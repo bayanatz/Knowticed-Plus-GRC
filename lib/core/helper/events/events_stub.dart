@@ -17,7 +17,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:demo_app/core/widgets/removed_module_placeholder.dart';
+import 'package:demo_app/core/helper/events/core_widgets/removed_module_placeholder.dart';
 import 'package:demo_app/features/home/helper/events/controllers/events_controllers/model/event_model.dart';
 
 // Stub: Survey

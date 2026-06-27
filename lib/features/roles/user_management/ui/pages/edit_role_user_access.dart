@@ -5,8 +5,8 @@ import 'package:get/get.dart';
 
 import 'package:demo_app/core/helper/main_helper/cross_axis_count_helper.dart';
 import 'package:demo_app/features/roles/widgets/confirm_dialog.dart';
-import 'package:demo_app/core/widgets/main_widget/loading.dart';
-import 'package:demo_app/core/widgets/main_widget/pagination_app_bar.dart';
+import 'package:demo_app/core/custom/loading.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/pagination_app_bar.dart';
 import 'package:demo_app/features/roles/role_management/domain/entity/user_permission_entity.dart';
 import 'package:demo_app/features/roles/user_management/controller/user_management_cubit.dart';
 import 'package:demo_app/features/roles/role_management/utils/role_log_service.dart';

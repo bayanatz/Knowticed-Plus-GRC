@@ -1,24 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:demo_app/features/roles/widgets/dialogs/confirmation_dialog.dart';
-import 'package:demo_app/core/widgets/main_widget/shared_action_widgets.dart';
-import 'package:demo_app/core/widgets/main_widget/side_frame_master.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/shared_action_widgets.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/side_frame_master.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_svg.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/custom_svg.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:demo_app/core/helper/main_helper/circle_progress.dart';
-import 'package:demo_app/core/widgets/main_widget/circle_progress.dart';
+import 'package:demo_app/core/custom/circle_progress.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/services_mangment_module/Category/presentation/ui/services_admin/Widget/W3_Frame_Screen_tablet.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/services_mangment_module/core/custom_button_with_image.dart';
 import 'package:demo_app/features/roles/user_management/controller/user_management_cubit.dart';
 import 'package:demo_app/features/roles/user_management/ui/pages/showEditUserAccessDialog.dart';
 import 'dart:ui' as ui;
 
-import 'package:demo_app/core/widgets/main_widget/timeline_widget.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/timeline_widget.dart';
 import 'package:demo_app/core/enums/enum.dart' as FormatHelper;
 import 'package:demo_app/core/enums/enum.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';
@@ -40,10 +40,10 @@ import 'package:demo_app/features/roles/role_management/controller/role_cubit.da
 import 'package:demo_app/features/roles/role_management/utils/role_log_service.dart';
 import 'package:demo_app/features/roles/user_management/ui/widgets/user_widget].dart';
 
-part 'widgets/employee_details_methods1.dart';
-part 'widgets/employee_details_methods2.dart';
-part 'widgets/employee_details_methods3.dart';
-part 'widgets/employee_details_methods4.dart';
+part '../widgets/employee_details_methods1.dart';
+part '../widgets/employee_details_methods2.dart';
+part '../widgets/employee_details_methods3.dart';
+part '../widgets/employee_details_methods4.dart';
 
 class RoleEmployeeDetailsPage extends StatefulWidget {
   final UserPermissionEntity userPermission;

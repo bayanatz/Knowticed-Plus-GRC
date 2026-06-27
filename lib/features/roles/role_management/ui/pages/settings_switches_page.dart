@@ -8,10 +8,10 @@ import 'package:demo_app/features/roles/role_management/controller/role_switches
 import 'package:demo_app/core/enums/enum.dart';
 import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
 import 'package:demo_app/features/roles/widgets/confirm_dialog.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_button.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/custom_button.dart';
 import 'package:demo_app/features/roles/widgets/default_switch_button.dart';
-import 'package:demo_app/core/widgets/main_widget/loading.dart';
-import 'package:demo_app/core/widgets/main_widget/pagination_app_bar.dart';
+import 'package:demo_app/core/custom/loading.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/pagination_app_bar.dart';
 import 'package:demo_app/generated/l10n.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';

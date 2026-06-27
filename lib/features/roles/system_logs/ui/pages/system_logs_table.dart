@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:demo_app/core/theme/app_font_size.dart';
-import 'package:demo_app/core/widgets/main_widget/circle_progress.dart';
+import 'package:demo_app/core/custom/circle_progress.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/skeleton/authentication/welcome_screen/views/mobile_view/nav_bar.dart';
 import 'package:demo_app/core/helper/employees/presentation/controller/employee_controller.dart';
 import 'package:demo_app/features/roles/system_logs/controller/system_logs_controller.dart';

@@ -1,10 +1,10 @@
-import 'package:demo_app/core/widgets/main_widget/side_frame_master.dart';
+import 'package:demo_app/features/settings/core_widgets/main_widget/side_frame_master.dart';
 import 'package:demo_app/core/custom/2-custom_textfield.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_svg.dart';
+import 'package:demo_app/features/settings/core_widgets/main_widget/custom_svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/theme/app_colors.dart';

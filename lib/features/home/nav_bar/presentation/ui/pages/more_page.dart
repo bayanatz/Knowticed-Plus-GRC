@@ -9,15 +9,15 @@ import 'package:demo_app/features/settings/mode_changer.dart';
 
 
 import 'package:demo_app/core/theme/app_font_size.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_appbar_mobile.dart';
-import 'package:demo_app/core/widgets/dialogs/custom_logout_dialog.dart';
+import 'package:demo_app/features/home/core_widgets/main_widget/custom_appbar_mobile.dart';
+import 'package:demo_app/features/home/core_widgets/dialogs/custom_logout_dialog.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/skeleton/authentication/welcome_screen/views/mobile_view/mobile_sign_in.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/services_mangment_module/core/new_theme.dart';
 import 'package:demo_app/features/home/nav_bar/presentation/controller/nav_bar_controller.dart';
 import 'package:demo_app/core/nav_bar_package.dart/functions.dart';
 
-import 'package:demo_app/core/widgets/main_widget/timeline_widget.dart';
+import 'package:demo_app/features/home/core_widgets/main_widget/timeline_widget.dart';
 import 'package:demo_app/core/enums/enum.dart';
 import 'package:demo_app/features/roles/role_management/domain/enums/modules_enum.dart';
 

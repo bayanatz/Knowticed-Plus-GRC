@@ -10,7 +10,7 @@ import 'package:demo_app/features/onboarding/authentication/presentation/ui/page
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:demo_app/core/widgets/buttons/main_custom_icon_button.dart';
+import 'package:demo_app/features/onboarding/core_widgets/buttons/main_custom_icon_button.dart';
 import 'package:demo_app/features/onboarding/presentation/ui/pages/page_onBoarding.dart';
 // import 'package:demo_app/components/on_boarding_components.dart/page_onboarding.dart';
 import 'package:demo_app/core/enums/enum.dart';

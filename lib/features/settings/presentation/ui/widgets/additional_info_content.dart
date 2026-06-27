@@ -7,7 +7,7 @@ import 'package:demo_app/core/constants/files_extensions.dart';
 import 'package:demo_app/core/enums/enum.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:demo_app/core/widgets/main_widget/request_escalate_dialog.dart';
+import 'package:demo_app/features/settings/core_widgets/main_widget/request_escalate_dialog.dart';
 import 'package:demo_app/features/settings/presentation/controller/settings_controller.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'document_section.dart';

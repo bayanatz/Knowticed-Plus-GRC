@@ -10,8 +10,8 @@ import 'package:intl/intl.dart';
 import 'package:demo_app/features/roles/account_status/domain/entity/account_status_access_entity.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 
-import 'package:demo_app/core/widgets/main_widget/DatePicker.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_button.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/DatePicker.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/custom_button.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';
 import 'package:demo_app/features/roles/role_management/utils/constants.dart';

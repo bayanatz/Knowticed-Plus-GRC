@@ -6,9 +6,9 @@
 
 import 'dart:io';
 
-import 'package:demo_app/core/widgets/main_widget/custom_button_widget.dart';
-import 'package:demo_app/core/widgets/main_widget/navigation.dart';
-import 'package:demo_app/core/widgets/main_widget/side_frame_master.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/custom_button_widget.dart';
+import 'package:demo_app/core/custom/37-custom_navigate.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/side_frame_master.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:excel/excel.dart';
@@ -26,8 +26,8 @@ import 'package:desktop_drop/desktop_drop.dart'; // Add this dependency
 
 import 'package:demo_app/generated/l10n.dart';
 
-part 'widgets/import_page_methods1.dart';
-part 'widgets/import_page_methods2.dart';
+part '../widgets/import_page_methods1.dart';
+part '../widgets/import_page_methods2.dart';
 
 // REMOVED_MODULE: import '../../../../../../external/inventory_module/core/custom_button_widget.dart';
 // REMOVED_MODULE: import '../../../../../../external/services_mangment_module/Category/presentation/ui/service_department_manager/tablet/s1_create_service/data_upload/upload_file_details_toggle.dart';

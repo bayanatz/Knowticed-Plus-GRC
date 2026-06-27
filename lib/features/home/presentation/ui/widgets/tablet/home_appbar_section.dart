@@ -7,13 +7,13 @@
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_svg.dart';
+import 'package:demo_app/features/home/core_widgets/main_widget/custom_svg.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:demo_app/core/widgets/main_widget/timeline_widget.dart';
+import 'package:demo_app/features/home/core_widgets/main_widget/timeline_widget.dart';
 import 'package:demo_app/core/enums/enum.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/inventory_module/core/navigate.dart';
 import 'package:demo_app/features/home/presentation/ui/widgets/gradiant_container.dart';

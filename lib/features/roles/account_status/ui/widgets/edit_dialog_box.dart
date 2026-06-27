@@ -1,4 +1,4 @@
-import 'package:demo_app/core/widgets/main_widget/custom_button_widget.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/custom_button_widget.dart';
 import 'package:demo_app/core/custom/2-custom_textfield.dart';
 import 'package:demo_app/core/helper/knowledge_hub_module/core/custom_drop_down.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
@@ -15,8 +15,8 @@ import 'package:lottie/lottie.dart';
 import 'package:demo_app/features/roles/account_status/domain/entity/account_status_access_entity.dart';
 import 'package:demo_app/generated/l10n.dart'; // ✅ Add this import
 
-import 'package:demo_app/core/widgets/main_widget/custom_button.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_drop_down.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/custom_button.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/custom_drop_down.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/features/roles/account_status/controller/account_status_cubit.dart';

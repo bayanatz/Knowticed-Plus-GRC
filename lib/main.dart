@@ -1,6 +1,6 @@
 // ignore_for_file: sdk_version_since
 
-import 'package:demo_app/core/utils/theme & loclization/ThemeAndLoc_cubit.dart';
+import 'package:demo_app/core/utils/toogle_control.dart';
 import 'package:demo_app/features/onboarding/presentation/ui/pages/onboarding.dart';
 import 'dart:async';
 import 'dart:io';

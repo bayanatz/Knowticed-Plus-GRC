@@ -8,13 +8,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
-import 'package:demo_app/core/widgets/buttons/main_custom_icon_button.dart';
-import 'package:demo_app/core/widgets/dialogs/response_dialog.dart';
-import 'package:demo_app/core/widgets/main_widget/column_request_data.dart';
+import 'package:demo_app/features/onboarding/core_widgets/buttons/main_custom_icon_button.dart';
+import 'package:demo_app/features/onboarding/core_widgets/dialogs/response_dialog.dart';
+import 'package:demo_app/features/onboarding/core_widgets/main_widget/column_request_data.dart';
 
 import 'package:demo_app/features/onboarding/helper/functions.dart';
 import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
-import 'package:demo_app/core/widgets/main_widget/loading.dart';
+import 'package:demo_app/core/custom/loading.dart';
 
 import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:demo_app/core/constants/system_actions.dart';

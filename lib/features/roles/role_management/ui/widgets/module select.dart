@@ -1,10 +1,10 @@
-import 'package:demo_app/core/widgets/main_widget/custom_svg.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/custom_svg.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:demo_app/core/widgets/main_widget/circle_progress.dart';
+import 'package:demo_app/core/custom/circle_progress.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/inventory_module/core/svg_custom.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/services_mangment_module/core/new_theme.dart';
 import 'dart:ui' as ui;

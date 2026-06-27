@@ -6,7 +6,7 @@ import 'package:lottie/lottie.dart';
 
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_button.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/custom_button.dart';
 
 class ConfirmDialog {
   show(

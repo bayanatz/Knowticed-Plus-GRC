@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../home/app_drawer/presentation/controller/drawer_controller.dart';
-import 'package:demo_app/features/roles/role_management/domain/enums/modules_enum.dart';
 
 // REMOVED_MODULE: messaging_package was removed from demo_app.
 // When adding the messaging module, restore the full implementation from demo_app_plus.

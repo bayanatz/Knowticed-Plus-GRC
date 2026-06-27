@@ -16,8 +16,8 @@ import 'package:demo_app/core/helper/employees/presentation/controller/employee_
 
 import '../../../../../core/constants/system_actions.dart';
 import '../../../../../core/network/failure_model.dart';
-import '../../../../../core/widgets/dialogs/response_dialog.dart';
-import 'package:demo_app/core/widgets/main_widget/loading.dart';
+import 'package:demo_app/features/onboarding/core_widgets/dialogs/response_dialog.dart';
+import 'package:demo_app/core/custom/loading.dart';
 import '../../../../employee/data/models/emplyees_model/new_employee_model.dart';
 import 'package:demo_app/features/roles/account_status/controller/account_status_notification_service.dart';
 import '../../data/repository/demo_login_repository.dart';

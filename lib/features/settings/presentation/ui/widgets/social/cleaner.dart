@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:demo_app/core/widgets/main_widget/loading.dart';
+import 'package:demo_app/core/custom/loading.dart';
 import 'package:demo_app/core/constants/api_constants.dart';
 import 'package:demo_app/core/network/get_base_url.dart';
 import 'package:demo_app/core/network/get_base_url.dart';

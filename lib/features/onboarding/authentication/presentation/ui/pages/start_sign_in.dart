@@ -21,7 +21,7 @@ import 'package:demo_app/core/helper/main_helper/validator.dart';
 
 import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:demo_app/features/onboarding/widgets/dialogs/forgot_pass_dialog.dart';
-import 'package:demo_app/core/widgets/dialogs/response_dialog.dart';
+import 'package:demo_app/features/onboarding/core_widgets/dialogs/response_dialog.dart';
 import 'package:demo_app/core/helper/employees/biometrics_contoller.dart';
 import 'package:demo_app/features/onboarding/authentication/welcome_screen/views/start_sign_up.dart';
 import 'package:demo_app/features/onboarding/authentication/presentation/controller/login_controller.dart';

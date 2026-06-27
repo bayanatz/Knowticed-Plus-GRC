@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:demo_app/core/widgets/main_widget/circle_progress.dart';
+import 'package:demo_app/core/custom/circle_progress.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:demo_app/core/helper/employees/presentation/controller/employee_controller.dart';
 import 'package:demo_app/core/helper/employees/attendance_controller.dart';

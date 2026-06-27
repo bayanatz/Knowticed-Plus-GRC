@@ -19,7 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:demo_app/core/widgets/removed_module_placeholder.dart';
+import 'package:demo_app/features/home/core_widgets/removed_module_placeholder.dart';
 
 enum TaskStatus { deleted, done, scheduled, none }
 

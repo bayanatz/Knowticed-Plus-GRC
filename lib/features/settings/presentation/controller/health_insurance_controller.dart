@@ -8,8 +8,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:demo_app/core/widgets/main_widget/phone_number.dart';
-import 'package:demo_app/core/widgets/main_widget/loading.dart';
+import 'package:demo_app/features/settings/core_widgets/main_widget/phone_number.dart';
+import 'package:demo_app/core/custom/loading.dart';
 import 'package:demo_app/core/helper/employees/domain/entities/emergency_contact_entity.dart';
 import 'package:demo_app/core/helper/employees/domain/entities/request_health_insurance_entity.dart';
 import 'package:demo_app/core/helper/employees/presentation/controller/emergency_contact_controller.dart';

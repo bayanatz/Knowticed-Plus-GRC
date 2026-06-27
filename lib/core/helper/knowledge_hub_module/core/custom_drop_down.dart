@@ -1,5 +1,5 @@
-import 'package:demo_app/core/widgets/main_widget/custom_button_widget.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_svg.dart';
+import 'package:demo_app/core/helper/knowledge_hub_module/core_widgets/main_widget/custom_button_widget.dart';
+import 'package:demo_app/core/helper/knowledge_hub_module/core_widgets/main_widget/custom_svg.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';

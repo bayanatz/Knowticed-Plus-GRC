@@ -4,12 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:demo_app/core/widgets/main_widget/small_drop_down.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/small_drop_down.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/data_grc_module/core/extensions/extensions.dart';
 
 import 'package:demo_app/core/helper/main_helper/format_helper.dart';
-import 'package:demo_app/core/widgets/main_widget/DatePicker.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/DatePicker.dart';
 import 'package:demo_app/features/roles/widgets/confirm_dialog.dart';
 import 'package:demo_app/generated/l10n.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';

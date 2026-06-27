@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 
-import 'package:demo_app/core/widgets/grc/svg_custom.dart';
+import 'package:demo_app/core/custom/32-custom_svg.dart';
 import '../theme/app_colors.dart';
 
 /// Sort action button.

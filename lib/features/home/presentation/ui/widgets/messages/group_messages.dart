@@ -9,7 +9,7 @@ import 'package:demo_app/features/messaging/features/groups/domain/entity/group_
 import 'package:demo_app/features/messaging/interface/controller/messaging_init_controller.dart';
 import 'package:demo_app/features/home/data/models/group_message_model.dart';
 
-import 'package:demo_app/core/widgets/main_widget/custom_button.dart';
+import 'package:demo_app/features/home/core_widgets/main_widget/custom_button.dart';
 import '../../../../../../core/theme/app_colors.dart';
 import '../../../../../../core/theme/app_text_styles.dart';
 import '../../../../../messaging/interface/message_interface_consumer.dart';

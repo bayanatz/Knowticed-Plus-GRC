@@ -1,7 +1,7 @@
-import 'package:demo_app/core/widgets/main_widget/custom_button_widget.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/custom_button_widget.dart';
 import 'package:demo_app/features/roles/widgets/filter_bar_item.dart';
-import 'package:demo_app/core/widgets/main_widget/navigation.dart';
-import 'package:demo_app/core/widgets/main_widget/shared_action_widgets.dart';
+import 'package:demo_app/core/custom/37-custom_navigate.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/shared_action_widgets.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,8 +24,8 @@ import 'package:lottie/lottie.dart';
 import 'package:demo_app/core/helper/main_helper/cross_axis_count_helper.dart';
 import 'package:demo_app/core/network/api_constants.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';
-import 'package:demo_app/core/widgets/main_widget/circle_progress.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_button.dart';
+import 'package:demo_app/core/custom/circle_progress.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/custom_button.dart';
 import 'package:demo_app/generated/l10n.dart';
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
 // REMOVED_MODULE: import '../../../../../../external/services_mangment_module/Category/presentation/ui/service_department_manager/tablet/s1_create_service/upload_file/upload_file.dart';
@@ -48,7 +48,7 @@ import 'import_page.dart';
 import 'role_user_details.dart';
 import 'package:demo_app/features/roles/role_management/utils/role_log_service.dart';
 
-part 'widgets/user_management_home_methods1.dart';
+part '../widgets/user_management_home_methods1.dart';
 
 class UserManagementHome extends StatefulWidget {
   @override

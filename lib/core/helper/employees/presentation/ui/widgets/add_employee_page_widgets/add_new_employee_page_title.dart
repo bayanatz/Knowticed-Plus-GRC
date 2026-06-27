@@ -9,7 +9,7 @@ import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:demo_app/features/home/app_drawer/presentation/ui/pages/custom_drawer.dart';
 import 'package:page_transition/page_transition.dart';
 
-import 'package:demo_app/core/widgets/main_widget/timeline_widget.dart';
+import 'package:demo_app/core/helper/employees/core_widgets/main_widget/timeline_widget.dart';
 
 class AddNewEmployeePageTitle extends StatelessWidget {
   const AddNewEmployeePageTitle({super.key});

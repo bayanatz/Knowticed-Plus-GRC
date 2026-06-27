@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:demo_app/core/widgets/dialogs/response_dialog.dart';
+import 'package:demo_app/features/roles/core_widgets/dialogs/response_dialog.dart';
 
 /// Success/result dialog.
 ///

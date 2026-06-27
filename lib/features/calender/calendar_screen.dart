@@ -1,5 +1,5 @@
 import 'package:demo_app/core/theme/app_theme.dart';
-import 'package:demo_app/core/widgets/main_widget/side_frame_master.dart';
+import 'package:demo_app/features/calender/core_widgets/main_widget/side_frame_master.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:demo_app/core/helper/main_helper/circle_progress.dart';
@@ -11,10 +11,11 @@ import 'package:lottie/lottie.dart';
 import 'package:intl/intl.dart';
 import 'dart:ui' as ui;
 import 'package:demo_app/core/theme/app_colors.dart';
+import '../../core/custom/32-custom_svg.dart';
 import '../../generated/l10n.dart';
 import '../home/app_drawer/presentation/controller/drawer_controller.dart';
 import 'package:demo_app/features/roles/role_management/domain/enums/modules_enum.dart';
-import 'package:demo_app/features/calender/widgets/grc/svg_custom_grc.dart';
+
 import 'package:demo_app/features/calender/helper/data_grc_module/grc_module/grc_owner/presentation/ui/preview_creation.dart';
 import '../employee/presentation/controller/main_core_employee_controller.dart';
 import 'package:get/get.dart';

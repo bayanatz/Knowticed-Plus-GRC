@@ -5,11 +5,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:demo_app/core/widgets/calender_package/src/models/calendar_date_picker2_config.dart';
-import 'package:demo_app/core/widgets/main_widget/date_picker_class.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_drop_down_menu.dart';
+import 'package:demo_app/features/settings/core_widgets/calender_package/src/models/calendar_date_picker2_config.dart';
+import 'package:demo_app/features/settings/core_widgets/main_widget/date_picker_class.dart';
+import 'package:demo_app/features/settings/core_widgets/main_widget/custom_drop_down_menu.dart';
 import 'package:demo_app/features/settings/presentation/ui/widgets/location_info_update.dart';
-import 'package:demo_app/core/widgets/form_fields/profile_textfield.dart';
+import 'package:demo_app/features/settings/core_widgets/form_fields/profile_textfield.dart';
 import 'package:demo_app/core/helper/main_helper/date_time_in_arabic.dart';
 import 'package:demo_app/core/enums/enum.dart';
 

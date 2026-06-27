@@ -10,7 +10,7 @@ import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/services_mangment_module/core/new_theme.dart';
 
-import 'package:demo_app/core/widgets/main_widget/sort_option_widget.dart';
+import 'package:demo_app/features/settings/core_widgets/main_widget/sort_option_widget.dart';
 
 class SettingsHeader extends StatefulWidget {
   final String imagePath;

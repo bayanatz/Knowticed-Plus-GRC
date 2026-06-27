@@ -1,8 +1,8 @@
-import 'package:demo_app/core/widgets/main_widget/navigation.dart';
-import 'package:demo_app/core/widgets/main_widget/side_frame_master.dart';
+import 'package:demo_app/core/custom/37-custom_navigate.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/side_frame_master.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_svg.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/custom_svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/custom/2-custom_textfield.dart';
@@ -26,7 +26,7 @@ import 'package:demo_app/features/employee/presentation/controller/main_core_emp
 import 'package:demo_app/features/settings/presentation/ui/pages/details_request.dart';
 import 'package:demo_app/features/roles/role_management/utils/role_log_service.dart';
 
-part 'widgets/request_page_approval_methods1.dart';
+part '../widgets/request_page_approval_methods1.dart';
 
 
 class RequestPageApproval extends StatefulWidget {

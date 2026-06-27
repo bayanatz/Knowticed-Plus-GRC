@@ -4,11 +4,11 @@ import 'dart:io';
 import 'package:demo_app/core/custom/2-custom_textfield.dart';
 import 'package:demo_app/core/custom/3-custom_dropdwon_calander.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
-import 'package:demo_app/core/widgets/services_management/custom_reasponsive_filed.dart';
+import 'package:demo_app/features/settings/core_widgets/services_management/custom_reasponsive_filed.dart';
 
 import 'package:demo_app/core/custom/1-custom_dropdwon.dart';
 import 'package:flutter/material.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_svg.dart';
+import 'package:demo_app/features/settings/core_widgets/main_widget/custom_svg.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -19,9 +19,9 @@ import 'package:demo_app/core/theme/app_colors.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/services_mangment_module/core/new_theme.dart';
 import 'package:demo_app/features/settings/presentation/controller/settings_controller.dart';
 
-import 'package:demo_app/core/widgets/main_widget/timeline_widget.dart';
+import 'package:demo_app/features/settings/core_widgets/main_widget/timeline_widget.dart';
 import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
-import '../../../../../../core/widgets/form_fields/profile_textfield.dart';
+import 'package:demo_app/features/settings/core_widgets/form_fields/profile_textfield.dart';
 import 'package:demo_app/core/helper/main_helper/validator.dart';
 import '../../../../../../generated/l10n.dart';
 import 'package:demo_app/core/helper/main_helper/format_helper.dart';

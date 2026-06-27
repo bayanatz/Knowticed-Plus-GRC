@@ -22,7 +22,7 @@ import 'package:demo_app/core/theme/app_font_size.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/skeleton/authentication/welcome_screen/views/mobile_view/nav_bar.dart';
 import '../../../../../core/constants/skeleton_assets.dart';
 import 'package:demo_app/core/enums/enum.dart';
-import '../../../../../core/widgets/form_fields/profile_textfield.dart';
+import 'package:demo_app/features/settings/core_widgets/form_fields/profile_textfield.dart';
 import 'package:demo_app/features/settings/widgets/name_section.dart';
 // REMOVED: import '../../../settings_screen/views/personal_info_screens/personal_info_tablet/nationality_and_birth_section.dart';
 import '../../../../../generated/l10n.dart';

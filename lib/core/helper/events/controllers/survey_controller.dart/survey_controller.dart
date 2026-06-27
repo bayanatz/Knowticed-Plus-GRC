@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:demo_app/core/widgets/main_widget/loading.dart';
+import 'package:demo_app/core/custom/loading.dart';
 import 'package:demo_app/core/constants/system_actions.dart';
 import 'package:demo_app/features/notification/notification_controller.dart';
 import 'package:demo_app/core/helper/events/components/survey_components/question_card.dart';

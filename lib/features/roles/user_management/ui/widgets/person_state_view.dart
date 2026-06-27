@@ -1,5 +1,5 @@
 import 'package:demo_app/core/constants/app_assets.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_check_box.dart';
+import 'package:demo_app/core/custom/23-custom_check_box.dart';
 import 'package:flutter/material.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

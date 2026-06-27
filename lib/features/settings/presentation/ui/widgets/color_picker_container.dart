@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:demo_app/core/widgets/buttons/main_custom_icon_button.dart';
-import 'package:demo_app/core/widgets/main_widget/timeline_widget.dart';
+import 'package:demo_app/features/settings/core_widgets/buttons/main_custom_icon_button.dart';
+import 'package:demo_app/features/settings/core_widgets/main_widget/timeline_widget.dart';
 import 'package:demo_app/core/enums/enum.dart';
 
 

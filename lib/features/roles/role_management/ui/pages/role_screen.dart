@@ -13,7 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';
-import 'package:demo_app/core/widgets/main_widget/pagination_app_bar.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/pagination_app_bar.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/services_mangment_module/core/helpers/circle_progress.dart';
 import 'package:demo_app/features/roles/account_status/ui/pages/user_access_container.dart';
 import 'package:demo_app/features/roles/role_management/controller/role_cubit.dart';

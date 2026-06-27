@@ -10,15 +10,15 @@ import 'package:demo_app/core/theme/app_colors.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/inventory_module/core/svg_custom.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:animated_reorderable_list/animated_reorderable_list.dart';
-import 'package:demo_app/core/widgets/main_widget/timeline_widget.dart';
+import 'package:demo_app/features/home/core_widgets/main_widget/timeline_widget.dart';
 import 'package:demo_app/core/constants/image_paths.dart';
 import 'package:demo_app/features/settings/mode_changer.dart';
 import 'package:demo_app/core/enums/enum.dart';
 import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
 
 import 'package:demo_app/core/theme/app_font_size.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_appbar.dart';
-import 'package:demo_app/core/widgets/dialogs/custom_logout_dialog.dart';
+import 'package:demo_app/features/home/core_widgets/main_widget/custom_appbar.dart';
+import 'package:demo_app/features/home/core_widgets/dialogs/custom_logout_dialog.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/skeleton/employees/employees_views/employee_attendance.dart';
 // REMOVED_MODULE: import 'package:demo_app/feature/notification/notification_screen.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/skeleton/authentication/welcome_screen/views/mobile_view/nav_bar.dart';

@@ -4,7 +4,7 @@
 /// Author: Mohamed Elrashidy
 /// Created at: 25/12/2024
 import 'package:demo_app/core/theme/app_theme.dart';
-import 'package:demo_app/core/widgets/services_management/custom_filter.dart';
+import 'package:demo_app/core/helper/employees/core_widgets/services_management/custom_filter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,7 +12,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:flutter/src/services/haptic_feedback.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
-import 'package:demo_app/core/widgets/main_widget/app_search_text_field.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/services_mangment_module/Category/presentation/ui/services_admin/Widget/W3_Frame_Screen_tablet.dart';
 import 'package:demo_app/core/helper/employees/domain/entities/organization_hierarchy_node.dart';
@@ -20,9 +19,9 @@ import 'package:demo_app/core/helper/employees/presentation/controller/employees
 import 'package:lottie/lottie.dart';
 
 import 'package:demo_app/core/enums/enum.dart';
-import 'package:demo_app/core/widgets/main_widget/circle_progress.dart';
+import 'package:demo_app/core/custom/circle_progress.dart';
 import 'package:demo_app/generated/l10n.dart';
-import 'package:demo_app/core/widgets/grc/custom_button_with_image.dart';
+import 'package:demo_app/core/helper/employees/core_widgets/grc/custom_button_with_image.dart';
 // REMOVED_MODULE: import '../../../../../../external/knowledge_hub_module/core/theming/new_theme.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/helper/employees/presentation/controller/employee_controller.dart';

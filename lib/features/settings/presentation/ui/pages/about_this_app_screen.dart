@@ -1,15 +1,15 @@
-import 'package:demo_app/core/widgets/main_widget/side_frame_master.dart';
+import 'package:demo_app/features/settings/core_widgets/main_widget/side_frame_master.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_svg.dart';
+import 'package:demo_app/features/settings/core_widgets/main_widget/custom_svg.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:demo_app/core/widgets/main_widget/circle_progress.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_appbar_mobile.dart';
+import 'package:demo_app/core/custom/circle_progress.dart';
+import 'package:demo_app/features/settings/core_widgets/main_widget/custom_appbar_mobile.dart';
 
 import 'package:demo_app/features/settings/mode_changer.dart';
 

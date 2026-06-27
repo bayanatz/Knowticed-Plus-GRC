@@ -1,13 +1,13 @@
-import 'package:demo_app/core/widgets/main_widget/shared_action_widgets.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/shared_action_widgets.dart';
 import 'package:demo_app/core/custom/2-custom_textfield.dart';
 import 'package:demo_app/features/roles/helper/knowledge_hub_module/core/custom_dialog_manager.dart';
-import 'package:demo_app/core/widgets/main_widget/side_frame_master.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/side_frame_master.dart';
 import 'package:demo_app/features/roles/helper/knowledge_hub_module/knowledge_hub/presentation/ui/widgets/customed_text_field.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_svg.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/custom_svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/helper/main_helper/format_helper.dart';
@@ -27,9 +27,9 @@ import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/features/employee/data/models/emplyees_model/new_employee_model.dart';
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
 
-part 'widgets/umdr_methods1.dart';
-part 'widgets/umdr_methods2.dart';
-part 'widgets/umdr_methods3.dart';
+part '../widgets/umdr_methods1.dart';
+part '../widgets/umdr_methods2.dart';
+part '../widgets/umdr_methods3.dart';
 // REMOVED_MODULE: import '../../../../../../external/services_mangment_module/Category/presentation/ui/service_department_manager/mobile/dashBoard_master_mobile/widget/dialog.dart';
 // REMOVED_MODULE: import '../../../../../../external/services_mangment_module/Category/presentation/ui/services_admin/Widget/W3_Frame_Screen_tablet.dart';
 

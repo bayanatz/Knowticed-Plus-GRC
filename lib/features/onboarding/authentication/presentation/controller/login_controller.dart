@@ -21,7 +21,7 @@ import 'package:demo_app/features/roles/user_management/controller/user_role_con
   import 'package:demo_app/features/settings/mode_changer.dart';
   import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
   import 'package:demo_app/core/network/api_constants.dart';
-  import 'package:demo_app/core/widgets/main_widget/loading.dart';
+  import 'package:demo_app/core/custom/loading.dart';
 import 'package:demo_app/core/helper/employees/add_wrong_employee_controller.dart';
 import 'package:demo_app/core/helper/employees/biometrics_contoller.dart';
 // REMOVED_MODULE:   import 'package:demo_app/features/skeleton/controllers/notification_controller.dart';

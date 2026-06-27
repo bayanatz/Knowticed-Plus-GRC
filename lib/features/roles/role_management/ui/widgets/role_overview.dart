@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'dart:ui' as ui;
 import 'package:intl/intl.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';
-import 'package:demo_app/core/widgets/main_widget/circle_progress.dart';
+import 'package:demo_app/core/custom/circle_progress.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/data_grc_module/core/extensions/extensions.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/inventory_module/core/circle_progress.dart';
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';

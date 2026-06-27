@@ -4,7 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:demo_app/core/widgets/main_widget/loading.dart';
+import 'package:demo_app/core/custom/loading.dart';
 ///************************ FILE INFO ************************///
 /// Class Name: AddNewEmployeeController
 /// Purpose: Controller for add new employee

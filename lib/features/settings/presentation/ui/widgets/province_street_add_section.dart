@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:demo_app/core/widgets/form_fields/profile_textfield.dart';
+import 'package:demo_app/features/settings/core_widgets/form_fields/profile_textfield.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';
 
 class ProvinceStreetAddSection extends StatefulWidget {

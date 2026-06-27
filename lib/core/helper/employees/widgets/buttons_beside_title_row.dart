@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/helper/employees/presentation/ui/widgets/employees_hr_appbar.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_container_photo.dart';
+import 'package:demo_app/core/helper/employees/core_widgets/main_widget/custom_container_photo.dart';
 import 'package:demo_app/core/enums/enum.dart';
 import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
 

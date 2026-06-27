@@ -6,15 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-import 'package:demo_app/core/widgets/calender_package/src/models/calendar_date_picker2_config.dart';
-import 'package:demo_app/core/widgets/main_widget/date_picker_class.dart';
-import 'package:demo_app/core/widgets/buttons/main_custom_icon_button.dart';
-import 'package:demo_app/core/widgets/main_widget/country_picker_dialog.dart';
-import 'package:demo_app/core/widgets/main_widget/intl_phone_field.dart';
-import 'package:demo_app/core/widgets/main_widget/phone_number.dart';
-import 'package:demo_app/core/widgets/main_widget/column_request_data.dart';
+import 'package:demo_app/core/helper/employees/core_widgets/calender_package/src/models/calendar_date_picker2_config.dart';
+import 'package:demo_app/core/helper/employees/core_widgets/main_widget/date_picker_class.dart';
+import 'package:demo_app/core/helper/employees/core_widgets/buttons/main_custom_icon_button.dart';
+import 'package:demo_app/core/helper/employees/core_widgets/main_widget/country_picker_dialog.dart';
+import 'package:demo_app/core/helper/employees/core_widgets/main_widget/intl_phone_field.dart';
+import 'package:demo_app/core/helper/employees/core_widgets/main_widget/phone_number.dart';
+import 'package:demo_app/core/helper/employees/core_widgets/main_widget/column_request_data.dart';
 
-import 'package:demo_app/core/widgets/main_widget/loading.dart';
+import 'package:demo_app/core/custom/loading.dart';
 
 import 'package:demo_app/core/constants/nationalities_list.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';

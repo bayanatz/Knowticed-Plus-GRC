@@ -1,15 +1,15 @@
 
 import 'package:demo_app/core/custom/2-custom_textfield.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_button_widget.dart';
-import 'package:demo_app/core/widgets/main_widget/side_frame_master.dart';
+import 'package:demo_app/features/settings/core_widgets/main_widget/custom_button_widget.dart';
+import 'package:demo_app/features/settings/core_widgets/main_widget/side_frame_master.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_svg.dart';
+import 'package:demo_app/features/settings/core_widgets/main_widget/custom_svg.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'dart:ui' as ui;
-import 'package:demo_app/core/widgets/main_widget/custom_appbar_mobile.dart';
+import 'package:demo_app/features/settings/core_widgets/main_widget/custom_appbar_mobile.dart';
 import 'package:demo_app/features/settings/widgets/dialogs/custom_dialog_box.dart';
 
 import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
@@ -25,7 +25,7 @@ import '../../../../../generated/l10n.dart';
 // REMOVED_MODULE: import '../../../../../external/inventory_module/core/custom_check_box.dart';
 // REMOVED_MODULE: import '../../../../../external/inventory_module/core/text_field.dart';
 // REMOVED_MODULE: import '../../../../../external/knowledge_hub_module/core/custom_validated_text_field_master.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_check_box.dart'; // ADD THIS IMPORT
+import 'package:demo_app/core/custom/23-custom_check_box.dart'; // ADD THIS IMPORT
 
 class CommentsAndFeedbackScreen extends StatefulWidget {
   const CommentsAndFeedbackScreen({super.key});

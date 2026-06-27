@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:demo_app/core/theme/app_colors.dart';
 
-import 'package:demo_app/core/widgets/grc/svg_custom.dart';
+import 'package:demo_app/core/custom/32-custom_svg.dart';
 import '../../category/presentation/screens/to_do_list/home_screen.dart';
 import '../utilties/images.dart';
 

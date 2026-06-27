@@ -1,5 +1,5 @@
 import 'package:demo_app/core/custom/1-custom_dropdwon.dart';
-import 'package:demo_app/core/widgets/main_widget/side_frame_master.dart';
+import 'package:demo_app/core/helper/todo_new_module/core_widgets/main_widget/side_frame_master.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_switch/flutter_switch.dart';
@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
-import 'package:demo_app/core/widgets/main_widget/DatePicker.dart';
+import 'package:demo_app/core/helper/todo_new_module/core_widgets/main_widget/DatePicker.dart';
 
 import 'package:demo_app/core/theme/app_font_weights.dart';
 import 'package:demo_app/generated/l10n.dart';

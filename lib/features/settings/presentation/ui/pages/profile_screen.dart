@@ -1,7 +1,7 @@
 // Shared mutable global state for the settings personal-info / additional-info
 // update widgets. These top-level globals previously lived in the (now removed)
 // legacy profile screen and are still referenced by the settings update widgets.
-import 'package:demo_app/core/widgets/main_widget/phone_number.dart';
+import 'package:demo_app/features/settings/core_widgets/main_widget/phone_number.dart';
 
 // Contact info
 String? email2;

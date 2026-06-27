@@ -2,7 +2,7 @@ import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/core/custom/2-custom_textfield.dart';
 
 import 'package:flutter/material.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_svg.dart';
+import 'package:demo_app/core/helper/employees/core_widgets/main_widget/custom_svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -12,8 +12,8 @@ import 'package:lottie/lottie.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';
 import 'package:demo_app/core/helper/employees/presentation/controller/main_core_department_controller.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_button.dart';
-import 'package:demo_app/core/widgets/main_widget/loading.dart';
+import 'package:demo_app/core/helper/employees/core_widgets/main_widget/custom_button.dart';
+import 'package:demo_app/core/custom/loading.dart';
 
 import 'package:demo_app/generated/l10n.dart';
 import 'package:demo_app/core/network/get_base_url.dart';

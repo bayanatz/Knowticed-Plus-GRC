@@ -1,4 +1,4 @@
-import 'package:demo_app/core/widgets/main_widget/side_frame_master.dart';
+import 'package:demo_app/core/helper/todo_new_module/core_widgets/main_widget/side_frame_master.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -6,8 +6,7 @@ import 'package:demo_app/core/helper/form_builder_module/core/widgets/buttons/cu
 import 'package:lottie/lottie.dart';
 
 import 'package:demo_app/core/custom/35-custom_search_widget_custom.dart';
-import 'package:demo_app/core/widgets/main_widget/app_search_text_field.dart';
-import 'package:demo_app/core/widgets/main_widget/circle_progress.dart';
+import 'package:demo_app/core/custom/circle_progress.dart';
 import 'package:demo_app/generated/l10n.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';

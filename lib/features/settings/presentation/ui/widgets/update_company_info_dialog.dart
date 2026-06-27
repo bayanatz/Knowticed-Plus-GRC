@@ -3,14 +3,14 @@ import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:demo_app/core/widgets/buttons/main_custom_icon_button.dart';
+import 'package:demo_app/features/settings/core_widgets/buttons/main_custom_icon_button.dart';
 import 'package:demo_app/features/settings/presentation/ui/widgets/multiselect.dart';
 import 'package:demo_app/features/settings/presentation/ui/widgets/company_info_update.dart';
 import 'package:demo_app/features/settings/presentation/ui/widgets/company_service_update.dart';
 import 'package:demo_app/features/settings/presentation/ui/widgets/contact_info_company_update.dart';
 import 'package:demo_app/features/settings/presentation/ui/widgets/settings_header.dart';
-import 'package:demo_app/core/widgets/dialogs/response_dialog.dart';
-import 'package:demo_app/core/widgets/main_widget/filters_appbar.dart';
+import 'package:demo_app/features/settings/core_widgets/dialogs/response_dialog.dart';
+import 'package:demo_app/features/settings/core_widgets/main_widget/filters_appbar.dart';
 
 
 import 'package:demo_app/core/theme/app_font_size.dart';

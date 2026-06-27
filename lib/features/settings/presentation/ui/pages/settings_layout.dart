@@ -14,8 +14,8 @@ import 'package:demo_app/core/services/notifications/firebase_notification_handl
 
 import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:demo_app/core/theme/theme_controller.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_appbar.dart';
-import 'package:demo_app/core/widgets/main_widget/restart_widget.dart';
+import 'package:demo_app/features/settings/core_widgets/main_widget/custom_appbar.dart';
+import 'package:demo_app/features/settings/core_widgets/main_widget/restart_widget.dart';
 import 'package:demo_app/features/settings/presentation/controller/settings_controller.dart';
 import 'package:demo_app/generated/l10n.dart';
 
@@ -24,7 +24,6 @@ import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
 import 'package:demo_app/features/settings/widgets/custom_cards.dart';
 import 'package:demo_app/features/settings/presentation/ui/pages/language_screen.dart';
 import 'package:demo_app/features/settings/presentation/ui/widgets/settings_appbar.dart';
-import 'package:demo_app/features/settings/presentation/ui/pages/subscribtion_new.dart';
 import 'package:demo_app/features/settings/presentation/ui/pages/terms_and_conditions.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../employee/data/models/emplyees_model/new_employee_model.dart';
@@ -727,7 +726,7 @@ class _SettingsLayoutState extends State<SettingsLayout> {
                         if (settingsController.selectedContainerIndex == 8 && hasCompanyInfo)
                           CompanyScreenInfo(),
                         if (settingsController.selectedContainerIndex == 9)
-                          const SubscribtionNew(),
+                          Container(),
                         if (settingsController.selectedContainerIndex == 10 && hasHealthInsurance)
                           SettingsHealthInsurance(),
                         if (settingsController.selectedContainerIndex == 12 && hasSocialInfo)

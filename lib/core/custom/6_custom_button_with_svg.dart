@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:demo_app/core/widgets/grc/svg_custom.dart';
+import 'package:demo_app/core/custom/32-custom_svg.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import '../theme/app_colors.dart';
 

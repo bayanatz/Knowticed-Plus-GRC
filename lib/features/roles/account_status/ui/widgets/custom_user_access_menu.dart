@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/features/roles/widgets/dialogs/reschedule_dialog.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_schedule_or_now_dialog.dart';
-import 'package:demo_app/core/widgets/dialogs/response_dialog.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/custom_schedule_or_now_dialog.dart';
+import 'package:demo_app/features/roles/core_widgets/dialogs/response_dialog.dart';
 
 
 import 'package:demo_app/core/theme/app_font_size.dart';

@@ -1,12 +1,12 @@
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_svg.dart';
+import 'package:demo_app/features/home/core_widgets/main_widget/custom_svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/services_mangment_module/core/new_theme.dart';
 
-import 'package:demo_app/core/widgets/main_widget/custom_drop_down.dart';
+import 'package:demo_app/features/home/core_widgets/main_widget/custom_drop_down.dart';
 import 'chart_orientation_enum.dart';
 import 'chart_registry.dart';
 import 'chart_setting_firebase_service.dart';

@@ -13,7 +13,7 @@ import 'package:demo_app/features/roles/role_management/controller/role_cubit.da
 
 import 'package:demo_app/core/helper/main_helper/employee_helper.dart';
 import 'package:demo_app/core/helper/main_helper/format_helper.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_icon_button.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/custom_icon_button.dart';
 import 'package:demo_app/features/roles/widgets/custom_title_value_widget.dart';
 import 'package:demo_app/generated/l10n.dart';
 import 'package:demo_app/core/theme/app_colors.dart';

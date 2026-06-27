@@ -3,12 +3,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_button.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/custom_button.dart';
 import 'package:demo_app/generated/l10n.dart'; // ✅ Add this import
 
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/features/roles/role_management/controller/role_cubit.dart';
-import 'package:demo_app/core/widgets/main_widget/loading.dart';
+import 'package:demo_app/core/custom/loading.dart';
 
 class RoleDialogs {
   /// Show save for later confirmation dialog

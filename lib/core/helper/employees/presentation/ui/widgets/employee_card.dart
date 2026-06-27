@@ -5,7 +5,7 @@
 // Objectives: this is a widget to customize the card of the employee in the org chart
 import 'package:demo_app/core/nav_bar_package.dart/functions.dart';
 import 'package:flutter/material.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_svg.dart';
+import 'package:demo_app/core/helper/employees/core_widgets/main_widget/custom_svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:demo_app/core/helper/employees/employees_views/employee_detailed_info/employee_detailed_info_screen.dart';
 import 'package:demo_app/core/helper/employees/employees_views/employees_hr_view/employees_profile/employee_profile_mobile/employee_profile_screen_employee_view_mobile.dart';

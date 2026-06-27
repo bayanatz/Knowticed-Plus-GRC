@@ -1,4 +1,4 @@
-import 'package:demo_app/core/widgets/main_widget/custom_button_widget.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/custom_button_widget.dart';
 import 'package:demo_app/core/custom/2-custom_textfield.dart';
 
 import 'package:demo_app/features/roles/helper/task_management_module/core/components/success_dialog.dart';
@@ -9,7 +9,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_button.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/custom_button.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:demo_app/generated/l10n.dart';
 

@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'package:demo_app/features/home/widgets/standard_container.dart';
 import 'package:percentages_with_animation/percentages_with_animation.dart';
 
-import 'package:demo_app/core/widgets/main_widget/circle_progress.dart';
+import 'package:demo_app/core/custom/circle_progress.dart';
 import '../../../../../../generated/l10n.dart';
 import '../../../../../../core/theme/app_colors.dart';
 import '../../../../../../core/theme/app_text_styles.dart';

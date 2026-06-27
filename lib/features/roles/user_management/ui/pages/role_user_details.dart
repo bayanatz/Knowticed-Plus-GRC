@@ -6,8 +6,8 @@ import 'package:get/get.dart';
 
 import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/helper/main_helper/cross_axis_count_helper.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_icon_button.dart';
-import 'package:demo_app/core/widgets/main_widget/pagination_app_bar.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/custom_icon_button.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/pagination_app_bar.dart';
 import 'package:demo_app/features/roles/user_management/controller/user_management_cubit.dart';
 import 'package:demo_app/features/roles/user_management/ui/widgets/access_info.dart';
 import 'package:demo_app/features/roles/user_management/ui/widgets/access_search_and_filter.dart';

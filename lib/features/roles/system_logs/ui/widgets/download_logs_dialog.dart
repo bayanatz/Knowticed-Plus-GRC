@@ -2,8 +2,8 @@ import 'package:demo_app/features/onboarding/presentation/ui/pages/onboarding.da
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:demo_app/core/widgets/buttons/main_custom_icon_button.dart';
-import 'package:demo_app/core/widgets/main_widget/column_request_data.dart';
+import 'package:demo_app/features/roles/core_widgets/buttons/main_custom_icon_button.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/column_request_data.dart';
 
 
 import 'package:demo_app/core/theme/app_font_size.dart';

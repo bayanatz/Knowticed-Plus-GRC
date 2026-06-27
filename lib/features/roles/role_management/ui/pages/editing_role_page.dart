@@ -5,13 +5,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:demo_app/core/widgets/main_widget/loading.dart';
+import 'package:demo_app/core/custom/loading.dart';
 import 'package:demo_app/core/custom/2-custom_textfield.dart';
 
 import 'package:demo_app/features/roles/widgets/confirm_dialog.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_button.dart';
-import 'package:demo_app/core/widgets/main_widget/pagination_app_bar.dart';
-import 'package:demo_app/core/widgets/main_widget/text_single_field.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/custom_button.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/pagination_app_bar.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/text_single_field.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';
 import 'package:demo_app/features/roles/role_management/data/models/role_model.dart';

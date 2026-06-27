@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:demo_app/core/widgets/main_widget/circle_progress.dart';
+import 'package:demo_app/core/custom/circle_progress.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/home/widgets/standard_container.dart';
 import '../../../../../../generated/l10n.dart';

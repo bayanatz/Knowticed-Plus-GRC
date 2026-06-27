@@ -18,9 +18,9 @@ import 'package:demo_app/core/helper/employees/presentation/ui/pages/position_de
 import 'package:demo_app/features/settings/mode_changer.dart';
 import 'package:demo_app/core/enums/enum.dart';
 import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
-import 'package:demo_app/core/widgets/buttons/main_custom_icon_button.dart';
+import 'package:demo_app/core/helper/employees/core_widgets/buttons/main_custom_icon_button.dart';
 // REMOVED_MODULE: import '../../../../controllers/users_access_controller.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_appbar.dart';
+import 'package:demo_app/core/helper/employees/core_widgets/main_widget/custom_appbar.dart';
 import 'package:demo_app/features/employee/data/models/emplyees_model/mobile_phone_model.dart';
 import 'package:demo_app/core/helper/employees/presentation/controller/add_new_employee_controller.dart';
 import 'package:demo_app/core/helper/employees/presentation/controller/employee_controller.dart';

@@ -2,18 +2,18 @@
 /// Purpose: Responsive personal information screen (phone + tablet in one page).
 /// Author: Mohamed Elrashidy
 /// refactored at: 11/11/2024
-import 'package:demo_app/core/widgets/main_widget/shared_action_widgets.dart';
+import 'package:demo_app/features/settings/core_widgets/main_widget/shared_action_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/enums/enum.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_appbar_mobile.dart';
+import 'package:demo_app/features/settings/core_widgets/main_widget/custom_appbar_mobile.dart';
 import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
-import 'package:demo_app/core/widgets/main_widget/navigation.dart';
+import 'package:demo_app/core/custom/37-custom_navigate.dart';
 import 'package:demo_app/features/settings/presentation/controller/request_controller.dart';
 import 'package:demo_app/features/settings/presentation/ui/widgets/personal_information_fields.dart';
 import 'package:demo_app/features/settings/presentation/ui/pages/edit_page_request.dart';

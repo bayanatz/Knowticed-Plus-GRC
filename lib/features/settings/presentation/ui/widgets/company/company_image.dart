@@ -9,11 +9,11 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:demo_app/core/theme/app_font_size.dart';
-import 'package:demo_app/core/widgets/dialogs/response_dialog.dart';
+import 'package:demo_app/features/settings/core_widgets/dialogs/response_dialog.dart';
 import 'package:demo_app/features/settings/presentation/controller/add_company_controller.dart';
 import 'package:demo_app/generated/l10n.dart';
 
-import 'package:demo_app/core/widgets/main_widget/loading.dart';
+import 'package:demo_app/core/custom/loading.dart';
 
 class CompanyImage extends StatefulWidget {
    CompanyImage({required this.onChangedImageUrl,super.key});

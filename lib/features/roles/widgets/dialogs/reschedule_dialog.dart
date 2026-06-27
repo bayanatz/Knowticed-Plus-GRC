@@ -4,12 +4,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:demo_app/core/widgets/calender_package/src/models/calendar_date_picker2_config.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_calendar_picker.dart';
-import 'package:demo_app/core/widgets/buttons/main_custom_button.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_schedule_or_now_dialog.dart';
-import 'package:demo_app/core/widgets/dialogs/response_dialog.dart';
-import 'package:demo_app/core/widgets/main_widget/filters_appbar.dart';
+import 'package:demo_app/features/roles/core_widgets/calender_package/src/models/calendar_date_picker2_config.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/custom_calendar_picker.dart';
+import 'package:demo_app/features/roles/core_widgets/buttons/main_custom_button.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/custom_schedule_or_now_dialog.dart';
+import 'package:demo_app/features/roles/core_widgets/dialogs/response_dialog.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/filters_appbar.dart';
 import 'package:demo_app/core/helper/main_helper/date_time_in_arabic.dart';
 
 

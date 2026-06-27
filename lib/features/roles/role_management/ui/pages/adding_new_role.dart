@@ -7,8 +7,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/custom/2-custom_textfield.dart';
-import 'package:demo_app/core/widgets/main_widget/circle_progress.dart';
-import 'package:demo_app/core/widgets/main_widget/pagination_app_bar.dart';
+import 'package:demo_app/core/custom/circle_progress.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/pagination_app_bar.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/knowledge_hub_module/core/theming/new_theme.dart';
 import 'package:demo_app/features/roles/role_management/domain/enums/modules_enum.dart';
 import 'package:lottie/lottie.dart';
@@ -16,7 +16,7 @@ import 'package:lottie/lottie.dart';
 import 'package:demo_app/core/enums/enum.dart';
 import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
 import 'package:demo_app/core/network/api_constants.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_button.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/custom_button.dart';
 import 'package:demo_app/generated/l10n.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';
@@ -28,8 +28,8 @@ import 'role_permission_switches.dart';
 import 'package:flutter/src/services/haptic_feedback.dart';
 import 'package:demo_app/features/roles/role_management/utils/role_log_service.dart';
 
-part 'widgets/adding_new_role_methods1.dart';
-part 'widgets/adding_new_role__rolestatuschangedialog.dart';
+part '../widgets/adding_new_role_methods1.dart';
+part '../widgets/adding_new_role__rolestatuschangedialog.dart';
 
 class AddingNewRole extends StatefulWidget {
   AddingNewRole({super.key});

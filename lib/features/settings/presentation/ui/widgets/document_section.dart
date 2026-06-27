@@ -4,7 +4,7 @@
 /// Refactored At: 13/11/2024
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_icon_container.dart';
+import 'package:demo_app/features/settings/core_widgets/main_widget/custom_icon_container.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';
 
 class DocumentSection extends StatefulWidget {

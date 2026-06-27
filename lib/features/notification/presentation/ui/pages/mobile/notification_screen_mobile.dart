@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';import 'package:demo_app/core/theme/app_font_size.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_appbar_mobile.dart';
+import 'package:demo_app/features/notification/core_widgets/main_widget/custom_appbar_mobile.dart';
 import '../../../../../../core/theme/font_manager.dart';
-import 'package:demo_app/core/widgets/main_widget/circle_progress.dart';
+import 'package:demo_app/core/custom/circle_progress.dart';
 import '../../../controller/notification_controller.dart';
 import '../../widgets/custom_notification_chat.dart';
 import 'package:lottie/lottie.dart';

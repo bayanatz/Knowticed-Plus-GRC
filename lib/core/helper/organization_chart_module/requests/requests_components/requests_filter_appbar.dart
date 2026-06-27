@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_drop_down_menu.dart';
+import 'package:demo_app/core/helper/organization_chart_module/core_widgets/main_widget/custom_drop_down_menu.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';
-import 'package:demo_app/core/widgets/form_fields/custom_search.dart';
+import 'package:demo_app/core/helper/organization_chart_module/core_widgets/form_fields/custom_search.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/helper/organization_chart_module/presentation/controller/main_core_department_controller.dart';
 import 'package:demo_app/features/onboarding/welcome_screen/views/mobile_view/nav_bar.dart';

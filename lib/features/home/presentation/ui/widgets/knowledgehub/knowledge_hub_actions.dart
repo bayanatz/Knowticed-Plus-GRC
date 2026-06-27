@@ -4,10 +4,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/features/home/widgets/standard_container.dart';
 import 'package:demo_app/features/home/data/models/home_component_model.dart';
-import 'package:demo_app/core/widgets/removed_module_placeholder.dart';
+import 'package:demo_app/features/home/core_widgets/removed_module_placeholder.dart';
 
 import '../../../../../../core/custom/37-custom_navigate.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_button.dart';
+import 'package:demo_app/features/home/core_widgets/main_widget/custom_button.dart';
 import '../../../../../../generated/l10n.dart';
 // REMOVED_MODULE: import '../../../../../knowledge_hub_module/knowledge_hub/presentation/ui/s1_create_new_knowledge/master_page/creating_knowledge_hub.dart';
 // REMOVED_MODULE: import '../../../../../knowledge_hub_module/knowledge_hub/presentation/ui/s8_dashboard/dashboard_screen.dart';

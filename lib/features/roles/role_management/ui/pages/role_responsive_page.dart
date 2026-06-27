@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:demo_app/features/roles/role_management/ui/pages/role_screen.dart';
 
-import 'package:demo_app/core/widgets/main_widget/responsive_helper.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/responsive_helper.dart';
 import 'package:demo_app/features/roles/account_status/controller/account_status_cubit.dart';
 import 'package:demo_app/features/roles/role_management/controller/role_cubit.dart';
 import 'package:demo_app/features/roles/user_management/controller/user_management_cubit.dart';

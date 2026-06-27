@@ -12,7 +12,7 @@ import 'package:flutter_offline/flutter_offline.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_appbar.dart';
+import 'package:demo_app/features/onboarding/core_widgets/main_widget/custom_appbar.dart';
 import 'package:demo_app/core/enums/enum.dart';
 import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
 import 'package:demo_app/features/settings/mode_changer.dart';

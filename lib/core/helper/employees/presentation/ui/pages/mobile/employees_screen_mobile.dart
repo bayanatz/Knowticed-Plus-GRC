@@ -1,9 +1,9 @@
-import 'package:demo_app/core/widgets/main_widget/circle_progress.dart';
+import 'package:demo_app/core/custom/circle_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:intl/intl.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_appbar_mobile.dart';
+import 'package:demo_app/core/helper/employees/core_widgets/main_widget/custom_appbar_mobile.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/helper/employees/presentation/ui/widgets/add_depratment_dialog.dart';
 import 'package:demo_app/core/helper/employees/widgets/buttons_beside_title_row.dart';
@@ -18,7 +18,7 @@ import 'package:demo_app/core/helper/employees/employees_views/requests/requests
 
 import 'package:demo_app/core/nav_bar_package.dart/functions.dart';
 
-import 'package:demo_app/core/widgets/main_widget/sort_option_widget.dart';
+import 'package:demo_app/core/helper/employees/core_widgets/main_widget/sort_option_widget.dart';
 import 'package:demo_app/core/helper/employees/presentation/ui/pages/tablet/employees_hierarchy.dart';
 
 class EmployeesScreenMobile extends StatefulWidget {

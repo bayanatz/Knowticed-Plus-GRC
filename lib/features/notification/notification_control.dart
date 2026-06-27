@@ -1,19 +1,19 @@
-import 'package:demo_app/core/widgets/main_widget/custom_button_widget.dart';
-import 'package:demo_app/core/widgets/main_widget/side_frame_master.dart';
+import 'package:demo_app/features/notification/core_widgets/main_widget/custom_button_widget.dart';
+import 'package:demo_app/features/notification/core_widgets/main_widget/side_frame_master.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_svg.dart';
+import 'package:demo_app/features/notification/core_widgets/main_widget/custom_svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get.dart';
-import 'package:demo_app/core/widgets/main_widget/circle_progress.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_button.dart';
-import 'package:demo_app/core/widgets/grc/custom_button_with_image.dart';
+import 'package:demo_app/core/custom/circle_progress.dart';
+import 'package:demo_app/features/notification/core_widgets/main_widget/custom_button.dart';
+import 'package:demo_app/features/notification/core_widgets/grc/custom_button_with_image.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/services_mangment_module/Category/presentation/ui/services_admin/Widget/W3_Frame_Screen_tablet.dart';
 import 'package:demo_app/features/notification/data/repository/notification_template_service.dart';
 import 'package:demo_app/features/notification/presentation/custom_tab_ar.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_drop_down.dart';
-import 'package:demo_app/core/widgets/main_widget/text_single_field.dart';
+import 'package:demo_app/features/notification/core_widgets/main_widget/custom_drop_down.dart';
+import 'package:demo_app/features/notification/core_widgets/main_widget/text_single_field.dart';
 import '../../generated/l10n.dart';
 
 // REMOVED_MODULE: import '../../external/knowledge_hub_module/core/theming/new_theme.dart';

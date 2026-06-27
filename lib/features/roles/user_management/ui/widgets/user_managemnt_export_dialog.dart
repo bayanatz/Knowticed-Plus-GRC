@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:demo_app/core/widgets/main_widget/custom_button_widget.dart';
+import 'package:demo_app/features/roles/core_widgets/main_widget/custom_button_widget.dart';
 import 'package:demo_app/features/roles/helper/knowledge_hub_module/knowledge_hub/presentation/ui/widgets/customed_text_field.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/roles/helper/task_management_module/core/components/success_dialog.dart';

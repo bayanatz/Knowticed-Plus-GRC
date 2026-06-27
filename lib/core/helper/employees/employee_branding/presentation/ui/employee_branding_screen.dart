@@ -5,9 +5,9 @@
 /// Purpose: Screen for employees to customize personal branding
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_button_widget.dart';
+import 'package:demo_app/core/helper/employees/core_widgets/main_widget/custom_button_widget.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
-import 'package:demo_app/core/widgets/services_management/custom_reasponsive_filed.dart';
+import 'package:demo_app/core/helper/employees/core_widgets/services_management/custom_reasponsive_filed.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -17,12 +17,12 @@ import 'package:demo_app/core/helper/main_helper/biometric_controller.dart';
 
 
 import 'package:demo_app/core/theme/app_font_size.dart';
-import 'package:demo_app/core/widgets/dialogs/delete_dialog.dart';
-import 'package:demo_app/core/widgets/dialogs/response_dialog.dart';
+import 'package:demo_app/core/helper/employees/core_widgets/dialogs/delete_dialog.dart';
+import 'package:demo_app/core/helper/employees/core_widgets/dialogs/response_dialog.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/skeleton/settings/settings_screen/views/owner_screens/company_information/color_display_section.dart';
 import 'package:demo_app/core/helper/knowledge_hub_module/core/custom_drop_down.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
-import 'package:demo_app/core/widgets/grc/custom_button_with_image.dart';
+import 'package:demo_app/core/helper/employees/core_widgets/grc/custom_button_with_image.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/services_mangment_module/core/new_theme.dart';
 import 'package:demo_app/features/settings/presentation/controller/add_company_controller.dart';
 import 'package:demo_app/features/settings/utils/company_constants.dart';
@@ -30,7 +30,7 @@ import 'package:demo_app/features/settings/utils/company_constants.dart';
 
 // REMOVED_MODULE: import 'package:demo_app/features/skeleton/authentication/welcome_screen/views/mobile_view/nav_bar.dart';
 import 'package:demo_app/features/settings/presentation/ui/widgets/color_display_section.dart';
-import 'package:demo_app/core/widgets/main_widget/timeline_widget.dart';
+import 'package:demo_app/core/helper/employees/core_widgets/main_widget/timeline_widget.dart';
 import 'package:demo_app/features/settings/presentation/ui/pages/settings_screen.dart';
 import 'package:demo_app/features/settings/presentation/ui/widgets/company/company_image.dart';
 import 'package:demo_app/core/helper/employees/employee_branding/presentation/controller/add_company_controller.dart';

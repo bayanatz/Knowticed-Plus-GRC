@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:demo_app/core/helper/employees/presentation/ui/pages/additionalInformation_container.dart';
-import 'package:demo_app/core/widgets/main_widget/loading.dart';
+import 'package:demo_app/core/custom/loading.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:demo_app/core/helper/employees/presentation/ui/pages/add_new_employee_view.dart';

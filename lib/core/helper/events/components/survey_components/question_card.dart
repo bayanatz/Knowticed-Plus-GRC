@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_drop_down_menu.dart';
+import 'package:demo_app/core/helper/events/core_widgets/main_widget/custom_drop_down_menu.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/helper/events/components/survey_components/custom_textfield_container.dart';

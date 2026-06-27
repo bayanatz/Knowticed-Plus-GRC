@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:demo_app/core/widgets/buttons/main_custom_icon_button.dart';
+import 'package:demo_app/core/helper/events/core_widgets/buttons/main_custom_icon_button.dart';
 import 'package:demo_app/core/enums/enum.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';

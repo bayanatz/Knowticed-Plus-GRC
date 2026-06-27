@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:demo_app/core/helper/main_helper/employee_helper.dart';
 import 'package:demo_app/core/helper/main_helper/format_helper.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_check_box.dart';
+import 'package:demo_app/core/custom/23-custom_check_box.dart';
 import 'package:demo_app/features/employee/domain/entities/employee_entity.dart';
 
 import 'package:demo_app/core/theme/app_colors.dart';

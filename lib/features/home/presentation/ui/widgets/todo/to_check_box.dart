@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/helper/main_helper/format_helper.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_check_box.dart';
+import 'package:demo_app/core/custom/23-custom_check_box.dart';
 import 'package:demo_app/features/home/widgets/standard_container.dart';
 
 import '../../../../../../core/theme/app_colors.dart';

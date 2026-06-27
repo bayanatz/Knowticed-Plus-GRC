@@ -8,7 +8,7 @@ import 'package:demo_app/features/messaging/interface/message_interface_consumer
 import 'package:demo_app/features/home/data/models/direct_message_model.dart';
 
 import 'package:demo_app/core/helper/main_helper/format_helper.dart';
-import 'package:demo_app/core/widgets/main_widget/custom_button.dart';
+import 'package:demo_app/features/home/core_widgets/main_widget/custom_button.dart';
 
 class DirectMessages extends StatelessWidget {
   DirectMessages({required this.model, super.key});
