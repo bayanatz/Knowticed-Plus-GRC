@@ -1559,16 +1559,16 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   abseil: a05cc83bf02079535e17169a73c5be5ba47f714b
   BoringSSL-GRPC: dded2a44897e45f28f08ae87a55ee4bcd19bc508
-  cloud_firestore: 8f6806cab914d2e8b607a6d8abee6ce7fa0880fd
-  connectivity_plus: 18d3c32514c886e046de60e9c13895109866c747
-  desktop_drop: e52397f93b3daec9fe1d504f1d5a21b76403d8ae
-  device_info_plus: 1b14eed9bf95428983aed283a8d51cce3d8c4215
-  file_picker: e716a70a9fe5fd9e09ebc922d7541464289443af
-  file_selector_macos: 3e56eaea051180007b900eacb006686fd54da150
+  cloud_firestore: 92bf414ac4a12c1008efa35a70ffe988f90cf740
+  connectivity_plus: e74b9f74717d2d99d45751750e266e55912baeb5
+  desktop_drop: 248706031734554504f939cab1ad4c5fbc9c9c72
+  device_info_plus: 4fb280989f669696856f8b129e4a5e3cd6c48f76
+  file_picker: 7584aae6fa07a041af2b36a2655122d42f578c1a
+  file_selector_macos: 9e9e068e90ebee155097d00e89ae91edb2374db7
   Firebase: d99ac19b909cd2c548339c2241ecd0d1599ab02e
-  firebase_core: 2af692f4818474ed52eda1ba6aeb448a6a3352af
-  firebase_messaging: 034dd3c6c4adfa780c040f1f4e5041bcf651be30
-  firebase_storage: 3eab676e946de7d4c7eef4792aab173d229cccec
+  firebase_core: 7667f880631ae8ad10e3d6567ab7582fe0682326
+  firebase_messaging: df39858bcbbcce792c9e4f1ca51b41123d6181fd
+  firebase_storage: de55edba0e3b9e680fe3d48b94007aa8aedc6b29
   FirebaseAppCheckInterop: 06fe5a3799278ae4667e6c432edd86b1030fa3df
   FirebaseAuthInterop: 7087d7a4ee4bc4de019b2d0c240974ed5d89e2fd
   FirebaseCore: efb3893e5b94f32b86e331e3bd6dadf18b66568e
@@ -1580,31 +1580,31 @@ SPEC CHECKSUMS:
   FirebaseMessaging: 3b26e2cee503815e01c3701236b020aa9b576f09
   FirebaseSharedSwift: e17c654ef1f1a616b0b33054e663ad1035c8fd40
   FirebaseStorage: 50fc9ee147392943e492467db6b52759b0447037
-  flutter_local_notifications: 7062189aabf7f50938a7b8b6614ffa97656eb0bf
-  flutter_localization: 4035848ae2ed142875d5fd3dde328250a5e81f42
+  flutter_local_notifications: 13862b132e32eb858dea558a86d45d08daeacfe7
+  flutter_localization: 3cda759884c7dab4466fe963d97fba723a492666
   FlutterMacOS: d0db08ddef1a9af05a5ec4b724367152bb0500b1
-  geolocator_apple: 66b711889fd333205763b83c9dcf0a57a28c7afd
+  geolocator_apple: ab36aa0e8b7d7a2d7639b3b4e48308394e8cef5e
   GoogleDataTransport: aae35b7ea0c09004c3797d53c8c41f66f219d6a7
   GoogleUtilities: 00c88b9a86066ef77f0da2fab05f65d7768ed8e1
   "gRPC-C++": cc207623316fb041a7a3e774c252cf68a058b9e8
   gRPC-Core: 860978b7db482de8b4f5e10677216309b5ff6330
   GTMSessionFetcher: fc75fc972958dceedee61cb662ae1da7a83a91cf
   leveldb-library: cc8b8f8e013647a295ad3f8cd2ddf49a6f19be19
-  local_auth_darwin: 63c73d6d28cc3e239be2b6aa460ea6e317cd5100
+  local_auth_darwin: c3ee6cce0a8d56be34c8ccb66ba31f7f180aaebb
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
-  network_info_plus: f4fbc7877ab7b3294500d9441dfa53cd54972d05
-  package_info_plus: 12f1c5c2cfe8727ca46cbd0b26677728972d9a5b
-  pdfx: d1c406047b02acc54fe98495ae24b04fe9b4f024
-  printing: 1dd6a1fce2209ec240698e2439a4adbb9b427637
+  network_info_plus: e4d4efcc88f6cabc6e19147ffc223c371d191ab6
+  package_info_plus: f0052d280d17aa382b932f399edf32507174e870
+  pdfx: 1e79f57f7a6ce2f4a4c30f21fa54d3dc82441b51
+  printing: c4cf83c78fd684f9bc318e6aadc18972aa48f617
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   ReachabilitySwift: 32793e867593cfc1177f5d16491e3a197d2fccda
-  share_plus: 1fa619de8392a4398bfaf176d441853922614e89
-  shared_preferences_foundation: 5086985c1d43c5ba4d5e69a4e8083a389e2909e6
-  sqflite_darwin: 5a7236e3b501866c1c9befc6771dfd73ffb8702d
-  syncfusion_pdfviewer_macos: e9194851581cad04b28b53913d0636d39a4ed4b2
-  url_launcher_macos: 175a54c831f4375a6cf895875f716ee5af3888ce
-  video_player_avfoundation: e54d03b3b19f64f2c557354f72ce538387541ba6
-  wakelock_plus: 9d63063ffb7af1c215209769067c57103bde719d
+  share_plus: 510bf0af1a42cd602274b4629920c9649c52f4cc
+  shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
+  sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
+  syncfusion_pdfviewer_macos: 94d2eafcb3475d32309d4ba282ef02dc75fd682f
+  url_launcher_macos: f87a979182d112f911de6820aefddaf56ee9fbfd
+  video_player_avfoundation: 3453f792138786248960ca029747fcd9f318ef52
+  wakelock_plus: 917609be14d812ddd9e9528876538b2263aaa03b
 
 PODFILE CHECKSUM: 54d867c82ac51cbd61b565781b9fada492027009
 

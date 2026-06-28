@@ -1,11 +1,10 @@
 // ignore_for_file: sdk_version_since
 
 import 'package:demo_app/core/utils/toogle_control.dart';
-import 'package:demo_app/features/onboarding/presentation/ui/pages/onboarding.dart';
+import 'package:demo_app/firebase/dev/firebase_options.dart';
 import 'dart:async';
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +26,6 @@ import 'package:demo_app/core/helper/events/events_stub.dart';
 import 'package:demo_app/features/roles/system_logs/controller/system_logs_controller.dart';
 import 'package:demo_app/features/department/presentation/controller/add_department_controller.dart';
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
-import 'package:demo_app/firebase/dev/firebase_options.dart';
 import 'package:demo_app/features/home/presentation/ui/pages/no_internet_screen.dart';
 import 'package:demo_app/features/onboarding/splash_screen.dart';
 
@@ -51,7 +49,8 @@ void main() async {
 
     // test
     // Firebase
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform);
 
     // Core controllers
     Get.put(MainCoreEmployeeController());
@@ -61,8 +60,12 @@ void main() async {
     await ScreenUtil.ensureScreenSize();
 
     // FCM (mobile only)
-    if (!Platform.isWindows && !Platform.isLinux && !Platform.isMacOS && !Platform.isIOS) {
-      FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+    if (!Platform.isWindows &&
+        !Platform.isLinux &&
+        !Platform.isMacOS &&
+        !Platform.isIOS) {
+      FirebaseMessaging.onBackgroundMessage(
+          _firebaseMessagingBackgroundHandler);
       await FlutterLocalNotificationHandler.initialize();
       await FirebaseMessaging.instance.requestPermission();
       FirebaseMessaging.onMessage.listen((msg) {
@@ -78,7 +81,9 @@ void main() async {
 
     // Locale
     final box = GetStorage();
-    String localeData = box.read<String>('LocaleData') ?? Get.deviceLocale?.toString() ?? 'en_US';
+    String localeData = box.read<String>('LocaleData') ??
+        Get.deviceLocale?.toString() ??
+        'en_US';
     bool isArabic = localeData.contains('ar');
     await S.load(Locale(isArabic ? 'ar' : 'en'));
     Intl.defaultLocale = isArabic ? 'ar' : 'en';
@@ -107,7 +112,7 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  MyApp(this.themeCubit, this.themeController, {super.key});
+  const MyApp(this.themeCubit, this.themeController, {super.key});
 
   final ThemeAndLocalizationsCubit themeCubit;
   final ThemeController themeController;
@@ -122,9 +127,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final box = GetStorage();
-    final localeData = box.read<String>('LocaleData') ?? Get.deviceLocale.toString();
+    final localeData =
+        box.read<String>('LocaleData') ?? Get.deviceLocale.toString();
     final isArabic = localeData.contains('ar');
-    final targetLocale = isArabic ? const Locale('ar', 'EG') : const Locale('en', 'US');
+    final targetLocale =
+        isArabic ? const Locale('ar', 'EG') : const Locale('en', 'US');
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -161,7 +168,9 @@ class MyApp extends StatelessWidget {
                 home: OfflineBuilder(
                   connectivityBuilder: (ctx, connectivity, child) {
                     final connected = connectivity != ConnectivityResult.none;
-                    return connected ? SplashScreen() : const NoInternetScreen();
+                    return connected
+                        ? SplashScreen()
+                        : const NoInternetScreen();
                   },
                   child: SplashScreen(),
                 ),
@@ -181,7 +190,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
 
 // ─── Notification tap handlers (stubs) ───────────────────────────────────────
 Future<void> onTapOnNotificationMobile(String? payload, context) async {}
