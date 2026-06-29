@@ -1,3 +1,4 @@
+import 'package:demo_app/features/grc/presentation/ui/pages/grc_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/features/roles/widgets/module_page_stubs.dart';
@@ -13,7 +14,6 @@ import 'package:demo_app/features/roles/role_management/domain/enums/services/se
 // REMOVED_MODULE: import '../../../../external/form_builder_module/core/routes/get_pages.dart';
 // REMOVED_MODULE: import '../../../../external/form_builder_module/core/services/form_navigator_service.dart';
 // REMOVED_MODULE: import '../../../database_builder/database_responsive_page.dart';
-
 
 // REMOVED_MODULE: import '../../../inventory_module/inventory_responsive_page.dart';
 // REMOVED_MODULE: import '../../../knowledge_hub_module/knowledge_hub_responsive_page.dart';
@@ -38,7 +38,6 @@ import 'notification/notification_subSections_enums.dart';
 import 'qiyas/qiyas_permissions_sections.dart';
 import 'roles/roles_permissions_sections.dart';
 import 'settings/settings_permissions_sections.dart';
-
 
 // ✅ DECLARE GLOBAL KEYS OUTSIDE THE ENUM (at file level)
 // This ensures only ONE instance of each key exists
@@ -65,7 +64,7 @@ enum Modules {
   database,
   formBuilder,
   settings,
-  hr,           // ✅ ADDED
+  hr, // ✅ ADDED
   notification, // ✅ ADDED
   more;
 
@@ -107,9 +106,9 @@ enum Modules {
         return 'assets/icons_drawer_news/database.svg';
       case Modules.settings:
         return 'assets/icons_drawer_news/settings_new_icon.svg';
-      case Modules.hr:  // ✅ ADDED
+      case Modules.hr: // ✅ ADDED
         return 'assets/icons_drawer_news/hr_modules.svg';
-      case Modules.notification:  // ✅ ADDED
+      case Modules.notification: // ✅ ADDED
         return 'assets/svg/Bell.svg';
       case Modules.more:
         return 'assets/icons/more_horizontal_lines.svg';
@@ -156,9 +155,9 @@ enum Modules {
         return 'assets/icons_drawer_news/database.svg';
       case Modules.settings:
         return 'assets/roles_icons/Settings.svg';
-      case Modules.hr:  // ✅ ADDED
+      case Modules.hr: // ✅ ADDED
         return 'assets/roles_icons/HR.svg';
-      case Modules.notification:  // ✅ ADDED
+      case Modules.notification: // ✅ ADDED
         return 'assets/svg/Bell.svg';
       case Modules.more:
         return 'assets/icons/more_horizontal_lines.svg';
@@ -184,11 +183,15 @@ enum Modules {
       case Modules.notes:
         return Get.locale.toString().contains('ar') ? 'الملاحظات' : 'Notes';
       case Modules.grc:
-        return Get.locale.toString().contains('ar') ? ' الحوكمة و المخاطر و الآلتزام' : 'GRC';
+        return Get.locale.toString().contains('ar')
+            ? ' الحوكمة و المخاطر و الآلتزام'
+            : 'GRC';
       case Modules.requests:
         return Get.locale.toString().contains('ar') ? 'الطلبات' : 'Requests';
       case Modules.knowledgeHub:
-        return Get.locale.toString().contains('ar') ? 'مركز المعرفة' : 'Knowledge Hub';
+        return Get.locale.toString().contains('ar')
+            ? 'مركز المعرفة'
+            : 'Knowledge Hub';
       case Modules.qiyas:
         return Get.locale.toString().contains('ar') ? 'قياس' : 'Qiyas';
       case Modules.tracking:
@@ -198,17 +201,23 @@ enum Modules {
       case Modules.messages:
         return Get.locale.toString().contains('ar') ? 'الرسائل' : 'Messages';
       case Modules.database:
-        return Get.locale.toString().contains('ar') ? 'قاعدة البيانات' : 'Database';
+        return Get.locale.toString().contains('ar')
+            ? 'قاعدة البيانات'
+            : 'Database';
       case Modules.formBuilder:
-        return Get.locale.toString().contains('ar') ? 'منشئ النماذج' : 'Form Builder';
+        return Get.locale.toString().contains('ar')
+            ? 'منشئ النماذج'
+            : 'Form Builder';
       case Modules.roles:
         return Get.locale.toString().contains('ar') ? 'الأدوار' : 'Roles';
       case Modules.settings:
         return Get.locale.toString().contains('ar') ? 'الإعدادات' : 'Settings';
-      case Modules.hr:  // ✅ ADDED
+      case Modules.hr: // ✅ ADDED
         return Get.locale.toString().contains('ar') ? 'الموارد البشرية' : 'HR';
-      case Modules.notification:  // ✅ ADDED
-        return Get.locale.toString().contains('ar') ? 'الإشعارات' : 'Notification';
+      case Modules.notification: // ✅ ADDED
+        return Get.locale.toString().contains('ar')
+            ? 'الإشعارات'
+            : 'Notification';
       case Modules.more:
         return Get.locale.toString().contains('ar') ? 'المزيد' : 'More';
       default:
@@ -229,14 +238,12 @@ enum Modules {
       case Modules.inventory:
         return Container();
       case Modules.grc:
-        return GrcResponsivePageRefactor();
+        return GrcResponsivePage();
       case Modules.roles:
         return RoleResponsivePage();
 
       case Modules.services:
-        if (servicesKey == null) {
-          servicesKey = GlobalKey();
-        }
+        servicesKey ??= GlobalKey();
         return Container();
 
       case Modules.todo:
@@ -250,9 +257,7 @@ enum Modules {
         return FormResponsivePage();
 
       case Modules.tracking:
-        if (trackerAppKey == null) {
-          trackerAppKey = GlobalKey();
-        }
+        trackerAppKey ??= GlobalKey();
         return TrackerPageResponsivePageRefactor();
 
       case Modules.knowledgeHub:
@@ -265,17 +270,16 @@ enum Modules {
       case Modules.qiyas:
         if (grcNavKey == null) {
           grcNavKey = GlobalKey();
-        } else {
-        }
+        } else {}
         return GrcResponsivePage();
 
-    // ✅ ADDED: HR Module
+      // ✅ ADDED: HR Module
       case Modules.hr:
-        return Container();  // TODO: Create this page
+        return Container(); // TODO: Create this page
 
-    // ✅ ADDED: Notification Module
+      // ✅ ADDED: Notification Module
       case Modules.notification:
-        return NotificationControlPage();  // TODO: Create this page
+        return NotificationControlPage(); // TODO: Create this page
 
       default:
         return Scaffold();
@@ -300,9 +304,9 @@ enum Modules {
         return RolePermissionsSections.firstColumnValues;
       case Modules.knowledgeHub:
         return KnowledgeHubPermissionsSections.firstColumnValues;
-      case Modules.hr:  // ✅ ADDED
+      case Modules.hr: // ✅ ADDED
         return HRPermissionsSections.firstColumnValues;
-      case Modules.notification:  // ✅ ADDED
+      case Modules.notification: // ✅ ADDED
         return NotificationPermissionsSections.firstColumnValues;
       default:
         return [];
@@ -327,9 +331,9 @@ enum Modules {
         return RolePermissionsSections.lastColumnValues;
       case Modules.knowledgeHub:
         return KnowledgeHubPermissionsSections.lastColumnValues;
-      case Modules.hr:  // ✅ ADDED
+      case Modules.hr: // ✅ ADDED
         return HRPermissionsSections.lastColumnValues;
-      case Modules.notification:  // ✅ ADDED
+      case Modules.notification: // ✅ ADDED
         return NotificationPermissionsSections.lastColumnValues;
       default:
         return [];
@@ -346,7 +350,7 @@ enum Modules {
       Modules.roles,
       Modules.settings,
       Modules.knowledgeHub,
-      Modules.hr,           // ✅ ADDED
+      Modules.hr, // ✅ ADDED
       Modules.notification, // ✅ ADDED
     ];
   }

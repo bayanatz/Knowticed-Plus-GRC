@@ -3,8 +3,11 @@
 /// Purpose: Contains the appbar section for the home screen
 /// Author: Mohamed Elrashidy
 /// Refactored at: 9/2/2025
+library;
 
+import 'package:demo_app/core/helper/todo_new_module/external/tasks_module/category/presentation/screens/to_do_list/details_screen/hr_module/hr_dashboard.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
+import 'package:demo_app/features/grc/presentation/ui/pages/grc_page.dart';
 import 'package:flutter/material.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/custom_svg.dart';
@@ -32,7 +35,7 @@ import '../../../controller/home_cubit.dart';
 import '../../../controller/skeleton_home_controller.dart';
 
 class HomeAppbarSection extends StatelessWidget {
-  HomeAppbarSection({Key? key}) : super(key: key);
+  HomeAppbarSection({super.key});
   SkeletonHomeController controller = Get.find();
 
   @override
@@ -54,23 +57,22 @@ class HomeAppbarSection extends StatelessWidget {
                   children: [
                     GestureDetector(
                       onTap: () {},
-                      child: SvgPicture.asset(
-                        "assets/icons/homeCalen.svg",
-                        height: orientation ? 20.h : 25.h,
-                        color: lightMode ? AppColors.blackButton : AppColors.white
-                      ),
+                      child: SvgPicture.asset("assets/icons/homeCalen.svg",
+                          height: orientation ? 20.h : 25.h,
+                          color: lightMode
+                              ? AppColors.blackButton
+                              : AppColors.white),
                     ),
                     SizedBox(width: 10.sp),
                     GestureDetector(
-                      onTap: (){
-                     //   navigateTo(context, AnimationsShowcaseScreen());
+                      onTap: () {
+                        //   navigateTo(context, AnimationsShowcaseScreen());
                       },
-                      child: Text(
-                        controller.getCurrentDate(),
-                        style: StyleText.fontSize20Weight600.copyWith(
-                          color: lightMode ? AppColors.blackButton : AppColors.white
-                        )
-                      ),
+                      child: Text(controller.getCurrentDate(),
+                          style: StyleText.fontSize20Weight600.copyWith(
+                              color: lightMode
+                                  ? AppColors.blackButton
+                                  : AppColors.white)),
                     ),
                   ],
                 ),
@@ -112,28 +114,32 @@ class HomeAppbarSection extends StatelessWidget {
           ),
           SizedBox(height: 20.h),
           GestureDetector(
-            // onTap: (){
-            //   Navigator.push(
-            //     context,
-            //     MaterialPageRoute(builder: (context) =>  HrDashboard()),
-            //   );
-            // },
+            onTap: () {
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) =>  HrDashboard()),
+              // );
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //       builder: (context) => GovernanceRiskAndCompliancePage()),
+              // );
+            },
             child: Text(
-              "${DateTime.now().hour < 12 ? 'Good Morning'.tr : DateTime.now().hour < 14 ? 'Good Afternoon'.tr : 'Good Evening'.tr} ${Get.locale.toString().contains('en') ? employee!.firstName!.last!.capitalize : employee!.firstNameInArabic!.last!}",
-              style: StyleText.fontSize24Weight600.copyWith(
-                color: lightMode ? AppColors.blackButton : AppColors.white
-              )
-            ),
+                "${DateTime.now().hour < 12 ? 'Good Morning'.tr : DateTime.now().hour < 14 ? 'Good Afternoon'.tr : 'Good Evening'.tr} ${Get.locale.toString().contains('en') ? employee!.firstName.last.capitalize : employee!.firstNameInArabic.last}",
+                style: StyleText.fontSize24Weight600.copyWith(
+                    color:
+                        lightMode ? AppColors.blackButton : AppColors.white)),
           ),
           SizedBox(height: 20.h),
           GestureDetector(
               onTap: () async {
-               // // final locale = context.read<ThemeCubit>().isArabic ? 'ar' : 'en';
-               //  await TwilioRepository().sendOTP("amrmesbah33@gmail.com", "email", 'en');
-               //  await TwilioRepository().sendOTP("+201124753420", "sms", 'en');
-               //
-               //
-               //  //  await TwilioRepository().testTwilioAuth();
+                // // final locale = context.read<ThemeCubit>().isArabic ? 'ar' : 'en';
+                //  await TwilioRepository().sendOTP("amrmesbah33@gmail.com", "email", 'en');
+                //  await TwilioRepository().sendOTP("+201124753420", "sms", 'en');
+                //
+                //
+                //  //  await TwilioRepository().testTwilioAuth();
               },
               child: GradientContainer()),
         ],
