@@ -1,8 +1,19 @@
+/// Module: GRC Module Management
+/// Description: Provides the form input fields for the GRC Module details page,
+///              including bilingual name/description fields, department dropdown,
+///              and activation date picker.
+/// Author: Mohamed Magdy Abdelkhalek
+/// Date: 2026-06-29
+/// Dependencies: AppColors, CustomTextField, CustomDropdown, CustomDropdownCalendar
+/// Revision History: 2026-06-29 - Initial creation
+library;
+
 /// ************************* FILE INFO *************************** ///
 /// File Name: grc_form_fields.dart
-/// Purpose: This file contains the implementation of the GrcFormFields widget, which provides form fields for managing GRC modules.
+/// Purpose: Contains GrcFormFields, a stateless widget that renders all input
+///          fields needed to create or edit a GRC Module record.
 /// Author: Mohamed Magdy Abdelkhalek
-/// Created At: 2026-06-29
+/// Created At: 29/6/2026
 
 import 'package:demo_app/core/custom/1-custom_dropdwon.dart';
 import 'package:demo_app/core/custom/2-custom_textfield.dart';
@@ -13,6 +24,16 @@ import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+/// class name: [GrcFormFields]
+///
+/// purpose: stateless form section for a GRC Module. Renders bilingual name
+///          fields (EN/AR), bilingual description fields, owning-department
+///          dropdown, and activation-date picker. All values are managed by the
+///          parent page's state via controllers and callbacks.
+///
+/// authors: Mohamed Magdy Abdelkhalek
+///
+/// created at: 29/6/2026
 class GrcFormFields extends StatelessWidget {
   final TextEditingController nameEnController;
   final TextEditingController nameArController;

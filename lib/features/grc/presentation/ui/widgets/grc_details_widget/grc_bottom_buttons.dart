@@ -1,8 +1,19 @@
+/// Module: GRC Module Management
+/// Description: Provides the bottom action buttons (Discard / Publish / Save /
+///              Restore) displayed at the foot of the GRC Module details page.
+/// Author: Mohamed Magdy Abdelkhalek
+/// Date: 2026-06-29
+/// Dependencies: AppColors, customButton, showConfirmDialog, GrcPageMode
+/// Revision History: 2026-06-29 - Initial creation
+///                    2026-06-30 - Added onAction callback (Mohamed Magdy Abdelkhalek)
+library;
+
 /// ************************* FILE INFO *************************** ///
 /// File Name: grc_bottom_buttons.dart
-/// Purpose: This file contains the implementation of the GrcBottomButtons widget, which provides bottom action buttons for managing GRC modules. It includes discard and save functionality with confirmation dialogs.
+/// Purpose: Contains GrcBottomButtons, the bottom row of action buttons for
+///          create, edit, and restore modes of the GRC Module details page.
 /// Author: Mohamed Magdy Abdelkhalek
-/// Created At: 2026-06-29
+/// Created At: 29/6/2026
 
 import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart';
 import 'package:demo_app/core/custom/5-custom_button.dart';
@@ -12,14 +23,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 
+/// class name: [GrcBottomButtons]
+///
+/// purpose: renders the bottom action row for the GRC Module details page.
+///          Hidden in view mode; shows Discard + Publish/Save/Restore otherwise.
+///          Tapping the primary action opens a confirmation dialog before
+///          invoking [onAction].
+///
+/// authors: Mohamed Magdy Abdelkhalek
+///
+/// created at: 29/6/2026
 class GrcBottomButtons extends StatelessWidget {
   final GrcPageMode mode;
   final VoidCallback onDiscard;
+  final VoidCallback onAction;
 
   const GrcBottomButtons({
     super.key,
     required this.mode,
     required this.onDiscard,
+    required this.onAction,
   });
 
   @override
@@ -77,21 +100,7 @@ class GrcBottomButtons extends StatelessWidget {
           : isRestore
               ? "Are You Sure You Want To Restore This Module ?".tr
               : "Are You Sure You Want To Edit This Module ?".tr,
-      onConfirm: () {
-        showSuccessDialog(
-          context: context,
-          title: isCreate
-              ? "Created Modules".tr
-              : isRestore
-                  ? "Restored Modules".tr
-                  : "Edited Modules".tr,
-          subtitle: isCreate
-              ? "You Successfully Created This GRC Module".tr
-              : isRestore
-                  ? "You Successfully Restored This Module".tr
-                  : "You Successfully Edited This Module".tr,
-        );
-      },
+      onConfirm: onAction,
     );
   }
 }

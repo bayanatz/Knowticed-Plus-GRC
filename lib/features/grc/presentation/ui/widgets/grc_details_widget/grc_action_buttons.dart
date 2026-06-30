@@ -1,9 +1,19 @@
+/// Module: GRC Module Management
+/// Description: Provides the Edit and Delete action buttons shown at the top
+///              of the GRC Module details page in view mode.
+/// Author: Mohamed Magdy Abdelkhalek
+/// Date: 2026-06-29
+/// Dependencies: AppColors, AppTheme, customButtonWithSvg, showConfirmDialog
+/// Revision History: 2026-06-29 - Initial creation
+///                    2026-06-30 - Added onDeleteTap callback (Mohamed Magdy Abdelkhalek)
+library;
+
 /// ************************* FILE INFO *************************** ///
 /// File Name: grc_action_buttons.dart
-/// Purpose: This file contains the implementation of the GrcActionButtons widget, which provides action buttons for managing GRC modules. It includes edit and delete functionality with confirmation dialogs.
+/// Purpose: Contains GrcActionButtons, a row of Edit and Delete buttons for
+///          the GRC Module details page view mode.
 /// Author: Mohamed Magdy Abdelkhalek
-/// Created At: 2026-06-29
-library;
+/// Created At: 29/6/2026
 
 import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart';
 import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
@@ -13,14 +23,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 
-import '../../../../../settings/core_widgets/main_widget/shared_action_widgets.dart';
 
 class GrcActionButtons extends StatelessWidget {
   final VoidCallback onEditTap;
+  final VoidCallback onDeleteTap;
 
   const GrcActionButtons({
     super.key,
     required this.onEditTap,
+    required this.onDeleteTap,
   });
 
   @override
@@ -63,13 +74,7 @@ class GrcActionButtons extends StatelessWidget {
                   iconAsset: 'assets/icons/delete_icon.svg',
                   subtitle:
                       "Are You Sure You Want To Delete This GRC Module ?".tr,
-                  onConfirm: () {
-                    showSuccessDialog(
-                      context: context,
-                      title: "Deleted GRC Module".tr,
-                      subtitle: "You Successfully Deleted This Module".tr,
-                    );
-                  },
+                  onConfirm: onDeleteTap,
                 );
               },
               width: 135.w,

@@ -1,3 +1,18 @@
+/// Module: GRC Module Management
+/// Description: Provides the GRC dashboard/details page showing module
+///              analytics, filter tabs, and quick-action buttons.
+/// Author: Mohamed Magdy Abdelkhalek
+/// Date: 2026-06-28
+/// Dependencies: Flutter SDK, AppColors, AppTheme, PaginationAppBar
+/// Revision History: 2026-06-28 - Initial creation
+library;
+
+/// ************************* FILE INFO *************************** ///
+/// File Name: grc_module_details_page.dart
+/// Purpose: Contains GrcModuleDetailsPage, the GRC dashboard screen.
+/// Author: Mohamed Magdy Abdelkhalek
+/// Created At: 28/6/2026
+
 import 'package:demo_app/core/custom/35-custom_search_widget_custom.dart';
 import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
 import 'package:demo_app/core/custom/9_filter_tab_with_container.dart';
@@ -11,6 +26,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 
+/// class name: [GrcModuleDetailsPage]
+///
+/// purpose: GRC dashboard screen that displays module analytics with filter
+///          tabs, search, and quick-action buttons.
+///
+/// authors: Mohamed Magdy Abdelkhalek
+///
+/// created at: 28/6/2026
 class GrcModuleDetailsPage extends StatelessWidget {
   const GrcModuleDetailsPage({super.key});
 

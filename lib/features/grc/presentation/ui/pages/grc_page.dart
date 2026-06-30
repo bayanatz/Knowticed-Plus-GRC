@@ -1,12 +1,19 @@
-/// Module: GRC (Governance, Risk, and Compliance)
-/// Description: This module provides a comprehensive framework for managing governance, risk, and compliance within an organization. It includes features for creating, editing, viewing, and restoring GRC modules, as well as action buttons for user interactions.
+/// Module: GRC Module Management
+/// Description: Provides the main list page for GRC Modules with status
+///              filtering, search, sort, and navigation to the details page.
 /// Author: Mohamed Magdy Abdelkhalek
 /// Date: 2026-06-28
-/// Dependencies:  FireStore , Flutter SDK, Bloc for state management, and other core libraries.
-/// Revision History: 2026-06-28 .
+/// Dependencies: flutter_bloc, GRCModuleCubit, GRCModuleEntity, get_it
+/// Revision History: 2026-06-28 - Initial creation
+///                    2026-06-30 - Connected to GRCModuleCubit with real data (Mohamed Magdy Abdelkhalek)
 library;
 
-import 'dart:developer';
+/// ************************* FILE INFO *************************** ///
+/// File Name: grc_page.dart
+/// Purpose: Contains GrcResponsivePage (root shell), GovernanceRiskAndCompliancePage
+///          (list page), and _GrcModuleCard (list item card).
+/// Author: Mohamed Magdy Abdelkhalek
+/// Created At: 28/6/2026
 
 import 'package:demo_app/core/constants/app_assets.dart';
 import 'package:demo_app/core/custom/35-custom_search_widget_custom.dart';
@@ -14,6 +21,8 @@ import 'package:demo_app/core/custom/37-custom_navigate.dart';
 import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
+import 'package:demo_app/features/grc/domain/entities/grc_module_entity.dart';
+import 'package:demo_app/features/grc/presentation/controller/grc_module_cubit.dart';
 import 'package:demo_app/features/grc/presentation/ui/pages/grc_details_page.dart';
 import 'package:demo_app/features/grc/presentation/ui/pages/grc_module_details_page.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
@@ -21,31 +30,57 @@ import 'package:demo_app/features/roles/core_widgets/main_widget/app_dropdown.da
 import 'package:demo_app/features/roles/core_widgets/main_widget/responsive_helper.dart';
 import 'package:demo_app/features/roles/widgets/filter_bar_item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:get_it/get_it.dart';
 
 import '../../../../settings/core_widgets/main_widget/custom_button_widget.dart';
 
+/// class name: [GrcResponsivePage]
+///
+/// purpose: root shell that provides [GRCModuleCubit] and switches between
+///          the mobile and tablet layouts via [ResponsiveHelper].
+///
+/// authors: Mohamed Magdy Abdelkhalek
+///
+/// created at: 28/6/2026
 class GrcResponsivePage extends StatelessWidget {
   const GrcResponsivePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ResponsiveHelper(
-        mobileWidget: GovernanceRiskAndCompliancePage(),
-        tabletWidget: Navigator(
-          onGenerateRoute: (settings) {
-            return MaterialPageRoute(
-              builder: (context) {
-                return GovernanceRiskAndCompliancePage();
-              },
-            );
-          },
-        ));
+    return BlocProvider(
+      create: (_) =>
+          GetIt.instance<GRCModuleCubit>()..getAllModules(includeDeleted: true),
+      child: Builder(
+        builder: (ctx) => ResponsiveHelper(
+          mobileWidget: const GovernanceRiskAndCompliancePage(),
+          tabletWidget: Navigator(
+            onGenerateRoute: (settings) {
+              return MaterialPageRoute(
+                builder: (_) => BlocProvider.value(
+                  value: ctx.read<GRCModuleCubit>(),
+                  child: const GovernanceRiskAndCompliancePage(),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
   }
 }
 
+/// class name: [GovernanceRiskAndCompliancePage]
+///
+/// purpose: main list page for GRC Modules. Reads from [GRCModuleCubit] and
+///          renders a filtered, searchable, sortable list of module cards.
+///
+/// authors: Mohamed Magdy Abdelkhalek
+///
+/// created at: 28/6/2026
 class GovernanceRiskAndCompliancePage extends StatefulWidget {
   const GovernanceRiskAndCompliancePage({super.key});
 
@@ -56,129 +91,368 @@ class GovernanceRiskAndCompliancePage extends StatefulWidget {
 
 class _GovernanceRiskAndCompliancePageState
     extends State<GovernanceRiskAndCompliancePage> {
+  String _selectedStatus = 'all';
+  final _searchController = TextEditingController();
+  String _searchQuery = '';
+  String _sortOrder = 'Creation Date';
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  // ── Filtering logic ───────────────────────────────────────────────────────
+
+  List<GRCModuleEntity> _applyFilters(List<GRCModuleEntity> modules) {
+    var result = modules;
+
+    // Status filter — Removed is treated as a status alongside Active/Inactive.
+    // "all" shows everything; each other tab filters by its own condition.
+    if (_selectedStatus == 'Active') {
+      result =
+          result.where((m) => !m.isDeleted && m.status == 'Active').toList();
+    } else if (_selectedStatus == 'Inactive') {
+      result =
+          result.where((m) => !m.isDeleted && m.status == 'Inactive').toList();
+    } else if (_selectedStatus == 'Removed') {
+      result = result.where((m) => m.isDeleted).toList();
+    }
+    // 'all' → no filter, show everything
+
+    // Search filter
+    if (_searchQuery.isNotEmpty) {
+      final q = _searchQuery.toLowerCase();
+      result = result
+          .where((m) =>
+              m.grcModuleNameEnglish.toLowerCase().contains(q) ||
+              m.grcModuleNameArabic.toLowerCase().contains(q))
+          .toList();
+    }
+
+    // Sort
+    if (_sortOrder == 'ASC') {
+      result.sort(
+          (a, b) => a.grcModuleNameEnglish.compareTo(b.grcModuleNameEnglish));
+    } else if (_sortOrder == 'DES') {
+      result.sort(
+          (a, b) => b.grcModuleNameEnglish.compareTo(a.grcModuleNameEnglish));
+    } else if (_sortOrder == 'Last Update') {
+      result.sort((a, b) => b.lastModifiedDate.compareTo(a.lastModifiedDate));
+    } else {
+      // Creation Date — keep Firestore order (no reliable creation date in entity)
+    }
+
+    return result;
+  }
+
+  Map<String, int> _countByStatus(List<GRCModuleEntity> modules) {
+    return {
+      'all': modules.length,
+      'Active':
+          modules.where((m) => !m.isDeleted && m.status == 'Active').length,
+      'Inactive':
+          modules.where((m) => !m.isDeleted && m.status == 'Inactive').length,
+      'Removed': modules.where((m) => m.isDeleted).length,
+    };
+  }
+
+  // ── Navigation helpers ────────────────────────────────────────────────────
+
+  Future<void> _openDetails(
+    BuildContext context,
+    GrcPageMode mode, {
+    GRCModuleEntity? entity,
+  }) async {
+    final reloaded = await Navigator.of(context).push<bool>(
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) => GovernanceRiskAndComplianceDetails(
+          mode: mode,
+          entity: entity,
+        ),
+        transitionsBuilder: (_, animation, __, child) =>
+            FadeTransition(opacity: animation, child: child),
+      ),
+    );
+    if (reloaded == true && context.mounted) {
+      context.read<GRCModuleCubit>().getAllModules(includeDeleted: true);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<MapEntry<String, Map<String, dynamic>>> status = [
-      MapEntry('all', {'num': 10, 'color': AppColors.textButton}),
-      MapEntry('Active', {'num': 5, 'color': AppColors.green}),
-      MapEntry('Inactive', {'num': 3, 'color': AppColors.red}),
-      MapEntry('Removed', {'num': 2, 'color': AppColors.colorGrey}),
-    ];
-    String selectedStatus = 'all';
-    return Scaffold(
-        body: SafeArea(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            PaginationAppBar(
-                screensTitles: ["Governance, Risk, and Compliance".tr]),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                customButton(
-                    title: "Dashboard".tr,
-                    function: () {
-                      navigateTo(context, GrcModuleDetailsPage());
-                    },
-                    width: 135.w,
-                    height: 38.h,
-                    color: AppColors.primary,
-                    textStyle: StyleText.fontSize16Weight500
-                        .copyWith(color: AppColors.textButton)),
-              ],
-            ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                spacing: 30.sp,
+    return BlocBuilder<GRCModuleCubit, GRCModuleState>(
+      builder: (context, state) {
+        final allModules =
+            state is GRCModuleListLoaded ? state.modules : <GRCModuleEntity>[];
+        final counts = _countByStatus(allModules);
+        final filtered = _applyFilters(allModules);
+
+        final List<MapEntry<String, Map<String, dynamic>>> statusEntries = [
+          MapEntry('all',
+              {'num': counts['all'] ?? 0, 'color': AppColors.textButton}),
+          MapEntry('Active',
+              {'num': counts['Active'] ?? 0, 'color': AppColors.green}),
+          MapEntry('Inactive',
+              {'num': counts['Inactive'] ?? 0, 'color': AppColors.red}),
+          MapEntry('Removed',
+              {'num': counts['Removed'] ?? 0, 'color': AppColors.colorGrey}),
+        ];
+
+        return Scaffold(
+          body: SafeArea(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  for (var roleEntry in status)
-                    FilterBarItem(
-                      title: roleEntry.key,
-                      numberOfItems: roleEntry.value['num'],
-                      color: roleEntry.value['color'],
-                      onTap: () {
-                        setState(() {
-                          selectedStatus = roleEntry.key;
-                        });
-                        log("Selected Status: $selectedStatus");
-                      },
-                      isSelected: selectedStatus == roleEntry.key,
+                  PaginationAppBar(
+                      screensTitles: ["Governance, Risk, and Compliance".tr]),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      customButton(
+                        title: "Dashboard".tr,
+                        function: () {
+                          navigateTo(context, GrcModuleDetailsPage());
+                        },
+                        width: 135.w,
+                        height: 38.h,
+                        color: AppColors.primary,
+                        textStyle: StyleText.fontSize16Weight500
+                            .copyWith(color: AppColors.textButton),
+                      ),
+                    ],
+                  ),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      spacing: 30.sp,
+                      children: [
+                        for (var entry in statusEntries)
+                          FilterBarItem(
+                            title: entry.key,
+                            numberOfItems: entry.value['num'] as int,
+                            color: entry.value['color'] as Color,
+                            onTap: () =>
+                                setState(() => _selectedStatus = entry.key),
+                            isSelected: _selectedStatus == entry.key,
+                          ),
+                      ],
                     ),
+                  ),
+                  SizedBox(height: 20.h),
+                  Row(
+                    spacing: 10.w,
+                    children: [
+                      AppSearchTextField(
+                        onChanged: (value) =>
+                            setState(() => _searchQuery = value),
+                        hintText: "Search".tr,
+                        controller: _searchController,
+                      ),
+                      SizedBox(
+                        width: 50.w,
+                        child: AppDropdown(
+                          items: ["ASC", "DES", "Creation Date", 'Last Update']
+                              .map((option) => DropdownMenuItem<String>(
+                                    value: option,
+                                    child: Text(option),
+                                  ))
+                              .toList(),
+                          onChanged: (value) {
+                            if (value != null) {
+                              setState(() => _sortOrder = value);
+                            }
+                          },
+                          textButton: null,
+                          borderRadius: 8.r,
+                          isAllCornersRounded: true,
+                          value: null,
+                          width: 150.sp,
+                          menuWidth: 150.sp,
+                          fillColor: AppColors.field,
+                          menuItemHeight: 35.h,
+                          customButton: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 8.w),
+                            decoration: BoxDecoration(
+                              color: AppColors.field,
+                            ),
+                            child: SvgPicture.asset(
+                              AppAssets.sort,
+                              width: 20.w,
+                              height: 20.h,
+                            ),
+                          ),
+                        ),
+                      ),
+                      customButtonWithSvg(
+                        colorBorder: AppColors.primary,
+                        space: 10.w,
+                        function: () => _openDetails(
+                          context,
+                          GrcPageMode.create,
+                        ),
+                        title: 'Create GRC Module',
+                        textStyle: StyleText.fontSize14Weight500
+                            .copyWith(color: AppColors.textButton),
+                        image: 'assets/icons_drawer_news/grc_new.svg',
+                        widthImage: 16.w,
+                        heightImage: 16.h,
+                        color: AppColors.primary,
+                        width: 200.w,
+                        height: 36.h,
+                        radius: 8.r,
+                        svgColor: AppColors.textButton,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 16.h),
+
+                  // ── List ─────────────────────────────────────────────────
+                  Expanded(
+                    child: _buildBody(context, state, filtered),
+                  ),
                 ],
               ),
             ),
-            SizedBox(height: 20.h),
-            Row(
-              spacing: 10.w,
-              children: [
-                AppSearchTextField(
-                  onChanged: (value) {},
-                  hintText: "Search".tr,
-                  controller: TextEditingController(),
-                ),
-                SizedBox(
-                  width: 50.w,
-                  child: AppDropdown(
-                    items: ["ASC", "DES", "Creation Date", 'Last Update']
-                        .map((option) => DropdownMenuItem<String>(
-                              value: option,
-                              child: Text(option),
-                            ))
-                        .toList(),
-                    onChanged: (value) {
-                      // Handle the selected value here
-                    },
-                    textButton: null,
+          ),
+        );
+      },
+    );
+  }
 
-                    borderRadius: 8.r,
-                    isAllCornersRounded: true,
-                    value: null,
-                    width: 150.sp,
-                    menuWidth: 150.sp, // Increased for Arabic text
-                    fillColor: AppColors.field,
-                    menuItemHeight: 35.h,
-                    customButton: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w),
-                      decoration: BoxDecoration(
-                        color: AppColors.field,
-                      ),
-                      child: SvgPicture.asset(
-                        AppAssets.sort,
-                        width: 20.w,
-                        height: 20.h,
-                      ),
-                    ),
+  Widget _buildBody(
+    BuildContext context,
+    GRCModuleState state,
+    List<GRCModuleEntity> modules,
+  ) {
+    if (state is GRCModuleLoading) {
+      return Center(
+        child: CircularProgressIndicator(color: AppColors.primary),
+      );
+    }
+
+    if (state is GRCModuleFailure) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              state.message,
+              style:
+                  StyleText.fontSize14Weight500.copyWith(color: AppColors.red),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 16.h),
+            TextButton(
+              onPressed: () => context.read<GRCModuleCubit>().getAllModules(),
+              child: Text('Retry'.tr),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (modules.isEmpty) {
+      return Center(
+        child: Text(
+          'No GRC Modules found'.tr,
+          style: StyleText.fontSize14Weight500
+              .copyWith(color: AppColors.secondaryText),
+        ),
+      );
+    }
+
+    return ListView.separated(
+      itemCount: modules.length,
+      separatorBuilder: (_, __) => SizedBox(height: 10.h),
+      itemBuilder: (context, index) {
+        final module = modules[index];
+        return _GrcModuleCard(
+          module: module,
+          onTap: () => _openDetails(
+            context,
+            module.isDeleted ? GrcPageMode.restore : GrcPageMode.view,
+            entity: module,
+          ),
+        );
+      },
+    );
+  }
+}
+
+// ── Module list card ─────────────────────────────────────────────────────────
+
+/// class name: [_GrcModuleCard]
+///
+/// purpose: private list-item card that displays a single [GRCModuleEntity]
+///          with its name, department, and status badge. Tapping navigates
+///          to the details page in view or restore mode.
+///
+/// authors: Mohamed Magdy Abdelkhalek
+///
+/// created at: 28/6/2026
+class _GrcModuleCard extends StatelessWidget {
+  final GRCModuleEntity module;
+  final VoidCallback onTap;
+
+  const _GrcModuleCard({required this.module, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDeleted = module.isDeleted;
+    final statusColor = isDeleted
+        ? AppColors.colorGrey
+        : module.status == 'Active'
+            ? AppColors.green
+            : AppColors.red;
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8.r),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+        decoration: BoxDecoration(
+          color: AppColors.field,
+          borderRadius: BorderRadius.circular(8.r),
+          border: Border.all(color: AppColors.border),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    module.grcModuleNameEnglish,
+                    style: StyleText.fontSize14Weight500
+                        .copyWith(color: AppColors.text),
                   ),
-                ),
-                customButtonWithSvg(
-                    colorBorder: AppColors.primary,
-                    space: 10.w,
-                    function: () {
-                      navigateTo(
-                          context,
-                          GovernanceRiskAndComplianceDetails(
-                            mode: GrcPageMode.create,
-                          ));
-                    },
-                    title: 'Create GRC Module',
-                    textStyle: StyleText.fontSize14Weight500
-                        .copyWith(color: AppColors.textButton),
-                    image: 'assets/icons_drawer_news/grc_new.svg',
-                    widthImage: 16.w,
-                    heightImage: 16.h,
-                    color: AppColors.primary,
-                    width: 200.w,
-                    height: 36.h,
-                    radius: 8.r,
-                    svgColor: AppColors.textButton),
-              ],
+                  SizedBox(height: 4.h),
+                  Text(
+                    module.owningDepartment,
+                    style: StyleText.fontSize14Weight500
+                        .copyWith(color: AppColors.secondaryText),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+              decoration: BoxDecoration(
+                color: statusColor.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(20.r),
+              ),
+              child: Text(
+                isDeleted ? 'Removed' : module.status,
+                style:
+                    StyleText.fontSize14Weight500.copyWith(color: statusColor),
+              ),
             ),
           ],
         ),
       ),
-    ));
+    );
   }
 }

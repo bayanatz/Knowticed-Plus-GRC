@@ -1,8 +1,21 @@
+/// Module: GRC Module Management
+/// Description: Provides the Module Owner section for the GRC Module details
+///              page. In view/restore mode shows only selected owners; in
+///              create/edit mode shows all employees with a search field so
+///              the user can toggle selection.
+/// Author: Mohamed Magdy Abdelkhalek
+/// Date: 2026-06-29
+/// Dependencies: GrcOwnerCubit, PersonChipCard, AppSearchTextField
+/// Revision History: 2026-06-29 - Initial creation
+///                    2026-06-30 - Added initialOwnerIds for pre-selection (Mohamed Magdy Abdelkhalek)
+library;
+
 /// ************************* FILE INFO *************************** ///
 /// File Name: grc_owner_section.dart
-/// Purpose: This file contains the implementation of the GrcOwnerSection widget, which displays the owner section for GRC modules.
+/// Purpose: Contains GrcOwnerSection, which renders the owner-selection grid
+///          for a GRC Module in both view and edit modes.
 /// Author: Mohamed Magdy Abdelkhalek
-/// Created At: 2026-06-29
+/// Created At: 29/6/2026
 
 import 'package:demo_app/core/custom/19-custom_person_chip_card.dart';
 import 'package:demo_app/core/custom/35-custom_search_widget_custom.dart';
@@ -13,13 +26,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+/// class name: [GrcOwnerSection]
+///
+/// purpose: displays the Module Owner picker section inside the GRC Module
+///          details page. Owns a private [GrcOwnerCubit] instance and passes
+///          [initialOwnerIds] to pre-select existing owners. In view/restore
+///          mode only selected owners are shown; in create/edit mode all
+///          employees appear with a search bar.
+///
+/// authors: Mohamed Magdy Abdelkhalek
+///
+/// created at: 29/6/2026
 class GrcOwnerSection extends StatefulWidget {
   final bool isViewMode;
+
+  /// IDs of owners already assigned to the module.
+  /// - In view/restore mode  → only these owners are displayed.
+  /// - In create/edit mode   → these owners are pre-selected.
+  final List<String> initialOwnerIds;
+
   final void Function(List<OwnerData> selected)? onOwnersChanged;
 
   const GrcOwnerSection({
     super.key,
     this.isViewMode = false,
+    this.initialOwnerIds = const [],
     this.onOwnersChanged,
   });
 
@@ -35,7 +66,10 @@ class _GrcOwnerSectionState extends State<GrcOwnerSection> {
     super.initState();
     _cubit = GrcOwnerCubit();
     WidgetsBinding.instance.addPostFrameCallback(
-      (_) => _cubit.loadOwners(context),
+      (_) => _cubit.loadOwners(
+        context,
+        initialOwnerIds: widget.initialOwnerIds,
+      ),
     );
   }
 
@@ -61,7 +95,11 @@ class _GrcOwnerSectionState extends State<GrcOwnerSection> {
       value: _cubit,
       child: BlocBuilder<GrcOwnerCubit, GrcOwnerState>(
         builder: (context, state) {
-          final owners = _cubit.filteredOwners;
+          // In view/restore mode show only the selected (assigned) owners.
+          // In create/edit mode show all employees so the user can pick.
+          final owners = widget.isViewMode
+              ? _cubit.filteredOwners.where((o) => o.isSelected).toList()
+              : _cubit.filteredOwners;
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -92,7 +130,7 @@ class _GrcOwnerSectionState extends State<GrcOwnerSection> {
                   padding: EdgeInsets.symmetric(vertical: 16.h),
                   child: Center(
                     child: Text(
-                      'No people found',
+                      widget.isViewMode ? 'No owners assigned' : 'No people found',
                       style: AppTextStyles.font16BlackRegularCairo.copyWith(
                         fontSize: 13.sp,
                         color: AppColors.secondaryText,
@@ -116,8 +154,7 @@ class _GrcOwnerSectionState extends State<GrcOwnerSection> {
                               subtitle1: left.department,
                               subtitle2: left.jobTitle,
                               avatar: _buildAvatar(left.photo),
-                              isSelected:
-                                  widget.isViewMode ? false : left.isSelected,
+                              isSelected: left.isSelected,
                               showCheckBox: !widget.isViewMode,
                               width: double.infinity,
                               backgroundColor: AppColors.background,
@@ -134,9 +171,7 @@ class _GrcOwnerSectionState extends State<GrcOwnerSection> {
                                 subtitle1: owners[rightIdx].department,
                                 subtitle2: owners[rightIdx].jobTitle,
                                 avatar: _buildAvatar(owners[rightIdx].photo),
-                                isSelected: widget.isViewMode
-                                    ? false
-                                    : owners[rightIdx].isSelected,
+                                isSelected: owners[rightIdx].isSelected,
                                 showCheckBox: !widget.isViewMode,
                                 width: double.infinity,
                                 backgroundColor: AppColors.background,

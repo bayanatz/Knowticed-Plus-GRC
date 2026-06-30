@@ -32,7 +32,10 @@ class GrcOwnerCubit extends Cubit<GrcOwnerState> {
   List<OwnerData> _allOwners = [];
   List<OwnerData> filteredOwners = [];
 
-  void loadOwners(BuildContext context) {
+  void loadOwners(
+    BuildContext context, {
+    List<String> initialOwnerIds = const [],
+  }) {
     if (!Get.isRegistered<MainCoreEmployeeController>()) return;
     final ctrl = Get.find<MainCoreEmployeeController>();
     final employees = ctrl.allEmployeesEntities ?? [];
@@ -43,6 +46,7 @@ class GrcOwnerCubit extends Cubit<GrcOwnerState> {
         department: EmployeeHelper.getEmployeeLocalizeDepartment(employee: e, context: context),
         jobTitle: EmployeeHelper.getEmployeeLocalizedTitle(employee: e, context: context)?.toString() ?? '',
         photo: EmployeeHelper.getEmployeeImage(employee: e),
+        isSelected: initialOwnerIds.contains(e.id ?? ''),
       );
     }).toList();
     filteredOwners = List.from(_allOwners);
