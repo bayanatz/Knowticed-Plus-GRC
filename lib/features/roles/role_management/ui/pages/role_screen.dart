@@ -35,7 +35,7 @@ import 'package:demo_app/features/roles/user_management/controller/user_role_con
 import 'role_responsive_page.dart';
 
 class RoleScreen extends StatefulWidget {
-  RoleScreen({Key? key, this.selectedIndex}) : super(key: key);
+  const RoleScreen({super.key, this.selectedIndex});
   final int? selectedIndex;
 
   @override
@@ -93,7 +93,6 @@ class _RoleScreenState extends State<RoleScreen> {
 
       return roleName == 'master admin' || roleNameAr == 'مسؤول رئيسي';
     });
-
 
     // ✅ CRITICAL: Preload ALL role permissions before showing screen
     if (selectedIndex == 0) {
@@ -181,12 +180,6 @@ class _RoleScreenState extends State<RoleScreen> {
           children: [
             PaginationAppBar(
                 screensTitles: ["Platform Controls and Management".tr]),
-
-
-
-
-
-
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -207,8 +200,11 @@ class _RoleScreenState extends State<RoleScreen> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             Text(
-                              Constants.tabletRolePageTabs[visibleTabIndices[i]].tr,
-                              style: AppTextStyles.font20SecondaryBlackMediumCairo.copyWith(
+                              Constants
+                                  .tabletRolePageTabs[visibleTabIndices[i]].tr,
+                              style: AppTextStyles
+                                  .font20SecondaryBlackMediumCairo
+                                  .copyWith(
                                 height: 1.3,
                                 color: selectedIndex == visibleTabIndices[i]
                                     ? AppColors.primary

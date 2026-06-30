@@ -2,25 +2,24 @@
 /// Description: This module provides a comprehensive framework for managing governance, risk, and compliance within an organization. It includes features for creating, editing, viewing, and restoring GRC modules, as well as action buttons for user interactions.
 /// Author: Mohamed Magdy Abdelkhalek
 /// Date: 2026-06-28
-/// Dependencies:  FireStore , Flutter SDK, Bloc for state management, and other core libraries. 
+/// Dependencies:  FireStore , Flutter SDK, Bloc for state management, and other core libraries.
 /// Revision History: 2026-06-28 .
-
-
+library;
 
 import 'dart:developer';
 
 import 'package:demo_app/core/constants/app_assets.dart';
 import 'package:demo_app/core/custom/35-custom_search_widget_custom.dart';
 import 'package:demo_app/core/custom/37-custom_navigate.dart';
+import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/grc/presentation/ui/pages/grc_details_page.dart';
-import 'package:demo_app/features/grc/presentation/widgets/grc_bottom_buttons.dart';
+import 'package:demo_app/features/grc/presentation/ui/pages/grc_module_details_page.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
 import 'package:demo_app/features/roles/core_widgets/main_widget/app_dropdown.dart';
 import 'package:demo_app/features/roles/core_widgets/main_widget/responsive_helper.dart';
 import 'package:demo_app/features/roles/widgets/filter_bar_item.dart';
-import 'package:demo_app/features/settings/core_widgets/main_widget/shared_action_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -80,7 +79,9 @@ class _GovernanceRiskAndCompliancePageState
               children: [
                 customButton(
                     title: "Dashboard".tr,
-                    function: () {},
+                    function: () {
+                      navigateTo(context, GrcModuleDetailsPage());
+                    },
                     width: 135.w,
                     height: 38.h,
                     color: AppColors.primary,
@@ -152,12 +153,14 @@ class _GovernanceRiskAndCompliancePageState
                     ),
                   ),
                 ),
-                customButtonWithImage(
+                customButtonWithSvg(
+                    colorBorder: AppColors.primary,
+                    space: 10.w,
                     function: () {
                       navigateTo(
                           context,
                           GovernanceRiskAndComplianceDetails(
-                            mode: GrcPageMode.restore,
+                            mode: GrcPageMode.create,
                           ));
                     },
                     title: 'Create GRC Module',
