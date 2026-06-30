@@ -14,8 +14,11 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:get_it/get_it.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
+
+import 'package:demo_app/features/grc/grc_get_it.dart';
 
 import 'package:demo_app/core/services/notifications/flutter_local_notification_handler.dart';
 import 'package:demo_app/core/theme/theme_controller.dart';
@@ -55,6 +58,9 @@ void main() async {
     // Core controllers
     Get.put(MainCoreEmployeeController());
     Get.put(MainCoreDepartmentController());
+
+    // Dependency injection
+    setupGRCDependencies(GetIt.instance);
 
     // ScreenUtil
     await ScreenUtil.ensureScreenSize();
