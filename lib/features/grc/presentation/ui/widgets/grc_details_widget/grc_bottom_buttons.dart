@@ -60,7 +60,7 @@ class GrcBottomButtons extends StatelessWidget {
                 ? 'Discard'.tr
                 : 'Discard Changes'.tr,
             function: onDiscard,
-            height: 48.h,
+            height: 38.h,
             width: 150.w,
             color: AppColors.grey,
             textColor: AppColors.text,
@@ -73,7 +73,7 @@ class GrcBottomButtons extends StatelessWidget {
                   ? 'Restore'.tr
                   : 'Save'.tr,
           function: () => _onActionTap(context),
-          height: 48.h,
+          height: 38.h,
           width: 150.w,
           color: AppColors.primary,
           textColor: AppColors.textButton,

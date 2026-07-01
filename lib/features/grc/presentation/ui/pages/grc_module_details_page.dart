@@ -14,10 +14,12 @@ library;
 /// Created At: 28/6/2026
 
 import 'package:demo_app/core/custom/35-custom_search_widget_custom.dart';
+import 'package:demo_app/core/custom/37-custom_navigate.dart';
 import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
 import 'package:demo_app/core/custom/9_filter_tab_with_container.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
+import 'package:demo_app/features/grc/presentation/ui/pages/create_new_policy.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
 import 'package:demo_app/features/roles/widgets/filter_bar_item.dart';
 import 'package:demo_app/features/settings/core_widgets/main_widget/custom_button_widget.dart';
@@ -101,8 +103,7 @@ class GrcModuleDetailsPage extends StatelessWidget {
                 customButton(
                     title: "Assignment Controls".tr,
                     function: () {},
-                    width: 180.w,
-                    height: 38.h,
+                    // width: 180.w,
                     color: AppColors.primary,
                     textStyle: StyleText.fontSize16Weight500
                         .copyWith(color: AppColors.textButton)),
@@ -155,11 +156,7 @@ class GrcModuleDetailsPage extends StatelessWidget {
                     widthImage: 16.w,
                     heightImage: 16.h,
                     function: () {
-                      // navigateTo(
-                      //     context,
-                      //     GovernanceRiskAndComplianceDetails(
-                      //       mode: GrcPageMode.restore,
-                      //     ));
+                      navigateTo(context, CreateNewPolicyPage());
                     },
                     title: 'Policy',
                     textStyle: StyleText.fontSize14Weight500
