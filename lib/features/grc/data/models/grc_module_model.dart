@@ -321,6 +321,7 @@ class GRCModuleModel {
       activationDate: activationDate.last,
       owners: owners.last,
       status: status.last,
+      createdAt: lastModifiedDate.first,
       lastModifiedDate: lastModifiedDate.last,
       lastEditorId: editors.last,
       isDeleted: isDeleted.last,

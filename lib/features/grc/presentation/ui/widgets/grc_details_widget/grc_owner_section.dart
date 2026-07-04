@@ -25,6 +25,7 @@ import 'package:demo_app/features/grc/presentation/controller/grc_owner_cubit.da
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 
 /// class name: [GrcOwnerSection]
 ///
@@ -105,7 +106,7 @@ class _GrcOwnerSectionState extends State<GrcOwnerSection> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Module Owner',
+                'Module Owner'.tr,
                 style: AppTextStyles.font16BlackRegularCairo
                     .copyWith(fontSize: 14.sp),
               ),
@@ -117,7 +118,7 @@ class _GrcOwnerSectionState extends State<GrcOwnerSection> {
                     AppSearchTextField(
                       controller: _cubit.searchController,
                       onChanged: _cubit.search,
-                      hintText: 'Search People',
+                      hintText: 'Search People'.tr,
                       fillColor: AppColors.background,
                     ),
                   ],
@@ -130,7 +131,7 @@ class _GrcOwnerSectionState extends State<GrcOwnerSection> {
                   padding: EdgeInsets.symmetric(vertical: 16.h),
                   child: Center(
                     child: Text(
-                      widget.isViewMode ? 'No owners assigned' : 'No people found',
+                      widget.isViewMode ? 'No owners assigned'.tr : 'No people found'.tr,
                       style: AppTextStyles.font16BlackRegularCairo.copyWith(
                         fontSize: 13.sp,
                         color: AppColors.secondaryText,

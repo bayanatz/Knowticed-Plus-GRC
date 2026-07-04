@@ -42,7 +42,7 @@ class GrcModuleDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<MapEntry<String, Map<String, dynamic>>> status = [
-      MapEntry('all', {'num': 10, 'color': AppColors.textButton}),
+      MapEntry('all', {'num': 10, 'color': AppColors.text}),
       MapEntry('Active', {'num': 5, 'color': AppColors.green}),
       MapEntry('Inactive', {'num': 3, 'color': AppColors.orange}),
       MapEntry('Expired', {'num': 2, 'color': AppColors.red}),

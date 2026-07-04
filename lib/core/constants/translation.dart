@@ -3658,6 +3658,49 @@ No class actions, class arbitrations, or representative actions for users locate
           'Total Weight': 'Total Weight',
           'Publish': 'Publish',
           'Save Draft': 'Save Draft',
+          'Governance, Risk, and Compliance': 'Governance, Risk, and Compliance',
+          'Create GRC Module': 'Create GRC Module',
+          'No GRC Modules found': 'No GRC Modules found',
+          'Retry': 'Retry',
+          'ASC': 'ASC',
+          'DES': 'DES',
+          'GRC Module': 'GRC Module',
+          'Create New GRC Module': 'Create New GRC Module',
+          'Edit GRC Module': 'Edit GRC Module',
+          'GRC Module Name': 'GRC Module Name',
+          'Activation Date': 'Activation Date',
+          'Select Activation Date': 'Select Activation Date',
+          'Module Owner': 'Module Owner',
+          'No owners assigned': 'No owners assigned',
+          'No people found': 'No people found',
+          'Discard Changes': 'Discard Changes',
+          'Changing Status': 'Changing Status',
+          'Are You Sure You Want To Change The Status Of This Module ?':
+              'Are You Sure You Want To Change The Status Of This Module ?',
+          'Deleting GRC Module': 'Deleting GRC Module',
+          'Are You Sure You Want To Delete This GRC Module ?':
+              'Are You Sure You Want To Delete This GRC Module ?',
+          'Creating Modules': 'Creating Modules',
+          'Restoring Module': 'Restoring Module',
+          'Editing Modules': 'Editing Modules',
+          'Are You Sure You Want To Create This Module ?':
+              'Are You Sure You Want To Create This Module ?',
+          'Are You Sure You Want To Restore This Module ?':
+              'Are You Sure You Want To Restore This Module ?',
+          'Are You Sure You Want To Edit This Module ?':
+              'Are You Sure You Want To Edit This Module ?',
+          'Deleted GRC Module': 'Deleted GRC Module',
+          'Restored Modules': 'Restored Modules',
+          'Created Modules': 'Created Modules',
+          'Edited Modules': 'Edited Modules',
+          'You Successfully Deleted This Module':
+              'You Successfully Deleted This Module',
+          'You Successfully Restored This Module':
+              'You Successfully Restored This Module',
+          'You Successfully Created This GRC Module':
+              'You Successfully Created This GRC Module',
+          'You Successfully Edited This Module':
+              'You Successfully Edited This Module',
           'You Successfully Create Policy': 'You Successfully Create Policy',
           'You Successfully Create Policy As Draft':
               'You Successfully Create Policy As Draft',
@@ -4213,6 +4256,46 @@ No class actions, class arbitrations, or representative actions for users locate
               'تم إنشاء السياسة كمسودة بنجاح',
           'Data Governance, Risk, and Compliance':
               'حوكمة البيانات والمخاطر والامتثال',
+          'Governance, Risk, and Compliance': 'الحوكمة والمخاطر والامتثال',
+          'Create GRC Module': 'إنشاء وحدة حوكمة',
+          'No GRC Modules found': 'لا توجد وحدات حوكمة',
+          'Retry': 'إعادة المحاولة',
+          'ASC': 'تصاعدي',
+          'DES': 'تنازلي',
+          'GRC Module': 'وحدة الحوكمة',
+          'Create New GRC Module': 'إنشاء وحدة حوكمة جديدة',
+          'Edit GRC Module': 'تعديل وحدة الحوكمة',
+          'GRC Module Name': 'اسم وحدة الحوكمة',
+          'Activation Date': 'تاريخ التفعيل',
+          'Select Activation Date': 'اختر تاريخ التفعيل',
+          'Module Owner': 'مالك الوحدة',
+          'No owners assigned': 'لا يوجد مالكون معينون',
+          'No people found': 'لا يوجد أشخاص',
+          'Discard Changes': 'تجاهل التغييرات',
+          'Changing Status': 'تغيير الحالة',
+          'Are You Sure You Want To Change The Status Of This Module ?':
+              'هل أنت متأكد أنك تريد تغيير حالة هذه الوحدة؟',
+          'Deleting GRC Module': 'حذف وحدة الحوكمة',
+          'Are You Sure You Want To Delete This GRC Module ?':
+              'هل أنت متأكد أنك تريد حذف هذه الوحدة؟',
+          'Creating Modules': 'إنشاء وحدة',
+          'Restoring Module': 'استعادة الوحدة',
+          'Editing Modules': 'تعديل الوحدة',
+          'Are You Sure You Want To Create This Module ?':
+              'هل أنت متأكد أنك تريد إنشاء هذه الوحدة؟',
+          'Are You Sure You Want To Restore This Module ?':
+              'هل أنت متأكد أنك تريد استعادة هذه الوحدة؟',
+          'Are You Sure You Want To Edit This Module ?':
+              'هل أنت متأكد أنك تريد تعديل هذه الوحدة؟',
+          'Deleted GRC Module': 'تم حذف وحدة الحوكمة',
+          'Restored Modules': 'تم استعادة الوحدة',
+          'Created Modules': 'تم إنشاء الوحدة',
+          'Edited Modules': 'تم تعديل الوحدة',
+          'You Successfully Deleted This Module': 'تم حذف الوحدة بنجاح',
+          'You Successfully Restored This Module': 'تم استعادة الوحدة بنجاح',
+          'You Successfully Created This GRC Module':
+              'تم إنشاء وحدة الحوكمة بنجاح',
+          'You Successfully Edited This Module': 'تم تعديل الوحدة بنجاح',
           'Add Policy': 'إضافة سياسة',
           'Creation Date': 'تاريخ الإنشاء',
           'No. Of Controls': 'عدد الضوابط',

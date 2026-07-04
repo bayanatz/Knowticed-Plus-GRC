@@ -18,11 +18,15 @@ library;
 import 'package:demo_app/core/custom/1-custom_dropdwon.dart';
 import 'package:demo_app/core/custom/2-custom_textfield.dart';
 import 'package:demo_app/core/custom/3-custom_dropdwon_calander.dart';
+import 'package:demo_app/core/extension/context_extensions.dart';
+import 'package:demo_app/core/helper/main_helper/format_helper.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
+import 'package:demo_app/features/department/presentation/controller/add_department_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 /// class name: [GrcFormFields]
 ///
@@ -43,6 +47,7 @@ class GrcFormFields extends StatelessWidget {
   final DateTime? activationDate;
   final ValueChanged<String?> onDepartmentChanged;
   final ValueChanged<DateTime?> onDateChanged;
+  final bool submitted;
 
   const GrcFormFields({
     super.key,
@@ -54,42 +59,28 @@ class GrcFormFields extends StatelessWidget {
     required this.activationDate,
     required this.onDepartmentChanged,
     required this.onDateChanged,
+    this.submitted = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final requiredError =
+        context.isArabic ? 'هذا الحقل مطلوب' : 'This field is required.';
+
     return Column(
       children: [
-        // ── Module name (EN + AR) ─────────────────────
-        Row(
-          children: [
-            Expanded(
-              child: CustomTextField(
-                label: 'GRC Module Name',
-                hint: 'Text here',
-                controller: nameEnController,
-                required: true,
-                fillColor: AppColors.background,
-                borderRadius: BorderRadius.circular(8),
-                height: 30.h,
-                valueStyle: StyleText.fontSize14Weight500
-                    .copyWith(color: AppColors.secondaryText),
-                hintStyle: StyleText.fontSize14Weight500
-                    .copyWith(color: AppColors.secondaryText.withOpacity(.5)),
-                labelStyle: AppTextStyles.font16BlackRegularCairo
-                    .copyWith(fontSize: 14.sp),
-                onChanged: (_) {},
-              ),
-            ),
-            SizedBox(width: 10.w),
-            Expanded(
-              child: Directionality(
-                textDirection: TextDirection.rtl,
+        // ── Module name (EN + AR) — always LTR so order never flips ──────────
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: Row(
+            children: [
+              Expanded(
                 child: CustomTextField(
-                  label: 'عنوان اطار الحوكمه',
-                  hint: 'اكتب هنا',
-                  controller: nameArController,
-                  required: true,
+                  label: 'GRC Module Name',
+                  hint: 'Text here',
+                  controller: nameEnController,
+                  errorText: "GRC Module Name is required",
+                  submitted: submitted,
                   fillColor: AppColors.background,
                   borderRadius: BorderRadius.circular(8),
                   height: 30.h,
@@ -102,29 +93,56 @@ class GrcFormFields extends StatelessWidget {
                   onChanged: (_) {},
                 ),
               ),
-            ),
-          ],
+              SizedBox(width: 10.w),
+              Expanded(
+                child: Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: CustomTextField(
+                    label: 'عنوان اطار الحوكمه',
+                    hint: 'اكتب هنا',
+                    controller: nameArController,
+                    errorText: "عنوان اطار الحوكمه مطلوب",
+                    submitted: submitted,
+                    fillColor: AppColors.background,
+                    borderRadius: BorderRadius.circular(8),
+                    height: 30.h,
+                    valueStyle: StyleText.fontSize14Weight500
+                        .copyWith(color: AppColors.secondaryText),
+                    hintStyle: StyleText.fontSize14Weight500.copyWith(
+                        color: AppColors.secondaryText.withOpacity(.5)),
+                    labelStyle: AppTextStyles.font16BlackRegularCairo
+                        .copyWith(fontSize: 14.sp),
+                    onChanged: (_) {},
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
         SizedBox(height: 15.h),
 
         // ── Description EN ────────────────────────────
-        CustomTextField(
-          label: 'Description',
-          hint: 'Text here',
-          controller: descEnController,
-          required: true,
-          maxLines: 3,
-          minLines: 3,
-          maxLength: 500,
-          showCharCount: true,
-          fillColor: AppColors.background,
-          borderRadius: BorderRadius.circular(8),
-          valueStyle: StyleText.fontSize14Weight500
-              .copyWith(color: AppColors.secondaryText),
-          hintStyle: StyleText.fontSize14Weight500
-              .copyWith(color: AppColors.secondaryText.withOpacity(.5)),
-          labelStyle:
-              AppTextStyles.font16BlackRegularCairo.copyWith(fontSize: 14.sp),
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: CustomTextField(
+            label: 'Description',
+            hint: 'Text here',
+            controller: descEnController,
+            errorText: "Description is required",
+            submitted: submitted,
+            maxLines: 3,
+            minLines: 3,
+            maxLength: 500,
+            showCharCount: true,
+            fillColor: AppColors.background,
+            borderRadius: BorderRadius.circular(8),
+            valueStyle: StyleText.fontSize14Weight500
+                .copyWith(color: AppColors.secondaryText),
+            hintStyle: StyleText.fontSize14Weight500
+                .copyWith(color: AppColors.secondaryText.withOpacity(.5)),
+            labelStyle:
+                AppTextStyles.font16BlackRegularCairo.copyWith(fontSize: 14.sp),
+          ),
         ),
         SizedBox(height: 15.h),
 
@@ -135,7 +153,8 @@ class GrcFormFields extends StatelessWidget {
             label: 'الوصف',
             hint: 'اكتب وصف',
             controller: descArController,
-            required: true,
+            errorText: "الوصف مطلوب",
+            submitted: submitted,
             maxLines: 3,
             minLines: 3,
             maxLength: 500,
@@ -157,14 +176,29 @@ class GrcFormFields extends StatelessWidget {
           children: [
             Expanded(
               child: CustomDropdown<String>(
-                label: 'Owning Department',
-                hint: 'Choose Department',
-                items: ['Department 1', 'Department 2', 'Department 3']
-                    .map((d) => DropdownItem<String>(value: d, label: d))
-                    .toList(),
+                label: 'Owning Department'.tr,
+                hint: 'Choose Department'.tr,
+                items: Get.find<MainCoreDepartmentController>()
+                    .departmentIds
+                    .map((id) {
+                  final depCtrl = Get.find<MainCoreDepartmentController>();
+                  final label = FormatHelper.capitalize(
+                    context.isArabic
+                        ? depCtrl.getArabicDepartmentNameFromDepartmentId(
+                                departmentId: id) ??
+                            ''
+                        : depCtrl.getEnglishDepartmentNameFromDepartmentId(
+                                departmentId: id) ??
+                            '',
+                  );
+                  return DropdownItem<String>(value: id, label: label);
+                }).toList(),
                 value: selectedDepartment,
                 onChanged: onDepartmentChanged,
                 fillColor: AppColors.background,
+                errorText: submitted && selectedDepartment == null
+                    ? requiredError
+                    : null,
                 labelStyle: StyleText.fontSize16Weight500.copyWith(
                   color: AppColors.text,
                 ),
@@ -184,11 +218,13 @@ class GrcFormFields extends StatelessWidget {
             Expanded(
               child: CustomDropdownCalendar(
                 borderRadius: BorderRadius.circular(4.r),
-                label: 'Activation Date',
-                hint: 'Select Activation Date',
+                label: 'Activation Date'.tr,
+                hint: 'Select Activation Date'.tr,
                 value: activationDate,
                 onChanged: onDateChanged,
                 fillColor: AppColors.background,
+                errorText:
+                    submitted && activationDate == null ? requiredError : null,
                 labelStyle: StyleText.fontSize16Weight500.copyWith(
                   color: AppColors.text,
                 ),

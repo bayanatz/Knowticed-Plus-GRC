@@ -35,7 +35,8 @@ class GRCModuleEntity {
   final List<String> owners;
   final String status;
 
-  // Tracking fields (latest values only)
+  // Tracking fields
+  final DateTime createdAt;
   final DateTime lastModifiedDate;
   final String lastEditorId;
 
@@ -53,6 +54,7 @@ class GRCModuleEntity {
     required this.activationDate,
     required this.owners,
     required this.status,
+    required this.createdAt,
     required this.lastModifiedDate,
     required this.lastEditorId,
     required this.isDeleted,
@@ -97,6 +99,7 @@ class GRCModuleEntity {
       activationDate: activationDate ?? this.activationDate,
       owners: owners ?? this.owners,
       status: status ?? this.status,
+      createdAt: createdAt,
       lastModifiedDate: lastModifiedDate,
       lastEditorId: lastEditorId,
       isDeleted: isDeleted,

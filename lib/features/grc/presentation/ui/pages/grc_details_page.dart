@@ -82,6 +82,7 @@ class _GovernanceRiskAndComplianceDetailsState
   bool _statusValue = true;
   late GrcPageMode _currentMode;
   List<String> _selectedOwnerIds = [];
+  bool _submitted = false;
 
   @override
   void initState() {
@@ -110,6 +111,16 @@ class _GovernanceRiskAndComplianceDetailsState
     _descEnController.dispose();
     _descArController.dispose();
     super.dispose();
+  }
+
+  bool _validate() {
+    setState(() => _submitted = true);
+    return _nameEnController.text.trim().isNotEmpty &&
+        _nameArController.text.trim().isNotEmpty &&
+        _descEnController.text.trim().isNotEmpty &&
+        _descArController.text.trim().isNotEmpty &&
+        _selectedDepartment != null &&
+        _activationDate != null;
   }
 
   // ── Cubit action helpers ──────────────────────────────────────────────────
@@ -270,6 +281,7 @@ class _GovernanceRiskAndComplianceDetailsState
                                   descArController: _descArController,
                                   selectedDepartment: _selectedDepartment,
                                   activationDate: _activationDate,
+                                  submitted: _submitted,
                                   onDepartmentChanged: (v) =>
                                       setState(() => _selectedDepartment = v),
                                   onDateChanged: (v) =>
@@ -294,6 +306,10 @@ class _GovernanceRiskAndComplianceDetailsState
                       SizedBox(height: 16.h),
                       GrcBottomButtons(
                         mode: _currentMode,
+                        validate: (_currentMode == GrcPageMode.create ||
+                                _currentMode == GrcPageMode.edit)
+                            ? _validate
+                            : null,
                         onDiscard: _currentMode == GrcPageMode.create
                             ? () => Navigator.pop(context)
                             : () =>

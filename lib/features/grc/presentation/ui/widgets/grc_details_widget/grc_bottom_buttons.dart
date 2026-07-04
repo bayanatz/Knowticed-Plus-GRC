@@ -38,11 +38,15 @@ class GrcBottomButtons extends StatelessWidget {
   final VoidCallback onDiscard;
   final VoidCallback onAction;
 
+  /// Called before the confirm dialog. Return false to abort.
+  final bool Function()? validate;
+
   const GrcBottomButtons({
     super.key,
     required this.mode,
     required this.onDiscard,
     required this.onAction,
+    this.validate,
   });
 
   @override
@@ -83,6 +87,7 @@ class GrcBottomButtons extends StatelessWidget {
   }
 
   void _onActionTap(BuildContext context) {
+    if (validate != null && !validate!()) return;
     final isCreate = mode == GrcPageMode.create;
     final isRestore = mode == GrcPageMode.restore;
     showConfirmDialog(

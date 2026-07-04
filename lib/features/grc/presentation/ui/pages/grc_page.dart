@@ -19,6 +19,8 @@ import 'package:demo_app/core/constants/app_assets.dart';
 import 'package:demo_app/core/custom/35-custom_search_widget_custom.dart';
 import 'package:demo_app/core/custom/37-custom_navigate.dart';
 import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
+import 'package:demo_app/core/extension/context_extensions.dart';
+import 'package:demo_app/core/helper/main_helper/employee_helper.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/grc/domain/entities/grc_module_entity.dart';
@@ -35,6 +37,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:get_it/get_it.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../settings/core_widgets/main_widget/custom_button_widget.dart';
 
@@ -139,8 +142,8 @@ class _GovernanceRiskAndCompliancePageState
           (a, b) => b.grcModuleNameEnglish.compareTo(a.grcModuleNameEnglish));
     } else if (_sortOrder == 'Last Update') {
       result.sort((a, b) => b.lastModifiedDate.compareTo(a.lastModifiedDate));
-    } else {
-      // Creation Date — keep Firestore order (no reliable creation date in entity)
+    } else if (_sortOrder == 'Creation Date') {
+      result.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     }
 
     return result;
@@ -188,9 +191,15 @@ class _GovernanceRiskAndCompliancePageState
         final counts = _countByStatus(allModules);
         final filtered = _applyFilters(allModules);
 
+        const statusLabels = {
+          'all': 'All',
+          'Active': 'Active',
+          'Inactive': 'Inactive',
+          'Removed': 'Removed',
+        };
+
         final List<MapEntry<String, Map<String, dynamic>>> statusEntries = [
-          MapEntry('all',
-              {'num': counts['all'] ?? 0, 'color': AppColors.textButton}),
+          MapEntry('all', {'num': counts['all'] ?? 0, 'color': AppColors.text}),
           MapEntry('Active',
               {'num': counts['Active'] ?? 0, 'color': AppColors.green}),
           MapEntry('Inactive',
@@ -231,7 +240,7 @@ class _GovernanceRiskAndCompliancePageState
                       children: [
                         for (var entry in statusEntries)
                           FilterBarItem(
-                            title: entry.key,
+                            title: statusLabels[entry.key]!.tr,
                             numberOfItems: entry.value['num'] as int,
                             color: entry.value['color'] as Color,
                             onTap: () =>
@@ -257,7 +266,7 @@ class _GovernanceRiskAndCompliancePageState
                           items: ["ASC", "DES", "Creation Date", 'Last Update']
                               .map((option) => DropdownMenuItem<String>(
                                     value: option,
-                                    child: Text(option),
+                                    child: Text(option.tr),
                                   ))
                               .toList(),
                           onChanged: (value) {
@@ -293,7 +302,7 @@ class _GovernanceRiskAndCompliancePageState
                           context,
                           GrcPageMode.create,
                         ),
-                        title: 'Create GRC Module',
+                        title: 'Create GRC Module'.tr,
                         textStyle: StyleText.fontSize14Weight500
                             .copyWith(color: AppColors.textButton),
                         image: 'assets/icons_drawer_news/grc_new.svg',
@@ -399,6 +408,17 @@ class _GrcModuleCard extends StatelessWidget {
 
   const _GrcModuleCard({required this.module, required this.onTap});
 
+  String _resolveOwnerName(BuildContext context, String ownerId) {
+    try {
+      return EmployeeHelper.getEmployeeLocalizedNameWithId(
+        employeeId: ownerId,
+        context: context,
+      );
+    } catch (_) {
+      return ownerId;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDeleted = module.isDeleted;
@@ -425,15 +445,26 @@ class _GrcModuleCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    module.grcModuleNameEnglish,
+                    context.isArabic
+                        ? module.grcModuleNameArabic
+                        : module.grcModuleNameEnglish,
                     style: StyleText.fontSize14Weight500
                         .copyWith(color: AppColors.text),
                   ),
                   SizedBox(height: 4.h),
-                  Text(
-                    module.owningDepartment,
-                    style: StyleText.fontSize14Weight500
-                        .copyWith(color: AppColors.secondaryText),
+                  if (module.owners.isNotEmpty)
+                    _LabelValueText(
+                      label: context.isArabic ? 'المالك : ' : 'Owner : ',
+                      value: _resolveOwnerName(context, module.owners.first),
+                    ),
+                  SizedBox(height: 2.h),
+                  _LabelValueText(
+                    label: context.isArabic
+                        ? 'تاريخ الإنشاء: '
+                        : 'Creation Date: ',
+                    value:
+                        DateFormat('d MMM yyyy', context.isArabic ? 'ar' : 'en')
+                            .format(module.createdAt),
                   ),
                 ],
               ),
@@ -445,13 +476,40 @@ class _GrcModuleCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20.r),
               ),
               child: Text(
-                isDeleted ? 'Removed' : module.status,
+                isDeleted ? 'Removed'.tr : module.status.tr,
                 style:
                     StyleText.fontSize14Weight500.copyWith(color: statusColor),
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _LabelValueText extends StatelessWidget {
+  final String label;
+  final String value;
+
+  const _LabelValueText({required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return RichText(
+      text: TextSpan(
+        children: [
+          TextSpan(
+            text: label,
+            style: StyleText.fontSize12Weight500
+                .copyWith(color: AppColors.secondaryText),
+          ),
+          TextSpan(
+            text: value,
+            style:
+                StyleText.fontSize12Weight500.copyWith(color: AppColors.text),
+          ),
+        ],
       ),
     );
   }
