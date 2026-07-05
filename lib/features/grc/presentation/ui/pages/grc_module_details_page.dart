@@ -48,23 +48,29 @@ class GrcModuleDetailsPage extends StatelessWidget {
       MapEntry('Expired', {'num': 2, 'color': AppColors.red}),
       MapEntry('Draft', {'num': 2, 'color': AppColors.colorGrey}),
     ];
+    final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            PaginationAppBar(
-              screensTitles: [
-                'GRC'.tr,
-                'GRC Module Name',
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                customButtonWithSvg(
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              PaginationAppBar(
+                screensTitles: [
+                  'GRC'.tr,
+                  'GRC Module Name',
+                ],
+              ),
+
+              // Approved Evidence + Dashboard
+              Wrap(
+                spacing: 8.w,
+                runSpacing: 8.h,
+                alignment: WrapAlignment.spaceBetween,
+                children: [
+                  customButtonWithSvg(
                     colorBorder: AppColors.primary,
                     space: 10.w,
                     radius: 8.r,
@@ -73,151 +79,206 @@ class GrcModuleDetailsPage extends StatelessWidget {
                     image: "assets/icons/edit.svg",
                     title: "Approved Evidence".tr,
                     function: () {},
-                    width: 200.w,
+                    width: isTablet ? 200.w : 180.w,
                     height: 38.h,
                     color: AppColors.primary,
                     textStyle: StyleText.fontSize16Weight500
-                        .copyWith(color: AppColors.textButton)),
-                customButton(
+                        .copyWith(color: AppColors.textButton),
+                  ),
+                  customButton(
                     title: "Dashboard".tr,
                     function: () {},
                     width: 135.w,
                     height: 38.h,
                     color: AppColors.primary,
                     textStyle: StyleText.fontSize16Weight500
-                        .copyWith(color: AppColors.textButton)),
-              ],
-            ),
-            SizedBox(height: 15.h),
-            Row(
-              children: [
-                customButton(
-                    title: "Approvals".tr,
-                    function: () {},
-                    width: 135.w,
-                    height: 38.h,
-                    color: AppColors.primary,
-                    textStyle: StyleText.fontSize16Weight500
-                        .copyWith(color: AppColors.textButton)),
-                SizedBox(width: 10.w),
-                customButton(
-                    title: "Assignment Controls".tr,
-                    function: () {},
-                    // width: 180.w,
-                    color: AppColors.primary,
-                    textStyle: StyleText.fontSize16Weight500
-                        .copyWith(color: AppColors.textButton)),
-                Spacer(),
-                customButton(
-                    title: "My Audits".tr,
-                    function: () {},
-                    width: 135.w,
-                    height: 38.h,
-                    color: AppColors.primary,
-                    textStyle: StyleText.fontSize16Weight500
-                        .copyWith(color: AppColors.textButton)),
-              ],
-            ),
-            SizedBox(height: 15.h),
-            CustomSegmentedTabs(
-                tabs: ['All', 'Pending', 'Approved'],
-                selectedIndex: 0,
-                onTabSelected: (_) {}),
-            SizedBox(height: 15.h),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                spacing: 30.sp,
-                children: [
-                  for (var roleEntry in status)
-                    FilterBarItem(
-                      title: roleEntry.key,
-                      numberOfItems: roleEntry.value['num'],
-                      color: roleEntry.value['color'],
-                      onTap: () {},
-                      isSelected: roleEntry.key == 'all',
-                    ),
+                        .copyWith(color: AppColors.textButton),
+                  ),
                 ],
               ),
-            ),
-            SizedBox(height: 15.h),
-            Row(
-              spacing: 10.w,
-              children: [
-                AppSearchTextField(
-                  onChanged: (value) {},
-                  hintText: "Search".tr,
-                  controller: TextEditingController(),
-                ),
-                customButtonWithSvg(
-                    colorBorder: AppColors.primary,
-                    space: 10.w,
-                    radius: 8.r,
-                    widthImage: 16.w,
-                    heightImage: 16.h,
-                    function: () {
-                      navigateTo(context, CreateNewPolicyPage());
-                    },
-                    title: 'Policy',
-                    textStyle: StyleText.fontSize14Weight500
-                        .copyWith(color: AppColors.textButton),
-                    image: 'assets/icons/add.svg',
+              SizedBox(height: 15.h),
+
+              // Approvals + Assignment Controls + My Audits
+              Wrap(
+                spacing: 8.w,
+                runSpacing: 8.h,
+                children: [
+                  customButton(
+                    title: "Approvals".tr,
+                    function: () {},
+                    width: 120.w,
+                    height: 38.h,
                     color: AppColors.primary,
-                    width: 140.w,
-                    height: 36.h,
-                    svgColor: AppColors.textButton),
-              ],
-            ),
-            SizedBox(height: 15.h),
-            Row(children: [
-              customButton(
-                  title: "Policy Weight Issue".tr,
-                  function: () {},
-                  width: 180.w,
-                  height: 38.h,
-                  color: AppColors.primary,
-                  textStyle: StyleText.fontSize16Weight500
-                      .copyWith(color: AppColors.textButton)),
-              Spacer(),
-              Container(
-                width: 38.sp,
-                height: 38.sp,
-                decoration: BoxDecoration(
-                  color: AppColors.primary,
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
-                child: Center(
-                  child: SvgPicture.asset(
-                    "assets/tableView.svg",
-                    width: 20.sp,
-                    height: 20.sp,
-                    fit: BoxFit.scaleDown,
-                    semanticsLabel: 'Table View',
-                    color: AppColors.black,
+                    textStyle: StyleText.fontSize16Weight500
+                        .copyWith(color: AppColors.textButton),
+                  ),
+                  customButton(
+                    title: "Assignment Controls".tr,
+                    function: () {},
+                    width: isTablet ? 180.w : 170.w,
+                    height: 38.h,
+                    color: AppColors.primary,
+                    textStyle: StyleText.fontSize16Weight500
+                        .copyWith(color: AppColors.textButton),
+                  ),
+                  customButton(
+                    title: "My Audits".tr,
+                    function: () {},
+                    width: 120.w,
+                    height: 38.h,
+                    color: AppColors.primary,
+                    textStyle: StyleText.fontSize16Weight500
+                        .copyWith(color: AppColors.textButton),
+                  ),
+                ],
+              ),
+              SizedBox(height: 15.h),
+
+              CustomSegmentedTabs(
+                tabs: ['All', 'Pending', 'Approved'],
+                selectedIndex: 0,
+                onTabSelected: (_) {},
+              ),
+              SizedBox(height: 15.h),
+
+              ScrollConfiguration(
+                behavior: ScrollConfiguration.of(context)
+                    .copyWith(scrollbars: false),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    spacing: 30.sp,
+                    children: [
+                      for (var roleEntry in status)
+                        FilterBarItem(
+                          title: roleEntry.key,
+                          numberOfItems: roleEntry.value['num'],
+                          color: roleEntry.value['color'],
+                          onTap: () {},
+                          isSelected: roleEntry.key == 'all',
+                        ),
+                    ],
                   ),
                 ),
               ),
-              SizedBox(width: 8.sp),
-              Container(
-                width: 38.sp,
-                height: 38.sp,
-                decoration: BoxDecoration(
-                  color: AppColors.primary,
-                  borderRadius: BorderRadius.circular(8.r),
+              SizedBox(height: 15.h),
+
+              // Search + Create Policy — stack on mobile
+              if (isTablet)
+                Row(
+                  spacing: 10.w,
+                  children: [
+                    AppSearchTextField(
+                      onChanged: (_) {},
+                      hintText: "Search".tr,
+                      controller: TextEditingController(),
+                    ),
+                    customButtonWithSvg(
+                      colorBorder: AppColors.primary,
+                      space: 10.w,
+                      radius: 8.r,
+                      widthImage: 16.w,
+                      heightImage: 16.h,
+                      function: () => navigateTo(context, CreateNewPolicyPage()),
+                      title: 'Policy',
+                      textStyle: StyleText.fontSize14Weight500
+                          .copyWith(color: AppColors.textButton),
+                      image: 'assets/icons/add.svg',
+                      color: AppColors.primary,
+                      width: 140.w,
+                      height: 36.h,
+                      svgColor: AppColors.textButton,
+                    ),
+                  ],
+                )
+              else
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      children: [
+                        AppSearchTextField(
+                          onChanged: (_) {},
+                          hintText: "Search".tr,
+                          controller: TextEditingController(),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 8.h),
+                    customButtonWithSvg(
+                      colorBorder: AppColors.primary,
+                      space: 10.w,
+                      radius: 8.r,
+                      widthImage: 16.w,
+                      heightImage: 16.h,
+                      function: () => navigateTo(context, CreateNewPolicyPage()),
+                      title: 'Policy',
+                      textStyle: StyleText.fontSize14Weight500
+                          .copyWith(color: AppColors.textButton),
+                      image: 'assets/icons/add.svg',
+                      color: AppColors.primary,
+                      width: double.infinity,
+                      height: 36.h,
+                      svgColor: AppColors.textButton,
+                    ),
+                  ],
                 ),
-                child: Center(
-                  child: SvgPicture.asset(
-                    "assets/gridView.svg",
-                    width: 20.sp,
-                    height: 20.sp,
-                    fit: BoxFit.scaleDown,
-                    semanticsLabel: 'Table View',
-                    color: AppColors.black,
+              SizedBox(height: 15.h),
+
+              // Policy Weight Issue + view-mode icons
+              Row(
+                children: [
+                  customButton(
+                    title: "Policy Weight Issue".tr,
+                    function: () {},
+                    width: isTablet ? 180.w : 160.w,
+                    height: 38.h,
+                    color: AppColors.primary,
+                    textStyle: StyleText.fontSize16Weight500
+                        .copyWith(color: AppColors.textButton),
                   ),
-                ),
+                  const Spacer(),
+                  Container(
+                    width: 38.sp,
+                    height: 38.sp,
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
+                    child: Center(
+                      child: SvgPicture.asset(
+                        "assets/tableView.svg",
+                        width: 20.sp,
+                        height: 20.sp,
+                        fit: BoxFit.scaleDown,
+                        semanticsLabel: 'Table View',
+                        color: AppColors.black,
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 8.sp),
+                  Container(
+                    width: 38.sp,
+                    height: 38.sp,
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
+                    child: Center(
+                      child: SvgPicture.asset(
+                        "assets/gridView.svg",
+                        width: 20.sp,
+                        height: 20.sp,
+                        fit: BoxFit.scaleDown,
+                        semanticsLabel: 'Table View',
+                        color: AppColors.black,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ]),
-          ],
+            ],
+          ),
         ),
       ),
     );

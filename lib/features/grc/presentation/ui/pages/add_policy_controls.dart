@@ -89,43 +89,47 @@ class _AddPolicyControlsPageState extends State<AddPolicyControlsPage> {
         ),
         SizedBox(height: 12.h),
         Expanded(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                for (int i = 0; i < _controls.length; i++)
-                  PolicyControlItemWidget(
-                    key: ValueKey(_controls[i]),
-                    control: _controls[i],
-                    isArabicEnabled: widget.isArabicEnabled,
-                    showRemoveButton: _controls.length > 1,
-                    onRemove: () => _removeControl(i),
-                    onUploadDocument: () => _onUploadDocument(i),
-                    onRemoveDocument: () =>
-                        setState(() => _controls[i].document = null),
-                    onFrequencyChanged: (value) =>
-                        setState(() => _controls[i].frequency = value),
+          child: ScrollConfiguration(
+            behavior:
+                ScrollConfiguration.of(context).copyWith(scrollbars: false),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  for (int i = 0; i < _controls.length; i++)
+                    PolicyControlItemWidget(
+                      key: ValueKey(_controls[i]),
+                      control: _controls[i],
+                      isArabicEnabled: widget.isArabicEnabled,
+                      showRemoveButton: _controls.length > 1,
+                      onRemove: () => _removeControl(i),
+                      onUploadDocument: () => _onUploadDocument(i),
+                      onRemoveDocument: () =>
+                          setState(() => _controls[i].document = null),
+                      onFrequencyChanged: (value) =>
+                          setState(() => _controls[i].frequency = value),
+                    ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: customButtonWithSvg(
+                      colorBorder: AppColors.textButton,
+                      space: 10.w,
+                      radius: 8.r,
+                      widthImage: 16.w,
+                      heightImage: 16.h,
+                      function: _addControl,
+                      title: 'Control',
+                      textStyle: StyleText.fontSize14Weight500
+                          .copyWith(color: AppColors.white),
+                      image: 'assets/icons/add.svg',
+                      color: AppColors.textButton,
+                      width: 140.w,
+                      height: 36.h,
+                      svgColor: AppColors.white,
+                    ),
                   ),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: customButtonWithSvg(
-                    colorBorder: AppColors.textButton,
-                    space: 10.w,
-                    radius: 8.r,
-                    widthImage: 16.w,
-                    heightImage: 16.h,
-                    function: _addControl,
-                    title: 'Control',
-                    textStyle: StyleText.fontSize14Weight500
-                        .copyWith(color: AppColors.white),
-                    image: 'assets/icons/add.svg',
-                    color: AppColors.textButton,
-                    width: 140.w,
-                    height: 36.h,
-                    svgColor: AppColors.white,
-                  ),
-                ),
-                SizedBox(height: 20.h),
-              ],
+                  SizedBox(height: 20.h),
+                ],
+              ),
             ),
           ),
         ),

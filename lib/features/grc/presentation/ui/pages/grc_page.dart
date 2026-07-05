@@ -233,89 +233,30 @@ class _GovernanceRiskAndCompliancePageState
                       ),
                     ],
                   ),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      spacing: 30.sp,
-                      children: [
-                        for (var entry in statusEntries)
-                          FilterBarItem(
-                            title: statusLabels[entry.key]!.tr,
-                            numberOfItems: entry.value['num'] as int,
-                            color: entry.value['color'] as Color,
-                            onTap: () =>
-                                setState(() => _selectedStatus = entry.key),
-                            isSelected: _selectedStatus == entry.key,
-                          ),
-                      ],
+                  SizedBox(height: 16.h),
+                  ScrollConfiguration(
+                    behavior: ScrollConfiguration.of(context)
+                        .copyWith(scrollbars: false),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        spacing: 30.sp,
+                        children: [
+                          for (var entry in statusEntries)
+                            FilterBarItem(
+                              title: statusLabels[entry.key]!.tr,
+                              numberOfItems: entry.value['num'] as int,
+                              color: entry.value['color'] as Color,
+                              onTap: () =>
+                                  setState(() => _selectedStatus = entry.key),
+                              isSelected: _selectedStatus == entry.key,
+                            ),
+                        ],
+                      ),
                     ),
                   ),
                   SizedBox(height: 20.h),
-                  Row(
-                    spacing: 10.w,
-                    children: [
-                      AppSearchTextField(
-                        onChanged: (value) =>
-                            setState(() => _searchQuery = value),
-                        hintText: "Search".tr,
-                        controller: _searchController,
-                      ),
-                      SizedBox(
-                        width: 50.w,
-                        child: AppDropdown(
-                          items: ["ASC", "DES", "Creation Date", 'Last Update']
-                              .map((option) => DropdownMenuItem<String>(
-                                    value: option,
-                                    child: Text(option.tr),
-                                  ))
-                              .toList(),
-                          onChanged: (value) {
-                            if (value != null) {
-                              setState(() => _sortOrder = value);
-                            }
-                          },
-                          textButton: null,
-                          borderRadius: 8.r,
-                          isAllCornersRounded: true,
-                          value: null,
-                          width: 150.sp,
-                          menuWidth: 150.sp,
-                          fillColor: AppColors.field,
-                          menuItemHeight: 35.h,
-                          customButton: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 8.w),
-                            decoration: BoxDecoration(
-                              color: AppColors.field,
-                            ),
-                            child: SvgPicture.asset(
-                              AppAssets.sort,
-                              width: 20.w,
-                              height: 20.h,
-                            ),
-                          ),
-                        ),
-                      ),
-                      customButtonWithSvg(
-                        colorBorder: AppColors.primary,
-                        space: 10.w,
-                        function: () => _openDetails(
-                          context,
-                          GrcPageMode.create,
-                        ),
-                        title: 'Create GRC Module'.tr,
-                        textStyle: StyleText.fontSize14Weight500
-                            .copyWith(color: AppColors.textButton),
-                        image: 'assets/icons_drawer_news/grc_new.svg',
-                        widthImage: 16.w,
-                        heightImage: 16.h,
-                        color: AppColors.primary,
-                        width: 200.w,
-                        height: 36.h,
-                        radius: 8.r,
-                        svgColor: AppColors.textButton,
-                      ),
-                    ],
-                  ),
+                  _buildActionBar(context),
                   SizedBox(height: 16.h),
 
                   // ── List ─────────────────────────────────────────────────
@@ -328,6 +269,70 @@ class _GovernanceRiskAndCompliancePageState
           ),
         );
       },
+    );
+  }
+
+  Widget _buildActionBar(BuildContext context) {
+    final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
+
+    final sortButton = SizedBox(
+      width: 40.w,
+      height: 40.h,
+      child: AppDropdown(
+        items: ['ASC', 'DES', 'Creation Date', 'Last Update']
+            .map((o) => DropdownMenuItem<String>(value: o, child: Text(o.tr)))
+            .toList(),
+        onChanged: (value) {
+          if (value != null) setState(() => _sortOrder = value);
+        },
+        textButton: null,
+        borderRadius: 8.r,
+        isAllCornersRounded: true,
+        value: null,
+        // width: 150.sp,
+        // menuWidth: 150.sp,
+        fillColor: AppColors.field,
+        // menuItemHeight: 35.h,
+        customButton: Container(
+          padding: EdgeInsets.symmetric(horizontal: 8.w),
+          decoration: BoxDecoration(color: AppColors.field),
+          child: SvgPicture.asset(
+            AppAssets.sort,
+            width: 20.w,
+            height: 20.h,
+          ),
+        ),
+      ),
+    );
+
+    final createButton = customButtonWithSvg(
+      colorBorder: AppColors.primary,
+      space: 10.w,
+      function: () => _openDetails(context, GrcPageMode.create),
+      title: isTablet ? 'Create GRC Module'.tr : '',
+      textStyle:
+          StyleText.fontSize14Weight500.copyWith(color: AppColors.textButton),
+      image: 'assets/icons_drawer_news/grc_new.svg',
+      widthImage: 16.w,
+      heightImage: 16.h,
+      color: AppColors.primary,
+      width: isTablet ? 200.w : 40.w,
+      height: 36.h,
+      radius: 8.r,
+      svgColor: AppColors.textButton,
+    );
+
+    return Row(
+      spacing: 10.w,
+      children: [
+        AppSearchTextField(
+          onChanged: (value) => setState(() => _searchQuery = value),
+          hintText: 'Search'.tr,
+          controller: _searchController,
+        ),
+        sortButton,
+        createButton,
+      ],
     );
   }
 
@@ -373,17 +378,51 @@ class _GovernanceRiskAndCompliancePageState
       );
     }
 
-    return ListView.separated(
-      itemCount: modules.length,
-      separatorBuilder: (_, __) => SizedBox(height: 10.h),
-      itemBuilder: (context, index) {
-        final module = modules[index];
-        return _GrcModuleCard(
-          module: module,
-          onTap: () => _openDetails(
-            context,
-            module.isDeleted ? GrcPageMode.restore : GrcPageMode.view,
-            entity: module,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final w = constraints.maxWidth;
+        final columns = w >= 900
+            ? 3
+            : w >= 600
+                ? 2
+                : 1;
+
+        GRCModuleEntity moduleAt(int i) => modules[i];
+
+        _GrcModuleCard cardFor(int index) => _GrcModuleCard(
+              module: moduleAt(index),
+              onTap: () => _openDetails(
+                context,
+                moduleAt(index).isDeleted
+                    ? GrcPageMode.restore
+                    : GrcPageMode.view,
+                entity: moduleAt(index),
+              ),
+            );
+
+        if (columns == 1) {
+          return ScrollConfiguration(
+            behavior:
+                ScrollConfiguration.of(context).copyWith(scrollbars: false),
+            child: ListView.separated(
+              itemCount: modules.length,
+              separatorBuilder: (_, __) => SizedBox(height: 10.h),
+              itemBuilder: (_, index) => cardFor(index),
+            ),
+          );
+        }
+
+        return ScrollConfiguration(
+          behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+          child: GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: columns,
+              crossAxisSpacing: 12.w,
+              mainAxisSpacing: 12.h,
+              mainAxisExtent: 100.h,
+            ),
+            itemCount: modules.length,
+            itemBuilder: (_, index) => cardFor(index),
           ),
         );
       },

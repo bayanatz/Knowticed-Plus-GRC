@@ -23,7 +23,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 
-
 class GrcActionButtons extends StatelessWidget {
   final VoidCallback onEditTap;
   final VoidCallback onDeleteTap;
@@ -36,6 +35,8 @@ class GrcActionButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
+
     return Column(
       children: [
         Row(
@@ -48,9 +49,9 @@ class GrcActionButtons extends StatelessWidget {
               widthImage: 16.w,
               heightImage: 16.h,
               image: "assets/icons/edit.svg",
-              title: "Edit".tr,
+              title: isTablet ? "Edit".tr : "",
               function: onEditTap,
-              width: 135.w,
+              width: isTablet ? 135.w : 40.w,
               height: 38.h,
               color: AppColors.primary,
               textStyle: StyleText.fontSize16Weight500
@@ -64,7 +65,7 @@ class GrcActionButtons extends StatelessWidget {
               widthImage: 16.w,
               heightImage: 16.h,
               image: "assets/delete.svg",
-              title: "Delete".tr,
+              title: isTablet ? "Delete".tr : "",
               function: () {
                 showConfirmDialog(
                   context: context,
@@ -77,7 +78,7 @@ class GrcActionButtons extends StatelessWidget {
                   onConfirm: onDeleteTap,
                 );
               },
-              width: 135.w,
+              width: isTablet ? 135.w : 40.w,
               height: 38.h,
               color: AppColors.red,
               textStyle: StyleText.fontSize16Weight500

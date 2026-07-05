@@ -115,56 +115,35 @@ class PolicyInfoFormWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
+
+    Widget twoColumns(Widget left, Widget right) => isTablet
+        ? Row(children: [
+            Expanded(child: left),
+            SizedBox(width: 10.w),
+            Expanded(child: right),
+          ])
+        : Column(children: [
+            left,
+            SizedBox(height: 15.h),
+            right,
+          ]);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: _textField(
-                label: 'Policy Name',
-                hint: 'Text here',
-                controller: nameController,
-              ),
-            ),
-            SizedBox(width: 10.w),
-            Expanded(
-              child: isArabicEnabled
-                  ? _textField(
-                      label: 'اسم السياسة',
-                      hint: 'اكتب هنا',
-                      controller: nameArController,
-                      rtl: true,
-                    )
-                  : _textField(
-                      label: 'Policy Number',
-                      hint: 'Text here',
-                      controller: numberController,
-                    ),
-            ),
-          ],
+        // Policy Name + AR name (or Policy Number when AR disabled)
+        twoColumns(
+          _textField(label: 'Policy Name', hint: 'Text here', controller: nameController),
+          isArabicEnabled
+              ? _textField(label: 'اسم السياسة', hint: 'اكتب هنا', controller: nameArController, rtl: true)
+              : _textField(label: 'Policy Number', hint: 'Text here', controller: numberController),
         ),
         SizedBox(height: 15.h),
         if (isArabicEnabled) ...[
-          Row(
-            children: [
-              Expanded(
-                child: _textField(
-                  label: 'Policy Number',
-                  hint: 'Text here',
-                  controller: numberController,
-                ),
-              ),
-              SizedBox(width: 10.w),
-              Expanded(
-                child: _textField(
-                  label: 'رقم السياسة',
-                  hint: 'اكتب هنا',
-                  controller: numberArController,
-                  rtl: true,
-                ),
-              ),
-            ],
+          twoColumns(
+            _textField(label: 'Policy Number', hint: 'Text here', controller: numberController),
+            _textField(label: 'رقم السياسة', hint: 'اكتب هنا', controller: numberArController, rtl: true),
           ),
           SizedBox(height: 15.h),
         ],
@@ -191,55 +170,42 @@ class PolicyInfoFormWidget extends StatelessWidget {
           ),
           SizedBox(height: 15.h),
         ],
-        Row(
-          children: [
-            Expanded(
-              child: CustomDropdownCalendar(
-                borderRadius: BorderRadius.circular(4.r),
-                label: 'Start Date',
-                hint: 'Select Start Date',
-                value: startDate,
-                onChanged: onStartDateChanged,
-                fillColor: AppColors.background,
-                labelStyle: StyleText.fontSize16Weight500
-                    .copyWith(color: AppColors.text),
-                hintStyle: StyleText.fontSize14Weight500
-                    .copyWith(color: AppColors.secondaryText.withOpacity(.7)),
-                required: false,
-              ),
-            ),
-            SizedBox(width: 10.w),
-            Expanded(
-              child: CustomDropdownCalendar(
-                borderRadius: BorderRadius.circular(4.r),
-                label: 'End Date',
-                hint: 'Select End Date',
-                value: endDate,
-                onChanged: onEndDateChanged,
-                fillColor: AppColors.background,
-                labelStyle: StyleText.fontSize16Weight500
-                    .copyWith(color: AppColors.text),
-                hintStyle: StyleText.fontSize14Weight500
-                    .copyWith(color: AppColors.secondaryText.withOpacity(.7)),
-                required: false,
-              ),
-            ),
-          ],
+        // Start Date + End Date
+        twoColumns(
+          CustomDropdownCalendar(
+            borderRadius: BorderRadius.circular(4.r),
+            label: 'Start Date',
+            hint: 'Select Start Date',
+            value: startDate,
+            onChanged: onStartDateChanged,
+            fillColor: AppColors.background,
+            labelStyle: StyleText.fontSize16Weight500.copyWith(color: AppColors.text),
+            hintStyle: StyleText.fontSize14Weight500
+                .copyWith(color: AppColors.secondaryText.withOpacity(.7)),
+            required: false,
+          ),
+          CustomDropdownCalendar(
+            borderRadius: BorderRadius.circular(4.r),
+            label: 'End Date',
+            hint: 'Select End Date',
+            value: endDate,
+            onChanged: onEndDateChanged,
+            fillColor: AppColors.background,
+            labelStyle: StyleText.fontSize16Weight500.copyWith(color: AppColors.text),
+            hintStyle: StyleText.fontSize14Weight500
+                .copyWith(color: AppColors.secondaryText.withOpacity(.7)),
+            required: false,
+          ),
         ),
         SizedBox(height: 15.h),
-        Row(
-          children: [
-            Expanded(
-              child: _textField(
-                label: 'Policy Weight',
-                hint: 'Text here',
-                controller: weightController,
-              ),
-            ),
-            SizedBox(width: 10.w),
-            const Expanded(child: SizedBox()),
-          ],
-        ),
+        // Policy Weight (half-width on tablet, full-width on mobile)
+        isTablet
+            ? Row(children: [
+                Expanded(child: _textField(label: 'Policy Weight', hint: 'Text here', controller: weightController)),
+                SizedBox(width: 10.w),
+                const Expanded(child: SizedBox()),
+              ])
+            : _textField(label: 'Policy Weight', hint: 'Text here', controller: weightController),
         SizedBox(height: 15.h),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,

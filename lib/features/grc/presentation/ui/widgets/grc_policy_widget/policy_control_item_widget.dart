@@ -95,6 +95,37 @@ class PolicyControlItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
+
+    final frequencyField = CustomDropdown<String>(
+      label: 'Frequency',
+      hint: 'Choose Here',
+      items: const [
+        'Weekly',
+        'Bi weekly',
+        'Monthly',
+        'Quarterly',
+        'Semi Annual',
+        'Annually',
+      ].map((d) => DropdownItem<String>(value: d, label: d)).toList(),
+      value: control.frequency,
+      onChanged: onFrequencyChanged,
+      fillColor: AppColors.background,
+      labelStyle: StyleText.fontSize16Weight500.copyWith(color: AppColors.text),
+      hintStyle: StyleText.fontSize14Weight500
+          .copyWith(color: AppColors.secondaryText.withOpacity(.7)),
+      itemStyle: StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
+      triggerPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+      borderRadius: BorderRadius.circular(4.r),
+      required: false,
+    );
+
+    final weightField = _textField(
+      label: 'Control Weight',
+      hint: 'Text Here',
+      controller: control.weightController,
+    );
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(15.sp),
@@ -115,28 +146,38 @@ class PolicyControlItemWidget extends StatelessWidget {
                     color: AppColors.secondaryText, size: 18.sp),
               ),
             ),
-          Row(
-            children: [
+          // Control Name (+ AR name on tablet when Arabic enabled)
+          if (isArabicEnabled && isTablet)
+            Row(children: [
               Expanded(
                 child: _textField(
-                  label: 'Control Name',
-                  hint: 'Text here',
-                  controller: control.nameController,
-                ),
+                    label: 'Control Name',
+                    hint: 'Text here',
+                    controller: control.nameController),
               ),
-              if (isArabicEnabled) ...[
-                SizedBox(width: 10.w),
-                Expanded(
-                  child: _textField(
+              SizedBox(width: 10.w),
+              Expanded(
+                child: _textField(
                     label: 'اسم ضابط',
                     hint: 'اكتب هنا',
                     controller: control.nameArController,
-                    rtl: true,
-                  ),
-                ),
-              ],
+                    rtl: true),
+              ),
+            ])
+          else ...[
+            _textField(
+                label: 'Control Name',
+                hint: 'Text here',
+                controller: control.nameController),
+            if (isArabicEnabled) ...[
+              SizedBox(height: 15.h),
+              _textField(
+                  label: 'اسم ضابط',
+                  hint: 'اكتب هنا',
+                  controller: control.nameArController,
+                  rtl: true),
             ],
-          ),
+          ],
           SizedBox(height: 15.h),
           _textField(
             label: 'Control Description',
@@ -164,11 +205,9 @@ class PolicyControlItemWidget extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Control Document',
-                style: StyleText.fontSize16Weight500
-                    .copyWith(color: AppColors.text),
-              ),
+              Text('Control Document',
+                  style: StyleText.fontSize16Weight500
+                      .copyWith(color: AppColors.text)),
               const Spacer(),
               if (control.document != null)
                 Flexible(
@@ -197,45 +236,18 @@ class PolicyControlItemWidget extends StatelessWidget {
             ],
           ),
           SizedBox(height: 15.h),
-          Row(
-            children: [
-              Expanded(
-                child: CustomDropdown<String>(
-                  label: 'Frequency',
-                  hint: 'Choose Here',
-                  items: const [
-                    'Weekly',
-                    'Bi weekly',
-                    'Monthly',
-                    'Quarterly',
-                    'Semi Annual',
-                    'Annually',
-                  ].map((d) => DropdownItem<String>(value: d, label: d)).toList(),
-                  value: control.frequency,
-                  onChanged: onFrequencyChanged,
-                  fillColor: AppColors.background,
-                  labelStyle: StyleText.fontSize16Weight500
-                      .copyWith(color: AppColors.text),
-                  hintStyle: StyleText.fontSize14Weight500.copyWith(
-                      color: AppColors.secondaryText.withOpacity(.7)),
-                  itemStyle: StyleText.fontSize14Weight500
-                      .copyWith(color: AppColors.text),
-                  triggerPadding:
-                      EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-                  borderRadius: BorderRadius.circular(4.r),
-                  required: false,
-                ),
-              ),
-              SizedBox(width: 10.w),
-              Expanded(
-                child: _textField(
-                  label: 'Control Weight',
-                  hint: 'Text Here',
-                  controller: control.weightController,
-                ),
-              ),
-            ],
-          ),
+          // Frequency + Weight — side by side on tablet, stacked on mobile
+          isTablet
+              ? Row(children: [
+                  Expanded(child: frequencyField),
+                  SizedBox(width: 10.w),
+                  Expanded(child: weightField),
+                ])
+              : Column(children: [
+                  frequencyField,
+                  SizedBox(height: 15.h),
+                  weightField,
+                ]),
         ],
       ),
     );

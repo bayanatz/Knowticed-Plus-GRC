@@ -83,7 +83,7 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.0),
+        padding: EdgeInsets.symmetric(horizontal: 16.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -110,34 +110,37 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
         color: AppColors.field,
         borderRadius: BorderRadius.circular(8.sp),
       ),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            PolicyHeaderWidget(
-              isArabicEnabled: _isArabicEnabled,
-              onArabicToggle: (value) =>
-                  setState(() => _isArabicEnabled = value),
-            ),
-            SizedBox(height: 15.h),
-            PolicyInfoFormWidget(
-              isArabicEnabled: _isArabicEnabled,
-              nameController: _nameController,
-              nameArController: _nameArController,
-              numberController: _numberController,
-              numberArController: _numberArController,
-              descriptionController: _descriptionController,
-              descriptionArController: _descriptionArController,
-              weightController: _weightController,
-              startDate: _startDate,
-              endDate: _endDate,
-              onStartDateChanged: (d) => setState(() => _startDate = d),
-              onEndDateChanged: (d) => setState(() => _endDate = d),
-              document: _document,
-              onUploadDocument: _onUploadDocument,
-              onRemoveDocument: () => setState(() => _document = null),
-            ),
-          ],
+      child: ScrollConfiguration(
+        behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              PolicyHeaderWidget(
+                isArabicEnabled: _isArabicEnabled,
+                onArabicToggle: (value) =>
+                    setState(() => _isArabicEnabled = value),
+              ),
+              SizedBox(height: 15.h),
+              PolicyInfoFormWidget(
+                isArabicEnabled: _isArabicEnabled,
+                nameController: _nameController,
+                nameArController: _nameArController,
+                numberController: _numberController,
+                numberArController: _numberArController,
+                descriptionController: _descriptionController,
+                descriptionArController: _descriptionArController,
+                weightController: _weightController,
+                startDate: _startDate,
+                endDate: _endDate,
+                onStartDateChanged: (d) => setState(() => _startDate = d),
+                onEndDateChanged: (d) => setState(() => _endDate = d),
+                document: _document,
+                onUploadDocument: _onUploadDocument,
+                onRemoveDocument: () => setState(() => _document = null),
+              ),
+            ],
+          ),
         ),
       ),
     );

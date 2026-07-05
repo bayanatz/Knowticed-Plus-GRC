@@ -270,35 +270,45 @@ class _GovernanceRiskAndComplianceDetailsState
                             color: AppColors.field,
                             borderRadius: BorderRadius.circular(8.sp),
                           ),
-                          child: SingleChildScrollView(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                GrcFormFields(
-                                  nameEnController: _nameEnController,
-                                  nameArController: _nameArController,
-                                  descEnController: _descEnController,
-                                  descArController: _descArController,
-                                  selectedDepartment: _selectedDepartment,
-                                  activationDate: _activationDate,
-                                  submitted: _submitted,
-                                  onDepartmentChanged: (v) =>
-                                      setState(() => _selectedDepartment = v),
-                                  onDateChanged: (v) =>
-                                      setState(() => _activationDate = v),
-                                ),
-                                SizedBox(height: 20.h),
-                                GrcOwnerSection(
-                                  isViewMode:
-                                      (_currentMode == GrcPageMode.view ||
-                                          _currentMode == GrcPageMode.restore),
-                                  initialOwnerIds: _selectedOwnerIds,
-                                  onOwnersChanged: (selected) {
-                                    _selectedOwnerIds =
-                                        selected.map((o) => o.id).toList();
-                                  },
-                                ),
-                              ],
+                          child: ScrollConfiguration(
+                            behavior: ScrollConfiguration.of(context)
+                                .copyWith(scrollbars: false),
+                            child: SingleChildScrollView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _ModuleImagePicker(
+                                    imageUrl: widget.entity?.image,
+                                  ),
+                                  SizedBox(height: 15.h),
+                                  GrcFormFields(
+                                    nameEnController: _nameEnController,
+                                    nameArController: _nameArController,
+                                    descEnController: _descEnController,
+                                    descArController: _descArController,
+                                    selectedDepartment: _selectedDepartment,
+                                    activationDate: _activationDate,
+                                    submitted: _submitted,
+                                    readOnly: _currentMode == GrcPageMode.view ||
+                                        _currentMode == GrcPageMode.restore,
+                                    onDepartmentChanged: (v) =>
+                                        setState(() => _selectedDepartment = v),
+                                    onDateChanged: (v) =>
+                                        setState(() => _activationDate = v),
+                                  ),
+                                  SizedBox(height: 20.h),
+                                  GrcOwnerSection(
+                                    isViewMode:
+                                        (_currentMode == GrcPageMode.view ||
+                                            _currentMode == GrcPageMode.restore),
+                                    initialOwnerIds: _selectedOwnerIds,
+                                    onOwnersChanged: (selected) {
+                                      _selectedOwnerIds =
+                                          selected.map((o) => o.id).toList();
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -343,3 +353,46 @@ class _GovernanceRiskAndComplianceDetailsState
 /// Tracks which cubit action was last dispatched so the success listener
 /// can build the correct dialog title / subtitle.
 enum _PendingAction { none, create, update, delete, restore }
+
+class _ModuleImagePicker extends StatelessWidget {
+  final String? imageUrl;
+
+  const _ModuleImagePicker({this.imageUrl});
+
+  @override
+  Widget build(BuildContext context) {
+    final hasImage = imageUrl != null && imageUrl!.isNotEmpty;
+    final avatarRadius = 30.r;
+
+    return SizedBox(
+      width: avatarRadius * 2 + 10,
+      height: avatarRadius * 2 + 10,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          CircleAvatar(
+            radius: avatarRadius,
+            backgroundColor: AppColors.background,
+            backgroundImage: hasImage ? NetworkImage(imageUrl!) : null,
+            child: hasImage
+                ? null
+                : Icon(
+                    Icons.image_outlined,
+                    color: AppColors.secondaryText,
+                    size: 26.sp,
+                  ),
+          ),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: CircleAvatar(
+              radius: 11.r,
+              backgroundColor: AppColors.primary,
+              child: Icon(Icons.camera_alt, color: Colors.white, size: 13.sp),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

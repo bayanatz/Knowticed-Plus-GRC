@@ -90,6 +90,79 @@ class _GrcOwnerSectionState extends State<GrcOwnerSection> {
     widget.onOwnersChanged?.call(_cubit.selectedOwners);
   }
 
+  Widget _buildOwnerGrid(BuildContext context, List<OwnerData> owners) {
+    final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
+
+    if (isTablet) {
+      // 2-column grid
+      return Column(
+        children: List.generate((owners.length / 2).ceil(), (i) {
+          final left = owners[i * 2];
+          final rightIdx = i * 2 + 1;
+          return Padding(
+            padding: EdgeInsets.only(bottom: 10.h),
+            child: Row(
+              children: [
+                Expanded(
+                  child: PersonChipCard(
+                    name: left.name,
+                    subtitle1: left.department,
+                    subtitle2: left.jobTitle,
+                    avatar: _buildAvatar(left.photo),
+                    isSelected: left.isSelected,
+                    showCheckBox: !widget.isViewMode,
+                    width: double.infinity,
+                    backgroundColor: AppColors.background,
+                    onTap: widget.isViewMode ? null : () => _onToggle(i * 2),
+                  ),
+                ),
+                SizedBox(width: 10.w),
+                if (rightIdx < owners.length)
+                  Expanded(
+                    child: PersonChipCard(
+                      name: owners[rightIdx].name,
+                      subtitle1: owners[rightIdx].department,
+                      subtitle2: owners[rightIdx].jobTitle,
+                      avatar: _buildAvatar(owners[rightIdx].photo),
+                      isSelected: owners[rightIdx].isSelected,
+                      showCheckBox: !widget.isViewMode,
+                      width: double.infinity,
+                      backgroundColor: AppColors.background,
+                      onTap:
+                          widget.isViewMode ? null : () => _onToggle(rightIdx),
+                    ),
+                  )
+                else
+                  const Expanded(child: SizedBox()),
+              ],
+            ),
+          );
+        }),
+      );
+    }
+
+    // Mobile: 1-column list (full-width cards)
+    return Column(
+      children: List.generate(owners.length, (i) {
+        final owner = owners[i];
+        return Padding(
+          padding: EdgeInsets.only(bottom: 10.h),
+          child: PersonChipCard(
+            name: owner.name,
+            subtitle1: owner.department,
+            subtitle2: owner.jobTitle,
+            avatar: _buildAvatar(owner.photo),
+            isSelected: owner.isSelected,
+            showCheckBox: !widget.isViewMode,
+            width: double.infinity,
+            backgroundColor: AppColors.background,
+            onTap: widget.isViewMode ? null : () => _onToggle(i),
+          ),
+        );
+      }),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
@@ -140,54 +213,7 @@ class _GrcOwnerSectionState extends State<GrcOwnerSection> {
                   ),
                 )
               else
-                ...List.generate(
-                  (owners.length / 2).ceil(),
-                  (i) {
-                    final left = owners[i * 2];
-                    final rightIdx = i * 2 + 1;
-                    return Padding(
-                      padding: EdgeInsets.only(bottom: 10.h),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: PersonChipCard(
-                              name: left.name,
-                              subtitle1: left.department,
-                              subtitle2: left.jobTitle,
-                              avatar: _buildAvatar(left.photo),
-                              isSelected: left.isSelected,
-                              showCheckBox: !widget.isViewMode,
-                              width: double.infinity,
-                              backgroundColor: AppColors.background,
-                              onTap: widget.isViewMode
-                                  ? null
-                                  : () => _onToggle(i * 2),
-                            ),
-                          ),
-                          SizedBox(width: 10.w),
-                          if (rightIdx < owners.length)
-                            Expanded(
-                              child: PersonChipCard(
-                                name: owners[rightIdx].name,
-                                subtitle1: owners[rightIdx].department,
-                                subtitle2: owners[rightIdx].jobTitle,
-                                avatar: _buildAvatar(owners[rightIdx].photo),
-                                isSelected: owners[rightIdx].isSelected,
-                                showCheckBox: !widget.isViewMode,
-                                width: double.infinity,
-                                backgroundColor: AppColors.background,
-                                onTap: widget.isViewMode
-                                    ? null
-                                    : () => _onToggle(rightIdx),
-                              ),
-                            )
-                          else
-                            const Expanded(child: SizedBox()),
-                        ],
-                      ),
-                    );
-                  },
-                ),
+                _buildOwnerGrid(context, owners),
             ],
           );
         },

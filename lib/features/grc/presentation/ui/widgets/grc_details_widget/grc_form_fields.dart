@@ -48,6 +48,7 @@ class GrcFormFields extends StatelessWidget {
   final ValueChanged<String?> onDepartmentChanged;
   final ValueChanged<DateTime?> onDateChanged;
   final bool submitted;
+  final bool readOnly;
 
   const GrcFormFields({
     super.key,
@@ -60,6 +61,7 @@ class GrcFormFields extends StatelessWidget {
     required this.onDepartmentChanged,
     required this.onDateChanged,
     this.submitted = false,
+    this.readOnly = false,
   });
 
   @override
@@ -67,61 +69,126 @@ class GrcFormFields extends StatelessWidget {
     final requiredError =
         context.isArabic ? 'هذا الحقل مطلوب' : 'This field is required.';
 
+    final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
+
+    final nameEnField = CustomTextField(
+      label: 'GRC Module Name',
+      hint: 'Text here',
+      controller: nameEnController,
+      errorText: "GRC Module Name is required",
+      submitted: submitted,
+      readOnly: readOnly,
+      fillColor: AppColors.background,
+      borderRadius: BorderRadius.circular(8),
+      height: 30.h,
+      valueStyle:
+          StyleText.fontSize14Weight500.copyWith(color: AppColors.secondaryText),
+      hintStyle: StyleText.fontSize14Weight500
+          .copyWith(color: AppColors.secondaryText.withOpacity(.5)),
+      labelStyle:
+          AppTextStyles.font16BlackRegularCairo.copyWith(fontSize: 14.sp),
+      onChanged: (_) {},
+    );
+
+    final nameArField = Directionality(
+      textDirection: TextDirection.rtl,
+      child: CustomTextField(
+        label: 'عنوان اطار الحوكمه',
+        hint: 'اكتب هنا',
+        controller: nameArController,
+        errorText: "عنوان اطار الحوكمه مطلوب",
+        submitted: submitted,
+        readOnly: readOnly,
+        fillColor: AppColors.background,
+        borderRadius: BorderRadius.circular(8),
+        height: 30.h,
+        valueStyle:
+            StyleText.fontSize14Weight500.copyWith(color: AppColors.secondaryText),
+        hintStyle: StyleText.fontSize14Weight500
+            .copyWith(color: AppColors.secondaryText.withOpacity(.5)),
+        labelStyle:
+            AppTextStyles.font16BlackRegularCairo.copyWith(fontSize: 14.sp),
+        onChanged: (_) {},
+      ),
+    );
+
+    final departmentField = CustomDropdown<String>(
+      label: 'Owning Department'.tr,
+      hint: 'Choose Department'.tr,
+      items: Get.find<MainCoreDepartmentController>().departmentIds.map((id) {
+        final depCtrl = Get.find<MainCoreDepartmentController>();
+        final label = FormatHelper.capitalize(
+          context.isArabic
+              ? depCtrl.getArabicDepartmentNameFromDepartmentId(
+                      departmentId: id) ??
+                  ''
+              : depCtrl.getEnglishDepartmentNameFromDepartmentId(
+                      departmentId: id) ??
+                  '',
+        );
+        return DropdownItem<String>(value: id, label: label);
+      }).toList(),
+      value: selectedDepartment,
+      onChanged: onDepartmentChanged,
+      enabled: !readOnly,
+      fillColor: AppColors.background,
+      errorText:
+          submitted && selectedDepartment == null ? requiredError : null,
+      labelStyle: StyleText.fontSize16Weight500.copyWith(color: AppColors.text),
+      hintStyle: StyleText.fontSize14Weight500
+          .copyWith(color: AppColors.secondaryText.withOpacity(.7)),
+      itemStyle: StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
+      triggerPadding:
+          EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+      borderRadius: BorderRadius.circular(4.r),
+      required: false,
+    );
+
+    final activationDateField = CustomDropdownCalendar(
+      borderRadius: BorderRadius.circular(4.r),
+      label: 'Activation Date'.tr,
+      hint: 'Select Activation Date'.tr,
+      value: activationDate,
+      onChanged: onDateChanged,
+      enabled: !readOnly,
+      fillColor: AppColors.background,
+      errorText: submitted && activationDate == null ? requiredError : null,
+      labelStyle: StyleText.fontSize16Weight500.copyWith(color: AppColors.text),
+      hintStyle: StyleText.fontSize14Weight500
+          .copyWith(color: AppColors.secondaryText.withOpacity(.7)),
+      required: false,
+    );
+
     return Column(
       children: [
-        // ── Module name (EN + AR) — always LTR so order never flips ──────────
+        // ── Module name (EN + AR) ─────────────────────────────────────────────
         Directionality(
           textDirection: TextDirection.ltr,
-          child: Row(
-            children: [
-              Expanded(
-                child: CustomTextField(
-                  label: 'GRC Module Name',
-                  hint: 'Text here',
-                  controller: nameEnController,
-                  errorText: "GRC Module Name is required",
-                  submitted: submitted,
-                  fillColor: AppColors.background,
-                  borderRadius: BorderRadius.circular(8),
-                  height: 30.h,
-                  valueStyle: StyleText.fontSize14Weight500
-                      .copyWith(color: AppColors.secondaryText),
-                  hintStyle: StyleText.fontSize14Weight500
-                      .copyWith(color: AppColors.secondaryText.withOpacity(.5)),
-                  labelStyle: AppTextStyles.font16BlackRegularCairo
-                      .copyWith(fontSize: 14.sp),
-                  onChanged: (_) {},
+          child: isTablet
+              ? Row(
+                  children: [
+                    Expanded(child: nameEnField),
+                    SizedBox(width: 10.w),
+                    Expanded(child: nameArField),
+                  ],
+                )
+              : Column(
+                  children: context.isArabic
+                      ? [
+                          nameArField,
+                          SizedBox(height: 15.h),
+                          nameEnField,
+                        ]
+                      : [
+                          nameEnField,
+                          SizedBox(height: 15.h),
+                          nameArField,
+                        ],
                 ),
-              ),
-              SizedBox(width: 10.w),
-              Expanded(
-                child: Directionality(
-                  textDirection: TextDirection.rtl,
-                  child: CustomTextField(
-                    label: 'عنوان اطار الحوكمه',
-                    hint: 'اكتب هنا',
-                    controller: nameArController,
-                    errorText: "عنوان اطار الحوكمه مطلوب",
-                    submitted: submitted,
-                    fillColor: AppColors.background,
-                    borderRadius: BorderRadius.circular(8),
-                    height: 30.h,
-                    valueStyle: StyleText.fontSize14Weight500
-                        .copyWith(color: AppColors.secondaryText),
-                    hintStyle: StyleText.fontSize14Weight500.copyWith(
-                        color: AppColors.secondaryText.withOpacity(.5)),
-                    labelStyle: AppTextStyles.font16BlackRegularCairo
-                        .copyWith(fontSize: 14.sp),
-                    onChanged: (_) {},
-                  ),
-                ),
-              ),
-            ],
-          ),
         ),
         SizedBox(height: 15.h),
 
-        // ── Description EN ────────────────────────────
+        // ── Description EN ────────────────────────────────────────────────────
         Directionality(
           textDirection: TextDirection.ltr,
           child: CustomTextField(
@@ -130,6 +197,7 @@ class GrcFormFields extends StatelessWidget {
             controller: descEnController,
             errorText: "Description is required",
             submitted: submitted,
+            readOnly: readOnly,
             maxLines: 3,
             minLines: 3,
             maxLength: 500,
@@ -146,7 +214,7 @@ class GrcFormFields extends StatelessWidget {
         ),
         SizedBox(height: 15.h),
 
-        // ── Description AR ────────────────────────────
+        // ── Description AR ────────────────────────────────────────────────────
         Directionality(
           textDirection: TextDirection.rtl,
           child: CustomTextField(
@@ -155,6 +223,7 @@ class GrcFormFields extends StatelessWidget {
             controller: descArController,
             errorText: "الوصف مطلوب",
             submitted: submitted,
+            readOnly: readOnly,
             maxLines: 3,
             minLines: 3,
             maxLength: 500,
@@ -171,71 +240,22 @@ class GrcFormFields extends StatelessWidget {
         ),
         SizedBox(height: 15.h),
 
-        // ── Owning Department + Activation Date ───────
-        Row(
-          children: [
-            Expanded(
-              child: CustomDropdown<String>(
-                label: 'Owning Department'.tr,
-                hint: 'Choose Department'.tr,
-                items: Get.find<MainCoreDepartmentController>()
-                    .departmentIds
-                    .map((id) {
-                  final depCtrl = Get.find<MainCoreDepartmentController>();
-                  final label = FormatHelper.capitalize(
-                    context.isArabic
-                        ? depCtrl.getArabicDepartmentNameFromDepartmentId(
-                                departmentId: id) ??
-                            ''
-                        : depCtrl.getEnglishDepartmentNameFromDepartmentId(
-                                departmentId: id) ??
-                            '',
-                  );
-                  return DropdownItem<String>(value: id, label: label);
-                }).toList(),
-                value: selectedDepartment,
-                onChanged: onDepartmentChanged,
-                fillColor: AppColors.background,
-                errorText: submitted && selectedDepartment == null
-                    ? requiredError
-                    : null,
-                labelStyle: StyleText.fontSize16Weight500.copyWith(
-                  color: AppColors.text,
-                ),
-                hintStyle: StyleText.fontSize14Weight500.copyWith(
-                  color: AppColors.secondaryText.withOpacity(.7),
-                ),
-                itemStyle: StyleText.fontSize14Weight500.copyWith(
-                  color: AppColors.text,
-                ),
-                triggerPadding:
-                    EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-                borderRadius: BorderRadius.circular(4.r),
-                required: false,
+        // ── Owning Department + Activation Date ───────────────────────────────
+        isTablet
+            ? Row(
+                children: [
+                  Expanded(child: departmentField),
+                  SizedBox(width: 10.w),
+                  Expanded(child: activationDateField),
+                ],
+              )
+            : Column(
+                children: [
+                  departmentField,
+                  SizedBox(height: 15.h),
+                  activationDateField,
+                ],
               ),
-            ),
-            SizedBox(width: 10.w),
-            Expanded(
-              child: CustomDropdownCalendar(
-                borderRadius: BorderRadius.circular(4.r),
-                label: 'Activation Date'.tr,
-                hint: 'Select Activation Date'.tr,
-                value: activationDate,
-                onChanged: onDateChanged,
-                fillColor: AppColors.background,
-                errorText:
-                    submitted && activationDate == null ? requiredError : null,
-                labelStyle: StyleText.fontSize16Weight500.copyWith(
-                  color: AppColors.text,
-                ),
-                hintStyle: StyleText.fontSize14Weight500.copyWith(
-                  color: AppColors.secondaryText.withOpacity(.7),
-                ),
-                required: false,
-              ),
-            ),
-          ],
-        ),
       ],
     );
   }
