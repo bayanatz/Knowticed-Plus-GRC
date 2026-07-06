@@ -18,7 +18,6 @@ library;
 import 'package:demo_app/core/constants/app_assets.dart';
 import 'package:demo_app/core/custom/16-custom_card_styles.dart';
 import 'package:demo_app/core/custom/35-custom_search_widget_custom.dart';
-import 'package:demo_app/core/custom/37-custom_navigate.dart';
 import 'package:demo_app/core/custom/43_custom_module_info_card.dart';
 import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
@@ -40,8 +39,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
-
-import '../../../../settings/core_widgets/main_widget/custom_button_widget.dart';
 
 /// class name: [GrcResponsivePage]
 ///
@@ -219,22 +216,6 @@ class _GovernanceRiskAndCompliancePageState
                 children: [
                   PaginationAppBar(
                       screensTitles: ["Governance, Risk, and Compliance".tr]),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      customButton(
-                        title: "Dashboard".tr,
-                        function: () {
-                          navigateTo(context, GrcModuleDetailsPage());
-                        },
-                        width: 135.w,
-                        height: 38.h,
-                        color: AppColors.primary,
-                        textStyle: StyleText.fontSize16Weight500
-                            .copyWith(color: AppColors.textButton),
-                      ),
-                    ],
-                  ),
                   SizedBox(height: 16.h),
                   ScrollConfiguration(
                     behavior: ScrollConfiguration.of(context)
@@ -386,13 +367,18 @@ class _GovernanceRiskAndCompliancePageState
 
         _GrcModuleCard cardFor(int index) => _GrcModuleCard(
               module: moduleAt(index),
-              onTap: () => _openDetails(
-                context,
-                moduleAt(index).isDeleted
-                    ? GrcPageMode.restore
-                    : GrcPageMode.view,
-                entity: moduleAt(index),
-              ),
+              onTap: () {
+                final entity = moduleAt(index);
+                if (entity.isDeleted) {
+                  _openDetails(context, GrcPageMode.restore, entity: entity);
+                } else {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => GrcModuleDetailsPage(module: entity),
+                    ),
+                  );
+                }
+              },
             );
 
         if (columns == 1) {
