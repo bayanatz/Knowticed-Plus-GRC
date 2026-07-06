@@ -89,12 +89,19 @@ class PolicyCubit extends Cubit<PolicyState> {
   ///          success or [PolicyFailure] on failure.
   ///
   /// parameters:
+  ///            [String] moduleId: unique identifier of the parent GRC Module
   ///            [bool] includeDeleted: include soft-deleted policies (default: false)
   ///
   /// return type: [Future<void>]
-  Future<void> getAllPolicies({bool includeDeleted = false}) async {
+  Future<void> getAllPolicies({
+    required String moduleId,
+    bool includeDeleted = false,
+  }) async {
     emit(PolicyLoading());
-    final result = await _getAllUseCase.call(includeDeleted: includeDeleted);
+    final result = await _getAllUseCase.call(
+      moduleId: moduleId,
+      includeDeleted: includeDeleted,
+    );
     result.fold(
       (failure) => emit(PolicyFailure(failure.message)),
       (policies) => emit(PolicyListLoaded(policies)),
@@ -112,11 +119,12 @@ class PolicyCubit extends Cubit<PolicyState> {
   ///
   /// parameters:
   ///            [String] id: unique identifier of the policy to fetch
+  ///            [String] moduleId: unique identifier of the parent GRC Module
   ///
   /// return type: [Future<void>]
-  Future<void> getPolicy(String id) async {
+  Future<void> getPolicy(String id, {required String moduleId}) async {
     emit(PolicyLoading());
-    final result = await _getUseCase.call(id);
+    final result = await _getUseCase.call(id, moduleId: moduleId);
     result.fold(
       (failure) => emit(PolicyFailure(failure.message)),
       (policy) => emit(PolicySingleLoaded(policy)),
@@ -144,6 +152,7 @@ class PolicyCubit extends Cubit<PolicyState> {
   ///            [DateTime] endDate: policy end date
   ///            [double] policyWeight: policy weight value
   ///            [List<CreateControlParams>] controls: initial controls to attach
+  ///            [String] moduleId: unique identifier of the parent GRC Module
   ///            [File] imageFile: local image file to upload, if any
   ///            [String] imageUrl: already-hosted image URL, if any
   ///            [File] policyDocumentFile: local document file to upload, if any
@@ -161,6 +170,7 @@ class PolicyCubit extends Cubit<PolicyState> {
     required DateTime endDate,
     required double policyWeight,
     required List<CreateControlParams> controls,
+    required String moduleId,
     File? imageFile,
     String? imageUrl,
     File? policyDocumentFile,
@@ -179,6 +189,7 @@ class PolicyCubit extends Cubit<PolicyState> {
         endDate: endDate,
         policyWeight: policyWeight,
         editorId: _currentUserId,
+        moduleId: moduleId,
         controls: controls,
         status: PolicyStatus.active, // Publish = Active
         imageFile: imageFile,
@@ -215,6 +226,7 @@ class PolicyCubit extends Cubit<PolicyState> {
   ///            [DateTime] endDate: policy end date
   ///            [double] policyWeight: policy weight value
   ///            [List<CreateControlParams>] controls: controls snapshot (can be empty)
+  ///            [String] moduleId: unique identifier of the parent GRC Module
   ///            [File] imageFile: local image file to upload, if any
   ///            [String] imageUrl: already-hosted image URL, if any
   ///            [File] policyDocumentFile: local document file to upload, if any
@@ -232,6 +244,7 @@ class PolicyCubit extends Cubit<PolicyState> {
     required DateTime endDate,
     required double policyWeight,
     required List<CreateControlParams> controls,
+    required String moduleId,
     File? imageFile,
     String? imageUrl,
     File? policyDocumentFile,
@@ -250,6 +263,7 @@ class PolicyCubit extends Cubit<PolicyState> {
         endDate: endDate,
         policyWeight: policyWeight,
         editorId: _currentUserId,
+        moduleId: moduleId,
         controls: controls,
         status: PolicyStatus.draft, // Save For Later = Draft
         imageFile: imageFile,
@@ -277,6 +291,7 @@ class PolicyCubit extends Cubit<PolicyState> {
   ///
   /// parameters:
   ///            [String] id: unique identifier of the policy to update
+  ///            [String] moduleId: unique identifier of the parent GRC Module
   ///            [PolicyStatus] status: new lifecycle status, if changed
   ///            [String] policyNameEn: new English name, if changed
   ///            [String] policyNameAr: new Arabic name, if changed
@@ -296,6 +311,7 @@ class PolicyCubit extends Cubit<PolicyState> {
   /// return type: [Future<void>]
   Future<void> updatePolicy({
     required String id,
+    required String moduleId,
     PolicyStatus? status,
     String? policyNameEn,
     String? policyNameAr,
@@ -317,6 +333,7 @@ class PolicyCubit extends Cubit<PolicyState> {
       UpdatePolicyParams(
         id: id,
         editorId: _currentUserId,
+        moduleId: moduleId,
         status: status,
         policyNameEn: policyNameEn,
         policyNameAr: policyNameAr,
@@ -351,12 +368,16 @@ class PolicyCubit extends Cubit<PolicyState> {
   ///
   /// parameters:
   ///            [String] id: unique identifier of the policy to delete
+  ///            [String] moduleId: unique identifier of the parent GRC Module
   ///
   /// return type: [Future<void>]
-  Future<void> deletePolicy({required String id}) async {
+  Future<void> deletePolicy({
+    required String id,
+    required String moduleId,
+  }) async {
     emit(PolicyLoading());
     final result = await _deleteUseCase.call(
-      DeletePolicyParams(id: id, editorId: _currentUserId),
+      DeletePolicyParams(id: id, editorId: _currentUserId, moduleId: moduleId),
     );
     result.fold(
       (failure) => emit(PolicyFailure(failure.message)),
@@ -375,12 +396,16 @@ class PolicyCubit extends Cubit<PolicyState> {
   ///
   /// parameters:
   ///            [String] id: unique identifier of the policy to restore
+  ///            [String] moduleId: unique identifier of the parent GRC Module
   ///
   /// return type: [Future<void>]
-  Future<void> restorePolicy({required String id}) async {
+  Future<void> restorePolicy({
+    required String id,
+    required String moduleId,
+  }) async {
     emit(PolicyLoading());
     final result = await _restoreUseCase.call(
-      RestorePolicyParams(id: id, editorId: _currentUserId),
+      RestorePolicyParams(id: id, editorId: _currentUserId, moduleId: moduleId),
     );
     result.fold(
       (failure) => emit(PolicyFailure(failure.message)),
