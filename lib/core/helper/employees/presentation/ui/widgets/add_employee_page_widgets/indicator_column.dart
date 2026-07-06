@@ -54,7 +54,7 @@ class _IndicatorColumnState extends State<IndicatorColumn> {
               minHeight: 0.015.h,
               borderRadius: BorderRadius.circular(64),
               valueColor: AlwaysStoppedAnimation<Color>(AppColors.signOut),
-              backgroundColor: AppColors.indicatorColor.withOpacity(0.1),
+              backgroundColor: AppColors.transparent,
             ),
           ),
         )

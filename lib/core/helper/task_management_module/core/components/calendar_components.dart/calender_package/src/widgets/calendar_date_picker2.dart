@@ -9,8 +9,8 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-import '../../../../../constant/date_time_in_arabic.dart';
-import '../../calendar_date_picker2.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/date_time_in_arabic.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/calendar_components.dart/calender_package/calendar_date_picker2.dart';
 
 part '_impl/_calendar_view.dart';
 part '_impl/_date_picker_mode_toggle_button.dart';

@@ -34,7 +34,7 @@ class SwitchColumn extends StatelessWidget {
           tooltip: '\nYou Can Chat with Team through \nProject Board\n',
           padding: EdgeInsets.zero,
           icon: SvgPicture.asset(
-            'assets/images/Vector.svg',
+            'assets/icons_assets/main_icons_assets/svg_pdf_icon.svg',
             width: 16,
           ),
         )

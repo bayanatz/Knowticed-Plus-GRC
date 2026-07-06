@@ -110,7 +110,7 @@ class _CustomEmployeeChartContainerState
     AppColors.colorGreydark,
     AppColors.colorLightGrey,
     AppColors.colorWhiteDark,
-    AppColors.colorGreyDisabled,
+    AppColors.greyDark,
     AppColors.colorDarkGrey,
   ];
   //AppColors.colorGreydark,

@@ -8,16 +8,16 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';import 'package:demo_app/core/helper/task_management_module/task/controller/task_details_controller.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/card_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_model.dart';
 
-import '../../constant/enum.dart';
-import '../../constant/haptic_controller.dart';
-import '../calendar_components.dart/calender_package/src/models/calendar_date_picker2_config.dart';
-import '../calendar_components.dart/date_picker_class.dart';
-import '../main_yellow_button.dart';
-import 'package:demo_app/features/roles/helper/task_management_module/core/components/success_dialog.dart';
-import '../tasks_components/custom_container_header_mobile.dart';
-import '../tracking_time_components/track_time_subwidget/column_request_data.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/enum.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/calendar_components.dart/calender_package/src/models/calendar_date_picker2_config.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/calendar_components.dart/date_picker_class.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/main_yellow_button.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/success_dialog.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_container_header_mobile.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tracking_time_components/track_time_subwidget/column_request_data.dart';
 
 /// Date Created :17/April/2024
 /// Developer Name : Abdullah Ibrahim
@@ -52,7 +52,7 @@ class _AddEditCardDeadlineDialougeState
   TaskDetailsController taskController = Get.find();
   TimeOfDay? startTime;
   TimeOfDay? endTime;
-  final TaskHapticController hapticController = Get.put(TaskHapticController());
+  final HapticController hapticController = Get.put(HapticController());
   DateTime? selectedStartDate;
   DateTime? selectedEndDate;
   String hintStartDate = "DD/MM/YYYY";
@@ -230,7 +230,7 @@ class _AddEditCardDeadlineDialougeState
                                   isExpanded: true,
                                   hasPrefix: true,
                                   hasSuffix: true,
-                                  suffixUrl: "assets/icons/calendar2.svg",
+                                  suffixUrl: "assets/icons_assets/main_icons_assets/calendar2.svg",
                                 ),
                               ),
                             ),
@@ -304,7 +304,7 @@ class _AddEditCardDeadlineDialougeState
                                   hasPrefix: true,
                                   enabled: false,
                                   hasSuffix: true,
-                                  suffixUrl: "assets/icons/ClockCircleIcon.svg",
+                                  suffixUrl: "assets/icons_assets/task_assets/ClockCircleIcon.svg",
                                 ),
                               ),
                             ),
@@ -343,7 +343,7 @@ class _AddEditCardDeadlineDialougeState
                                   // textController: ,
                                   hasPrefix: true,
                                   hasSuffix: true,
-                                  suffixUrl: "assets/icons/calendar2.svg",
+                                  suffixUrl: "assets/icons_assets/main_icons_assets/calendar2.svg",
                                 ),
                               ),
                             ),
@@ -417,7 +417,7 @@ class _AddEditCardDeadlineDialougeState
                                   hasPrefix: true,
                                   enabled: false,
                                   hasSuffix: true,
-                                  suffixUrl: "assets/icons/ClockCircleIcon.svg",
+                                  suffixUrl: "assets/icons_assets/task_assets/ClockCircleIcon.svg",
                                 ),
                               ),
                             ),
@@ -465,7 +465,7 @@ class _AddEditCardDeadlineDialougeState
                                             : "Task deadlines are updated successfully"
                                                 .tr,
                                         lottieAsset:
-                                            "assets/images/correct.json",
+                                            "assets/lottie_assets/main_lottie_assets/lottie_successful.json",
                                       );
                                     },
                                   );
@@ -499,7 +499,7 @@ class _AddEditCardDeadlineDialougeState
                                               : "Task deadlines are updated successfully"
                                                   .tr,
                                           lottieAsset:
-                                              "assets/images/correct.json",
+                                              "assets/lottie_assets/main_lottie_assets/lottie_successful.json",
                                         );
                                       },
                                     );
@@ -512,7 +512,7 @@ class _AddEditCardDeadlineDialougeState
                                     return const SuccessDialog(
                                       title: "Failure",
                                       subtitle: "Please Fill All The Fields",
-                                      lottieAsset: "assets/images/error.json",
+                                      lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
                                     );
                                   },
                                 );

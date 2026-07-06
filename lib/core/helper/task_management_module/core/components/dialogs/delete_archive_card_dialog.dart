@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
-import '../../constant/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 import 'package:lottie/lottie.dart';
 
-import '../custom_elevated_button.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_elevated_button.dart';
 
 class DeletOrArchiveDialog extends StatefulWidget {
   DeletOrArchiveDialog(
@@ -31,7 +31,7 @@ class _DeletOrArchiveDialogState extends State<DeletOrArchiveDialog> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)));
   }
 
-  final TaskHapticController hapticController = Get.put(TaskHapticController());
+  final HapticController hapticController = Get.put(HapticController());
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +57,7 @@ class _DeletOrArchiveDialogState extends State<DeletOrArchiveDialog> {
                 child: Transform.scale(
                   scale: isTablet ? 0.7 : 2,
                   child: Lottie.asset(
-                    "assets/images/deletion.json",
+                    "assets/lottie_assets/main_lottie_assets/lottie_trash.json",
                     width: 0.1.w,
                     fit: BoxFit.fitHeight,
                   ),

@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
-import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 
-export 'package:demo_app/core/helper/main_helper/haptic_controller.dart' show HapticController;
+export 'package:demo_app/core/haptic/haptic_controller.dart' show HapticController;
 
 /// Global, app-wide access to the [HapticController].
 ///

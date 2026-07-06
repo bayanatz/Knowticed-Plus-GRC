@@ -10,6 +10,15 @@ import 'app_theme.dart';
 abstract class AppColors {
   static Map<String, Color> currentThemeColors = AppTheme.lightThemeColors;
 
+  // Theme-independent constant (avoids raw Colors.transparent in widgets, §12).
+  static const Color transparent = Colors.transparent;
+
+  /// Theme-independent disabled/inactive-state grey (was inline
+  /// `Color(0xFFD9D9D9)` in custom_check_box.dart). Matches the light-theme
+  /// barrierColor value but is kept separate since it's used for disabled
+  /// buttons/controls, not modal barriers.
+  static const Color disabledGrey = Color(0xFFD9D9D9);
+
 
   // ----------------- Black & White Colors -----------------
   static Color get pending => currentThemeColors['pending']!;
@@ -178,6 +187,15 @@ abstract class AppColors {
   /// AppColors.colorDarkGrey (0xFF797979)
   static const Color colorDarkGrey = Color(0xFF797979);
 
+  /// Settings input background (dark mode) — 0xFF545454
+  static const Color inputBackgroundDark = Color(0xFF545454);
+
+  /// Invoices table zebra-stripe (light) — 0xFFF1F1F1
+  static const Color tableRowLight = Color(0xFFF1F1F1);
+
+  /// Invoices table zebra-stripe (dark) — 0xFF28282B
+  static const Color tableRowDark = Color(0xFF28282B);
+
   /// AppColors.dark (0xFF4B4B4B)
   static Color get dark => currentThemeColors['greyDark']!;
 
@@ -201,16 +219,4 @@ abstract class AppColors {
 
   /// AppColors.yellowColor (0xffFFCC00)
   static Color get yellowColor => currentThemeColors['yellow']!;
-
-  // ----------------- Remaining MyThemeData fixed-value aliases -----------------
-  // These were defined as fixed (theme-unaware) Colors on MyThemeData.
-  // Values copied exactly from the original MyThemeData definition.
-  static const Color GreyBack = Color(0xFFBCCCCCCCC);
-  static const Color blueNew = Color(0xFF347AE2);
-  static const Color colorBlue = Color(0xFF1877F2);
-  static const Color colorGreyDisabled = Color(0xFF999999);
-  static const Color colorYellow = Color(0xFFFFDE59);
-  static const Color divider = Color(0xFFCFCAE4);
-  static const Color dividerColor = Color(0xFF959090);
-  static const Color indicatorColor = Color(0xFF0A0F0C);
 }

@@ -8,22 +8,22 @@ import 'package:demo_app/core/helper/task_management_module/core/components/task
 import 'package:demo_app/core/helper/task_management_module/core/constant/screen_size.dart';
 import 'package:demo_app/core/helper/task_management_module/task/controller/task_details_controller.dart';
 import 'package:demo_app/core/helper/task_management_module/task/data/model/board_model/board_members.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/board_model/board_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/board_model/board_model.dart';
 import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_members.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/card_model.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/checklist_item.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/checklist_item.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
-import '../../../core/components/custom_black_button.dart';
-import 'package:demo_app/features/roles/helper/task_management_module/core/components/success_dialog.dart';
-import '../../../core/components/tasks_components/custom_container_header_mobile.dart';
-import '../../../core/components/tasks_components/custom_members_dialog_Tablet.dart';
-import '../../../core/components/tasks_components/custom_members_dialog_mobile.dart';
-import '../../../core/components/tasks_components/custom_members_list_mobile.dart';
-import '../../../core/components/tasks_components/custom_project_screen_header.dart';
-import '../../../core/constant/circle_progress.dart';
-import '../../../core/constant/enum.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_black_button.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/success_dialog.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_container_header_mobile.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_members_dialog_Tablet.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_members_dialog_mobile.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_members_list_mobile.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_project_screen_header.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/circle_progress.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/enum.dart';
 
 /// App Version : Version 2
 /// Date of Last Edit :23/April/2024 By Abdullah Ibrahim
@@ -104,7 +104,7 @@ class _MemberContainerState extends State<MemberContainer> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // CustomRowWithIcons(
-              //   iconPath: "assets/icons/memebrsIcon.svg",
+              //   iconPath: "assets/icons_assets/task_assets/memebrsIcon.svg",
               //   title: "Members".tr,
               //   isExpand: widget.showMembers,
               //   onArrowPressed: () {
@@ -177,7 +177,7 @@ class _MemberContainerState extends State<MemberContainer> {
                         return const SuccessDialog(
                           title: "Warning",
                           subtitle: "Only Task Owner Can Edit Members",
-                          lottieAsset: "assets/images/error.json",
+                          lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
                         );
                       },
                     );
@@ -294,7 +294,7 @@ class _MemberContainerState extends State<MemberContainer> {
               //                 return const SuccessDialog(
               //                   title: "Warning",
               //                   subtitle: "Only Task Owner Can Edit Members",
-              //                   lottieAsset: "assets/images/error.json",
+              //                   lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
               //                 );
               //               },
               //             );

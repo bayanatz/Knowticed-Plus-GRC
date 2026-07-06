@@ -4,17 +4,17 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';import 'package:demo_app/core/helper/task_management_module/borad/controller/board_controller.dart';
 
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/board_model/board_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/board_model/board_model.dart';
 import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_checklists.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/card_model.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/checklist_item.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/checklist_item.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/selection_user.dart';
 
 import 'package:demo_app/core/theme/app_colors.dart';
-import '../../constant/date_time_in_arabic.dart';
-import 'custom_members_dialog_Tablet.dart';
-import 'custom_members_dialog_mobile.dart';
-import 'image_row_widget.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/date_time_in_arabic.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_members_dialog_Tablet.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_members_dialog_mobile.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/image_row_widget.dart';
 
 class CustomChecklistAdditionalInfoRow extends StatelessWidget {
   final CheckListItems currentListItem;
@@ -158,7 +158,7 @@ class CustomChecklistAdditionalInfoRow extends StatelessWidget {
                 currentListItem.itemMembers!.isNotEmpty)
               SvgPicture.asset(
                 width: isTablet ? (isPortrait ? 0.027.h : 0.035.h) : 0.05.w,
-                'assets/icons/CheckSquare.svg',
+                'assets/icons_assets/task_assets/CheckSquare.svg',
                 color: Colors.transparent,
               ),
             if (!isPortrait &&
@@ -232,7 +232,7 @@ class CustomChecklistAdditionalInfoRow extends StatelessWidget {
                       SvgPicture.asset(
                         width:
                             isTablet ? (isPortrait ? 0.03.w : 0.015.w) : 0.05.w,
-                        'assets/icons/calendar.svg',
+                        'assets/icons_assets/main_icons_assets/icons_calendar.svg',
                         color: AppColors.grey,
                       ),
                       SizedBox(
@@ -265,7 +265,7 @@ class CustomChecklistAdditionalInfoRow extends StatelessWidget {
                           width: isTablet
                               ? (isPortrait ? 0.03.w : 0.015.w)
                               : 0.05.w,
-                          "assets/icons/ClockCircleIcon.svg",
+                          "assets/icons_assets/task_assets/ClockCircleIcon.svg",
                           color: AppColors.grey,
                         ),
                         SizedBox(
@@ -305,7 +305,7 @@ class CustomChecklistAdditionalInfoRow extends StatelessWidget {
                       SvgPicture.asset(
                         width:
                             isTablet ? (isPortrait ? 0.03.w : 0.015.w) : 0.05.w,
-                        'assets/icons/calendar.svg',
+                        'assets/icons_assets/main_icons_assets/icons_calendar.svg',
                         color: isPastDeadline
                             ? AppColors.delete
                             : AppColors.grey,
@@ -343,7 +343,7 @@ class CustomChecklistAdditionalInfoRow extends StatelessWidget {
                               width: isTablet
                                   ? (isPortrait ? 0.03.w : 0.015.w)
                                   : 0.05.w,
-                              "assets/icons/ClockCircleIcon.svg",
+                              "assets/icons_assets/task_assets/ClockCircleIcon.svg",
                               color: isPastDeadline
                                   ? AppColors.delete
                                   : AppColors.grey,

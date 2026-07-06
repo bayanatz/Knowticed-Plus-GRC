@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:demo_app/core/theme/app_text_styles.dart';
+import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
-import '../theme/app_colors.dart';
-import '../theme/app_colors.dart';
 
 /// A customizable segmented tabs widget that can be reused throughout the app
 ///
@@ -142,7 +140,7 @@ class CustomSegmentedTabs extends StatelessWidget {
           child: FittedBox(
             child: Text(
               title.tr,
-              style: (textStyle ?? AppTextStyles.font14BlackCairo).copyWith(
+              style: (textStyle ?? StyleText.fontSize14Weight600).copyWith(
                 height: 1,
                 color: isSelected
                     ? (selectedTextColor ?? AppColors.textButton)

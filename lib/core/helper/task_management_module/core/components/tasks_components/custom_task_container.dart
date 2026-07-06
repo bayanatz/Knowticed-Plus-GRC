@@ -1,25 +1,25 @@
-import 'package:demo_app/core/nav_bar_package.dart/functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:demo_app/core/helper/task_management_module/borad/controller/board_controller.dart';
-import 'package:demo_app/features/home/helper/task_management_module/borad/view/board_create/create_board_screen.dart';
+import 'package:demo_app/core/helper/task_management_module/borad/view/board_create/create_board_screen.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/invited_members_screen.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/main_yellow_button.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/selection_user.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_icon.dart';
 import 'package:demo_app/core/helper/task_management_module/core/constant/date_time_in_arabic.dart';
-import 'package:demo_app/core/theme/app_font_size.dart';
+import 'package:demo_app/core/theme/app_font_size.dart';import 'package:demo_app/core/helper/task_management_module/core/nav_bar_package.dart/functions.dart';
 import 'package:demo_app/core/helper/task_management_module/task/controller/task_details_controller.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/board_model/board_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/board_model/board_model.dart';
 import 'package:demo_app/core/helper/task_management_module/task/view/member/widgets/invited_members_screen_mobile.dart';
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:page_transition/page_transition.dart';
 
-import '../custom_drawer.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_drawer.dart';
+import 'package:demo_app/core/utils/app_image_provider.dart';
 
 /// Date Created :19/November/2023
 /// Developer Name : Bassem Mohamed
@@ -336,7 +336,7 @@ class _CustomTaskContainerState extends State<CustomTaskContainer> {
                                           board: widget.board,
                                         ));
                                   },
-                                  svgPath: 'assets/images/edit.svg',
+                                  svgPath: 'assets/icons_assets/main_icons_assets/images_edit.svg',
                                   color: AppColors.signOut,
                                 ),
                                 SizedBox(
@@ -349,7 +349,7 @@ class _CustomTaskContainerState extends State<CustomTaskContainer> {
                             ),
                             ReusableElevatedButton(
                               buttonText: 'Chat',
-                              icon: 'assets/images/chat_notifi_mob.svg',
+                              icon: 'assets/icons_assets/main_icons_assets/chat_notifi_mob.svg',
                               onPressed: () {},
                             ),
                           ],
@@ -385,7 +385,7 @@ class _CustomTaskContainerState extends State<CustomTaskContainer> {
                           )
                         : CircleAvatar(
                             radius: 0.03.h,
-                            backgroundImage: AssetImage(images[0]),
+                            backgroundImage: appImageProvider(images[0]),
                           ),
                   ),
                 ),
@@ -417,7 +417,7 @@ class _CustomTaskContainerState extends State<CustomTaskContainer> {
                           )
                         : CircleAvatar(
                             radius: 30,
-                            backgroundImage: AssetImage(images[1]),
+                            backgroundImage: appImageProvider(images[1]),
                           ),
                   ),
                 ),
@@ -449,7 +449,7 @@ class _CustomTaskContainerState extends State<CustomTaskContainer> {
                           )
                         : CircleAvatar(
                             radius: 0.03.h,
-                            backgroundImage: AssetImage(images[2]),
+                            backgroundImage: appImageProvider(images[2]),
                           ),
                   ),
                 ),

@@ -4,9 +4,9 @@
 // Objectives: This file is responsible for providing a responsive widget based on screen size
 // with proper controller lifecycle management
 
-import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 
 class ResponsiveHelper extends StatefulWidget {
   final Widget mobileWidget, tabletWidget;
@@ -26,7 +26,7 @@ class _ResponsiveHelperState extends State<ResponsiveHelper> {
 
   @override
   Widget build(BuildContext context) {
-    final isTablet = context.isTablett;
+    final isTablet = context.isTablet;
 
     // ✅ Detect size change and clean up wrong controller
     if (_wasTablet != null && _wasTablet != isTablet) {

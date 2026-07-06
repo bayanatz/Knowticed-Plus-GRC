@@ -1,6 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
-import 'package:demo_app/core/helper/employees/utils/employees_constants.dart';
+import 'package:demo_app/core/helper/organization_chart_module/utils/employees_constants.dart';
 
 String capitalize(String input) {
   input.toLowerCase();
@@ -414,3 +414,5 @@ enum Currencys {
 }
 
 enum ConnectionStatusPerson { pending, add, chat }
+
+

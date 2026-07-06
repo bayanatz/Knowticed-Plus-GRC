@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:demo_app/core/theme/app_colors.dart';
-import '../theme/app_colors.dart';
+import 'package:demo_app/core/theme/app_theme.dart';
 
 /// A dropdown item model
 class DropdownItem<T> {
@@ -157,8 +157,8 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
         openUpward: openUpward,
         items: widget.items,
         maxHeight: widget.maxOverlayHeight ?? 240.h,
-        itemHeight: widget.itemHeight ?? 44.h,
-        borderRadius: widget.borderRadius ?? BorderRadius.circular(8.r),
+        itemHeight: widget.itemHeight ?? 36.sp,
+        borderRadius: widget.borderRadius ?? BorderRadius.circular(4.r),
         elevation: widget.overlayElevation,
         itemStyle: widget.itemStyle,
         showDivider: widget.showDivider,
@@ -214,9 +214,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
             text: TextSpan(
               text: widget.label,
               style: widget.labelStyle ??
-                  TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
+                  StyleText.fontSize14Weight500.copyWith(
                     color: hasError
                         ? AppColors.red
                         : widget.enabled
@@ -227,7 +225,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
                   ? [
                 TextSpan(
                   text: ' *',
-                  style: TextStyle(color: AppColors.red),
+                  style: StyleText.fontSize14Weight500.copyWith(color: AppColors.red),
                 )
               ]
                   : [],
@@ -300,7 +298,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
                         turns: _isOpen ? 0.5 : 0,
                         duration: const Duration(milliseconds: 180),
                         child: SvgPicture.asset(
-                          'assets/arrowdown.svg',
+                          'assets/icons_assets/main_icons_assets/arrowdown.svg',
                           width: 20.sp,
                           height: 20.sp,
                           colorFilter: ColorFilter.mode(
@@ -317,8 +315,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
                 suffixIconConstraints: const BoxConstraints(),
                 hintText: _selectedItem == null ? (widget.hint ?? '') : null,
                 hintStyle: widget.hintStyle ??
-                    TextStyle(
-                      fontSize: 14.sp,
+                    StyleText.fontSize14Weight400.copyWith(
                       color: AppColors.text.withOpacity(0.4),
                     ),
                 // Suppress built-in error text — we render our own below
@@ -336,8 +333,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
                     child: Text(
                       _selectedItem!.label,
                       style: widget.valueStyle ??
-                          TextStyle(
-                            fontSize: 14.sp,
+                          StyleText.fontSize14Weight400.copyWith(
                             color: widget.enabled
                                 ? AppColors.text
                                 : AppColors.text.withOpacity(0.4),
@@ -360,15 +356,14 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
           Text(
             widget.errorText!,
             style: widget.errorStyle ??
-                TextStyle(fontSize: 12.sp, color: AppColors.red),
+                StyleText.fontSize12Weight400.copyWith(color: AppColors.red),
           ),
         ] else if (widget.helperText != null) ...[
           SizedBox(height: 4.h),
           Text(
             widget.helperText!,
             style: widget.helperStyle ??
-                TextStyle(
-                    fontSize: 12.sp,
+                StyleText.fontSize12Weight400.copyWith(
                     color: AppColors.text.withOpacity(0.5)),
           ),
         ],
@@ -479,8 +474,7 @@ class _DropdownOverlay<T> extends StatelessWidget {
                             Center(
                               child: Text(
                                 'No options',
-                                style: TextStyle(
-                                  fontSize: 13.sp,
+                                style: StyleText.fontSize13Weight400.copyWith(
                                   color: AppColors.text.withOpacity(0.4),
                                 ),
                               ),
@@ -569,7 +563,7 @@ class _DropdownItemTileState<T> extends State<_DropdownItemTile<T>> {
               ? AppColors.primary
               : (_hovered && !isDisabled)
               ? AppColors.primary
-              : Colors.transparent,
+              : AppColors.transparent,
           child: Row(
             children: [
               if (widget.item.leading != null) ...[
@@ -580,12 +574,9 @@ class _DropdownItemTileState<T> extends State<_DropdownItemTile<T>> {
                 child: Text(
                   widget.item.label,
                   style: (widget.style ??
-                      TextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: widget.isSelected
-                            ? FontWeight.w500
-                            : FontWeight.normal,
-                      ))
+                      (widget.isSelected
+                          ? StyleText.fontSize14Weight500
+                          : StyleText.fontSize14Weight400))
                       .copyWith(
                     color: isDisabled
                         ? AppColors.text.withOpacity(0.3)

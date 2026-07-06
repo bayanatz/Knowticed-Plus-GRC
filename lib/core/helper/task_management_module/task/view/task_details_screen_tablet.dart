@@ -1,14 +1,13 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/board_model/board_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/helper/task_management_module/borad/controller/board_controller.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/selection_user.dart';
-import 'package:demo_app/core/theme/app_font_size.dart';
+import 'package:demo_app/core/theme/app_font_size.dart';import 'package:demo_app/core/helper/task_management_module/task/data/model/board_model/board_model.dart';
 import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_checklists.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/card_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_model.dart';
 import 'package:demo_app/core/helper/task_management_module/task/view/attachment/tablet_view/attachment_section_tablet.dart';
 import 'package:demo_app/core/helper/task_management_module/task/view/checklist/checklist_section_mobile.dart';
 import 'package:demo_app/core/helper/task_management_module/task/view/comment/comments_column_tablet.dart';
@@ -21,16 +20,16 @@ import 'package:page_transition/page_transition.dart';
 
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
-import '../../core/components/custom_appbar.dart';
-import '../../core/components/custom_drawer.dart';
-import '../../core/components/dialogs/add_edit_card_deadline_dialog.dart';
-import '../../core/components/dialogs/copy_card_dialog.dart';
-import '../../core/components/dialogs/delete_archive_card_dialog.dart';
-import 'package:demo_app/features/roles/helper/task_management_module/core/components/success_dialog.dart';
-import '../../core/components/tasks_components/custom_members_dialog_Tablet.dart';
-import '../../core/components/tasks_components/custom_task_components_detailes.dart';
-import '../../core/constant/enum.dart';
-import '../../core/constant/haptic_controller.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_appbar.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_drawer.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/dialogs/add_edit_card_deadline_dialog.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/dialogs/copy_card_dialog.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/dialogs/delete_archive_card_dialog.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/success_dialog.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_members_dialog_Tablet.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_task_components_detailes.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/enum.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 
 /// Date Created :21/November/2023
 /// Developer Name : Bassem Mohamed
@@ -121,7 +120,7 @@ class _TaskDetailsTabletScreenState extends State<TaskDetailsTabletScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final TaskHapticController hapticController = Get.put(TaskHapticController());
+    final HapticController hapticController = Get.put(HapticController());
     bool orientation =
         MediaQuery.of(context).orientation == Orientation.portrait;
     final TextStyle titleStyle = AppFontStyle.cairoRegularStyle.copyWith(
@@ -254,7 +253,7 @@ class _TaskDetailsTabletScreenState extends State<TaskDetailsTabletScreen> {
                                                                   child:
                                                                       CustomContainerWithImage(
                                                                     imagePath:
-                                                                        "assets/icons/member.svg",
+                                                                        "assets/icons_assets/task_assets/member.svg",
                                                                     text:
                                                                         'Members',
                                                                     changeColor: widget
@@ -320,7 +319,7 @@ class _TaskDetailsTabletScreenState extends State<TaskDetailsTabletScreen> {
                                                                                 return const SuccessDialog(
                                                                                   title: "Warning",
                                                                                   subtitle: "No Board Members Found\nPlease Add Board Members First",
-                                                                                  lottieAsset: "assets/images/newAttension.json",
+                                                                                  lottieAsset: "assets/lottie_assets/main_lottie_assets/lottie_attension.json",
                                                                                 );
                                                                               },
                                                                             );
@@ -335,7 +334,7 @@ class _TaskDetailsTabletScreenState extends State<TaskDetailsTabletScreen> {
                                                                               return const SuccessDialog(
                                                                                 title: "Warning",
                                                                                 subtitle: "Only task owner can add members",
-                                                                                lottieAsset: "assets/images/error.json",
+                                                                                lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
                                                                               );
                                                                             },
                                                                           );
@@ -351,7 +350,7 @@ class _TaskDetailsTabletScreenState extends State<TaskDetailsTabletScreen> {
                                                                   child:
                                                                       CustomContainerWithImage(
                                                                     imagePath:
-                                                                        "assets/icons/Square.svg",
+                                                                        "assets/icons_assets/task_assets/Square.svg",
                                                                     text:
                                                                         'Check Lists',
                                                                     changeColor:
@@ -397,7 +396,7 @@ class _TaskDetailsTabletScreenState extends State<TaskDetailsTabletScreen> {
                                                                             isCheckList:
                                                                                 true,
                                                                             iconUrl:
-                                                                                'assets/icons/CheckSquareIcon.svg',
+                                                                                'assets/icons_assets/task_assets/CheckSquareIcon.svg',
                                                                           );
                                                                         },
                                                                       );
@@ -418,7 +417,7 @@ class _TaskDetailsTabletScreenState extends State<TaskDetailsTabletScreen> {
                                                                   child:
                                                                       CustomContainerWithImage(
                                                                     imagePath:
-                                                                        "assets/icons/calendar.svg",
+                                                                        "assets/icons_assets/main_icons_assets/icons_calendar.svg",
                                                                     text:
                                                                         'Dates',
                                                                     changeColor: widget.currentCard.startDate!.startDate!.isNotEmpty &&
@@ -462,7 +461,7 @@ class _TaskDetailsTabletScreenState extends State<TaskDetailsTabletScreen> {
                                                                                     showDates = true;
                                                                                   });
                                                                                 },
-                                                                                iconUrl: 'assets/icons/taskDeadline.svg',
+                                                                                iconUrl: 'assets/icons_assets/task_assets/taskDeadline.svg',
                                                                               );
                                                                             },
                                                                           );
@@ -480,7 +479,7 @@ class _TaskDetailsTabletScreenState extends State<TaskDetailsTabletScreen> {
                                                                                                                            });
                                                                                                                          },
                                                                                                                          isDates: true,
-                                                                                                                          iconUrl:'assets/icons/taskDeadline.svg',
+                                                                                                                          iconUrl:'assets/icons_assets/task_assets/taskDeadline.svg',
                                                                                                          );
                                                                                                      },
                                                                                                     );*/
@@ -494,7 +493,7 @@ class _TaskDetailsTabletScreenState extends State<TaskDetailsTabletScreen> {
                                                                               return const SuccessDialog(
                                                                                 title: "Warning",
                                                                                 subtitle: "Only task owner can add deadline",
-                                                                                lottieAsset: "assets/images/error.json",
+                                                                                lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
                                                                               );
                                                                             },
                                                                           );
@@ -512,7 +511,7 @@ class _TaskDetailsTabletScreenState extends State<TaskDetailsTabletScreen> {
                                                                   child:
                                                                       CustomContainerWithImage(
                                                                     imagePath:
-                                                                        "assets/icons/attachsquare.svg",
+                                                                        "assets/icons_assets/task_assets/attachsquare.svg",
                                                                     text:
                                                                         'Attachments',
                                                                     changeColor: widget
@@ -556,7 +555,7 @@ class _TaskDetailsTabletScreenState extends State<TaskDetailsTabletScreen> {
                                                                             isAttachment:
                                                                                 true,
                                                                             iconUrl:
-                                                                                'assets/icons/attachsquareIcon.svg',
+                                                                                'assets/icons_assets/task_assets/attachsquareIcon.svg',
                                                                           );
                                                                         },
                                                                       );
@@ -577,7 +576,7 @@ class _TaskDetailsTabletScreenState extends State<TaskDetailsTabletScreen> {
                                                           children: [
                                                             CustomContainerWithImage(
                                                               imagePath:
-                                                                  "assets/icons/member.svg",
+                                                                  "assets/icons_assets/task_assets/member.svg",
                                                               text: 'Members',
                                                               changeColor: widget
                                                                       .currentCard
@@ -671,7 +670,7 @@ class _TaskDetailsTabletScreenState extends State<TaskDetailsTabletScreen> {
                                                                             subtitle:
                                                                                 "No Board Members Found\nPlease Add Board Members First",
                                                                             lottieAsset:
-                                                                                "assets/images/newAttension.json",
+                                                                                "assets/lottie_assets/main_lottie_assets/lottie_attension.json",
                                                                           );
                                                                         },
                                                                       );
@@ -689,7 +688,7 @@ class _TaskDetailsTabletScreenState extends State<TaskDetailsTabletScreen> {
                                                                           subtitle:
                                                                               "Only task owner can add members",
                                                                           lottieAsset:
-                                                                              "assets/images/error.json",
+                                                                              "assets/lottie_assets/main_lottie_assets/error.json",
                                                                         );
                                                                       },
                                                                     );
@@ -699,7 +698,7 @@ class _TaskDetailsTabletScreenState extends State<TaskDetailsTabletScreen> {
                                                             ),
                                                             CustomContainerWithImage(
                                                               imagePath:
-                                                                  "assets/icons/Square.svg",
+                                                                  "assets/icons_assets/task_assets/Square.svg",
                                                               text:
                                                                   'Check Lists',
                                                               changeColor: widget
@@ -758,7 +757,7 @@ class _TaskDetailsTabletScreenState extends State<TaskDetailsTabletScreen> {
                                                                       isCheckList:
                                                                           true,
                                                                       iconUrl:
-                                                                          'assets/icons/CheckSquareIcon.svg',
+                                                                          'assets/icons_assets/task_assets/CheckSquareIcon.svg',
                                                                     );
                                                                   },
                                                                 );
@@ -766,7 +765,7 @@ class _TaskDetailsTabletScreenState extends State<TaskDetailsTabletScreen> {
                                                             ),
                                                             CustomContainerWithImage(
                                                               imagePath:
-                                                                  "assets/icons/calendar.svg",
+                                                                  "assets/icons_assets/main_icons_assets/icons_calendar.svg",
                                                               text: 'Dates',
                                                               changeColor: widget
                                                                           .currentCard
@@ -831,7 +830,7 @@ class _TaskDetailsTabletScreenState extends State<TaskDetailsTabletScreen> {
                                                                             });
                                                                           },
                                                                           iconUrl:
-                                                                              'assets/icons/taskDeadline.svg',
+                                                                              'assets/icons_assets/task_assets/taskDeadline.svg',
                                                                         );
                                                                       },
                                                                     );
@@ -849,7 +848,7 @@ class _TaskDetailsTabletScreenState extends State<TaskDetailsTabletScreen> {
                                                      });
                                                    },
                                                    isDates: true,
-                                                    iconUrl:'assets/icons/taskDeadline.svg',
+                                                    iconUrl:'assets/icons_assets/task_assets/taskDeadline.svg',
                                                  );
                                              },
                                             );*/
@@ -866,7 +865,7 @@ class _TaskDetailsTabletScreenState extends State<TaskDetailsTabletScreen> {
                                                                           subtitle:
                                                                               "Only task owner can add deadline",
                                                                           lottieAsset:
-                                                                              "assets/images/error.json",
+                                                                              "assets/lottie_assets/main_lottie_assets/error.json",
                                                                         );
                                                                       },
                                                                     );
@@ -878,7 +877,7 @@ class _TaskDetailsTabletScreenState extends State<TaskDetailsTabletScreen> {
                                                             /// Attachments section
                                                             CustomContainerWithImage(
                                                               imagePath:
-                                                                  "assets/icons/attachsquare.svg",
+                                                                  "assets/icons_assets/task_assets/attachsquare.svg",
                                                               text:
                                                                   'Attachments',
                                                               changeColor: widget
@@ -927,7 +926,7 @@ class _TaskDetailsTabletScreenState extends State<TaskDetailsTabletScreen> {
                                                                       isAttachment:
                                                                           true,
                                                                       iconUrl:
-                                                                          'assets/icons/attachsquareIcon.svg',
+                                                                          'assets/icons_assets/task_assets/attachsquareIcon.svg',
                                                                     );
                                                                   },
                                                                 );

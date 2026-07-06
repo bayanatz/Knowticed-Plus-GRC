@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/project_screen/project_screen.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_project_screen_header.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/board_model/board_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/board_model/board_model.dart';
 import 'package:page_transition/page_transition.dart';
 
-import '../../../../core/components/custom_drawer.dart';
-import '../../../../core/components/tasks_components/custom_task_container.dart';
-import '../../../../core/constant/enum.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_drawer.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_task_container.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/enum.dart';
 
 class ProjectListWidget extends StatelessWidget {
   final List<BoardModel> boardModel;

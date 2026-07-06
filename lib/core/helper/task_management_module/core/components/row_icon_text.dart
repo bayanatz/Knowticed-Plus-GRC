@@ -3,9 +3,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
-import 'selection_user.dart';
-import 'custom_drop_down_menu.dart';
-import 'tracking_time_components/track_time_subwidget/column_request_data.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/selection_user.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_drop_down_menu.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tracking_time_components/track_time_subwidget/column_request_data.dart';
+import 'package:demo_app/core/utils/app_image_provider.dart';
 
 class RowIconTextAnnouncement extends StatefulWidget {
   RowIconTextAnnouncement(
@@ -261,7 +262,7 @@ class _RowIconTextAnnouncementState extends State<RowIconTextAnnouncement> {
                                   isExpanded: true,
                                   hasSuffix: true,
                                   sizerSuffix: isPortrait ? 0.45 : 0.5,
-                                  suffixUrl: 'assets/icons/isEditIcon.svg',
+                                  suffixUrl: 'assets/icons_assets/main_icons_assets/isEditIcon.svg',
                                   suffixHasColor: true,
                                   //    suffixColor: AppColors.signOut,
                                 ),
@@ -276,7 +277,7 @@ class _RowIconTextAnnouncementState extends State<RowIconTextAnnouncement> {
                                             radius:
                                                 isPortrait ? 0.02.w : 0.015.w,
                                             backgroundColor: Colors.transparent,
-                                            backgroundImage: AssetImage(
+                                            backgroundImage: appImageProvider(
                                                 widget.profileImage!),
                                           )
                                         : CircleAvatar(
@@ -330,7 +331,7 @@ class _RowIconTextAnnouncementState extends State<RowIconTextAnnouncement> {
                                   isExpanded: true,
                                   hasSuffix: true,
                                   sizerSuffix: isPortrait ? 0.45 : 0.5,
-                                  suffixUrl: 'assets/icons/isEditIcon.svg',
+                                  suffixUrl: 'assets/icons_assets/main_icons_assets/isEditIcon.svg',
                                   suffixHasColor: true,
                                   //    suffixColor: AppColors.signOut,
                                 ),
@@ -343,7 +344,7 @@ class _RowIconTextAnnouncementState extends State<RowIconTextAnnouncement> {
                                         ? CircleAvatar(
                                             radius: 0.04.w,
                                             backgroundColor: Colors.transparent,
-                                            backgroundImage: AssetImage(
+                                            backgroundImage: appImageProvider(
                                                 widget.profileImage!),
                                           )
                                         : CircleAvatar(

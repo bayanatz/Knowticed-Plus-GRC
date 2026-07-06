@@ -7,16 +7,16 @@ import 'package:intl/intl.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/calendar_components.dart/calender_package/src/models/calendar_date_picker2_config.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/calendar_components.dart/date_picker_class.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/dialogs/add_edit_card_deadline_dialog.dart';
-import 'package:demo_app/features/roles/helper/task_management_module/core/components/success_dialog.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/success_dialog.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_container_header_mobile.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/set_date_dialog.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/tracking_time_components/track_time_subwidget/column_request_data.dart';
 import 'package:demo_app/core/helper/task_management_module/core/constant/app_strings.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';
-import 'package:demo_app/core/helper/task_management_module/core/constant/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 import 'package:demo_app/core/helper/task_management_module/core/constant/image_paths.dart';
 import 'package:demo_app/core/helper/task_management_module/task/controller/task_details_controller.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/card_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_model.dart';
 import 'package:demo_app/core/helper/task_management_module/task/view/deadline/mobile_view/date_item.dart';
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
@@ -42,7 +42,7 @@ class DeadlineSection extends StatefulWidget {
 class _DeadlineSectionState extends State<DeadlineSection> {
   final TaskDetailsController controller = Get.find();
 
-  final TaskHapticController hapticController = Get.put(TaskHapticController());
+  final HapticController hapticController = Get.put(HapticController());
 
 
 
@@ -194,7 +194,7 @@ class _DeadlineSectionState extends State<DeadlineSection> {
                 padding: EdgeInsets.all(6),
                 child: Center(
                   child: SvgPicture.asset(
-                    "assets/icons/calendar.svg",
+                    "assets/icons_assets/main_icons_assets/icons_calendar.svg",
                     height: 16.h,
                     width: 16.w,
                     color: AppColors.black,
@@ -222,7 +222,7 @@ class _DeadlineSectionState extends State<DeadlineSection> {
                           board: widget.board,
                           onPressed: () {},
                           isEditDates: true,
-                          iconUrl: 'assets/icons/taskDeadline.svg',
+                          iconUrl: 'assets/icons_assets/task_assets/taskDeadline.svg',
                         );
                       },
                     );
@@ -233,7 +233,7 @@ class _DeadlineSectionState extends State<DeadlineSection> {
                         return const SuccessDialog(
                           title: "Warning",
                           subtitle: "Only Task Owner Can Edit Deadline",
-                          lottieAsset: "assets/images/error.json",
+                          lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
                         );
                       },
                     );
@@ -245,7 +245,7 @@ class _DeadlineSectionState extends State<DeadlineSection> {
 
                 },
                 child: SvgPicture.asset(
-                  'assets/icons/isEditIcon.svg',
+                  'assets/icons_assets/main_icons_assets/isEditIcon.svg',
                   color: AppColors.lightPrimary,
                 ),
               ),
@@ -272,7 +272,7 @@ class _DeadlineSectionState extends State<DeadlineSection> {
               isExpanded: true,
               hasPrefix: true,
               hasSuffix: true,
-              suffixUrl: "assets/icons/calendar2.svg",
+              suffixUrl: "assets/icons_assets/main_icons_assets/calendar2.svg",
             ),
           ),
 
@@ -342,7 +342,7 @@ class _DeadlineSectionState extends State<DeadlineSection> {
               hasPrefix: true,
               enabled: false,
               hasSuffix: true,
-              suffixUrl: "assets/icons/ClockCircleIcon.svg",
+              suffixUrl: "assets/icons_assets/task_assets/ClockCircleIcon.svg",
             ),
           ),
 
@@ -368,7 +368,7 @@ class _DeadlineSectionState extends State<DeadlineSection> {
               textController: controllerEndDate,
               hasPrefix: true,
               hasSuffix: true,
-              suffixUrl: "assets/icons/calendar2.svg",
+              suffixUrl: "assets/icons_assets/main_icons_assets/calendar2.svg",
             ),
           ),
           SizedBox(height: 4),
@@ -442,7 +442,7 @@ class _DeadlineSectionState extends State<DeadlineSection> {
               hasPrefix: true,
               enabled: false,
               hasSuffix: true,
-              suffixUrl: "assets/icons/ClockCircleIcon.svg",
+              suffixUrl: "assets/icons_assets/task_assets/ClockCircleIcon.svg",
             ),
           ),
           SizedBox(height: 9),

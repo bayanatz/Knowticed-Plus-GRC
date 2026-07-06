@@ -1,14 +1,14 @@
 // Date: 3/3/2026
 // CreatedBy : Amr Mesbah
 // Purpose: Reusable horizontal status chip filter widget
-import '../theme/app_colors.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import 'package:demo_app/core/helper/main_helper/format_helper.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
-import 'package:demo_app/core/theme/app_text_styles.dart';
+import 'package:demo_app/core/theme/app_theme.dart';
 
 class StatusChipFilter extends StatelessWidget {
   /// List of chip items to display
@@ -59,8 +59,8 @@ class StatusChipFilter extends StatelessWidget {
 
     final resolvedSelectedColor = selectedColor ?? theme.colorScheme.primary;
     final resolvedUnselectedColor =
-        unselectedColor ?? (isLight ? Colors.white : theme.cardColor);
-    final resolvedSelectedCountColor = selectedCountTextColor ?? Colors.white;
+        unselectedColor ?? (isLight ? AppColors.white : theme.cardColor);
+    final resolvedSelectedCountColor = selectedCountTextColor ?? AppColors.white;
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -134,14 +134,23 @@ class _StatusChip extends StatelessWidget {
           Container(
             width: chipSize,
             height: chipSize,
+            alignment: Alignment.center,
             decoration: BoxDecoration(
               color: isSelected ? AppColors.primary : AppColors.card,
               borderRadius: BorderRadius.circular(4.r),
             ),
-            child: Center(
-              child: Text(
-                item.count.toString(),
-                style: AppTextStyles.font20BlackCairoMedium.copyWith(color: countColor),
+            child: Text(
+              item.count.toString(),
+              textAlign: TextAlign.center,
+              textHeightBehavior: const TextHeightBehavior(
+                applyHeightToFirstAscent: false,
+                applyHeightToLastDescent: false,
+                leadingDistribution: TextLeadingDistribution.even,
+              ),
+              style: StyleText.fontSize20Weight500.copyWith(
+                color: countColor,
+                height: 1.0,
+                leadingDistribution: TextLeadingDistribution.even,
               ),
             ),
           ),
@@ -151,7 +160,7 @@ class _StatusChip extends StatelessWidget {
           // ── Label ───────────────────────────────────────────────────────
           Text(
             item.label,
-            style: AppTextStyles.font16BlackSemiBoldCairo.copyWith(color: labelColor),
+            style: StyleText.fontSize16Weight600.copyWith(color: labelColor),
           ),
 
           SizedBox(width: chipSpacing),
@@ -185,6 +194,62 @@ class StatusChipItem {
     required this.count,
     this.labelColor,
   });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Department / status filter helper
+// Reproduces the behaviour of the former DepartmentFilterChips widget so it can
+// be used together with [StatusChipFilter]:
+//   • prepends an "All" chip (canonical key 'All') showing [totalCount]
+//   • localizes known English department names to Arabic when [isArabic]
+//   • capitalizes labels via FormatHelper.capitalize
+// The chip `key` stays the English/canonical value so selection logic is
+// unchanged; only the displayed label is localized.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// English → Arabic labels for known departments (and the "All" chip).
+const Map<String, String> kDepartmentEnToAr = {
+  'All': 'الكل',
+  'Executive': 'الإدارة التنفيذية',
+  'Customer Support': 'دعم العملاء',
+  'Finance': 'المالية',
+  'Operations': 'العمليات',
+  'Information Technology': 'تقنية المعلومات',
+  'Human Resources': 'الموارد البشرية',
+  'Marketing': 'التسويق',
+  'Sales': 'المبيعات',
+  'Data Management': 'إدارة البيانات',
+  'Compliance & Legal': 'الامتثال والشؤون القانونية',
+  'Software': 'البرمجيات',
+};
+
+/// Builds the [StatusChipItem] list for a department/status filter.
+List<StatusChipItem> departmentChipItems({
+  required int totalCount,
+  required Map<String, int> departmentCounts,
+  required bool isArabic,
+  Map<String, Color>? labelColors,
+}) {
+  String displayLabel(String key) {
+    final raw = isArabic ? (kDepartmentEnToAr[key] ?? key) : key;
+    return FormatHelper.capitalize(raw);
+  }
+
+  return [
+    StatusChipItem(
+      key: 'All',
+      label: displayLabel('All'),
+      count: totalCount,
+    ),
+    ...departmentCounts.entries.map(
+      (entry) => StatusChipItem(
+        key: entry.key,
+        label: displayLabel(entry.key),
+        count: entry.value,
+        labelColor: labelColors?[entry.key],
+      ),
+    ),
+  ];
 }
 
 

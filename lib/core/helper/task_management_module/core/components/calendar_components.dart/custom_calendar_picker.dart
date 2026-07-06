@@ -3,8 +3,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
-import 'calender_package/src/models/calendar_date_picker2_config.dart';
-import 'calender_package/src/widgets/calendar_date_picker2.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/calendar_components.dart/calender_package/src/models/calendar_date_picker2_config.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/calendar_components.dart/calender_package/src/widgets/calendar_date_picker2.dart';
 
 // ignore: must_be_immutable
 class CustomCalendarPicker extends StatefulWidget {
@@ -45,7 +45,7 @@ class _CustomCalendarPickerState extends State<CustomCalendarPicker> {
         lastMonthIcon: Transform.rotate(
           angle: Get.locale.toString().contains('en') ? 0 : 3.14,
           child: SvgPicture.asset(
-            'assets/icons/back_icon.svg',
+            'assets/icons_assets/main_icons_assets/back_icon.svg',
             // ignore: deprecated_member_use
             color: AppColors.lightPrimary,
           ),
@@ -53,7 +53,7 @@ class _CustomCalendarPickerState extends State<CustomCalendarPicker> {
         nextMonthIcon: Transform.rotate(
           angle: Get.locale.toString().contains('en') ? 3.14 : 0,
           child: SvgPicture.asset(
-            'assets/icons/back_icon.svg',
+            'assets/icons_assets/main_icons_assets/back_icon.svg',
             // ignore: deprecated_member_use
             color: AppColors.lightPrimary,
           ),

@@ -273,7 +273,7 @@ class _EmployeeListViewState extends State<EmployeeListView> {
                               padding: const EdgeInsets.all(12.0),
                               child: GestureDetector(
                                 child: SvgPicture.asset(
-                                  'assets/icons/CheckListOn.svg',
+                                  'assets/icons_assets/main_icons_assets/CheckListOn.svg',
                                 ),
                               ),
                             )
@@ -281,7 +281,7 @@ class _EmployeeListViewState extends State<EmployeeListView> {
                               padding: const EdgeInsets.all(12.0),
                               child: GestureDetector(
                                 child: SvgPicture.asset(
-                                  'assets/icons/CheckListOff.svg',
+                                  'assets/icons_assets/main_icons_assets/CheckListOff.svg',
                                 ),
                               ),
                             ),

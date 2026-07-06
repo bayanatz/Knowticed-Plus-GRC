@@ -7,9 +7,9 @@
 import 'dart:math';
 import 'package:demo_app/features/employee/data/models/emplyees_model/new_employee_model.dart';
 
-import '../../data/models/new_employee_model/emplyees_model/new_employee_model.dart';
-import '../../domain/entities/organization_hierarchy_node.dart';
-import 'employee_controller.dart';
+import 'package:demo_app/core/helper/organization_chart_module/data/models/new_employee_model/emplyees_model/new_employee_model.dart';
+import 'package:demo_app/core/helper/organization_chart_module/domain/entities/organization_hierarchy_node.dart';
+import 'package:demo_app/core/helper/organization_chart_module/presentation/controller/employee_controller.dart';
 
 extension OrganizationHierarchyDrawer on EmployeeController {
   /// function name: buildOrganizationHierarchyGraph

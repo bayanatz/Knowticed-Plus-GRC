@@ -6,12 +6,12 @@ import 'package:demo_app/core/theme/app_font_size.dart';import 'package:demo_app
 
 import 'package:demo_app/core/helper/task_management_module/core/components/selection_user.dart';
 
-import '../../task/controller/task_details_controller.dart';
+import 'package:demo_app/core/helper/task_management_module/task/controller/task_details_controller.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
-import '../constant/enum.dart';
-import 'main_yellow_button.dart';
-import 'tasks_components/custom_project_screen_header.dart';
-import 'tracking_time_components/track_time_subwidget/column_request_data.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/enum.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/main_yellow_button.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_project_screen_header.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tracking_time_components/track_time_subwidget/column_request_data.dart';
 
 /// Date Created :14/November/2023
 /// Developer Name : Bassem Mohamed
@@ -101,7 +101,7 @@ class _CustomCreateTaskContainerState extends State<CustomCreateTaskContainer> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                //SvgPicture.asset("assets/images/imagePickerPhoto.svg"),
+                //SvgPicture.asset("assets/icons_assets/main_icons_assets/imagePickerPhoto.svg"),
                 InkWell(
                   onTap: () {
                     tController.uploadImage("card_images");
@@ -116,7 +116,7 @@ class _CustomCreateTaskContainerState extends State<CustomCreateTaskContainer> {
                                 child: Transform.scale(
                                     scale: 1.2,
                                     child: SvgPicture.asset(
-                                        "assets/images/imagePickerPhoto.svg")),
+                                        "assets/icons_assets/main_icons_assets/imagePickerPhoto.svg")),
                               ),
                             )
                           : CircleAvatar(
@@ -141,7 +141,7 @@ class _CustomCreateTaskContainerState extends State<CustomCreateTaskContainer> {
                             child: Transform.scale(
                               scale: 1.2,
                               child: SvgPicture.asset(
-                                  "assets/images/photo_picker2.svg"),
+                                  "assets/icons_assets/task_assets/photo_picker2.svg"),
                             ),
                           ),
                         ),

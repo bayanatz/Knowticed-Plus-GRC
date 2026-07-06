@@ -7,9 +7,9 @@ import 'package:demo_app/core/helper/task_management_module/core/constant/app_si
 import 'package:demo_app/core/theme/app_font_size.dart';import 'package:demo_app/core/helper/task_management_module/core/components/selection_user.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 
-import '../../constant/enum.dart';
-import '../custom_search.dart';
-import 'custom_project_screen_header.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/enum.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_search.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_project_screen_header.dart';
 
 class SearchFilterRowInvitedMembers extends StatelessWidget {
   final bool filterColor;

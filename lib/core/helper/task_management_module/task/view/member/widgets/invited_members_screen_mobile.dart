@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/selection_user.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';import 'package:demo_app/core/helper/task_management_module/task/controller/task_details_controller.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/board_model/board_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/board_model/board_model.dart';
 
-import '../../../../core/components/custom_appbar_mobile.dart';
-import '../../../../core/components/custom_search.dart';
-import '../../../../core/components/requests_number_container.dart';
-import '../../../../core/components/reusable_icon_container.dart';
-import '../../../../core/components/tasks_components/custom_invited_members_container_mobile.dart';
-import '../../../../core/components/tasks_components/invited_members_filter.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_appbar_mobile.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_search.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/requests_number_container.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/reusable_icon_container.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_invited_members_container_mobile.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/invited_members_filter.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 
 /// Date Created : 18/Sep/2024
@@ -107,7 +107,7 @@ class _InvitedMembersScreenMobileState
                               SizedBox(width: 0.03.w),
                               ReusableIconContainer(
                                 filterColor: taskController.isFilterEnabled,
-                                imagePath: "assets/images/filter_table.svg",
+                                imagePath: "assets/icons_assets/main_icons_assets/filter_table.svg",
                                 onPressed: () {
                                   showDialog(
                                     context: context,

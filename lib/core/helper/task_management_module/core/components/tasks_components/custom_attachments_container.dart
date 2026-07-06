@@ -9,8 +9,8 @@ import 'package:demo_app/core/helper/task_management_module/core/components/sele
 import 'package:demo_app/core/helper/task_management_module/task/controller/task_details_controller.dart';
 
 import 'package:demo_app/core/theme/app_colors.dart';
-import '../dialogs/delete_dialog.dart';
-import 'package:demo_app/features/roles/helper/task_management_module/core/components/success_dialog.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/dialogs/delete_dialog.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/success_dialog.dart';
 
 /// Date Created :23/November/2023
 /// Developer Name : Bassem Mohamed
@@ -183,7 +183,7 @@ class AttachmentContainer extends StatelessWidget {
                               title: "Successful",
                               subtitle:
                               "Attachment Has Been Deleted Successfully",
-                              lottieAsset: "assets/images/correct.json",
+                              lottieAsset: "assets/lottie_assets/main_lottie_assets/lottie_successful.json",
                             );
                           },
                         );

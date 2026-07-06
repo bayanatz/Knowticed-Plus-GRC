@@ -7,8 +7,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
-import '../constant/enum.dart';
-import '../constant/haptic_controller.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/enum.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 
 // ignore: must_be_immutable
 class CustomElevatedButton extends StatelessWidget {
@@ -50,7 +50,7 @@ class CustomElevatedButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final orientation = MediaQuery.of(context).orientation;
-    final TaskHapticController hapticController = Get.put(TaskHapticController());
+    final HapticController hapticController = Get.put(HapticController());
     bool isTablet = MediaQuery.of(context).size.shortestSide > 600;
     return SizedBox(
       height: height,

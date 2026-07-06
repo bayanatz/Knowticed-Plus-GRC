@@ -6,23 +6,23 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/selection_user.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';import 'package:demo_app/core/helper/task_management_module/task/controller/task_details_controller.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/board_model/board_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/board_model/board_model.dart';
 import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_checklists.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/card_model.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/checklist_item.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/checklist_item.dart';
 
 import 'package:demo_app/core/theme/app_colors.dart';
-import '../../constant/enum.dart';
-import '../custom_black_button.dart';
-import '../custom_textfield_new.dart';
-import '../dialogs/delete_archive_card_dialog.dart';
-import 'check_list_settings_menu.dart';
-import 'custom_checklist_additional_info_row.dart';
-import 'custom_container_header_mobile.dart';
-import 'custom_members_dialog_Tablet.dart';
-import 'custom_project_screen_header.dart';
-import 'set_date_dialog.dart';
-import 'set_date_dialog_vertical.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/enum.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_black_button.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_textfield_new.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/dialogs/delete_archive_card_dialog.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/check_list_settings_menu.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_checklist_additional_info_row.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_container_header_mobile.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_members_dialog_Tablet.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_project_screen_header.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/set_date_dialog.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/set_date_dialog_vertical.dart';
 
 /// Date Created :21/November/2023
 /// Developer Name : Bassem Mohamed
@@ -159,7 +159,7 @@ class _ChecklistSectionState extends State<ChecklistSection> {
             CustomRowWithIcons(
               isCheckList: true,
               onTrashPressed: widget.onDeletePressed,
-              iconPath: "assets/icons/CheckSquareIcon.svg",
+              iconPath: "assets/icons_assets/task_assets/CheckSquareIcon.svg",
               isExpand: expandCheckList,
               title: widget.checkListName!.tr,
               board: widget.board,
@@ -246,8 +246,8 @@ class _ChecklistSectionState extends State<ChecklistSection> {
                                                     : 0.035.h)
                                                 : 0.05.w,
                                             completedItems.contains(index)
-                                                ? 'assets/icons/CheckListFilled.svg'
-                                                : 'assets/icons/CheckSquare.svg',
+                                                ? 'assets/icons_assets/main_icons_assets/CheckListOn.svg'
+                                                : 'assets/icons_assets/task_assets/CheckSquare.svg',
                                             color: AppColors.lightPrimary),
                                         SizedBox(
                                           width: isTablet
@@ -350,7 +350,7 @@ class _ChecklistSectionState extends State<ChecklistSection> {
                                         );
                                       },
                                       child: SvgPicture.asset(
-                                        'assets/icons/threeDots.svg',
+                                        'assets/icons_assets/main_icons_assets/more_menu.svg',
                                         color: AppColors.colorDarkGrey,
                                         height: isPortrait ? 0.008.h : 0.01.h,
                                       )),
@@ -388,7 +388,7 @@ class _ChecklistSectionState extends State<ChecklistSection> {
                                         );
                                       },
                                       child: SvgPicture.asset(
-                                        'assets/icons/xClose.svg',
+                                        'assets/icons_assets/task_assets/xClose.svg',
                                         height: 0.015.h,
                                       )),
                                 ],
@@ -442,7 +442,7 @@ class _ChecklistSectionState extends State<ChecklistSection> {
                         GestureDetector(
                             onTap: widget.onDeletePressed,
                             child: SvgPicture.asset(
-                              'assets/icons/deleteIcon.svg',
+                              'assets/icons_assets/task_assets/deleteIcon.svg',
                               height: 0.025.h,
                               color: AppColors.red,
                             )),

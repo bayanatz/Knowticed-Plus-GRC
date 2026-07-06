@@ -6,10 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:demo_app/core/custom/2-custom_textfield.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:demo_app/core/custom/32-custom_svg.dart';
 
 import 'package:demo_app/core/theme/app_colors.dart';
-import 'package:demo_app/core/theme/app_text_styles.dart';
-import '../theme/app_colors.dart';
+import 'package:demo_app/core/theme/app_theme.dart';
+import 'package:demo_app/core/local_widgets/services_management/custom_textformfield.dart';
 
 ///
 /// Usage:
@@ -34,7 +35,7 @@ Future<void> showUploadDialog({
 }) {
   return showDialog(
     context: context,
-    barrierColor: Colors.black.withOpacity(0.4),
+    barrierColor: AppColors.totalBlack.withOpacity(0.4),
     builder: (_) => _UploadDialog(
       dialogTitle: dialogTitle,
       titleFieldLabel: titleFieldLabel,
@@ -56,17 +57,17 @@ Future<void> showUploadDialog({
 String getFileIcon(String extension) {
   switch (extension.toLowerCase()) {
     case 'pdf':
-      return 'assets/svg/pdf_icon.svg';
+      return 'assets/icons_assets/main_icons_assets/svg_pdf_icon.svg';
     case 'ppt':
     case 'pptx':
-      return 'assets/svg/ppt_attachment_icon.svg';
+      return 'assets/icons_assets/main_icons_assets/ppt_attachment_icon.svg';
     case 'doc':
     case 'docx':
-      return 'assets/svg/doc_icon.svg';
+      return 'assets/icons_assets/main_icons_assets/doc_icon.svg';
     case 'png':
-      return 'assets/svg/image_icon.svg';
+      return 'assets/icons_assets/main_icons_assets/svg_image_icon.svg';
     default:
-      return 'assets/svg/image_icon.svg';
+      return 'assets/icons_assets/main_icons_assets/svg_image_icon.svg';
   }
 }
 
@@ -83,7 +84,7 @@ class _DialogShell extends StatelessWidget {
   Widget build(BuildContext context) {
     final lightMode = Theme.of(context).brightness == Brightness.light;
     return Dialog(
-      backgroundColor: lightMode ? Colors.white : AppColors.background,
+      backgroundColor: lightMode ? AppColors.card : AppColors.background,
       elevation: 8,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.r),
@@ -229,7 +230,7 @@ class _UploadDialogState extends State<_UploadDialog> {
           ] else ...[
             Text(
               'File',
-              style: AppTextStyles.font12BlackCairoRegular.copyWith(
+              style: StyleText.fontSize12Weight400.copyWith(
                 color: AppColors.text.withOpacity(0.6),
               ),
             ),
@@ -246,7 +247,7 @@ class _UploadDialogState extends State<_UploadDialog> {
             // Title Name field
             Text(
               widget.titleFieldLabel,
-              style: AppTextStyles.font12BlackCairoRegular
+              style: StyleText.fontSize12Weight400
                   .copyWith(color: AppColors.text),
             ),
             SizedBox(height: 6.h),
@@ -282,23 +283,18 @@ class _UploadDialogState extends State<_UploadDialog> {
             shape: BoxShape.circle,
           ),
           child: Center(
-            child: widget.headerIconAsset != null
-                ? SvgPicture.asset(
-              widget.headerIconAsset!,
+            child:
+                 SvgPicture.asset(
+              "assets/icons_assets/main_icons_assets/Upload Minimalistic.svg",
               width: 18.r,
               height: 18.r,
             )
-                : Icon(
-              Icons.upload_rounded,
-              size: 18.r,
-              color: Colors.black,
-            ),
           ),
         ),
         SizedBox(width: 10.w),
         Text(
           widget.dialogTitle,
-          style: AppTextStyles.font16BlackSemiBoldCairo.copyWith(color: AppColors.text),
+          style: StyleText.fontSize16Weight600.copyWith(color: AppColors.text),
         ),
       ],
     );
@@ -312,28 +308,24 @@ class _UploadDialogState extends State<_UploadDialog> {
       width: double.infinity,
       padding: EdgeInsets.symmetric(vertical: 40.h),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
+        color: AppColors.background,
         borderRadius: BorderRadius.circular(8.r),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.cloud_upload_outlined,
-            size: 64.r,
-            color: Colors.grey.shade500,
-          ),
+          CustomSvg(assetPath: "assets/icons_assets/main_icons_assets/first_upload.svg",width: 100.sp,height: 100.sp,fit: BoxFit.fill,),
           SizedBox(height: 12.h),
           Text(
             'Drag & Drop files here',
-            style: AppTextStyles.font16BlackMediumCairo
-                .copyWith(color: Colors.grey.shade700),
+            style: StyleText.fontSize16Weight500
+                .copyWith(color: AppColors.secondaryText),
           ),
           SizedBox(height: 6.h),
           Text(
             'Or',
-            style: AppTextStyles.font13SecondaryBlackCairo
-                .copyWith(color: Colors.grey.shade500),
+            style: StyleText.fontSize13Weight400
+                .copyWith(color: AppColors.secondaryText),
           ),
         ],
       ),
@@ -375,7 +367,7 @@ class _UploadDialogState extends State<_UploadDialog> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
+        color: AppColors.card,
         borderRadius: BorderRadius.circular(8.r),
       ),
       child: Row(
@@ -394,7 +386,7 @@ class _UploadDialogState extends State<_UploadDialog> {
               children: [
                 Text(
                   file.name,
-                  style: AppTextStyles.font13SecondaryBlackCairo
+                  style: StyleText.fontSize13Weight400
                       .copyWith(color: AppColors.text),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -403,14 +395,14 @@ class _UploadDialogState extends State<_UploadDialog> {
                   children: [
                     Text(
                       _formatBytes(file.size),
-                      style: AppTextStyles.font10LightGreyRegularCairo
-                          .copyWith(color: Colors.grey.shade500),
+                      style: StyleText.fontSize10Weight400
+                          .copyWith(color: AppColors.secondaryText),
                     ),
                     SizedBox(width: 16.w),
                     Text(
                       'Date: ${_formatDate(now)}',
-                      style: AppTextStyles.font10LightGreyRegularCairo
-                          .copyWith(color: Colors.grey.shade500),
+                      style: StyleText.fontSize10Weight400
+                          .copyWith(color: AppColors.secondaryText),
                     ),
                   ],
                 ),
@@ -424,11 +416,11 @@ class _UploadDialogState extends State<_UploadDialog> {
             child: Container(
               width: 22.r,
               height: 22.r,
-              decoration: const BoxDecoration(
-                color: Color(0xFFE53935),
+              decoration: BoxDecoration(
+                color: AppColors.red,
                 shape: BoxShape.circle,
               ),
-              child: Icon(Icons.remove, size: 14.r, color: Colors.white),
+              child: Icon(Icons.remove, size: 14.r, color: AppColors.white),
             ),
           ),
         ],
@@ -452,12 +444,12 @@ class _UploadDialogState extends State<_UploadDialog> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.upload_rounded, size: 18.r, color: Colors.black),
+            Icon(Icons.upload_rounded, size: 18.r, color: AppColors.textButton),
             SizedBox(width: 8.w),
             Text(
               'Upload',
-              style: AppTextStyles.font14BlackCairo
-                  .copyWith(color: Colors.black),
+              style: StyleText.fontSize14Weight600
+                  .copyWith(color: AppColors.textButton),
             ),
           ],
         ),
@@ -499,15 +491,15 @@ class _UploadDialogState extends State<_UploadDialog> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 46.h,
+        height: 36.sp,
         decoration: BoxDecoration(
-          color: Colors.grey.shade200,
+          color: AppColors.greyDark,
           borderRadius: BorderRadius.circular(8.r),
         ),
         alignment: Alignment.center,
         child: Text(
           label,
-          style: AppTextStyles.font14BlackCairoMedium
+          style: StyleText.fontSize14Weight500
               .copyWith(color: AppColors.text),
         ),
       ),
@@ -521,7 +513,7 @@ class _UploadDialogState extends State<_UploadDialog> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 46.h,
+        height: 36.sp,
         decoration: BoxDecoration(
           color: AppColors.primary,
           borderRadius: BorderRadius.circular(8.r),
@@ -529,8 +521,8 @@ class _UploadDialogState extends State<_UploadDialog> {
         alignment: Alignment.center,
         child: Text(
           label,
-          style: AppTextStyles.font14BlackCairo
-              .copyWith(color: Colors.black),
+          style: StyleText.fontSize14Weight600
+              .copyWith(color: AppColors.textButton),
         ),
       ),
     );

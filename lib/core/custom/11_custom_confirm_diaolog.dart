@@ -2,7 +2,7 @@
 /// File Name: custom_dialogs.dart
 /// Description: Reusable dialog widgets:
 ///   - showConfirmDialog   → Request To Cancellation / any confirm
-///   - showSuccessDialog   → Success feedback
+///   - showSuccessDialog   → Success feedback (Lottie animation)
 ///   - showCommentDialog   → Justifications / any text-area comment
 ///   - showUploadDialog    → Adding Attachment (drag & drop / browse)
 /// Created by: Amr Mesbah
@@ -15,15 +15,14 @@ import 'package:flutter/material.dart';
 import 'package:demo_app/core/custom/2-custom_textfield.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../theme/app_colors.dart';
+import 'package:lottie/lottie.dart';
 
-
-import 'package:demo_app/core/custom/32-custom_svg.dart';
+import 'package:demo_app/core/helper/inventory_module/core/svg_custom.dart';
+import 'package:demo_app/core/helper/knowledge_hub_module/core/custom_validated_text_field_master.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
-import 'package:demo_app/core/theme/app_text_styles.dart';
-import '../theme/app_colors.dart';
+import 'package:demo_app/core/theme/app_theme.dart';
+import 'package:demo_app/core/helper/main_helper/app_haptics.dart';
 
-//
 // ─────────────────────────────────────────────
 //  SHARED HELPERS
 // ─────────────────────────────────────────────
@@ -39,18 +38,18 @@ class _DialogShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.transparent,
       insetPadding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),
       child: Container(
         width: width ?? 420.w,
         decoration: BoxDecoration(
           color: Theme.of(context).brightness == Brightness.light
-              ? Colors.white
+              ? AppColors.card
               : AppColors.background,
           borderRadius: BorderRadius.circular(8.r),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.08),
+              color: AppColors.totalBlack.withOpacity(0.08),
               blurRadius: 20,
               offset: const Offset(-3, 4),
             ),
@@ -73,7 +72,7 @@ Widget _primaryBtn({
     onTap: onTap,
     child: Container(
       width: width,
-      height: 38.h,
+      height: 36.sp,
       decoration: BoxDecoration(
         color: AppColors.primary, // #FFDE59
         borderRadius: BorderRadius.circular(8.r),
@@ -81,7 +80,7 @@ Widget _primaryBtn({
       child: Center(
         child: Text(
           label,
-          style: AppTextStyles.font14BlackCairoMedium.copyWith(color: Colors.black),
+          style: StyleText.fontSize14Weight500.copyWith(color: AppColors.textButton),
         ),
       ),
     ),
@@ -98,15 +97,15 @@ Widget _secondaryBtn({
     onTap: onTap,
     child: Container(
       width: width,
-      height: 38.h,
+      height: 36.sp,
       decoration: BoxDecoration(
-        color: const Color(0xFFEEEEEE),
+        color: AppColors.greyDark,
         borderRadius: BorderRadius.circular(8.r),
       ),
       child: Center(
         child: Text(
           label,
-          style: AppTextStyles.font14BlackCairoMedium.copyWith(color: Colors.black87),
+          style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
         ),
       ),
     ),
@@ -134,14 +133,17 @@ Future<void> showConfirmDialog({
   String cancelLabel = 'No',
   VoidCallback? onConfirm,
   VoidCallback? onCancel,
-  /// Pass a custom SVG asset path for the icon, e.g. 'assets/icons/cancel.svg'
-  String? iconAsset,
-  /// Fallback icon widget if no SVG asset is given
+  /// Optional custom Lottie animation path.
+  /// Defaults to assets/lottie_assets/main_lottie_assets/lottie_attention.json
+  String? lottieAsset,
+  /// Whether the Lottie animation should loop. Defaults to true.
+  bool repeat = true,
+  /// Fallback icon widget if you want to bypass Lottie entirely
   Widget? iconWidget,
 }) {
   return showDialog(
     context: context,
-    barrierColor: Colors.black.withOpacity(0.4),
+    barrierColor: AppColors.totalBlack.withOpacity(0.4),
     builder: (_) => _ConfirmDialog(
       title: title,
       subtitle: subtitle,
@@ -149,7 +151,8 @@ Future<void> showConfirmDialog({
       cancelLabel: cancelLabel,
       onConfirm: onConfirm,
       onCancel: onCancel,
-      iconAsset: iconAsset,
+      lottieAsset: lottieAsset,
+      repeat: repeat,
       iconWidget: iconWidget,
     ),
   );
@@ -162,7 +165,8 @@ class _ConfirmDialog extends StatelessWidget {
   final String cancelLabel;
   final VoidCallback? onConfirm;
   final VoidCallback? onCancel;
-  final String? iconAsset;
+  final String? lottieAsset;
+  final bool repeat;
   final Widget? iconWidget;
 
   const _ConfirmDialog({
@@ -172,7 +176,8 @@ class _ConfirmDialog extends StatelessWidget {
     required this.cancelLabel,
     this.onConfirm,
     this.onCancel,
-    this.iconAsset,
+    this.lottieAsset,
+    this.repeat = true,
     this.iconWidget,
   });
 
@@ -192,14 +197,14 @@ class _ConfirmDialog extends StatelessWidget {
           Text(
             title,
             textAlign: TextAlign.center,
-            style: AppTextStyles.font16BlackSemiBoldCairo.copyWith(color: AppColors.text),
+            style: StyleText.fontSize16Weight600.copyWith(color: AppColors.text),
           ),
           SizedBox(height: 8.h),
           // Subtitle
           Text(
             subtitle,
             textAlign: TextAlign.center,
-            style: AppTextStyles.font12BlackCairoRegular.copyWith(
+            style: StyleText.fontSize12Weight400.copyWith(
               color: AppColors.text.withOpacity(0.6),
             ),
           ),
@@ -213,6 +218,7 @@ class _ConfirmDialog extends StatelessWidget {
                 child: _secondaryBtn(
                   label: cancelLabel,
                   onTap: () {
+                    AppHaptics.low(); // cancel in dialog
                     Navigator.of(context).pop();
                     onCancel?.call();
                   },
@@ -223,6 +229,7 @@ class _ConfirmDialog extends StatelessWidget {
                 child: _primaryBtn(
                   label: confirmLabel,
                   onTap: () {
+                    AppHaptics.high(); // confirm "are you sure"
                     Navigator.of(context).pop();
                     onConfirm?.call();
                   },
@@ -238,18 +245,11 @@ class _ConfirmDialog extends StatelessWidget {
 
   Widget _buildIcon() {
     if (iconWidget != null) return iconWidget!;
-    if (iconAsset != null) {
-      return SvgPicture.asset(iconAsset!, width: 60.r, height: 60.r);
-    }
-    // Default: red X circle (matches Figma design)
-    return Container(
-      width: 60.r,
-      height: 60.r,
-      decoration: const BoxDecoration(
-        color: Color(0xFFE53935),
-        shape: BoxShape.circle,
-      ),
-      child: Icon(Icons.close_rounded, color: Colors.white, size: 36.r),
+    return Lottie.asset(
+      lottieAsset ?? 'assets/lottie_assets/main_lottie_assets/lottie_confirmation.json',
+      width: 90.r,
+      height: 90.r,
+      repeat: repeat,
     );
   }
 }
@@ -272,18 +272,22 @@ Future<void> showSuccessDialog({
   String subtitle = 'Operation completed successfully.',
   String closeLabel = 'Close',
   VoidCallback? onClose,
-  /// Optional custom SVG icon path
-  String? iconAsset,
+  /// Optional custom Lottie animation path.
+  /// Defaults to assets/lottie_assets/main_lottie_assets/lottie_approved.json
+  String? lottieAsset,
+  /// Whether the Lottie animation should loop. Defaults to false (plays once).
+  bool repeat = false,
 }) {
   return showDialog(
     context: context,
-    barrierColor: Colors.black.withOpacity(0.4),
+    barrierColor: AppColors.totalBlack.withOpacity(0.4),
     builder: (_) => _SuccessDialog(
       title: title,
       subtitle: subtitle,
       closeLabel: closeLabel,
       onClose: onClose,
-      iconAsset: iconAsset,
+      lottieAsset: lottieAsset,
+      repeat: repeat,
     ),
   );
 }
@@ -293,14 +297,16 @@ class _SuccessDialog extends StatelessWidget {
   final String subtitle;
   final String closeLabel;
   final VoidCallback? onClose;
-  final String? iconAsset;
+  final String? lottieAsset;
+  final bool repeat;
 
   const _SuccessDialog({
     required this.title,
     required this.subtitle,
     required this.closeLabel,
     this.onClose,
-    this.iconAsset,
+    this.lottieAsset,
+    this.repeat = false,
   });
 
   @override
@@ -311,43 +317,36 @@ class _SuccessDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           SizedBox(height: 16.h),
-          // Green check icon
+          // Lottie success animation
           _buildIcon(),
           SizedBox(height: 16.h),
           // Title
           Text(
             title,
             textAlign: TextAlign.center,
-            style: AppTextStyles.font16BlackSemiBoldCairo.copyWith(color: AppColors.text),
+            style: StyleText.fontSize16Weight600.copyWith(color: AppColors.text),
           ),
           SizedBox(height: 8.h),
           // Subtitle
           Text(
             subtitle,
             textAlign: TextAlign.center,
-            style: AppTextStyles.font12BlackCairoRegular.copyWith(
+            style: StyleText.fontSize12Weight400.copyWith(
               color: AppColors.text.withOpacity(0.6),
             ),
           ),
           SizedBox(height: 10.h),
-
         ],
       ),
     );
   }
 
   Widget _buildIcon() {
-    if (iconAsset != null) {
-      return SvgPicture.asset(iconAsset!, width: 60.r, height: 60.r);
-    }
-    return Container(
-      width: 60.r,
-      height: 60.r,
-      decoration: const BoxDecoration(
-        color: Color(0xFF43A047),
-        shape: BoxShape.circle,
-      ),
-      child: Icon(Icons.check_rounded, color: Colors.white, size: 36.r),
+    return Lottie.asset(
+      lottieAsset ?? 'assets/lottie_assets/main_lottie_assets/lottie_approved.json',
+      width: 90.r,
+      height: 90.r,
+      repeat: repeat,
     );
   }
 }
@@ -379,7 +378,7 @@ Future<void> showCommentDialog({
 }) {
   return showDialog(
     context: context,
-    barrierColor: Colors.black.withOpacity(0.4),
+    barrierColor: AppColors.totalBlack.withOpacity(0.4),
     builder: (_) => _CommentDialog(
       title: title,
       fieldLabel: fieldLabel,
@@ -431,6 +430,7 @@ class _CommentDialogState extends State<_CommentDialog> {
   void _handleSubmit() {
     setState(() => _submitted = true);
     if (_controller.text.trim().isEmpty) return;
+    AppHaptics.medium(); // submit
     Navigator.of(context).pop();
     widget.onSubmit?.call(_controller.text.trim());
   }
@@ -451,7 +451,7 @@ class _CommentDialogState extends State<_CommentDialog> {
               Expanded(
                 child: Text(
                   widget.title,
-                  style: AppTextStyles.font14BlackCairo
+                  style: StyleText.fontSize14Weight600
                       .copyWith(color: AppColors.text),
                 ),
               ),
@@ -505,17 +505,6 @@ class _CommentDialogState extends State<_CommentDialog> {
 ///   onSubmit: (file, title) { /* handle upload */ },
 /// );
 /// ```
-// ─────────────────────────────────────────────
-//  4.  UPLOAD / ATTACHMENT DIALOG
-// ─────────────────────────────────────────────
-///
-/// Usage:
-/// ```dart
-/// showUploadDialog(
-///   context: context,
-///   onSubmit: (file, title) { /* handle upload */ },
-/// );
-/// ```
 Future<void> showUploadDialog({
   required BuildContext context,
   String dialogTitle = 'Adding Attachment',
@@ -530,11 +519,13 @@ Future<void> showUploadDialog({
   String successTitle = 'Attachment Added',
   String successSubtitle = 'Your attachment has been added successfully.',
   bool showSuccessOnSubmit = true,
+  /// Optional custom Lottie animation path for the success dialog shown after submit.
+  String? successLottieAsset,
   void Function(PlatformFile file, String titleName)? onSubmit,
 }) {
   return showDialog(
     context: context,
-    barrierColor: Colors.black.withOpacity(0.4),
+    barrierColor: AppColors.totalBlack.withOpacity(0.4),
     builder: (_) => _UploadDialog(
       parentContext: context, // ← pass the parent context
       dialogTitle: dialogTitle,
@@ -548,6 +539,7 @@ Future<void> showUploadDialog({
       showSuccessOnSubmit: showSuccessOnSubmit,
       successTitle: successTitle,
       successSubtitle: successSubtitle,
+      successLottieAsset: successLottieAsset,
       onSubmit: onSubmit,
     ),
   );
@@ -566,6 +558,7 @@ class _UploadDialog extends StatefulWidget {
   final bool showSuccessOnSubmit;
   final String successTitle;
   final String successSubtitle;
+  final String? successLottieAsset;
   final void Function(PlatformFile, String)? onSubmit;
 
   const _UploadDialog({
@@ -581,6 +574,7 @@ class _UploadDialog extends StatefulWidget {
     required this.successSubtitle,
     this.headerIconAsset,
     this.allowedExtensions,
+    this.successLottieAsset,
     this.onSubmit,
   });
 
@@ -617,6 +611,7 @@ class _UploadDialogState extends State<_UploadDialog> {
     if (_pickedFile == null) return;
     if (_titleCtrl.text.trim().isEmpty) return;
 
+    AppHaptics.medium(); // submit
     // Close upload dialog
     Navigator.of(context).pop();
 
@@ -629,6 +624,7 @@ class _UploadDialogState extends State<_UploadDialog> {
         context: widget.parentContext,
         title: widget.successTitle,
         subtitle: widget.successSubtitle,
+        lottieAsset: widget.successLottieAsset,
         onClose: () {},
       );
     }
@@ -654,14 +650,14 @@ class _UploadDialogState extends State<_UploadDialog> {
           Row(
             children: [
               _TitleIcon(
-                assetPath: "assets/images/Upload Minimalistic.svg",
+                assetPath: "assets/icons_assets/data_grc_assets/upload_minimalistic.svg",
                 fallback: Icon(Icons.attach_file,
                     size: 18.r, color: AppColors.primary),
               ),
               SizedBox(width: 8.w),
               Text(
                 widget.dialogTitle,
-                style: AppTextStyles.font14BlackCairo
+                style: StyleText.fontSize14Weight600
                     .copyWith(color: AppColors.text),
               ),
             ],
@@ -677,7 +673,10 @@ class _UploadDialogState extends State<_UploadDialog> {
               alignment: Alignment.centerRight,
               child: _secondaryBtn(
                 label: widget.discardLabel,
-                onTap: () => Navigator.of(context).pop(),
+                onTap: () {
+                  AppHaptics.medium(); // discard
+                  Navigator.of(context).pop();
+                },
                 width: 120.w,
               ),
             ),
@@ -691,7 +690,7 @@ class _UploadDialogState extends State<_UploadDialog> {
             // Title field (only after file is selected)
             Text(
               widget.titleFieldLabel,
-              style: AppTextStyles.font14BlackCairoRegular
+              style: StyleText.fontSize14Weight400
                   .copyWith(color: AppColors.text),
             ),
             SizedBox(height: 6.h),
@@ -711,7 +710,10 @@ class _UploadDialogState extends State<_UploadDialog> {
                 Expanded(
                   child: _secondaryBtn(
                     label: widget.discardLabel,
-                    onTap: () => Navigator.of(context).pop(),
+                    onTap: () {
+                      AppHaptics.medium(); // discard
+                      Navigator.of(context).pop();
+                    },
                   ),
                 ),
                 SizedBox(width: 12.w),
@@ -744,7 +746,7 @@ class _UploadDialogState extends State<_UploadDialog> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CustomSvg(
-              assetPath: 'assets/uploadfile.svg',
+              assetPath: 'assets/icons_assets/main_icons_assets/uploadfile.svg',
               width: 60.w,
               height: 60.h,
               fit: BoxFit.fill,
@@ -752,13 +754,13 @@ class _UploadDialogState extends State<_UploadDialog> {
             SizedBox(height: 8.h),
             Text(
               'Drag & Drop files here',
-              style: AppTextStyles.font14BlackCairoRegular
+              style: StyleText.fontSize14Weight400
                   .copyWith(color: AppColors.text),
             ),
             SizedBox(height: 4.h),
             Text(
               'Or',
-              style: AppTextStyles.font12BlackCairoRegular
+              style: StyleText.fontSize12Weight400
                   .copyWith(color: AppColors.text),
             ),
           ],
@@ -793,22 +795,22 @@ class _UploadDialogState extends State<_UploadDialog> {
               children: [
                 Text(
                   file.name,
-                  style: AppTextStyles.font12BlackCairoRegular
+                  style: StyleText.fontSize12Weight400
                       .copyWith(color: AppColors.text),
                   overflow: TextOverflow.ellipsis,
                 ),
                 SizedBox(height: 6.h),
                 Text(
                   _formatBytes(file.size),
-                  style: AppTextStyles.font10BlackCairoRegular
-                      .copyWith(color: Colors.grey.shade600),
+                  style: StyleText.fontSize10Weight400
+                      .copyWith(color: AppColors.secondaryText),
                 ),
               ],
             ),
           ),
           GestureDetector(
-            onTap: () => setState(() => _pickedFile = null),
-            child:  CustomSvg(assetPath: "assets/removed.svg",width: 15.w,height: 15.h,fit: BoxFit.scaleDown,)
+              onTap: () => setState(() => _pickedFile = null),
+              child:  CustomSvg(assetPath: "assets/icons_assets/main_icons_assets/removed.svg",width: 15.w,height: 15.h,fit: BoxFit.scaleDown,)
 
           ),
         ],
@@ -819,17 +821,17 @@ class _UploadDialogState extends State<_UploadDialog> {
   String _getFileIcon(String extension) {
     switch (extension.toLowerCase()) {
       case 'pdf':
-        return 'assets/svg/pdf_icon.svg';
+        return 'assets/icons_assets/main_icons_assets/svg_pdf_icon.svg';
       case 'ppt':
       case 'pptx':
-        return 'assets/svg/ppt_attachment_icon.svg';
+        return 'assets/icons_assets/main_icons_assets/ppt_attachment_icon.svg';
       case 'doc':
       case 'docx':
-        return 'assets/svg/doc_icon.svg';
+        return 'assets/icons_assets/main_icons_assets/doc_icon.svg';
       case 'png':
-        return 'assets/svg/image_icon.svg';
+        return 'assets/icons_assets/main_icons_assets/svg_image_icon.svg';
       default:
-        return 'assets/svg/image_icon.svg';
+        return 'assets/icons_assets/main_icons_assets/svg_image_icon.svg';
     }
   }
 }
@@ -850,8 +852,8 @@ class _TitleIcon extends StatelessWidget {
           width: 30.r,
           height: 30.r,
           decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: AppColors.primary
+              shape: BoxShape.circle,
+              color: AppColors.primary
           ),
           child: Center(child: SvgPicture.asset(assetPath!, width: 20.r, height: 20.r, fit: BoxFit.scaleDown,)));
     }
@@ -859,11 +861,11 @@ class _TitleIcon extends StatelessWidget {
         Container(
           width: 20.r,
           height: 20.r,
-          decoration: const BoxDecoration(
-            color: Color(0xFFE53935),
+          decoration: BoxDecoration(
+            color: AppColors.red,
             shape: BoxShape.circle,
           ),
-          child: Icon(Icons.close, size: 12.r, color: Colors.white),
+          child: Icon(Icons.close, size: 12.r, color: AppColors.white),
         );
   }
 }
@@ -875,7 +877,7 @@ class _TitleIcon extends StatelessWidget {
 //   context: context,
 //   title: 'Request To Cancellation',
 //   subtitle: 'Are You Sure You Want to Cancel This Request?',
-//   iconAsset: 'assets/icons/cancel.svg', // or leave null for default red X
+//   // lottieAsset: 'assets/lottie_assets/main_lottie_assets/lottie_attention.json', // default
 //   onConfirm: () { /* your action */ },
 // );
 
@@ -884,6 +886,7 @@ class _TitleIcon extends StatelessWidget {
 // context: context,
 // title: 'Request Cancelation',
 // subtitle: 'You Successfully Requested Cancelation For This Request',
+// // lottieAsset: 'assets/lottie_assets/main_lottie_assets/lottie_approved.json', // default
 // onClose: () { /* optional */ },
 // );
 
@@ -892,7 +895,7 @@ class _TitleIcon extends StatelessWidget {
 //   context: context,
 //   title: 'Reason Of Cancellation',
 //   fieldLabel: 'Justifications',
-//   titleIconAsset: 'assets/icons/cancel.svg',
+//   titleIconAsset: 'assets/icons_assets/main_icons_assets/icons_cancel.svg',
 //   textDirection: TextDirection.ltr, // or rtl for Arabic
 //   onSubmit: (text) { /* use comment text */ },
 // );

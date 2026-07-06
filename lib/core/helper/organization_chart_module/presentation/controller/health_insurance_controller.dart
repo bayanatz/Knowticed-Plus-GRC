@@ -1,9 +1,9 @@
 import 'package:dartz/dartz.dart';
-import 'package:demo_app/core/network/failure_model.dart';
 import 'package:get/get.dart';
 
-import '../../data/repository/health_insurance_repository.dart';
-import '../../domain/entities/request_health_insurance_entity.dart';
+import 'package:demo_app/core/network/failure_model.dart';
+import 'package:demo_app/core/helper/organization_chart_module/data/repository/health_insurance_repository.dart';
+import 'package:demo_app/core/helper/organization_chart_module/domain/entities/request_health_insurance_entity.dart';
 
 class HealthInsuranceController extends GetxController {
   final HealthInsuranceRepository _healthInsuranceRepository =

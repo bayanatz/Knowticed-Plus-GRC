@@ -10,7 +10,7 @@ import 'package:get/get.dart';
 import 'package:demo_app/core/helper/task_management_module/borad/controller/board_controller.dart';
 import 'package:demo_app/core/helper/task_management_module/core/constant/enum.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';import 'package:demo_app/core/theme/app_colors.dart';
-import '../constant/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 
 // ignore: must_be_immutable
 class UpperFilters extends StatefulWidget {
@@ -45,7 +45,7 @@ class _UpperFiltersState extends State<UpperFilters> {
     fontSize: FontConstants.fontSize032.h,
   );
 
-  final TaskHapticController hapticController = Get.put(TaskHapticController());
+  final HapticController hapticController = Get.put(HapticController());
   Widget filterItems(String title, int index) {
     return GestureDetector(
       onTap: () {

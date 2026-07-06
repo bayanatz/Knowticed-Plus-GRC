@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:demo_app/core/network/api_constants.dart';
-import 'package:demo_app/core/network/failure_model.dart';
-import 'package:demo_app/core/services/firebase/repository/firebase_repository.dart';
 import 'package:demo_app/features/onboarding/authentication/data/models/demo_user_account_overview.dart';
 
+import 'package:demo_app/core/network/failure_model.dart';
+import 'package:demo_app/core/services/firebase/repository/firebase_repository.dart';
 
 ///********************** FILE INFO ********************///
 /// Class Name: EmployeesRemoteDataSource

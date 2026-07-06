@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
-import '../constant/date_time_in_arabic.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/date_time_in_arabic.dart';
 
 // ignore: must_be_immutable
 class RequestsNumberContainer extends StatefulWidget {

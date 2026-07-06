@@ -1,3 +1,4 @@
+import 'package:demo_app/features/home/presentation/ui/pages/no_internet_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_offline/flutter_offline.dart';
@@ -6,14 +7,14 @@ import 'package:get/get.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/board_screen.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/selection_user.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';
-import 'package:demo_app/features/home/presentation/ui/pages/no_internet_screen.dart';
 import 'package:page_transition/page_transition.dart';
 
-import '../constant/enum.dart';
-import '../constant/haptic_controller.dart';
-import '../constant/image_paths.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/enum.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/haptic_controller.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/image_paths.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
-import 'tasks_components/custom_project_screen_header.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_project_screen_header.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 
 // Date Created :12/November/2023
 // Developer Name : Bassem Mohamed
@@ -130,7 +131,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         padding: EdgeInsets.only(
                             top: orientation ? 0.015.h : 0.02.h),
                         child: _buildMenuItem(
-                            8, 'assets/icons/Logout.svg', "Log Out".tr),
+                            8, 'assets/icons_assets/main_icons_assets/Logout.svg', "Log Out".tr),
                       ),
                     ],
                   ),
@@ -176,9 +177,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            _buildMenuItem(0, 'assets/icons/home.svg', "Home".tr),
+            _buildMenuItem(0, 'assets/icons_assets/task_assets/home.svg', "Home".tr),
             SizedBox(height: orientation ? height : 0),
-            _buildMenuItem(1, 'assets/images/task_manage.svg', "Tasks".tr),
+            _buildMenuItem(1, 'assets/icons_assets/main_icons_assets/task_manage.svg', "Tasks".tr),
           ],
         ),
       ),

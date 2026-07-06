@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/helper/task_management_module/core/constant/screen_size.dart';
 
-import '../main_yellow_button.dart';
-import '../tracking_time_components/track_time_subwidget/column_request_data.dart';
-import '../tracking_time_components/track_time_subwidget/filters_appbar.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/main_yellow_button.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tracking_time_components/track_time_subwidget/column_request_data.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tracking_time_components/track_time_subwidget/filters_appbar.dart';
 
 class AttachmentsDialog extends StatefulWidget {
   const AttachmentsDialog({super.key});
@@ -37,7 +37,7 @@ class _AttachmentsDialogState extends State<AttachmentsDialog> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const FiltersAppBar(
-                  imageUrl: "assets/images/add_checklist.svg",
+                  imageUrl: "assets/icons_assets/task_assets/add_checklist.svg",
                   title: "Attachment"),
               ColumnRequestData(
                 fillColor: Colors.transparent,
@@ -46,7 +46,7 @@ class _AttachmentsDialogState extends State<AttachmentsDialog> {
                 textController: listName,
                 hint: "Choose Attachment".tr,
                 hasSuffix: true,
-                suffixUrl: 'assets/images/attachsquare_field.svg',
+                suffixUrl: 'assets/icons_assets/main_icons_assets/attachsquare_field.svg',
                 isOptional: false,
                 isExpanded: true,
                 readOnly: false,

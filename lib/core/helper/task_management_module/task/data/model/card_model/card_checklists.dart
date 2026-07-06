@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/checklist_item.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/checklist_item.dart';
 
 class CardCheckLists {
   List<String>? checkListTitle;

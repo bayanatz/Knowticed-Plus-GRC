@@ -5,13 +5,13 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
-import 'package:demo_app/core/helper/main_helper/single_value_tracking_model.dart';
 import 'package:demo_app/core/network/failure_model.dart';
+import 'package:demo_app/core/helper/messaging/core/generic_models/single_value_tracking_model.dart';
 import 'package:demo_app/core/helper/organization_chart_module/data/repository/employees_repository.dart';
-import '../../domain/entities/request_health_insurance_entity.dart';
-import '../data_source/remote_data_source/insurance_remote_data_source.dart';
-import '../models/health_insurance_model/health_insurance_model.dart';
-import '../models/new_employee_model/emplyees_model/mobile_phone_model.dart';
+import 'package:demo_app/core/helper/organization_chart_module/domain/entities/request_health_insurance_entity.dart';
+import 'package:demo_app/core/helper/organization_chart_module/data/data_source/remote_data_source/insurance_remote_data_source.dart';
+import 'package:demo_app/core/helper/organization_chart_module/data/models/health_insurance_model/health_insurance_model.dart';
+import 'package:demo_app/core/helper/organization_chart_module/data/models/new_employee_model/emplyees_model/mobile_phone_model.dart';
 
 
 class HealthInsuranceRepository {

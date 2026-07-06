@@ -4,18 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/selection_user.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';import 'package:demo_app/core/helper/task_management_module/task/controller/task_details_controller.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/board_model/board_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/board_model/board_model.dart';
 
-import '../constant/date_time_in_arabic.dart';
-import '../constant/haptic_controller.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/date_time_in_arabic.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
-import 'custom_appbar.dart';
-import 'custom_table_body.dart';
-import 'custom_table_header_new.dart';
-import 'requests_number_container.dart';
-import 'tasks_components/bread_crumbs_navigation_members.dart';
-import 'tasks_components/invited_members_filter.dart';
-import 'tasks_components/search_filter_row_invited_members.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_appbar.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_table_body.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_table_header_new.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/requests_number_container.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/bread_crumbs_navigation_members.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/invited_members_filter.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/search_filter_row_invited_members.dart';
 
 /// Date Created : 18/Sep/2024
 /// Developer Name : Bassem Mohamed
@@ -38,7 +38,7 @@ class InvitedMembersScreen extends StatefulWidget {
 }
 
 class _InvitedMembersScreenState extends State<InvitedMembersScreen> {
-  final TaskHapticController hapticController = Get.put(TaskHapticController());
+  final HapticController hapticController = Get.put(HapticController());
   TaskDetailsController taskController = Get.put(TaskDetailsController());
   @override
   void initState() {

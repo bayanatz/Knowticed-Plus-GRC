@@ -94,14 +94,14 @@
 //   /////////////////////////// Added New Section ///////////////////////////////////////////
 //   /// list for displaying the members images
 //   List<String>? checkListImages = [
-//     "assets/images/profile1.png",
-//     "assets/images/profile1.png",
-//     "assets/images/profile1.png",
-//     "assets/images/profile1.png",
-//     "assets/images/profile1.png",
-//     "assets/images/profile1.png",
-//     "assets/images/profile1.png",
-//     "assets/images/profile1.png",
+//     "assets/png_assets/profile1.png",
+//     "assets/png_assets/profile1.png",
+//     "assets/png_assets/profile1.png",
+//     "assets/png_assets/profile1.png",
+//     "assets/png_assets/profile1.png",
+//     "assets/png_assets/profile1.png",
+//     "assets/png_assets/profile1.png",
+//     "assets/png_assets/profile1.png",
 //   ];
 //   String? memberName = "Bassem Mohamed";
 //   String? startDate = "12/05/2023";
@@ -698,7 +698,7 @@
 //           return const SuccessDialog(
 //             title: "Failure",
 //             subtitle: "Please Fill All The Fields",
-//             lottieAsset: "assets/images/error.json",
+//             lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
 //           );
 //         },
 //       );
@@ -721,7 +721,7 @@
 //                 return const SuccessDialog(
 //                   title: "Failure",
 //                   subtitle: "This card name is already exist",
-//                   lottieAsset: "assets/images/error.json",
+//                   lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
 //                 );
 //               },
 //             );
@@ -779,7 +779,7 @@
 //                   return const SuccessDialog(
 //                     title: "Successful",
 //                     subtitle: "Card Added Successfully",
-//                     lottieAsset: "assets/images/correct.json",
+//                     lottieAsset: "assets/lottie_assets/main_lottie_assets/lottie_successful.json",
 //                   );
 //                 },
 //               );

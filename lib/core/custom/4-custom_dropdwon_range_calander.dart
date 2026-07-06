@@ -5,8 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 import 'package:demo_app/core/theme/app_colors.dart';
-import 'package:demo_app/core/theme/app_text_styles.dart';
-import '../theme/app_colors.dart';
+import 'package:demo_app/core/theme/app_theme.dart';
 
 class CustomDropdownRangeCalendar extends StatefulWidget {
   final DateTime? startDate;
@@ -83,7 +82,7 @@ class _CustomDropdownRangeCalendarState
         dayBorderRadius: BorderRadius.circular(8.r),
         dayBuilder: _buildDay,
         customModePickerIcon: SvgPicture.asset(
-          'assets/arrowdown.svg',
+          'assets/icons_assets/main_icons_assets/arrowdown.svg',
           fit: BoxFit.fitHeight,
           colorFilter: ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
           height: 14.sp,
@@ -91,35 +90,35 @@ class _CustomDropdownRangeCalendarState
         lastMonthIcon: Transform.rotate(
           angle: Get.locale.toString().contains('en') ? 0 : 3.14,
           child: SvgPicture.asset(
-            'assets/icons/back_icon.svg',
+            'assets/icons_assets/main_icons_assets/back_icon.svg',
             colorFilter: ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
           ),
         ),
         nextMonthIcon: Transform.rotate(
           angle: Get.locale.toString().contains('en') ? 3.14 : 0,
           child: SvgPicture.asset(
-            'assets/icons/back_icon.svg',
+            'assets/icons_assets/main_icons_assets/back_icon.svg',
             colorFilter: ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
           ),
         ),
         okButton: _buildActionButton('Set Date'.tr),
         cancelButton: _buildActionButton('Cancel'.tr, isCancel: true),
-        weekdayLabelTextStyle: AppTextStyles.font16BlackRegularCairo
+        weekdayLabelTextStyle: StyleText.fontSize16Weight400
             .copyWith(color: AppColors.primary),
-        controlsTextStyle: AppTextStyles.font14BlackCairoRegular
+        controlsTextStyle: StyleText.fontSize14Weight400
             .copyWith(color: AppColors.primary),
-        selectedYearTextStyle: AppTextStyles.font14BlackCairoRegular
+        selectedYearTextStyle: StyleText.fontSize14Weight400
             .copyWith(color: AppColors.primary),
         selectedDayHighlightColor: AppColors.primary,
         selectedRangeHighlightColor: AppColors.primary.withOpacity(0.15),
         dayTextStyle:
-        AppTextStyles.font14BlackCairoRegular.copyWith(color: AppColors.text),
-        selectedDayTextStyle: AppTextStyles.font14BlackCairoRegular
+        StyleText.fontSize14Weight400.copyWith(color: AppColors.text),
+        selectedDayTextStyle: StyleText.fontSize14Weight400
             .copyWith(color: AppColors.textButton),
         yearTextStyle:
-        AppTextStyles.font14BlackCairoRegular.copyWith(color: AppColors.text),
+        StyleText.fontSize14Weight400.copyWith(color: AppColors.text),
         todayTextStyle:
-        AppTextStyles.font14BlackCairoRegular.copyWith(color: AppColors.text),
+        StyleText.fontSize14Weight400.copyWith(color: AppColors.text),
         buttonPadding: EdgeInsets.symmetric(horizontal: 14.sp),
       ),
       dialogSize: Size(320.w, 320.h),
@@ -153,13 +152,13 @@ class _CustomDropdownRangeCalendarState
           borderRadius: BorderRadius.circular(8.r),
           color: isSelected == true ? AppColors.primary : AppColors.field,
           border: Border.all(
-            color: isTodayDate ? AppColors.primary : Colors.transparent,
+            color: isTodayDate ? AppColors.primary : AppColors.transparent,
           ),
         ),
         child: Center(
           child: Text(
             date.day.toString(),
-            style: AppTextStyles.font14BlackCairoRegular.copyWith(
+            style: StyleText.fontSize14Weight400.copyWith(
               color: isSelected == true
                   ? AppColors.textButton
                   : AppColors.secondaryText,
@@ -182,7 +181,7 @@ class _CustomDropdownRangeCalendarState
         child: Center(
           child: Text(
             label,
-            style: AppTextStyles.font14BlackCairoRegular.copyWith(
+            style: StyleText.fontSize14Weight400.copyWith(
               color: isCancel ? AppColors.text : AppColors.textButton,
             ),
           ),
@@ -222,9 +221,7 @@ class _CustomDropdownRangeCalendarState
             text: TextSpan(
               text: widget.label,
               style: widget.labelStyle ??
-                  TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
+                  StyleText.fontSize14Weight500.copyWith(
                     color: hasError
                         ? AppColors.red
                         : isDisabled
@@ -232,7 +229,7 @@ class _CustomDropdownRangeCalendarState
                         : AppColors.text,
                   ),
               children: widget.required
-                  ? [TextSpan(text: ' *', style: TextStyle(color: AppColors.red))]
+                  ? [TextSpan(text: ' *', style: StyleText.fontSize14Weight500.copyWith(color: AppColors.red))]
                   : [],
             ),
           ),
@@ -267,10 +264,14 @@ class _CustomDropdownRangeCalendarState
                   borderRadius: radius, borderSide: BorderSide.none),
               disabledBorder: OutlineInputBorder(
                   borderRadius: radius, borderSide: BorderSide.none),
-              prefixIcon: Padding(
-                padding: EdgeInsets.only(left: 12.w, right: 8.w),
+              // ── prefixIcon removed ──
+              prefixIcon: null,
+              prefixIconConstraints: const BoxConstraints(),
+              // ── calendar icon now on the right, arrow removed ──
+              suffixIcon: Padding(
+                padding: EdgeInsets.only(left: 8.w, right: 12.w),
                 child: SvgPicture.asset(
-                  'assets/calender.svg',
+                  'assets/icons_assets/main_icons_assets/images_calender.svg',
                   width: 18.sp,
                   height: 18.sp,
                   colorFilter: ColorFilter.mode(
@@ -283,35 +284,17 @@ class _CustomDropdownRangeCalendarState
                   ),
                 ),
               ),
-              prefixIconConstraints: const BoxConstraints(),
-              suffixIcon: Padding(
-                padding: EdgeInsets.only(left: 8.w, right: 12.w),
-                child: SvgPicture.asset(
-                  'assets/arrowdown.svg',
-                  width: 20.sp,
-                  height: 20.sp,
-                  colorFilter: ColorFilter.mode(
-                    hasError
-                        ? AppColors.red
-                        : isDisabled
-                        ? AppColors.text.withOpacity(0.3)
-                        : AppColors.text.withOpacity(0.6),
-                    BlendMode.srcIn,
-                  ),
-                ),
-              ),
               suffixIconConstraints: const BoxConstraints(),
               hintText: isEmpty ? (widget.hint ?? '') : null,
               hintStyle: widget.hintStyle ??
-                  TextStyle(fontSize: 14.sp, color: AppColors.text.withOpacity(0.4)),
+                  StyleText.fontSize14Weight400.copyWith(color: AppColors.text.withOpacity(0.4)),
               errorText: null,
             ),
             child: !isEmpty
                 ? Text(
               displayText,
               style: widget.valueStyle ??
-                  TextStyle(
-                    fontSize: 14.sp,
+                  StyleText.fontSize14Weight400.copyWith(
                     color: isDisabled
                         ? AppColors.text.withOpacity(0.4)
                         : AppColors.text,
@@ -325,13 +308,13 @@ class _CustomDropdownRangeCalendarState
           SizedBox(height: 4.h),
           Text(widget.errorText!,
               style: widget.errorStyle ??
-                  TextStyle(fontSize: 12.sp, color: AppColors.red)),
+                  StyleText.fontSize12Weight400.copyWith(color: AppColors.red)),
         ] else if (widget.helperText != null) ...[
           SizedBox(height: 4.h),
           Text(widget.helperText!,
               style: widget.helperStyle ??
-                  TextStyle(
-                      fontSize: 12.sp, color: AppColors.text.withOpacity(0.5))),
+                  StyleText.fontSize12Weight400.copyWith(
+                      color: AppColors.text.withOpacity(0.5))),
         ],
       ],
     );

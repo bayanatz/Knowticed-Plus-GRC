@@ -11,17 +11,17 @@ import 'package:demo_app/core/helper/task_management_module/core/components/cust
 import 'package:demo_app/core/helper/task_management_module/core/components/selection_user.dart';
 import 'package:demo_app/core/helper/task_management_module/core/constant/enum.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';import 'package:demo_app/core/helper/task_management_module/task/controller/task_details_controller.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/board_model/board_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/board_model/board_model.dart';
 import 'package:demo_app/features/department/presentation/controller/add_department_controller.dart';
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
 import 'package:demo_app/features/employee/domain/entities/employee_entity.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 
-import 'custom_drop_down_menu.dart';
-import 'dialogue_switchers_row.dart';
-import 'main_yellow_button.dart';
-import 'tasks_components/custom_project_screen_header.dart';
-import 'tracking_time_components/track_time_subwidget/column_request_data.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_drop_down_menu.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/dialogue_switchers_row.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/main_yellow_button.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_project_screen_header.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tracking_time_components/track_time_subwidget/column_request_data.dart';
 
 /// Date Created :14/November/2023
 /// Developer Name : Bassem Mohamed
@@ -131,7 +131,7 @@ class _CustomCreateBoardContainerState
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  //SvgPicture.asset("assets/images/imagePickerPhoto.svg"),
+                  //SvgPicture.asset("assets/icons_assets/main_icons_assets/imagePickerPhoto.svg"),
                   InkWell(
                     onTap: () {
                       boardController.uploadImage("board_images");
@@ -146,7 +146,7 @@ class _CustomCreateBoardContainerState
                                   child: Transform.scale(
                                       scale: 1.2,
                                       child: SvgPicture.asset(
-                                          "assets/images/imagePickerPhoto.svg")),
+                                          "assets/icons_assets/main_icons_assets/imagePickerPhoto.svg")),
                                 ),
                               )
                             : CircleAvatar(
@@ -171,7 +171,7 @@ class _CustomCreateBoardContainerState
                               child: Transform.scale(
                                 scale: 1.2,
                                 child: SvgPicture.asset(
-                                    "assets/images/photo_picker2.svg"),
+                                    "assets/icons_assets/task_assets/photo_picker2.svg"),
                               ),
                             ),
                           ),

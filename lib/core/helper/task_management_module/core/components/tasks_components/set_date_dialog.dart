@@ -5,19 +5,19 @@ import 'package:intl/intl.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/selection_user.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';import 'package:demo_app/core/helper/task_management_module/task/controller/task_details_controller.dart';
 import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_checklists.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/card_model.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/checklist_item.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/checklist_item.dart';
 
-import '../../constant/date_time_in_arabic.dart';
-import '../../constant/enum.dart';
-import '../../constant/haptic_controller.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/date_time_in_arabic.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/enum.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
-import '../calendar_components.dart/calender_package/src/models/calendar_date_picker2_config.dart';
-import '../calendar_components.dart/custom_calendar_picker.dart';
-import '../cupertino_time_picker.dart';
-import '../tracking_time_components/track_time_subwidget/column_request_data.dart';
-import '../tracking_time_components/track_time_subwidget/filters_appbar.dart';
-import 'two_container_widget.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/calendar_components.dart/calender_package/src/models/calendar_date_picker2_config.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/calendar_components.dart/custom_calendar_picker.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/cupertino_time_picker.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tracking_time_components/track_time_subwidget/column_request_data.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tracking_time_components/track_time_subwidget/filters_appbar.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/two_container_widget.dart';
 
 class SetDateDialog extends StatefulWidget {
   final String board;
@@ -38,7 +38,7 @@ class SetDateDialog extends StatefulWidget {
 }
 
 class _SetDateDialogState extends State<SetDateDialog> {
-  final TaskHapticController hapticController = Get.put(TaskHapticController());
+  final HapticController hapticController = Get.put(HapticController());
   TaskDetailsController taskController = Get.find();
   TimeOfDay? startTime;
   TimeOfDay? endTime;
@@ -156,7 +156,7 @@ class _SetDateDialogState extends State<SetDateDialog> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   FiltersAppBar(
-                    imageUrl: 'assets/icons/calendar.svg',
+                    imageUrl: 'assets/icons_assets/main_icons_assets/icons_calendar.svg',
                     title: "Set Dates",
                     iconColor: AppColors.textButton,
                   ),
@@ -226,7 +226,7 @@ class _SetDateDialogState extends State<SetDateDialog> {
                                   isExpanded: true,
                                   hasPrefix: true,
                                   hasSuffix: true,
-                                  suffixUrl: "assets/icons/calendar2.svg",
+                                  suffixUrl: "assets/icons_assets/main_icons_assets/calendar2.svg",
                                   textController:
                                       Get.locale.toString().contains('en')
                                           ? controllerStartDate
@@ -283,7 +283,7 @@ class _SetDateDialogState extends State<SetDateDialog> {
                                     enabled: false,
                                     hasSuffix: true,
                                     suffixUrl:
-                                        "assets/icons/ClockCircleIcon.svg",
+                                        "assets/icons_assets/task_assets/ClockCircleIcon.svg",
                                   ),
                                 ),
                               ),
@@ -309,7 +309,7 @@ class _SetDateDialogState extends State<SetDateDialog> {
                                       isExpanded: true,
                                       hasPrefix: true,
                                       hasSuffix: true,
-                                      suffixUrl: "assets/icons/calendar2.svg",
+                                      suffixUrl: "assets/icons_assets/main_icons_assets/calendar2.svg",
                                       textController:
                                           Get.locale.toString().contains('en')
                                               ? controllerEndDate
@@ -366,7 +366,7 @@ class _SetDateDialogState extends State<SetDateDialog> {
                                         enabled: false,
                                         hasSuffix: true,
                                         suffixUrl:
-                                            "assets/icons/ClockCircleIcon.svg",
+                                            "assets/icons_assets/task_assets/ClockCircleIcon.svg",
                                       ),
                                     ),
                                   ),

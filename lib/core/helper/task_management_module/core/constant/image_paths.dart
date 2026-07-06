@@ -16,57 +16,57 @@ class ImagePaths {
   }
 
   static String getLightModeImagePath(String imageName) {
-    String logo = 'assets/images/knowticed_logo.svg';
-    // 'assets/images/bmw.svg';
+    String logo = 'assets/icons_assets/main_icons_assets/knowticed_logo.svg';
+    // 'assets/icons_assets/main_icons_assets/bmw.svg';
     if (imageName == 'logo') {
       return logo;
-      // return 'assets/images/knowticed_logo.svg';
+      // return 'assets/icons_assets/main_icons_assets/knowticed_logo.svg';
     } else if (imageName == 'edit_data') {
-      return 'assets/icons/dialog_card_icon.svg';
+      return 'assets/icons_assets/main_icons_assets/dialog_card_icon.svg';
     } else if (imageName == 'delete') {
       return 'assets/icons/delete_attachment.svg';
     } else if (imageName == 'Download') {
-      return 'assets/icons/Download.svg';
+      return 'assets/icons_assets/task_assets/icons_Download.svg';
     } else if (imageName == 'social_icon') {
-      return 'assets/icons/social_dialog_icon.svg';
+      return 'assets/icons_assets/main_icons_assets/social_dialog_icon.svg';
     } else if (imageName == 'back_icon') {
-      return 'assets/icons/back_icon.svg';
+      return 'assets/icons_assets/main_icons_assets/back_icon.svg';
     } else if (imageName == 'DeleteIcon') {
-      return 'assets/icons/deleteIcon.svg';
+      return 'assets/icons_assets/task_assets/deleteIcon.svg';
     } else if (imageName == 'call_icon') {
-      return 'assets/icons/call_icon.svg';
+      return 'assets/icons_assets/main_icons_assets/call_icon.svg';
     } else if (imageName == 'mic_icon') {
-      return 'assets/icons/mic_chat_icon.svg';
+      return 'assets/icons_assets/main_icons_assets/mic_chat_icon.svg';
     } else if (imageName == 'camera_icon') {
-      return 'assets/icons/camera_icon.svg';
+      return 'assets/icons_assets/main_icons_assets/camera_icon.svg';
     } else if (imageName == 'add_icon') {
-      return 'assets/icons/add_chat_icon.svg';
+      return 'assets/icons_assets/main_icons_assets/add_chat_icon.svg';
     } else if (imageName == 'send_icon') {
-      return 'assets/icons/send_icon.svg';
+      return 'assets/icons_assets/main_icons_assets/send_icon.svg';
     } else if (imageName == 'send_inactive_icon') {
-      return 'assets/icons/send_inactive_icon.svg';
+      return 'assets/icons_assets/main_icons_assets/send_inactive_icon.svg';
     } else if (imageName == 'switch_off_icon') {
       return 'assets/icons/SwitchOff.png';
     } else if (imageName == 'splash') {
-      return 'assets/splash.gif';
+      return 'assets/png_assets/assets_splash.gif';
     } else if (imageName == 'notification') {
-      return 'assets/icons/NotificationAppBarRedDot.png';
+      return 'assets/png_assets/NotificationAppBarRedDot.png';
     } else if (imageName == 'AttachSquareIcon') {
-      return 'assets/icons/attachsquareIcon.svg';
+      return 'assets/icons_assets/task_assets/attachsquareIcon.svg';
     } else if (imageName == 'taskDeadline') {
-      return "assets/icons/taskDeadline.svg";
+      return "assets/icons_assets/task_assets/taskDeadline.svg";
     } else if (imageName == 'calendar2') {
-      return "assets/icons/calendar2.svg";
+      return "assets/icons_assets/main_icons_assets/calendar2.svg";
     } else if (imageName == 'arrow_down_mobile') {
-      return "assets/icons/arrow_down_mobile.svg";
+      return "assets/icons_assets/main_icons_assets/arrow_down_mobile.svg";
     } else if (imageName == 'ClockCircleIcon') {
-      return "assets/icons/ClockCircleIcon.svg";
+      return "assets/icons_assets/task_assets/ClockCircleIcon.svg";
     } else if (imageName == 'pdfImage') {
-      return "assets/images/pdfImage.svg";
+      return "assets/icons_assets/task_assets/pdfImage.svg";
     } else if (imageName == 'docxImage') {
-      return "assets/images/docxImage.svg";
+      return "assets/icons_assets/task_assets/docxImage.svg";
     } else if (imageName == 'threeDotsDialog') {
-      return "assets/icons/threeDotsDialog.svg";
+      return "assets/icons_assets/main_icons_assets/threeDotsDialog.svg";
     } else if (imageName == 'ImagePlaceHolder') {
       return "assets/images/ImagePlaceHolder.svg";
     } else {
@@ -76,51 +76,51 @@ class ImagePaths {
 
   static String getDarkModeImagePath(String imageName) {
     if (imageName == 'logo') {
-      return 'assets/images/knowticed_logo_dark.svg';
+      return 'assets/icons_assets/main_icons_assets/knowticed_logo_dark.svg';
     } else if (imageName == 'threeDotsDialog') {
-      return "assets/icons/threeDotsDialog.svg";
+      return "assets/icons_assets/main_icons_assets/threeDotsDialog.svg";
     }  else if (imageName == 'edit_data') {
-      return 'assets/icons/dialog_card_icon_dark.svg';
+      return 'assets/icons_assets/main_icons_assets/dialog_card_icon_dark.svg';
     } else if (imageName == 'DeleteIcon') {
-      return 'assets/icons/deleteIcon.svg';
+      return 'assets/icons_assets/task_assets/deleteIcon.svg';
     } else if (imageName == 'social_icon') {
-      return 'assets/icons/social_dialog_icon_dark.svg';
+      return 'assets/icons_assets/main_icons_assets/social_dialog_icon_dark.svg';
     } else if (imageName == 'back_icon') {
-      return 'assets/icons/back_icon_dark.svg';
+      return 'assets/icons_assets/main_icons_assets/back_icon_dark.svg';
     } else if (imageName == 'call_icon') {
-      return 'assets/icons/call_icon_dark.svg';
+      return 'assets/icons_assets/main_icons_assets/call_icon_dark.svg';
     } else if (imageName == 'mic_icon') {
-      return 'assets/icons/mic_icon_dark.svg';
+      return 'assets/icons_assets/main_icons_assets/mic_icon_dark.svg';
     } else if (imageName == 'camera_icon') {
-      return 'assets/icons/camera_icon_dark.svg';
+      return 'assets/icons_assets/main_icons_assets/camera_icon_dark.svg';
     } else if (imageName == 'add_icon') {
-      return 'assets/icons/add_icon_dark.svg';
+      return 'assets/icons_assets/main_icons_assets/add_icon_dark.svg';
     } else if (imageName == 'send_icon') {
-      return 'assets/icons/send_icon_dark.svg';
+      return 'assets/icons_assets/main_icons_assets/send_icon_dark.svg';
     } else if (imageName == 'send_inactive_icon') {
-      return 'assets/icons/send_inactive_dark_icon.svg';
+      return 'assets/icons_assets/main_icons_assets/send_inactive_dark_icon.svg';
     } else if (imageName == 'switch_off_icon') {
       return 'assets/icons/switch_off_icon.png';
     } else if (imageName == 'splash') {
-      return 'assets/splash_dark.gif';
+      return 'assets/png_assets/assets_splash_dark.gif';
     } else if (imageName == 'notification') {
-      return 'assets/icons/NotificationAppBarRedDot_dark.png';
+      return 'assets/png_assets/NotificationAppBarRedDot_dark.png';
     } else if (imageName == 'AttachSquareIcon') {
-      return 'assets/icons/attachsquareIcon.svg';
+      return 'assets/icons_assets/task_assets/attachsquareIcon.svg';
     } else if (imageName == 'taskDeadline') {
-      return "assets/icons/taskDeadline.svg";
+      return "assets/icons_assets/task_assets/taskDeadline.svg";
     } else if (imageName == 'calendar2') {
-      return "assets/icons/calendar2.svg";
+      return "assets/icons_assets/main_icons_assets/calendar2.svg";
     } else if (imageName == 'ClockCircleIcon') {
-      return "assets/icons/ClockCircleIcon.svg";
+      return "assets/icons_assets/task_assets/ClockCircleIcon.svg";
     } else if (imageName == 'pdfImage') {
-      return "assets/images/pdfImage.svg";
+      return "assets/icons_assets/task_assets/pdfImage.svg";
     } else if (imageName == 'docxImage') {
-      return "assets/images/docxImage.svg";
+      return "assets/icons_assets/task_assets/docxImage.svg";
     } else if (imageName == 'delete') {
       return 'assets/icons/delete_attachment.svg';
     } else if (imageName == 'Download') {
-      return 'assets/icons/Download.svg';
+      return 'assets/icons_assets/task_assets/icons_Download.svg';
     } else if (imageName == 'ImagePlaceHolder') {
       return "assets/images/ImagePlaceHolder.svg";
     } else {

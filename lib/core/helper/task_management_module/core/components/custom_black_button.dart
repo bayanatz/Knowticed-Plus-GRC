@@ -41,7 +41,7 @@ class CustomBlackButton extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           SvgPicture.asset(
-            icon ?? "assets/icons/plusIcon.svg",
+            icon ?? "assets/icons_assets/main_icons_assets/images_plus.svg",
             height: isTablet ? (orientation ? 0.015.h : null) : null,
           ),
           SizedBox(

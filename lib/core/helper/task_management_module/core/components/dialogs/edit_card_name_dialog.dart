@@ -8,15 +8,15 @@ import 'package:get/get.dart';
 import 'package:demo_app/core/helper/task_management_module/core/constant/screen_size.dart';
 
 import 'package:demo_app/core/helper/task_management_module/task/controller/task_details_controller.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/card_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_model.dart';
 
-import '../../constant/enum.dart';
-import '../../constant/haptic_controller.dart';
-import '../custom_create_task_container.dart';
-import '../main_yellow_button.dart';
-import 'package:demo_app/features/roles/helper/task_management_module/core/components/success_dialog.dart';
-import '../tasks_components/custom_container_header_mobile.dart';
-import '../tracking_time_components/track_time_subwidget/column_request_data.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/enum.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_create_task_container.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/main_yellow_button.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/success_dialog.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_container_header_mobile.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tracking_time_components/track_time_subwidget/column_request_data.dart';
 
 class EditCardDetailsDialouge extends StatefulWidget {
   EditCardDetailsDialouge({
@@ -49,7 +49,7 @@ class _EditCardDetailsDialougeState extends State<EditCardDetailsDialouge> {
   TaskDetailsController taskController = Get.find();
   String? listValue;
 
-  final TaskHapticController hapticController = Get.put(TaskHapticController());
+  final HapticController hapticController = Get.put(HapticController());
 
   TextEditingController titleCont = TextEditingController();
 
@@ -92,7 +92,7 @@ class _EditCardDetailsDialougeState extends State<EditCardDetailsDialouge> {
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 0.01.h),
                       child: CustomRowWithIcons(
-                        iconPath: "assets/icons/editIconReq.svg",
+                        iconPath: "assets/icons_assets/task_assets/editIconReq.svg",
                         title: widget.title.tr,
                         hideDelete: true,
                         onArrowPressed: () {
@@ -171,7 +171,7 @@ class _EditCardDetailsDialougeState extends State<EditCardDetailsDialouge> {
                                     subtitle:
                                         "Card Description Updated Successfully"
                                             .tr,
-                                    lottieAsset: "assets/images/correct.json",
+                                    lottieAsset: "assets/lottie_assets/main_lottie_assets/lottie_successful.json",
                                   );
                                 },
                               );
@@ -190,7 +190,7 @@ class _EditCardDetailsDialougeState extends State<EditCardDetailsDialouge> {
                                     title: "Successful".tr,
                                     subtitle:
                                         "Card Name Updated Successfully".tr,
-                                    lottieAsset: "assets/images/correct.json",
+                                    lottieAsset: "assets/lottie_assets/main_lottie_assets/lottie_successful.json",
                                   );
                                 },
                               );
@@ -201,7 +201,7 @@ class _EditCardDetailsDialougeState extends State<EditCardDetailsDialouge> {
                                   return const SuccessDialog(
                                     title: "Failure",
                                     subtitle: "Please Fill The Field",
-                                    lottieAsset: "assets/images/error.json",
+                                    lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
                                   );
                                 },
                               );

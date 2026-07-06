@@ -25,7 +25,7 @@ class TimeLimit extends StatelessWidget {
         Row(
           children: [
             SvgPicture.asset(
-              "assets/icons/calendar.svg",
+              "assets/icons_assets/main_icons_assets/icons_calendar.svg",
               height: 16.h,
               width: 16.w,
               color: isExceeded ? AppColors.red : AppColors.black,

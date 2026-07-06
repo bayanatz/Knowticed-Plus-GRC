@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:demo_app/core/theme/app_colors.dart';
+import 'package:demo_app/core/theme/app_theme.dart';
 
 /// Custom text field widget — mirrors CustomDropdown API exactly.
 ///
@@ -335,7 +336,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
   Widget build(BuildContext context) {
     final resolvedError = _resolvedError;
     final hasError = resolvedError != null && resolvedError.isNotEmpty;
-    final radius = widget.borderRadius ?? BorderRadius.circular(8.r);
+    final radius = widget.borderRadius ?? BorderRadius.circular(4.r);
     final isDisabled = !widget.enabled;
 
     // ── Suffix icon resolution ─────────────────────────────────────────────
@@ -372,9 +373,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             text: TextSpan(
               text: widget.label,
               style: widget.labelStyle ??
-                  TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
+                  StyleText.fontSize14Weight500.copyWith(
                     color: hasError
                         ? AppColors.red
                         : isDisabled
@@ -384,8 +383,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
               children: widget.required
                   ? [
                 TextSpan(
-                  text: ' *',
-                  style: TextStyle(color: AppColors.red),
+                  text: '',
+                  style: StyleText.fontSize14Weight500.copyWith(color: AppColors.red),
                 ),
               ]
                   : [],
@@ -399,120 +398,120 @@ class _CustomTextFieldState extends State<CustomTextField> {
           width: widget.width?.w,
           height: widget.height?.h,
           child: TextField(
-            controller: _controller,
-            focusNode: _focusNode,
-            enabled: widget.enabled,
-            readOnly: widget.readOnly,
-            obscureText: _effectiveObscure,
-            maxLines: widget.obscureText ? 1 : widget.maxLines,
-            minLines: widget.minLines,
-            maxLength: _effectiveMaxLength,
-            keyboardType: _isMultiline
-                ? TextInputType.multiline
-                : (widget.keyboardType ??
-                (widget.onlyDigits ? TextInputType.number : null)),
-            inputFormatters: _resolvedFormatters,
-            textAlign: widget.textAlign,
-            textDirection: widget.textDirection,
-            textInputAction: widget.textInputAction,
-            textCapitalization: widget.textCapitalization,
-            autocorrect: widget.autocorrect,
-            enableSuggestions: widget.enableSuggestions,
-            onChanged: widget.onChanged,
-            onSubmitted: widget.onSubmitted,
-            onTap: widget.onTap,
-            style: widget.valueStyle ??
-                TextStyle(
-                  fontSize: 14.sp,
-                  color: isDisabled
-                      ? AppColors.text.withOpacity(0.4)
-                      : AppColors.text,
-                ),
-            // Hide the built-in counter — we render our own below
-            buildCounter: _effectiveMaxLength != null
-                ? (_, {required currentLength, required isFocused, maxLength}) =>
-            const SizedBox.shrink()
-                : null,
-            decoration: InputDecoration(
-              isDense: true,
-              contentPadding: effectivePadding,
-              filled: true,
-              fillColor: isDisabled
-                  ? (widget.fillColor ?? AppColors.card).withOpacity(0.5)
-                  : widget.fillColor ?? AppColors.card,
+          controller: _controller,
+          focusNode: _focusNode,
+          enabled: widget.enabled,
+          readOnly: widget.readOnly,
+          obscureText: _effectiveObscure,
+          maxLines: widget.obscureText ? 1 : widget.maxLines,
+          minLines: widget.minLines,
+          maxLength: _effectiveMaxLength,
+          keyboardType: _isMultiline
+              ? TextInputType.multiline
+              : (widget.keyboardType ??
+                  (widget.onlyDigits ? TextInputType.number : null)),
+          inputFormatters: _resolvedFormatters,
+          textAlign: widget.textAlign,
+          textDirection: widget.textDirection,
+          textInputAction: widget.textInputAction,
+          textCapitalization: widget.textCapitalization,
+          autocorrect: widget.autocorrect,
+          enableSuggestions: widget.enableSuggestions,
+          onChanged: widget.onChanged,
+          onSubmitted: widget.onSubmitted,
+          onTap: widget.onTap,
+          style: widget.valueStyle ??
+              StyleText.fontSize14Weight400.copyWith(
+                color: isDisabled
+                    ? AppColors.text.withOpacity(0.4)
+                    : AppColors.text,
+              ),
+          // Hide the built-in counter — we render our own below
+          buildCounter: _effectiveMaxLength != null
+              ? (_, {required currentLength, required isFocused, maxLength}) =>
+          const SizedBox.shrink()
+              : null,
+          decoration: InputDecoration(
+            isDense: true,
+            contentPadding: effectivePadding,
+            filled: true,
+            // No hover overlay tint on desktop/web
+            hoverColor: Colors.transparent,
+            fillColor: isDisabled
+                ? (widget.fillColor ?? AppColors.card).withOpacity(0.5)
+                : widget.fillColor ?? AppColors.card,
 
-              // ── No border rule ────────────────────────────────────────────
-              // Default / focused / disabled → no border at all.
-              // Error → red border.
-              border: hasError
-                  ? OutlineInputBorder(
-                borderRadius: radius,
-                borderSide: BorderSide(color: AppColors.red, width: 1.5.w),
-              )
-                  : OutlineInputBorder(
-                borderRadius: radius,
-                borderSide: BorderSide.none,
-              ),
-              enabledBorder: hasError
-                  ? OutlineInputBorder(
-                borderRadius: radius,
-                borderSide: BorderSide(color: AppColors.red, width: 1.5.w),
-              )
-                  : OutlineInputBorder(
-                borderRadius: radius,
-                borderSide: BorderSide.none,
-              ),
-              focusedBorder: hasError
-                  ? OutlineInputBorder(
-                borderRadius: radius,
-                borderSide: BorderSide(color: AppColors.red, width: 1.5.w),
-              )
-                  : OutlineInputBorder(
-                borderRadius: radius,
-                borderSide: BorderSide.none,
-              ),
-              disabledBorder: OutlineInputBorder(
-                borderRadius: radius,
-                borderSide: BorderSide.none,
-              ),
-              errorBorder: OutlineInputBorder(
-                borderRadius: radius,
-                borderSide: BorderSide(color: AppColors.red, width: 1.5.w),
-              ),
-              focusedErrorBorder: OutlineInputBorder(
-                borderRadius: radius,
-                borderSide: BorderSide(color: AppColors.red, width: 1.5.w),
-              ),
-              // ─────────────────────────────────────────────────────────────
-
-              hintText: widget.hint,
-              hintStyle: widget.hintStyle ??
-                  TextStyle(
-                    fontSize: 14.sp,
-                    color: AppColors.text.withOpacity(0.4),
-                  ),
-
-              prefixIcon: widget.prefixIcon != null
-                  ? Padding(
-                padding: EdgeInsets.only(left: 12.w, right: 8.w),
-                child: widget.prefixIcon,
-              )
-                  : null,
-              prefixIconConstraints: const BoxConstraints(),
-
-              suffixIcon: resolvedSuffix != null
-                  ? Padding(
-                padding: EdgeInsets.only(left: 8.w, right: 12.w),
-                child: resolvedSuffix,
-              )
-                  : null,
-              suffixIconConstraints: const BoxConstraints(),
-
-              // Suppress built-in error / helper — we render our own
-              errorText: null,
-              helperText: null,
-              counterText: '',
+            // ── No border rule ────────────────────────────────────────────
+            // Default / focused / disabled → no border at all.
+            // Error → red border.
+            border: hasError
+                ? OutlineInputBorder(
+              borderRadius: radius,
+              borderSide: BorderSide(color: AppColors.red, width: 1.5.w),
+            )
+                : OutlineInputBorder(
+              borderRadius: radius,
+              borderSide: BorderSide.none,
             ),
+            enabledBorder: hasError
+                ? OutlineInputBorder(
+              borderRadius: radius,
+              borderSide: BorderSide(color: AppColors.red, width: 1.5.w),
+            )
+                : OutlineInputBorder(
+              borderRadius: radius,
+              borderSide: BorderSide.none,
+            ),
+            focusedBorder: hasError
+                ? OutlineInputBorder(
+              borderRadius: radius,
+              borderSide: BorderSide(color: AppColors.red, width: 1.5.w),
+            )
+                : OutlineInputBorder(
+              borderRadius: radius,
+              borderSide: BorderSide.none,
+            ),
+            disabledBorder: OutlineInputBorder(
+              borderRadius: radius,
+              borderSide: BorderSide.none,
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: radius,
+              borderSide: BorderSide(color: AppColors.red, width: 1.5.w),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: radius,
+              borderSide: BorderSide(color: AppColors.red, width: 1.5.w),
+            ),
+            // ─────────────────────────────────────────────────────────────
+
+            hintText: widget.hint,
+            hintStyle: widget.hintStyle ??
+                StyleText.fontSize14Weight400.copyWith(
+                  color: AppColors.text.withOpacity(0.4),
+                ),
+
+            prefixIcon: widget.prefixIcon != null
+                ? Padding(
+              padding: EdgeInsets.only(left: 12.w, right: 8.w),
+              child: widget.prefixIcon,
+            )
+                : null,
+            prefixIconConstraints: const BoxConstraints(),
+
+            suffixIcon: resolvedSuffix != null
+                ? Padding(
+              padding: EdgeInsets.only(left: 8.w, right: 12.w),
+              child: resolvedSuffix,
+            )
+                : null,
+            suffixIconConstraints: const BoxConstraints(),
+
+            // Suppress built-in error / helper — we render our own
+            errorText: null,
+            helperText: null,
+            counterText: '',
+          ),
           ),
         ),
 
@@ -529,14 +528,13 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     ? Text(
                   resolvedError!,
                   style: widget.errorStyle ??
-                      TextStyle(fontSize: 12.sp, color: AppColors.red),
+                      StyleText.fontSize12Weight400.copyWith(color: AppColors.red),
                 )
                     : widget.helperText != null
                     ? Text(
                   widget.helperText!,
                   style: widget.helperStyle ??
-                      TextStyle(
-                        fontSize: 12.sp,
+                      StyleText.fontSize12Weight400.copyWith(
                         color: AppColors.text.withOpacity(0.5),
                       ),
                 )
@@ -549,8 +547,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 Text(
                   '$_charCount / ${_effectiveMaxLength}',
                   style: widget.counterStyle ??
-                      TextStyle(
-                        fontSize: 12.sp,
+                      StyleText.fontSize12Weight400.copyWith(
                         color: _charCount > _effectiveMaxLength!
                             ? AppColors.red
                             : AppColors.text.withOpacity(0.4),
@@ -573,9 +570,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
 class _ArabicOnlyInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue,
-      TextEditingValue newValue,
-      ) {
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
     final hasEnglishLetters = RegExp(r'[a-zA-Z]').hasMatch(newValue.text);
     if (hasEnglishLetters) return oldValue;
     return newValue;
@@ -586,9 +583,9 @@ class _ArabicOnlyInputFormatter extends TextInputFormatter {
 class _EnglishOnlyInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue,
-      TextEditingValue newValue,
-      ) {
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
     final hasArabicCharacters = RegExp(r'[؀-ۿ]').hasMatch(newValue.text);
     if (hasArabicCharacters) return oldValue;
     return newValue;
@@ -599,9 +596,9 @@ class _EnglishOnlyInputFormatter extends TextInputFormatter {
 class _CapitalizeTextFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue,
-      TextEditingValue newValue,
-      ) {
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
     if (newValue.text.isEmpty) return newValue;
 
     final capitalizedText = newValue.text.split(' ').map((word) {

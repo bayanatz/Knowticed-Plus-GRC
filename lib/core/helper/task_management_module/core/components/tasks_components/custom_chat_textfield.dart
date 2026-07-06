@@ -67,7 +67,7 @@ class _CustomCommentsTextFieldState extends State<CustomCommentsTextField> {
                       fit: BoxFit.cover,
                     )
                   : Image.asset(
-                      widget.profileImage ?? 'assets/images/profile1.png',
+                      widget.profileImage ?? 'assets/png_assets/profile1.png',
                       width: 0.04.h,
                       height: 0.04.h,
                       fit: BoxFit.cover,
@@ -148,7 +148,7 @@ class _CustomCommentsTextFieldState extends State<CustomCommentsTextField> {
                     vertical: isTablet ? 0.013.h : 0.009.h),
                 child: SvgPicture.asset(
                   matchTextDirection: Get.locale?.languageCode == 'ar',
-                  'assets/icons/send.svg',
+                  'assets/icons_assets/main_icons_assets/send.svg',
                   color: AppColors.textButton,
                 ),
               ),

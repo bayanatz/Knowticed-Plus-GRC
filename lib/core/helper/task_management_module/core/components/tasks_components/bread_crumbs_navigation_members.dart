@@ -5,9 +5,9 @@ import 'package:get/get.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:page_transition/page_transition.dart';
 
-import '../../constant/enum.dart';
-import '../custom_drawer.dart';
-import 'custom_project_screen_header.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/enum.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_drawer.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_project_screen_header.dart';
 
 class BreadCrumbsNavigationMembers extends StatelessWidget {
   const BreadCrumbsNavigationMembers({
@@ -57,7 +57,7 @@ class BreadCrumbsNavigationMembers extends StatelessWidget {
         ),
         SvgPicture.asset(
           matchTextDirection: Get.locale?.languageCode == 'ar',
-          'assets/icons/arrowLeft.svg',
+          'assets/icons_assets/main_icons_assets/images_arrow.svg',
           height: isPortrait ? 0.025.h : 0.04.h,
           color: Theme.of(context).colorScheme.inverseSurface,
         ),
@@ -78,7 +78,7 @@ class BreadCrumbsNavigationMembers extends StatelessWidget {
         ),
         SvgPicture.asset(
           matchTextDirection: Get.locale?.languageCode == 'ar',
-          'assets/icons/arrowLeft.svg',
+          'assets/icons_assets/main_icons_assets/images_arrow.svg',
           height: isPortrait ? 0.025.h : 0.04.h,
           color: Theme.of(context).colorScheme.inverseSurface,
         ),

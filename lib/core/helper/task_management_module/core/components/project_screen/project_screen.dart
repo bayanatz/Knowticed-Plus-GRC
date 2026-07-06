@@ -10,11 +10,11 @@ import 'package:demo_app/core/helper/task_management_module/core/components/proj
 import 'package:demo_app/core/helper/task_management_module/core/components/project_screen/widget/search_fext_field.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/project_screen/widget/status_filter_with_add_button.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_task_container.dart';
-import 'package:demo_app/core/helper/task_management_module/core/constant/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 import 'package:demo_app/core/helper/task_management_module/task/controller/task_controller.dart';
 import 'package:demo_app/core/helper/task_management_module/task/controller/task_details_controller.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/board_model/board_model.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/card_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/board_model/board_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_model.dart';
 
 /// Date Created :20/November/2023
 /// Developer Name : Bassem Mohamed
@@ -36,7 +36,7 @@ class ProjectScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<ProjectScreen> {
   TaskDetailsController taskController = Get.find();
-  final TaskHapticController hapticController = Get.put(TaskHapticController());
+  final HapticController hapticController = Get.put(HapticController());
   late String cardFilter;
   List<CardModel> searchCards = [];
 
@@ -206,7 +206,7 @@ class TabletButton extends StatelessWidget {
         ReusableElevatedButton(
           onTablet: true,
           buttonText: 'Edit'.tr,
-          icon: 'assets/icons/edit_icon.svg',
+          icon: 'assets/icons_assets/main_icons_assets/edit_icon.svg',
           onPressed: () {},
         ),
         SizedBox(
@@ -216,7 +216,7 @@ class TabletButton extends StatelessWidget {
           deleteButton: true,
           onTablet: true,
           buttonText: 'Delete'.tr,
-          icon: 'assets/icons/trashIcon.svg',
+          icon: 'assets/icons_assets/main_icons_assets/trashIcon.svg',
           onPressed: () {},
         ),
       ],

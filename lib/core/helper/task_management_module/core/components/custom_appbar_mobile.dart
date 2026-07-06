@@ -1,4 +1,5 @@
 // ignore_for_file: unrelated_type_equality_checks
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,9 +8,9 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/selection_user.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';
-import '../constant/date_time_in_arabic.dart';
-import '../constant/haptic_controller.dart';
-import '../constant/image_paths.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/date_time_in_arabic.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/haptic_controller.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/image_paths.dart';
 import 'package:demo_app/features/notification/presentation/controller/notification_controller.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 
@@ -130,7 +131,7 @@ class _CustomAppBarMobileState extends State<CustomAppBarMobile> {
                       // );
                     },
                     child: SvgPicture.asset(
-                      "assets/icons/SettingHome.svg",
+                      "assets/icons_assets/main_icons_assets/SettingHome.svg",
                       color:
                           themeController.currentTheme == AppColors.lightTheme
                               ? null
@@ -158,7 +159,7 @@ class _CustomAppBarMobileState extends State<CustomAppBarMobile> {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
                           return SvgPicture.asset(
-                            "assets/icons/bellIcon.svg",
+                            "assets/icons_assets/main_icons_assets/bellIcon.svg",
                             color: themeController.currentTheme ==
                                     AppColors.lightTheme
                                 ? null
@@ -168,7 +169,7 @@ class _CustomAppBarMobileState extends State<CustomAppBarMobile> {
                         } else if (snapshot.hasError ||
                             snapshot.data?.docs.isEmpty == true) {
                           return SvgPicture.asset(
-                            "assets/icons/bellIcon.svg",
+                            "assets/icons_assets/main_icons_assets/bellIcon.svg",
                             color: themeController.currentTheme ==
                                     AppColors.lightTheme
                                 ? null
@@ -193,7 +194,7 @@ class _CustomAppBarMobileState extends State<CustomAppBarMobile> {
                                   Theme.of(context).colorScheme.inverseSurface,
                             ),
                             child: SvgPicture.asset(
-                              "assets/icons/bellIcon.svg",
+                              "assets/icons_assets/main_icons_assets/bellIcon.svg",
                               color: themeController.currentTheme ==
                                       AppColors.lightTheme
                                   ? null
@@ -242,7 +243,7 @@ class _CustomAppBarMobileState extends State<CustomAppBarMobile> {
                           child: Transform.scale(
                             scale: 0.0013.h,
                             child: SvgPicture.asset(
-                              'assets/icons/arrowright2.svg',
+                              'assets/icons_assets/main_icons_assets/arrowright2.svg',
                               fit: BoxFit.fitWidth,
                               colorFilter: ColorFilter.mode(
                                   Theme.of(context)
@@ -275,7 +276,7 @@ class _CustomAppBarMobileState extends State<CustomAppBarMobile> {
                         ),
                         padding: EdgeInsets.all(0.01.h),
                         child: SvgPicture.asset(
-                          "assets/icons/blackAddIcon.svg",
+                          "assets/icons_assets/main_icons_assets/blackAddIcon.svg",
                         )),
 
                   //   if (widget.imagePath != null)
@@ -292,7 +293,7 @@ class _CustomAppBarMobileState extends State<CustomAppBarMobile> {
                   //                 ),
                   //                 padding: EdgeInsets.all(0.01.h),
                   //                 child: SvgPicture.asset(
-                  //                   "assets/icons/blackAddIcon.svg",
+                  //                   "assets/icons_assets/main_icons_assets/blackAddIcon.svg",
                   //                   color: AppColors.textButton,
                   //                 )),
                   //           )
@@ -308,7 +309,7 @@ class _CustomAppBarMobileState extends State<CustomAppBarMobile> {
                               ),
                               padding: EdgeInsets.all(0.01.h),
                               child: SvgPicture.asset(
-                                "assets/icons/shareIcon.svg",
+                                "assets/icons_assets/main_icons_assets/shareIcon.svg",
                                 color: AppColors.textButton,
                               )),
                         )

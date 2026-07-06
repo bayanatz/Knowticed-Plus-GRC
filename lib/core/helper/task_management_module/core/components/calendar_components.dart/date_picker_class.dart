@@ -9,8 +9,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
-import 'calender_package/src/models/calendar_date_picker2_config.dart';
-import 'calender_package/src/utils/dialog.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/calendar_components.dart/calender_package/src/models/calendar_date_picker2_config.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/calendar_components.dart/calender_package/src/utils/dialog.dart';
 
 class DatePicker {
   Future<List<DateTime?>?> showDatePicker(
@@ -49,7 +49,7 @@ class DatePicker {
                 horizontal: isTablet ? 0.004.w : 0.014.w,
                 vertical: isTablet ? 0.0.h : 0.02.h),
             child: SvgPicture.asset(
-              'assets/images/downArrow.svg',
+              'assets/icons_assets/main_icons_assets/downArrow.svg',
               fit: BoxFit.fitHeight,
               height: isTablet ? 0.053.h : null,
             ),
@@ -102,7 +102,7 @@ class DatePicker {
           lastMonthIcon: Transform.rotate(
             angle: Get.locale.toString().contains('en') ? 0 : 3.14,
             child: SvgPicture.asset(
-              'assets/icons/back_icon.svg',
+              'assets/icons_assets/main_icons_assets/back_icon.svg',
               // ignore: deprecated_member_use
               color: const Color(0xFFE5B800),
             ),
@@ -110,7 +110,7 @@ class DatePicker {
           nextMonthIcon: Transform.rotate(
             angle: Get.locale.toString().contains('en') ? 3.14 : 0,
             child: SvgPicture.asset(
-              'assets/icons/back_icon.svg',
+              'assets/icons_assets/main_icons_assets/back_icon.svg',
               // ignore: deprecated_member_use
               color: const Color(0xFFE5B800),
             ),

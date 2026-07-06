@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get_core/get_core.dart';
 import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_utils/get_utils.dart';
-import 'package:demo_app/features/roles/helper/task_management_module/core/components/success_dialog.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/success_dialog.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_project_screen_header.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_share_members_dialog_Tablet.dart';
 import 'package:demo_app/core/helper/task_management_module/core/constant/enum.dart';
@@ -16,7 +16,7 @@ import 'package:demo_app/core/helper/task_management_module/core/constant/screen
 import 'package:demo_app/core/helper/task_management_module/task/controller/task_details_controller.dart';
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
 import 'package:demo_app/core/helper/task_management_module/task/controller/task_controller.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/board_model/board_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/board_model/board_model.dart';
 
 class ProjectHeaderSection extends StatelessWidget {
   final TaskDetailsController controller;
@@ -85,7 +85,7 @@ class ProjectHeaderSection extends StatelessWidget {
                 return const SuccessDialog(
                   title: 'Warning',
                   subtitle: 'Only the board owner can edit members',
-                  lottieAsset: 'assets/images/error.json',
+                  lottieAsset: 'assets/lottie_assets/main_lottie_assets/error.json',
                 );
               },
             );

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';
 
 import 'package:demo_app/core/theme/app_colors.dart';
-import '../sort_option_widget.dart';
-import 'custom_task_container_mobile.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/sort_option_widget.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_task_container_mobile.dart';
 
 enum CheckList {
   Dates,
@@ -82,13 +82,13 @@ Widget _getSortOptionLabel(CheckList option, BuildContext context) {
   switch (option) {
     case CheckList.Dates:
       return const SortOptionWidget(
-        iconAddress: 'assets/icons/move_mobile.svg',
+        iconAddress: 'assets/icons_assets/main_icons_assets/move_mobile.svg',
         text: "Set Dates",
         hasImage: false,
       );
     case CheckList.Members:
       return const SortOptionWidget(
-        iconAddress: 'assets/icons/delete_mob.svg',
+        iconAddress: 'assets/icons_assets/main_icons_assets/delete_mob.svg',
         iconColor: Color(0xFF797979),
         text: "Assign Members",
         hasImage: false,

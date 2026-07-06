@@ -7,23 +7,24 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/custom/32-custom_svg.dart';
 import 'package:demo_app/core/custom/16-custom_card_styles.dart';
-import '../theme/app_colors.dart';
 
-/// SVG icon assets used by the chart widgets (assets/new/charts).
+/// SVG icon assets used by the chart widgets.
+/// All paths point to existing, pubspec-declared assets in assets/icons_assets.
 abstract class ChartSvg {
-  static const String _base = 'assets/new/charts';
+  static const String _inventory = 'assets/icons_assets/inventory_assets';
+  static const String _hr = 'assets/icons_assets/todo_new_assets';
 
-  static const String products = '$_base/products.svg';
-  static const String orders = '$_base/orders.svg';
-  static const String warehouse = '$_base/warehouse.svg';
-  static const String lowStock = '$_base/low_stock.svg';
-  static const String supplier = '$_base/supplier.svg';
-  static const String request = '$_base/request.svg';
-  static const String present = '$_base/present.svg';
-  static const String absent = '$_base/absent.svg';
-  static const String late = '$_base/late.svg';
-  static const String vacation = '$_base/vacation.svg';
-  static const String excused = '$_base/excused.svg';
+  static const String products = '$_inventory/product.svg';
+  static const String orders = '$_inventory/order.svg';
+  static const String warehouse = '$_inventory/warehouses.svg';
+  static const String lowStock = '$_inventory/low_stocks.svg';
+  static const String supplier = '$_inventory/suppliers.svg';
+  static const String request = '$_inventory/requests.svg';
+  static const String present = '$_hr/hrPresent.svg';
+  static const String absent = '$_hr/hrabcent.svg';
+  static const String late = '$_hr/hrLate.svg';
+  static const String vacation = '$_hr/hrVacation.svg';
+  static const String excused = '$_hr/hrExcuseLeave.svg';
 }
 
 /// White rounded container with the standard chart header:
@@ -55,7 +56,8 @@ class ChartCard extends StatelessWidget {
     return Container(
       width: width ?? double.infinity,
       height: height,
-      padding: padding ?? EdgeInsets.all(10.r),
+      // Figma: card padding 16.
+      padding: padding ?? EdgeInsets.all(16.r),
       decoration: BoxDecoration(
         color: AppColors.card,
         borderRadius: CardStyles.radius(),

@@ -3,13 +3,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';import 'package:demo_app/core/helper/task_management_module/task/controller/task_details_controller.dart';
 import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_checklists.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/card_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_model.dart';
 
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
-import '../dialogs/add_edit_card_deadline_dialog.dart';
-import '../dialogs/copy_card_dialog.dart';
-import 'package:demo_app/features/roles/helper/task_management_module/core/components/success_dialog.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/dialogs/add_edit_card_deadline_dialog.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/dialogs/copy_card_dialog.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/success_dialog.dart';
 
 class CustomRowWithIcons extends StatefulWidget {
   final String iconPath;
@@ -122,7 +122,7 @@ class _CustomRowWithIconsState extends State<CustomRowWithIcons> {
                             currentCheckList: widget.currentCheckList,
                             title: "Edit Check list Name",
                             onPressed: () {},
-                            iconUrl: 'assets/icons/CheckSquareIcon.svg',
+                            iconUrl: 'assets/icons_assets/task_assets/CheckSquareIcon.svg',
                           );
                         },
                       );
@@ -141,7 +141,7 @@ class _CustomRowWithIconsState extends State<CustomRowWithIcons> {
                               board: widget.board,
                               onPressed: () {},
                               isEditDates: true,
-                              iconUrl: 'assets/icons/taskDeadline.svg',
+                              iconUrl: 'assets/icons_assets/task_assets/taskDeadline.svg',
                             );
                           },
                         );
@@ -152,7 +152,7 @@ class _CustomRowWithIconsState extends State<CustomRowWithIcons> {
                             return const SuccessDialog(
                               title: "Warning",
                               subtitle: "Only Task Owner Can Edit Deadline",
-                              lottieAsset: "assets/images/error.json",
+                              lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
                             );
                           },
                         );
@@ -163,7 +163,7 @@ class _CustomRowWithIconsState extends State<CustomRowWithIcons> {
                     });
                   },
                   child: SvgPicture.asset(
-                    'assets/icons/isEditIcon.svg',
+                    'assets/icons_assets/main_icons_assets/isEditIcon.svg',
                     color: AppColors.lightPrimary,
                     height: isTablet ? (orientation ? 0.02.h : 0.03.h) : null,
                   ),
@@ -175,9 +175,9 @@ class _CustomRowWithIconsState extends State<CustomRowWithIcons> {
             GestureDetector(
               onTap: widget.onTrashPressed,
               child: SvgPicture.asset(
-                'assets/icons/deleteIcon.svg',
+                'assets/icons_assets/task_assets/deleteIcon.svg',
                 height: isTablet ? (orientation ? 0.025.h : null) : null,
-              ), //"assets/icons/deleteIcon.svg"
+              ), //"assets/icons_assets/task_assets/deleteIcon.svg"
             ),
           if (widget.onTrashPressed != null && widget.isExpand == false)
             SizedBox(
@@ -190,16 +190,16 @@ class _CustomRowWithIconsState extends State<CustomRowWithIcons> {
               onTap: widget.onArrowPressed,
               child: widget.hideDelete == true
                   ? SvgPicture.asset(
-                      "assets/icons/xClose.svg",
+                      "assets/icons_assets/task_assets/xClose.svg",
                       height: isTablet ? (orientation ? 0.012.h : null) : null,
                     )
                   : SvgPicture.asset(
                       widget.isExpand == true
-                          ? 'assets/icons/taskOpened.svg'
-                          : 'assets/icons/taskClosed.svg',
+                          ? 'assets/icons_assets/task_assets/taskOpened.svg'
+                          : 'assets/icons_assets/task_assets/taskClosed.svg',
                       color: Theme.of(context).colorScheme.inverseSurface,
                       height: 0.012.h,
-                    ), //"assets/icons/deleteIcon.svg"
+                    ), //"assets/icons_assets/task_assets/deleteIcon.svg"
             ),
           if (widget.isComments == true) const Spacer(),
           widget.isComments == true

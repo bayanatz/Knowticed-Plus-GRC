@@ -1,18 +1,17 @@
 // ignore_for_file: library_private_types_in_public_api, non_constant_identifier_names
 
-import 'package:demo_app/core/nav_bar_package.dart/functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:demo_app/features/home/helper/task_management_module/borad/view/board_create/create_board_screen.dart';
+import 'package:demo_app/core/helper/task_management_module/borad/view/board_create/create_board_screen.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/custom_drop_down_menu.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/dialogs/copy_card_dialog.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/main_yellow_button.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_icon.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_project_screen_header.dart';
 import 'package:demo_app/core/helper/task_management_module/core/constant/enum.dart';
-import 'package:demo_app/core/theme/app_font_size.dart';
+import 'package:demo_app/core/theme/app_font_size.dart';import 'package:demo_app/core/helper/task_management_module/core/nav_bar_package.dart/functions.dart';
 import 'package:demo_app/core/helper/task_management_module/task/controller/task_details_controller.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 
@@ -112,7 +111,7 @@ class _CustomSearchFiledState extends State<CustomSearchFiled2> {
                     padding: const EdgeInsets.all(9.0),
                     child: InkWell(
                       child: SvgPicture.asset(
-                        'assets/images/Search.svg',
+                        'assets/icons_assets/main_icons_assets/images_search.svg',
                       ),
                     ),
                   ),
@@ -160,7 +159,7 @@ class _CustomSearchFiledState extends State<CustomSearchFiled2> {
                                     radius: 15,
                                     backgroundColor: AppColors.signOut,
                                     child: SvgPicture.asset(
-                                      'assets/icons/Tuning 2.svg',
+                                      'assets/icons_assets/task_assets/icons_Tuning 2.svg',
                                       colorFilter: ColorFilter.mode(
                                         Colors.black,
                                         BlendMode.srcIn,
@@ -288,8 +287,8 @@ class _CustomSearchFiledState extends State<CustomSearchFiled2> {
                 padding: const EdgeInsets.all(7.0),
                 child: SvgPicture.asset(
                   widget.onBoardDetails
-                      ? 'assets/icons/sort_mob.svg'
-                      : 'assets/icons/Tuning 2.svg',
+                      ? 'assets/icons_assets/main_icons_assets/sort_mob.svg'
+                      : 'assets/icons_assets/task_assets/icons_Tuning 2.svg',
                   height: 24,
                   width: 24,
                 ),
@@ -300,7 +299,7 @@ class _CustomSearchFiledState extends State<CustomSearchFiled2> {
           widget.onBoardDetails
               ? ReusableElevatedButton(
                   buttonText: 'Card',
-                  icon: 'assets/icons/add.svg',
+                  icon: 'assets/icons_assets/main_icons_assets/icons_add.svg',
                   onPressed: () {
                     hapticController.triggerHapticFeedback(
                         vibration: VibrateType.lightImpact,
@@ -318,7 +317,7 @@ class _CustomSearchFiledState extends State<CustomSearchFiled2> {
                           },
                           isCard: true,
                           isCreatingCard: true,
-                          iconUrl: 'assets/icons/addCardIcon.svg',
+                          iconUrl: 'assets/icons_assets/task_assets/addCardIcon.svg',
                         );
                       },
                     );

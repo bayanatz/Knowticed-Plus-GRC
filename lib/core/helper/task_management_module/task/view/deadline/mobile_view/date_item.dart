@@ -23,8 +23,8 @@ class DateItem extends StatelessWidget {
           Spacer(),
           SvgPicture.asset(
             isClock
-                ? "assets/icons/ClockCircleSmall.svg"
-                : "assets/icons/calendar.svg",
+                ? "assets/icons_assets/main_icons_assets/ClockCircleSmall.svg"
+                : "assets/icons_assets/main_icons_assets/icons_calendar.svg",
             height: 16.h,
             width: 16.h,
             fit: BoxFit.cover,

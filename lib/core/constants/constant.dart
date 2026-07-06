@@ -10,6 +10,9 @@ class FirestoreCollections {
   // static const allServices = "myCreateRequests";
   static const accessEmployee = "User_Management";
   static const employeeInfo = "Employees_Info";
+  static const services = "Services";
+  static const requestedServices = "RequestedServices";
+  static const users = "users";
 }
 
 

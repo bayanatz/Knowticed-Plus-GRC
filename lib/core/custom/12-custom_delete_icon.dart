@@ -2,19 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
+import 'package:demo_app/core/theme/app_theme.dart';
+import 'package:demo_app/core/helper/main_helper/app_haptics.dart';
 
-import 'package:demo_app/core/custom/32-custom_svg.dart';
-import '../theme/app_colors.dart';
+import 'package:demo_app/core/helper/inventory_module/core/svg_custom.dart';
+import 'package:demo_app/core/custom/41_custom_button_sizing.dart';
 
 /// Delete action button.
 ///
 /// Fixed (static) values:
 /// - Mobile: 38.sp x 38.sp, icon only (no text)
-/// - Non-mobile: 100.sp x 38.sp, svg + text with 8.sp space
+/// - Non-mobile: 135.sp x 38.sp, svg + text with 8.sp space;
+///   if the content doesn't fit, wraps with 12.sp horizontal padding
 /// - Border radius: 8.r
-/// - Svg: assets/delete.svg, 20.sp x 20.sp
+/// - Svg: assets/icons_assets/main_icons_assets/delete.svg, 20.sp x 20.sp
 class CustomDeleteIcon extends StatelessWidget {
-  static const String _svgPath = 'assets/delete.svg';
+  static const String _svgPath = 'assets/icons_assets/main_icons_assets/delete.svg';
 
   final String? title;
   final VoidCallback? onTap;
@@ -50,36 +53,68 @@ class CustomDeleteIcon extends StatelessWidget {
       fit: BoxFit.scaleDown,
     );
 
+    final TextStyle effectiveStyle =
+        textStyle ?? StyleText.fontSize14Weight400.copyWith(color: iconColor);
+
+    // Enforced sizing: 38.sp icon-only on mobile; 135.sp on tablet, or
+    // content width + 12.sp horizontal padding when the text doesn't fit.
+    final double? buttonWidth = isMobile
+        ? ButtonSizing.iconButtonSize
+        : ButtonSizing.width(
+            context,
+            title: text,
+            textStyle: effectiveStyle,
+            extraContentWidth: 20.sp + 8.sp,
+          );
+
     return GestureDetector(
-      onTap: onTap,
+      onTap: onTap == null
+          ? null
+          : () {
+              AppHaptics.high(); // destructive: delete
+              onTap!();
+            },
       child: Container(
-        width: isMobile ? 38.sp : 100.sp,
-        height: 38.sp,
+        width: buttonWidth,
+        height: ButtonSizing.height,
         decoration: BoxDecoration(
           color: color ?? AppColors.primary,
-          border: Border.all(color: borderColor ?? Colors.transparent),
-          borderRadius: BorderRadius.circular(8.r),
+          border: Border.all(color: borderColor ?? AppColors.transparent),
+          borderRadius: BorderRadius.circular(ButtonSizing.radius),
         ),
         child: isMobile
             ? Center(child: svg)
             : Padding(
-                padding: padding ?? EdgeInsets.zero,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    svg,
-                    SizedBox(width: 8.sp),
-                    Flexible(
-                      child: Text(
-                        text,
-                        style: textStyle ??
-                            TextStyle(fontSize: 14.sp, color: iconColor),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
+                padding: buttonWidth == null
+                    ? EdgeInsets.symmetric(
+                        horizontal: ButtonSizing.horizontalPadding,
+                      )
+                    : (padding ?? EdgeInsets.zero),
+                child: buttonWidth == null
+                    ? Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          svg,
+                          SizedBox(width: 8.sp),
+                          Text(text, style: effectiveStyle, maxLines: 1),
+                        ],
+                      )
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          svg,
+                          SizedBox(width: 8.sp),
+                          Flexible(
+                            child: Text(
+                              text,
+                              style: effectiveStyle,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
               ),
       ),
     );

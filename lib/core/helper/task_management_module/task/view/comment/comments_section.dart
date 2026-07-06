@@ -3,15 +3,15 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';import 'package:demo_app/core/helper/task_management_module/borad/controller/board_controller.dart';
 import 'package:demo_app/core/helper/task_management_module/task/controller/task_details_controller.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/card_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_model.dart';
 import 'package:lottie/lottie.dart';
 
-import '../../../core/components/tasks_components/custom_chat_textfield.dart';
-import '../../../core/components/tasks_components/custom_comments_bottom_sheet.dart';
-import '../../../core/components/tasks_components/custom_comments_card.dart';
-import '../../../core/components/tasks_components/custom_container_header_mobile.dart';
-import '../../../core/components/tasks_components/custom_project_screen_header.dart';
-import '../../../core/constant/enum.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_chat_textfield.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_comments_bottom_sheet.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_comments_card.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_container_header_mobile.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_project_screen_header.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/enum.dart';
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 
@@ -48,7 +48,7 @@ class CommentsSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CustomRowWithIcons(
-              iconPath: "assets/icons/taskDeadline.svg",
+              iconPath: "assets/icons_assets/task_assets/taskDeadline.svg",
               title: "Comments".tr,
               isComments: true,
               cardModel: cardModel,
@@ -92,7 +92,7 @@ class CommentsSection extends StatelessWidget {
                             Transform.scale(
                               scale: 1.2,
                               child: Lottie.asset(
-                                "assets/images/emptyBoardComments.json",
+                                "assets/lottie_assets/main_lottie_assets/emptyBoardComments.json",
                                 width: 0.15.w,
                                 fit: BoxFit.fitHeight,
                               ),

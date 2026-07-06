@@ -6,10 +6,10 @@ import 'package:demo_app/core/helper/task_management_module/core/components/cust
 import 'package:demo_app/core/helper/task_management_module/core/components/selection_user.dart';
 import 'package:demo_app/core/helper/task_management_module/core/constant/app_size.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';import 'package:demo_app/core/helper/task_management_module/task/controller/task_details_controller.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/card_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_model.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 
-import '../custom_elevated_button.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_elevated_button.dart';
 
 class CustomProgressDialog extends StatefulWidget {
   final String? initialIncrement;

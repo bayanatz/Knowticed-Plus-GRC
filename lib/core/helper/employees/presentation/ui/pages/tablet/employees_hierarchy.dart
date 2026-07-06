@@ -4,7 +4,7 @@
 /// Author: Mohamed Elrashidy
 /// Created at: 25/12/2024
 import 'package:demo_app/core/theme/app_theme.dart';
-import 'package:demo_app/core/helper/employees/core_widgets/services_management/custom_filter.dart';
+import 'package:demo_app/core/custom/8-custom_filter_app.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -150,7 +150,7 @@ class _TabletEmployeesHierarchyState extends State<TabletEmployeesHierarchy> {
                       }
                     }
 
-                    return DepartmentFilterChips(
+                    return StatusChipFilter(
                       selectedKey: controller.selectedDepartment ?? allLabel,
                       onSelected: (selectedLabel) {
                         String? deptId;
@@ -176,10 +176,11 @@ class _TabletEmployeesHierarchyState extends State<TabletEmployeesHierarchy> {
 
                         setState(() {});
                       },
-                      totalCount: totalCount,
-                      departmentCounts: departmentCounts,
-                      userDepartment: '',
-                      isArabic: isArabic,
+                      items: departmentChipItems(
+                        totalCount: totalCount,
+                        departmentCounts: departmentCounts,
+                        isArabic: isArabic,
+                      ),
                     );
                   },
                 ),
@@ -326,7 +327,7 @@ class _TabletEmployeesHierarchyState extends State<TabletEmployeesHierarchy> {
                       }
                     }
 
-                    return DepartmentFilterChips(
+                    return StatusChipFilter(
                       selectedKey: controller.selectedDepartment ?? allLabel,
                       onSelected: (selectedLabel) {
                         String? deptId;
@@ -352,10 +353,11 @@ class _TabletEmployeesHierarchyState extends State<TabletEmployeesHierarchy> {
 
                         setState(() {});
                       },
-                      totalCount: totalCount,
-                      departmentCounts: departmentCounts,
-                      userDepartment: '',
-                      isArabic: isArabic,
+                      items: departmentChipItems(
+                        totalCount: totalCount,
+                        departmentCounts: departmentCounts,
+                        isArabic: isArabic,
+                      ),
                     );
                   },
                 ),

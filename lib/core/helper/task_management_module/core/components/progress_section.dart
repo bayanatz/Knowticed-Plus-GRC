@@ -9,14 +9,14 @@ import 'package:demo_app/core/helper/task_management_module/borad/controller/boa
 import 'package:demo_app/core/helper/task_management_module/core/components/selection_user.dart';
 import 'package:demo_app/core/helper/task_management_module/core/constant/image_paths.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';import 'package:demo_app/core/helper/task_management_module/task/controller/task_details_controller.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/card_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_model.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';
 
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
-import 'custom_progress_drop_down.dart';
-import 'package:demo_app/features/roles/helper/task_management_module/core/components/success_dialog.dart';
-import 'tasks_components/custom_progress_dialog.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_progress_drop_down.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/success_dialog.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_progress_dialog.dart';
 
 class ProgressSection extends StatefulWidget {
   const ProgressSection({
@@ -263,7 +263,7 @@ class _ProgressSectionState extends State<ProgressSection> {
                           return const SuccessDialog(
                             title: "Warning",
                             subtitle: "Only Card Owner Can Edit The Progress",
-                            lottieAsset: "assets/images/error.json",
+                            lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
                           );
                         },
                       );
@@ -326,7 +326,7 @@ class _ProgressSectionState extends State<ProgressSection> {
                     return const SuccessDialog(
                       title: "Warning",
                       subtitle: "Only Card Owner Can Edit The Progress",
-                      lottieAsset: "assets/images/error.json",
+                      lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
                     );
                   },
                 );

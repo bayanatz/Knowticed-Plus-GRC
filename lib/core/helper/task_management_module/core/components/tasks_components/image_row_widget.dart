@@ -4,7 +4,8 @@ import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/selection_user.dart';
 
 import 'package:demo_app/core/theme/app_colors.dart';
-import '../../constant/date_time_in_arabic.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/date_time_in_arabic.dart';
+import 'package:demo_app/core/utils/app_image_provider.dart';
 
 class ImageRowWidget extends StatelessWidget {
   final List<String> checkListImages;
@@ -79,7 +80,7 @@ class ImageRowWidget extends StatelessWidget {
             : CircleAvatar(
                 radius: 0.03.h,
                 backgroundColor: Colors.transparent,
-                backgroundImage: AssetImage(image),
+                backgroundImage: appImageProvider(image),
               ),
       ),
     );

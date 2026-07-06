@@ -6,9 +6,9 @@ import 'package:demo_app/core/helper/task_management_module/borad/controller/boa
 import 'package:demo_app/core/helper/task_management_module/task/controller/task_details_controller.dart';
 
 import 'package:demo_app/core/theme/app_colors.dart';
-import '../main_yellow_button.dart';
-import '../tracking_time_components/track_time_subwidget/column_request_data.dart';
-import '../tracking_time_components/track_time_subwidget/filters_appbar.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/main_yellow_button.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tracking_time_components/track_time_subwidget/column_request_data.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tracking_time_components/track_time_subwidget/filters_appbar.dart';
 
 class AddCardDialog extends StatefulWidget {
   const AddCardDialog({
@@ -59,9 +59,9 @@ class _AddCardDialogState extends State<AddCardDialog> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const FiltersAppBar(
-                      imageUrl: "assets/images/create_board.svg",
+                      imageUrl: "assets/icons_assets/task_assets/create_board.svg",
                       title: "Add Card"),
-                  // SvgPicture.asset("assets/images/imagePickerPhoto.svg"),
+                  // SvgPicture.asset("assets/icons_assets/main_icons_assets/imagePickerPhoto.svg"),
                   InkWell(
                     onTap: () {
                       controller.uploadImage("card_images");
@@ -76,7 +76,7 @@ class _AddCardDialogState extends State<AddCardDialog> {
                                   child: Transform.scale(
                                       scale: 1.3,
                                       child: SvgPicture.asset(
-                                          "assets/images/imagePickerPhoto.svg")),
+                                          "assets/icons_assets/main_icons_assets/imagePickerPhoto.svg")),
                                 ),
                               )
                             : CircleAvatar(
@@ -101,7 +101,7 @@ class _AddCardDialogState extends State<AddCardDialog> {
                               child: Transform.scale(
                                 scale: 1.5,
                                 child: SvgPicture.asset(
-                                    "assets/images/photo_picker2.svg"),
+                                    "assets/icons_assets/task_assets/photo_picker2.svg"),
                               ),
                             ),
                           ),

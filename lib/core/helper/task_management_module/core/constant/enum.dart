@@ -1,4 +1,5 @@
 // ignore_for_file: constant_identifier_names
+export 'package:demo_app/core/enums/enum.dart' show VibrateType;
 
 String capitalize(String input) {
   if (input.isEmpty) {
@@ -359,12 +360,6 @@ enum NotificationType {
     }
     return 'updates';
   }
-}
-
-enum VibrateType {
-  lightImpact,
-  mediumImpact,
-  heavyImpact,
 }
 
 enum Languages {

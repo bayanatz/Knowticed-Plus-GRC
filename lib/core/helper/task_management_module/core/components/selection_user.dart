@@ -5,7 +5,7 @@ import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:demo_app/core/theme/theme_controller.dart';import 'package:demo_app/core/helper/task_management_module/borad/view/board_home/board_screen_mobile.dart';
 
 import 'package:demo_app/core/theme/app_colors.dart';
-import 'custom_drawer.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_drawer.dart';
 
 final ThemeController themeController = Get.put(ThemeController());
 

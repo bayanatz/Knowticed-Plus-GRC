@@ -4,8 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/custom/16-custom_card_styles.dart';
-import 'package:demo_app/core/custom/5-custom_button.dart';
-import '../theme/app_colors.dart';
+import 'package:demo_app/core/helper/main_helper/app_haptics.dart';
 
 /// Card: icon box + title + icon info rows + full-width primary button.
 ///
@@ -68,7 +67,8 @@ class ServiceRequestCard extends StatelessWidget {
                 width: 40.r,
                 height: 40.r,
                 decoration: BoxDecoration(
-                  color: AppColors.barrierColor,
+                  // Figma: #D9D9D9, radius 4 (node 6550:9774).
+                  color: AppColors.background,
                   borderRadius: BorderRadius.circular(4.r),
                 ),
                 child: Center(
@@ -99,16 +99,32 @@ class ServiceRequestCard extends StatelessWidget {
               child: CardInfoRow(info: info, fontSize: 14),
             ),
           SizedBox(height: 4.h),
-          // Primary action button (full width, 30h, radius 8).
-          customButton(
-            title: buttonText,
-            function: onPressed ?? () {},
-            width: double.infinity,
-            height: 30.h,
-            radius: 8.r,
-            color: buttonColor ?? AppColors.primary,
-            textStyle:
-                CardStyles.title(16).copyWith(color: AppColors.textButton),
+          // Primary action button — Figma node 6550:9771 "new student button":
+          // full width, height 30, radius 8, bg #FFDE59, Cairo Medium 16.
+          // Built inline (not customButton) because this card requires the
+          // exact Figma layout, not the app-wide ButtonSizing rule.
+          GestureDetector(
+            onTap: () {
+              AppHaptics.medium(); // primary action button
+              (onPressed ?? () {})();
+            },
+            child: Container(
+              width: double.infinity,
+              height: 30.h,
+              decoration: BoxDecoration(
+                color: buttonColor ?? AppColors.primary,
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+              child: Center(
+                child: Text(
+                  buttonText,
+                  style: CardStyles.title(16)
+                      .copyWith(color: AppColors.textButton),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ),
           ),
         ],
       ),

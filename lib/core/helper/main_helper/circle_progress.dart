@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:demo_app/core/theme/app_colors.dart';
-// REMOVED_MODULE: import 'package:demo_app/features/external/services_mangment_module/core/app_color.dart';
-
-// REMOVED_MODULE: import '../../features/external/services_mangment_module/core/new_theme.dart';
+import 'package:demo_app/core/theme/app_text_styles.dart';
 
 
 // date:April/30/2024
@@ -22,7 +20,7 @@ class CircleProgress extends StatelessWidget {
         height: 50.sp,
         width: 50.sp,
         child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary), // primary color of any company
+          valueColor: AlwaysStoppedAnimation<Color>(AppColors.yellow), // primary color of any company
           backgroundColor: Colors.white60,
           strokeWidth: 2.0,
         ),

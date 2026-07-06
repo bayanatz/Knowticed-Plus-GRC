@@ -6,7 +6,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/task_container_section_project_screen.dart';
 import 'package:demo_app/core/helper/task_management_module/core/constant/screen_size.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/card_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_model.dart';
 
 class CardsContainerView extends StatelessWidget {
   final List<CardModel> cards;

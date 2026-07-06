@@ -1,7 +1,7 @@
 class SkeletonAssets {
   static const String imageAvatar =
-      'assets/skeleton/common/icons/image_avatar.svg';
+      'assets/icons_assets/main_icons_assets/image_avatar.svg';
   static const String roleIcon =
-      'assets/skeleton/roles/icons/role_main_icon.svg';
-  static const String cameraIcon = 'assets/skeleton/common/icons/camera.svg';
+      'assets/icons_assets/main_icons_assets/role_main_icon.svg';
+  static const String cameraIcon = 'assets/icons_assets/main_icons_assets/common_icons_camera.svg';
 }

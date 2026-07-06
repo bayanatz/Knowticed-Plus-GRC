@@ -11,12 +11,12 @@ import 'package:demo_app/core/helper/task_management_module/borad/controller/boa
 import 'package:demo_app/core/helper/task_management_module/core/constant/app_size.dart';
 import 'package:demo_app/core/helper/task_management_module/core/constant/image_paths.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';import 'package:demo_app/core/helper/task_management_module/task/controller/task_details_controller.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/card_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_model.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';
 
-import '../constant/date_time_in_arabic.dart';
-import '../constant/haptic_controller.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/date_time_in_arabic.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 
 class CustomProgressDropdown extends StatefulWidget {
   final String hint;
@@ -112,7 +112,7 @@ class CustomProgressDropdown extends StatefulWidget {
 }
 
 class _CustomDropdownButton2State extends State<CustomProgressDropdown> {
-  final TaskHapticController hapticController = Get.put(TaskHapticController());
+  final HapticController hapticController = Get.put(HapticController());
 
   bool filled = false;
   Color _borderColor = AppColors.colorGrey;
@@ -612,7 +612,7 @@ class CustomProgressColorDropdown extends StatefulWidget {
 
 class _CustomProgressColorDropdownState
     extends State<CustomProgressColorDropdown> {
-  final TaskHapticController hapticController = Get.put(TaskHapticController());
+  final HapticController hapticController = Get.put(HapticController());
   TaskDetailsController taskController = Get.put(TaskDetailsController());
   bool filled = false;
   Color _borderColor = AppColors.colorGrey;
@@ -899,7 +899,7 @@ class ColorDropdown extends StatefulWidget {
 }
 
 class _ColorDropdownState extends State<ColorDropdown> {
-  final TaskHapticController hapticController = Get.put(TaskHapticController());
+  final HapticController hapticController = Get.put(HapticController());
 
   bool filled = false;
   Color _borderColor = AppColors.colorGrey;

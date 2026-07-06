@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
-import 'package:demo_app/core/network/failure_model.dart';
-import 'package:demo_app/core/helper/employees/presentation/controller/emergency_contact_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/network/api_constants.dart';
@@ -9,14 +7,16 @@ import 'package:demo_app/features/employee/presentation/controller/main_core_emp
 import 'package:demo_app/core/helper/organization_chart_module/presentation/controller/employees_hierarchy_drawer.dart';
 import 'package:demo_app/core/helper/organization_chart_module/presentation/controller/health_insurance_controller.dart';
 import 'package:demo_app/core/custom/31-custom_multi_select_dropdown.dart';
+import 'package:demo_app/core/network/failure_model.dart';
 
 import 'package:demo_app/features/employee/data/models/emplyees_model/new_employee_model.dart';
 import 'package:demo_app/features/roles/role_management/utils/constants.dart';
-import '../../data/models/department_model/department_model.dart' as newDepartmentModel;
-import '../../data/models/employee_model/employee_directory_model.dart';
-import '../../data/repository/employees_repository.dart';
-import '../../domain/entities/organization_hierarchy_node.dart';
-import 'main_core_department_controller.dart';
+import 'package:demo_app/core/helper/organization_chart_module/data/models/department_model/department_model.dart' as newDepartmentModel;
+import 'package:demo_app/core/helper/organization_chart_module/data/models/employee_model/employee_directory_model.dart';
+import 'package:demo_app/core/helper/organization_chart_module/data/repository/employees_repository.dart';
+import 'package:demo_app/core/helper/organization_chart_module/domain/entities/organization_hierarchy_node.dart';
+import 'package:demo_app/core/helper/organization_chart_module/presentation/controller/main_core_department_controller.dart';
+import 'package:demo_app/core/helper/organization_chart_module/presentation/controller/emergency_contact_controller.dart';
 import 'package:intl/intl.dart';
 
 /// Date: Jan/8/2024
@@ -511,8 +511,8 @@ class EmployeeController extends GetxController with StateMixin {
       bool isFemale = employee.gender.isNotEmpty &&
           employee.gender.last.toLowerCase() == 'female';
       return isFemale
-          ? "assets/images/female_avatar.png"
-          : "assets/images/male_avatar.png";
+          ? "assets/icons_assets/main_icons_assets/images_female.svg"
+          : "assets/icons_assets/main_icons_assets/assets_male.svg";
     }
 
     return employee.photo.last;

@@ -6,7 +6,7 @@
 //import 'package:demo_app/core/theme/app_font_size.dart';
 //import 'package:demo_app/core/theme/app_colors.dart';
 // import 'package:demo_app/features/onboarding/presentation/ui/pages/onboarding.dart';
-// import 'package:demo_app/features/settings/presentation/controller/add_company_controller.dart';
+// import 'package:demo_app/core/helper/settings/presentation/controller/add_company_controller.dart';
 // import 'package:demo_app/features/onboarding/welcome_screen/views/mobile_view/nav_bar.dart';
 // // import '../../features/messaging/interface/controller/messaging_init_controller.dart';
 // import 'app_theme.dart';
@@ -454,7 +454,10 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:demo_app/features/onboarding/presentation/ui/pages/onboarding.dart';
-import 'package:demo_app/features/settings/presentation/controller/add_company_controller.dart';
+import 'package:demo_app/core/helper/settings/presentation/controller/add_company_controller.dart';
+import 'package:demo_app/core/helper/settings/data/repository/company_repository.dart';
+import 'package:demo_app/core/helper/settings/data/data_source/remote_data_source/company_remote_data_source.dart';
+import 'package:demo_app/features/onboarding/welcome_screen/views/mobile_view/nav_bar.dart';
 import '../../features/messaging/interface/controller/messaging_init_controller.dart';
 import 'package:demo_app/features/roles/system_logs/controller/system_logs_controller.dart';
 import 'app_theme.dart';
@@ -465,10 +468,6 @@ class ThemeController extends GetxController {
   final storage = GetStorage();
   late Rx<ThemeData> currentTheme;
   final RxBool isInitialized = false.obs;
-
-  /// Whether UI animations (e.g. slide/fade transitions) are enabled.
-  /// Toggle this to globally disable animations.
-  final RxBool animationsEnabled = true.obs;
 
   @override
   void onInit() {
@@ -722,48 +721,62 @@ class ThemeController extends GetxController {
     print('🎨 [ThemeController] Theme initialization completed');
   }
 
-  CompanyController addCompanyController = Get.put(CompanyController());
+  // ⚠️ Must NOT re-create or re-init on every ThemeController construction.
+  //
+  // ThemeController is created via `Get.put(ThemeController())` inside many
+  // widget build() methods. Because the argument is evaluated every rebuild, a
+  // new ThemeController (and therefore this field) is built every frame. If this
+  // field called `CompanyController()..init()` each time, init() -> getCompany()
+  // -> update*Color()/updateFonts() -> Get.forceAppUpdate() would rebuild the
+  // whole tree, which re-runs those build() methods, which re-create
+  // ThemeController... an infinite loop (the repeating branding logs + lag).
+  //
+  // Reuse the already-registered CompanyController and only init() it once.
+  CompanyController addCompanyController = _ensureCompanyController();
   SystemLogsController get systemLogsController => Get.find();
+
+  /// Returns the singleton CompanyController, creating and initializing it only
+  /// the first time. Subsequent calls reuse the existing instance without
+  /// re-running init() (which would re-trigger the branding + forceAppUpdate
+  /// cascade and loop).
+  static CompanyController _ensureCompanyController() {
+    if (Get.isRegistered<CompanyController>()) {
+      return Get.find<CompanyController>();
+    }
+    final controller = Get.put(
+      CompanyController(repository: CompanyRepository(CompanyRemoteDataSource())),
+    );
+    controller.init();
+    return controller;
+  }
 
   // ✅ FIXED: Check GetStorage FIRST for employee branding, fallback to company branding
   void updatePrimaryColor() {
-    print(
-        '🎨 [ThemeController] ========== UPDATE PRIMARY COLOR START ==========');
+
 
     // Step 1: Check if there's already a value in GetStorage (employee branding)
     String? existingColorInStorage = storage.read('primaryColor');
-    print(
-        '🎨 [ThemeController] Step 1 - Existing primaryColor in storage: $existingColorInStorage');
 
     String? colorValue;
 
     // Step 2: If storage is empty, load from company branding
     if (existingColorInStorage == null || existingColorInStorage.isEmpty) {
-      print(
-          '🎨 [ThemeController] Step 2 - Storage is empty, loading from company branding...');
-      print('🎨 [ThemeController] Company status: ${addCompanyController.company
-          ?.status}');
+
 
       colorValue = addCompanyController.company?.status == 'active'
           ? addCompanyController.company?.primaryColor?.primaryColor?.lastOrNull
           : null;
 
-      print('🎨 [ThemeController] Primary color from company: $colorValue');
 
       if (colorValue != null && colorValue.isNotEmpty) {
         storage.write('primaryColor', colorValue);
-        print(
-            '🎨 [ThemeController] ✅ Wrote company color to storage: $colorValue');
       }
     } else {
       // Use existing storage value (employee branding)
       colorValue = existingColorInStorage;
-      print(
-          '🎨 [ThemeController] Step 2 - Using existing storage value (employee branding): $colorValue');
+
     }
 
-    // Step 3: Apply the color to theme
-    print('🎨 [ThemeController] Step 3 - Applying color to theme...');
 
 
     final _primaryColor = colorValue != null && colorValue.isNotEmpty
@@ -776,11 +789,9 @@ class ThemeController extends GetxController {
     AppColors.currentThemeColors['primary'] = _primaryColor;
     AppColors.currentThemeColors['lightPrimary'] = _primaryColor;
 
-    print('🎨 [ThemeController] ✅ AppColors.lightPrimary set to: ${AppColors
-        .lightPrimary}');
+
 
     // Step 4: Refresh current theme to apply new color
-    print('🎨 [ThemeController] Step 4 - Refreshing theme...');
     if (currentTheme.value == AppColors.lightTheme) {
       currentTheme.value = AppColors.lightTheme;
     } else {
@@ -788,14 +799,11 @@ class ThemeController extends GetxController {
     }
 
     // Step 5: Update modules AFTER setting the storage values
-    print('🎨 [ThemeController] Step 5 - Updating modules branding...');
     updateModulesBranding();
 
     // Step 6: Force UI update
-    print('🎨 [ThemeController] Step 6 - Forcing UI update...');
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Get.forceAppUpdate();
-      print('🎨 [ThemeController] ✅ UI update forced');
     });
 
     print('🎨 [ThemeController] ========== UPDATE PRIMARY COLOR END ==========');

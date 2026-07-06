@@ -11,9 +11,10 @@ import 'package:demo_app/features/employee/presentation/controller/main_core_emp
 import 'package:demo_app/features/notification/presentation/controller/notification_controller.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
-import '../constant/enum.dart';
-import '../constant/haptic_controller.dart';
-import 'custom_drawer.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/enum.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_drawer.dart';
+import 'package:demo_app/core/utils/app_image_provider.dart';
 
 // ignore: must_be_immutable
 class CustomAppBar extends StatefulWidget {
@@ -34,7 +35,7 @@ MainCoreNotificationController appNotificationController =
     Get.put(MainCoreNotificationController());
 
 class _CustomAppBarState extends State<CustomAppBar> {
-  final TaskHapticController hapticController = Get.put(TaskHapticController());
+  final HapticController hapticController = Get.put(HapticController());
   @override
   Widget build(BuildContext context) {
     bool isPortrait =
@@ -107,7 +108,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
             //           if (snapshot.connectionState == ConnectionState.waiting) {
             //             return Center(
             //               child: SvgPicture.asset(
-            //                 'assets/icons/Bell.svg',
+            //                 'assets/icons_assets/main_icons_assets/Bell.svg',
             //                 // ignore: deprecated_member_use
             //                 color: widget.isNotifications
             //                     ? AppColors.textButton
@@ -118,7 +119,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
             //               snapshot.data?.docs.isEmpty == true) {
             //             return Center(
             //               child: SvgPicture.asset(
-            //                 'assets/icons/Bell.svg',
+            //                 'assets/icons_assets/main_icons_assets/Bell.svg',
             //                 // ignore: deprecated_member_use
             //                 color: widget.isNotifications
             //                     ? AppColors.textButton
@@ -148,7 +149,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
             //               ),
             //               child: Center(
             //                 child: SvgPicture.asset(
-            //                   'assets/icons/Bell.svg',
+            //                   'assets/icons_assets/main_icons_assets/Bell.svg',
             //                   // ignore: deprecated_member_use
             //                   color: widget.isNotifications
             //                       ? AppColors.textButton
@@ -170,13 +171,13 @@ class _CustomAppBarState extends State<CustomAppBar> {
                 ? CircleAvatar(
                     radius: orientation ? 0.02.h : 0.03.h,
                     backgroundColor: Colors.transparent,
-                    backgroundImage: AssetImage(
+                    backgroundImage: appImageProvider(
                         Get.find<MainCoreEmployeeController>()
                                     .employeeEntity
                                     ?.gender ==
                                 'female'
-                            ? 'assets/images/female_avatar.png'
-                            : 'assets/images/male_avatar.png'),
+                            ? 'assets/icons_assets/main_icons_assets/images_female.svg'
+                            : 'assets/icons_assets/main_icons_assets/assets_male.svg'),
                   )
                 : CircleAvatar(
                     backgroundColor: Colors.transparent,

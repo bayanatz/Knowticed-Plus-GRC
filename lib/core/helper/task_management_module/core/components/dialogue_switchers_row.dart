@@ -6,9 +6,9 @@ import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/selection_user.dart';
 
 import 'package:demo_app/core/theme/app_colors.dart';
-import '../constant/enum.dart';
-import '../constant/haptic_controller.dart';
-import 'switchs_data_column.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/enum.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/switchs_data_column.dart';
 
 // ignore: must_be_immutable
 class DialogueSwitcher extends StatefulWidget {
@@ -26,7 +26,7 @@ class DialogueSwitcher extends StatefulWidget {
 }
 
 class _DialogueSwitcherState extends State<DialogueSwitcher> {
-  final TaskHapticController hapticController = Get.put(TaskHapticController());
+  final HapticController hapticController = Get.put(HapticController());
 
   @override
   Widget build(BuildContext context) {
@@ -57,11 +57,11 @@ class _DialogueSwitcherState extends State<DialogueSwitcher> {
             },
             child: SvgPicture.asset(
               widget.switchValue
-                  ? 'assets/icons/NewSwitchOn.svg'
+                  ? 'assets/icons_assets/main_icons_assets/NewSwitchOn.svg'
                   // ignore: unrelated_type_equality_checks
                   : themeController.currentTheme == AppColors.lightTheme
-                      ? 'assets/icons/NewSwitchOff.svg'
-                      : 'assets/icons/NewSwitchOff.svg',
+                      ? 'assets/icons_assets/main_icons_assets/NewSwitchOff.svg'
+                      : 'assets/icons_assets/main_icons_assets/NewSwitchOff.svg',
             ),
           ),
         ),

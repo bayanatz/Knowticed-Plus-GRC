@@ -1,18 +1,18 @@
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/board_model/board_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/selection_user.dart';
-import 'package:demo_app/core/theme/app_font_size.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/card_model.dart';
+import 'package:demo_app/core/theme/app_font_size.dart';import 'package:demo_app/core/helper/task_management_module/task/data/model/board_model/board_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_model.dart';
 import 'package:demo_app/core/helper/task_management_module/task/view/task_details_screen_tablet.dart';
 import 'package:page_transition/page_transition.dart';
 
-import '../../constant/enum.dart';
-import '../../constant/haptic_controller.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/enum.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
+import 'package:demo_app/core/utils/app_image_provider.dart';
 
 /// Date Created :20/November/2023
 /// Developer Name : Bassem Mohamed
@@ -60,7 +60,7 @@ class CustomStatusContainer extends StatefulWidget {
   State<CustomStatusContainer> createState() => _CustomStatusContainerState();
 }
 
-final TaskHapticController hapticController = Get.put(TaskHapticController());
+final HapticController hapticController = Get.put(HapticController());
 
 class _CustomStatusContainerState extends State<CustomStatusContainer> {
   @override
@@ -114,7 +114,7 @@ class _CustomStatusContainerState extends State<CustomStatusContainer> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8.0),
                           image: DecorationImage(
-                            image: AssetImage(widget.imagePath!),
+                            image: appImageProvider(widget.imagePath!),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -179,7 +179,7 @@ class _CustomStatusContainerState extends State<CustomStatusContainer> {
                           Row(
                             children: [
                               SvgPicture.asset(
-                                'assets/icons/Link.svg',
+                                'assets/icons_assets/task_assets/icons_Link.svg',
                               ),
                               SizedBox(width: 0.005.h),
                               Text(
@@ -217,7 +217,7 @@ class _CustomStatusContainerState extends State<CustomStatusContainer> {
                           Row(
                             children: [
                               SvgPicture.asset(
-                                'assets/icons/comments.svg',
+                                'assets/icons_assets/task_assets/comments.svg',
                               ),
                               SizedBox(width: 0.005.h),
                               Text(
@@ -257,7 +257,7 @@ class _CustomStatusContainerState extends State<CustomStatusContainer> {
                         child: Row(
                           children: [
                             SvgPicture.asset(
-                              'assets/icons/CheckSquare.svg',
+                              'assets/icons_assets/task_assets/CheckSquare.svg',
                               color: (widget.currentCount == widget.totalCount)
                                   ? AppColors.colorWhite
                                   : null,
@@ -302,7 +302,7 @@ class _CustomStatusContainerState extends State<CustomStatusContainer> {
                 child: Center(
                   child: CircleAvatar(
                     radius: 0.03.h,
-                    backgroundImage: AssetImage(widget.firstImage!),
+                    backgroundImage: appImageProvider(widget.firstImage!),
                   ),
                 ),
               ),
@@ -322,7 +322,7 @@ class _CustomStatusContainerState extends State<CustomStatusContainer> {
                 child: Center(
                   child: CircleAvatar(
                     radius: 0.03.h,
-                    backgroundImage: AssetImage(widget.secondImage!),
+                    backgroundImage: appImageProvider(widget.secondImage!),
                   ),
                 ),
               ),
@@ -342,7 +342,7 @@ class _CustomStatusContainerState extends State<CustomStatusContainer> {
                 child: Center(
                   child: CircleAvatar(
                     radius: 0.03.h,
-                    backgroundImage: AssetImage(widget.thirdImage!),
+                    backgroundImage: appImageProvider(widget.thirdImage!),
                   ),
                 ),
               ),

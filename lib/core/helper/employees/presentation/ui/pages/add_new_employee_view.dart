@@ -1110,7 +1110,7 @@ class _AddNewEmployeeScreenState extends State<AddNewEmployeeScreen> {
   /// Get next button style based on state
   ButtonStyle _getNextButtonStyle() {
     if (_isNextButtonDisabled()) {
-      return buttonStyle(AppColors.GreyBack);
+      return buttonStyle(AppColors.greyDark);
     }
     return buttonStyle(AppColors.signOut);
   }

@@ -9,7 +9,8 @@ import 'package:demo_app/core/helper/task_management_module/core/components/sele
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';
 
-import '../../constant/date_time_in_arabic.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/date_time_in_arabic.dart';
+import 'package:demo_app/core/utils/app_image_provider.dart';
 
 class PersonListTile extends StatefulWidget {
   final String imageUrl;
@@ -50,7 +51,7 @@ class _PersonListTileState extends State<PersonListTile> {
       child: Row(
         children: [
           CircleAvatar(
-            backgroundImage: AssetImage(widget.imageUrl),
+            backgroundImage: appImageProvider(widget.imageUrl),
             radius: isTablet ? (isPortrait ? 0.02.h : 0.025.h) : 0.02.h,
           ),
           SizedBox(

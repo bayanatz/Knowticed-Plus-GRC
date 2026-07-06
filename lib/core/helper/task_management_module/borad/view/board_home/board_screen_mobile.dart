@@ -12,7 +12,7 @@ import 'package:demo_app/core/helper/task_management_module/core/components/task
 import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_task_container.dart';
 import 'package:demo_app/core/helper/task_management_module/core/constant/enum.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';import 'package:demo_app/core/helper/task_management_module/core/nav_bar_package.dart/functions.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/board_model/board_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/board_model/board_model.dart';
 import 'package:demo_app/features/department/presentation/controller/add_department_controller.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 
@@ -238,7 +238,7 @@ class _BoardScreenMobileState extends State<BoardScreenMobile> {
                               : boardController.boards.isEmpty
                               ? const EmptyWidget(
                             assetPath:
-                            "assets/images/emptyTask.json",
+                            "assets/lottie_assets/main_lottie_assets/emptyTask.json",
                             scale: 3,
                           )
 

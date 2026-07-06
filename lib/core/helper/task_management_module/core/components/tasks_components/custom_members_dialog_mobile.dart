@@ -5,17 +5,18 @@ import 'package:get/get.dart';
 import 'package:demo_app/core/helper/task_management_module/borad/controller/board_controller.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/selection_user.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';import 'package:demo_app/core/helper/task_management_module/task/controller/task_details_controller.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/board_model/board_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/board_model/board_model.dart';
 import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_checklists.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/card_model.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/checklist_item.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/checklist_item.dart';
 
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
-import '../../constant/enum.dart';
-import '../../constant/haptic_controller.dart';
-import '../custom_search.dart';
-import '../tracking_time_components/track_time_subwidget/filters_appbar.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/enum.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_search.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tracking_time_components/track_time_subwidget/filters_appbar.dart';
+import 'package:demo_app/core/utils/app_image_provider.dart';
 
 /// Date Created :22/April/2024
 /// Developer Name : Abdullah Ibrahim
@@ -123,7 +124,7 @@ class _CustomMemberDialogMobileState extends State<CustomMemberDialogMobile> {
                   )
                 : CircleAvatar(
                     radius: 0.02.h,
-                    backgroundImage: AssetImage(person.imageUrl),
+                    backgroundImage: appImageProvider(person.imageUrl),
                   ),
           ));
         }
@@ -134,7 +135,7 @@ class _CustomMemberDialogMobileState extends State<CustomMemberDialogMobile> {
 
   @override
   Widget build(BuildContext context) {
-    final TaskHapticController hapticController = Get.put(TaskHapticController());
+    final HapticController hapticController = Get.put(HapticController());
     bool isTablet = MediaQuery.of(context).size.shortestSide > 600;
 
     return GetBuilder<BoardController>(
@@ -162,7 +163,7 @@ class _CustomMemberDialogMobileState extends State<CustomMemberDialogMobile> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const FiltersAppBar(
-                    imageUrl: "assets/icons/memberIcon.svg",
+                    imageUrl: "assets/icons_assets/task_assets/memberIcon.svg",
                     title: "Members",
                   ),
 
@@ -268,7 +269,7 @@ class _CustomMemberDialogMobileState extends State<CustomMemberDialogMobile> {
                                           : CircleAvatar(
                                               radius: 0.02.h,
                                               backgroundImage:
-                                                  AssetImage(person.imageUrl),
+                                                  appImageProvider(person.imageUrl),
                                             ),
                                       title: Text(
                                           '${person.fullName.capitalize}',
@@ -323,7 +324,7 @@ class _CustomMemberDialogMobileState extends State<CustomMemberDialogMobile> {
                                                       : CircleAvatar(
                                                           radius: 0.02.h,
                                                           backgroundImage:
-                                                              AssetImage(person
+                                                              appImageProvider(person
                                                                   .imageUrl),
                                                         ),
                                                 ));
@@ -332,13 +333,13 @@ class _CustomMemberDialogMobileState extends State<CustomMemberDialogMobile> {
                                           },
                                           child: person.isSelected
                                               ? SvgPicture.asset(
-                                                  'assets/icons/CheckListOn.svg',
+                                                  'assets/icons_assets/main_icons_assets/CheckListOn.svg',
                                                   color:
                                                       AppColors.lightPrimary,
                                                   height: 0.025.h,
                                                 )
                                               : SvgPicture.asset(
-                                                  'assets/icons/CheckListOff.svg',
+                                                  'assets/icons_assets/main_icons_assets/CheckListOff.svg',
                                                   height: 0.025.h,
                                                 ),
                                         ),
@@ -363,7 +364,7 @@ class _CustomMemberDialogMobileState extends State<CustomMemberDialogMobile> {
                                           : CircleAvatar(
                                               radius: 0.02.h,
                                               backgroundImage:
-                                                  AssetImage(person.imageUrl),
+                                                  appImageProvider(person.imageUrl),
                                             ),
                                       title: Text(
                                           '${person.fullName.capitalize}',
@@ -418,7 +419,7 @@ class _CustomMemberDialogMobileState extends State<CustomMemberDialogMobile> {
                                                       : CircleAvatar(
                                                           radius: 0.02.h,
                                                           backgroundImage:
-                                                              AssetImage(person
+                                                              appImageProvider(person
                                                                   .imageUrl),
                                                         ),
                                                 ));
@@ -427,13 +428,13 @@ class _CustomMemberDialogMobileState extends State<CustomMemberDialogMobile> {
                                           },
                                           child: person.isSelected
                                               ? SvgPicture.asset(
-                                                  'assets/icons/CheckListOn.svg',
+                                                  'assets/icons_assets/main_icons_assets/CheckListOn.svg',
                                                   color:
                                                       AppColors.lightPrimary,
                                                   height: 0.025.h,
                                                 )
                                               : SvgPicture.asset(
-                                                  'assets/icons/CheckListOff.svg',
+                                                  'assets/icons_assets/main_icons_assets/CheckListOff.svg',
                                                   height: 0.025.h,
                                                 ),
                                         ),

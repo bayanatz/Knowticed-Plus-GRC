@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
+import 'package:demo_app/core/utils/app_image_provider.dart';
 
 class CustomTableBody extends StatefulWidget {
   final String text;
@@ -72,7 +73,7 @@ class _CustomTableBodyState extends State<CustomTableBody> {
             CircleAvatar(
               radius: isPortrait ? 0.02.w : 0.012.w,
               backgroundColor: Colors.transparent,
-              backgroundImage: AssetImage(widget.profileImage!),
+              backgroundImage: appImageProvider(widget.profileImage!),
             ),
           if (widget.profileImage != null)
             SizedBox(

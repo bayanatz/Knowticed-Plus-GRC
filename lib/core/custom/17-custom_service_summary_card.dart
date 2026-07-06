@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/custom/16-custom_card_styles.dart';
-import '../theme/app_colors.dart';
 
 /// Compact card: leading icon box + title + info rows + footer date.
 ///
@@ -61,7 +60,7 @@ class ServiceSummaryCard extends StatelessWidget {
               width: 80.r,
               height: 80.r,
               decoration: BoxDecoration(
-                color: AppColors.barrierColor,
+                color: AppColors.background,
                 borderRadius: BorderRadius.circular(4.r),
               ),
               child: Center(

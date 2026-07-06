@@ -13,10 +13,10 @@ import 'package:demo_app/core/helper/task_management_module/core/components/task
 import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:demo_app/core/helper/task_management_module/core/nav_bar_package.dart/functions.dart';
 import 'package:demo_app/core/helper/task_management_module/task/controller/task_details_controller.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/board_model/board_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/board_model/board_model.dart';
 import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_checklists.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/card_model.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/checklist_item.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/checklist_item.dart';
 import 'package:demo_app/core/helper/task_management_module/task/view/attachment/mobile_view/attachment_section_mobile.dart';
 import 'package:demo_app/core/helper/task_management_module/task/view/checklist/checkList.dart';
 import 'package:demo_app/core/helper/task_management_module/task/view/checklist/checklist_section_mobile.dart';
@@ -27,16 +27,16 @@ import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';
 
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
-import '../../core/components/custom_appbar_mobile.dart';
-import '../../core/components/dialogs/copy_card_dialog.dart';
-import '../../core/components/dialogs/delete_archive_card_dialog.dart';
-import 'package:demo_app/features/roles/helper/task_management_module/core/components/success_dialog.dart';
-import '../../core/components/tasks_components/custom_members_dialog_mobile.dart';
-import '../../core/components/tasks_components/custom_project_screen_header.dart';
-import '../../core/components/tasks_components/custom_task_components_detailes.dart';
-import '../../core/constant/enum.dart';
-import 'deadline/mobile_view/deadLine_Section.dart';
-import 'member/member_section_mobile.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_appbar_mobile.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/dialogs/copy_card_dialog.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/dialogs/delete_archive_card_dialog.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/success_dialog.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_members_dialog_mobile.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_project_screen_header.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_task_components_detailes.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/enum.dart';
+import 'package:demo_app/core/helper/task_management_module/task/view/deadline/mobile_view/deadLine_Section.dart';
+import 'package:demo_app/core/helper/task_management_module/task/view/member/member_section_mobile.dart';
 
 /// Date Created :12/November/2023
 /// Developer Name : Bassem Mohamed
@@ -199,7 +199,7 @@ class _TaskDetailsMobileState extends State<TaskDetailsMobile> {
                                           children: [
                                             CustomContainerWithImage(
                                               imagePath:
-                                                  "assets/icons/member.svg",
+                                                  "assets/icons_assets/task_assets/member.svg",
                                               text: 'Members',
                                               isShown: showMembers,
                                               changeColor: widget
@@ -307,7 +307,7 @@ class _TaskDetailsMobileState extends State<TaskDetailsMobile> {
                                                             subtitle:
                                                                 "No Board Members Found\nPlease Add Board Members First",
                                                             lottieAsset:
-                                                                "assets/images/newAttension.json",
+                                                                "assets/lottie_assets/main_lottie_assets/lottie_attension.json",
                                                           );
                                                         },
                                                       );
@@ -322,7 +322,7 @@ class _TaskDetailsMobileState extends State<TaskDetailsMobile> {
                                                           subtitle:
                                                               "Only task owner can add members",
                                                           lottieAsset:
-                                                              "assets/images/error.json",
+                                                              "assets/lottie_assets/main_lottie_assets/error.json",
                                                         );
                                                       },
                                                     );
@@ -332,7 +332,7 @@ class _TaskDetailsMobileState extends State<TaskDetailsMobile> {
                                             ),
                                             CustomContainerWithImage(
                                               imagePath:
-                                                  "assets/icons/Square.svg",
+                                                  "assets/icons_assets/task_assets/Square.svg",
                                               text: 'Check List',
                                               // changeColor: widget
                                               //         .cardModel
@@ -384,7 +384,7 @@ class _TaskDetailsMobileState extends State<TaskDetailsMobile> {
                                                         }
                                                       },
                                                       iconUrl:
-                                                          'assets/icons/CheckSquareIcon.svg',
+                                                          'assets/icons_assets/task_assets/CheckSquareIcon.svg',
                                                     );
                                                   },
                                                 );
@@ -401,7 +401,7 @@ class _TaskDetailsMobileState extends State<TaskDetailsMobile> {
                                           children: [
                                             CustomContainerWithImage(
                                               imagePath:
-                                                  "assets/icons/calendar.svg",
+                                                  "assets/icons_assets/main_icons_assets/icons_calendar.svg",
                                               text: 'Dates',
                                               isShown : showDates,
                                               changeColor: widget
@@ -465,7 +465,7 @@ class _TaskDetailsMobileState extends State<TaskDetailsMobile> {
                                                             });
                                                           },
                                                           iconUrl:
-                                                              'assets/icons/taskDeadline.svg',
+                                                              'assets/icons_assets/task_assets/taskDeadline.svg',
                                                         );
                                                       },
                                                     );
@@ -485,7 +485,7 @@ class _TaskDetailsMobileState extends State<TaskDetailsMobile> {
                                                         },
                                                         isDates: true,
                                                         iconUrl:
-                                                            'assets/icons/taskDeadline.svg',
+                                                            'assets/icons_assets/task_assets/taskDeadline.svg',
                                                       );
                                                     },
                                                   );*/
@@ -499,7 +499,7 @@ class _TaskDetailsMobileState extends State<TaskDetailsMobile> {
                                                     //       subtitle:
                                                     //           "Only task owner can add deadline",
                                                     //       lottieAsset:
-                                                    //           "assets/images/error.json",
+                                                    //           "assets/lottie_assets/main_lottie_assets/error.json",
                                                     //     );
                                                     //   },
                                                     // );
@@ -510,7 +510,7 @@ class _TaskDetailsMobileState extends State<TaskDetailsMobile> {
 
                                             /// Attachments section
                                             CustomContainerWithImage(
-                                              imagePath: "assets/icons/attachsquare.svg",
+                                              imagePath: "assets/icons_assets/task_assets/attachsquare.svg",
                                               text: 'Attachments',
                                               changeColor: widget.cardModel.cardAttachments?.cardAttachments?.isNotEmpty == true &&
                                                   widget.cardModel.cardAttachments?.cardAttachmentsStatus?.contains("uploaded") == true,
@@ -545,7 +545,7 @@ class _TaskDetailsMobileState extends State<TaskDetailsMobile> {
                                                           });
                                                         },
                                                         isAttachment: true,
-                                                        iconUrl: 'assets/icons/attachsquareIcon.svg',
+                                                        iconUrl: 'assets/icons_assets/task_assets/attachsquareIcon.svg',
                                                       );
                                                     },
                                                   );

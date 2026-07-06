@@ -2,13 +2,10 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:demo_app/core/helper/main_helper/helper_function.dart';
-
-// NOTE: SharedPrefsEmployeeHelper / SharedPrefsApprovalHelper live in the
-// services module (data/helper/services_prefs_employee.dart) so core no longer
-// depends on the module's EmployeeEntityModell and survives module deletion.
-
-
+// NOTE: SharedPrefsEmployeeHelper / SharedPrefsApprovalHelper moved to the
+// services module (data/data_source/local_data_source/services_prefs_employee.dart)
+// so core no longer depends on the module's EmployeeEntityModell and survives
+// module deletion.
 
 class SharedPrefsHelper {
   static Future<void> setString(String key, String value) async {
@@ -70,8 +67,6 @@ class SharedPrefsHelper {
     await prefs.clear();
   }
 }
-
-
 
 
 class SharedPrefsDepartmentsHelper {

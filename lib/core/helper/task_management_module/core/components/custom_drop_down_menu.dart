@@ -13,7 +13,7 @@ import 'package:demo_app/core/helper/task_management_module/core/constant/image_
 import 'package:demo_app/core/theme/app_font_size.dart';import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';
 
-import '../constant/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 
 class CustomDropdownButton2 extends StatefulWidget {
   final String hint;
@@ -106,7 +106,7 @@ class CustomDropdownButton2 extends StatefulWidget {
 }
 
 class _CustomDropdownButton2State extends State<CustomDropdownButton2> {
-  final TaskHapticController hapticController = Get.put(TaskHapticController());
+  final HapticController hapticController = Get.put(HapticController());
 
   bool filled = false;
   Color _borderColor = AppColors.colorGrey;
@@ -194,13 +194,13 @@ class _CustomDropdownButton2State extends State<CustomDropdownButton2> {
                           scale: 1.1,
                           child: SvgPicture.asset(
                             item == "Urgent".tr
-                                ? 'assets/icons/urgentBell.svg'
+                                ? 'assets/icons_assets/main_icons_assets/urgentBell.svg'
                                 : item == "Important".tr
-                                ? 'assets/icons/important.svg'
+                                ? 'assets/icons_assets/main_icons_assets/important.svg'
                                 : item == "Medium".tr
-                                ? 'assets/icons/medium.svg'
+                                ? 'assets/icons_assets/main_icons_assets/medium.svg'
                                 : item == "Low".tr
-                                ? 'assets/icons/lowPriority.svg'
+                                ? 'assets/icons_assets/main_icons_assets/lowPriority.svg'
                                 : "",
                             height: 19.h,
                           )),
@@ -257,13 +257,13 @@ class _CustomDropdownButton2State extends State<CustomDropdownButton2> {
                 padding: EdgeInsets.symmetric(horizontal: 8),
                 child: SvgPicture.asset(
                   item == "Urgent".tr
-                      ? 'assets/icons/urgentBell.svg'
+                      ? 'assets/icons_assets/main_icons_assets/urgentBell.svg'
                       : item == "Important".tr
-                      ? 'assets/icons/important.svg'
+                      ? 'assets/icons_assets/main_icons_assets/important.svg'
                       : item == "Medium".tr
-                      ? 'assets/icons/medium.svg'
+                      ? 'assets/icons_assets/main_icons_assets/medium.svg'
                       : item == "Low".tr
-                      ? 'assets/icons/lowPriority.svg'
+                      ? 'assets/icons_assets/main_icons_assets/lowPriority.svg'
                       : "",
                   height: 19,
                 ),

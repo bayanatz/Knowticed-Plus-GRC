@@ -140,7 +140,7 @@ class _CustomColumnChartContainerState
     AppColors.colorGreydark,
     AppColors.colorLightGrey,
     AppColors.colorWhiteDark,
-    AppColors.colorGreyDisabled,
+    AppColors.greyDark,
     AppColors.colorDarkGrey,
   ];
 

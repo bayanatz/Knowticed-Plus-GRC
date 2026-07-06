@@ -1,17 +1,16 @@
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/board_model/board_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/project_screen/project_screen.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/selection_user.dart';
-import 'package:demo_app/core/theme/app_font_size.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/card_model.dart';
+import 'package:demo_app/core/theme/app_font_size.dart';import 'package:demo_app/core/helper/task_management_module/task/data/model/board_model/board_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_model.dart';
 import 'package:page_transition/page_transition.dart';
 
-import '../../../core/components/custom_drawer.dart';
-import '../../../core/constant/enum.dart';
-import '../../../core/constant/haptic_controller.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_drawer.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/enum.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 
 class TaskDetailsAppBarTablet extends StatefulWidget {
@@ -38,7 +37,7 @@ class TaskDetailsAppBarTablet extends StatefulWidget {
 class _TaskDetailsAppBarTabletState extends State<TaskDetailsAppBarTablet> {
   @override
   Widget build(BuildContext context) {
-    final TaskHapticController hapticController = Get.put(TaskHapticController());
+    final HapticController hapticController = Get.put(HapticController());
     bool orientation =
         MediaQuery.of(context).orientation == Orientation.portrait;
     TextStyle breadCrumbsTextStyle = TextStyle(
@@ -82,7 +81,7 @@ class _TaskDetailsAppBarTabletState extends State<TaskDetailsAppBarTablet> {
               ),
               SvgPicture.asset(
                 matchTextDirection: Get.locale?.languageCode == 'ar',
-                'assets/icons/arrowLeft.svg',
+                'assets/icons_assets/main_icons_assets/images_arrow.svg',
                 height: orientation ? 0.025.h : 0.04.h,
                 color: Theme.of(context).colorScheme.inverseSurface,
               ),
@@ -122,7 +121,7 @@ class _TaskDetailsAppBarTabletState extends State<TaskDetailsAppBarTablet> {
               ),
               SvgPicture.asset(
                 matchTextDirection: Get.locale?.languageCode == 'ar',
-                'assets/icons/arrowLeft.svg',
+                'assets/icons_assets/main_icons_assets/images_arrow.svg',
                 height: orientation ? 0.025.h : 0.04.h,
                 color: Theme.of(context).colorScheme.inverseSurface,
               ),
@@ -170,7 +169,7 @@ class _TaskDetailsAppBarTabletState extends State<TaskDetailsAppBarTablet> {
               //     // Add your functionality for deleting the task
               //   },
               //   child: SvgPicture.asset(
-              //     'assets/icons/threeDotsHori.svg',
+              //     'assets/icons_assets/task_assets/threeDotsHori.svg',
               //     width: 0.03.h,
               //    color: themeController.currentTheme == AppColors.lightTheme
               //       ? AppColors.colorBlack

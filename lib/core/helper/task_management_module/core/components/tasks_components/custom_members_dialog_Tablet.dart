@@ -5,17 +5,18 @@ import 'package:get/get.dart';
 import 'package:demo_app/core/helper/task_management_module/borad/controller/board_controller.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/selection_user.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';import 'package:demo_app/core/helper/task_management_module/task/controller/task_details_controller.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/board_model/board_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/board_model/board_model.dart';
 import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_checklists.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/card_model.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/checklist_item.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/checklist_item.dart';
 
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
-import '../../constant/enum.dart';
-import '../../constant/haptic_controller.dart';
-import '../custom_search.dart';
-import '../tracking_time_components/track_time_subwidget/filters_appbar.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/enum.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_search.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tracking_time_components/track_time_subwidget/filters_appbar.dart';
+import 'package:demo_app/core/utils/app_image_provider.dart';
 
 class Person {
   final String fullName;
@@ -142,7 +143,7 @@ class _CustomMemberDialogTabletState extends State<CustomMemberDialogTablet> {
                   )
                 : CircleAvatar(
                     radius: 0.02.h,
-                    backgroundImage: AssetImage(person.imageUrl),
+                    backgroundImage: appImageProvider(person.imageUrl),
                   ),
           ));
         }
@@ -155,7 +156,7 @@ class _CustomMemberDialogTabletState extends State<CustomMemberDialogTablet> {
   Widget build(BuildContext context) {
     bool isVertical =
         MediaQuery.of(context).orientation == Orientation.portrait;
-    final TaskHapticController hapticController = Get.put(TaskHapticController());
+    final HapticController hapticController = Get.put(HapticController());
     return GetBuilder<TaskDetailsController>(
       builder: (controller) {
         return Dialog(
@@ -182,7 +183,7 @@ class _CustomMemberDialogTabletState extends State<CustomMemberDialogTablet> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const FiltersAppBar(
-                    imageUrl: "assets/icons/memberIcon.svg",
+                    imageUrl: "assets/icons_assets/task_assets/memberIcon.svg",
                     title: "Members",
                   ),
                   CustomSearchFiled2(
@@ -283,7 +284,7 @@ class _CustomMemberDialogTabletState extends State<CustomMemberDialogTablet> {
                                         : CircleAvatar(
                                             radius: 0.02.h,
                                             backgroundImage:
-                                                AssetImage(person.imageUrl),
+                                                appImageProvider(person.imageUrl),
                                           ),
                                     title: Padding(
                                       padding: const EdgeInsets.all(8.0),
@@ -341,7 +342,7 @@ class _CustomMemberDialogTabletState extends State<CustomMemberDialogTablet> {
                                                     : CircleAvatar(
                                                         radius: 0.02.h,
                                                         backgroundImage:
-                                                            AssetImage(person
+                                                            appImageProvider(person
                                                                 .imageUrl),
                                                       ),
                                               ));
@@ -350,14 +351,14 @@ class _CustomMemberDialogTabletState extends State<CustomMemberDialogTablet> {
                                         },
                                         child: person.isSelected
                                             ? SvgPicture.asset(
-                                                'assets/icons/CheckListOn.svg',
+                                                'assets/icons_assets/main_icons_assets/CheckListOn.svg',
                                                 color: AppColors.lightPrimary,
                                                 height: isVertical
                                                     ? 0.03.h
                                                     : 0.035.h,
                                               )
                                             : SvgPicture.asset(
-                                                'assets/icons/CheckListOff.svg',
+                                                'assets/icons_assets/main_icons_assets/CheckListOff.svg',
                                                 height: isVertical
                                                     ? 0.03.h
                                                     : 0.035.h,
@@ -379,7 +380,7 @@ class _CustomMemberDialogTabletState extends State<CustomMemberDialogTablet> {
                                         : CircleAvatar(
                                             radius: 0.02.h,
                                             backgroundImage:
-                                                AssetImage(person.imageUrl),
+                                                appImageProvider(person.imageUrl),
                                           ),
                                     title: Padding(
                                       padding: const EdgeInsets.all(8.0),
@@ -437,7 +438,7 @@ class _CustomMemberDialogTabletState extends State<CustomMemberDialogTablet> {
                                                     : CircleAvatar(
                                                         radius: 0.02.h,
                                                         backgroundImage:
-                                                            AssetImage(person
+                                                            appImageProvider(person
                                                                 .imageUrl),
                                                       ),
                                               ));
@@ -446,14 +447,14 @@ class _CustomMemberDialogTabletState extends State<CustomMemberDialogTablet> {
                                         },
                                         child: person.isSelected
                                             ? SvgPicture.asset(
-                                                'assets/icons/CheckListOn.svg',
+                                                'assets/icons_assets/main_icons_assets/CheckListOn.svg',
                                                 color: AppColors.lightPrimary,
                                                 height: isVertical
                                                     ? 0.03.h
                                                     : 0.035.h,
                                               )
                                             : SvgPicture.asset(
-                                                'assets/icons/CheckListOff.svg',
+                                                'assets/icons_assets/main_icons_assets/CheckListOff.svg',
                                                 height: isVertical
                                                     ? 0.03.h
                                                     : 0.035.h,
@@ -487,7 +488,7 @@ class _CustomMemberDialogTabletState extends State<CustomMemberDialogTablet> {
                         isExpanded: true,
                         hasPrefix: true,
                         hasSuffix: true,
-                        suffixUrl: "assets/icons/calendar2.svg",
+                        suffixUrl: "assets/icons_assets/main_icons_assets/calendar2.svg",
                       ),
                     ),
                   ),
@@ -509,7 +510,7 @@ class _CustomMemberDialogTabletState extends State<CustomMemberDialogTablet> {
                         enabled: false,
                         hasPrefix: true,
                         hasSuffix: true,
-                        suffixUrl: "assets/icons/calendar2.svg",
+                        suffixUrl: "assets/icons_assets/main_icons_assets/calendar2.svg",
                       ),
                     ),
                   ),

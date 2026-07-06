@@ -3,9 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import 'package:demo_app/core/theme/app_font_size.dart';
-import '../../../../../constant/enum.dart';
-import '../../../../../constant/haptic_controller.dart';
-import '../../calendar_date_picker2.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/enum.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/calendar_components.dart/calender_package/calendar_date_picker2.dart';
+
 
 class CalendarDatePicker2WithActionButtons extends StatefulWidget {
   const CalendarDatePicker2WithActionButtons({
@@ -44,7 +45,7 @@ class _CalendarDatePicker2WithActionButtonsState
     extends State<CalendarDatePicker2WithActionButtons> {
   List<DateTime?> _values = [];
   List<DateTime?> _editCache = [];
-  final TaskHapticController hapticController = Get.put(TaskHapticController());
+  final HapticController hapticController = Get.put(HapticController());
   @override
   void initState() {
     _values = widget.value;

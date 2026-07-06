@@ -5,10 +5,9 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
 
-import 'package:demo_app/core/theme/app_text_styles.dart';
+import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 
-import '../theme/app_colors.dart';
 
 class DatePicker {
   Future<List<DateTime?>?> showDatePicker(
@@ -44,21 +43,21 @@ class DatePicker {
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8.r),
                       color: isSelected == true
-                          ? Color(0xFFD16F9A)
+                          ? AppColors.primary
                           : AppColors.field,
                       border: Border.all(
                         color: date.day == DateTime.now().day &&
                             date.month == DateTime.now().month &&
                             date.year == DateTime.now().year
-                            ? Color(0xFFD16F9A)
-                            : Colors.transparent,
+                            ? AppColors.primary
+                            : AppColors.transparent,
                       )),
                   child: Center(
                       child: Text(
                         date.day.toString(),
-                        style: AppTextStyles.font14BlackCairoRegular.copyWith(
+                        style: StyleText.fontSize14Weight400.copyWith(
                           color: isSelected == true
-                              ? Colors.white
+                              ? AppColors.white
                               : AppColors.secondaryText,
                         ),
                       ))),
@@ -72,9 +71,9 @@ class DatePicker {
           dayBorderRadius: BorderRadius.circular(8),
 
           customModePickerIcon: SvgPicture.asset(
-            'assets/images/downArrow.svg',
+            'assets/icons_assets/main_icons_assets/downArrow.svg',
             fit: BoxFit.fitHeight,
-            color: Color(0xFFD16F9A),
+            color: AppColors.primary,
             height: isTablet ? 16.sp : null,
           ),
 
@@ -86,12 +85,12 @@ class DatePicker {
                 width: isTablet ? 150.sp : 120.sp,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8.r),
-                  color: Color(0xFFD16F9A),
+                  color: AppColors.primary,
                 ),
                 child: Center(
                   child: Text(
                     'Set Date'.tr,
-                    style: AppTextStyles.font14BlackCairoRegular
+                    style: StyleText.fontSize14Weight400
                         .copyWith(color: AppColors.textButton),
                   ),
                 ),
@@ -112,7 +111,7 @@ class DatePicker {
                 child: Center(
                   child: Text(
                     'Cancel'.tr,
-                    style: AppTextStyles.font14BlackCairoRegular.copyWith(),
+                    style: StyleText.fontSize14Weight400.copyWith(),
                   ),
                 ),
               ),
@@ -123,39 +122,39 @@ class DatePicker {
           lastMonthIcon: Transform.rotate(
             angle: Get.locale.toString().contains('en') ? 0 : 3.14,
             child: SvgPicture.asset(
-              'assets/icons/back_icon.svg',
+              'assets/icons_assets/main_icons_assets/back_icon.svg',
               // ignore: deprecated_member_use
-              color: Color(0xFFD16F9A),
+              color: AppColors.primary,
             ),
           ),
           nextMonthIcon: Transform.rotate(
             angle: Get.locale.toString().contains('en') ? 3.14 : 0,
             child: SvgPicture.asset(
-              'assets/icons/back_icon.svg',
+              'assets/icons_assets/main_icons_assets/back_icon.svg',
               // ignore: deprecated_member_use
-              color: Color(0xFFD16F9A),
+              color: AppColors.primary,
             ),
           ),
-          weekdayLabelTextStyle: AppTextStyles.font16BlackRegularCairo
-              .copyWith(color: Color(0xFFD16F9A)),
+          weekdayLabelTextStyle: StyleText.fontSize16Weight400
+              .copyWith(color: AppColors.primary),
 
-          controlsTextStyle: AppTextStyles.font14BlackCairoRegular
-              .copyWith(color: Color(0xFFD16F9A)),
-          selectedYearTextStyle: AppTextStyles.font14BlackCairoRegular
-              .copyWith(color: Color(0xFFD16F9A)),
-          selectedDayHighlightColor: Color(0xFFD16F9A),
-          dayTextStyle: AppTextStyles.font14BlackCairoRegular
+          controlsTextStyle: StyleText.fontSize14Weight400
+              .copyWith(color: AppColors.primary),
+          selectedYearTextStyle: StyleText.fontSize14Weight400
+              .copyWith(color: AppColors.primary),
+          selectedDayHighlightColor: AppColors.primary,
+          dayTextStyle: StyleText.fontSize14Weight400
               .copyWith(color: AppColors.textButton),
-          selectedDayTextStyle: AppTextStyles.font14BlackCairoRegular
+          selectedDayTextStyle: StyleText.fontSize14Weight400
               .copyWith(color: AppColors.textButton),
 
-          yearTextStyle: AppTextStyles.font14BlackCairoRegular
+          yearTextStyle: StyleText.fontSize14Weight400
               .copyWith(color: AppColors.text),
-          todayTextStyle: AppTextStyles.font14BlackCairoRegular
+          todayTextStyle: StyleText.fontSize14Weight400
               .copyWith(color: AppColors.text),
           buttonPadding:
           EdgeInsets.symmetric(horizontal: isTablet ? 35.sp : 14.sp),
-          selectedRangeHighlightColor: Color(0xFFD16F9A),
+          selectedRangeHighlightColor: AppColors.primary,
           calendarType: calendarType, //CalendarDatePicker2Type.range,
         ),
         dialogSize: isTablet ? Size(460.sp, 320.sp) : Size(320.w, 320.h),

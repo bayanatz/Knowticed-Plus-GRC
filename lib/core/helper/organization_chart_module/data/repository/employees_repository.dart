@@ -1,12 +1,12 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
+import 'package:demo_app/core/network/api_constants.dart';
 import 'package:demo_app/core/network/failure_model.dart';
 import 'package:demo_app/features/employee/data/models/emplyees_model/new_employee_model.dart';
-import '../../../../network/api_constants.dart';
-import '../data_source/remote_data_source/employees_remote_data_source.dart';
-import '../models/employee_model/employee_directory_model.dart';
-import '../models/new_employee_model/emplyees_model/new_employee_model.dart';
+import 'package:demo_app/core/helper/organization_chart_module/data/data_source/remote_data_source/employees_remote_data_source.dart';
+import 'package:demo_app/core/helper/organization_chart_module/data/models/employee_model/employee_directory_model.dart';
+import 'package:demo_app/core/helper/organization_chart_module/data/models/new_employee_model/emplyees_model/new_employee_model.dart';
 
 /// ******************************** FILE INFO *****************************
 /// Class Name: EmployeesRepository

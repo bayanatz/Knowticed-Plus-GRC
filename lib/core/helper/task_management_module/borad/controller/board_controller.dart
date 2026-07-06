@@ -8,14 +8,14 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/custom_appbar.dart';
-import 'package:demo_app/features/roles/helper/task_management_module/core/components/success_dialog.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/success_dialog.dart';
 import 'package:demo_app/core/helper/task_management_module/core/constant/loading.dart';
 import 'package:demo_app/core/helper/task_management_module/task/controller/task_details_controller.dart';
 import 'package:demo_app/core/helper/task_management_module/task/data/model/board_model/board_department.dart';
 import 'package:demo_app/core/helper/task_management_module/task/data/model/board_model/board_description.dart';
 import 'package:demo_app/core/helper/task_management_module/task/data/model/board_model/board_image.dart';
 import 'package:demo_app/core/helper/task_management_module/task/data/model/board_model/board_members.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/board_model/board_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/board_model/board_model.dart';
 import 'package:demo_app/core/helper/task_management_module/task/data/model/board_model/board_name.dart';
 import 'package:demo_app/core/helper/task_management_module/task/data/model/board_model/board_tasks.dart';
 import 'package:demo_app/core/helper/task_management_module/task/data/model/board_model/messaging_channels.dart';
@@ -25,13 +25,13 @@ import 'package:demo_app/core/helper/task_management_module/task/data/model/card
 import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_description.dart';
 import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_image.dart';
 import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_members.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/card_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_model.dart';
 import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_name.dart';
 import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_priority.dart';
 import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_progress.dart';
 import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_progress_color.dart';
 import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_status.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/checklist_item.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/checklist_item.dart';
 import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/comment.dart';
 import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/end_date.dart';
 import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/end_time.dart';
@@ -366,7 +366,7 @@ class BoardController extends GetxController {
         return SuccessDialog(
           title: "Successful",
           subtitle: message,
-          lottieAsset: "assets/images/correct.json",
+          lottieAsset: "assets/lottie_assets/main_lottie_assets/lottie_successful.json",
         );
       },
     );
@@ -380,7 +380,7 @@ class BoardController extends GetxController {
         return SuccessDialog(
           title: "Failure",
           subtitle: message,
-          lottieAsset: "assets/images/error.json",
+          lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
         );
       },
     );
@@ -623,7 +623,7 @@ class BoardController extends GetxController {
         return SuccessDialog(
           title: "Failure",
           subtitle: message,
-          lottieAsset: "assets/images/error.json",
+          lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
         );
       },
     );
@@ -1184,7 +1184,7 @@ class BoardController extends GetxController {
           return const SuccessDialog(
             title: "Failure",
             subtitle: "Failed to add member.",
-            lottieAsset: "assets/images/error.json",
+            lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
           );
         },
       );
@@ -1255,7 +1255,7 @@ class BoardController extends GetxController {
           return const SuccessDialog(
             title: "Failure",
             subtitle: "Please Fill All The Fields",
-            lottieAsset: "assets/images/error.json",
+            lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
           );
         },
       );
@@ -1277,7 +1277,7 @@ class BoardController extends GetxController {
                 return const SuccessDialog(
                   title: "Failure",
                   subtitle: "This Board Name Already Exist",
-                  lottieAsset: "assets/images/error.json",
+                  lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
                 );
               },
             );

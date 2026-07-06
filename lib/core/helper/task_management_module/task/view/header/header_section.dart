@@ -15,14 +15,14 @@ import 'package:demo_app/core/helper/task_management_module/core/constant/app_si
 import 'package:demo_app/core/helper/task_management_module/core/constant/enum.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';import 'package:demo_app/core/helper/task_management_module/task/controller/task_controller.dart';
 import 'package:demo_app/core/helper/task_management_module/task/controller/task_details_controller.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/card_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_model.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';
 
-import '../../../core/components/custom_description_text_field.dart';
-import '../../../core/components/dialogs/edit_card_name_dialog.dart';
-import 'package:demo_app/features/roles/helper/task_management_module/core/components/success_dialog.dart';
-import '../../../core/components/tracking_time_components/track_time_subwidget/column_request_data.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_description_text_field.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/dialogs/edit_card_name_dialog.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/success_dialog.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tracking_time_components/track_time_subwidget/column_request_data.dart';
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
 
 class TaskDetailsHeaderWidget extends StatefulWidget {
@@ -112,8 +112,8 @@ class _TaskDetailsHeaderWidgetState extends State<TaskDetailsHeaderWidget> {
                             borderRadius: BorderRadius.circular(AppSize.radius),
                             child: Image.asset(
                               isTablet
-                                  ? "assets/images/taskImageTab.png"
-                                  : "assets/images/taskImage.png",
+                                  ? "assets/png_assets/taskImageTab.png"
+                                  : "assets/png_assets/taskImage.png",
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -138,7 +138,7 @@ class _TaskDetailsHeaderWidgetState extends State<TaskDetailsHeaderWidget> {
                                   return const SuccessDialog(
                                     title: "Warning",
                                     subtitle: "Only Task Owner Can Edit Image",
-                                    lottieAsset: "assets/images/error.json",
+                                    lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
                                   );
                                 },
                               );
@@ -153,7 +153,7 @@ class _TaskDetailsHeaderWidgetState extends State<TaskDetailsHeaderWidget> {
                             ),
                             padding: EdgeInsets.all(1),
                             child: SvgPicture.asset(
-                              'assets/icons/CameraEdit.svg',
+                              'assets/icons_assets/task_assets/CameraEdit.svg',
                               height: orientation ? 0.02.h : 0.03.h,
                               color: AppColors.textButton,
                             ),
@@ -212,7 +212,7 @@ class _TaskDetailsHeaderWidgetState extends State<TaskDetailsHeaderWidget> {
                                   title: "Successful".tr,
                                   subtitle:
                                   "Card Name Updated Successfully".tr,
-                                  lottieAsset: "assets/images/correct.json",
+                                  lottieAsset: "assets/lottie_assets/main_lottie_assets/lottie_successful.json",
                                 );
                               },
                             );
@@ -223,7 +223,7 @@ class _TaskDetailsHeaderWidgetState extends State<TaskDetailsHeaderWidget> {
                                 return const SuccessDialog(
                                   title: "Failure",
                                   subtitle: "Please Fill The Field",
-                                  lottieAsset: "assets/images/error.json",
+                                  lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
                                 );
                               },
                             );
@@ -288,7 +288,7 @@ class _TaskDetailsHeaderWidgetState extends State<TaskDetailsHeaderWidget> {
                                       subtitle:
                                       "Card Description Updated Successfully"
                                           .tr,
-                                      lottieAsset: "assets/images/correct.json",
+                                      lottieAsset: "assets/lottie_assets/main_lottie_assets/lottie_successful.json",
                                     );
                                   },
                                 );
@@ -301,7 +301,7 @@ class _TaskDetailsHeaderWidgetState extends State<TaskDetailsHeaderWidget> {
                                     title: "Warning",
                                     subtitle:
                                     "Only Task Owner Can Edit Task Description",
-                                    lottieAsset: "assets/images/error.json",
+                                    lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
                                   );
                                 },
                               );
@@ -410,7 +410,7 @@ class _TaskDetailsHeaderWidgetState extends State<TaskDetailsHeaderWidget> {
                                   title: "Warning",
                                   subtitle:
                                   "Only Task Owner Can Edit The Priority",
-                                  lottieAsset: "assets/images/error.json",
+                                  lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
                                 );
                               },
                             );
@@ -421,7 +421,7 @@ class _TaskDetailsHeaderWidgetState extends State<TaskDetailsHeaderWidget> {
                             AppColors.lightTheme
                             ? AppColors.colorLightGrey
                             : AppColors.colorBlack,
-                        suffixUrl: "assets/images/closefield.svg",
+                        suffixUrl: "assets/icons_assets/main_icons_assets/closefield.svg",
                       ),
                       ProgressSection(
                         card: widget.card,
@@ -485,7 +485,7 @@ class _TaskDetailsHeaderWidgetState extends State<TaskDetailsHeaderWidget> {
                                   title: "Warning",
                                   subtitle:
                                   "Only Task Owner Can Edit The Priority",
-                                  lottieAsset: "assets/images/error.json",
+                                  lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
                                 );
                               },
                             );
@@ -496,7 +496,7 @@ class _TaskDetailsHeaderWidgetState extends State<TaskDetailsHeaderWidget> {
                             AppColors.lightTheme
                             ? AppColors.colorLightGrey
                             : AppColors.colorBlack,
-                        suffixUrl: "assets/images/closefield.svg",
+                        suffixUrl: "assets/icons_assets/main_icons_assets/closefield.svg",
                       ),
                       ProgressSection(
                         card: widget.card,

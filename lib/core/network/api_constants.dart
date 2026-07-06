@@ -21,7 +21,6 @@ class ApiConstants {
   static const String _department = "/Departments";
   static const String _systemLogs = "System Logs";
   static const String _homeLayout = "/Home Layout";
-  static const String _grcModules = '/GRC_Modules';
   // Public getters
   static String get employeesProfile => '$baseUri/$employeeInfo';
   static String get employeesProfileBackUpOne =>
@@ -44,5 +43,4 @@ class ApiConstants {
   static String get company => '$baseUri$_company';
   static String get systemLogs => '$baseUri/$_systemLogs';
   static String get homeLayout => '$baseUri$_homeLayout';
-  static String get grcModules => '$baseUri$_grcModules';
 }

@@ -5,8 +5,9 @@ import 'package:demo_app/core/helper/task_management_module/task/data/model/card
 import 'package:demo_app/core/helper/task_management_module/core/components/selection_user.dart';
 
 import 'package:demo_app/core/theme/app_colors.dart';
-import '../../constant/date_time_in_arabic.dart';
-import '../row_icon_text.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/date_time_in_arabic.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/row_icon_text.dart';
+import 'package:demo_app/core/utils/app_image_provider.dart';
 
 class CustomInvitedMembersContainerMobile extends StatelessWidget {
   const CustomInvitedMembersContainerMobile({
@@ -65,7 +66,7 @@ class CustomInvitedMembersContainerMobile extends StatelessWidget {
                                 radius: 0.04.w,
                                 backgroundColor: Colors.transparent,
                                 backgroundImage:
-                                    AssetImage(invitedMember.memberImage!),
+                                    appImageProvider(invitedMember.memberImage!),
                               )
                             : CircleAvatar(
                                 radius: 0.04.w,
@@ -107,14 +108,14 @@ class CustomInvitedMembersContainerMobile extends StatelessWidget {
             ),
             SizedBox(height: heightSpacer),
             RowIconTextAnnouncement(
-              iconUrl: "assets/images/contact_icon.svg",
+              iconUrl: "assets/icons_assets/main_icons_assets/details_User Plus.svg",
               text: "Card",
               hideImage: true,
               value: invitedMember.card,
             ),
             SizedBox(height: heightSpacer),
             RowIconTextAnnouncement(
-              iconUrl: "assets/images/contact_icon.svg",
+              iconUrl: "assets/icons_assets/main_icons_assets/details_User Plus.svg",
               text: "Task",
               hideImage: true,
               value: invitedMember.task,
@@ -127,7 +128,7 @@ class CustomInvitedMembersContainerMobile extends StatelessWidget {
                 if (invitedMember.startDate != null)
                   Expanded(
                     child: RowIconTextAnnouncement(
-                      iconUrl: "assets/images/contact_icon.svg",
+                      iconUrl: "assets/icons_assets/main_icons_assets/details_User Plus.svg",
                       hideImage: true,
                       text: "Start Date",
                       value: Get.locale.toString().contains('en')
@@ -141,7 +142,7 @@ class CustomInvitedMembersContainerMobile extends StatelessWidget {
                 if (invitedMember.endDate != null)
                   Expanded(
                     child: RowIconTextAnnouncement(
-                      iconUrl: "assets/images/contact_icon.svg",
+                      iconUrl: "assets/icons_assets/main_icons_assets/details_User Plus.svg",
                       text: "End Date",
                       hideImage: true,
                       value: Get.locale.toString().contains('en')

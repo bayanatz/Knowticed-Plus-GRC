@@ -6,7 +6,7 @@ import 'package:demo_app/core/helper/task_management_module/core/constant/app_st
 import 'package:demo_app/core/helper/task_management_module/core/constant/image_paths.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:demo_app/core/helper/task_management_module/task/controller/task_details_controller.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/card_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_model.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 
 // Name: Nour Nabil

@@ -7,17 +7,17 @@ import 'package:get/get.dart';
 import 'package:demo_app/core/helper/task_management_module/borad/controller/board_controller.dart';
 import 'package:demo_app/core/helper/task_management_module/core/constant/screen_size.dart';
 import 'package:demo_app/core/helper/task_management_module/task/controller/task_details_controller.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/board_model/board_model.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/card_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/board_model/board_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_model.dart';
 import 'package:demo_app/core/helper/task_management_module/task/view/task_details_screen_tablet.dart';
 import 'package:page_transition/page_transition.dart';
 
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
-import '../constant/enum.dart';
-import 'custom_drawer.dart';
-import 'package:demo_app/features/roles/helper/task_management_module/core/components/success_dialog.dart';
-import 'tasks_components/custom_project_screen_header.dart';
-import 'tasks_components/custom_task_container_mobile.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/enum.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_drawer.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/success_dialog.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_project_screen_header.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_task_container_mobile.dart';
 
 /// App Version : Version 2
 /// Date of Last Edit :23/April/2024 By Abdullah Ibrahim
@@ -197,7 +197,7 @@ class _CardsContainerState extends State<CardsContainer> {
                                                   subtitle:
                                                       "Only Task Owner Can Eidt Status Of This Card",
                                                   lottieAsset:
-                                                      "assets/images/error.json",
+                                                      "assets/lottie_assets/main_lottie_assets/error.json",
                                                 );
                                               },
                                             );
@@ -285,7 +285,7 @@ class _CardsContainerState extends State<CardsContainer> {
                                                   subtitle:
                                                       "Only Task Owner Can Eidt Status Of This Card",
                                                   lottieAsset:
-                                                      "assets/images/error.json",
+                                                      "assets/lottie_assets/main_lottie_assets/error.json",
                                                 );
                                               },
                                             );
@@ -404,7 +404,7 @@ class _CardsContainerState extends State<CardsContainer> {
                                                     subtitle:
                                                         "Only Task Owner Can Eidt Status Of This Card",
                                                     lottieAsset:
-                                                        "assets/images/error.json",
+                                                        "assets/lottie_assets/main_lottie_assets/error.json",
                                                   );
                                                 },
                                               );
@@ -499,7 +499,7 @@ class _CardsContainerState extends State<CardsContainer> {
                                                     subtitle:
                                                         "Only Task Owner Can Eidt Status Of This Card",
                                                     lottieAsset:
-                                                        "assets/images/error.json",
+                                                        "assets/lottie_assets/main_lottie_assets/error.json",
                                                   );
                                                 },
                                               );
@@ -594,7 +594,7 @@ class _CardsContainerState extends State<CardsContainer> {
                                                     subtitle:
                                                         "Only Task Owner Can Eidt Status Of This Card",
                                                     lottieAsset:
-                                                        "assets/images/error.json",
+                                                        "assets/lottie_assets/main_lottie_assets/error.json",
                                                   );
                                                 },
                                               );

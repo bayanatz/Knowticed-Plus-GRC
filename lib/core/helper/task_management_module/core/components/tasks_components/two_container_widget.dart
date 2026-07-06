@@ -28,7 +28,7 @@ class _TwoContainersWidgetState extends State<TwoContainersWidget> {
         _buildContainer(
           index: 0,
           text: 'Start Date',
-          svgPath: 'assets/icons/calendar.svg',
+          svgPath: 'assets/icons_assets/main_icons_assets/icons_calendar.svg',
           isSelected: _selectedIndex == 0,
           onTap: () => _handleContainerTap(0),
         ),
@@ -36,7 +36,7 @@ class _TwoContainersWidgetState extends State<TwoContainersWidget> {
         _buildContainer(
           index: 1,
           text: 'End Date',
-          svgPath: 'assets/icons/calendar.svg',
+          svgPath: 'assets/icons_assets/main_icons_assets/icons_calendar.svg',
           isSelected: _selectedIndex == 1,
           onTap: () => _handleContainerTap(1),
         ),

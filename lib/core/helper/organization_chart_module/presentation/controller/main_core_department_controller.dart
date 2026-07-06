@@ -1,16 +1,16 @@
 // ignore_for_file: avoid_print
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:demo_app/core/constants/api_constants.dart';
 
 import 'package:get/get.dart';
 import 'package:demo_app/core/enums/enum.dart';
 
 import 'package:demo_app/core/helper/organization_chart_module/data/models/department_model.dart';
-import '../../data/models/department_model/department_model.dart'
+import 'package:demo_app/core/network/api_constants.dart';
+import 'package:demo_app/core/helper/organization_chart_module/data/models/department_model/department_model.dart'
     as newDepartmentModel;
-import '../../data/repository/departments_repository.dart';
-import '../../utils/employees_constants.dart';
+import 'package:demo_app/core/helper/organization_chart_module/data/repository/departments_repository.dart';
+import 'package:demo_app/core/helper/organization_chart_module/utils/employees_constants.dart';
 
 // name:AddDepartmentController
 // date:Jan/10/2024

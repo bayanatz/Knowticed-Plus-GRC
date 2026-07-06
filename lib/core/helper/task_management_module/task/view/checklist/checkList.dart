@@ -26,7 +26,7 @@ class Checklist extends StatelessWidget {
                   borderRadius: BorderRadius.circular(18),
                 ),
                 child: SvgPicture.asset(
-                  "assets/icons/CheckSquareIcon.svg",
+                  "assets/icons_assets/task_assets/CheckSquareIcon.svg",
                   height: 18.h,
                   width: 18.w,
                 ),
@@ -36,7 +36,7 @@ class Checklist extends StatelessWidget {
                   style: AppTextStyles.font16ButtonMediumCairo),
               Spacer(),
               IconItem(
-                  color: AppColors.primary, icon: "assets/icons/edit_icon.svg"),
+                  color: AppColors.primary, icon: "assets/icons_assets/main_icons_assets/edit_icon.svg"),
               SizedBox(width: 10),
               IconItem(
                   color: AppColors.red, icon: "assets/icons/remove_icon.svg")
@@ -85,7 +85,7 @@ class Checklist extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: SvgPicture.asset(
-                  "assets/icons/edit_icon.svg",
+                  "assets/icons_assets/main_icons_assets/edit_icon.svg",
                   height: 14.h,
                   width: 14.w,
                   color: AppColors.black,
@@ -96,7 +96,7 @@ class Checklist extends StatelessWidget {
           SizedBox(height: 15),
           Row(
             children: [
-              Image.asset("assets/images/person.png",
+              Image.asset("assets/png_assets/images_person.png",
                   height: 30.h, width: 30.w),
               SizedBox(width: 5),
               Column(
@@ -148,7 +148,7 @@ class Checklist extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: SvgPicture.asset(
-                  "assets/icons/edit_icon.svg",
+                  "assets/icons_assets/main_icons_assets/edit_icon.svg",
                   height: 14.h,
                   width: 14.w,
                   color: AppColors.black,

@@ -10,12 +10,12 @@ import 'package:demo_app/core/helper/task_management_module/borad/view/board_hom
 import 'package:demo_app/core/helper/task_management_module/core/components/custom_upper_filter.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/selection_user.dart';
 import 'package:demo_app/core/helper/task_management_module/core/constant/circle_progress.dart';
-import 'package:demo_app/core/theme/app_font_size.dart';import 'package:demo_app/core/helper/task_management_module/core/constant/haptic_controller.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/board_model/board_model.dart';
+import 'package:demo_app/core/theme/app_font_size.dart';import 'package:demo_app/core/haptic/haptic_controller.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/board_model/board_model.dart';
 import 'package:demo_app/features/department/presentation/controller/add_department_controller.dart';
 
-import 'custom_appbar.dart';
-import 'custom_search.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_appbar.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_search.dart';
 
 /// Date Created :19/November/2023
 /// Developer Name : Bassem Mohamed
@@ -36,7 +36,7 @@ class _TaskScreenState extends State<TaskScreen> {
   BoardController tController = Get.find();
 
   int selectedFilterIndex = 0;
-  final TaskHapticController hapticController = Get.put(TaskHapticController());
+  final HapticController hapticController = Get.put(HapticController());
 
   String? departmentDrop;
 

@@ -9,19 +9,19 @@ import 'package:intl/intl.dart';
 import 'package:demo_app/core/helper/task_management_module/borad/controller/board_controller.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/selection_user.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';import 'package:demo_app/core/helper/task_management_module/task/controller/task_details_controller.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/board_model/board_model.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/card_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/board_model/board_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_model.dart';
 
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
-import '../../constant/date_time_in_arabic.dart';
-import '../../constant/enum.dart';
-import '../dialogs/copy_card_dialog.dart';
-import '../dialogs/delete_archive_card_dialog.dart';
-import '../dialogs/delete_dialog.dart';
-import '../sort_option_widget.dart';
-import 'package:demo_app/features/roles/helper/task_management_module/core/components/success_dialog.dart';
-import 'custom_project_screen_header.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/date_time_in_arabic.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/enum.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/dialogs/copy_card_dialog.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/dialogs/delete_archive_card_dialog.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/dialogs/delete_dialog.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/sort_option_widget.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/success_dialog.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_project_screen_header.dart';
 
 /// Date Created :19/November/2023
 /// Developer Name : Bassem Mohamed
@@ -144,7 +144,7 @@ class _CustomTaskContainerMobileState extends State<CustomTaskContainerMobile> {
                             : 0.045.h,
                       )
                     : Image.asset(
-                        "assets/images/taskImage.png",
+                        "assets/png_assets/taskImage.png",
                         fit: BoxFit.cover,
                         width:
                             isTablet ? (orientation ? 0.05.w : 0.05.h) : 0.1.w,
@@ -219,7 +219,7 @@ class _CustomTaskContainerMobileState extends State<CustomTaskContainerMobile> {
                                           subtitle:
                                               "Only Card Owner Can Edit This Card",
                                           lottieAsset:
-                                              "assets/images/error.json",
+                                              "assets/lottie_assets/main_lottie_assets/error.json",
                                         );
                                       },
                                     );
@@ -237,7 +237,7 @@ class _CustomTaskContainerMobileState extends State<CustomTaskContainerMobile> {
                                       ? (orientation ? 0.007.h : 0.01.h)
                                       : 0.01.h),
                                   child: SvgPicture.asset(
-                                    "assets/icons/threeDotsVertical.svg",
+                                    "assets/icons_assets/task_assets/threeDotsVertical.svg",
                                     height: 0.023.h,
                                     color: themeController.currentTheme ==
                                             AppColors.lightTheme
@@ -250,7 +250,7 @@ class _CustomTaskContainerMobileState extends State<CustomTaskContainerMobile> {
                             InkWell(
                                 onTap: widget.isArchive,
                                 child: SvgPicture.asset(
-                                  "assets/icons/ArchiveRedo.svg",
+                                  "assets/icons_assets/task_assets/ArchiveRedo.svg",
                                   height: 0.023.h,
                                   color: themeController.currentTheme ==
                                           AppColors.lightTheme
@@ -283,22 +283,22 @@ class _CustomTaskContainerMobileState extends State<CustomTaskContainerMobile> {
                                               .last
                                               .toLowerCase() ==
                                           "urgent"
-                                      ? 'assets/icons/urgentBell.svg'
+                                      ? 'assets/icons_assets/main_icons_assets/urgentBell.svg'
                                       : widget.cardModel!.cardPriority!
                                                   .cardPriority!.last
                                                   .toLowerCase() ==
                                               "important"
-                                          ? 'assets/icons/important.svg'
+                                          ? 'assets/icons_assets/main_icons_assets/important.svg'
                                           : widget.cardModel!.cardPriority!
                                                       .cardPriority!.last
                                                       .toLowerCase() ==
                                                   "medium"
-                                              ? 'assets/icons/medium.svg'
+                                              ? 'assets/icons_assets/main_icons_assets/medium.svg'
                                               : widget.cardModel!.cardPriority!
                                                           .cardPriority!.last
                                                           .toLowerCase() ==
                                                       "low"
-                                                  ? 'assets/icons/lowPriority.svg'
+                                                  ? 'assets/icons_assets/main_icons_assets/lowPriority.svg'
                                                   : "",
                                   height: isTablet
                                       ? (orientation ? 0.022.w : 0.015.w)
@@ -582,7 +582,7 @@ void _showSortMenu(
                   cardModel: card,
                 );
               },
-              iconUrl: 'assets/icons/NewCopy.svg',
+              iconUrl: 'assets/icons_assets/task_assets/NewCopy.svg',
               textController: textController,
             );
           },
@@ -599,7 +599,7 @@ void _showSortMenu(
               cardModel: card,
               board: board,
               boardModel: boardModel,
-              iconUrl: 'assets/icons/moveIcon.svg',
+              iconUrl: 'assets/icons_assets/task_assets/moveIcon.svg',
               textController: null,
             );
           },
@@ -649,7 +649,7 @@ void _showSortMenu(
                                 title: "Successful",
                                 subtitle:
                                     "This Task Has Been Deleted Successfully",
-                                lottieAsset: "assets/images/correct.json",
+                                lottieAsset: "assets/lottie_assets/main_lottie_assets/lottie_successful.json",
                               );
                             });
                       } catch (e) {
@@ -670,22 +670,22 @@ Widget _getSortOptionLabel(StatusWant option, BuildContext context) {
   switch (option) {
     case StatusWant.Delete:
       return const SortOptionWidget(
-        iconAddress: 'assets/icons/trashIconTask.svg',
+        iconAddress: 'assets/icons_assets/task_assets/trashIconTask.svg',
         text: "Delete",
       );
     case StatusWant.Archive:
       return const SortOptionWidget(
-        iconAddress: 'assets/icons/archiveIcon.svg',
+        iconAddress: 'assets/icons_assets/task_assets/archiveIcon.svg',
         text: "Archive",
       );
     case StatusWant.Move:
       return const SortOptionWidget(
-        iconAddress: 'assets/icons/moveIcon.svg',
+        iconAddress: 'assets/icons_assets/task_assets/moveIcon.svg',
         text: "Move",
       );
     case StatusWant.Copy:
       return const SortOptionWidget(
-        iconAddress: 'assets/icons/NewCopy.svg',
+        iconAddress: 'assets/icons_assets/task_assets/NewCopy.svg',
         text: "Copy",
       );
   }

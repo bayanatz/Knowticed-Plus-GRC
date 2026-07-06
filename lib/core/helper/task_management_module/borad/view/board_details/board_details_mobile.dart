@@ -8,21 +8,21 @@ import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:demo_app/core/helper/task_management_module/core/nav_bar_package.dart/functions.dart';
 import 'package:demo_app/core/helper/task_management_module/borad/controller/board_controller.dart';
 import 'package:demo_app/core/helper/task_management_module/task/controller/task_details_controller.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/board_model/board_model.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/card_model.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/checklist_item.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/board_model/board_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/checklist_item.dart';
 import 'package:demo_app/core/helper/task_management_module/task/view/task_details_screen_mobile.dart';
 
-import '../../../core/components/custom_appbar_mobile.dart';
-import '../../../core/components/custom_black_button.dart';
-import '../../../core/components/custom_search.dart';
-import '../../../core/components/custom_upper_filter.dart';
-import '../../../core/components/dialogs/copy_card_dialog.dart';
-import 'package:demo_app/features/roles/helper/task_management_module/core/components/success_dialog.dart';
-import '../../../core/components/tasks_components/custom_members_dialog_mobile.dart';
-import '../../../core/components/tasks_components/custom_project_screen_header.dart';
-import '../../../core/components/tasks_components/custom_task_container_mobile.dart';
-import '../../../core/constant/enum.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_appbar_mobile.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_black_button.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_search.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_upper_filter.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/dialogs/copy_card_dialog.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/success_dialog.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_members_dialog_mobile.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_project_screen_header.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_task_container_mobile.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/enum.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 
 /// Date Created :12/November/2023
@@ -113,7 +113,7 @@ class _ProjectScreenMobileState extends State<ProjectScreenMobile> {
                         showIcon: true,
                         title: widget
                             .boardModel!.boardName!.boardgName!.last.capitalize,
-                        imagePath: "assets/icons/shareIcon.svg",
+                        imagePath: "assets/icons_assets/main_icons_assets/shareIcon.svg",
                         isProject: false,
                         onIconPressed: () {
                           hapticController.triggerHapticFeedback(
@@ -163,7 +163,7 @@ class _ProjectScreenMobileState extends State<ProjectScreenMobile> {
                                 return const SuccessDialog(
                                   title: "Warning",
                                   subtitle: "Only Board Owner Can Set Members",
-                                  lottieAsset: "assets/images/error.json",
+                                  lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
                                 );
                               },
                             );
@@ -410,7 +410,7 @@ class _ProjectScreenMobileState extends State<ProjectScreenMobile> {
                                                     subtitle:
                                                     "Only Task Owner Can Eidt Status Of This Card",
                                                     lottieAsset:
-                                                    "assets/images/error.json",
+                                                    "assets/lottie_assets/main_lottie_assets/error.json",
                                                   );
                                                 },
                                               );
@@ -466,7 +466,7 @@ class _ProjectScreenMobileState extends State<ProjectScreenMobile> {
                                                       isCreatingCard:
                                                       true,
                                                       iconUrl:
-                                                      'assets/icons/addCardIcon.svg',
+                                                      'assets/icons_assets/task_assets/addCardIcon.svg',
                                                     );
                                                   },
                                                 );
@@ -607,7 +607,7 @@ class _ProjectScreenMobileState extends State<ProjectScreenMobile> {
                                                     subtitle:
                                                     "Only Task Owner Can Eidt Status Of This Card",
                                                     lottieAsset:
-                                                    "assets/images/error.json",
+                                                    "assets/lottie_assets/main_lottie_assets/error.json",
                                                   );
                                                 },
                                               );
@@ -663,7 +663,7 @@ class _ProjectScreenMobileState extends State<ProjectScreenMobile> {
                                                       isCreatingCard:
                                                       true,
                                                       iconUrl:
-                                                      'assets/icons/addCardIcon.svg',
+                                                      'assets/icons_assets/task_assets/addCardIcon.svg',
                                                     );
                                                   },
                                                 );
@@ -710,7 +710,7 @@ class _ProjectScreenMobileState extends State<ProjectScreenMobile> {
                                               isCard: true,
                                               isCreatingCard: true,
                                               iconUrl:
-                                              'assets/icons/addCardIcon.svg',
+                                              'assets/icons_assets/task_assets/addCardIcon.svg',
                                             );
                                           },
                                         );

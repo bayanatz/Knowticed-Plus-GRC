@@ -1,6 +1,6 @@
-import 'package:demo_app/core/helper/main_helper/single_value_tracking_model.dart';
-import 'package:demo_app/core/helper/main_helper/single_value_tracking_model.dart';
-import '../new_employee_model/emplyees_model/mobile_phone_model.dart';
+
+import 'package:demo_app/core/helper/messaging/core/generic_models/single_value_tracking_model.dart';
+import 'package:demo_app/core/helper/organization_chart_module/data/models/new_employee_model/emplyees_model/mobile_phone_model.dart';
 
 /// **************************** FILE INFO **************************** ///
 /// Purpose: Model for employee insurance data

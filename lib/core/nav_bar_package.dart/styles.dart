@@ -1,10 +1,9 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/nav_bar_package.dart/model.dart';
 import 'package:demo_app/core/nav_bar_package.dart/paint.dart';
-
-import '../theme/app_colors.dart';
 
 class BottomNavStyle1 extends StatelessWidget {
   const BottomNavStyle1({

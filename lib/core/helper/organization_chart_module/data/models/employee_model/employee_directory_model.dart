@@ -2,12 +2,12 @@
 
 import 'dart:convert';
 import 'package:demo_app/features/employee/data/models/emplyees_model/mobile_phone_model.dart';
-import 'package:demo_app/core/helper/employees/data/models/employee_model/department_model.dart';
 
-import '../new_employee_model/emplyees_model/email_model.dart';
-import '../new_employee_model/emplyees_model/first_name_model.dart';
-import '../new_employee_model/emplyees_model/last_name_model.dart';
-import '../new_employee_model/emplyees_model/supervisor_model.dart';
+import 'package:demo_app/core/helper/organization_chart_module/data/models/new_employee_model/emplyees_model/email_model.dart';
+import 'package:demo_app/core/helper/organization_chart_module/data/models/new_employee_model/emplyees_model/first_name_model.dart';
+import 'package:demo_app/core/helper/organization_chart_module/data/models/new_employee_model/emplyees_model/last_name_model.dart';
+import 'package:demo_app/core/helper/organization_chart_module/data/models/new_employee_model/emplyees_model/supervisor_model.dart';
+import 'package:demo_app/core/helper/organization_chart_module/data/models/employee_model/department_model.dart';
 
 // date:January/7/2024
 // by:MohamedFouad

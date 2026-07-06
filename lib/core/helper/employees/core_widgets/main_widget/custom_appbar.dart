@@ -2,8 +2,8 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';
-import 'package:demo_app/features/notification/notification_controller.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
+import 'package:demo_app/features/notification/notification_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:flutter/services.dart';
@@ -24,7 +24,6 @@ import 'package:demo_app/core/theme/app_text_styles.dart';
 import 'package:demo_app/features/settings/presentation/ui/pages/settings_screen.dart';
 
 import 'package:demo_app/features/home/app_drawer/presentation/controller/drawer_controller.dart';
-import 'package:demo_app/features/notification/notification_page.dart';
 
 // ignore: must_be_immutable
 class CustomAppBar extends StatefulWidget {

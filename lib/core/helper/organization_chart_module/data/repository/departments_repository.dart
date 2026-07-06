@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:demo_app/core/network/failure_model.dart';
 import 'package:demo_app/core/helper/organization_chart_module/data/models/department_model.dart';
 
-import '../data_source/remote_data_source/departments_remote_data_source.dart';
+import 'package:demo_app/core/helper/organization_chart_module/data/data_source/remote_data_source/departments_remote_data_source.dart';
 ///********************** FILE INFO ********************///
 /// Class Name: DepartmentsRepository
 /// Purpose: A class to control data flow for departments

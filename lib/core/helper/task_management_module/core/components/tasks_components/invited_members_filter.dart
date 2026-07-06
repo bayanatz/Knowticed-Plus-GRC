@@ -4,16 +4,16 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/selection_user.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';
-import '../../constant/date_time_in_arabic.dart';
-import '../../constant/enum.dart';
-import '../../constant/haptic_controller.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/date_time_in_arabic.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/enum.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
-import '../calendar_components.dart/calender_package/src/models/calendar_date_picker2_config.dart';
-import '../calendar_components.dart/date_picker_class.dart';
-import '../custom_drop_down_menu.dart';
-import '../custom_elevated_button.dart';
-import '../tracking_time_components/track_time_subwidget/column_request_data.dart';
-import '../tracking_time_components/track_time_subwidget/filters_appbar.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/calendar_components.dart/calender_package/src/models/calendar_date_picker2_config.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/calendar_components.dart/date_picker_class.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_drop_down_menu.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_elevated_button.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tracking_time_components/track_time_subwidget/column_request_data.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tracking_time_components/track_time_subwidget/filters_appbar.dart';
 
 class InvitedMembersFilter extends StatefulWidget {
   InvitedMembersFilter({
@@ -49,7 +49,7 @@ class _InvitedMembersFilterState extends State<InvitedMembersFilter> {
   TextEditingController startDateArabicController = TextEditingController();
   TextEditingController endDateArabicController = TextEditingController();
 
-  final TaskHapticController hapticController = Get.put(TaskHapticController());
+  final HapticController hapticController = Get.put(HapticController());
 
   Future<void> _selectDate(BuildContext context, bool isStartDate) async {
     final DateTime now = DateTime.now();
@@ -124,7 +124,7 @@ class _InvitedMembersFilterState extends State<InvitedMembersFilter> {
             mainAxisSize: MainAxisSize.min,
             children: [
               FiltersAppBar(
-                imageUrl: "assets/images/filter_table.svg",
+                imageUrl: "assets/icons_assets/main_icons_assets/filter_table.svg",
                 title: "Filter",
                 iconColor: AppColors.textButton,
               ),
@@ -153,7 +153,7 @@ class _InvitedMembersFilterState extends State<InvitedMembersFilter> {
                                   isExpanded: true,
                                   enabled: false,
                                   hasSuffix: true,
-                                  suffixUrl: "assets/icons/calendar2.svg",
+                                  suffixUrl: "assets/icons_assets/main_icons_assets/calendar2.svg",
                                 ),
                               ),
                             ),
@@ -176,7 +176,7 @@ class _InvitedMembersFilterState extends State<InvitedMembersFilter> {
                                   isExpanded: true,
                                   enabled: false,
                                   hasSuffix: true,
-                                  suffixUrl: "assets/icons/calendar2.svg",
+                                  suffixUrl: "assets/icons_assets/main_icons_assets/calendar2.svg",
                                 ),
                               ),
                             ),
@@ -252,7 +252,7 @@ class _InvitedMembersFilterState extends State<InvitedMembersFilter> {
                             isExpanded: true,
                             enabled: false,
                             hasSuffix: true,
-                            suffixUrl: "assets/icons/calendar2.svg",
+                            suffixUrl: "assets/icons_assets/main_icons_assets/calendar2.svg",
                           ),
                         ),
                         SizedBox(height: 0.02.h),
@@ -271,7 +271,7 @@ class _InvitedMembersFilterState extends State<InvitedMembersFilter> {
                             isExpanded: true,
                             enabled: false,
                             hasSuffix: true,
-                            suffixUrl: "assets/icons/calendar2.svg",
+                            suffixUrl: "assets/icons_assets/main_icons_assets/calendar2.svg",
                           ),
                         ),
                         SizedBox(height: 0.02.h),

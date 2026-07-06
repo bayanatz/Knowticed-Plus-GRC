@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/helper/task_management_module/core/constant/screen_size.dart';
 import 'package:demo_app/core/helper/task_management_module/task/controller/task_details_controller.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/board_model/board_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/board_model/board_model.dart';
 import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_checklists.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/card_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_model.dart';
 
-import '../../../core/components/tasks_components/custom_checklist_section.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_checklist_section.dart';
 
 /// App Version : Version 2
 /// Date of Last Edit :23/April/2024 By Abdullah Ibrahim

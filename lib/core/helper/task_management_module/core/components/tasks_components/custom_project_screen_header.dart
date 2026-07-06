@@ -5,13 +5,14 @@ import 'package:get/get.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/invited_members_screen.dart';
 import 'package:demo_app/core/helper/task_management_module/core/components/selection_user.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';import 'package:demo_app/core/helper/task_management_module/task/controller/task_details_controller.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/board_model/board_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/board_model/board_model.dart';
 import 'package:page_transition/page_transition.dart';
 
 import 'package:demo_app/core/theme/app_colors.dart';
-import '../../constant/enum.dart';
-import '../../constant/haptic_controller.dart';
-import '../custom_drawer.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/enum.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_drawer.dart';
+import 'package:demo_app/core/utils/app_image_provider.dart';
 
 class ProjectHeader extends StatefulWidget {
   final String projectName;
@@ -33,7 +34,7 @@ class ProjectHeader extends StatefulWidget {
   State<ProjectHeader> createState() => _ProjectHeaderState();
 }
 
-final TaskHapticController hapticController = Get.put(TaskHapticController());
+final HapticController hapticController = Get.put(HapticController());
 
 class _ProjectHeaderState extends State<ProjectHeader> {
   TaskDetailsController tController = Get.find();
@@ -116,7 +117,7 @@ class _ProjectHeaderState extends State<ProjectHeader> {
                     ),
                     SvgPicture.asset(
                       matchTextDirection: Get.locale?.languageCode == 'ar',
-                      'assets/icons/arrowLeft.svg',
+                      'assets/icons_assets/main_icons_assets/images_arrow.svg',
                       height: orientation ? 0.025.h : 0.04.h,
                       color: Theme.of(context).colorScheme.inverseSurface,
                     ),
@@ -147,7 +148,7 @@ class _ProjectHeaderState extends State<ProjectHeader> {
                     //         padding: EdgeInsets.all(0.012.h),
                     //         child: SvgPicture.asset(
                     //           height: 0.02.h,
-                    //           'assets/icons/shareBoardIcon.svg',
+                    //           'assets/icons_assets/task_assets/shareBoardIcon.svg',
                     //           color: AppColors.textButton,
                     //         ),
                     //       ),
@@ -203,7 +204,7 @@ class _ProjectHeaderState extends State<ProjectHeader> {
                 //                 padding: EdgeInsets.all(0.012.h),
                 //                 child: SvgPicture.asset(
                 //                   height: 0.03.h,
-                //                   'assets/icons/shareBoardIcon.svg',
+                //                   'assets/icons_assets/task_assets/shareBoardIcon.svg',
                 //                   color: AppColors.textButton,
                 //                 ),
                 //               ),
@@ -239,7 +240,7 @@ class _ProjectHeaderState extends State<ProjectHeader> {
             //                   )
             //                 : CircleAvatar(
             //                     radius: 0.03.h,
-            //                     backgroundImage: AssetImage(controller.images[0]),
+            //                     backgroundImage: appImageProvider(controller.images[0]),
             //                   ),
             //           ),
             //         ),
@@ -271,7 +272,7 @@ class _ProjectHeaderState extends State<ProjectHeader> {
             //                   )
             //                 : CircleAvatar(
             //                     radius: 0.03.h,
-            //                     backgroundImage: AssetImage(controller.images[1]),
+            //                     backgroundImage: appImageProvider(controller.images[1]),
             //                   ),
             //           ),
             //         ),
@@ -303,7 +304,7 @@ class _ProjectHeaderState extends State<ProjectHeader> {
             //                   )
             //                 : CircleAvatar(
             //                     radius: 0.03.h,
-            //                     backgroundImage: AssetImage(controller.images[2]),
+            //                     backgroundImage: appImageProvider(controller.images[2]),
             //                   ),
             //           ),
             //         ),
@@ -335,7 +336,7 @@ class _ProjectHeaderState extends State<ProjectHeader> {
             //                   )
             //                 : CircleAvatar(
             //                     radius: 0.03.h,
-            //                     backgroundImage: AssetImage(controller.images[3]),
+            //                     backgroundImage: appImageProvider(controller.images[3]),
             //                   ),
             //           ),
             //         ),
@@ -367,7 +368,7 @@ class _ProjectHeaderState extends State<ProjectHeader> {
             //                   )
             //                 : CircleAvatar(
             //                     radius: 0.03.h,
-            //                     backgroundImage: AssetImage(controller.images[4]),
+            //                     backgroundImage: appImageProvider(controller.images[4]),
             //                   ),
             //           ),
             //         ),
@@ -399,7 +400,7 @@ class _ProjectHeaderState extends State<ProjectHeader> {
             //                   )
             //                 : CircleAvatar(
             //                     radius: 0.03.h,
-            //                     backgroundImage: AssetImage(controller.images[5]),
+            //                     backgroundImage: appImageProvider(controller.images[5]),
             //                   ),
             //           ),
             //         ),

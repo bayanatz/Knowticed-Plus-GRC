@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/features/department/presentation/controller/add_department_controller.dart';
-import 'package:demo_app/core/extension/context_extensions.dart';
+import 'package:demo_app/core/helper/messaging/core/configs/extensions/extensions.dart';
 
 import 'package:demo_app/features/employee/domain/entities/employee_entity.dart';
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
@@ -54,9 +54,9 @@ abstract class EmployeeHelper {
         employee.photo!.isEmpty ||
         employee.photo == "[]") {
       if (employee.gender == 'female') {
-        employeeImageUrl = "assets/images/female_avatar.png";
+        employeeImageUrl = "assets/icons_assets/main_icons_assets/images_female.svg";
       } else {
-        employeeImageUrl = "assets/images/male_avatar.png";
+        employeeImageUrl = "assets/icons_assets/main_icons_assets/assets_male.svg";
       }
     }
 

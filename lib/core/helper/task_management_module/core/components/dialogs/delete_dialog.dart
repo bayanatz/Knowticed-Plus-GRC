@@ -5,8 +5,8 @@ import 'package:lottie/lottie.dart';
 
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
-import '../../constant/haptic_controller.dart';
-import '../custom_elevated_button.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_elevated_button.dart';
 
 class DeleteDialog extends StatefulWidget {
   const DeleteDialog({
@@ -34,7 +34,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)));
   }
 
-  final TaskHapticController hapticController = Get.put(TaskHapticController());
+  final HapticController hapticController = Get.put(HapticController());
   MainCoreEmployeeController addEmployeeController = Get.find();
   @override
   Widget build(BuildContext context) {
@@ -67,8 +67,8 @@ class _DeleteDialogState extends State<DeleteDialog> {
                   scale: isTablet ? (orientation ? 2 : 0.9) : 2,
                   child: Lottie.asset(
                     widget.isDeleteDialog == false
-                        ? "assets/images/attention.json"
-                        : "assets/images/deletion.json",
+                        ? "assets/lottie_assets/main_lottie_assets/images_attention.json"
+                        : "assets/lottie_assets/main_lottie_assets/lottie_trash.json",
                     width: 0.1.w,
                     fit: BoxFit.fitHeight,
                   ),

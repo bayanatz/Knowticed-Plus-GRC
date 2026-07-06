@@ -4,17 +4,17 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:demo_app/core/helper/task_management_module/task/controller/task_details_controller.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/card_model/card_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/card_model/card_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:demo_app/core/theme/app_colors.dart';
-import '../../../../core/components/custom_black_button.dart';
-import '../../../../core/components/dialogs/copy_card_dialog.dart';
-import '../../../../core/components/dialogs/delete_archive_card_dialog.dart';
-import '../../../../core/components/tasks_components/custom_attachments_container.dart';
-import '../../../../core/components/tasks_components/custom_container_header_mobile.dart';
-import '../../../../core/components/tasks_components/custom_project_screen_header.dart';
-import '../../../../core/constant/enum.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_black_button.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/dialogs/copy_card_dialog.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/dialogs/delete_archive_card_dialog.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_attachments_container.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_container_header_mobile.dart';
+import 'package:demo_app/core/helper/task_management_module/core/components/tasks_components/custom_project_screen_header.dart';
+import 'package:demo_app/core/helper/task_management_module/core/constant/enum.dart';
 
 class AttachmentSectionTablet extends StatefulWidget {
   final bool showAttach;
@@ -74,7 +74,7 @@ class _AttachmentSectionState extends State<AttachmentSectionTablet> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomRowWithIcons(
-                iconPath: "assets/icons/attachsquareIcon.svg",
+                iconPath: "assets/icons_assets/task_assets/attachsquareIcon.svg",
                 title: "Attachments".tr,
                 isExpand: expandAttach,
                 onTrashPressed: widget.toggleShowAttach,
@@ -221,7 +221,7 @@ class _AttachmentSectionState extends State<AttachmentSectionTablet> {
                   isAttachment: true,
                   cardModel: widget.cardModel,
                   board: widget.board,
-                  iconUrl: 'assets/icons/attachsquareIcon.svg',
+                  iconUrl: 'assets/icons_assets/task_assets/attachsquareIcon.svg',
                 );
               },
             );
@@ -233,7 +233,7 @@ class _AttachmentSectionState extends State<AttachmentSectionTablet> {
                   title: "Add Attachment",
                   onPressed: () {},
                   isAttachment: true,
-                  iconUrl: 'assets/icons/attachsquareIcon.svg',
+                  iconUrl: 'assets/icons_assets/task_assets/attachsquareIcon.svg',
                 );
               },
             );*/
@@ -268,7 +268,7 @@ class _AttachmentSectionState extends State<AttachmentSectionTablet> {
             );
           },
           child: SvgPicture.asset(
-            'assets/icons/deleteIcon.svg',
+            'assets/icons_assets/task_assets/deleteIcon.svg',
             height: 0.025.h,
             color: AppColors.red,
           ),
