@@ -43,8 +43,11 @@ class GetPolicyUseCase {
   ///            [String] id: unique identifier of the policy to fetch
   ///
   /// return type: [Future<Either<Failure, PolicyEntity>>] - the matching entity, or a Failure
-  Future<Either<Failure, PolicyEntity>> call(String id) {
-    return _repository.getPolicy(id);
+  Future<Either<Failure, PolicyEntity>> call(
+    String id, {
+    required String moduleId,
+  }) {
+    return _repository.getPolicy(id, moduleId: moduleId);
   }
 }
 
@@ -73,9 +76,13 @@ class GetAllPoliciesUseCase {
   ///
   /// return type: [Future<Either<Failure, List<PolicyEntity>>>] - the list of entities, or a Failure
   Future<Either<Failure, List<PolicyEntity>>> call({
+    required String moduleId,
     bool includeDeleted = false,
   }) {
-    return _repository.getAllPolicies(includeDeleted: includeDeleted);
+    return _repository.getAllPolicies(
+      moduleId: moduleId,
+      includeDeleted: includeDeleted,
+    );
   }
 }
 
@@ -93,8 +100,13 @@ class GetAllPoliciesUseCase {
 class DeletePolicyParams {
   final String id;
   final String editorId;
+  final String moduleId;
 
-  const DeletePolicyParams({required this.id, required this.editorId});
+  const DeletePolicyParams({
+    required this.id,
+    required this.editorId,
+    required this.moduleId,
+  });
 }
 
 /// class name: [DeletePolicyUseCase]
@@ -121,6 +133,7 @@ class DeletePolicyUseCase {
     return _repository.deletePolicy(
       id: params.id,
       editorId: params.editorId,
+      moduleId: params.moduleId,
     );
   }
 }
@@ -139,8 +152,13 @@ class DeletePolicyUseCase {
 class RestorePolicyParams {
   final String id;
   final String editorId;
+  final String moduleId;
 
-  const RestorePolicyParams({required this.id, required this.editorId});
+  const RestorePolicyParams({
+    required this.id,
+    required this.editorId,
+    required this.moduleId,
+  });
 }
 
 /// class name: [RestorePolicyUseCase]
@@ -167,6 +185,7 @@ class RestorePolicyUseCase {
     return _repository.restorePolicy(
       id: params.id,
       editorId: params.editorId,
+      moduleId: params.moduleId,
     );
   }
 }

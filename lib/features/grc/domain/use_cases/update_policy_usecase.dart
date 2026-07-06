@@ -33,6 +33,7 @@ import 'package:demo_app/features/grc/domain/repository/policy_repository.dart';
 class UpdatePolicyParams {
   final String id;
   final String editorId;
+  final String moduleId;
   final String? policyNameEn;
   final String? policyNameAr;
   final String? policyNumberEn;
@@ -52,6 +53,7 @@ class UpdatePolicyParams {
   const UpdatePolicyParams({
     required this.id,
     required this.editorId,
+    required this.moduleId,
     this.policyNameEn,
     this.policyNameAr,
     this.policyNumberEn,
@@ -95,6 +97,7 @@ class UpdatePolicyUseCase {
     return _repository.updatePolicy(
       id: params.id,
       editorId: params.editorId,
+      moduleId: params.moduleId,
       policyNameEn: params.policyNameEn,
       policyNameAr: params.policyNameAr,
       policyNumberEn: params.policyNumberEn,

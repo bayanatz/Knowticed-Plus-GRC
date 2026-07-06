@@ -43,6 +43,7 @@ class CreatePolicyParams {
   final DateTime endDate;
   final double policyWeight;
   final String editorId;
+  final String moduleId;
   final List<CreateControlParams> controls;
   final PolicyStatus status;
   final File? imageFile;
@@ -61,6 +62,7 @@ class CreatePolicyParams {
     required this.endDate,
     required this.policyWeight,
     required this.editorId,
+    required this.moduleId,
     required this.controls,
     required this.status,
     this.imageFile,
@@ -105,6 +107,7 @@ class CreatePolicyUseCase {
       endDate: params.endDate,
       policyWeight: params.policyWeight,
       editorId: params.editorId,
+      moduleId: params.moduleId,
       controls: params.controls,
       imageFile: params.imageFile,
       imageUrl: params.imageUrl,
