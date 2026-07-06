@@ -235,7 +235,7 @@ class _RequestExcalateDialogState extends State<RequestExcalateDialog> {
                                       ? () { Navigator.pop(context); showDialog(context: context, builder: (_) => const ResponseDialog(subtitle: "You Successful Send Leave Sick", title: '', lottieAsset: '')); }
                                       : widget.onPressed!,
                               buttonText: widget.isExclate ? "Escalates".tr : "Send".tr,
-                              buttonStyle: widget.isSetting == false && requestType == null ? btnStyle(AppColors.GreyBack) : btnStyle(AppColors.signOut))
+                              buttonStyle: widget.isSetting == false && requestType == null ? btnStyle(AppColors.greyDark) : btnStyle(AppColors.signOut))
                           ]),
                         SizedBox(height: 0.015.h),
                       ],

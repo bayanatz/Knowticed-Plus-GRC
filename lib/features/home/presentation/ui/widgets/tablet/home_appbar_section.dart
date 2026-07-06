@@ -5,32 +5,25 @@
 /// Refactored at: 9/2/2025
 library;
 
-import 'package:demo_app/core/helper/todo_new_module/external/tasks_module/category/presentation/screens/to_do_list/details_screen/hr_module/hr_dashboard.dart';
+import 'package:demo_app/core/custom/preview.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
-import 'package:demo_app/features/grc/presentation/ui/pages/grc_page.dart';
 import 'package:flutter/material.dart';
-import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/custom_svg.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:demo_app/features/home/core_widgets/main_widget/timeline_widget.dart';
-import 'package:demo_app/core/enums/enum.dart';
+
 // REMOVED_MODULE: import 'package:demo_app/features/external/inventory_module/core/navigate.dart';
 import 'package:demo_app/features/home/presentation/ui/widgets/gradiant_container.dart';
-import 'package:demo_app/features/roles/role_management/domain/enums/modules_enum.dart';
 import 'package:demo_app/features/settings/presentation/ui/pages/settings_screen.dart';
 
 import '../../../../../../core/theme/app_colors.dart';
-import '../../../../../../core/theme/app_text_styles.dart';
 // REMOVED_MODULE: import '../../../../../../external/services_mangment_module/core/new_theme.dart';
 // REMOVED_MODULE: import '../../../../../../external/todo_new_module/external/tasks_module/category/presentation/screens/to_do_list/details_screen/hr_module/add_new_employee_screen.dart';
 // REMOVED_MODULE: import '../../../../../../external/todo_new_module/external/tasks_module/category/presentation/screens/to_do_list/details_screen/hr_module/hr_dashboard.dart';
-import '../../../../app_drawer/presentation/controller/drawer_controller.dart';
-import '../../../../../../core/twillo/twilio_constants.dart';
-import '../../../../../../core/twillo/twilio_repository.dart';
+
 import '../../../controller/home_cubit.dart';
 import '../../../controller/skeleton_home_controller.dart';
 
@@ -119,11 +112,10 @@ class HomeAppbarSection extends StatelessWidget {
               //   context,
               //   MaterialPageRoute(builder: (context) =>  HrDashboard()),
               // );
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //       builder: (context) => GovernanceRiskAndCompliancePage()),
-              // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PreviewAllCustomPage()),
+              );
             },
             child: Text(
                 "${DateTime.now().hour < 12 ? 'Good Morning'.tr : DateTime.now().hour < 14 ? 'Good Afternoon'.tr : 'Good Evening'.tr} ${Get.locale.toString().contains('en') ? employee!.firstName.last.capitalize : employee!.firstNameInArabic.last}",

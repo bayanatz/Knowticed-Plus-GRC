@@ -60,7 +60,7 @@ class CreateBoardScreenMobile extends StatelessWidget {
                           child: Column(
                             children: [
                               CustomCreateBoardContainer(
-                                boardModel: board,
+                                // boardModel: board,
                               )
                             ],
                           ),

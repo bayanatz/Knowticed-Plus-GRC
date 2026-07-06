@@ -121,57 +121,43 @@ flutter:
   generate: true
 
   assets:
-    - assets/images/
-    - assets/formbuilder/
-    - assets/hrAsset/
-    - assets/tracker/icons/
-    - assets/tracker/lottie/
-    - assets/calender/
-    - assets/knowlege_module/
-    - assets/tracker/images/
-    - assets/database/
-    - assets/services_module/
-    - assets/database/fonts/
-    - assets/database/icons/
-    - assets/home_module/
-    - assets/database/images/
-    - assets/inquire_comment/
-    - assets/database/lottie/
-    - assets/dashboard/
-    - assets/images/details/
-    - assets/dummyFile/
-    - assets/fonts/
-    - assets/icons/
-    - assets/state/
+    # Icons categorized by module
+    - assets/icons_assets/calender_assets/
+    - assets/icons_assets/data_grc_assets/
+    - assets/icons_assets/database_builder_assets/
+    - assets/icons_assets/events_assets/
+    - assets/icons_assets/form_builder_assets/
+    - assets/icons_assets/home_assets/
+    - assets/icons_assets/inventory_assets/
+    - assets/icons_assets/knowledge_hub_assets/
+    - assets/icons_assets/main_icons_assets/
+    - assets/icons_assets/messaging_assets/
+    - assets/icons_assets/notification_assets/
+    - assets/icons_assets/onboarding_assets/
+    - assets/icons_assets/organization_chart_assets/
+    - assets/icons_assets/qiyas_assets/
+    - assets/icons_assets/roles_assets/
+    - assets/icons_assets/services_assets/
+    - assets/icons_assets/settings_assets/
+    - assets/icons_assets/task_assets/
+    - assets/icons_assets/todo_new_assets/
+    - assets/icons_assets/tracking_assets/
+    # Lottie categorized by module
+    - assets/lottie_assets/calender_lottie_assets/
+    - assets/lottie_assets/database_builder_lottie_assets/
+    - assets/lottie_assets/events_lottie_assets/
+    - assets/lottie_assets/form_builder_lottie_assets/
+    - assets/lottie_assets/home_lottie_assets/
+    - assets/lottie_assets/inventory_lottie_assets/
+    - assets/lottie_assets/main_lottie_assets/
+    - assets/lottie_assets/messaging_lottie_assets/
+    - assets/lottie_assets/notification_lottie_assets/
+    - assets/lottie_assets/organization_chart_lottie_assets/
+    - assets/lottie_assets/roles_lottie_assets/
+    - assets/lottie_assets/services_lottie_assets/
+    - assets/lottie_assets/tracking_lottie_assets/
+    # Remaining non-image assets (pdf / zip) kept in place
     - assets/
-    - assets/images/profile/
-    - assets/images/community/
-    - assets/images/management/
-    - assets/images/icons/
-    - assets/lottie/
-    - assets/images/grc_images/
-    - assets/lotties/
-    - assets/icon_drwaer/
-    - assets/dailog/
-    - assets/formbuilder/lottie/
-    - assets/formbuilder/vectors/
-    - assets/formbuilder/flags/
-    - assets/vectors/
-    - assets/svg/
-    - assets/roles_icons/
-    - assets/roles_module/
-    - assets/notification_module/
-    - assets/settings/
-    - assets/icons_drawer_news/
-    - assets/icons_settings_new/
-    - assets/settings_drawer/
-    - assets/state_icon/
-    - assets/icons_module/
-    - assets/employee_assets/
-    - assets/skeleton/common/icons/
-    - assets/skeleton/roles/icons/
-    - assets/skeleton/home/icons/
-    - assets/message_modules/
 
   fonts:
     - family: Cairo

@@ -428,7 +428,7 @@ class _FilterDialogState extends State<FilterDialog> {
                                           ? Size(0.15.w, 0.045.h)
                                           : Size(0.07.w, 0.05.h)
                                       : Size(0.36.w, 0.05.h),
-                                  backgroundColor: AppColors.GreyBack,
+                                  backgroundColor: AppColors.greyDark,
                                   shape: const RoundedRectangleBorder(
                                     borderRadius: BorderRadius.all(
                                       Radius.circular(8),

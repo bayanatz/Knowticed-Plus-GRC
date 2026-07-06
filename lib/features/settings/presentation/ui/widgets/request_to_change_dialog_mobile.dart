@@ -258,7 +258,7 @@ class _RequestToChangeDialogMobileState
                           buttonText: "Send".tr,
                           buttonStyle: widget.isSetting == false &&
                                   requestType == null
-                              ? buttonStyle(AppColors.GreyBack)
+                              ? buttonStyle(AppColors.greyBack)
                               : buttonStyle(AppColors.signOut),
                         ),
                       ],

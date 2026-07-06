@@ -3,6 +3,8 @@
 /// Author: Mohamed Elrashidy
 /// refactored at: 11/12/2024
 /// Updated by: Amr Mesbah - Fixed cross-device branding sync
+library;
+
 import 'package:demo_app/features/onboarding/presentation/ui/pages/onboarding.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -17,8 +19,11 @@ import 'package:demo_app/core/custom/loading.dart';
 import 'package:demo_app/features/settings/core_widgets/main_widget/restart_widget.dart';
 import 'package:demo_app/features/roles/system_logs/controller/system_logs_controller.dart';
 
-class CompanyController extends GetxController with StateMixin {
-  final SystemLogsController systemLogsController = Get.find<SystemLogsController>();
+typedef CompanyController = LegacyCompanyController;
+
+class LegacyCompanyController extends GetxController with StateMixin {
+  final SystemLogsController systemLogsController =
+      Get.find<SystemLogsController>();
   int brandingSelectedIndex = 0;
   String? selectedEnglishFont;
   String? selectedArabicFont;
@@ -59,7 +64,8 @@ class CompanyController extends GetxController with StateMixin {
     // Load company data asynchronously after widget is built
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await getCompany(shouldRestart: false);
-      print('🔵 Company loaded in onInit: ${company?.companyName?.companyName?.lastOrNull}');
+      print(
+          '🔵 Company loaded in onInit: ${company?.companyName?.companyName?.lastOrNull}');
       update(); // Notify listeners that data is ready
     });
 
@@ -89,13 +95,14 @@ class CompanyController extends GetxController with StateMixin {
   Future addCompany(CompanyModel companyModel, String companyId) async {
     print('💾 ===== ADD COMPANY START =====');
     print('💾 Company ID: $companyId');
-    print('💾 Company Name: ${companyModel.companyName?.companyName?.lastOrNull}');
+    print(
+        '💾 Company Name: ${companyModel.companyName?.companyName?.lastOrNull}');
 
     // Update the controller state.
     update();
 
     final CollectionReference companyCollection =
-    db.collection(ApiConstants.company);
+        db.collection(ApiConstants.company);
 
     await companyCollection
         .doc(companyId)
@@ -110,7 +117,8 @@ class CompanyController extends GetxController with StateMixin {
     print('💾 ===== ADD COMPANY END =====');
   }
 
-  Future<CompanyModel?> getCompany({String? companyName, bool shouldRestart = false}) async {
+  Future<CompanyModel?> getCompany(
+      {String? companyName, bool shouldRestart = false}) async {
     print('🔍 ===== GET COMPANY START =====');
     print('🔍 shouldRestart: $shouldRestart');
 
@@ -127,18 +135,19 @@ class CompanyController extends GetxController with StateMixin {
       }
 
       final CollectionReference companyCollection =
-      db.collection(ApiConstants.company);
+          db.collection(ApiConstants.company);
 
       print('🔍 Fetching document from Firestore...');
       DocumentSnapshot companySnapshot =
-      await companyCollection.doc(companyId).get();
+          await companyCollection.doc(companyId).get();
 
       print('🔍 Document exists: ${companySnapshot.exists}');
 
       if (companySnapshot.exists) {
         print('🔍 Document retrieved successfully');
 
-        Map<String, dynamic> data = companySnapshot.data() as Map<String, dynamic>;
+        Map<String, dynamic> data =
+            companySnapshot.data() as Map<String, dynamic>;
 
         // Debug: Check each field
         print('🔍 Document fields:');
@@ -148,12 +157,16 @@ class CompanyController extends GetxController with StateMixin {
 
         company = CompanyModel.fromMap(data);
         print('🔍 Company model created successfully');
-        print('🔍 Company name: ${company!.companyName?.companyName?.lastOrNull}');
+        print(
+            '🔍 Company name: ${company!.companyName?.companyName?.lastOrNull}');
         print('🔍 Company status: ${company!.status}');
-        print('🔍 English font: ${company!.englishFont?.englishFont?.lastOrNull}');
+        print(
+            '🔍 English font: ${company!.englishFont?.englishFont?.lastOrNull}');
         print('🔍 Arabic font: ${company!.arabicFont?.arabicFont?.lastOrNull}');
-        print('🔍 Primary color: ${company!.primaryColor?.primaryColor?.lastOrNull}');
-        print('🔍 Secondary color: ${company!.secondaryColor?.secondaryColor?.lastOrNull}');
+        print(
+            '🔍 Primary color: ${company!.primaryColor?.primaryColor?.lastOrNull}');
+        print(
+            '🔍 Secondary color: ${company!.secondaryColor?.secondaryColor?.lastOrNull}');
 
         // Populate text field controllers with company data
         _populateControllers();
@@ -209,28 +222,34 @@ class CompanyController extends GetxController with StateMixin {
     print('🔄 ==========================================');
 
     // Sync English font
-    String? englishFont = company!.englishFont?.englishFont?.lastOrNull?.capitalize;
+    String? englishFont =
+        company!.englishFont?.englishFont?.lastOrNull?.capitalize;
     print('🔄 English font from company: $englishFont');
     storage.write('font', englishFont);
     print('🔄 ✅ Wrote to storage - font: ${storage.read('font')}');
 
     // Sync Arabic font
-    String? arabicFont = company!.arabicFont?.arabicFont?.lastOrNull?.capitalize;
+    String? arabicFont =
+        company!.arabicFont?.arabicFont?.lastOrNull?.capitalize;
     print('🔄 Arabic font from company: $arabicFont');
     storage.write('font_arabic', arabicFont);
-    print('🔄 ✅ Wrote to storage - font_arabic: ${storage.read('font_arabic')}');
+    print(
+        '🔄 ✅ Wrote to storage - font_arabic: ${storage.read('font_arabic')}');
 
     // Sync Primary color
     String? primaryColorValue = company!.primaryColor?.primaryColor?.lastOrNull;
     print('🔄 Primary color from company: $primaryColorValue');
     storage.write('primaryColor', primaryColorValue);
-    print('🔄 ✅ Wrote to storage - primaryColor: ${storage.read('primaryColor')}');
+    print(
+        '🔄 ✅ Wrote to storage - primaryColor: ${storage.read('primaryColor')}');
 
     // Sync Secondary color
-    String? secondaryColorValue = company!.secondaryColor?.secondaryColor?.lastOrNull;
+    String? secondaryColorValue =
+        company!.secondaryColor?.secondaryColor?.lastOrNull;
     print('🔄 Secondary color from company: $secondaryColorValue');
     storage.write('secondaryColor', secondaryColorValue);
-    print('🔄 ✅ Wrote to storage - secondaryColor: ${storage.read('secondaryColor')}');
+    print(
+        '🔄 ✅ Wrote to storage - secondaryColor: ${storage.read('secondaryColor')}');
 
     // Sync Logo
     String? logoUrl = company!.companyLogo?.companyLogo?.lastOrNull;
@@ -357,7 +376,8 @@ class CompanyController extends GetxController with StateMixin {
       }
     }
 
-    print('7. Company loaded successfully: ${company!.companyName?.companyName?.lastOrNull}');
+    print(
+        '7. Company loaded successfully: ${company!.companyName?.companyName?.lastOrNull}');
     showLoadingIndicator();
 
     try {
@@ -371,41 +391,50 @@ class CompanyController extends GetxController with StateMixin {
       company!.status = 'active';
 
       if (primaryColor != null) {
-        print('10. Adding primaryColor: ${primaryColor!.value.toRadixString(16)}');
+        print(
+            '10. Adding primaryColor: ${primaryColor!.value.toRadixString(16)}');
         String colorHex = '0x${primaryColor!.value.toRadixString(16)}';
         print('10a. Color hex string: $colorHex');
-        print('10b. Current primaryColor list before add: ${company!.primaryColor!.primaryColor}');
+        print(
+            '10b. Current primaryColor list before add: ${company!.primaryColor!.primaryColor}');
 
         company!.primaryColor!.primaryColor!.add(colorHex);
         company!.primaryColor!.timestamps!.add(Timestamp.now());
 
-        print('10c. Current primaryColor list after add: ${company!.primaryColor!.primaryColor}');
+        print(
+            '10c. Current primaryColor list after add: ${company!.primaryColor!.primaryColor}');
       }
 
       if (secondaryColor != null) {
-        print('11. Adding secondaryColor: ${secondaryColor!.value.toRadixString(16)}');
+        print(
+            '11. Adding secondaryColor: ${secondaryColor!.value.toRadixString(16)}');
         String colorHex = '0x${secondaryColor!.value.toRadixString(16)}';
         print('11a. Color hex string: $colorHex');
-        print('11b. Current secondaryColor list before add: ${company!.secondaryColor!.secondaryColor}');
+        print(
+            '11b. Current secondaryColor list before add: ${company!.secondaryColor!.secondaryColor}');
 
         company!.secondaryColor!.secondaryColor!.add(colorHex);
         company!.secondaryColor!.timestamps!.add(Timestamp.now());
 
-        print('11c. Current secondaryColor list after add: ${company!.secondaryColor!.secondaryColor}');
+        print(
+            '11c. Current secondaryColor list after add: ${company!.secondaryColor!.secondaryColor}');
       }
 
       if (selectedEnglishFont != null) {
         print('12. Adding englishFont: $selectedEnglishFont');
-        company!.englishFont!.englishFont!.add(selectedEnglishFont!.toLowerCase());
+        company!.englishFont!.englishFont!
+            .add(selectedEnglishFont!.toLowerCase());
         company!.englishFont!.timestamps!.add(Timestamp.now());
-        print('12a. Current englishFont list: ${company!.englishFont!.englishFont}');
+        print(
+            '12a. Current englishFont list: ${company!.englishFont!.englishFont}');
       }
 
       if (selectedArabicFont != null) {
         print('13. Adding arabicFont: $selectedArabicFont');
         company!.arabicFont!.arabicFont!.add(selectedArabicFont!.toLowerCase());
         company!.arabicFont!.timestamps!.add(Timestamp.now());
-        print('13a. Current arabicFont list: ${company!.arabicFont!.arabicFont}');
+        print(
+            '13a. Current arabicFont list: ${company!.arabicFont!.arabicFont}');
       }
 
       print('14. Calling addCompany to save to Firebase...');
@@ -418,13 +447,15 @@ class CompanyController extends GetxController with StateMixin {
 
       // Check if list is not empty before accessing .last
       if (company!.primaryColor!.primaryColor!.isNotEmpty) {
-        print('18. Final primaryColor: ${company!.primaryColor!.primaryColor!.last}');
+        print(
+            '18. Final primaryColor: ${company!.primaryColor!.primaryColor!.last}');
       } else {
         print('18. Final primaryColor: No primary color set');
       }
 
       if (company!.secondaryColor!.secondaryColor!.isNotEmpty) {
-        print('19. Final secondaryColor: ${company!.secondaryColor!.secondaryColor!.last}');
+        print(
+            '19. Final secondaryColor: ${company!.secondaryColor!.secondaryColor!.last}');
       } else {
         print('19. Final secondaryColor: No secondary color set');
       }

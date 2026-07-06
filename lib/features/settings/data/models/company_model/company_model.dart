@@ -4,6 +4,7 @@
 
 // ignore_for_file: prefer_null_aware_operators
 
+import 'package:demo_app/core/helper/organization_chart_module/data/models/employee_model/address_model.dart';
 import 'package:demo_app/features/settings/data/models/company_model/arabic_font_model.dart';
 import 'package:demo_app/features/settings/data/models/company_model/city_model.dart';
 import 'package:demo_app/features/settings/data/models/company_model/company_industry_model.dart';
@@ -18,7 +19,6 @@ import 'package:demo_app/features/settings/data/models/company_model/province_mo
 import 'package:demo_app/features/settings/data/models/company_model/secondary_color_model.dart';
 import 'package:demo_app/features/settings/data/models/company_model/tax_number_model.dart';
 import 'package:demo_app/features/settings/data/models/company_model/zip_code.dart';
-import 'package:demo_app/core/helper/employees/data/models/employee_model/address_model.dart';
 import 'package:demo_app/core/helper/employees/data/models/new_employee_model/emplyees_model/email_model.dart';
 import 'package:demo_app/core/helper/employees/data/models/new_employee_model/emplyees_model/first_name_model.dart';
 import 'package:demo_app/core/helper/employees/data/models/new_employee_model/emplyees_model/last_name_model.dart';

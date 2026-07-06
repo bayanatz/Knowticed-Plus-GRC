@@ -34,7 +34,7 @@ Widget getPhotoAsset(String eventType) {
         break;
       case 'board':
         assetPath = 'assets/icons/boardIcon.svg';
-        containerColor = AppColors.colorYellow;
+        containerColor = AppColors.yellow;
         assetColor = AppColors.colorBlack;
         break;
       case 'service':
