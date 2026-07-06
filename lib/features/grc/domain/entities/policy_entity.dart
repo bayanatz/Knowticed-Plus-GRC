@@ -31,6 +31,7 @@ import 'policy_status.dart';
 /// created at: 15/1/2025
 class PolicyEntity {
   final String id;
+  final String moduleId;
   final String image;
   final String policyNameEn;
   final String policyNameAr;
@@ -52,6 +53,7 @@ class PolicyEntity {
 
   const PolicyEntity({
     required this.id,
+    required this.moduleId,
     required this.image,
     required this.policyNameEn,
     required this.policyNameAr,
@@ -110,6 +112,7 @@ class PolicyEntity {
   }) {
     return PolicyEntity(
       id: id,
+      moduleId: moduleId,
       image: image ?? this.image,
       policyNameEn: policyNameEn ?? this.policyNameEn,
       policyNameAr: policyNameAr ?? this.policyNameAr,

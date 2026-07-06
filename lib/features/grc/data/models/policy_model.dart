@@ -33,6 +33,7 @@ import 'control_model.dart';
 /// created at: 15/1/2025
 class PolicyModel {
   final String id;
+  final String moduleId;
   final List<String> image;
   final List<String> policyNameEn;
   final List<String> policyNameAr;
@@ -54,6 +55,7 @@ class PolicyModel {
 
   PolicyModel({
     required this.id,
+    required this.moduleId,
     required this.image,
     required this.policyNameEn,
     required this.policyNameAr,
@@ -129,6 +131,7 @@ class PolicyModel {
   /// return type: [PolicyModel] - the newly created model instance
   factory PolicyModel.create({
     required String id,
+    required String moduleId,
     required String image,
     required String policyNameEn,
     required String policyNameAr,
@@ -147,6 +150,7 @@ class PolicyModel {
     final now = DateTime.now();
     return PolicyModel(
       id: id,
+      moduleId: moduleId,
       image: [image],
       policyNameEn: [policyNameEn],
       policyNameAr: [policyNameAr],
@@ -209,6 +213,7 @@ class PolicyModel {
     final now = DateTime.now();
     return PolicyModel(
       id: id,
+      moduleId: moduleId,
       image: [...this.image, image ?? this.image.last],
       policyNameEn: [
         ...this.policyNameEn,
@@ -263,6 +268,7 @@ class PolicyModel {
   Map<String, dynamic> toJson() {
     return {
       'ID': id,
+      'Module_ID': moduleId,
       'Image': image,
       'Policy_Name_En': policyNameEn,
       'Policy_Name_Ar': policyNameAr,
@@ -300,6 +306,7 @@ class PolicyModel {
     final editorsRaw = List<String>.from(json['Editors'] ?? []);
     return PolicyModel(
       id: json['ID'] as String,
+      moduleId: json['Module_ID'] as String,
       image: List<String>.from(json['Image'] ?? []),
       policyNameEn: List<String>.from(json['Policy_Name_En'] ?? []),
       policyNameAr: List<String>.from(json['Policy_Name_Ar'] ?? []),
@@ -352,6 +359,7 @@ class PolicyModel {
 
     return PolicyEntity(
       id: id,
+      moduleId: moduleId,
       image: image.last,
       policyNameEn: policyNameEn.last,
       policyNameAr: policyNameAr.last,
