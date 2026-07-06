@@ -58,7 +58,9 @@ import 'package:get_it/get_it.dart';
 ///
 /// created at: 1/7/2026
 class CreateNewPolicyPage extends StatefulWidget {
-  const CreateNewPolicyPage({super.key});
+  final String moduleId;
+
+  const CreateNewPolicyPage({super.key, required this.moduleId});
 
   @override
   State<CreateNewPolicyPage> createState() => _CreateNewPolicyPageState();
@@ -199,6 +201,7 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
       policyWeight:
           double.tryParse(_weightController.text.trim()) ?? 0,
       controls: _buildControlParams(),
+      moduleId: widget.moduleId,
     );
   }
 
@@ -233,6 +236,7 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
       policyWeight:
           double.tryParse(_weightController.text.trim()) ?? 0,
       controls: _buildControlParams(),
+      moduleId: widget.moduleId,
     );
   }
 
