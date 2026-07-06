@@ -29,6 +29,7 @@ import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_b
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:get_it/get_it.dart';
 
@@ -253,7 +254,7 @@ class _GovernanceRiskAndComplianceDetailsState
                                 title: "Changing Status".tr,
                                 cancelLabel: "No".tr,
                                 confirmLabel: "Yes".tr,
-                                iconAsset: 'assets/des.svg',
+                                iconWidget: SvgPicture.asset('assets/des.svg'),
                                 subtitle:
                                     "Are You Sure You Want To Change The Status Of This Module ?"
                                         .tr,

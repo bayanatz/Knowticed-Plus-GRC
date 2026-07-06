@@ -13,17 +13,24 @@ library;
 /// Author: Mohamed Magdy Abdelkhalek
 /// Created At: 1/7/2026
 
+import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart';
+import 'package:demo_app/core/custom/loading.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
+import 'package:demo_app/features/grc/domain/repository/policy_repository.dart';
+import 'package:demo_app/features/grc/presentation/controller/policy_cubit.dart';
 import 'package:demo_app/features/grc/presentation/ui/pages/add_policy_controls.dart';
+import 'package:demo_app/features/grc/presentation/ui/widgets/grc_policy_widget/policy_control_model.dart';
 import 'package:demo_app/features/grc/presentation/ui/widgets/grc_policy_widget/policy_document_info.dart';
 import 'package:demo_app/features/grc/presentation/ui/widgets/grc_policy_widget/policy_header_widget.dart';
 import 'package:demo_app/features/grc/presentation/ui/widgets/grc_policy_widget/policy_info_form_widget.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
 import 'package:demo_app/features/settings/core_widgets/main_widget/custom_button_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:get_it/get_it.dart';
 
 /// class name: [CreateNewPolicyPage]
 ///
@@ -53,6 +60,8 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
   final _descriptionArController = TextEditingController();
   final _weightController = TextEditingController();
 
+  final List<PolicyControlModel> _controls = [PolicyControlModel()];
+
   DateTime? _startDate;
   DateTime? _endDate;
   PolicyDocumentInfo? _document;
@@ -66,6 +75,9 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
     _descriptionController.dispose();
     _descriptionArController.dispose();
     _weightController.dispose();
+    for (final control in _controls) {
+      control.dispose();
+    }
     super.dispose();
   }
 
@@ -79,25 +91,99 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
     });
   }
 
+  bool _validateStep0() {
+    return _nameController.text.trim().isNotEmpty &&
+        _numberController.text.trim().isNotEmpty &&
+        _descriptionController.text.trim().isNotEmpty &&
+        _startDate != null &&
+        _endDate != null &&
+        _weightController.text.trim().isNotEmpty;
+  }
+
+  void _onCreate(PolicyCubit cubit) {
+    cubit.createPolicy(
+      policyNameEn: _nameController.text.trim(),
+      policyNameAr: _nameArController.text.trim(),
+      policyNumberEn: _numberController.text.trim(),
+      policyNumberAr: _numberArController.text.trim(),
+      policyDescriptionEn: _descriptionController.text.trim(),
+      policyDescriptionAr: _descriptionArController.text.trim(),
+      startDate: _startDate ?? DateTime.now(),
+      endDate: _endDate ?? DateTime.now(),
+      policyWeight: double.tryParse(_weightController.text.trim()) ?? 0,
+      controls: _controls
+          .map(
+            (c) => CreateControlParams(
+              controlsNameEn: c.nameController.text.trim(),
+              controlsNameAr: c.nameArController.text.trim(),
+              controlsDescriptionEn: c.descriptionController.text.trim(),
+              controlsDescriptionAr: c.descriptionArController.text.trim(),
+              controlsWeight:
+                  double.tryParse(c.weightController.text.trim()) ?? 0,
+              frequency: c.frequency ?? '',
+            ),
+          )
+          .toList(),
+    );
+  }
+
+  void _onStateChange(BuildContext context, PolicyState state) {
+    if (state is PolicyLoading) {
+      showLoadingIndicator();
+      return;
+    }
+    hideLoadingIndicator();
+
+    if (state is PolicyActionSuccess) {
+      showSuccessDialog(
+        context: context,
+        title: 'Created Policy'.tr,
+        subtitle: 'You Successfully Created This Policy'.tr,
+      );
+      Navigator.of(context).pop(true);
+      return;
+    }
+
+    if (state is PolicyFailure) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(state.message),
+          backgroundColor: AppColors.red,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            PaginationAppBar(
-              screensTitles: ['GRC'.tr, 'Create New Policy'.tr],
+    return BlocProvider(
+      create: (_) => GetIt.instance<PolicyCubit>(),
+      child: Builder(
+        builder: (ctx) {
+          final cubit = ctx.read<PolicyCubit>();
+          return BlocListener<PolicyCubit, PolicyState>(
+            listener: _onStateChange,
+            child: Scaffold(
+              body: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    PaginationAppBar(
+                      screensTitles: ['GRC'.tr, 'Create New Policy'.tr],
+                    ),
+                    Expanded(
+                      child: _step == 0 ? _buildStep0() : _buildStep1(),
+                    ),
+                    SizedBox(height: 16.h),
+                    _buildButtons(cubit),
+                    SizedBox(height: 16.h),
+                  ],
+                ),
+              ),
             ),
-            Expanded(
-              child: _step == 0 ? _buildStep0() : _buildStep1(),
-            ),
-            SizedBox(height: 16.h),
-            _buildButtons(),
-            SizedBox(height: 16.h),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -147,10 +233,13 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
   }
 
   Widget _buildStep1() {
-    return AddPolicyControlsPage(isArabicEnabled: _isArabicEnabled);
+    return AddPolicyControlsPage(
+      isArabicEnabled: _isArabicEnabled,
+      controls: _controls,
+    );
   }
 
-  Widget _buildButtons() {
+  Widget _buildButtons(PolicyCubit cubit) {
     if (_step == 0) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -166,7 +255,18 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
           ),
           customButton(
             title: 'Next'.tr,
-            function: () => setState(() => _step = 1),
+            function: () {
+              if (!_validateStep0()) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Please fill all required fields'.tr),
+                    backgroundColor: AppColors.red,
+                  ),
+                );
+                return;
+              }
+              setState(() => _step = 1);
+            },
             height: 38.h,
             width: 150.w,
             color: AppColors.primary,
@@ -189,8 +289,8 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
               StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
         ),
         customButton(
-          title: 'Preview'.tr,
-          function: () {},
+          title: 'Create Policy'.tr,
+          function: () => _onCreate(cubit),
           height: 38.h,
           width: 150.w,
           color: AppColors.primary,

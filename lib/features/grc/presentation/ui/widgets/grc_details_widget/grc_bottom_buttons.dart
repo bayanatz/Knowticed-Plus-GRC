@@ -21,6 +21,7 @@ import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/features/grc/presentation/ui/pages/grc_details_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 
 /// class name: [GrcBottomButtons]
@@ -99,7 +100,9 @@ class GrcBottomButtons extends StatelessWidget {
               : "Editing Modules".tr,
       cancelLabel: "No".tr,
       confirmLabel: "Yes".tr,
-      iconAsset: isCreate ? 'assets/doc.svg' : 'assets/des.svg',
+      iconWidget: isCreate
+          ? SvgPicture.asset('assets/doc.svg')
+          : SvgPicture.asset('assets/des.svg'),
       subtitle: isCreate
           ? "Are You Sure You Want To Create This Module ?".tr
           : isRestore

@@ -13,10 +13,10 @@ library;
 /// Author: Mohamed Magdy Abdelkhalek
 /// Created At: 28/6/2026
 
+import 'package:demo_app/core/custom/10-custom_tabs.dart';
 import 'package:demo_app/core/custom/35-custom_search_widget_custom.dart';
 import 'package:demo_app/core/custom/37-custom_navigate.dart';
 import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
-import 'package:demo_app/core/custom/9_filter_tab_with_container.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/grc/presentation/ui/pages/create_new_policy.dart';
@@ -134,16 +134,16 @@ class GrcModuleDetailsPage extends StatelessWidget {
               ),
               SizedBox(height: 15.h),
 
-              CustomSegmentedTabs(
+              CustomTabs(
                 tabs: ['All', 'Pending', 'Approved'],
-                selectedIndex: 0,
-                onTabSelected: (_) {},
+                selectedValue: 0,
+                onChanged: (_) {},
               ),
               SizedBox(height: 15.h),
 
               ScrollConfiguration(
-                behavior: ScrollConfiguration.of(context)
-                    .copyWith(scrollbars: false),
+                behavior:
+                    ScrollConfiguration.of(context).copyWith(scrollbars: false),
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
@@ -179,7 +179,8 @@ class GrcModuleDetailsPage extends StatelessWidget {
                       radius: 8.r,
                       widthImage: 16.w,
                       heightImage: 16.h,
-                      function: () => navigateTo(context, CreateNewPolicyPage()),
+                      function: () =>
+                          navigateTo(context, CreateNewPolicyPage()),
                       title: 'Policy',
                       textStyle: StyleText.fontSize14Weight500
                           .copyWith(color: AppColors.textButton),
@@ -211,7 +212,8 @@ class GrcModuleDetailsPage extends StatelessWidget {
                       radius: 8.r,
                       widthImage: 16.w,
                       heightImage: 16.h,
-                      function: () => navigateTo(context, CreateNewPolicyPage()),
+                      function: () =>
+                          navigateTo(context, CreateNewPolicyPage()),
                       title: 'Policy',
                       textStyle: StyleText.fontSize14Weight500
                           .copyWith(color: AppColors.textButton),

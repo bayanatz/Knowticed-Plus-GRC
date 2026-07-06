@@ -21,6 +21,7 @@ import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 
 class GrcActionButtons extends StatelessWidget {
@@ -48,11 +49,10 @@ class GrcActionButtons extends StatelessWidget {
               radius: 8.r,
               widthImage: 16.w,
               heightImage: 16.h,
-              image: "assets/icons/edit.svg",
+              image: "assets/icons_assets/data_grc_assets/edit_pen.svg",
               title: isTablet ? "Edit".tr : "",
               function: onEditTap,
               width: isTablet ? 135.w : 40.w,
-              height: 38.h,
               color: AppColors.primary,
               textStyle: StyleText.fontSize16Weight500
                   .copyWith(color: AppColors.textButton),
@@ -64,7 +64,7 @@ class GrcActionButtons extends StatelessWidget {
               radius: 8.r,
               widthImage: 16.w,
               heightImage: 16.h,
-              image: "assets/delete.svg",
+              image: "assets/icons_assets/organization_chart_assets/trashd.svg",
               title: isTablet ? "Delete".tr : "",
               function: () {
                 showConfirmDialog(
@@ -72,14 +72,13 @@ class GrcActionButtons extends StatelessWidget {
                   title: "Deleting GRC Module".tr,
                   cancelLabel: "No".tr,
                   confirmLabel: "Yes".tr,
-                  iconAsset: 'assets/icons/delete_icon.svg',
+                  iconWidget: SvgPicture.asset('assets/icons/delete_icon.svg'),
                   subtitle:
                       "Are You Sure You Want To Delete This GRC Module ?".tr,
                   onConfirm: onDeleteTap,
                 );
               },
               width: isTablet ? 135.w : 40.w,
-              height: 38.h,
               color: AppColors.red,
               textStyle: StyleText.fontSize16Weight500
                   .copyWith(color: AppColors.white),

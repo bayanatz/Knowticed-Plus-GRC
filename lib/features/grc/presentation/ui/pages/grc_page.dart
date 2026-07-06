@@ -16,8 +16,10 @@ library;
 /// Created At: 28/6/2026
 
 import 'package:demo_app/core/constants/app_assets.dart';
+import 'package:demo_app/core/custom/16-custom_card_styles.dart';
 import 'package:demo_app/core/custom/35-custom_search_widget_custom.dart';
 import 'package:demo_app/core/custom/37-custom_navigate.dart';
+import 'package:demo_app/core/custom/43_custom_module_info_card.dart';
 import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/helper/main_helper/employee_helper.dart';
@@ -277,7 +279,7 @@ class _GovernanceRiskAndCompliancePageState
 
     final sortButton = SizedBox(
       width: 40.w,
-      height: 40.h,
+      height: 35.h,
       child: AppDropdown(
         items: ['ASC', 'DES', 'Creation Date', 'Last Update']
             .map((o) => DropdownMenuItem<String>(value: o, child: Text(o.tr)))
@@ -286,39 +288,32 @@ class _GovernanceRiskAndCompliancePageState
           if (value != null) setState(() => _sortOrder = value);
         },
         textButton: null,
-        borderRadius: 8.r,
+
         isAllCornersRounded: true,
         value: null,
         // width: 150.sp,
         // menuWidth: 150.sp,
         fillColor: AppColors.field,
         // menuItemHeight: 35.h,
-        customButton: Container(
-          padding: EdgeInsets.symmetric(horizontal: 8.w),
-          decoration: BoxDecoration(color: AppColors.field),
-          child: SvgPicture.asset(
-            AppAssets.sort,
-            width: 20.w,
-            height: 20.h,
-          ),
+        customButton: SvgPicture.asset(
+          "assets/icons_assets/data_grc_assets/icons_sort.svg",
+          width: 20.w,
+          height: 20.h,
         ),
       ),
     );
 
     final createButton = customButtonWithSvg(
       colorBorder: AppColors.primary,
-      space: 10.w,
       function: () => _openDetails(context, GrcPageMode.create),
       title: isTablet ? 'Create GRC Module'.tr : '',
       textStyle:
           StyleText.fontSize14Weight500.copyWith(color: AppColors.textButton),
-      image: 'assets/icons_drawer_news/grc_new.svg',
+      image: 'assets/icons_assets/data_grc_assets/module.svg',
       widthImage: 16.w,
       heightImage: 16.h,
       color: AppColors.primary,
       width: isTablet ? 200.w : 40.w,
-      height: 36.h,
-      radius: 8.r,
       svgColor: AppColors.textButton,
     );
 
@@ -419,7 +414,7 @@ class _GovernanceRiskAndCompliancePageState
               crossAxisCount: columns,
               crossAxisSpacing: 12.w,
               mainAxisSpacing: 12.h,
-              mainAxisExtent: 100.h,
+              mainAxisExtent: 140.h,
             ),
             itemCount: modules.length,
             itemBuilder: (_, index) => cardFor(index),
@@ -461,95 +456,30 @@ class _GrcModuleCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDeleted = module.isDeleted;
-    final statusColor = isDeleted
-        ? AppColors.colorGrey
-        : module.status == 'Active'
-            ? AppColors.green
-            : AppColors.red;
 
-    return InkWell(
+    return ModuleInfoCard(
+      width: double.infinity,
       onTap: onTap,
-      borderRadius: BorderRadius.circular(8.r),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-        decoration: BoxDecoration(
-          color: AppColors.field,
-          borderRadius: BorderRadius.circular(8.r),
-          border: Border.all(color: AppColors.border),
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    context.isArabic
-                        ? module.grcModuleNameArabic
-                        : module.grcModuleNameEnglish,
-                    style: StyleText.fontSize14Weight500
-                        .copyWith(color: AppColors.text),
-                  ),
-                  SizedBox(height: 4.h),
-                  if (module.owners.isNotEmpty)
-                    _LabelValueText(
-                      label: context.isArabic ? 'المالك : ' : 'Owner : ',
-                      value: _resolveOwnerName(context, module.owners.first),
-                    ),
-                  SizedBox(height: 2.h),
-                  _LabelValueText(
-                    label: context.isArabic
-                        ? 'تاريخ الإنشاء: '
-                        : 'Creation Date: ',
-                    value:
-                        DateFormat('d MMM yyyy', context.isArabic ? 'ar' : 'en')
-                            .format(module.createdAt),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
-              decoration: BoxDecoration(
-                color: statusColor.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(20.r),
-              ),
-              child: Text(
-                isDeleted ? 'Removed'.tr : module.status.tr,
-                style:
-                    StyleText.fontSize14Weight500.copyWith(color: statusColor),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _LabelValueText extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _LabelValueText({required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return RichText(
-      text: TextSpan(
-        children: [
-          TextSpan(
-            text: label,
-            style: StyleText.fontSize12Weight500
-                .copyWith(color: AppColors.secondaryText),
+      title: context.isArabic
+          ? module.grcModuleNameArabic
+          : module.grcModuleNameEnglish,
+      infoRows: [
+        if (module.owners.isNotEmpty)
+          CardInfo(
+            label: context.isArabic ? 'المالك :' : 'Owner :',
+            value: _resolveOwnerName(context, module.owners.first),
           ),
-          TextSpan(
-            text: value,
-            style:
-                StyleText.fontSize12Weight500.copyWith(color: AppColors.text),
-          ),
-        ],
-      ),
+        CardInfo(
+          label: context.isArabic ? 'تاريخ الإنشاء:' : 'Creation Date:',
+          value: DateFormat('d MMM yyyy', context.isArabic ? 'ar' : 'en')
+              .format(module.createdAt),
+        ),
+      ],
+      complianceLabel: context.isArabic ? 'الحالة:' : 'Status:',
+      complianceScore: isDeleted ? 'Removed'.tr : module.status.tr,
+      footerLabel: context.isArabic ? 'آخر تحديث:' : 'Last Update:',
+      footerValue: DateFormat('d MMM yyyy', context.isArabic ? 'ar' : 'en')
+          .format(module.lastModifiedDate),
     );
   }
 }

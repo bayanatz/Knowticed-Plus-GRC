@@ -35,15 +35,20 @@ import 'package:get/get_utils/src/extensions/internacionalization.dart';
 /// created at: 1/7/2026
 class AddPolicyControlsPage extends StatefulWidget {
   final bool isArabicEnabled;
+  final List<PolicyControlModel> controls;
 
-  const AddPolicyControlsPage({super.key, required this.isArabicEnabled});
+  const AddPolicyControlsPage({
+    super.key,
+    required this.isArabicEnabled,
+    required this.controls,
+  });
 
   @override
   State<AddPolicyControlsPage> createState() => _AddPolicyControlsPageState();
 }
 
 class _AddPolicyControlsPageState extends State<AddPolicyControlsPage> {
-  final List<PolicyControlModel> _controls = [PolicyControlModel()];
+  List<PolicyControlModel> get _controls => widget.controls;
 
   void _addControl() {
     setState(() => _controls.add(PolicyControlModel()));
@@ -64,14 +69,6 @@ class _AddPolicyControlsPageState extends State<AddPolicyControlsPage> {
         dateLabel: '28 Dec 2023',
       );
     });
-  }
-
-  @override
-  void dispose() {
-    for (final control in _controls) {
-      control.dispose();
-    }
-    super.dispose();
   }
 
   @override
