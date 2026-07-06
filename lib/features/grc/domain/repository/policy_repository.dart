@@ -73,6 +73,7 @@ abstract class PolicyRepository {
     required DateTime endDate,
     required double policyWeight,
     required String editorId,
+    required String moduleId,
     required List<CreateControlParams> controls,
     File? imageFile,
     String? imageUrl,
@@ -90,7 +91,10 @@ abstract class PolicyRepository {
   ///            [String] id: unique identifier of the policy to fetch
   ///
   /// return type: [Future<Either<Failure, PolicyEntity>>] - the matching entity, or a Failure
-  Future<Either<Failure, PolicyEntity>> getPolicy(String id);
+  Future<Either<Failure, PolicyEntity>> getPolicy(
+    String id, {
+    required String moduleId,
+  });
 
   /// function name: [getAllPolicies]
   ///
@@ -102,6 +106,7 @@ abstract class PolicyRepository {
   ///
   /// return type: [Future<Either<Failure, List<PolicyEntity>>>] - the list of entities, or a Failure
   Future<Either<Failure, List<PolicyEntity>>> getAllPolicies({
+    required String moduleId,
     bool includeDeleted = false,
   });
 
@@ -133,6 +138,7 @@ abstract class PolicyRepository {
   Future<Either<Failure, PolicyEntity>> updatePolicy({
     required String id,
     required String editorId,
+    required String moduleId,
     String? policyNameEn,
     String? policyNameAr,
     String? policyNumberEn,
@@ -163,6 +169,7 @@ abstract class PolicyRepository {
   Future<Either<Failure, PolicyEntity>> deletePolicy({
     required String id,
     required String editorId,
+    required String moduleId,
   });
 
   /// function name: [restorePolicy]
@@ -177,6 +184,7 @@ abstract class PolicyRepository {
   Future<Either<Failure, PolicyEntity>> restorePolicy({
     required String id,
     required String editorId,
+    required String moduleId,
   });
 }
 

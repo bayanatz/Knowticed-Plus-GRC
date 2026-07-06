@@ -78,6 +78,7 @@ class PolicyRepositoryImpl implements PolicyRepository {
     required DateTime endDate,
     required double policyWeight,
     required String editorId,
+    required String moduleId,
     required PolicyStatus status,
     required List<CreateControlParams> controls,
     File? imageFile,
@@ -117,6 +118,7 @@ class PolicyRepositoryImpl implements PolicyRepository {
       // -- build and persist the PolicyModel --
       final model = PolicyModel.create(
         id: policyId,
+        moduleId: moduleId,
         image: resolvedImage ?? '',
         policyNameEn: policyNameEn,
         policyNameAr: policyNameAr,
@@ -133,7 +135,7 @@ class PolicyRepositoryImpl implements PolicyRepository {
         status: status
       );
 
-      final created = await _firebaseDataSource.create(model);
+      final created = await _firebaseDataSource.create(model, moduleId: moduleId);
       return Right(created.toEntity());
     } catch (e) {
       return Left(FirebaseFailure(e.toString()));
@@ -153,9 +155,12 @@ class PolicyRepositoryImpl implements PolicyRepository {
   ///
   /// return type: [Future<Either<Failure, PolicyEntity>>] - the matching entity, a [NotFoundFailure], or a [ServerFailure]
   @override
-  Future<Either<Failure, PolicyEntity>> getPolicy(String id) async {
+  Future<Either<Failure, PolicyEntity>> getPolicy(
+    String id, {
+    required String moduleId,
+  }) async {
     try {
-      final model = await _firebaseDataSource.get(id);
+      final model = await _firebaseDataSource.get(id, moduleId: moduleId);
       if (model == null) {
         return Left(ValidationError('Policy not found (id: $id)'));
       }
@@ -179,10 +184,12 @@ class PolicyRepositoryImpl implements PolicyRepository {
   /// return type: [Future<Either<Failure, List<PolicyEntity>>>] - the list of entities, or a [ServerFailure]
   @override
   Future<Either<Failure, List<PolicyEntity>>> getAllPolicies({
+    required String moduleId,
     bool includeDeleted = false,
   }) async {
     try {
       final models = await _firebaseDataSource.getAll(
+        moduleId: moduleId,
         includeDeleted: includeDeleted,
       );
       return Right(models.map((m) => m.toEntity()).toList());
@@ -209,6 +216,7 @@ class PolicyRepositoryImpl implements PolicyRepository {
   Future<Either<Failure, PolicyEntity>> updatePolicy({
     required String id,
     required String editorId,
+    required String moduleId,
     String? policyNameEn,
     String? policyNameAr,
     String? policyNumberEn,
@@ -226,7 +234,7 @@ class PolicyRepositoryImpl implements PolicyRepository {
     PolicyStatus? status,
   }) async {
     try {
-      final currentModel = await _firebaseDataSource.get(id);
+      final currentModel = await _firebaseDataSource.get(id, moduleId: moduleId);
       if (currentModel == null) {
         return Left(ValidationError('Policy not found (id: $id)'));
       }
@@ -276,7 +284,7 @@ class PolicyRepositoryImpl implements PolicyRepository {
         editorId: editorId,
       );
 
-      final saved = await _firebaseDataSource.update(updatedModel);
+      final saved = await _firebaseDataSource.update(updatedModel, moduleId: moduleId);
       return Right(saved.toEntity());
     } catch (e) {
       return Left(FirebaseFailure(e.toString()));
@@ -299,9 +307,14 @@ class PolicyRepositoryImpl implements PolicyRepository {
   Future<Either<Failure, PolicyEntity>> deletePolicy({
     required String id,
     required String editorId,
+    required String moduleId,
   }) async {
     try {
-      final deleted = await _firebaseDataSource.delete(id, editorId: editorId);
+      final deleted = await _firebaseDataSource.delete(
+        id,
+        moduleId: moduleId,
+        editorId: editorId,
+      );
       return Right(deleted.toEntity());
     } catch (e) {
       return Left(FirebaseFailure(e.toString()));
@@ -324,10 +337,14 @@ class PolicyRepositoryImpl implements PolicyRepository {
   Future<Either<Failure, PolicyEntity>> restorePolicy({
     required String id,
     required String editorId,
+    required String moduleId,
   }) async {
     try {
-      final restored =
-          await _firebaseDataSource.restore(id, editorId: editorId);
+      final restored = await _firebaseDataSource.restore(
+        id,
+        moduleId: moduleId,
+        editorId: editorId,
+      );
       return Right(restored.toEntity());
     } catch (e) {
       return Left(FirebaseFailure(e.toString()));
