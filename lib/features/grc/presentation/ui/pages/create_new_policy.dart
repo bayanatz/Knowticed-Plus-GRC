@@ -1,15 +1,22 @@
 /// Module: GRC Policy Management
-/// Description: Multi-step page for creating a new GRC policy.
+/// Description: Three-step page for creating a new GRC policy.
+///              Step 0: Policy info form.
+///              Step 1: Add / edit controls.
+///              Step 2: Full preview with controls table, weight validation,
+///                      Equal Weight, and Publish action.
 /// Author: Mohamed Magdy Abdelkhalek
-/// Date: 2026-07-01
-/// Dependencies: Flutter SDK, AppColors, AppTheme, AddPolicyControlsPage, PolicyInfoFormWidget
+/// Date: 2026-07-06
+/// Dependencies: Flutter SDK, AppColors, AppTheme, PolicyCubit,
+///               PolicyControlsTableWidget
 /// Revision History: 2026-07-01 - Initial creation
+///                   2026-07-06 - Added step 2 preview, Draft/Publish status,
+///                                Equal Weight, weight validation (Mohamed Elrashidy)
 library;
 
 /// ************************* FILE INFO *************************** ///
 /// File Name: create_new_policy.dart
-/// Purpose: Contains CreateNewPolicyPage, the two-step form for policy
-///          creation — step 0: policy info, step 1: policy controls.
+/// Purpose: Contains CreateNewPolicyPage, the three-step form for policy
+///          creation — step 0: policy info, step 1: controls, step 2: preview.
 /// Author: Mohamed Magdy Abdelkhalek
 /// Created At: 1/7/2026
 
@@ -21,6 +28,7 @@ import 'package:demo_app/features/grc/domain/repository/policy_repository.dart';
 import 'package:demo_app/features/grc/presentation/controller/policy_cubit.dart';
 import 'package:demo_app/features/grc/presentation/ui/pages/add_policy_controls.dart';
 import 'package:demo_app/features/grc/presentation/ui/widgets/grc_policy_widget/policy_control_model.dart';
+import 'package:demo_app/features/grc/presentation/ui/widgets/grc_policy_widget/policy_controls_table_widget.dart';
 import 'package:demo_app/features/grc/presentation/ui/widgets/grc_policy_widget/policy_document_info.dart';
 import 'package:demo_app/features/grc/presentation/ui/widgets/grc_policy_widget/policy_header_widget.dart';
 import 'package:demo_app/features/grc/presentation/ui/widgets/grc_policy_widget/policy_info_form_widget.dart';
@@ -34,9 +42,17 @@ import 'package:get_it/get_it.dart';
 
 /// class name: [CreateNewPolicyPage]
 ///
-/// purpose: two-step page that first collects policy info (step 0) then
-///          shows the controls widget (step 1) without navigating to a new
-///          route — the body switches in-place via _step.
+/// purpose: three-step page that collects policy info (step 0), manages
+///          controls (step 1), then shows a full preview with the controls
+///          table (step 2). The body switches in-place via [_step]; no new
+///          routes are pushed.
+///
+///          Supported actions:
+///           - Save For Later  → persists as [PolicyStatus.draft]
+///           - Preview         → advances from step 1 to step 2
+///           - Equal Weight    → distributes 100 equally across all controls
+///           - Publish         → persists as [PolicyStatus.active] (requires
+///                               total weight == 100)
 ///
 /// authors: Mohamed Magdy Abdelkhalek
 ///
@@ -49,9 +65,13 @@ class CreateNewPolicyPage extends StatefulWidget {
 }
 
 class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
-  int _step = 0;
+  // ----------------------------------------------------------------
+  // State
+  // ----------------------------------------------------------------
+  int _step = 0; // 0 = info, 1 = controls, 2 = preview
   bool _isArabicEnabled = true;
 
+  // Step 0 controllers
   final _nameController = TextEditingController();
   final _nameArController = TextEditingController();
   final _numberController = TextEditingController();
@@ -66,6 +86,9 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
   DateTime? _endDate;
   PolicyDocumentInfo? _document;
 
+  // ----------------------------------------------------------------
+  // Lifecycle
+  // ----------------------------------------------------------------
   @override
   void dispose() {
     _nameController.dispose();
@@ -75,11 +98,28 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
     _descriptionController.dispose();
     _descriptionArController.dispose();
     _weightController.dispose();
-    for (final control in _controls) {
-      control.dispose();
-    }
+    for (final c in _controls) c.dispose();
     super.dispose();
   }
+
+  // ----------------------------------------------------------------
+  // Helpers
+  // ----------------------------------------------------------------
+
+  /// function name: [_totalControlWeight]
+  ///
+  /// purpose: sum up the weight values entered for all controls.
+  ///
+  /// parameters: none
+  ///
+  /// return type: [double] - the current total control weight
+  double get _totalControlWeight => _controls.fold(
+        0,
+        (sum, c) =>
+            sum + (double.tryParse(c.weightController.text.trim()) ?? 0),
+      );
+
+  bool get _isWeightValid => _totalControlWeight == 100;
 
   void _onUploadDocument() {
     setState(() {
@@ -91,6 +131,14 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
     });
   }
 
+  /// function name: [_validateStep0]
+  ///
+  /// purpose: verify that all required policy-info fields have been filled
+  ///          before allowing the user to advance to step 1.
+  ///
+  /// parameters: none
+  ///
+  /// return type: [bool] - true if all required fields are non-empty
   bool _validateStep0() {
     return _nameController.text.trim().isNotEmpty &&
         _numberController.text.trim().isNotEmpty &&
@@ -100,7 +148,79 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
         _weightController.text.trim().isNotEmpty;
   }
 
-  void _onCreate(PolicyCubit cubit) {
+  /// function name: [_buildControlParams]
+  ///
+  /// purpose: map the local [PolicyControlModel] list to a list of
+  ///          [CreateControlParams] ready for the cubit.
+  ///
+  /// parameters: none
+  ///
+  /// return type: [List<CreateControlParams>]
+  List<CreateControlParams> _buildControlParams() {
+    return _controls
+        .map(
+          (c) => CreateControlParams(
+            controlsNameEn: c.nameController.text.trim(),
+            controlsNameAr: c.nameArController.text.trim(),
+            controlsDescriptionEn: c.descriptionController.text.trim(),
+            controlsDescriptionAr: c.descriptionArController.text.trim(),
+            controlsWeight:
+                double.tryParse(c.weightController.text.trim()) ?? 0,
+            frequency: c.frequency ?? '',
+          ),
+        )
+        .toList();
+  }
+
+  // ----------------------------------------------------------------
+  // Cubit actions
+  // ----------------------------------------------------------------
+
+  /// function name: [_onSaveForLater]
+  ///
+  /// purpose: persist the policy as a Draft regardless of the current step.
+  ///          Controls are included if any have been filled in; an empty
+  ///          list is valid for a draft.
+  ///
+  /// parameters:
+  ///            [PolicyCubit] cubit: the cubit instance from the BlocProvider
+  ///
+  /// return type: void
+  void _onSaveForLater(PolicyCubit cubit) {
+    cubit.saveAsDraft(
+      policyNameEn: _nameController.text.trim(),
+      policyNameAr: _nameArController.text.trim(),
+      policyNumberEn: _numberController.text.trim(),
+      policyNumberAr: _numberArController.text.trim(),
+      policyDescriptionEn: _descriptionController.text.trim(),
+      policyDescriptionAr: _descriptionArController.text.trim(),
+      startDate: _startDate ?? DateTime.now(),
+      endDate: _endDate ?? DateTime.now(),
+      policyWeight:
+          double.tryParse(_weightController.text.trim()) ?? 0,
+      controls: _buildControlParams(),
+    );
+  }
+
+  /// function name: [_onPublish]
+  ///
+  /// purpose: validate that the total control weight equals 100 then
+  ///          persist the policy with [PolicyStatus.active].
+  ///
+  /// parameters:
+  ///            [PolicyCubit] cubit: the cubit instance from the BlocProvider
+  ///
+  /// return type: void
+  void _onPublish(PolicyCubit cubit) {
+    if (!_isWeightValid) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Total Weight should be 100'.tr),
+          backgroundColor: AppColors.red,
+        ),
+      );
+      return;
+    }
     cubit.createPolicy(
       policyNameEn: _nameController.text.trim(),
       policyNameAr: _nameArController.text.trim(),
@@ -110,23 +230,27 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
       policyDescriptionAr: _descriptionArController.text.trim(),
       startDate: _startDate ?? DateTime.now(),
       endDate: _endDate ?? DateTime.now(),
-      policyWeight: double.tryParse(_weightController.text.trim()) ?? 0,
-      controls: _controls
-          .map(
-            (c) => CreateControlParams(
-              controlsNameEn: c.nameController.text.trim(),
-              controlsNameAr: c.nameArController.text.trim(),
-              controlsDescriptionEn: c.descriptionController.text.trim(),
-              controlsDescriptionAr: c.descriptionArController.text.trim(),
-              controlsWeight:
-                  double.tryParse(c.weightController.text.trim()) ?? 0,
-              frequency: c.frequency ?? '',
-            ),
-          )
-          .toList(),
+      policyWeight:
+          double.tryParse(_weightController.text.trim()) ?? 0,
+      controls: _buildControlParams(),
     );
   }
 
+  // ----------------------------------------------------------------
+  // BlocListener callback
+  // ----------------------------------------------------------------
+
+  /// function name: [_onStateChange]
+  ///
+  /// purpose: react to [PolicyState] changes emitted by [PolicyCubit]:
+  ///          show / hide the loading indicator, display success dialogs,
+  ///          and show error snackbars.
+  ///
+  /// parameters:
+  ///            [BuildContext] context: the current build context
+  ///            [PolicyState] state: the newly emitted state
+  ///
+  /// return type: void
   void _onStateChange(BuildContext context, PolicyState state) {
     if (state is PolicyLoading) {
       showLoadingIndicator();
@@ -135,10 +259,13 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
     hideLoadingIndicator();
 
     if (state is PolicyActionSuccess) {
+      final isDraft = state.policy.status.value == 'Draft';
       showSuccessDialog(
         context: context,
-        title: 'Created Policy'.tr,
-        subtitle: 'You Successfully Created This Policy'.tr,
+        title: isDraft ? 'Saved as Draft'.tr : 'Policy Created'.tr,
+        subtitle: isDraft
+            ? 'Policy saved as draft successfully'.tr
+            : 'You Successfully Created This Policy'.tr,
       );
       Navigator.of(context).pop(true);
       return;
@@ -154,6 +281,9 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
     }
   }
 
+  // ----------------------------------------------------------------
+  // Build
+  // ----------------------------------------------------------------
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -172,9 +302,7 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
                     PaginationAppBar(
                       screensTitles: ['GRC'.tr, 'Create New Policy'.tr],
                     ),
-                    Expanded(
-                      child: _step == 0 ? _buildStep0() : _buildStep1(),
-                    ),
+                    Expanded(child: _buildCurrentStep()),
                     SizedBox(height: 16.h),
                     _buildButtons(cubit),
                     SizedBox(height: 16.h),
@@ -188,6 +316,22 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
     );
   }
 
+  Widget _buildCurrentStep() {
+    switch (_step) {
+      case 0:
+        return _buildStep0();
+      case 1:
+        return _buildStep1();
+      case 2:
+        return _buildStep2();
+      default:
+        return _buildStep0();
+    }
+  }
+
+  // ----------------------------------------------------------------
+  // Step 0: Policy Info
+  // ----------------------------------------------------------------
   Widget _buildStep0() {
     return Container(
       width: double.infinity,
@@ -204,8 +348,8 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
             children: [
               PolicyHeaderWidget(
                 isArabicEnabled: _isArabicEnabled,
-                onArabicToggle: (value) =>
-                    setState(() => _isArabicEnabled = value),
+                onArabicToggle: (v) =>
+                    setState(() => _isArabicEnabled = v),
               ),
               SizedBox(height: 15.h),
               PolicyInfoFormWidget(
@@ -232,6 +376,9 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
     );
   }
 
+  // ----------------------------------------------------------------
+  // Step 1: Controls
+  // ----------------------------------------------------------------
   Widget _buildStep1() {
     return AddPolicyControlsPage(
       isArabicEnabled: _isArabicEnabled,
@@ -239,49 +386,88 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
     );
   }
 
+  // ----------------------------------------------------------------
+  // Step 2: Preview — policy summary + controls table
+  // ----------------------------------------------------------------
+  Widget _buildStep2() {
+    return ScrollConfiguration(
+      behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // -- Policy info summary (read-only) --
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(15.sp),
+              decoration: BoxDecoration(
+                color: AppColors.field,
+                borderRadius: BorderRadius.circular(8.sp),
+              ),
+              child: PolicyInfoFormWidget(
+                isArabicEnabled: _isArabicEnabled,
+                nameController: _nameController,
+                nameArController: _nameArController,
+                numberController: _numberController,
+                numberArController: _numberArController,
+                descriptionController: _descriptionController,
+                descriptionArController: _descriptionArController,
+                weightController: _weightController,
+                startDate: _startDate,
+                endDate: _endDate,
+                onStartDateChanged: (_) {},
+                onEndDateChanged: (_) {},
+                document: _document,
+                onUploadDocument: () {},
+                onRemoveDocument: () {},
+              ),
+            ),
+            SizedBox(height: 16.h),
+            // -- Controls table --
+            PolicyControlsTableWidget(
+              controls: _controls,
+              onSave: () => setState(() {}),
+            ),
+            SizedBox(height: 20.h),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ----------------------------------------------------------------
+  // Buttons row per step
+  // ----------------------------------------------------------------
+
+  /// function name: [_buildButtons]
+  ///
+  /// purpose: render the correct bottom-action buttons depending on the
+  ///          current step.
+  ///
+  /// parameters:
+  ///            [PolicyCubit] cubit: the cubit instance from the BlocProvider
+  ///
+  /// return type: [Widget]
   Widget _buildButtons(PolicyCubit cubit) {
-    if (_step == 0) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          customButton(
-            title: 'Discard'.tr,
-            function: () {},
-            height: 38.h,
-            width: 150.w,
-            color: AppColors.grey,
-            textStyle:
-                StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
-          ),
-          customButton(
-            title: 'Next'.tr,
-            function: () {
-              if (!_validateStep0()) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Please fill all required fields'.tr),
-                    backgroundColor: AppColors.red,
-                  ),
-                );
-                return;
-              }
-              setState(() => _step = 1);
-            },
-            height: 38.h,
-            width: 150.w,
-            color: AppColors.primary,
-            textStyle: StyleText.fontSize14Weight500
-                .copyWith(color: AppColors.textButton),
-          ),
-        ],
-      );
+    switch (_step) {
+      case 0:
+        return _buildStep0Buttons();
+      case 1:
+        return _buildStep1Buttons(cubit);
+      case 2:
+        return _buildStep2Buttons(cubit);
+      default:
+        return const SizedBox.shrink();
     }
+  }
+
+  Widget _buildStep0Buttons() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         customButton(
-          title: 'Save For Later'.tr,
-          function: () {},
+          title: 'Discard'.tr,
+          function: () => Navigator.of(context).pop(),
           height: 38.h,
           width: 150.w,
           color: AppColors.grey,
@@ -289,8 +475,71 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
               StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
         ),
         customButton(
-          title: 'Create Policy'.tr,
-          function: () => _onCreate(cubit),
+          title: 'Next'.tr,
+          function: () {
+            if (!_validateStep0()) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Please fill all required fields'.tr),
+                  backgroundColor: AppColors.red,
+                ),
+              );
+              return;
+            }
+            setState(() => _step = 1);
+          },
+          height: 38.h,
+          width: 150.w,
+          color: AppColors.primary,
+          textStyle: StyleText.fontSize14Weight500
+              .copyWith(color: AppColors.textButton),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStep1Buttons(PolicyCubit cubit) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        customButton(
+          title: 'Save For Later'.tr,
+          function: () => _onSaveForLater(cubit),
+          height: 38.h,
+          width: 150.w,
+          color: AppColors.grey,
+          textStyle:
+              StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
+        ),
+        customButton(
+          title: 'Preview'.tr,
+          function: () => setState(() => _step = 2),
+          height: 38.h,
+          width: 150.w,
+          color: AppColors.primary,
+          textStyle: StyleText.fontSize14Weight500
+              .copyWith(color: AppColors.textButton),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStep2Buttons(PolicyCubit cubit) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        customButton(
+          title: 'Save For Later'.tr,
+          function: () => _onSaveForLater(cubit),
+          height: 38.h,
+          width: 150.w,
+          color: AppColors.grey,
+          textStyle:
+              StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
+        ),
+        customButton(
+          title: 'Publish'.tr,
+          function: () => _onPublish(cubit),
           height: 38.h,
           width: 150.w,
           color: AppColors.primary,

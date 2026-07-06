@@ -1,46 +1,36 @@
 /// Module: Policy Management
-/// Description: Defines the Policy Model used for data persistence. Every
-///              field is stored as a history List so that previous values
-///              are never lost and each edit is fully traceable. The controls
-///              field is a nested List<List<ControlModel>> where the outer
-///              index corresponds to the policy revision and the inner list
-///              contains the controls snapshot at that revision.
-/// Author: Mohamed Magdy Abdelkhalek
-/// Date: 2026-07-5
-/// Dependencies: ControlModel, PolicyEntity
-/// Revision History: 2026-07-5 - Initial creation
+/// Description: Defines the Policy Model used for data persistence with
+///              full revision history per field, including status lifecycle.
+/// Author: Mohamed Elrashidy
+/// Date: 2025-01-15
+/// Dependencies: ControlModel, PolicyEntity, PolicyStatus
+/// Revision History: 2025-01-15 - Initial creation
+///                   2026-07-06 - Added status history list (Mohamed Elrashidy)
+library;
 
-import 'package:demo_app/features/grc/domain/entities/policy_entity.dart';
-
-
+import '../../domain/entities/policy_entity.dart';
+import '../../domain/entities/policy_status.dart';
 import 'control_model.dart';
 
 /// ************************* FILE INFO *************************** ///
 /// File Name: policy_model.dart
-/// Purpose: Contains the PolicyModel class used for create/update/read
-///          operations and Firestore (de)serialization.
-/// Author: Mohamed Magdy Abdelkhalek
-/// Created At: 5/7/2026
+/// Purpose: Contains the PolicyModel class used for Firestore
+///          (de)serialization with full revision history per field.
+/// Author: Mohamed Elrashidy
+/// Created At: 15/1/2025
 
 /// class name: [PolicyModel]
 ///
 /// purpose: represents a Policy record where every field is kept as a
-///          List<...>. Each index across all Lists (including [editors] and
-///          [lastModifiedDate]) represents one historical version of the
-///          record at the same point in time.
+///          List<...>. Each index across all Lists represents one historical
+///          version at the same point in time. The [status] List tracks the
+///          policy lifecycle (Draft → Active → Inactive / Expired).
+///          [controls] is List<List<ControlModel>>:
+///            outer index → policy revision | inner list → controls snapshot
 ///
-///          [controls] follows the same pattern as all other fields but
-///          its type is List<List<ControlModel>>:
-///            - outer index → policy revision number
-///            - inner list  → snapshot of all controls at that revision
+/// authors: Mohamed Elrashidy
 ///
-///          Every update must append one new element to every List (reusing
-///          the last value for unchanged fields) so all Lists always stay
-///          the same length.
-///
-/// authors: Mohamed Magdy Abdelkhalek
-///
-/// created at: 5/7/2026
+/// created at: 15/1/2025
 class PolicyModel {
   final String id;
   final List<String> image;
@@ -54,13 +44,11 @@ class PolicyModel {
   final List<DateTime> endDate;
   final List<double> policyWeight;
   final List<String> policyDocument;
-
-  // outer index = policy revision | inner list = controls at that revision
   final List<List<ControlModel>> controls;
-
+  final List<String> status; // PolicyStatus.value strings
   final List<bool> isDeleted;
 
-  // Tracking fields
+  // Tracking
   final List<DateTime> lastModifiedDate;
   final List<String> editors;
 
@@ -78,25 +66,22 @@ class PolicyModel {
     required this.policyWeight,
     required this.policyDocument,
     required this.controls,
+    required this.status,
     required this.isDeleted,
     required this.lastModifiedDate,
     required this.editors,
   }) {
-    assert(
-      _allSameLength(),
-      'All PolicyModel Lists must have the same number of elements (same index count)',
-    );
+    assert(_allSameLength(),
+        'All PolicyModel Lists must have the same number of elements');
   }
 
   /// function name: [_allSameLength]
   ///
-  /// purpose: validate that every history List in the model has the exact
-  ///          same length, guaranteeing that the indexes stay synchronized
-  ///          across all fields and tracking lists.
+  /// purpose: validate that all history Lists share the same length.
   ///
   /// parameters: none
   ///
-  /// return type: [bool] - true if all Lists share the same length
+  /// return type: [bool] - true if all lengths match
   bool _allSameLength() {
     final lengths = <int>{
       image.length,
@@ -111,6 +96,7 @@ class PolicyModel {
       policyWeight.length,
       policyDocument.length,
       controls.length,
+      status.length,
       isDeleted.length,
       lastModifiedDate.length,
       editors.length,
@@ -120,25 +106,25 @@ class PolicyModel {
 
   /// function name: [PolicyModel.create]
   ///
-  /// purpose: build a brand new [PolicyModel] where every history List
-  ///          is initialized with a single element representing the first
-  ///          (creation) revision of this Policy.
+  /// purpose: build the first revision of a PolicyModel where every List
+  ///          starts with exactly one element.
   ///
   /// parameters:
-  ///            [String] id: unique identifier of the new policy
+  ///            [String] id: unique identifier
   ///            [String] image: initial image url/path
-  ///            [String] policyNameEn: initial English policy name
-  ///            [String] policyNameAr: initial Arabic policy name
-  ///            [String] policyNumberEn: initial English policy number
-  ///            [String] policyNumberAr: initial Arabic policy number
+  ///            [String] policyNameEn: initial English name
+  ///            [String] policyNameAr: initial Arabic name
+  ///            [String] policyNumberEn: initial English number
+  ///            [String] policyNumberAr: initial Arabic number
   ///            [String] policyDescriptionEn: initial English description
   ///            [String] policyDescriptionAr: initial Arabic description
   ///            [DateTime] startDate: initial start date
   ///            [DateTime] endDate: initial end date
-  ///            [double] policyWeight: initial weight value
+  ///            [double] policyWeight: initial weight
   ///            [String] policyDocument: initial document url/path
-  ///            [List<ControlModel>] controls: initial list of controls (first revision snapshot)
-  ///            [String] editorId: id of the user creating this policy
+  ///            [List<ControlModel>] controls: initial controls snapshot
+  ///            [PolicyStatus] status: initial lifecycle status
+  ///            [String] editorId: id of the creating user
   ///
   /// return type: [PolicyModel] - the newly created model instance
   factory PolicyModel.create({
@@ -155,6 +141,7 @@ class PolicyModel {
     required double policyWeight,
     required String policyDocument,
     required List<ControlModel> controls,
+    required PolicyStatus status,
     required String editorId,
   }) {
     final now = DateTime.now();
@@ -171,7 +158,8 @@ class PolicyModel {
       endDate: [endDate],
       policyWeight: [policyWeight],
       policyDocument: [policyDocument],
-      controls: [controls], // first revision: one controls snapshot
+      controls: [controls],
+      status: [status.value],
       isDeleted: [false],
       lastModifiedDate: [now],
       editors: [editorId],
@@ -180,30 +168,27 @@ class PolicyModel {
 
   /// function name: [copyWithUpdate]
   ///
-  /// purpose: append a new revision (new index) to every history List in
-  ///          the policy. Any field not explicitly passed reuses its last
-  ///          known value, ensuring all Lists remain the same length.
-  ///          When [controls] is provided, the new controls snapshot
-  ///          replaces the old one for this revision; otherwise the last
-  ///          controls snapshot is carried forward unchanged.
+  /// purpose: append a new revision to every List. Fields left null reuse
+  ///          their last value so all Lists stay the same length.
   ///
   /// parameters:
   ///            [String] image: new image url/path, if changed
-  ///            [String] policyNameEn: new English policy name, if changed
-  ///            [String] policyNameAr: new Arabic policy name, if changed
-  ///            [String] policyNumberEn: new English policy number, if changed
-  ///            [String] policyNumberAr: new Arabic policy number, if changed
+  ///            [String] policyNameEn: new English name, if changed
+  ///            [String] policyNameAr: new Arabic name, if changed
+  ///            [String] policyNumberEn: new English number, if changed
+  ///            [String] policyNumberAr: new Arabic number, if changed
   ///            [String] policyDescriptionEn: new English description, if changed
   ///            [String] policyDescriptionAr: new Arabic description, if changed
   ///            [DateTime] startDate: new start date, if changed
   ///            [DateTime] endDate: new end date, if changed
-  ///            [double] policyWeight: new weight value, if changed
+  ///            [double] policyWeight: new weight, if changed
   ///            [String] policyDocument: new document url/path, if changed
   ///            [List<ControlModel>] controls: new controls snapshot, if changed
-  ///            [bool] isDeleted: new soft-delete flag (true = delete, false = restore)
+  ///            [PolicyStatus] status: new lifecycle status, if changed
+  ///            [bool] isDeleted: soft-delete flag (true=delete, false=restore)
   ///            [String] editorId: id of the user performing the update (required)
   ///
-  /// return type: [PolicyModel] - a new model instance with the appended revision
+  /// return type: [PolicyModel] - a new model with the appended revision
   PolicyModel copyWithUpdate({
     String? image,
     String? policyNameEn,
@@ -217,6 +202,7 @@ class PolicyModel {
     double? policyWeight,
     String? policyDocument,
     List<ControlModel>? controls,
+    PolicyStatus? status,
     bool? isDeleted,
     required String editorId,
   }) {
@@ -224,33 +210,42 @@ class PolicyModel {
     return PolicyModel(
       id: id,
       image: [...this.image, image ?? this.image.last],
-      policyNameEn: [...this.policyNameEn, policyNameEn ?? this.policyNameEn.last],
-      policyNameAr: [...this.policyNameAr, policyNameAr ?? this.policyNameAr.last],
+      policyNameEn: [
+        ...this.policyNameEn,
+        policyNameEn ?? this.policyNameEn.last
+      ],
+      policyNameAr: [
+        ...this.policyNameAr,
+        policyNameAr ?? this.policyNameAr.last
+      ],
       policyNumberEn: [
         ...this.policyNumberEn,
-        policyNumberEn ?? this.policyNumberEn.last,
+        policyNumberEn ?? this.policyNumberEn.last
       ],
       policyNumberAr: [
         ...this.policyNumberAr,
-        policyNumberAr ?? this.policyNumberAr.last,
+        policyNumberAr ?? this.policyNumberAr.last
       ],
       policyDescriptionEn: [
         ...this.policyDescriptionEn,
-        policyDescriptionEn ?? this.policyDescriptionEn.last,
+        policyDescriptionEn ?? this.policyDescriptionEn.last
       ],
       policyDescriptionAr: [
         ...this.policyDescriptionAr,
-        policyDescriptionAr ?? this.policyDescriptionAr.last,
+        policyDescriptionAr ?? this.policyDescriptionAr.last
       ],
       startDate: [...this.startDate, startDate ?? this.startDate.last],
       endDate: [...this.endDate, endDate ?? this.endDate.last],
-      policyWeight: [...this.policyWeight, policyWeight ?? this.policyWeight.last],
+      policyWeight: [
+        ...this.policyWeight,
+        policyWeight ?? this.policyWeight.last
+      ],
       policyDocument: [
         ...this.policyDocument,
-        policyDocument ?? this.policyDocument.last,
+        policyDocument ?? this.policyDocument.last
       ],
-      // append the new controls snapshot (or carry the last one forward)
       controls: [...this.controls, controls ?? this.controls.last],
+      status: [...this.status, status?.value ?? this.status.last],
       isDeleted: [...this.isDeleted, isDeleted ?? this.isDeleted.last],
       lastModifiedDate: [...lastModifiedDate, now],
       editors: [...editors, editorId],
@@ -259,14 +254,12 @@ class PolicyModel {
 
   /// function name: [toJson]
   ///
-  /// purpose: serialize the policy model into a Map ready to be persisted
-  ///          in Firestore. Keys follow the convention: each word
-  ///          capitalized, separated by underscores. ID is stored as "ID".
-  ///          Controls are serialized as a nested list of lists of Maps.
+  /// purpose: serialize to a Firestore-ready Map using Capital_Underscore
+  ///          keys. ID is stored as "ID".
   ///
   /// parameters: none
   ///
-  /// return type: [Map<String, dynamic>] - the Firestore-ready representation of this policy
+  /// return type: [Map<String, dynamic>] - the Firestore representation
   Map<String, dynamic> toJson() {
     return {
       'ID': id,
@@ -281,11 +274,13 @@ class PolicyModel {
       'End_Date': endDate.map((d) => d.toIso8601String()).toList(),
       'Policy_Weight': policyWeight,
       'Policy_Document': policyDocument,
-      // List< List<Map> > — outer = policy revision, inner = controls at that revision
+      // Firestore rejects arrays that directly contain other arrays, so each
+      // revision's control list is wrapped in a map (List<List<...>> would
+      // otherwise serialize as a nested array and the write would throw).
       'Controls': controls
-          .map((revisionControls) =>
-              revisionControls.map((c) => c.toJson()).toList())
+          .map((rev) => {'Items': rev.map((c) => c.toJson()).toList()})
           .toList(),
+      'Status': status,
       'Is_Deleted': isDeleted,
       'Last_Modified_Date':
           lastModifiedDate.map((d) => d.toIso8601String()).toList(),
@@ -295,11 +290,10 @@ class PolicyModel {
 
   /// function name: [PolicyModel.fromJson]
   ///
-  /// purpose: rebuild a [PolicyModel] instance from the raw Map retrieved
-  ///          from Firestore.
+  /// purpose: rebuild a [PolicyModel] from raw Firestore document data.
   ///
   /// parameters:
-  ///            [Map<String, dynamic>] json: the raw document data from Firestore
+  ///            [Map<String, dynamic>] json: the raw Firestore document data
   ///
   /// return type: [PolicyModel] - the reconstructed model instance
   factory PolicyModel.fromJson(Map<String, dynamic> json) {
@@ -324,11 +318,13 @@ class PolicyModel {
       policyWeight: List<double>.from(json['Policy_Weight'] ?? []),
       policyDocument: List<String>.from(json['Policy_Document'] ?? []),
       controls: (json['Controls'] as List? ?? [])
-          .map((revisionRaw) => (revisionRaw as List)
-              .map((c) =>
-                  ControlModel.fromJson(c as Map<String, dynamic>))
+          .map((rev) => ((rev as Map<String, dynamic>)['Items'] as List? ?? [])
+              .map((c) => ControlModel.fromJson(c as Map<String, dynamic>))
               .toList())
           .toList(),
+      status: json['Status'] != null
+          ? List<String>.from(json['Status'])
+          : List<String>.filled(editorsRaw.length, PolicyStatus.draft.value),
       isDeleted: json['Is_Deleted'] != null
           ? List<bool>.from(json['Is_Deleted'])
           : List<bool>.filled(editorsRaw.length, false),
@@ -341,17 +337,16 @@ class PolicyModel {
 
   /// function name: [toEntity]
   ///
-  /// purpose: convert this model (full revision history) into a
-  ///          [PolicyEntity] that holds only the latest (current) value of
-  ///          every field. Controls are derived by calling [toEntity] on
-  ///          each [ControlModel] in the last controls snapshot.
+  /// purpose: convert the full history model to a [PolicyEntity] holding
+  ///          only the latest value of every field. Soft-deleted controls
+  ///          are automatically filtered out.
   ///
   /// parameters: none
   ///
-  /// return type: [PolicyEntity] - the flattened entity built from the last index of every List
+  /// return type: [PolicyEntity] - the entity built from the last index of every List
   PolicyEntity toEntity() {
     final latestControls = controls.last
-        .where((c) => !c.isDeleted.last) // exclude soft-deleted controls
+        .where((c) => !c.isDeleted.last)
         .map((c) => c.toEntity())
         .toList();
 
@@ -369,6 +364,7 @@ class PolicyModel {
       policyWeight: policyWeight.last,
       policyDocument: policyDocument.last,
       controls: latestControls,
+      status: PolicyStatus.fromString(status.last),
       isDeleted: isDeleted.last,
       lastModifiedDate: lastModifiedDate.last,
       lastEditorId: editors.last,

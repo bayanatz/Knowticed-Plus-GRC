@@ -12,6 +12,7 @@ import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:demo_app/core/network/failure_model.dart';
 import 'package:demo_app/features/grc/domain/entities/policy_entity.dart';
+import 'package:demo_app/features/grc/domain/entities/policy_status.dart';
 
 
 /// ************************* FILE INFO *************************** ///
@@ -77,6 +78,7 @@ abstract class PolicyRepository {
     String? imageUrl,
     File? policyDocumentFile,
     String? policyDocumentUrl,
+    required PolicyStatus status,
   });
 
   /// function name: [getPolicy]
@@ -145,6 +147,7 @@ abstract class PolicyRepository {
     String? imageUrl,
     File? policyDocumentFile,
     String? policyDocumentUrl,
+    PolicyStatus? status,
   });
 
   /// function name: [deletePolicy]

@@ -10,6 +10,7 @@ import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:demo_app/core/network/failure_model.dart';
 import 'package:demo_app/features/grc/domain/entities/policy_entity.dart';
+import 'package:demo_app/features/grc/domain/entities/policy_status.dart';
 import 'package:demo_app/features/grc/domain/repository/policy_repository.dart';
 
 
@@ -42,6 +43,7 @@ class UpdatePolicyParams {
   final DateTime? endDate;
   final double? policyWeight;
   final List<CreateControlParams>? controls;
+  final PolicyStatus? status;
   final File? imageFile;
   final String? imageUrl;
   final File? policyDocumentFile;
@@ -60,6 +62,7 @@ class UpdatePolicyParams {
     this.endDate,
     this.policyWeight,
     this.controls,
+    this.status,
     this.imageFile,
     this.imageUrl,
     this.policyDocumentFile,
@@ -102,6 +105,7 @@ class UpdatePolicyUseCase {
       endDate: params.endDate,
       policyWeight: params.policyWeight,
       controls: params.controls,
+      status: params.status,
       imageFile: params.imageFile,
       imageUrl: params.imageUrl,
       policyDocumentFile: params.policyDocumentFile,

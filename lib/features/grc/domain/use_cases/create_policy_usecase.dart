@@ -12,6 +12,7 @@ import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:demo_app/core/network/failure_model.dart';
 import 'package:demo_app/features/grc/domain/entities/policy_entity.dart';
+import 'package:demo_app/features/grc/domain/entities/policy_status.dart';
 import 'package:demo_app/features/grc/domain/repository/policy_repository.dart';
 
 
@@ -43,6 +44,7 @@ class CreatePolicyParams {
   final double policyWeight;
   final String editorId;
   final List<CreateControlParams> controls;
+  final PolicyStatus status;
   final File? imageFile;
   final String? imageUrl;
   final File? policyDocumentFile;
@@ -60,6 +62,7 @@ class CreatePolicyParams {
     required this.policyWeight,
     required this.editorId,
     required this.controls,
+    required this.status,
     this.imageFile,
     this.imageUrl,
     this.policyDocumentFile,
@@ -91,6 +94,7 @@ class CreatePolicyUseCase {
   /// return type: [Future<Either<Failure, PolicyEntity>>] - the created entity, or a Failure
   Future<Either<Failure, PolicyEntity>> call(CreatePolicyParams params) {
     return _repository.createPolicy(
+      status: params.status,
       policyNameEn: params.policyNameEn,
       policyNameAr: params.policyNameAr,
       policyNumberEn: params.policyNumberEn,

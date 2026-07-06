@@ -19,6 +19,7 @@ import 'package:demo_app/features/grc/data/data_source/policy_storage_data_sourc
 import 'package:demo_app/features/grc/data/models/control_model.dart';
 import 'package:demo_app/features/grc/data/models/policy_model.dart';
 import 'package:demo_app/features/grc/domain/entities/policy_entity.dart';
+import 'package:demo_app/features/grc/domain/entities/policy_status.dart';
 import 'package:demo_app/features/grc/domain/repository/policy_repository.dart';
 import 'package:uuid/uuid.dart';
 
@@ -77,6 +78,7 @@ class PolicyRepositoryImpl implements PolicyRepository {
     required DateTime endDate,
     required double policyWeight,
     required String editorId,
+    required PolicyStatus status,
     required List<CreateControlParams> controls,
     File? imageFile,
     String? imageUrl,
@@ -128,6 +130,7 @@ class PolicyRepositoryImpl implements PolicyRepository {
         policyDocument: resolvedDocument ?? '',
         controls: controlModels,
         editorId: editorId,
+        status: status
       );
 
       final created = await _firebaseDataSource.create(model);
@@ -220,6 +223,7 @@ class PolicyRepositoryImpl implements PolicyRepository {
     String? imageUrl,
     File? policyDocumentFile,
     String? policyDocumentUrl,
+    PolicyStatus? status,
   }) async {
     try {
       final currentModel = await _firebaseDataSource.get(id);
