@@ -38,6 +38,10 @@ import 'policy_document_preview_widget.dart';
 class PolicyInfoFormWidget extends StatelessWidget {
   final bool isArabicEnabled;
 
+  /// When true, required fields left empty show an inline red error.
+  /// Set by the parent page once the user attempts to submit/advance.
+  final bool submitted;
+
   final TextEditingController nameController;
   final TextEditingController nameArController;
   final TextEditingController numberController;
@@ -58,6 +62,7 @@ class PolicyInfoFormWidget extends StatelessWidget {
   const PolicyInfoFormWidget({
     super.key,
     required this.isArabicEnabled,
+    this.submitted = false,
     required this.nameController,
     required this.nameArController,
     required this.numberController,
@@ -90,12 +95,14 @@ class PolicyInfoFormWidget extends StatelessWidget {
     int? minLines,
     int? maxLength,
     bool showCharCount = false,
+    bool isMandatory = false,
   }) {
     final field = CustomTextField(
       label: label,
       hint: hint,
       controller: controller,
       required: true,
+      submitted: isMandatory && submitted,
       maxLines: maxLines,
       minLines: minLines,
       maxLength: maxLength,
@@ -134,16 +141,16 @@ class PolicyInfoFormWidget extends StatelessWidget {
       children: [
         // Policy Name + AR name (or Policy Number when AR disabled)
         twoColumns(
-          _textField(label: 'Policy Name', hint: 'Text here', controller: nameController),
+          _textField(label: 'Policy Name', hint: 'Text here', controller: nameController, isMandatory: true),
           isArabicEnabled
-              ? _textField(label: 'اسم السياسة', hint: 'اكتب هنا', controller: nameArController, rtl: true)
-              : _textField(label: 'Policy Number', hint: 'Text here', controller: numberController),
+              ? _textField(label: 'اسم السياسة', hint: 'اكتب هنا', controller: nameArController, rtl: true, isMandatory: true)
+              : _textField(label: 'Policy Number', hint: 'Text here', controller: numberController, isMandatory: true),
         ),
         SizedBox(height: 15.h),
         if (isArabicEnabled) ...[
           twoColumns(
-            _textField(label: 'Policy Number', hint: 'Text here', controller: numberController),
-            _textField(label: 'رقم السياسة', hint: 'اكتب هنا', controller: numberArController, rtl: true),
+            _textField(label: 'Policy Number', hint: 'Text here', controller: numberController, isMandatory: true),
+            _textField(label: 'رقم السياسة', hint: 'اكتب هنا', controller: numberArController, rtl: true, isMandatory: true),
           ),
           SizedBox(height: 15.h),
         ],
@@ -155,6 +162,7 @@ class PolicyInfoFormWidget extends StatelessWidget {
           minLines: 3,
           maxLength: 500,
           showCharCount: true,
+          isMandatory: true,
         ),
         SizedBox(height: 15.h),
         if (isArabicEnabled) ...[
@@ -167,6 +175,7 @@ class PolicyInfoFormWidget extends StatelessWidget {
             minLines: 3,
             maxLength: 500,
             showCharCount: true,
+            isMandatory: true,
           ),
           SizedBox(height: 15.h),
         ],
@@ -183,6 +192,7 @@ class PolicyInfoFormWidget extends StatelessWidget {
             hintStyle: StyleText.fontSize14Weight500
                 .copyWith(color: AppColors.secondaryText.withOpacity(.7)),
             required: false,
+            errorText: submitted && startDate == null ? 'This field is required.' : null,
           ),
           CustomDropdownCalendar(
             borderRadius: BorderRadius.circular(4.r),
@@ -195,17 +205,18 @@ class PolicyInfoFormWidget extends StatelessWidget {
             hintStyle: StyleText.fontSize14Weight500
                 .copyWith(color: AppColors.secondaryText.withOpacity(.7)),
             required: false,
+            errorText: submitted && endDate == null ? 'This field is required.' : null,
           ),
         ),
         SizedBox(height: 15.h),
         // Policy Weight (half-width on tablet, full-width on mobile)
         isTablet
             ? Row(children: [
-                Expanded(child: _textField(label: 'Policy Weight', hint: 'Text here', controller: weightController)),
+                Expanded(child: _textField(label: 'Policy Weight', hint: 'Text here', controller: weightController, isMandatory: true)),
                 SizedBox(width: 10.w),
                 const Expanded(child: SizedBox()),
               ])
-            : _textField(label: 'Policy Weight', hint: 'Text here', controller: weightController),
+            : _textField(label: 'Policy Weight', hint: 'Text here', controller: weightController, isMandatory: true),
         SizedBox(height: 15.h),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,

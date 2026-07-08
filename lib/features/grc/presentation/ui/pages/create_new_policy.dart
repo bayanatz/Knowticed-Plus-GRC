@@ -72,6 +72,7 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
   // ----------------------------------------------------------------
   int _step = 0; // 0 = info, 1 = controls, 2 = preview
   bool _isArabicEnabled = true;
+  bool _step0Submitted = false;
 
   // Step 0 controllers
   final _nameController = TextEditingController();
@@ -147,7 +148,11 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
         _descriptionController.text.trim().isNotEmpty &&
         _startDate != null &&
         _endDate != null &&
-        _weightController.text.trim().isNotEmpty;
+        _weightController.text.trim().isNotEmpty &&
+        (!_isArabicEnabled ||
+            (_nameArController.text.trim().isNotEmpty &&
+                _numberArController.text.trim().isNotEmpty &&
+                _descriptionArController.text.trim().isNotEmpty));
   }
 
   /// function name: [_buildControlParams]
@@ -358,6 +363,7 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
               SizedBox(height: 15.h),
               PolicyInfoFormWidget(
                 isArabicEnabled: _isArabicEnabled,
+                submitted: _step0Submitted,
                 nameController: _nameController,
                 nameArController: _nameArController,
                 numberController: _numberController,
@@ -471,7 +477,14 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
       children: [
         customButton(
           title: 'Discard'.tr,
-          function: () => Navigator.of(context).pop(),
+          function: () => showConfirmDialog(
+            context: context,
+            title: 'Discard Policy'.tr,
+            subtitle: 'Are you sure you want to discard this policy? Any unsaved changes will be lost.'.tr,
+            confirmLabel: 'Discard'.tr,
+            cancelLabel: 'Cancel'.tr,
+            onConfirm: () => Navigator.of(context).pop(),
+          ),
           height: 38.h,
           width: 150.w,
           color: AppColors.grey,
@@ -481,6 +494,7 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
         customButton(
           title: 'Next'.tr,
           function: () {
+            setState(() => _step0Submitted = true);
             if (!_validateStep0()) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
@@ -508,7 +522,14 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
       children: [
         customButton(
           title: 'Save For Later'.tr,
-          function: () => _onSaveForLater(cubit),
+          function: () => showConfirmDialog(
+            context: context,
+            title: 'Save As Draft'.tr,
+            subtitle: 'Are you sure you want to save this policy as a draft?'.tr,
+            confirmLabel: 'Save'.tr,
+            cancelLabel: 'Cancel'.tr,
+            onConfirm: () => _onSaveForLater(cubit),
+          ),
           height: 38.h,
           width: 150.w,
           color: AppColors.grey,
@@ -534,7 +555,14 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
       children: [
         customButton(
           title: 'Save For Later'.tr,
-          function: () => _onSaveForLater(cubit),
+          function: () => showConfirmDialog(
+            context: context,
+            title: 'Save As Draft'.tr,
+            subtitle: 'Are you sure you want to save this policy as a draft?'.tr,
+            confirmLabel: 'Save'.tr,
+            cancelLabel: 'Cancel'.tr,
+            onConfirm: () => _onSaveForLater(cubit),
+          ),
           height: 38.h,
           width: 150.w,
           color: AppColors.grey,
@@ -543,7 +571,25 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
         ),
         customButton(
           title: 'Publish'.tr,
-          function: () => _onPublish(cubit),
+          function: () {
+            if (!_isWeightValid) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Total Weight should be 100'.tr),
+                  backgroundColor: AppColors.red,
+                ),
+              );
+              return;
+            }
+            showConfirmDialog(
+              context: context,
+              title: 'Publish Policy'.tr,
+              subtitle: 'Are you sure you want to publish this policy? This will make it active.'.tr,
+              confirmLabel: 'Publish'.tr,
+              cancelLabel: 'Cancel'.tr,
+              onConfirm: () => _onPublish(cubit),
+            );
+          },
           height: 38.h,
           width: 150.w,
           color: AppColors.primary,

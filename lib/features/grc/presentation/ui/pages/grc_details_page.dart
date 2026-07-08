@@ -59,11 +59,13 @@ class GovernanceRiskAndComplianceDetails extends StatefulWidget {
   /// Entity to pre-fill the form in view / edit / restore modes.
   /// Null when [mode] is [GrcPageMode.create].
   final GRCModuleEntity? entity;
+  final bool autoDelete;
 
   const GovernanceRiskAndComplianceDetails({
     super.key,
     this.mode = GrcPageMode.create,
     this.entity,
+    this.autoDelete = false,
   });
 
   @override
@@ -84,6 +86,7 @@ class _GovernanceRiskAndComplianceDetailsState
   late GrcPageMode _currentMode;
   List<String> _selectedOwnerIds = [];
   bool _submitted = false;
+  bool _autoDeleteScheduled = false;
 
   @override
   void initState() {
@@ -161,6 +164,30 @@ class _GovernanceRiskAndComplianceDetailsState
     cubit.restoreModule(id: widget.entity!.id);
   }
 
+  void _scheduleAutoDelete(BuildContext context, GRCModuleCubit cubit) {
+    if (!widget.autoDelete || _autoDeleteScheduled || widget.entity == null) {
+      return;
+    }
+    _autoDeleteScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      showConfirmDialog(
+        context: context,
+        title: "Deleting GRC Module".tr,
+        cancelLabel: "No".tr,
+        confirmLabel: "Yes".tr,
+        iconWidget: SvgPicture.asset('assets/icons/delete_icon.svg'),
+        subtitle: "Are You Sure You Want To Delete This GRC Module ?".tr,
+        onConfirm: () {
+          _pendingAction = _PendingAction.delete;
+          _onDelete(cubit);
+        },
+      );
+    });
+  }
+
   // ── State listener ────────────────────────────────────────────────────────
 
   void _onStateChange(BuildContext context, GRCModuleState state) {
@@ -216,6 +243,7 @@ class _GovernanceRiskAndComplianceDetailsState
       child: Builder(
         builder: (ctx) {
           final cubit = ctx.read<GRCModuleCubit>();
+          _scheduleAutoDelete(ctx, cubit);
           return BlocListener<GRCModuleCubit, GRCModuleState>(
             listener: _onStateChange,
             child: Scaffold(
@@ -290,8 +318,9 @@ class _GovernanceRiskAndComplianceDetailsState
                                     selectedDepartment: _selectedDepartment,
                                     activationDate: _activationDate,
                                     submitted: _submitted,
-                                    readOnly: _currentMode == GrcPageMode.view ||
-                                        _currentMode == GrcPageMode.restore,
+                                    readOnly:
+                                        _currentMode == GrcPageMode.view ||
+                                            _currentMode == GrcPageMode.restore,
                                     onDepartmentChanged: (v) =>
                                         setState(() => _selectedDepartment = v),
                                     onDateChanged: (v) =>
@@ -299,9 +328,9 @@ class _GovernanceRiskAndComplianceDetailsState
                                   ),
                                   SizedBox(height: 20.h),
                                   GrcOwnerSection(
-                                    isViewMode:
-                                        (_currentMode == GrcPageMode.view ||
-                                            _currentMode == GrcPageMode.restore),
+                                    isViewMode: (_currentMode ==
+                                            GrcPageMode.view ||
+                                        _currentMode == GrcPageMode.restore),
                                     initialOwnerIds: _selectedOwnerIds,
                                     onOwnersChanged: (selected) {
                                       _selectedOwnerIds =

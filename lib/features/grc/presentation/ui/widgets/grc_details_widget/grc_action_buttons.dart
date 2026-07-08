@@ -72,7 +72,8 @@ class GrcActionButtons extends StatelessWidget {
                   title: "Deleting GRC Module".tr,
                   cancelLabel: "No".tr,
                   confirmLabel: "Yes".tr,
-                  iconWidget: SvgPicture.asset('assets/icons/delete_icon.svg'),
+                  iconWidget: SvgPicture.asset(
+                      'assets/icons_assets/data_grc_assets/delete-module.svg'),
                   subtitle:
                       "Are You Sure You Want To Delete This GRC Module ?".tr,
                   onConfirm: onDeleteTap,

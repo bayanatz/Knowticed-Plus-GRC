@@ -15,13 +15,13 @@ library;
 /// Author: Mohamed Magdy Abdelkhalek
 /// Created At: 28/6/2026
 
-import 'package:demo_app/core/constants/app_assets.dart';
 import 'package:demo_app/core/custom/16-custom_card_styles.dart';
 import 'package:demo_app/core/custom/35-custom_search_widget_custom.dart';
 import 'package:demo_app/core/custom/43_custom_module_info_card.dart';
 import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/helper/main_helper/employee_helper.dart';
+import 'package:demo_app/core/local_widgets/services_management/W2_Navigator.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/grc/domain/entities/grc_module_entity.dart';
@@ -36,6 +36,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
@@ -165,19 +166,70 @@ class _GovernanceRiskAndCompliancePageState
     BuildContext context,
     GrcPageMode mode, {
     GRCModuleEntity? entity,
+    bool autoDelete = false,
   }) async {
     final reloaded = await Navigator.of(context).push<bool>(
-      PageRouteBuilder(
-        pageBuilder: (_, __, ___) => GovernanceRiskAndComplianceDetails(
+      MaterialPageRoute(
+        builder: (_) => GovernanceRiskAndComplianceDetails(
           mode: mode,
           entity: entity,
+          autoDelete: autoDelete,
         ),
-        transitionsBuilder: (_, animation, __, child) =>
-            FadeTransition(opacity: animation, child: child),
       ),
     );
+
     if (reloaded == true && context.mounted) {
       context.read<GRCModuleCubit>().getAllModules(includeDeleted: true);
+    }
+  }
+
+  Future<void> _showModuleMenu(
+    BuildContext context,
+    GRCModuleEntity module,
+  ) async {
+    final overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
+    final position = RelativeRect.fromLTRB(
+      overlay.size.width - 72.w,
+      110.h,
+      16.w,
+      overlay.size.height - 110.h,
+    );
+
+    final selected = await showMenu<String>(
+      context: context,
+      position: position,
+      color: AppColors.card,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.r),
+      ),
+      items: [
+        PopupMenuItem<String>(
+          value: 'edit',
+          child: Text('Edit'.tr),
+        ),
+        PopupMenuItem<String>(
+          value: 'delete',
+          child: Text('Delete'.tr),
+        ),
+      ],
+    );
+
+    if (!context.mounted || selected == null) {
+      return;
+    }
+
+    if (selected == 'edit') {
+      await _openDetails(context, GrcPageMode.edit, entity: module);
+      return;
+    }
+
+    if (selected == 'delete') {
+      await _openDetails(
+        context,
+        GrcPageMode.view,
+        entity: module,
+        autoDelete: true,
+      );
     }
   }
 
@@ -379,6 +431,7 @@ class _GovernanceRiskAndCompliancePageState
                   );
                 }
               },
+              onMenuTap: () => _showModuleMenu(context, moduleAt(index)),
             );
 
         if (columns == 1) {
@@ -425,8 +478,13 @@ class _GovernanceRiskAndCompliancePageState
 class _GrcModuleCard extends StatelessWidget {
   final GRCModuleEntity module;
   final VoidCallback onTap;
+  final VoidCallback? onMenuTap;
 
-  const _GrcModuleCard({required this.module, required this.onTap});
+  const _GrcModuleCard({
+    required this.module,
+    required this.onTap,
+    this.onMenuTap,
+  });
 
   String _resolveOwnerName(BuildContext context, String ownerId) {
     try {
@@ -452,20 +510,21 @@ class _GrcModuleCard extends StatelessWidget {
       infoRows: [
         if (module.owners.isNotEmpty)
           CardInfo(
-            label: context.isArabic ? 'المالك :' : 'Owner :',
+            label: '${'Owner'.tr} :',
             value: _resolveOwnerName(context, module.owners.first),
           ),
         CardInfo(
-          label: context.isArabic ? 'تاريخ الإنشاء:' : 'Creation Date:',
+          label: '${'Creation Date'.tr} :',
           value: DateFormat('d MMM yyyy', context.isArabic ? 'ar' : 'en')
               .format(module.createdAt),
         ),
       ],
-      complianceLabel: context.isArabic ? 'الحالة:' : 'Status:',
-      complianceScore: isDeleted ? 'Removed'.tr : module.status.tr,
-      footerLabel: context.isArabic ? 'آخر تحديث:' : 'Last Update:',
+      complianceLabel: '${'Compliance Score'.tr} :',
+      complianceScore: '-',
+      footerLabel: '${'Last Update'.tr} :',
       footerValue: DateFormat('d MMM yyyy', context.isArabic ? 'ar' : 'en')
           .format(module.lastModifiedDate),
+      onMenuTap: isDeleted ? null : onMenuTap,
     );
   }
 }

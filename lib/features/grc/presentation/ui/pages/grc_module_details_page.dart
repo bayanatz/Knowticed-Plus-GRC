@@ -61,8 +61,8 @@ class GrcModuleDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => GetIt.instance<PolicyCubit>()
-        ..getAllPolicies(moduleId: module.id),
+      create: (_) =>
+          GetIt.instance<PolicyCubit>()..getAllPolicies(moduleId: module.id),
       child: _GrcModuleDetailsBody(module: module),
     );
   }
@@ -78,13 +78,43 @@ class _GrcModuleDetailsBody extends StatefulWidget {
 }
 
 class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
+  static const _tabs = [
+    'Policies',
+    'Control Champions',
+    'Control Owners',
+    'Departments',
+  ];
+
   final _searchController = TextEditingController();
   String _searchQuery = '';
+  int _selectedTab = 0;
+  String _selectedStatusFilter = 'all';
 
   @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  PolicyStatus? _statusForKey(String key) {
+    switch (key) {
+      case 'Active':
+        return PolicyStatus.active;
+      case 'Inactive':
+        return PolicyStatus.inactive;
+      case 'Expired':
+        return PolicyStatus.expired;
+      case 'Draft':
+        return PolicyStatus.draft;
+      default:
+        return null;
+    }
+  }
+
+  List<PolicyEntity> _applyStatusFilter(List<PolicyEntity> policies) {
+    final status = _statusForKey(_selectedStatusFilter);
+    if (status == null) return policies;
+    return policies.where((p) => p.status == status).toList();
   }
 
   List<PolicyEntity> _applySearch(List<PolicyEntity> policies) {
@@ -103,8 +133,7 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
       'Active': policies.where((p) => p.status == PolicyStatus.active).length,
       'Inactive':
           policies.where((p) => p.status == PolicyStatus.inactive).length,
-      'Expired':
-          policies.where((p) => p.status == PolicyStatus.expired).length,
+      'Expired': policies.where((p) => p.status == PolicyStatus.expired).length,
       'Draft': policies.where((p) => p.status == PolicyStatus.draft).length,
     };
   }
@@ -118,11 +147,10 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
         final allPolicies =
             state is PolicyListLoaded ? state.policies : <PolicyEntity>[];
         final counts = _countByStatus(allPolicies);
-        final filtered = _applySearch(allPolicies);
+        final filtered = _applySearch(_applyStatusFilter(allPolicies));
 
         final List<MapEntry<String, Map<String, dynamic>>> status = [
-          MapEntry(
-              'all', {'num': counts['all'] ?? 0, 'color': AppColors.text}),
+          MapEntry('all', {'num': counts['all'] ?? 0, 'color': AppColors.text}),
           MapEntry('Active',
               {'num': counts['Active'] ?? 0, 'color': AppColors.green}),
           MapEntry('Inactive',
@@ -151,10 +179,9 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
                   ),
 
                   // Approved Evidence + Dashboard
-                  Wrap(
+                  Row(
                     spacing: 8.w,
-                    runSpacing: 8.h,
-                    alignment: WrapAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       customButtonWithSvg(
                         colorBorder: AppColors.primary,
@@ -162,11 +189,11 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
                         radius: 8.r,
                         widthImage: 16.w,
                         heightImage: 16.h,
-                        image: "assets/icons/edit.svg",
+                        image:
+                            "assets/icons_assets/data_grc_assets/approved-evidence-icon.svg",
                         title: "Approved Evidence".tr,
                         function: () {},
                         width: isTablet ? 200.w : 180.w,
-                        height: 38.h,
                         color: AppColors.primary,
                         textStyle: StyleText.fontSize16Weight500
                             .copyWith(color: AppColors.textButton),
@@ -175,7 +202,6 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
                         title: "Dashboard".tr,
                         function: () {},
                         width: 135.w,
-                        height: 38.h,
                         color: AppColors.primary,
                         textStyle: StyleText.fontSize16Weight500
                             .copyWith(color: AppColors.textButton),
@@ -185,9 +211,8 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
                   SizedBox(height: 15.h),
 
                   // Approvals + Assignment Controls + My Audits
-                  Wrap(
+                  Row(
                     spacing: 8.w,
-                    runSpacing: 8.h,
                     children: [
                       customButton(
                         title: "Approvals".tr,
@@ -207,11 +232,11 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
                         textStyle: StyleText.fontSize16Weight500
                             .copyWith(color: AppColors.textButton),
                       ),
+                      Spacer(),
                       customButton(
                         title: "My Audits".tr,
                         function: () {},
-                        width: 120.w,
-                        height: 38.h,
+                        width: 135.w,
                         color: AppColors.primary,
                         textStyle: StyleText.fontSize16Weight500
                             .copyWith(color: AppColors.textButton),
@@ -221,159 +246,23 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
                   SizedBox(height: 15.h),
 
                   CustomTabs(
-                    tabs: ['All', 'Pending', 'Approved'],
-                    selectedValue: 0,
-                    onChanged: (_) {},
-                  ),
-                  SizedBox(height: 15.h),
-
-                  ScrollConfiguration(
-                    behavior: ScrollConfiguration.of(context)
-                        .copyWith(scrollbars: false),
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        spacing: 30.sp,
-                        children: [
-                          for (var roleEntry in status)
-                            FilterBarItem(
-                              title: roleEntry.key,
-                              numberOfItems: roleEntry.value['num'],
-                              color: roleEntry.value['color'],
-                              onTap: () {},
-                              isSelected: roleEntry.key == 'all',
-                            ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 15.h),
-
-                  // Search + Create Policy — stack on mobile
-                  if (isTablet)
-                    Row(
-                      spacing: 10.w,
-                      children: [
-                        AppSearchTextField(
-                          onChanged: (v) => setState(() => _searchQuery = v),
-                          hintText: "Search".tr,
-                          controller: _searchController,
-                        ),
-                        customButtonWithSvg(
-                          colorBorder: AppColors.primary,
-                          space: 10.w,
-                          radius: 8.r,
-                          widthImage: 16.w,
-                          heightImage: 16.h,
-                          function: () => navigateTo(
-                            context,
-                            CreateNewPolicyPage(moduleId: widget.module.id),
-                          ),
-                          title: 'Policy',
-                          textStyle: StyleText.fontSize14Weight500
-                              .copyWith(color: AppColors.textButton),
-                          image: 'assets/icons/add.svg',
-                          color: AppColors.primary,
-                          width: 140.w,
-                          height: 36.h,
-                          svgColor: AppColors.textButton,
-                        ),
-                      ],
-                    )
-                  else
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Row(
-                          children: [
-                            AppSearchTextField(
-                              onChanged: (v) =>
-                                  setState(() => _searchQuery = v),
-                              hintText: "Search".tr,
-                              controller: _searchController,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 8.h),
-                        customButtonWithSvg(
-                          colorBorder: AppColors.primary,
-                          space: 10.w,
-                          radius: 8.r,
-                          widthImage: 16.w,
-                          heightImage: 16.h,
-                          function: () => navigateTo(
-                            context,
-                            CreateNewPolicyPage(moduleId: widget.module.id),
-                          ),
-                          title: 'Policy',
-                          textStyle: StyleText.fontSize14Weight500
-                              .copyWith(color: AppColors.textButton),
-                          image: 'assets/icons/add.svg',
-                          color: AppColors.primary,
-                          width: double.infinity,
-                          height: 36.h,
-                          svgColor: AppColors.textButton,
-                        ),
-                      ],
-                    ),
-                  SizedBox(height: 15.h),
-
-                  // Policy Weight Issue + view-mode icons
-                  Row(
-                    children: [
-                      customButton(
-                        title: "Policy Weight Issue".tr,
-                        function: () {},
-                        width: isTablet ? 180.w : 160.w,
-                        height: 38.h,
-                        color: AppColors.primary,
-                        textStyle: StyleText.fontSize16Weight500
-                            .copyWith(color: AppColors.textButton),
-                      ),
-                      const Spacer(),
-                      Container(
-                        width: 38.sp,
-                        height: 38.sp,
-                        decoration: BoxDecoration(
-                          color: AppColors.primary,
-                          borderRadius: BorderRadius.circular(8.r),
-                        ),
-                        child: Center(
-                          child: SvgPicture.asset(
-                            "assets/tableView.svg",
-                            width: 20.sp,
-                            height: 20.sp,
-                            fit: BoxFit.scaleDown,
-                            semanticsLabel: 'Table View',
-                            color: AppColors.black,
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 8.sp),
-                      Container(
-                        width: 38.sp,
-                        height: 38.sp,
-                        decoration: BoxDecoration(
-                          color: AppColors.primary,
-                          borderRadius: BorderRadius.circular(8.r),
-                        ),
-                        child: Center(
-                          child: SvgPicture.asset(
-                            "assets/gridView.svg",
-                            width: 20.sp,
-                            height: 20.sp,
-                            fit: BoxFit.scaleDown,
-                            semanticsLabel: 'Table View',
-                            color: AppColors.black,
-                          ),
-                        ),
-                      ),
-                    ],
+                    tabs: _tabs,
+                    selectedValue: _selectedTab,
+                    onChanged: (v) => setState(() => _selectedTab = v),
                   ),
                   SizedBox(height: 15.h),
 
                   Expanded(
-                    child: _buildPolicyList(context, state, filtered),
+                    child: _selectedTab == 0
+                        ? _buildPoliciesTab(
+                            context, isTablet, status, state, filtered)
+                        : Center(
+                            child: Text(
+                              _tabs[_selectedTab].tr,
+                              style: StyleText.fontSize16Weight500
+                                  .copyWith(color: AppColors.secondaryText),
+                            ),
+                          ),
                   ),
                 ],
               ),
@@ -381,6 +270,165 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildPoliciesTab(
+    BuildContext context,
+    bool isTablet,
+    List<MapEntry<String, Map<String, dynamic>>> status,
+    PolicyState state,
+    List<PolicyEntity> filtered,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ScrollConfiguration(
+          behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              spacing: 30.sp,
+              children: [
+                for (var roleEntry in status)
+                  FilterBarItem(
+                    title: roleEntry.key,
+                    numberOfItems: roleEntry.value['num'],
+                    color: roleEntry.value['color'],
+                    onTap: () =>
+                        setState(() => _selectedStatusFilter = roleEntry.key),
+                    isSelected: roleEntry.key == _selectedStatusFilter,
+                  ),
+              ],
+            ),
+          ),
+        ),
+        SizedBox(height: 15.h),
+
+        // Search + Create Policy — stack on mobile
+        if (isTablet)
+          Row(
+            spacing: 10.w,
+            children: [
+              AppSearchTextField(
+                onChanged: (v) => setState(() => _searchQuery = v),
+                hintText: "Search".tr,
+                controller: _searchController,
+              ),
+              customButtonWithSvg(
+                colorBorder: AppColors.primary,
+                space: 10.w,
+                widthImage: 16.w,
+                heightImage: 16.h,
+                function: () => navigateTo(
+                  context,
+                  CreateNewPolicyPage(moduleId: widget.module.id),
+                ),
+                title: 'Policy',
+                textStyle: StyleText.fontSize14Weight500
+                    .copyWith(color: AppColors.textButton),
+                image:
+                    'assets/icons_assets/database_builder_assets/plus_head.svg',
+                color: AppColors.primary,
+                svgColor: AppColors.textButton,
+              ),
+            ],
+          )
+        else
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  AppSearchTextField(
+                    onChanged: (v) => setState(() => _searchQuery = v),
+                    hintText: "Search".tr,
+                    controller: _searchController,
+                  ),
+                ],
+              ),
+              SizedBox(height: 8.h),
+              customButtonWithSvg(
+                colorBorder: AppColors.primary,
+                space: 10.w,
+                radius: 8.r,
+                widthImage: 16.w,
+                heightImage: 16.h,
+                function: () => navigateTo(
+                  context,
+                  CreateNewPolicyPage(moduleId: widget.module.id),
+                ),
+                title: 'Policy',
+                textStyle: StyleText.fontSize14Weight500
+                    .copyWith(color: AppColors.textButton),
+                image: 'assets/icons/add.svg',
+                color: AppColors.primary,
+                width: double.infinity,
+                height: 36.h,
+                svgColor: AppColors.textButton,
+              ),
+            ],
+          ),
+        SizedBox(height: 15.h),
+
+        // Policy Weight Issue + view-mode icons
+        Row(
+          children: [
+            customButton(
+              title: "Policy Weight Issue".tr,
+              function: () {},
+              width: isTablet ? 180.w : 160.w,
+              height: 38.h,
+              color: AppColors.primary,
+              textStyle: StyleText.fontSize16Weight500
+                  .copyWith(color: AppColors.textButton),
+            ),
+            const Spacer(),
+            Container(
+              width: 38.sp,
+              height: 38.sp,
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+              child: Center(
+                child: SvgPicture.asset(
+                  "assets/icons_assets/data_grc_assets/list_view_data.svg",
+                  width: 20.sp,
+                  height: 20.sp,
+                  fit: BoxFit.scaleDown,
+                  semanticsLabel: 'Table View',
+                  color: AppColors.black,
+                ),
+              ),
+            ),
+            SizedBox(width: 8.sp),
+            Container(
+              width: 38.sp,
+              height: 38.sp,
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+              child: Center(
+                child: SvgPicture.asset(
+                  "assets/icons_assets/data_grc_assets/grid_view_view.svg",
+                  width: 20.sp,
+                  height: 20.sp,
+                  fit: BoxFit.scaleDown,
+                  semanticsLabel: 'Table View',
+                  color: AppColors.black,
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 15.h),
+
+        Expanded(
+          child: _buildPolicyList(context, state, filtered),
+        ),
+      ],
     );
   }
 
@@ -450,9 +498,8 @@ class _PolicyCard extends StatelessWidget {
       infoRows: [
         CardInfo(
           label: context.isArabic ? 'الرقم :' : 'Number :',
-          value: context.isArabic
-              ? policy.policyNumberAr
-              : policy.policyNumberEn,
+          value:
+              context.isArabic ? policy.policyNumberAr : policy.policyNumberEn,
         ),
       ],
       complianceLabel: context.isArabic ? 'الحالة:' : 'Status:',
