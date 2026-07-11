@@ -124,6 +124,13 @@ class PolicyInfoFormWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
 
+    final today = DateTime.now();
+    final startOfToday = DateTime(today.year, today.month, today.day);
+    final startBeforeToday =
+        startDate != null && startDate!.isBefore(startOfToday);
+    final endBeforeStart =
+        endDate != null && startDate != null && endDate!.isBefore(startDate!);
+
     Widget twoColumns(Widget left, Widget right) => isTablet
         ? Row(children: [
             Expanded(child: left),
@@ -192,7 +199,14 @@ class PolicyInfoFormWidget extends StatelessWidget {
             hintStyle: StyleText.fontSize14Weight500
                 .copyWith(color: AppColors.secondaryText.withOpacity(.7)),
             required: false,
-            errorText: submitted && startDate == null ? 'This field is required.' : null,
+            firstDate: startOfToday,
+            errorText: !submitted
+                ? null
+                : startDate == null
+                    ? 'This field is required.'
+                    : startBeforeToday
+                        ? 'Start date cannot be before today.'
+                        : null,
           ),
           CustomDropdownCalendar(
             borderRadius: BorderRadius.circular(4.r),
@@ -205,7 +219,14 @@ class PolicyInfoFormWidget extends StatelessWidget {
             hintStyle: StyleText.fontSize14Weight500
                 .copyWith(color: AppColors.secondaryText.withOpacity(.7)),
             required: false,
-            errorText: submitted && endDate == null ? 'This field is required.' : null,
+            firstDate: startDate ?? startOfToday,
+            errorText: !submitted
+                ? null
+                : endDate == null
+                    ? 'This field is required.'
+                    : endBeforeStart
+                        ? 'End date cannot be before start date.'
+                        : null,
           ),
         ),
         SizedBox(height: 15.h),

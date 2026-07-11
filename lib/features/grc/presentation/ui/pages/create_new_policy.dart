@@ -134,6 +134,25 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
     });
   }
 
+  /// function name: [_onStartDateChanged]
+  ///
+  /// purpose: update the start date and, if the previously selected end
+  ///          date now falls before it, clear the end date so the user must
+  ///          pick a new one.
+  ///
+  /// parameters:
+  ///            [DateTime?] date: the newly selected start date
+  ///
+  /// return type: void
+  void _onStartDateChanged(DateTime? date) {
+    setState(() {
+      _startDate = date;
+      if (_endDate != null && date != null && _endDate!.isBefore(date)) {
+        _endDate = null;
+      }
+    });
+  }
+
   /// function name: [_validateStep0]
   ///
   /// purpose: verify that all required policy-info fields have been filled
@@ -143,11 +162,15 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
   ///
   /// return type: [bool] - true if all required fields are non-empty
   bool _validateStep0() {
+    final today = DateTime.now();
+    final startOfToday = DateTime(today.year, today.month, today.day);
     return _nameController.text.trim().isNotEmpty &&
         _numberController.text.trim().isNotEmpty &&
         _descriptionController.text.trim().isNotEmpty &&
         _startDate != null &&
         _endDate != null &&
+        !_startDate!.isBefore(startOfToday) &&
+        !_endDate!.isBefore(_startDate!) &&
         _weightController.text.trim().isNotEmpty &&
         (!_isArabicEnabled ||
             (_nameArController.text.trim().isNotEmpty &&
@@ -373,7 +396,7 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
                 weightController: _weightController,
                 startDate: _startDate,
                 endDate: _endDate,
-                onStartDateChanged: (d) => setState(() => _startDate = d),
+                onStartDateChanged: _onStartDateChanged,
                 onEndDateChanged: (d) => setState(() => _endDate = d),
                 document: _document,
                 onUploadDocument: _onUploadDocument,

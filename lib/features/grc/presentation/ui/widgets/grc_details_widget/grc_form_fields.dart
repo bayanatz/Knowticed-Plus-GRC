@@ -75,7 +75,9 @@ class GrcFormFields extends StatelessWidget {
       label: 'GRC Module Name',
       hint: 'Text here',
       controller: nameEnController,
-      errorText: "GRC Module Name is required",
+      errorText: submitted && nameEnController.text.trim().isEmpty
+          ? "GRC Module Name is required"
+          : null,
       submitted: submitted,
       readOnly: readOnly,
       fillColor: AppColors.background,
@@ -96,7 +98,9 @@ class GrcFormFields extends StatelessWidget {
         label: 'عنوان اطار الحوكمه',
         hint: 'اكتب هنا',
         controller: nameArController,
-        errorText: "عنوان اطار الحوكمه مطلوب",
+        errorText: submitted && nameArController.text.trim().isEmpty
+            ? "عنوان اطار الحوكمه مطلوب"
+            : null,
         submitted: submitted,
         readOnly: readOnly,
         fillColor: AppColors.background,
@@ -144,6 +148,11 @@ class GrcFormFields extends StatelessWidget {
       required: false,
     );
 
+    final today = DateTime.now();
+    final startOfToday = DateTime(today.year, today.month, today.day);
+    final isPastDate =
+        activationDate != null && activationDate!.isBefore(startOfToday);
+
     final activationDateField = CustomDropdownCalendar(
       borderRadius: BorderRadius.circular(4.r),
       label: 'Activation Date'.tr,
@@ -152,7 +161,16 @@ class GrcFormFields extends StatelessWidget {
       onChanged: onDateChanged,
       enabled: !readOnly,
       fillColor: AppColors.background,
-      errorText: submitted && activationDate == null ? requiredError : null,
+      firstDate: startOfToday,
+      errorText: !submitted
+          ? null
+          : activationDate == null
+              ? requiredError
+              : isPastDate
+                  ? (context.isArabic
+                      ? 'لا يمكن أن يكون تاريخ التفعيل قبل اليوم'
+                      : 'Activation date cannot be before today')
+                  : null,
       labelStyle: StyleText.fontSize16Weight500.copyWith(color: AppColors.text),
       hintStyle: StyleText.fontSize14Weight500
           .copyWith(color: AppColors.secondaryText.withOpacity(.7)),
@@ -195,7 +213,9 @@ class GrcFormFields extends StatelessWidget {
             label: 'Description',
             hint: 'Text here',
             controller: descEnController,
-            errorText: "Description is required",
+            errorText: submitted && descEnController.text.trim().isEmpty
+                ? "Description is required"
+                : null,
             submitted: submitted,
             readOnly: readOnly,
             maxLines: 3,
@@ -221,7 +241,9 @@ class GrcFormFields extends StatelessWidget {
             label: 'الوصف',
             hint: 'اكتب وصف',
             controller: descArController,
-            errorText: "الوصف مطلوب",
+            errorText: submitted && descArController.text.trim().isEmpty
+                ? "الوصف مطلوب"
+                : null,
             submitted: submitted,
             readOnly: readOnly,
             maxLines: 3,

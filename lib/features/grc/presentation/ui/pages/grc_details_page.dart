@@ -119,12 +119,15 @@ class _GovernanceRiskAndComplianceDetailsState
 
   bool _validate() {
     setState(() => _submitted = true);
+    final today = DateTime.now();
+    final startOfToday = DateTime(today.year, today.month, today.day);
     return _nameEnController.text.trim().isNotEmpty &&
         _nameArController.text.trim().isNotEmpty &&
         _descEnController.text.trim().isNotEmpty &&
         _descArController.text.trim().isNotEmpty &&
         _selectedDepartment != null &&
-        _activationDate != null;
+        _activationDate != null &&
+        !_activationDate!.isBefore(startOfToday);
   }
 
   // ── Cubit action helpers ──────────────────────────────────────────────────
