@@ -71,9 +71,13 @@ No existing GRC domain/data files change. Both screens depend only on
 - Mirrors the parsing approach in
   `lib/features/roles/user_management/ui/widgets/import_page_methods1.dart`
   (`Excel.decodeBytes`, header-row validation against a fixed
-  `expectedHeaders` list): `Policy Number, Policy Name, اسم السياسة,
-  Policy Description, وصف السياسة, Start Date, End Date, Policy Weight,
-  Policy Document`.
+  `expectedHeaders` list): `Policy Number, Policy Number Ar, Policy Name,
+  اسم السياسة, Policy Description, وصف السياسة, Start Date, End Date,
+  Policy Weight, Policy Document`.
+  `Policy Number Ar` is an addition beyond the original mockup: `PolicyEntity`
+  requires both `policyNumberEn` and `policyNumberAr` as separate non-null
+  fields (unlike a single combined column), so the sheet needs two number
+  columns the same way it already has two Name/Description columns.
 - Header mismatch → inline error on this page, file rejected, no
   navigation.
 - Header match → rows passed into a fresh `PolicyBulkUploadCubit`, then
@@ -81,16 +85,17 @@ No existing GRC domain/data files change. Both screens depend only on
 
 ## D. Preview/table page (`policy_bulk_upload_preview_page.dart`)
 
-- One row per parsed policy; each field (Policy Number, Policy Name En/Ar,
-  Policy Description En/Ar, Start Date, End Date, Policy Weight, Policy
-  Document) is backed by a `TextEditingController`, editable inline —
+- One row per parsed policy; each field (Policy Number En/Ar, Policy Name
+  En/Ar, Policy Description En/Ar, Start Date, End Date, Policy Weight,
+  Policy Document) is backed by a `TextEditingController`, editable inline —
   mirrors the per-cell controller pattern in
   `lib/features/roles/user_management/ui/widgets/upload_build_page.dart`.
 - Yellow checkbox per row selects rows for the **Remove Selection** and
   **Duplication** actions. **+ Row** appends one blank editable row.
 - Live per-cell validation:
-  - Required (non-empty): Policy Number, Policy Name En, Policy Name Ar,
-    Policy Description En, Policy Description Ar, Start Date.
+  - Required (non-empty): Policy Number En, Policy Number Ar, Policy Name
+    En, Policy Name Ar, Policy Description En, Policy Description Ar,
+    Start Date.
   - Start Date must be strictly before End Date whenever End Date is
     filled in (same rule as the single Add Policy flow).
   - Policy Weight must parse as a number and be `> 0`.
