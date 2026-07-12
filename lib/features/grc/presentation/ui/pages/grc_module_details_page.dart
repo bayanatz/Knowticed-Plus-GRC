@@ -63,7 +63,7 @@ class GrcModuleDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) =>
-          GetIt.instance<PolicyCubit>()..getAllPolicies(moduleId: module.id),
+          GetIt.instance<PolicyCubit>()..getAllPolicies(moduleId: module.moduleId),
       child: _GrcModuleDetailsBody(module: module),
     );
   }
@@ -126,9 +126,9 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
 
     if (!context.mounted) return;
     if (choice == 'add') {
-      navigateTo(context, CreateNewPolicyPage(moduleId: widget.module.id));
+      navigateTo(context, CreateNewPolicyPage(moduleId: widget.module.moduleId));
     } else if (choice == 'bulk') {
-      navigateTo(context, PolicyBulkUploadPage(moduleId: widget.module.id));
+      navigateTo(context, PolicyBulkUploadPage(moduleId: widget.module.moduleId));
     }
   }
 
@@ -209,8 +209,8 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
                     screensTitles: [
                       'GRC'.tr,
                       context.isArabic
-                          ? widget.module.grcModuleNameArabic
-                          : widget.module.grcModuleNameEnglish,
+                          ? widget.module.moduleNameAr
+                          : widget.module.moduleNameEn,
                     ],
                   ),
 
