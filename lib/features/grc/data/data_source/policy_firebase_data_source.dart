@@ -8,6 +8,7 @@
 /// Revision History: 2026-07-5 - Initial creation
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:demo_app/core/network/get_base_url.dart';
 import 'package:demo_app/features/grc/data/models/policy_model.dart';
 
 import 'policy_data_source.dart';
@@ -35,7 +36,8 @@ class PolicyFirebaseDataSource implements PolicyDataSource {
 
   final FirebaseFirestore _firestore;
 
-  static const String _modulesCollectionPath = 'GRC Modules';
+  static String get _modulesCollectionPath =>
+      '${getBaseUrl('Modules')}/grc/GRC Modules';
   static const String _policiesSubcollectionPath = 'Policies';
 
   CollectionReference<Map<String, dynamic>> _collection(String moduleId) =>
