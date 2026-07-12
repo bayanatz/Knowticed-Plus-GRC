@@ -4,72 +4,108 @@
 ///              values are never lost and each edit is fully traceable.
 /// Author: Mohamed Magdy Abdelkhalek
 /// Date: 2026-06-30
-/// Dependencies: GRCModuleEntity
+/// Dependencies: GRCModuleEntity, dart:convert
 /// Revision History: 2026-06-30 - Initial creation
-///                    2026-06-30 - Added isDeleted history list for soft-delete/restore support (Mohamed Magdy Abdelkhalek)
+///                   2026-07-06 - Aligned Firestore keys and Dart field names to
+///                                the updated schema; removed isDeleted list
+///                                (soft-delete now via Status:"Removed");
+///                                Editors→Modifiers stores user email;
+///                                added "Scheduled" status value
+///                                (Mohamed Magdy Abdelkhalek)
 
 import 'dart:convert';
 
 import 'package:demo_app/features/grc/domain/entities/grc_module_entity.dart';
-
+import 'package:intl/intl.dart';
 
 /// ************************* FILE INFO *************************** ///
 /// File Name: grc_module_model.dart
 /// Purpose: Contains the GRCModuleModel class used for create/update/read
-///          operations and Firebase (de)serialization.
+///          operations and Firestore (de)serialization.
 /// Author: Mohamed Magdy Abdelkhalek
 /// Created At: 30/6/2026
+
+final DateFormat _storageDateFormat = DateFormat('d MMM yyyy', 'en');
+
+/// function name: [_deriveStatus]
+///
+/// purpose: 'Inactive' and 'Removed' are the only statuses a caller sets
+///          explicitly, and they're sticky. Any other requested status
+///          (including the default 'Active' the UI sends) is derived from
+///          whether [activationDate] has arrived yet.
+///
+/// parameters:
+///            [String] requestedStatus: the status a caller asked for
+///            [DateTime] activationDate: the record's activation date
+///
+/// return type: [String] - 'Inactive' | 'Removed' | 'Scheduled' | 'Active'
+String _deriveStatus({
+  required String requestedStatus,
+  required DateTime activationDate,
+}) {
+  if (requestedStatus == 'Inactive' || requestedStatus == 'Removed') {
+    return requestedStatus;
+  }
+  final today = DateTime.now();
+  final startOfToday = DateTime(today.year, today.month, today.day);
+  return activationDate.isAfter(startOfToday) ? 'Scheduled' : 'Active';
+}
 
 /// class name: [GRCModuleModel]
 ///
 /// purpose: represents a GRC Module record where every field is kept as a
-///          List<...>. Each index across all the Lists (including
-///          [editors] and [lastModifiedDate]) represents one historical
-///          version of the record made at the same point in time. Updating
-///          any single field requires appending a new element to every List
-///          (re-using the previous value for fields that did not change) so
-///          that all Lists always stay the same length.
+///          List<...>. Each index across all the Lists (including [modifiers]
+///          and [modificationDate]) represents one historical version of the
+///          record at the same point in time. Updating any single field
+///          requires appending a new element to every List (re-using the
+///          previous value for unchanged fields) so that all Lists always stay
+///          the same length.
+///
+///          Soft-delete is no longer a separate [isDeleted] List. Setting
+///          [status] to "Removed" via [copyWithUpdate] is the canonical
+///          delete operation, and setting it back to "Active" restores it.
 ///
 /// authors: Mohamed Magdy Abdelkhalek
 ///
 /// created at: 30/6/2026
 class GRCModuleModel {
-  final String id;
+  final String moduleId;
 
-  final List<String> image;
-  final List<String> grcModuleNameEnglish;
-  final List<String> grcModuleNameArabic;
-  final List<String> descriptionEnglish;
-  final List<String> descriptionArabic;
-  final List<String> owningDepartment;
-  final List<DateTime> activationDate;
-  final List<List<String>> owners; // each element is the owners list at that revision
+  final List<String?> moduleImage;
+  final List<String> moduleNameEn;
+  final List<String> moduleNameAr;
+  final List<String> moduleDescriptionEn;
+  final List<String> moduleDescriptionAr;
+  final List<String> moduleOwningDepartment;
+  final List<DateTime> moduleActivationDate;
+
+  /// Each element is a JSON-encoded List<String> of owner **email addresses**.
+  /// Firestore rejects nested arrays, so every revision's owner list is
+  /// stored as jsonEncode(List<String>) and decoded on read.
+  final List<String> moduleOwners;
+
+  /// "Active" | "Inactive" | "Scheduled" | "Removed"
   final List<String> status;
 
-  // --- Tracking fields ---
-  final List<DateTime> lastModifiedDate; // last modification date per index
-  final List<String> editors; // id of the editor responsible for each index
+  // Tracking fields
+  final List<DateTime> modificationDate;
 
-  // --- Soft-delete flag ---
-  // Kept as a history List, just like every other field, so deleting and
-  // restoring a record is simply appending a new revision (true/false)
-  // instead of physically removing the document from the database.
-  final List<bool> isDeleted;
+  /// Stores the email address of the user responsible for each revision.
+  final List<String> modifiers;
 
   GRCModuleModel({
-    required this.id,
-    required this.image,
-    required this.grcModuleNameEnglish,
-    required this.grcModuleNameArabic,
-    required this.descriptionEnglish,
-    required this.descriptionArabic,
-    required this.owningDepartment,
-    required this.activationDate,
-    required this.owners,
+    required this.moduleId,
+    required this.moduleImage,
+    required this.moduleNameEn,
+    required this.moduleNameAr,
+    required this.moduleDescriptionEn,
+    required this.moduleDescriptionAr,
+    required this.moduleOwningDepartment,
+    required this.moduleActivationDate,
+    required this.moduleOwners,
     required this.status,
-    required this.lastModifiedDate,
-    required this.editors,
-    required this.isDeleted,
+    required this.modificationDate,
+    required this.modifiers,
   }) {
     assert(
       _allSameLength(),
@@ -85,21 +121,20 @@ class GRCModuleModel {
   ///
   /// parameters: none
   ///
-  /// return type: [bool] - true if all Lists share the same length, false otherwise
+  /// return type: [bool] - true if all Lists share the same length
   bool _allSameLength() {
     final lengths = <int>{
-      image.length,
-      grcModuleNameEnglish.length,
-      grcModuleNameArabic.length,
-      descriptionEnglish.length,
-      descriptionArabic.length,
-      owningDepartment.length,
-      activationDate.length,
-      owners.length,
+      moduleImage.length,
+      moduleNameEn.length,
+      moduleNameAr.length,
+      moduleDescriptionEn.length,
+      moduleDescriptionAr.length,
+      moduleOwningDepartment.length,
+      moduleActivationDate.length,
+      moduleOwners.length,
       status.length,
-      lastModifiedDate.length,
-      editors.length,
-      isDeleted.length,
+      modificationDate.length,
+      modifiers.length,
     };
     return lengths.length == 1;
   }
@@ -108,50 +143,55 @@ class GRCModuleModel {
   ///
   /// purpose: build a brand new [GRCModuleModel] record. Every history List
   ///          is initialized with a single element representing the first
-  ///          (creation) revision.
+  ///          (creation) revision. The initial status is always "Active".
   ///
   /// parameters:
-  ///            [String] id: unique identifier of the new record
-  ///            [String] image: initial image url/path
-  ///            [String] grcModuleNameEnglish: initial English module name
-  ///            [String] grcModuleNameArabic: initial Arabic module name
-  ///            [String] descriptionEnglish: initial English description
-  ///            [String] descriptionArabic: initial Arabic description
-  ///            [String] owningDepartment: initial owning department
-  ///            [DateTime] activationDate: initial activation date
-  ///            [List<String>] owners: initial owners list
-  ///            [String] status: initial status
-  ///            [String] editorId: id of the user creating the record
+  ///            [String] moduleId: unique identifier of the new record
+  ///            [String] moduleImage: initial image url/path
+  ///            [String] moduleNameEn: initial English module name
+  ///            [String] moduleNameAr: initial Arabic module name
+  ///            [String] moduleDescriptionEn: initial English description
+  ///            [String] moduleDescriptionAr: initial Arabic description
+  ///            [String] moduleOwningDepartment: initial owning department
+  ///            [DateTime] moduleActivationDate: initial activation date
+  ///            [List<String>] owners: initial list of owner ids
+  ///            [String] status: initial status ("Active" | "Inactive" | "Scheduled")
+  ///            [String] modifierEmail: email of the user creating the record
   ///
   /// return type: [GRCModuleModel] - the newly created model instance
   factory GRCModuleModel.create({
-    required String id,
-    required String image,
-    required String grcModuleNameEnglish,
-    required String grcModuleNameArabic,
-    required String descriptionEnglish,
-    required String descriptionArabic,
-    required String owningDepartment,
-    required DateTime activationDate,
+    required String moduleId,
+    String? moduleImage,
+    required String moduleNameEn,
+    required String moduleNameAr,
+    required String moduleDescriptionEn,
+    required String moduleDescriptionAr,
+    required String moduleOwningDepartment,
+    required DateTime moduleActivationDate,
     required List<String> owners,
     required String status,
-    required String editorId,
+    required String modifierEmail,
   }) {
     final now = DateTime.now();
     return GRCModuleModel(
-      id: id,
-      image: [image],
-      grcModuleNameEnglish: [grcModuleNameEnglish],
-      grcModuleNameArabic: [grcModuleNameArabic],
-      descriptionEnglish: [descriptionEnglish],
-      descriptionArabic: [descriptionArabic],
-      owningDepartment: [owningDepartment],
-      activationDate: [activationDate],
-      owners: [owners],
-      status: [status],
-      lastModifiedDate: [now],
-      editors: [editorId],
-      isDeleted: [false],
+      moduleId: moduleId,
+      moduleImage: [moduleImage],
+      moduleNameEn: [moduleNameEn],
+      moduleNameAr: [moduleNameAr],
+      moduleDescriptionEn: [moduleDescriptionEn],
+      moduleDescriptionAr: [moduleDescriptionAr],
+      moduleOwningDepartment: [moduleOwningDepartment],
+      moduleActivationDate: [moduleActivationDate],
+      // JSON-encode the owners list into a single String for Firestore.
+      moduleOwners: [jsonEncode(owners)],
+      status: [
+        _deriveStatus(
+          requestedStatus: status,
+          activationDate: moduleActivationDate,
+        ),
+      ],
+      modificationDate: [now],
+      modifiers: [modifierEmail],
     );
   }
 
@@ -162,169 +202,179 @@ class GRCModuleModel {
   ///          value, ensuring all Lists remain the same length after the
   ///          update.
   ///
+  ///          To soft-delete: pass status: "Removed".
+  ///          To restore:     pass status: "Active".
+  ///
   /// parameters:
-  ///            [String] image: new image url/path, if changed
-  ///            [String] grcModuleNameEnglish: new English module name, if changed
-  ///            [String] grcModuleNameArabic: new Arabic module name, if changed
-  ///            [String] descriptionEnglish: new English description, if changed
-  ///            [String] descriptionArabic: new Arabic description, if changed
-  ///            [String] owningDepartment: new owning department, if changed
-  ///            [DateTime] activationDate: new activation date, if changed
-  ///            [List<String>] owners: new owners list, if changed
-  ///            [String] status: new status, if changed
-  ///            [bool] isDeleted: new soft-delete flag, if changed (true = delete, false = restore)
-  ///            [String] editorId: id of the user performing the update (required)
+  ///            [String] moduleImage: new image url/path, if changed
+  ///            [String] moduleNameEn: new English module name, if changed
+  ///            [String] moduleNameAr: new Arabic module name, if changed
+  ///            [String] moduleDescriptionEn: new English description, if changed
+  ///            [String] moduleDescriptionAr: new Arabic description, if changed
+  ///            [String] moduleOwningDepartment: new owning department, if changed
+  ///            [DateTime] moduleActivationDate: new activation date, if changed
+  ///            [List<String>] owners: new owners list (raw ids), if changed
+  ///            [String] status: new status ("Active"|"Inactive"|"Scheduled"|"Removed"), if changed
+  ///            [String] modifierEmail: email of the user performing the update (required)
   ///
   /// return type: [GRCModuleModel] - a new model instance with the appended revision
   GRCModuleModel copyWithUpdate({
-    String? image,
-    String? grcModuleNameEnglish,
-    String? grcModuleNameArabic,
-    String? descriptionEnglish,
-    String? descriptionArabic,
-    String? owningDepartment,
-    DateTime? activationDate,
+    String? moduleImage,
+    String? moduleNameEn,
+    String? moduleNameAr,
+    String? moduleDescriptionEn,
+    String? moduleDescriptionAr,
+    String? moduleOwningDepartment,
+    DateTime? moduleActivationDate,
     List<String>? owners,
     String? status,
-    bool? isDeleted,
-    required String editorId,
+    required String modifierEmail,
   }) {
     final now = DateTime.now();
     return GRCModuleModel(
-      id: id,
-      image: [...this.image, image ?? this.image.last],
-      grcModuleNameEnglish: [
-        ...this.grcModuleNameEnglish,
-        grcModuleNameEnglish ?? this.grcModuleNameEnglish.last,
+      moduleId: moduleId,
+      moduleImage: [...this.moduleImage, moduleImage ?? this.moduleImage.last],
+      moduleNameEn: [...this.moduleNameEn, moduleNameEn ?? this.moduleNameEn.last],
+      moduleNameAr: [...this.moduleNameAr, moduleNameAr ?? this.moduleNameAr.last],
+      moduleDescriptionEn: [
+        ...this.moduleDescriptionEn,
+        moduleDescriptionEn ?? this.moduleDescriptionEn.last,
       ],
-      grcModuleNameArabic: [
-        ...this.grcModuleNameArabic,
-        grcModuleNameArabic ?? this.grcModuleNameArabic.last,
+      moduleDescriptionAr: [
+        ...this.moduleDescriptionAr,
+        moduleDescriptionAr ?? this.moduleDescriptionAr.last,
       ],
-      descriptionEnglish: [
-        ...this.descriptionEnglish,
-        descriptionEnglish ?? this.descriptionEnglish.last,
+      moduleOwningDepartment: [
+        ...this.moduleOwningDepartment,
+        moduleOwningDepartment ?? this.moduleOwningDepartment.last,
       ],
-      descriptionArabic: [
-        ...this.descriptionArabic,
-        descriptionArabic ?? this.descriptionArabic.last,
+      moduleActivationDate: [
+        ...this.moduleActivationDate,
+        moduleActivationDate ?? this.moduleActivationDate.last,
       ],
-      owningDepartment: [
-        ...this.owningDepartment,
-        owningDepartment ?? this.owningDepartment.last,
+      // JSON-encode the new owners list if provided; otherwise carry forward
+      // the last encoded string as-is (already encoded from a previous revision).
+      moduleOwners: [
+        ...this.moduleOwners,
+        owners != null ? jsonEncode(owners) : this.moduleOwners.last,
       ],
-      activationDate: [
-        ...this.activationDate,
-        activationDate ?? this.activationDate.last,
+      status: [
+        ...this.status,
+        _deriveStatus(
+          requestedStatus: status ?? this.status.last,
+          activationDate: moduleActivationDate ?? this.moduleActivationDate.last,
+        ),
       ],
-      owners: [...this.owners, owners ?? this.owners.last],
-      status: [...this.status, status ?? this.status.last],
-      lastModifiedDate: [...lastModifiedDate, now],
-      editors: [...editors, editorId],
-      isDeleted: [...this.isDeleted, isDeleted ?? this.isDeleted.last],
+      modificationDate: [...modificationDate, now],
+      modifiers: [...modifiers, modifierEmail],
     );
   }
 
   /// function name: [toJson]
   ///
   /// purpose: serialize the model into a Map ready to be persisted in
-  ///          Firebase. Keys follow the convention: first letter of each
-  ///          word capitalized, words separated by underscores (e.g.
-  ///          "GRC_Module_Name_English"). The primary key is stored as "ID".
+  ///          Firestore. Keys exactly match the schema:
+  ///
+  ///          Module_ID | Module_Image | Module_Name_En | Module_Name_Ar |
+  ///          Module_Description_En | Module_Description_Ar |
+  ///          Module_Owning_Department | Module_Activation_Date |
+  ///          Module_Owners | Status | Modification_Date | Modifiers
   ///
   /// parameters: none
   ///
-  /// return type: [Map<String, dynamic>] - the Firebase-ready representation of the model
+  /// return type: [Map<String, dynamic>] - the Firestore-ready representation
   Map<String, dynamic> toJson() {
     return {
-      'ID': id,
-      'Image': image,
-      'GRC_Module_Name_English': grcModuleNameEnglish,
-      'GRC_Module_Name_Arabic': grcModuleNameArabic,
-      'Description_English': descriptionEnglish,
-      'Description_Arabic': descriptionArabic,
-      'Owning_Department': owningDepartment,
-      'Activation_Date':
-          activationDate.map((d) => d.toIso8601String()).toList(),
-      // Each revision's owners list is JSON-encoded as a String because
-      // Firestore does not support nested arrays.
-      'Owners': owners.map((list) => jsonEncode(list)).toList(),
+      'Module_ID': moduleId,
+      'Module_Image': moduleImage,
+      'Module_Name_En': moduleNameEn,
+      'Module_Name_Ar': moduleNameAr,
+      'Module_Description_En': moduleDescriptionEn,
+      'Module_Description_Ar': moduleDescriptionAr,
+      'Module_Owning_Department': moduleOwningDepartment,
+      'Module_Activation_Date':
+          moduleActivationDate.map((d) => _storageDateFormat.format(d)).toList(),
+      // Already JSON-encoded strings — stored as List<String> in Firestore.
+      'Module_Owners': moduleOwners,
       'Status': status,
-      'Last_Modified_Date':
-          lastModifiedDate.map((d) => d.toIso8601String()).toList(),
-      'Editors': editors,
-      'Is_Deleted': isDeleted,
+      'Modification_Date':
+          modificationDate.map((d) => _storageDateFormat.format(d)).toList(),
+      'Modifiers': modifiers,
     };
   }
 
   /// function name: [GRCModuleModel.fromJson]
   ///
   /// purpose: rebuild a [GRCModuleModel] instance from the raw Map retrieved
-  ///          from Firebase.
+  ///          from Firestore.
   ///
   /// parameters:
-  ///            [Map<String, dynamic>] json: the raw document data coming from Firebase
+  ///            [Map<String, dynamic>] json: the raw document data from Firestore
   ///
   /// return type: [GRCModuleModel] - the reconstructed model instance
   factory GRCModuleModel.fromJson(Map<String, dynamic> json) {
+    final modifiersRaw = List<String>.from(json['Modifiers'] ?? []);
     return GRCModuleModel(
-      id: json['ID'] as String,
-      image: List<String>.from(json['Image'] ?? []),
-      grcModuleNameEnglish:
-          List<String>.from(json['GRC_Module_Name_English'] ?? []),
-      grcModuleNameArabic:
-          List<String>.from(json['GRC_Module_Name_Arabic'] ?? []),
-      descriptionEnglish:
-          List<String>.from(json['Description_English'] ?? []),
-      descriptionArabic: List<String>.from(json['Description_Arabic'] ?? []),
-      owningDepartment: List<String>.from(json['Owning_Department'] ?? []),
-      activationDate: (json['Activation_Date'] as List? ?? [])
-          .map((d) => DateTime.parse(d as String))
+      moduleId: json['Module_ID'] as String,
+      moduleImage: List<String?>.from(json['Module_Image'] ?? []),
+      moduleNameEn: List<String>.from(json['Module_Name_En'] ?? []),
+      moduleNameAr: List<String>.from(json['Module_Name_Ar'] ?? []),
+      moduleDescriptionEn:
+          List<String>.from(json['Module_Description_En'] ?? []),
+      moduleDescriptionAr:
+          List<String>.from(json['Module_Description_Ar'] ?? []),
+      moduleOwningDepartment:
+          List<String>.from(json['Module_Owning_Department'] ?? []),
+      moduleActivationDate: (json['Module_Activation_Date'] as List? ?? [])
+          .map((d) => _storageDateFormat.parse(d as String))
           .toList(),
-      owners: (json['Owners'] as List? ?? [])
-          .map((o) => List<String>.from(jsonDecode(o as String) as List))
+      // Stored as List<String> of JSON-encoded owner lists — keep as-is;
+      // decoding happens in toEntity() when the latest value is needed.
+      moduleOwners: List<String>.from(json['Module_Owners'] ?? []),
+      status: json['Status'] != null
+          ? List<String>.from(json['Status'])
+          // Backwards-compat: documents written before the Status field was
+          // added default to "Active".
+          : List<String>.filled(modifiersRaw.length, 'Active'),
+      modificationDate: (json['Modification_Date'] as List? ?? [])
+          .map((d) => _storageDateFormat.parse(d as String))
           .toList(),
-      status: List<String>.from(json['Status'] ?? []),
-      lastModifiedDate: (json['Last_Modified_Date'] as List? ?? [])
-          .map((d) => DateTime.parse(d as String))
-          .toList(),
-      editors: List<String>.from(json['Editors'] ?? []),
-      // Falls back to a list of `false` matching the editors length, so
-      // documents created before this field existed still load correctly.
-      isDeleted: json['Is_Deleted'] != null
-          ? List<bool>.from(json['Is_Deleted'])
-          : List<bool>.filled(
-              List<String>.from(json['Editors'] ?? []).length,
-              false,
-            ),
+      modifiers: modifiersRaw,
     );
   }
 
   /// function name: [toEntity]
   ///
-  /// purpose: convert the model (full history) into a [GRCModuleEntity]
-  ///          holding only the latest (current) value of every field, which
-  ///          is what the rest of the app actually consumes.
+  /// purpose: convert the model (full revision history) into a
+  ///          [GRCModuleEntity] holding only the latest (current) value of
+  ///          every field, which is what the rest of the app actually consumes.
+  ///          The owners string is decoded back to List<String> here.
   ///
   /// parameters: none
   ///
-  /// return type: [GRCModuleEntity] - the flattened entity built from the last index of every List
+  /// return type: [GRCModuleEntity] - the flattened entity from the last index
   GRCModuleEntity toEntity() {
+    final currentActivationDate = moduleActivationDate.last;
     return GRCModuleEntity(
-      id: id,
-      image: image.last,
-      grcModuleNameEnglish: grcModuleNameEnglish.last,
-      grcModuleNameArabic: grcModuleNameArabic.last,
-      descriptionEnglish: descriptionEnglish.last,
-      descriptionArabic: descriptionArabic.last,
-      owningDepartment: owningDepartment.last,
-      activationDate: activationDate.last,
-      owners: owners.last,
-      status: status.last,
-      createdAt: lastModifiedDate.first,
-      lastModifiedDate: lastModifiedDate.last,
-      lastEditorId: editors.last,
-      isDeleted: isDeleted.last,
+      moduleId: moduleId,
+      moduleImage: moduleImage.last,
+      moduleNameEn: moduleNameEn.last,
+      moduleNameAr: moduleNameAr.last,
+      moduleDescriptionEn: moduleDescriptionEn.last,
+      moduleDescriptionAr: moduleDescriptionAr.last,
+      moduleOwningDepartment: moduleOwningDepartment.last,
+      moduleActivationDate: currentActivationDate,
+      // Decode the JSON-encoded string back to List<String>.
+      moduleOwners: List<String>.from(
+        jsonDecode(moduleOwners.last) as List,
+      ),
+      status: _deriveStatus(
+        requestedStatus: status.last,
+        activationDate: currentActivationDate,
+      ),
+      createdAt: modificationDate.first,
+      modificationDate: modificationDate.last,
+      lastModifier: modifiers.last,
     );
   }
 }
