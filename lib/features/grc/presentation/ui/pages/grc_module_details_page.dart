@@ -33,6 +33,7 @@ import 'package:demo_app/features/grc/domain/entities/policy_entity.dart';
 import 'package:demo_app/features/grc/domain/entities/policy_status.dart';
 import 'package:demo_app/features/grc/presentation/controller/policy_cubit.dart';
 import 'package:demo_app/features/grc/presentation/ui/pages/create_new_policy.dart';
+import 'package:demo_app/features/grc/presentation/ui/pages/policy_bulk_upload/policy_bulk_upload_page.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
 import 'package:demo_app/features/roles/widgets/filter_bar_item.dart';
 import 'package:demo_app/features/settings/core_widgets/main_widget/custom_button_widget.dart';
@@ -86,6 +87,7 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
   ];
 
   final _searchController = TextEditingController();
+  final GlobalKey _addPolicyButtonKey = GlobalKey();
   String _searchQuery = '';
   int _selectedTab = 0;
   String _selectedStatusFilter = 'all';
@@ -94,6 +96,40 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  Future<void> _showPolicyCreationMenu(BuildContext context) async {
+    final buttonBox =
+        _addPolicyButtonKey.currentContext?.findRenderObject() as RenderBox?;
+    if (buttonBox == null) return;
+    final overlayBox =
+        Overlay.of(context).context.findRenderObject() as RenderBox;
+
+    final position = RelativeRect.fromRect(
+      Rect.fromPoints(
+        buttonBox.localToGlobal(Offset(0, buttonBox.size.height),
+            ancestor: overlayBox),
+        buttonBox.localToGlobal(buttonBox.size.bottomRight(Offset.zero),
+            ancestor: overlayBox),
+      ),
+      Offset.zero & overlayBox.size,
+    );
+
+    final choice = await showMenu<String>(
+      context: context,
+      position: position,
+      items: [
+        PopupMenuItem(value: 'add', child: Text('Add Policy'.tr)),
+        PopupMenuItem(value: 'bulk', child: Text('Bulk Upload'.tr)),
+      ],
+    );
+
+    if (!context.mounted) return;
+    if (choice == 'add') {
+      navigateTo(context, CreateNewPolicyPage(moduleId: widget.module.id));
+    } else if (choice == 'bulk') {
+      navigateTo(context, PolicyBulkUploadPage(moduleId: widget.module.id));
+    }
   }
 
   PolicyStatus? _statusForKey(String key) {
@@ -315,22 +351,22 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
                 hintText: "Search".tr,
                 controller: _searchController,
               ),
-              customButtonWithSvg(
-                colorBorder: AppColors.primary,
-                space: 10.w,
-                widthImage: 16.w,
-                heightImage: 16.h,
-                function: () => navigateTo(
-                  context,
-                  CreateNewPolicyPage(moduleId: widget.module.id),
+              Container(
+                key: _addPolicyButtonKey,
+                child: customButtonWithSvg(
+                  colorBorder: AppColors.primary,
+                  space: 10.w,
+                  widthImage: 16.w,
+                  heightImage: 16.h,
+                  function: () => _showPolicyCreationMenu(context),
+                  title: 'Policy',
+                  textStyle: StyleText.fontSize14Weight500
+                      .copyWith(color: AppColors.textButton),
+                  image:
+                      'assets/icons_assets/database_builder_assets/plus_head.svg',
+                  color: AppColors.primary,
+                  svgColor: AppColors.textButton,
                 ),
-                title: 'Policy',
-                textStyle: StyleText.fontSize14Weight500
-                    .copyWith(color: AppColors.textButton),
-                image:
-                    'assets/icons_assets/database_builder_assets/plus_head.svg',
-                color: AppColors.primary,
-                svgColor: AppColors.textButton,
               ),
             ],
           )
@@ -348,24 +384,24 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
                 ],
               ),
               SizedBox(height: 8.h),
-              customButtonWithSvg(
-                colorBorder: AppColors.primary,
-                space: 10.w,
-                radius: 8.r,
-                widthImage: 16.w,
-                heightImage: 16.h,
-                function: () => navigateTo(
-                  context,
-                  CreateNewPolicyPage(moduleId: widget.module.id),
+              Container(
+                key: _addPolicyButtonKey,
+                child: customButtonWithSvg(
+                  colorBorder: AppColors.primary,
+                  space: 10.w,
+                  radius: 8.r,
+                  widthImage: 16.w,
+                  heightImage: 16.h,
+                  function: () => _showPolicyCreationMenu(context),
+                  title: 'Policy',
+                  textStyle: StyleText.fontSize14Weight500
+                      .copyWith(color: AppColors.textButton),
+                  image: 'assets/icons/add.svg',
+                  color: AppColors.primary,
+                  width: double.infinity,
+                  height: 36.h,
+                  svgColor: AppColors.textButton,
                 ),
-                title: 'Policy',
-                textStyle: StyleText.fontSize14Weight500
-                    .copyWith(color: AppColors.textButton),
-                image: 'assets/icons/add.svg',
-                color: AppColors.primary,
-                width: double.infinity,
-                height: 36.h,
-                svgColor: AppColors.textButton,
               ),
             ],
           ),

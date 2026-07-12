@@ -46,12 +46,17 @@ class GrcOwnerSection extends StatefulWidget {
   /// - In create/edit mode   → these owners are pre-selected.
   final List<String> initialOwnerIds;
 
+  /// The department currently selected on the form. When set, only
+  /// employees belonging to this department are shown as owner candidates.
+  final String? selectedDepartmentId;
+
   final void Function(List<OwnerData> selected)? onOwnersChanged;
 
   const GrcOwnerSection({
     super.key,
     this.isViewMode = false,
     this.initialOwnerIds = const [],
+    this.selectedDepartmentId,
     this.onOwnersChanged,
   });
 
@@ -70,8 +75,17 @@ class _GrcOwnerSectionState extends State<GrcOwnerSection> {
       (_) => _cubit.loadOwners(
         context,
         initialOwnerIds: widget.initialOwnerIds,
+        selectedDepartmentId: widget.selectedDepartmentId,
       ),
     );
+  }
+
+  @override
+  void didUpdateWidget(covariant GrcOwnerSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selectedDepartmentId != widget.selectedDepartmentId) {
+      _cubit.filterByDepartment(widget.selectedDepartmentId);
+    }
   }
 
   @override

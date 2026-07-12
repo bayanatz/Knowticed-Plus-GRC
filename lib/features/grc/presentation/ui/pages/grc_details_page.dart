@@ -15,7 +15,10 @@ library;
 /// Author: Mohamed Magdy Abdelkhalek
 /// Created At: 28/6/2026
 
+import 'dart:io';
+
 import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart';
+import 'package:demo_app/core/custom/46_custom_image_picker.dart';
 import 'package:demo_app/core/custom/loading.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/features/grc/domain/entities/grc_module_entity.dart';
@@ -85,6 +88,7 @@ class _GovernanceRiskAndComplianceDetailsState
   bool _statusValue = true;
   late GrcPageMode _currentMode;
   List<String> _selectedOwnerIds = [];
+  File? _imageFile;
   bool _submitted = false;
   bool _autoDeleteScheduled = false;
 
@@ -125,6 +129,10 @@ class _GovernanceRiskAndComplianceDetailsState
         _nameArController.text.trim().isNotEmpty &&
         _descEnController.text.trim().isNotEmpty &&
         _descArController.text.trim().isNotEmpty &&
+        !containsArabicLetters(_nameEnController.text) &&
+        !containsEnglishLetters(_nameArController.text) &&
+        !containsArabicLetters(_descEnController.text) &&
+        !containsEnglishLetters(_descArController.text) &&
         _selectedDepartment != null &&
         _activationDate != null &&
         !_activationDate!.isBefore(startOfToday);
@@ -142,6 +150,7 @@ class _GovernanceRiskAndComplianceDetailsState
       activationDate: _activationDate ?? DateTime.now(),
       owners: _selectedOwnerIds,
       status: _statusValue ? 'Active' : 'Inactive',
+      imageFile: _imageFile,
     );
   }
 
@@ -156,6 +165,7 @@ class _GovernanceRiskAndComplianceDetailsState
       activationDate: _activationDate,
       owners: _selectedOwnerIds,
       status: _statusValue ? 'Active' : 'Inactive',
+      imageFile: _imageFile,
     );
   }
 
@@ -309,8 +319,16 @@ class _GovernanceRiskAndComplianceDetailsState
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  _ModuleImagePicker(
-                                    imageUrl: widget.entity?.image,
+                                  IgnorePointer(
+                                    ignoring: _currentMode ==
+                                            GrcPageMode.view ||
+                                        _currentMode == GrcPageMode.restore,
+                                    child: CustomImagePicker(
+                                      imageUrl: widget.entity?.image,
+                                      imageFile: _imageFile,
+                                      onImagePicked: (file) =>
+                                          setState(() => _imageFile = file),
+                                    ),
                                   ),
                                   SizedBox(height: 15.h),
                                   GrcFormFields(
@@ -335,6 +353,7 @@ class _GovernanceRiskAndComplianceDetailsState
                                             GrcPageMode.view ||
                                         _currentMode == GrcPageMode.restore),
                                     initialOwnerIds: _selectedOwnerIds,
+                                    selectedDepartmentId: _selectedDepartment,
                                     onOwnersChanged: (selected) {
                                       _selectedOwnerIds =
                                           selected.map((o) => o.id).toList();
@@ -386,46 +405,3 @@ class _GovernanceRiskAndComplianceDetailsState
 /// Tracks which cubit action was last dispatched so the success listener
 /// can build the correct dialog title / subtitle.
 enum _PendingAction { none, create, update, delete, restore }
-
-class _ModuleImagePicker extends StatelessWidget {
-  final String? imageUrl;
-
-  const _ModuleImagePicker({this.imageUrl});
-
-  @override
-  Widget build(BuildContext context) {
-    final hasImage = imageUrl != null && imageUrl!.isNotEmpty;
-    final avatarRadius = 30.r;
-
-    return SizedBox(
-      width: avatarRadius * 2 + 10,
-      height: avatarRadius * 2 + 10,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          CircleAvatar(
-            radius: avatarRadius,
-            backgroundColor: AppColors.background,
-            backgroundImage: hasImage ? NetworkImage(imageUrl!) : null,
-            child: hasImage
-                ? null
-                : Icon(
-                    Icons.image_outlined,
-                    color: AppColors.secondaryText,
-                    size: 26.sp,
-                  ),
-          ),
-          Positioned(
-            bottom: 0,
-            right: 0,
-            child: CircleAvatar(
-              radius: 11.r,
-              backgroundColor: AppColors.primary,
-              child: Icon(Icons.camera_alt, color: Colors.white, size: 13.sp),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}

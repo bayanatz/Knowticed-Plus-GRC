@@ -10,6 +10,7 @@ class OwnerData {
   final String id;
   final String name;
   final String department;
+  final String departmentId;
   final String jobTitle;
   final String photo;
   bool isSelected;
@@ -18,6 +19,7 @@ class OwnerData {
     required this.id,
     required this.name,
     required this.department,
+    required this.departmentId,
     required this.jobTitle,
     required this.photo,
     this.isSelected = false,
@@ -31,10 +33,13 @@ class GrcOwnerCubit extends Cubit<GrcOwnerState> {
 
   List<OwnerData> _allOwners = [];
   List<OwnerData> filteredOwners = [];
+  String _searchQuery = '';
+  String? _selectedDepartmentId;
 
   void loadOwners(
     BuildContext context, {
     List<String> initialOwnerIds = const [],
+    String? selectedDepartmentId,
   }) {
     if (!Get.isRegistered<MainCoreEmployeeController>()) return;
     final ctrl = Get.find<MainCoreEmployeeController>();
@@ -44,25 +49,40 @@ class GrcOwnerCubit extends Cubit<GrcOwnerState> {
         id: e.id ?? '',
         name: EmployeeHelper.getEmployeeLocalizedName(employee: e, context: context),
         department: EmployeeHelper.getEmployeeLocalizeDepartment(employee: e, context: context),
+        departmentId: e.departmentId ?? '',
         jobTitle: EmployeeHelper.getEmployeeLocalizedTitle(employee: e, context: context)?.toString() ?? '',
         photo: EmployeeHelper.getEmployeeImage(employee: e),
         isSelected: initialOwnerIds.contains(e.id ?? ''),
       );
     }).toList();
-    filteredOwners = List.from(_allOwners);
-    emit(GrcOwnerLoaded());
+    _selectedDepartmentId = selectedDepartmentId;
+    _applyFilters();
   }
 
   void search(String query) {
-    final q = query.toLowerCase().trim();
-    filteredOwners = q.isEmpty
-        ? List.from(_allOwners)
-        : _allOwners
-            .where((o) =>
-                o.name.toLowerCase().contains(q) ||
-                o.department.toLowerCase().contains(q) ||
-                o.jobTitle.toLowerCase().contains(q))
-            .toList();
+    _searchQuery = query.toLowerCase().trim();
+    _applyFilters();
+  }
+
+  /// Restricts the visible owners to those belonging to [departmentId].
+  /// Pass null to clear the department filter and show everyone again.
+  void filterByDepartment(String? departmentId) {
+    if (_selectedDepartmentId == departmentId) return;
+    _selectedDepartmentId = departmentId;
+    _applyFilters();
+  }
+
+  void _applyFilters() {
+    filteredOwners = _allOwners.where((o) {
+      final matchesDepartment = _selectedDepartmentId == null ||
+          _selectedDepartmentId!.isEmpty ||
+          o.departmentId == _selectedDepartmentId;
+      final matchesSearch = _searchQuery.isEmpty ||
+          o.name.toLowerCase().contains(_searchQuery) ||
+          o.department.toLowerCase().contains(_searchQuery) ||
+          o.jobTitle.toLowerCase().contains(_searchQuery);
+      return matchesDepartment && matchesSearch;
+    }).toList();
     emit(GrcOwnerLoaded());
   }
 

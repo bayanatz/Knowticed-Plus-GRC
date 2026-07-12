@@ -18,6 +18,7 @@ library;
 import 'package:demo_app/core/custom/16-custom_card_styles.dart';
 import 'package:demo_app/core/custom/35-custom_search_widget_custom.dart';
 import 'package:demo_app/core/custom/43_custom_module_info_card.dart';
+import 'package:demo_app/core/custom/47_custom_sort_button.dart';
 import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/helper/main_helper/employee_helper.dart';
@@ -29,13 +30,11 @@ import 'package:demo_app/features/grc/presentation/controller/grc_module_cubit.d
 import 'package:demo_app/features/grc/presentation/ui/pages/grc_details_page.dart';
 import 'package:demo_app/features/grc/presentation/ui/pages/grc_module_details_page.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
-import 'package:demo_app/features/roles/core_widgets/main_widget/app_dropdown.dart';
 import 'package:demo_app/features/roles/core_widgets/main_widget/responsive_helper.dart';
 import 'package:demo_app/features/roles/widgets/filter_bar_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:get_it/get_it.dart';
@@ -202,16 +201,23 @@ class _GovernanceRiskAndCompliancePageState
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.r),
       ),
-      items: [
-        PopupMenuItem<String>(
-          value: 'edit',
-          child: Text('Edit'.tr),
-        ),
-        PopupMenuItem<String>(
-          value: 'delete',
-          child: Text('Delete'.tr),
-        ),
-      ],
+      items: module.isDeleted
+          ? [
+              PopupMenuItem<String>(
+                value: 'restore',
+                child: Text('Restore'.tr),
+              ),
+            ]
+          : [
+              PopupMenuItem<String>(
+                value: 'edit',
+                child: Text('Edit'.tr),
+              ),
+              PopupMenuItem<String>(
+                value: 'delete',
+                child: Text('Delete'.tr),
+              ),
+            ],
     );
 
     if (!context.mounted || selected == null) {
@@ -219,7 +225,7 @@ class _GovernanceRiskAndCompliancePageState
     }
 
     if (selected == 'edit') {
-      await _openDetails(context, GrcPageMode.edit, entity: module);
+      await _openDetails(context, GrcPageMode.view, entity: module);
       return;
     }
 
@@ -230,6 +236,11 @@ class _GovernanceRiskAndCompliancePageState
         entity: module,
         autoDelete: true,
       );
+      return;
+    }
+
+    if (selected == 'restore') {
+      await _openDetails(context, GrcPageMode.restore, entity: module);
     }
   }
 
@@ -246,6 +257,7 @@ class _GovernanceRiskAndCompliancePageState
           'all': 'All',
           'Active': 'Active',
           'Inactive': 'Inactive',
+          'Scheduled': 'Scheduled',
           'Removed': 'Removed',
         };
 
@@ -255,6 +267,8 @@ class _GovernanceRiskAndCompliancePageState
               {'num': counts['Active'] ?? 0, 'color': AppColors.green}),
           MapEntry('Inactive',
               {'num': counts['Inactive'] ?? 0, 'color': AppColors.red}),
+          MapEntry('Scheduled',
+              {'num': counts['Scheduled'] ?? 0, 'color': AppColors.primary}),
           MapEntry('Removed',
               {'num': counts['Removed'] ?? 0, 'color': AppColors.colorGrey}),
         ];
@@ -310,30 +324,17 @@ class _GovernanceRiskAndCompliancePageState
   Widget _buildActionBar(BuildContext context) {
     final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
 
-    final sortButton = SizedBox(
+    final sortButton = CustomSortButton<String>(
+      value: _sortOrder,
+      items: const ['ASC', 'DES', 'Creation Date', 'Last Update'],
+      labelBuilder: (o) => o.tr,
+      onChanged: (value) {
+        if (value != null) setState(() => _sortOrder = value);
+      },
+      showTitle: false,
+      svgPath: "assets/icons_assets/data_grc_assets/icons_sort.svg",
       width: 40.w,
       height: 35.h,
-      child: AppDropdown(
-        items: ['ASC', 'DES', 'Creation Date', 'Last Update']
-            .map((o) => DropdownMenuItem<String>(value: o, child: Text(o.tr)))
-            .toList(),
-        onChanged: (value) {
-          if (value != null) setState(() => _sortOrder = value);
-        },
-        textButton: null,
-
-        isAllCornersRounded: true,
-        value: null,
-        // width: 150.sp,
-        // menuWidth: 150.sp,
-        fillColor: AppColors.field,
-        // menuItemHeight: 35.h,
-        customButton: SvgPicture.asset(
-          "assets/icons_assets/data_grc_assets/icons_sort.svg",
-          width: 20.w,
-          height: 20.h,
-        ),
-      ),
     );
 
     final createButton = customButtonWithSvg(
@@ -499,8 +500,6 @@ class _GrcModuleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDeleted = module.isDeleted;
-
     return ModuleInfoCard(
       width: double.infinity,
       onTap: onTap,
@@ -524,7 +523,7 @@ class _GrcModuleCard extends StatelessWidget {
       footerLabel: '${'Last Update'.tr} :',
       footerValue: DateFormat('d MMM yyyy', context.isArabic ? 'ar' : 'en')
           .format(module.lastModifiedDate),
-      onMenuTap: isDeleted ? null : onMenuTap,
+      onMenuTap: onMenuTap,
     );
   }
 }

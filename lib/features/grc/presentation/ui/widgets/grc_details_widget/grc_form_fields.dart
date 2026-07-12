@@ -27,6 +27,7 @@ import 'package:demo_app/features/department/presentation/controller/add_departm
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart' hide TextDirection;
 
 /// class name: [GrcFormFields]
 ///
@@ -38,7 +39,11 @@ import 'package:get/get.dart';
 /// authors: Mohamed Magdy Abdelkhalek
 ///
 /// created at: 29/6/2026
-class GrcFormFields extends StatelessWidget {
+bool containsEnglishLetters(String text) => RegExp(r'[a-zA-Z]').hasMatch(text);
+
+bool containsArabicLetters(String text) => RegExp(r'[؀-ۿ]').hasMatch(text);
+
+class GrcFormFields extends StatefulWidget {
   final TextEditingController nameEnController;
   final TextEditingController nameArController;
   final TextEditingController descEnController;
@@ -65,7 +70,48 @@ class GrcFormFields extends StatelessWidget {
   });
 
   @override
+  State<GrcFormFields> createState() => _GrcFormFieldsState();
+}
+
+class _GrcFormFieldsState extends State<GrcFormFields> {
+  @override
+  void initState() {
+    super.initState();
+    for (final controller in _bilingualControllers) {
+      controller.addListener(_onTextChanged);
+    }
+  }
+
+  @override
+  void dispose() {
+    for (final controller in _bilingualControllers) {
+      controller.removeListener(_onTextChanged);
+    }
+    super.dispose();
+  }
+
+  List<TextEditingController> get _bilingualControllers => [
+        widget.nameEnController,
+        widget.nameArController,
+        widget.descEnController,
+        widget.descArController,
+      ];
+
+  void _onTextChanged() => setState(() {});
+
+  @override
   Widget build(BuildContext context) {
+    final nameEnController = widget.nameEnController;
+    final nameArController = widget.nameArController;
+    final descEnController = widget.descEnController;
+    final descArController = widget.descArController;
+    final selectedDepartment = widget.selectedDepartment;
+    final activationDate = widget.activationDate;
+    final onDepartmentChanged = widget.onDepartmentChanged;
+    final onDateChanged = widget.onDateChanged;
+    final submitted = widget.submitted;
+    final readOnly = widget.readOnly;
+
     final requiredError =
         context.isArabic ? 'هذا الحقل مطلوب' : 'This field is required.';
 
@@ -77,14 +123,14 @@ class GrcFormFields extends StatelessWidget {
       controller: nameEnController,
       errorText: submitted && nameEnController.text.trim().isEmpty
           ? "GRC Module Name is required"
-          : null,
+          : containsArabicLetters(nameEnController.text)
+              ? "GRC Module Name must be written in English"
+              : null,
       submitted: submitted,
       readOnly: readOnly,
       fillColor: AppColors.background,
-      borderRadius: BorderRadius.circular(8),
-      height: 30.h,
-      valueStyle:
-          StyleText.fontSize14Weight500.copyWith(color: AppColors.secondaryText),
+      valueStyle: StyleText.fontSize14Weight500
+          .copyWith(color: AppColors.secondaryText),
       hintStyle: StyleText.fontSize14Weight500
           .copyWith(color: AppColors.secondaryText.withOpacity(.5)),
       labelStyle:
@@ -100,18 +146,18 @@ class GrcFormFields extends StatelessWidget {
         controller: nameArController,
         errorText: submitted && nameArController.text.trim().isEmpty
             ? "عنوان اطار الحوكمه مطلوب"
-            : null,
+            : containsEnglishLetters(nameArController.text)
+                ? "يجب كتابة عنوان اطار الحوكمه باللغة العربية"
+                : null,
         submitted: submitted,
         readOnly: readOnly,
         fillColor: AppColors.background,
-        borderRadius: BorderRadius.circular(8),
-        height: 30.h,
-        valueStyle:
-            StyleText.fontSize14Weight500.copyWith(color: AppColors.secondaryText),
+        valueStyle: StyleText.fontSize14Weight500
+            .copyWith(color: AppColors.secondaryText),
         hintStyle: StyleText.fontSize14Weight500
             .copyWith(color: AppColors.secondaryText.withOpacity(.5)),
-        labelStyle:
-            AppTextStyles.font16BlackRegularCairo.copyWith(fontSize: 14.sp),
+        labelStyle: AppTextStyles.font16BlackRegularCairo
+            .copyWith(fontSize: 12.sp, height: 1.4),
         onChanged: (_) {},
       ),
     );
@@ -136,14 +182,10 @@ class GrcFormFields extends StatelessWidget {
       onChanged: onDepartmentChanged,
       enabled: !readOnly,
       fillColor: AppColors.background,
-      errorText:
-          submitted && selectedDepartment == null ? requiredError : null,
-      labelStyle: StyleText.fontSize16Weight500.copyWith(color: AppColors.text),
+      errorText: submitted && selectedDepartment == null ? requiredError : null,
+      labelStyle: StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
       hintStyle: StyleText.fontSize14Weight500
           .copyWith(color: AppColors.secondaryText.withOpacity(.7)),
-      itemStyle: StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
-      triggerPadding:
-          EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
       borderRadius: BorderRadius.circular(4.r),
       required: false,
     );
@@ -151,7 +193,7 @@ class GrcFormFields extends StatelessWidget {
     final today = DateTime.now();
     final startOfToday = DateTime(today.year, today.month, today.day);
     final isPastDate =
-        activationDate != null && activationDate!.isBefore(startOfToday);
+        activationDate != null && activationDate.isBefore(startOfToday);
 
     final activationDateField = CustomDropdownCalendar(
       borderRadius: BorderRadius.circular(4.r),
@@ -162,6 +204,8 @@ class GrcFormFields extends StatelessWidget {
       enabled: !readOnly,
       fillColor: AppColors.background,
       firstDate: startOfToday,
+      dateFormatter: (d) =>
+          DateFormat('d MMM yyyy', context.isArabic ? 'ar' : 'en').format(d),
       errorText: !submitted
           ? null
           : activationDate == null
@@ -171,7 +215,7 @@ class GrcFormFields extends StatelessWidget {
                       ? 'لا يمكن أن يكون تاريخ التفعيل قبل اليوم'
                       : 'Activation date cannot be before today')
                   : null,
-      labelStyle: StyleText.fontSize16Weight500.copyWith(color: AppColors.text),
+      labelStyle: StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
       hintStyle: StyleText.fontSize14Weight500
           .copyWith(color: AppColors.secondaryText.withOpacity(.7)),
       required: false,
@@ -215,12 +259,14 @@ class GrcFormFields extends StatelessWidget {
             controller: descEnController,
             errorText: submitted && descEnController.text.trim().isEmpty
                 ? "Description is required"
-                : null,
+                : containsArabicLetters(descEnController.text)
+                    ? "Description must be written in English"
+                    : null,
             submitted: submitted,
             readOnly: readOnly,
             maxLines: 3,
             minLines: 3,
-            maxLength: 500,
+            maxLength: 1000,
             showCharCount: true,
             fillColor: AppColors.background,
             borderRadius: BorderRadius.circular(8),
@@ -243,12 +289,14 @@ class GrcFormFields extends StatelessWidget {
             controller: descArController,
             errorText: submitted && descArController.text.trim().isEmpty
                 ? "الوصف مطلوب"
-                : null,
+                : containsEnglishLetters(descArController.text)
+                    ? "يجب كتابة الوصف باللغة العربية"
+                    : null,
             submitted: submitted,
             readOnly: readOnly,
             maxLines: 3,
             minLines: 3,
-            maxLength: 500,
+            maxLength: 1000,
             showCharCount: true,
             fillColor: AppColors.background,
             borderRadius: BorderRadius.circular(8),
