@@ -4,7 +4,11 @@
 /// Date: 2026-06-30
 /// Dependencies: None
 /// Revision History: 2026-06-30 - Initial creation
-///                    2026-06-30 - Added isDeleted flag for soft-delete/restore support (Mohamed Magdy Abdelkhalek)
+///                   2026-07-06 - Aligned field names and Firestore keys to the
+///                                updated schema; replaced isDeleted with
+///                                Status:"Removed"; Editors→Modifiers (email);
+///                                added "Scheduled" status value
+///                                (Mohamed Magdy Abdelkhalek)
 
 /// ************************* FILE INFO *************************** ///
 /// File Name: grc_module_entity.dart
@@ -17,48 +21,56 @@
 ///
 /// purpose: holds the current (latest) values of a GRC Module record as plain
 ///          single fields, ready to be consumed directly by the UI and the
-///          business logic, instead of working with the history Lists kept
-///          in [GRCModuleModel].
+///          business logic.
+///
+///          Soft-delete is no longer a separate [isDeleted] flag — it is now
+///          expressed as [status] == "Removed". Use [isRemoved] getter to check.
 ///
 /// authors: Mohamed Magdy Abdelkhalek
 ///
 /// created at: 30/6/2026
 class GRCModuleEntity {
-  final String id;
-  final String image;
-  final String grcModuleNameEnglish;
-  final String grcModuleNameArabic;
-  final String descriptionEnglish;
-  final String descriptionArabic;
-  final String owningDepartment;
-  final DateTime activationDate;
-  final List<String> owners;
+  final String moduleId;
+  final String? moduleImage;
+  final String moduleNameEn;
+  final String moduleNameAr;
+  final String moduleDescriptionEn;
+  final String moduleDescriptionAr;
+  final String moduleOwningDepartment;
+  final DateTime moduleActivationDate;
+
+  /// Latest owners snapshot (list of user ids).
+  final List<String> moduleOwners;
+
+  /// One of: "Active" | "Inactive" | "Scheduled" | "Removed".
+  /// "Removed" replaces the old isDeleted flag.
   final String status;
 
-  // Tracking fields
+  // Tracking fields (latest values only)
   final DateTime createdAt;
-  final DateTime lastModifiedDate;
-  final String lastEditorId;
+  final DateTime modificationDate;
 
-  // Soft-delete flag (latest value only)
-  final bool isDeleted;
+  /// Email of the last user who modified this record.
+  final String lastModifier;
 
   const GRCModuleEntity({
-    required this.id,
-    required this.image,
-    required this.grcModuleNameEnglish,
-    required this.grcModuleNameArabic,
-    required this.descriptionEnglish,
-    required this.descriptionArabic,
-    required this.owningDepartment,
-    required this.activationDate,
-    required this.owners,
+    required this.moduleId,
+    required this.moduleImage,
+    required this.moduleNameEn,
+    required this.moduleNameAr,
+    required this.moduleDescriptionEn,
+    required this.moduleDescriptionAr,
+    required this.moduleOwningDepartment,
+    required this.moduleActivationDate,
+    required this.moduleOwners,
     required this.status,
     required this.createdAt,
-    required this.lastModifiedDate,
-    required this.lastEditorId,
-    required this.isDeleted,
+    required this.modificationDate,
+    required this.lastModifier,
   });
+
+  /// Convenience getter — true when this module has been soft-deleted.
+  bool get isRemoved => status == 'Removed';
 
   /// function name: [copyWith]
   ///
@@ -66,43 +78,43 @@ class GRCModuleEntity {
   ///          replaced by new values, keeping all other fields unchanged.
   ///
   /// parameters:
-  ///            [String] image: new image url/path, if provided
-  ///            [String] grcModuleNameEnglish: new English module name, if provided
-  ///            [String] grcModuleNameArabic: new Arabic module name, if provided
-  ///            [String] descriptionEnglish: new English description, if provided
-  ///            [String] descriptionArabic: new Arabic description, if provided
-  ///            [String] owningDepartment: new owning department, if provided
-  ///            [DateTime] activationDate: new activation date, if provided
-  ///            [List<String>] owners: new owners list, if provided
-  ///            [String] status: new status, if provided
+  ///            [String] moduleImage: new image url/path, if provided
+  ///            [String] moduleNameEn: new English module name, if provided
+  ///            [String] moduleNameAr: new Arabic module name, if provided
+  ///            [String] moduleDescriptionEn: new English description, if provided
+  ///            [String] moduleDescriptionAr: new Arabic description, if provided
+  ///            [String] moduleOwningDepartment: new owning department, if provided
+  ///            [DateTime] moduleActivationDate: new activation date, if provided
+  ///            [List<String>] moduleOwners: new owners list, if provided
+  ///            [String] status: new status ("Active" | "Inactive" | "Removed"), if provided
   ///
   /// return type: [GRCModuleEntity] - the updated entity instance
   GRCModuleEntity copyWith({
-    String? image,
-    String? grcModuleNameEnglish,
-    String? grcModuleNameArabic,
-    String? descriptionEnglish,
-    String? descriptionArabic,
-    String? owningDepartment,
-    DateTime? activationDate,
-    List<String>? owners,
+    String? moduleImage,
+    String? moduleNameEn,
+    String? moduleNameAr,
+    String? moduleDescriptionEn,
+    String? moduleDescriptionAr,
+    String? moduleOwningDepartment,
+    DateTime? moduleActivationDate,
+    List<String>? moduleOwners,
     String? status,
   }) {
     return GRCModuleEntity(
-      id: id,
-      image: image ?? this.image,
-      grcModuleNameEnglish: grcModuleNameEnglish ?? this.grcModuleNameEnglish,
-      grcModuleNameArabic: grcModuleNameArabic ?? this.grcModuleNameArabic,
-      descriptionEnglish: descriptionEnglish ?? this.descriptionEnglish,
-      descriptionArabic: descriptionArabic ?? this.descriptionArabic,
-      owningDepartment: owningDepartment ?? this.owningDepartment,
-      activationDate: activationDate ?? this.activationDate,
-      owners: owners ?? this.owners,
+      moduleId: moduleId,
+      moduleImage: moduleImage ?? this.moduleImage,
+      moduleNameEn: moduleNameEn ?? this.moduleNameEn,
+      moduleNameAr: moduleNameAr ?? this.moduleNameAr,
+      moduleDescriptionEn: moduleDescriptionEn ?? this.moduleDescriptionEn,
+      moduleDescriptionAr: moduleDescriptionAr ?? this.moduleDescriptionAr,
+      moduleOwningDepartment:
+          moduleOwningDepartment ?? this.moduleOwningDepartment,
+      moduleActivationDate: moduleActivationDate ?? this.moduleActivationDate,
+      moduleOwners: moduleOwners ?? this.moduleOwners,
       status: status ?? this.status,
       createdAt: createdAt,
-      lastModifiedDate: lastModifiedDate,
-      lastEditorId: lastEditorId,
-      isDeleted: isDeleted,
+      modificationDate: modificationDate,
+      lastModifier: lastModifier,
     );
   }
 }
