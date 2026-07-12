@@ -113,12 +113,12 @@ class _GovernanceRiskAndCompliancePageState
     // "all" shows everything; each other tab filters by its own condition.
     if (_selectedStatus == 'Active') {
       result =
-          result.where((m) => !m.isDeleted && m.status == 'Active').toList();
+          result.where((m) => !m.isRemoved && m.status == 'Active').toList();
     } else if (_selectedStatus == 'Inactive') {
       result =
-          result.where((m) => !m.isDeleted && m.status == 'Inactive').toList();
+          result.where((m) => !m.isRemoved && m.status == 'Inactive').toList();
     } else if (_selectedStatus == 'Removed') {
-      result = result.where((m) => m.isDeleted).toList();
+      result = result.where((m) => m.isRemoved).toList();
     }
     // 'all' → no filter, show everything
 
@@ -127,20 +127,18 @@ class _GovernanceRiskAndCompliancePageState
       final q = _searchQuery.toLowerCase();
       result = result
           .where((m) =>
-              m.grcModuleNameEnglish.toLowerCase().contains(q) ||
-              m.grcModuleNameArabic.toLowerCase().contains(q))
+              m.moduleNameEn.toLowerCase().contains(q) ||
+              m.moduleNameAr.toLowerCase().contains(q))
           .toList();
     }
 
     // Sort
     if (_sortOrder == 'ASC') {
-      result.sort(
-          (a, b) => a.grcModuleNameEnglish.compareTo(b.grcModuleNameEnglish));
+      result.sort((a, b) => a.moduleNameEn.compareTo(b.moduleNameEn));
     } else if (_sortOrder == 'DES') {
-      result.sort(
-          (a, b) => b.grcModuleNameEnglish.compareTo(a.grcModuleNameEnglish));
+      result.sort((a, b) => b.moduleNameEn.compareTo(a.moduleNameEn));
     } else if (_sortOrder == 'Last Update') {
-      result.sort((a, b) => b.lastModifiedDate.compareTo(a.lastModifiedDate));
+      result.sort((a, b) => b.modificationDate.compareTo(a.modificationDate));
     } else if (_sortOrder == 'Creation Date') {
       result.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     }
@@ -152,10 +150,10 @@ class _GovernanceRiskAndCompliancePageState
     return {
       'all': modules.length,
       'Active':
-          modules.where((m) => !m.isDeleted && m.status == 'Active').length,
+          modules.where((m) => !m.isRemoved && m.status == 'Active').length,
       'Inactive':
-          modules.where((m) => !m.isDeleted && m.status == 'Inactive').length,
-      'Removed': modules.where((m) => m.isDeleted).length,
+          modules.where((m) => !m.isRemoved && m.status == 'Inactive').length,
+      'Removed': modules.where((m) => m.isRemoved).length,
     };
   }
 
@@ -201,7 +199,7 @@ class _GovernanceRiskAndCompliancePageState
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.r),
       ),
-      items: module.isDeleted
+      items: module.isRemoved
           ? [
               PopupMenuItem<String>(
                 value: 'restore',
@@ -422,7 +420,7 @@ class _GovernanceRiskAndCompliancePageState
               module: moduleAt(index),
               onTap: () {
                 final entity = moduleAt(index);
-                if (entity.isDeleted) {
+                if (entity.isRemoved) {
                   _openDetails(context, GrcPageMode.restore, entity: entity);
                 } else {
                   Navigator.of(context).push(
@@ -487,14 +485,13 @@ class _GrcModuleCard extends StatelessWidget {
     this.onMenuTap,
   });
 
-  String _resolveOwnerName(BuildContext context, String ownerId) {
+  String _resolveOwnerName(BuildContext context, String ownerEmail) {
     try {
-      return EmployeeHelper.getEmployeeLocalizedNameWithId(
-        employeeId: ownerId,
-        context: context,
+      return EmployeeHelper.getEmployeeLocalizedNameWithEmail(
+        employeeEmail: ownerEmail,
       );
     } catch (_) {
-      return ownerId;
+      return ownerEmail;
     }
   }
 
@@ -503,14 +500,12 @@ class _GrcModuleCard extends StatelessWidget {
     return ModuleInfoCard(
       width: double.infinity,
       onTap: onTap,
-      title: context.isArabic
-          ? module.grcModuleNameArabic
-          : module.grcModuleNameEnglish,
+      title: context.isArabic ? module.moduleNameAr : module.moduleNameEn,
       infoRows: [
-        if (module.owners.isNotEmpty)
+        if (module.moduleOwners.isNotEmpty)
           CardInfo(
             label: '${'Owner'.tr} :',
-            value: _resolveOwnerName(context, module.owners.first),
+            value: _resolveOwnerName(context, module.moduleOwners.first),
           ),
         CardInfo(
           label: '${'Creation Date'.tr} :',
@@ -522,7 +517,7 @@ class _GrcModuleCard extends StatelessWidget {
       complianceScore: '-',
       footerLabel: '${'Last Update'.tr} :',
       footerValue: DateFormat('d MMM yyyy', context.isArabic ? 'ar' : 'en')
-          .format(module.lastModifiedDate),
+          .format(module.modificationDate),
       onMenuTap: onMenuTap,
     );
   }
