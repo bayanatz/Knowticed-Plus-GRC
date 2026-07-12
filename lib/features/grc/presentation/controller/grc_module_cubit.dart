@@ -64,14 +64,16 @@ class GRCModuleCubit extends Cubit<GRCModuleState> {
   final DeleteGRCModuleUseCase _deleteUseCase;
   final RestoreGRCModuleUseCase _restoreUseCase;
 
-  /// Resolves the currently logged-in user's id.
-  /// Falls back to MainCoreEmployeeController if Constant.idUser isn't set yet.
-  String get _currentUserId {
-    final fromConstant = Constant.idUser;
+  /// Resolves the currently logged-in user's email (every GRC Module
+  /// revision is attributed to an email, not an id — see Modifiers on
+  /// GRCModuleModel).
+  /// Falls back to MainCoreEmployeeController if Constant.emailUser isn't set yet.
+  String get _currentUserEmail {
+    final fromConstant = Constant.emailUser;
     if (fromConstant != null && fromConstant.isNotEmpty) return fromConstant;
     if (Get.isRegistered<MainCoreEmployeeController>()) {
-      final id = Get.find<MainCoreEmployeeController>().employeeEntity?.id;
-      if (id != null && id.isNotEmpty) return id;
+      final email = Get.find<MainCoreEmployeeController>().employeeEntity?.email;
+      if (email != null && email.isNotEmpty) return email;
     }
     return '';
   }
@@ -154,7 +156,7 @@ class GRCModuleCubit extends Cubit<GRCModuleState> {
       activationDate: activationDate,
       owners: owners,
       status: status,
-      editorId: _currentUserId,
+      editorId: _currentUserEmail,
       imageFile: imageFile,
       imageUrl: imageUrl,
     );
@@ -199,7 +201,7 @@ class GRCModuleCubit extends Cubit<GRCModuleState> {
     emit(GRCModuleLoading());
     final result = await _updateUseCase.execute(
       id: id,
-      editorId: _currentUserId,
+      editorId: _currentUserEmail,
       grcModuleNameEnglish: grcModuleNameEnglish,
       grcModuleNameArabic: grcModuleNameArabic,
       descriptionEnglish: descriptionEnglish,
@@ -230,7 +232,7 @@ class GRCModuleCubit extends Cubit<GRCModuleState> {
     emit(GRCModuleLoading());
     final result = await _deleteUseCase.execute(
       id: id,
-      editorId: _currentUserId,
+      editorId: _currentUserEmail,
     );
     result.fold(
       (failure) => emit(GRCModuleFailure(failure.message)),
@@ -252,7 +254,7 @@ class GRCModuleCubit extends Cubit<GRCModuleState> {
     emit(GRCModuleLoading());
     final result = await _restoreUseCase.execute(
       id: id,
-      editorId: _currentUserId,
+      editorId: _currentUserEmail,
     );
     result.fold(
       (failure) => emit(GRCModuleFailure(failure.message)),
