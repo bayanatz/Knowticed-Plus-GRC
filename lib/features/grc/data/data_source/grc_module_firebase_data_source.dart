@@ -9,6 +9,7 @@
 ///                                 includeDeleted filtering to getAll() (Mohamed Magdy Abdelkhalek)
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:demo_app/core/network/get_base_url.dart';
 import 'package:demo_app/features/grc/data/models/grc_module_model.dart';
 
 import 'grc_module_data_source.dart';
@@ -35,10 +36,8 @@ class GRCModuleFirebaseDataSource implements GRCModuleDataSource {
 
   final FirebaseFirestore _firestore;
 
-  static const String _collectionPath = 'GRC Modules';
-
   CollectionReference<Map<String, dynamic>> get _collection =>
-      _firestore.collection(_collectionPath);
+      _firestore.collection('${getBaseUrl('Modules')}/grc/GRC Modules');
 
   /// function name: [create]
   ///
@@ -52,7 +51,7 @@ class GRCModuleFirebaseDataSource implements GRCModuleDataSource {
   @override
   Future<GRCModuleModel> create(GRCModuleModel model) async {
     try {
-      await _collection.doc(model.id).set(model.toJson());
+      await _collection.doc(model.moduleId).set(model.toJson());
       return model;
     } catch (e) {
       throw Exception('Failed to create the GRC Module: $e');
@@ -95,7 +94,7 @@ class GRCModuleFirebaseDataSource implements GRCModuleDataSource {
       final models =
           snapshot.docs.map((doc) => GRCModuleModel.fromJson(doc.data()));
       if (includeDeleted) return models.toList();
-      return models.where((m) => !m.isDeleted.last).toList();
+      return models.where((m) => m.status.last != 'Removed').toList();
     } catch (e) {
       throw Exception('Failed to fetch the GRC Modules: $e');
     }
@@ -114,11 +113,11 @@ class GRCModuleFirebaseDataSource implements GRCModuleDataSource {
   @override
   Future<GRCModuleModel> update(GRCModuleModel updatedModel) async {
     try {
-      final docRef = _collection.doc(updatedModel.id);
+      final docRef = _collection.doc(updatedModel.moduleId);
       final exists = (await docRef.get()).exists;
       if (!exists) {
         throw Exception(
-          'Cannot update a Module that does not exist (id: ${updatedModel.id})',
+          'Cannot update a Module that does not exist (id: ${updatedModel.moduleId})',
         );
       }
       await docRef.set(updatedModel.toJson());
@@ -148,8 +147,8 @@ class GRCModuleFirebaseDataSource implements GRCModuleDataSource {
         throw Exception('Cannot delete a Module that does not exist (id: $id)');
       }
       final deletedModel = current.copyWithUpdate(
-        isDeleted: true,
-        editorId: editorId,
+        status: 'Removed',
+        modifierEmail: editorId,
       );
       await _collection.doc(id).set(deletedModel.toJson());
       return deletedModel;
@@ -176,8 +175,8 @@ class GRCModuleFirebaseDataSource implements GRCModuleDataSource {
         throw Exception('Cannot restore a Module that does not exist (id: $id)');
       }
       final restoredModel = current.copyWithUpdate(
-        isDeleted: false,
-        editorId: editorId,
+        status: 'Active',
+        modifierEmail: editorId,
       );
       await _collection.doc(id).set(restoredModel.toJson());
       return restoredModel;
