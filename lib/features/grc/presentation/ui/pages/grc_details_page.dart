@@ -87,7 +87,7 @@ class _GovernanceRiskAndComplianceDetailsState
   DateTime? _activationDate;
   bool _statusValue = true;
   late GrcPageMode _currentMode;
-  List<String> _selectedOwnerIds = [];
+  List<String> _selectedOwnerEmails = [];
   File? _imageFile;
   bool _submitted = false;
   bool _autoDeleteScheduled = false;
@@ -102,14 +102,14 @@ class _GovernanceRiskAndComplianceDetailsState
   /// Populate form fields from an existing entity (view / edit / restore modes).
   void _prefillFromEntity(GRCModuleEntity? entity) {
     if (entity == null) return;
-    _nameEnController.text = entity.grcModuleNameEnglish;
-    _nameArController.text = entity.grcModuleNameArabic;
-    _descEnController.text = entity.descriptionEnglish;
-    _descArController.text = entity.descriptionArabic;
-    _selectedDepartment = entity.owningDepartment;
-    _activationDate = entity.activationDate;
+    _nameEnController.text = entity.moduleNameEn;
+    _nameArController.text = entity.moduleNameAr;
+    _descEnController.text = entity.moduleDescriptionEn;
+    _descArController.text = entity.moduleDescriptionAr;
+    _selectedDepartment = entity.moduleOwningDepartment;
+    _activationDate = entity.moduleActivationDate;
     _statusValue = entity.status == 'Active';
-    _selectedOwnerIds = List.from(entity.owners);
+    _selectedOwnerEmails = List.from(entity.moduleOwners);
   }
 
   @override
@@ -148,7 +148,7 @@ class _GovernanceRiskAndComplianceDetailsState
       descriptionArabic: _descArController.text.trim(),
       owningDepartment: _selectedDepartment ?? '',
       activationDate: _activationDate ?? DateTime.now(),
-      owners: _selectedOwnerIds,
+      owners: _selectedOwnerEmails,
       status: _statusValue ? 'Active' : 'Inactive',
       imageFile: _imageFile,
     );
@@ -156,25 +156,25 @@ class _GovernanceRiskAndComplianceDetailsState
 
   void _onUpdate(GRCModuleCubit cubit) {
     cubit.updateModule(
-      id: widget.entity!.id,
+      id: widget.entity!.moduleId,
       grcModuleNameEnglish: _nameEnController.text.trim(),
       grcModuleNameArabic: _nameArController.text.trim(),
       descriptionEnglish: _descEnController.text.trim(),
       descriptionArabic: _descArController.text.trim(),
       owningDepartment: _selectedDepartment,
       activationDate: _activationDate,
-      owners: _selectedOwnerIds,
+      owners: _selectedOwnerEmails,
       status: _statusValue ? 'Active' : 'Inactive',
       imageFile: _imageFile,
     );
   }
 
   void _onDelete(GRCModuleCubit cubit) {
-    cubit.deleteModule(id: widget.entity!.id);
+    cubit.deleteModule(id: widget.entity!.moduleId);
   }
 
   void _onRestore(GRCModuleCubit cubit) {
-    cubit.restoreModule(id: widget.entity!.id);
+    cubit.restoreModule(id: widget.entity!.moduleId);
   }
 
   void _scheduleAutoDelete(BuildContext context, GRCModuleCubit cubit) {
@@ -324,7 +324,7 @@ class _GovernanceRiskAndComplianceDetailsState
                                             GrcPageMode.view ||
                                         _currentMode == GrcPageMode.restore,
                                     child: CustomImagePicker(
-                                      imageUrl: widget.entity?.image,
+                                      imageUrl: widget.entity?.moduleImage,
                                       imageFile: _imageFile,
                                       onImagePicked: (file) =>
                                           setState(() => _imageFile = file),
@@ -352,11 +352,11 @@ class _GovernanceRiskAndComplianceDetailsState
                                     isViewMode: (_currentMode ==
                                             GrcPageMode.view ||
                                         _currentMode == GrcPageMode.restore),
-                                    initialOwnerIds: _selectedOwnerIds,
+                                    initialOwnerEmails: _selectedOwnerEmails,
                                     selectedDepartmentId: _selectedDepartment,
                                     onOwnersChanged: (selected) {
-                                      _selectedOwnerIds =
-                                          selected.map((o) => o.id).toList();
+                                      _selectedOwnerEmails =
+                                          selected.map((o) => o.email).toList();
                                     },
                                   ),
                                 ],
