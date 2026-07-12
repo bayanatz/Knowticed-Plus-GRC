@@ -86,17 +86,17 @@ class GRCModuleRepositoryImpl implements GRCModuleRepository {
       );
 
       final model = GRCModuleModel.create(
-        id: id,
-        image: resolvedImageUrl ?? '',
-        grcModuleNameEnglish: grcModuleNameEnglish,
-        grcModuleNameArabic: grcModuleNameArabic,
-        descriptionEnglish: descriptionEnglish,
-        descriptionArabic: descriptionArabic,
-        owningDepartment: owningDepartment,
-        activationDate: activationDate,
+        moduleId: id,
+        moduleImage: resolvedImageUrl,
+        moduleNameEn: grcModuleNameEnglish,
+        moduleNameAr: grcModuleNameArabic,
+        moduleDescriptionEn: descriptionEnglish,
+        moduleDescriptionAr: descriptionArabic,
+        moduleOwningDepartment: owningDepartment,
+        moduleActivationDate: activationDate,
         owners: owners,
         status: status,
-        editorId: editorId,
+        modifierEmail: editorId,
       );
 
       final createdModel = await _firebaseDataSource.create(model);
@@ -186,16 +186,16 @@ class GRCModuleRepositoryImpl implements GRCModuleRepository {
       );
 
       final updatedModel = currentModel.copyWithUpdate(
-        image: resolvedImageUrl,
-        grcModuleNameEnglish: grcModuleNameEnglish,
-        grcModuleNameArabic: grcModuleNameArabic,
-        descriptionEnglish: descriptionEnglish,
-        descriptionArabic: descriptionArabic,
-        owningDepartment: owningDepartment,
-        activationDate: activationDate,
+        moduleImage: resolvedImageUrl,
+        moduleNameEn: grcModuleNameEnglish,
+        moduleNameAr: grcModuleNameArabic,
+        moduleDescriptionEn: descriptionEnglish,
+        moduleDescriptionAr: descriptionArabic,
+        moduleOwningDepartment: owningDepartment,
+        moduleActivationDate: activationDate,
         owners: owners,
         status: status,
-        editorId: editorId,
+        modifierEmail: editorId,
       );
 
       final savedModel = await _firebaseDataSource.update(updatedModel);
