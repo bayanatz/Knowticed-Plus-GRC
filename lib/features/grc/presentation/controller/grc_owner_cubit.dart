@@ -9,6 +9,7 @@ part 'grc_owner_state.dart';
 class OwnerData {
   final String id;
   final String name;
+  final String email;
   final String department;
   final String departmentId;
   final String jobTitle;
@@ -18,6 +19,7 @@ class OwnerData {
   OwnerData({
     required this.id,
     required this.name,
+    required this.email,
     required this.department,
     required this.departmentId,
     required this.jobTitle,
@@ -38,7 +40,7 @@ class GrcOwnerCubit extends Cubit<GrcOwnerState> {
 
   void loadOwners(
     BuildContext context, {
-    List<String> initialOwnerIds = const [],
+    List<String> initialOwnerEmails = const [],
     String? selectedDepartmentId,
   }) {
     if (!Get.isRegistered<MainCoreEmployeeController>()) return;
@@ -48,11 +50,12 @@ class GrcOwnerCubit extends Cubit<GrcOwnerState> {
       return OwnerData(
         id: e.id ?? '',
         name: EmployeeHelper.getEmployeeLocalizedName(employee: e, context: context),
+        email: e.email ?? '',
         department: EmployeeHelper.getEmployeeLocalizeDepartment(employee: e, context: context),
         departmentId: e.departmentId ?? '',
         jobTitle: EmployeeHelper.getEmployeeLocalizedTitle(employee: e, context: context)?.toString() ?? '',
         photo: EmployeeHelper.getEmployeeImage(employee: e),
-        isSelected: initialOwnerIds.contains(e.id ?? ''),
+        isSelected: initialOwnerEmails.contains(e.email ?? ''),
       );
     }).toList();
     _selectedDepartmentId = selectedDepartmentId;

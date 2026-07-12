@@ -7,7 +7,7 @@
 /// Date: 2026-06-29
 /// Dependencies: GrcOwnerCubit, PersonChipCard, AppSearchTextField
 /// Revision History: 2026-06-29 - Initial creation
-///                    2026-06-30 - Added initialOwnerIds for pre-selection (Mohamed Magdy Abdelkhalek)
+///                    2026-06-30 - Added initialOwnerEmails for pre-selection (Mohamed Magdy Abdelkhalek)
 library;
 
 import 'package:demo_app/core/custom/19-Custom_Employee_Card.dart';
@@ -31,7 +31,7 @@ import 'package:get/get_utils/src/extensions/internacionalization.dart';
 ///
 /// purpose: displays the Module Owner picker section inside the GRC Module
 ///          details page. Owns a private [GrcOwnerCubit] instance and passes
-///          [initialOwnerIds] to pre-select existing owners. In view/restore
+///          [initialOwnerEmails] to pre-select existing owners. In view/restore
 ///          mode only selected owners are shown; in create/edit mode all
 ///          employees appear with a search bar.
 ///
@@ -41,10 +41,10 @@ import 'package:get/get_utils/src/extensions/internacionalization.dart';
 class GrcOwnerSection extends StatefulWidget {
   final bool isViewMode;
 
-  /// IDs of owners already assigned to the module.
+  /// Emails of owners already assigned to the module.
   /// - In view/restore mode  → only these owners are displayed.
   /// - In create/edit mode   → these owners are pre-selected.
-  final List<String> initialOwnerIds;
+  final List<String> initialOwnerEmails;
 
   /// The department currently selected on the form. When set, only
   /// employees belonging to this department are shown as owner candidates.
@@ -55,7 +55,7 @@ class GrcOwnerSection extends StatefulWidget {
   const GrcOwnerSection({
     super.key,
     this.isViewMode = false,
-    this.initialOwnerIds = const [],
+    this.initialOwnerEmails = const [],
     this.selectedDepartmentId,
     this.onOwnersChanged,
   });
@@ -74,7 +74,7 @@ class _GrcOwnerSectionState extends State<GrcOwnerSection> {
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => _cubit.loadOwners(
         context,
-        initialOwnerIds: widget.initialOwnerIds,
+        initialOwnerEmails: widget.initialOwnerEmails,
         selectedDepartmentId: widget.selectedDepartmentId,
       ),
     );
