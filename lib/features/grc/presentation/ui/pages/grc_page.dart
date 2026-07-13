@@ -118,9 +118,8 @@ class _GovernanceRiskAndCompliancePageState
       result =
           result.where((m) => !m.isRemoved && m.status == 'Inactive').toList();
     } else if (_selectedStatus == 'Scheduled') {
-      result = result
-          .where((m) => !m.isRemoved && m.status == 'Scheduled')
-          .toList();
+      result =
+          result.where((m) => !m.isRemoved && m.status == 'Scheduled').toList();
     } else if (_selectedStatus == 'Removed') {
       result = result.where((m) => m.isRemoved).toList();
     }
@@ -501,27 +500,38 @@ class _GrcModuleCard extends StatelessWidget {
     }
   }
 
+  /// Capitalizes only the first character — display formatting, doesn't
+  /// touch how the value is stored.
+  String _capitalizeFirst(String value) {
+    if (value.isEmpty) return value;
+    return value[0].toUpperCase() + value.substring(1);
+  }
+
   @override
   Widget build(BuildContext context) {
     return ModuleInfoCard(
       width: double.infinity,
       onTap: onTap,
-      title: context.isArabic ? module.moduleNameAr : module.moduleNameEn,
+      title: _capitalizeFirst(
+        context.isArabic ? module.moduleNameAr : module.moduleNameEn,
+      ),
       infoRows: [
         if (module.moduleOwners.isNotEmpty)
           CardInfo(
-            label: '${'Owner'.tr} :',
-            value: _resolveOwnerName(context, module.moduleOwners.first),
+            label: '${'Owner'.tr}:',
+            value: _capitalizeFirst(
+              _resolveOwnerName(context, module.moduleOwners.first),
+            ),
           ),
         CardInfo(
-          label: '${'Creation Date'.tr} :',
+          label: '${'Creation Date'.tr}:',
           value: DateFormat('d MMM yyyy', context.isArabic ? 'ar' : 'en')
               .format(module.createdAt),
         ),
       ],
-      complianceLabel: '${'Compliance Score'.tr} :',
+      complianceLabel: '${'Compliance Score'.tr}:',
       complianceScore: '-',
-      footerLabel: '${'Last Update'.tr} :',
+      footerLabel: '${'Last Update'.tr}:',
       footerValue: DateFormat('d MMM yyyy', context.isArabic ? 'ar' : 'en')
           .format(module.modificationDate),
       onMenuTap: onMenuTap,

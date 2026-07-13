@@ -114,12 +114,15 @@ class _GovernanceRiskAndComplianceDetailsState
   }
 
   /// Localized name of the module being viewed/edited/restored, or '' in
-  /// create mode (no entity yet).
+  /// create mode (no entity yet). Capitalizes only the first character —
+  /// display formatting, doesn't touch how the name is stored.
   String _moduleDisplayName(BuildContext context) {
     if (widget.entity == null) return '';
-    return context.isArabic
+    final name = context.isArabic
         ? widget.entity!.moduleNameAr
         : widget.entity!.moduleNameEn;
+    if (name.isEmpty) return name;
+    return name[0].toUpperCase() + name.substring(1);
   }
 
   @override
