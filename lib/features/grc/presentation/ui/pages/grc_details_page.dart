@@ -20,6 +20,7 @@ import 'dart:io';
 import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart';
 import 'package:demo_app/core/custom/46_custom_image_picker.dart';
 import 'package:demo_app/core/custom/loading.dart';
+import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/features/grc/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/presentation/controller/grc_module_cubit.dart';
@@ -110,6 +111,15 @@ class _GovernanceRiskAndComplianceDetailsState
     _activationDate = entity.moduleActivationDate;
     _statusValue = entity.status == 'Active';
     _selectedOwnerEmails = List.from(entity.moduleOwners);
+  }
+
+  /// Localized name of the module being viewed/edited/restored, or '' in
+  /// create mode (no entity yet).
+  String _moduleDisplayName(BuildContext context) {
+    if (widget.entity == null) return '';
+    return context.isArabic
+        ? widget.entity!.moduleNameAr
+        : widget.entity!.moduleNameEn;
   }
 
   @override
@@ -272,9 +282,9 @@ class _GovernanceRiskAndComplianceDetailsState
                           if (_currentMode == GrcPageMode.create)
                             'Create New GRC Module'.tr
                           else if (_currentMode == GrcPageMode.edit)
-                            'Edit GRC Module'.tr
+                            '${'Edit'.tr} ${_moduleDisplayName(context)}'
                           else
-                            'GRC Module'.tr,
+                            _moduleDisplayName(context),
                         ],
                       ),
                       if (_currentMode == GrcPageMode.view)
