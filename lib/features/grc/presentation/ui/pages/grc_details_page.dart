@@ -333,9 +333,9 @@ class _GovernanceRiskAndComplianceDetailsState
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   IgnorePointer(
-                                    ignoring: _currentMode ==
-                                            GrcPageMode.view ||
-                                        _currentMode == GrcPageMode.restore,
+                                    ignoring:
+                                        _currentMode == GrcPageMode.view ||
+                                            _currentMode == GrcPageMode.restore,
                                     child: CustomImagePicker(
                                       imageUrl: widget.entity?.moduleImage,
                                       imageFile: _imageFile,

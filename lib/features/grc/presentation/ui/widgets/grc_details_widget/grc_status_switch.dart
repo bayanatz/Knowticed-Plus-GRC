@@ -48,7 +48,7 @@ class GrcStatusSwitch extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            SvgPicture.asset('assets/state/status.svg'),
+            SvgPicture.asset('assets/icons_assets/data_grc_assets/icons_status.svg'),
             SizedBox(width: 10.w),
             Text('Status'.tr),
             SizedBox(width: 10.w),
