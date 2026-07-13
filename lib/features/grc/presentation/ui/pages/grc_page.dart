@@ -117,6 +117,10 @@ class _GovernanceRiskAndCompliancePageState
     } else if (_selectedStatus == 'Inactive') {
       result =
           result.where((m) => !m.isRemoved && m.status == 'Inactive').toList();
+    } else if (_selectedStatus == 'Scheduled') {
+      result = result
+          .where((m) => !m.isRemoved && m.status == 'Scheduled')
+          .toList();
     } else if (_selectedStatus == 'Removed') {
       result = result.where((m) => m.isRemoved).toList();
     }
@@ -153,6 +157,8 @@ class _GovernanceRiskAndCompliancePageState
           modules.where((m) => !m.isRemoved && m.status == 'Active').length,
       'Inactive':
           modules.where((m) => !m.isRemoved && m.status == 'Inactive').length,
+      'Scheduled':
+          modules.where((m) => !m.isRemoved && m.status == 'Scheduled').length,
       'Removed': modules.where((m) => m.isRemoved).length,
     };
   }
