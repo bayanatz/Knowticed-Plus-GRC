@@ -160,7 +160,14 @@ class GRCModuleFirebaseDataSource implements GRCModuleDataSource {
   /// function name: [restore]
   ///
   /// purpose: restore a previously soft-deleted GRC Module document by
-  ///          appending a new revision with isDeleted = false.
+  ///          appending a new revision that reinstates whatever status the
+  ///          module had immediately before it was removed (the entry right
+  ///          before the trailing "Removed" one in its status history) —
+  ///          not a hardcoded "Active". If that status was "Inactive", the
+  ///          module comes back Inactive; otherwise it's re-derived from
+  ///          Activation_Date (see GRCModuleModel.copyWithUpdate), so a
+  ///          module that was Scheduled/Active before removal correctly
+  ///          reflects the current date on restore.
   ///
   /// parameters:
   ///            [String] id: unique identifier of the document to restore
@@ -174,8 +181,12 @@ class GRCModuleFirebaseDataSource implements GRCModuleDataSource {
       if (current == null) {
         throw Exception('Cannot restore a Module that does not exist (id: $id)');
       }
+      // status.last is 'Removed'; the entry right before it is what the
+      // module's status was immediately prior to being removed.
+      final statusBeforeRemoval =
+          current.status[current.status.length - 2];
       final restoredModel = current.copyWithUpdate(
-        status: 'Active',
+        status: statusBeforeRemoval,
         modifierEmail: editorId,
       );
       await _collection.doc(id).set(restoredModel.toJson());
