@@ -15,7 +15,7 @@ import 'package:demo_app/features/onboarding/presentation/ui/pages/page_onBoardi
 // import 'package:demo_app/components/on_boarding_components.dart/page_onboarding.dart';
 import 'package:demo_app/core/enums/enum.dart';
 
-import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 
 import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:demo_app/core/theme/theme_controller.dart';
@@ -55,42 +55,42 @@ class _OnboardScreenState extends State<WelcomeView> {
   // list of onboarding content that contain image ,details, titles
   List<AllinOnboardModel> allinonboardlist = [
     AllinOnboardModel(
-        'assets/images/onboard1.svg',
+        'assets/icons_assets/onboarding_assets/onboard1.svg',
         'Effortless Task Management'.tr,
         'Stay on top of your workload with real-time updates and seamless collaboration. Our task management tools ensure everyone knows what needs to be done and when, fostering accountability and efficiency across your team.'
             .tr),
     AllinOnboardModel(
-        'assets/images/onboard2.svg',
+        'assets/icons_assets/onboarding_assets/onboard2.svg',
         'Streamlined Requests'.tr,
         'Simplify the process of submitting, tracking, and managing requests within your organization. Our intuitive system ensures that all requests are handled promptly and efficiently, keeping everyone informed and on the same page.'
             .tr),
     AllinOnboardModel(
-        'assets/images/onboard3.svg',
+        'assets/icons_assets/onboarding_assets/onboard3.svg',
         'Comprehensive Service Management'.tr,
         'Manage inter-departmental service requests effortlessly with our all-in-one platform. Any department can request services from others, with the ability to approve, reject, and track the progress of these requests.'
             .tr),
     AllinOnboardModel(
-        'assets/images/onboard4.svg',
+        'assets/icons_assets/onboarding_assets/onboard4.svg',
         'Efficient Event Management'.tr,
         'Organize and manage company events seamlessly with the help of our dedicated media team. From sending invitations to gathering feedback, our event management tools ensure every event runs smoothly and successfully.'
             .tr),
     AllinOnboardModel(
-        'assets/images/onboard5.svg',
+        'assets/icons_assets/onboarding_assets/onboard5.svg',
         'Flexible Role Management'.tr,
         'Assign and manage roles_module within your organization effortlessly. Ensure that every team member has the appropriate access and responsibilities to perform their duties effectively.'
             .tr),
     AllinOnboardModel(
-        'assets/images/onboard6.svg',
+        'assets/icons_assets/onboarding_assets/onboard6.svg',
         'Personalized To-Do Lists'.tr,
         'Our to-do list feature helps you manage your workload efficiently, ensuring you never miss a task. Keep your day structured and focused with intuitive tools designed for your convenience.'
             .tr),
               AllinOnboardModel(
-        'assets/images/onboard7.svg',
+        'assets/icons_assets/onboarding_assets/onboard7.svg',
         'Real-Time Team Chat'.tr,
         'Streamline communication with direct messaging and group chats, ensuring everyone stays informed and engaged. Our chat functionality fosters quick decision-making and improves overall team productivity.'
             .tr),
               AllinOnboardModel(
-        'assets/images/onboard8.svg',
+        'assets/icons_assets/onboarding_assets/onboard8.svg',
         'Clear Organization Chart'.tr,
         'Visualize your company\'s structure effortlessly with our dynamic organization chart. Easily navigate through departments and roles_module to understand reporting lines and team relationships.'
             .tr),

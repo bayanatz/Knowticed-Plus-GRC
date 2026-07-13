@@ -14,7 +14,7 @@ import 'package:demo_app/features/roles/core_widgets/main_widget/column_request_
 import 'package:demo_app/features/roles/core_widgets/main_widget/filters_appbar.dart';
 import 'package:demo_app/core/helper/main_helper/date_time_in_arabic.dart';
 import 'package:demo_app/core/enums/enum.dart';
-import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 
 import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:demo_app/features/roles/system_logs/controller/system_logs_controller.dart';
@@ -93,7 +93,7 @@ class _FilterDialogState extends State<FilterDialog> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const FiltersAppBar(
-                    imageUrl: "assets/images/filter_table.svg",
+                    imageUrl: "assets/icons_assets/main_icons_assets/filter_table.svg",
                     title: "Filter"),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -121,7 +121,7 @@ class _FilterDialogState extends State<FilterDialog> {
                               isExpanded: true,
                               hasPrefix: true,
                               hasSuffix: true,
-                              suffixUrl: "assets/icons/newCalenderFixed.svg",
+                              suffixUrl: "assets/icons_assets/main_icons_assets/newCalenderFixed.svg",
                             ),
                           ),
                         ),
@@ -146,7 +146,7 @@ class _FilterDialogState extends State<FilterDialog> {
                               enabled: false,
                               hasPrefix: true,
                               hasSuffix: true,
-                              suffixUrl: "assets/icons/newCalenderFixed.svg",
+                              suffixUrl: "assets/icons_assets/main_icons_assets/newCalenderFixed.svg",
                             ),
                           ),
                         ),
@@ -193,7 +193,7 @@ class _FilterDialogState extends State<FilterDialog> {
                                 isExpanded: true,
                                 hasPrefix: true,
                                 hasSuffix: true,
-                                suffixUrl: "assets/images/circle_icon.svg",
+                                suffixUrl: "assets/icons_assets/main_icons_assets/circle_icon.svg",
                               ),
                             ),
                           ),
@@ -237,7 +237,7 @@ class _FilterDialogState extends State<FilterDialog> {
                                 enabled: false,
                                 hasPrefix: true,
                                 hasSuffix: true,
-                                suffixUrl: "assets/images/circle_icon.svg",
+                                suffixUrl: "assets/icons_assets/main_icons_assets/circle_icon.svg",
                               ),
                             ),
                           ),

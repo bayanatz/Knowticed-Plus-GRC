@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:demo_app/features/settings/core_widgets/main_widget/custom_appbar_mobile.dart';
 
-import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 import 'package:demo_app/features/settings/mode_changer.dart';
 
 import 'package:demo_app/core/theme/app_font_size.dart';

@@ -5,7 +5,7 @@ import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-// REMOVED_MODULE: import 'package:demo_app/features/external/data_grc_module/core/extensions/extensions.dart';
+// REMOVED_MODULE: import 'package:demo_app/core/helper/data_grc_module/core/extensions/extensions.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/form_builder_module/core/widgets/custom_check_box.dart';
 
 import 'package:demo_app/core/helper/main_helper/format_helper.dart';

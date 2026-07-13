@@ -493,8 +493,8 @@ class _AboutThisAppScreenState extends State<AboutThisAppScreen> {
                     SizedBox(
                       child: SvgPicture.asset(
                         !lightMode
-                            ? "assets/light_app_icon.svg"
-                            : "assets/logo_app.svg",
+                            ? "assets/icons_assets/main_icons_assets/light_app_icon.svg"
+                            : "assets/icons_assets/main_icons_assets/logo_app.svg",
                         width: 50.w,
                         height: 50.h,
                         fit: BoxFit.fill,
@@ -525,7 +525,7 @@ class _AboutThisAppScreenState extends State<AboutThisAppScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     CustomSvg(
-                        assetPath: "assets/note_icon.svg",
+                        assetPath: "assets/icons_assets/settings_assets/note_icon.svg",
                         width: 25,
                         height: 25,
                         fit: BoxFit.fill),
@@ -556,7 +556,7 @@ class _AboutThisAppScreenState extends State<AboutThisAppScreen> {
                               )
                             else
                               CustomSvg(
-                                assetPath: "assets/download.svg",
+                                assetPath: "assets/icons_assets/form_builder_assets/download.svg",
                                 width: 16.w,
                                 height: 16.h,
                                 color: AppColors.secondaryPrimary,
@@ -614,8 +614,8 @@ class _AboutThisAppScreenState extends State<AboutThisAppScreen> {
                   SizedBox(
                     child: SvgPicture.asset(
                       !lightMode
-                          ? "assets/logo_app.svg"
-                          : "assets/light_app_icon.svg",
+                          ? "assets/icons_assets/main_icons_assets/logo_app.svg"
+                          : "assets/icons_assets/main_icons_assets/light_app_icon.svg",
                       width: 50.w,
                       height: 50.h,
                       fit: BoxFit.fill,
@@ -644,7 +644,7 @@ class _AboutThisAppScreenState extends State<AboutThisAppScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   CustomSvg(
-                      assetPath: "assets/note_icon.svg",
+                      assetPath: "assets/icons_assets/settings_assets/note_icon.svg",
                       width: 25,
                       height: 25,
                       fit: BoxFit.fill),
@@ -685,7 +685,7 @@ class _AboutThisAppScreenState extends State<AboutThisAppScreen> {
                         )
                       else
                         CustomSvg(
-                          assetPath: "assets/download.svg",
+                          assetPath: "assets/icons_assets/form_builder_assets/download.svg",
                           width: 16.w,
                           height: 16.h,
                           color: AppColors.secondaryPrimary,

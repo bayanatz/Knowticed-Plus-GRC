@@ -61,7 +61,7 @@ class EditableEmergencyContactInformationSection extends StatelessWidget {
         isMobile ? SizedBox(height: 15.sp) : SizedBox(),
 
         SettingsHeader(
-          imagePath: 'assets/Emergency Contact.svg',
+          imagePath: 'assets/icons_assets/main_icons_assets/Emergency Contact.svg',
           text: headerText,
         ),
         SizedBox(height: 15.sp),

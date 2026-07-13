@@ -1,3 +1,4 @@
+import 'package:demo_app/core/helper/employees/presentation/controller/employee_controller.dart';
 import 'package:demo_app/features/settings/core_widgets/main_widget/custom_button_widget.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -5,11 +6,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/features/settings/core_widgets/buttons/main_custom_icon_button.dart';
 
-import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 
 import 'package:demo_app/core/theme/app_font_size.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/knowledge_hub_module/core/theming/new_theme.dart';
-import 'package:demo_app/core/helper/employees/presentation/controller/employee_controller.dart';
+
 // REMOVED_MODULE: import 'package:demo_app/features/skeleton/authentication/welcome_screen/views/mobile_view/nav_bar.dart';
 import 'package:lottie/lottie.dart';
 

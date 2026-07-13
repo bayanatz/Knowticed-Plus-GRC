@@ -1,4 +1,4 @@
-import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 import 'package:demo_app/core/theme/app_font_size.dart' show AppFontStyle;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

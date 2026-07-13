@@ -83,7 +83,7 @@ class _LocationDataState extends State<LocationData> {
           children: [
 
             SettingsHeader(
-                imagePath: 'assets/new_location.svg',
+                imagePath: 'assets/icons_assets/settings_assets/new_location.svg',
                 text: S.of(context).location),
 
             SizedBox(height: 10.sp),

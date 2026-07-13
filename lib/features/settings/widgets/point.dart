@@ -30,13 +30,13 @@ class Point extends StatelessWidget {
           padding: EdgeInsets.only(top:isTickColorBlack ? 0.007.h : 0.006.h ),
           child: isTickColorBlack
               ? SvgPicture.asset(
-                  'assets/icons/tick-circle.svg',
+                  'assets/icons_assets/main_icons_assets/tick-circle.svg',
                   colorFilter: ColorFilter.mode(
                       Theme.of(context).colorScheme.onInverseSurface,
                       BlendMode.srcIn),
                 )
               : SvgPicture.asset(
-                    'assets/icons/tick-circle-green.svg',
+                    'assets/icons_assets/main_icons_assets/tick-circle-green.svg',
                 ),
         ),
         SizedBox(

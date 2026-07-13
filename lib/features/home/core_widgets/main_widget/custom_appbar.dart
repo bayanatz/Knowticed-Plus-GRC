@@ -2,7 +2,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';
-import 'package:demo_app/features/notification/notification_controller.dart';
+import 'package:demo_app/features/notification/presentation/controller/app_notification_controller.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
@@ -13,18 +13,18 @@ import 'package:get/get.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/enums/enum.dart';
 import 'package:demo_app/core/helper/main_helper/date_time_in_arabic.dart';
-import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';
 
 
 // REMOVED_MODULE: import 'package:demo_app/features/skeleton/controllers/notification_controller.dart';
-// REMOVED_MODULE: import 'package:demo_app/features/external/data_grc_module/core/extensions/extensions.dart';
-// REMOVED_MODULE: import 'package:demo_app/features/external/inventory_module/core/navigate.dart';
+// REMOVED_MODULE: import 'package:demo_app/core/helper/data_grc_module/core/extensions/extensions.dart';
+// REMOVED_MODULE: import 'package:demo_app/core/helper/inventory_module/core/navigate.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/services_mangment_module/core/new_theme.dart';
 import 'package:demo_app/features/settings/presentation/ui/pages/settings_screen.dart';
 
 import 'package:demo_app/features/home/app_drawer/presentation/controller/drawer_controller.dart';
-import 'package:demo_app/features/notification/notification_page.dart';
+import 'package:demo_app/features/notification/presentation/ui/pages/notification_page.dart';
 
 // ignore: must_be_immutable
 class CustomAppBar extends StatefulWidget {
@@ -101,7 +101,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                             width: 35.w,
                             height: 35.h,
                             fit: BoxFit.fill,
-                            'assets/notification_svg_new.svg',
+                            'assets/icons_assets/main_icons_assets/notification_svg_new.svg',
                             color: drawerController.selectedIndex == 19
                                 ? AppColors.textButton
                                 : Theme.of(context).colorScheme.scrim,
@@ -114,7 +114,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                             width: 35.w,
                             height: 35.h,
                             fit: BoxFit.fill,
-                            'assets/notification_svg_new.svg',
+                            'assets/icons_assets/main_icons_assets/notification_svg_new.svg',
                             // color: drawerController.selectedIndex == 19
                             //     ? AppColors.textButton
                             //     : Theme.of(context).colorScheme.scrim,
@@ -146,7 +146,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                               width: 35.w,
                               height: 35.h,
                               fit: BoxFit.fill,
-                              'assets/icons/Bell.svg',
+                              'assets/icons_assets/main_icons_assets/Bell.svg',
                               // color: drawerController.selectedIndex == 19
                               //     ? AppColors.textButton
                               //     : Theme.of(context).colorScheme.scrim,

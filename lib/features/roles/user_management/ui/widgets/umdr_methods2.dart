@@ -232,13 +232,13 @@ extension UmdrMethods2 on _UserManagementDetailsRequestSettingsState {
                               SizedBox(height: 12.h),
                               _buildDetailRow(
                                   lightMode,
-                                  "assets/images/phone_number.svg",
+                                  "assets/icons_assets/main_icons_assets/phone_number.svg",
                                   S.of(context).phoneNumber,
                                   creatorPhone),
                               SizedBox(height: 12.h),
                               _buildDetailRow(
                                   lightMode,
-                                  "assets/images/email.svg",
+                                  "assets/icons_assets/form_builder_assets/email.svg",
                                   S.of(context).email,
                                   creatorEmail),
                             ],
@@ -254,7 +254,7 @@ extension UmdrMethods2 on _UserManagementDetailsRequestSettingsState {
                                   children: [
                                     _buildDetailRow(
                                         lightMode,
-                                        "assets/svg/job_title_new.svg",
+                                        "assets/icons_assets/roles_assets/job_title_new.svg",
                                         S.of(context).title,
                                         creatorTitle),
                                     SizedBox(height: 18.h),
@@ -274,13 +274,13 @@ extension UmdrMethods2 on _UserManagementDetailsRequestSettingsState {
                                   children: [
                                     _buildDetailRow(
                                         lightMode,
-                                        "assets/images/phone_number.svg",
+                                        "assets/icons_assets/main_icons_assets/phone_number.svg",
                                         S.of(context).phoneNumber,
                                         creatorPhone),
                                     SizedBox(height: 18.h),
                                     _buildDetailRow(
                                         lightMode,
-                                        "assets/images/email.svg",
+                                        "assets/icons_assets/form_builder_assets/email.svg",
                                         S.of(context).email,
                                         creatorEmail),
                                   ],
@@ -310,7 +310,7 @@ extension UmdrMethods2 on _UserManagementDetailsRequestSettingsState {
                 heightImage: 25.sp,
                 colorBorder: Colors.transparent,
                 widthImage: 25.sp,
-                image: 'assets/roles_icons/Messages.svg',
+                image: 'assets/roles_module/Messages.svg',
                 textStyle: StyleText.fontSize14Weight400
                     .copyWith(color: AppColors.textButton),
               ),

@@ -54,9 +54,28 @@
       isLoadingModules = true;
       update();
 
-      final currentEmployee = Get.find<MainCoreEmployeeController>().employeeEntity;
+      // ✅ FIX: employeeEntity may not be ready yet (MainCoreEmployeeController
+      // loads it asynchronously during login). Previously we bailed out
+      // immediately, leaving the drawer with only Home + Settings forever.
+      // Now we wait up to ~10 seconds for it to become available.
+      final mainCoreController = Get.find<MainCoreEmployeeController>();
+      var currentEmployee = mainCoreController.employeeEntity;
+
+      int retries = 0;
+      while (currentEmployee == null && retries < 20) {
+        if (retries == 0) {
+          print("⏳ Drawer: employeeEntity is null, waiting for it to load...");
+        }
+        await Future.delayed(const Duration(milliseconds: 500));
+        currentEmployee = mainCoreController.employeeEntity;
+        retries++;
+      }
+      if (currentEmployee != null && retries > 0) {
+        print("✅ Drawer: employeeEntity became available after ${retries * 500}ms");
+      }
 
       if (currentEmployee == null) {
+        print("❌ Drawer: employeeEntity still null after waiting — showing system modules only");
         _allDrawerModules = [];
         _getAllowedDrawerModules();
         isLoadingModules = false;

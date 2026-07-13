@@ -9,13 +9,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/custom/2-custom_textfield.dart';
 import 'package:demo_app/core/helper/main_helper/format_helper.dart';
-// REMOVED_MODULE: import 'package:demo_app/features/external/form_builder_module/core/configs/extensions/extensions.dart';
-// REMOVED_MODULE: import 'package:demo_app/features/external/inventory_module/core/navigate.dart';
-// REMOVED_MODULE: import 'package:demo_app/features/external/inventory_module/core/svg_custom.dart';
+// REMOVED_MODULE: import 'package:demo_app/core/helper/form_builder_module/core/configs/extensions/extensions.dart';
+// REMOVED_MODULE: import 'package:demo_app/core/helper/inventory_module/core/navigate.dart';
+// REMOVED_MODULE: import 'package:demo_app/core/helper/inventory_module/core/svg_custom.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/knowledge_hub_module/core/custom_buttons.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/features/roles/role_management/domain/enums/settings/settings_permissions_sections_main_core.dart';
-// REMOVED_MODULE: import 'package:demo_app/features/external/services_mangment_module/core/custom_button_with_image.dart' hide customButtonWithImage;
+// REMOVED_MODULE: import 'package:demo_app/core/local_widgets/services_management/custom_button_with_image.dart' hide customButtonWithImage;
 import 'package:demo_app/features/roles/role_management/data/repository/user_role_repository.dart';
 import 'package:demo_app/features/roles/user_management/ui/pages/request_page_approval.dart';
 import 'package:demo_app/features/roles/user_management/ui/widgets/warining_dialog.dart';
@@ -276,7 +276,7 @@ class _UserManagementHomeState extends State<UserManagementHome> {
                     heightImage: 16.h,
                     widthImage: 16.w,
                     svgColor: AppColors.textButton,
-                    image: "assets/Access_icons.svg",
+                    image: "assets/icons_assets/main_icons_assets/Access_icons.svg",
                     space: 8.sp,
                     colorBorder: Colors.transparent,
                   )

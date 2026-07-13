@@ -51,8 +51,10 @@ class SystemLogsRepository {
       role: currentEmployee.role?.lastOrNull ?? "",
       country: currentEmployee.country?.lastOrNull ?? '',
       city: currentEmployee.city?.lastOrNull ?? '',
-      lat: currentPosition!.latitude.toString(),
-      long: currentPosition!.longitude.toString(),
+      // ✅ FIX: currentPosition is null on macOS (location is skipped);
+      // the old `currentPosition!` crashed with a null-check error.
+      lat: currentPosition?.latitude.toString() ?? '',
+      long: currentPosition?.longitude.toString() ?? '',
       action: activity,
       timestamp: Timestamp.now(),
     );

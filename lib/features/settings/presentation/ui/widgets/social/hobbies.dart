@@ -9,13 +9,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/enums/enum.dart';
-import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 
 
 import 'package:demo_app/core/theme/app_font_size.dart';
-// REMOVED_MODULE: import 'package:demo_app/features/external/inventory_module/core/text_field.dart';
+// REMOVED_MODULE: import 'package:demo_app/core/helper/inventory_module/core/text_field.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
-// REMOVED_MODULE: import 'package:demo_app/features/external/knowledge_hub_module/core/custom_validated_text_field_master.dart';
+// REMOVED_MODULE: import 'package:demo_app/core/helper/knowledge_hub_module/core/custom_validated_text_field_master.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/services_mangment_module/core/new_theme.dart';
 import 'package:demo_app/core/helper/main_helper/format_helper.dart';
 import '../../../../../../generated/l10n.dart';
@@ -141,7 +141,7 @@ class _HobbiesState extends State<Hobbies> {
         children: [
           // ✅ HEADER WITH SVG ICON
           SettingsHeader(
-            imagePath: 'assets/new_hobbies.svg',
+            imagePath: 'assets/icons_assets/settings_assets/new_hobbies.svg',
             text: FormatHelper.capitalize('Hobbies'.tr),
           ),
 
@@ -204,7 +204,7 @@ class _HobbiesState extends State<Hobbies> {
                             borderRadius: BorderRadius.circular(4.r),
                           ),
                           child: CustomSvg(
-                            assetPath: "assets/removed.svg",
+                            assetPath: "assets/icons_assets/main_icons_assets/removed.svg",
                             width: 15.sp,
                             fit: BoxFit.fill,
                             height: 15.sp,

@@ -10,7 +10,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:demo_app/core/network/api_constants.dart';
-import 'package:demo_app/features/calender/services/calendar_event_model.dart';
+import 'package:demo_app/features/calender/data/data_source/calendar_event_model.dart';
 import 'package:demo_app/core/network/get_base_url.dart';
 
 class RoleManagementCalendarService {

@@ -121,7 +121,7 @@ class SideFrameMaster extends StatelessWidget {
           //     children: [
           //       SizedBox(height: 26.sp),
           //       SvgPicture.asset(
-          //         "assets/images/branding.svg",
+          //         "assets/icons_assets/main_icons_assets/branding.svg",
           //         width: 49.sp,
           //         height: 38.sp,
           //         semanticsLabel: 'Branding Logo',
@@ -135,7 +135,7 @@ class SideFrameMaster extends StatelessWidget {
           //           borderRadius: BorderRadius.circular(14.r),
           //         ),
           //         child: SvgPicture.asset(
-          //           "assets/images/logoApp.svg",
+          //           "assets/icons_assets/main_icons_assets/logoApp.svg",
           //           width: 24.sp,
           //           height: 24.sp,
           //           fit: BoxFit.scaleDown,
@@ -173,7 +173,7 @@ class SideFrameMaster extends StatelessWidget {
                 //     children: [
                 //       const Spacer(),
                 //       SvgPicture.asset(
-                //         "assets/images/Bell.svg",
+                //         "assets/icons_assets/main_icons_assets/Bell.svg",
                 //         semanticsLabel: 'Notification Icon',
                 //         color: Theme.of(context).brightness == Brightness.light
                 //             ? Colors.grey
@@ -183,7 +183,7 @@ class SideFrameMaster extends StatelessWidget {
                 //       Row(
                 //         children: [
                 //           SvgPicture.asset(
-                //             "assets/images/PersonStatic.svg",
+                //             "assets/icons_assets/main_icons_assets/PersonStatic.svg",
                 //             width: 40.sp,
                 //             height: 40.sp,
                 //             semanticsLabel: 'User Icon',
@@ -436,7 +436,7 @@ class SideFrameMasterServices extends StatelessWidget {
           //     children: [
           //       SizedBox(height: 26.sp),
           //       SvgPicture.asset(
-          //         "assets/images/branding.svg",
+          //         "assets/icons_assets/main_icons_assets/branding.svg",
           //         width: 49.sp,
           //         height: 38.sp,
           //         semanticsLabel: 'Branding Logo',
@@ -450,7 +450,7 @@ class SideFrameMasterServices extends StatelessWidget {
           //           borderRadius: BorderRadius.circular(14.r),
           //         ),
           //         child: SvgPicture.asset(
-          //           "assets/images/logoApp.svg",
+          //           "assets/icons_assets/main_icons_assets/logoApp.svg",
           //           width: 24.sp,
           //           height: 24.sp,
           //           fit: BoxFit.scaleDown,
@@ -488,7 +488,7 @@ class SideFrameMasterServices extends StatelessWidget {
                 //     children: [
                 //       const Spacer(),
                 //       SvgPicture.asset(
-                //         "assets/images/Bell.svg",
+                //         "assets/icons_assets/main_icons_assets/Bell.svg",
                 //         semanticsLabel: 'Notification Icon',
                 //         color: Theme.of(context).brightness == Brightness.light
                 //             ? Colors.grey
@@ -498,7 +498,7 @@ class SideFrameMasterServices extends StatelessWidget {
                 //       Row(
                 //         children: [
                 //           SvgPicture.asset(
-                //             "assets/images/PersonStatic.svg",
+                //             "assets/icons_assets/main_icons_assets/PersonStatic.svg",
                 //             width: 40.sp,
                 //             height: 40.sp,
                 //             semanticsLabel: 'User Icon',

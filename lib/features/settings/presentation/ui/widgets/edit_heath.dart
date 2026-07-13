@@ -35,7 +35,7 @@ class EditableHealthInsuranceSection extends StatelessWidget {
         Padding(
           padding: EdgeInsets.symmetric(vertical: 0.02.h),
           child: SettingsHeader(
-            imagePath: 'assets/Insurance Details.svg',
+            imagePath: 'assets/icons_assets/main_icons_assets/Insurance Details.svg',
             text: S.of(context).insuranceDetails,
           ),
         ),

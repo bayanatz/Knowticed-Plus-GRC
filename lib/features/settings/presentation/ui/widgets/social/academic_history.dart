@@ -20,7 +20,7 @@ import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/features/settings/presentation/controller/settings_controller.dart';
 
 import 'package:demo_app/features/settings/core_widgets/main_widget/timeline_widget.dart';
-import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 import 'package:demo_app/features/settings/core_widgets/form_fields/profile_textfield.dart';
 import 'package:demo_app/core/helper/main_helper/validator.dart';
 import '../../../../../../generated/l10n.dart';
@@ -152,7 +152,7 @@ class _AcademicHistoryState extends State<AcademicHistory> {
         children: [
           // Header
           SettingsHeader(
-            imagePath: 'assets/acadmic_history.svg',
+            imagePath: 'assets/icons_assets/settings_assets/acadmic_history.svg',
             text: FormatHelper.capitalize('Academic History'.tr),
           ),
 
@@ -179,7 +179,7 @@ class _AcademicHistoryState extends State<AcademicHistory> {
                             borderRadius: BorderRadius.circular(4.r),
                           ),
                           child: CustomSvg(
-                            assetPath: "assets/removed.svg",
+                            assetPath: "assets/icons_assets/main_icons_assets/removed.svg",
                             width: 15.sp,
                             fit: BoxFit.fill,
                             height: 15.sp,

@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:demo_app/features/settings/presentation/ui/pages/settings_screen.dart'
     show SettingsScreen;
 
-// // ── GRC ──────────────────────────────────────────────────────────────────────
+// ── GRC ──────────────────────────────────────────────────────────────────────
 
 // class GrcResponsivePage extends StatelessWidget {
 //   const GrcResponsivePage({super.key});
@@ -35,8 +35,8 @@ class FormResponsivePage extends StatelessWidget {
 class TrackerPageResponsivePageRefactor extends StatelessWidget {
   const TrackerPageResponsivePageRefactor({super.key});
   @override
-  Widget build(BuildContext context) => Scaffold(
-      body: Center(child: Text('TrackerPageResponsivePageRefactor'.tr)));
+  Widget build(BuildContext context) =>
+      Scaffold(body: Center(child: Text('TrackerPageResponsivePageRefactor'.tr)));
 }
 
 // ── Task Management ───────────────────────────────────────────────────────────

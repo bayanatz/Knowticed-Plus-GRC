@@ -3,6 +3,7 @@
 /// Description: Custom button with SVG image — ported from demo_app_plus grc module.
 library;
 
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,7 +11,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
 import 'package:demo_app/core/enums/enum.dart';
-import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 
 // ─── Animated wrapper ────────────────────────────────────────────────────────

@@ -10,6 +10,7 @@
 // ignore_for_file: must_be_immutable, prefer_const_declarations, unused_local_variable, deprecated_member_use, duplicate_ignore, no_leading_underscores_for_local_identifiers, unrelated_type_equality_checks, sdk_version_since, use_build_context_synchronously
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:demo_app/core/helper/employees/presentation/controller/employee_controller.dart';
 import 'package:demo_app/features/settings/core_widgets/main_widget/custom_button_widget.dart';
 import 'package:demo_app/features/settings/core_widgets/main_widget/side_frame_master.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/features/settings/core_widgets/dialogs/response_dialog.dart';
 
-import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 import 'package:demo_app/features/settings/mode_changer.dart';
 
 import 'package:demo_app/core/theme/app_font_size.dart';
@@ -33,7 +34,7 @@ import '../../../../employee/data/models/emplyees_model/new_employee_model.dart'
 import '../../../../employee/presentation/controller/main_core_employee_controller.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import '../../controller/settings_controller.dart' show SettingsController;
-import 'package:demo_app/core/helper/employees/presentation/controller/employee_controller.dart';
+
 import '../widgets/edit_details.dart';
 import '../widgets/edit_heath.dart';
 

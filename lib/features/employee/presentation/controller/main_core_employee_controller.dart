@@ -1,12 +1,17 @@
 
 
 import 'package:dartz/dartz.dart';
+// ✅ FIX: must import the SAME EmployeeController class that LoginController
+// registers with Get.put(). The organization_chart_module copy is a different
+// class with the same name, so Get.find<EmployeeController>() threw
+// "type 'EmployeeController' is not a subtype of type 'EmployeeController'"
+// and employeeEntity was never set (drawer showed only Home + Settings).
+import 'package:demo_app/core/helper/employees/presentation/controller/employee_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/network/failure_model.dart';
-import 'package:demo_app/core/helper/employees/presentation/controller/employee_controller.dart';
 import 'package:demo_app/features/roles/role_management/data/models/role_model.dart';
 import 'package:demo_app/features/roles/role_management/data/repository/role_repository.dart';
 import 'package:demo_app/features/roles/role_management/domain/enums/modules_enum.dart';
@@ -105,48 +110,69 @@ class MainCoreEmployeeController extends GetxController with StateMixin {
 
         // ✅ Check if employee field is initialized
         if (employeeController.employee == null) {
-          // print("⚠️ EmployeeController.employee is null, cannot initialize employeeEntity");
+          print("⚠️ MainCore: EmployeeController.employee is null, cannot initialize employeeEntity");
           return allEmployeesEntities;
         }
 
         String? currentEmployeeEmail = employeeController.employee!.email?.lastOrNull;
 
         if (currentEmployeeEmail == null || currentEmployeeEmail.isEmpty) {
-          // print("⚠️ Current employee email is null or empty");
+          print("⚠️ MainCore: Current employee email is null or empty");
           return allEmployeesEntities;
         }
 
-        // print("🔍 Looking for employee with email: $currentEmployeeEmail");
+        print("🔍 MainCore: Looking for employee with email: $currentEmployeeEmail "
+            "among ${allEmployeesEntities?.length ?? 0} entities");
 
-        // Populate map and find current employee
+        // Populate map and find current employee.
+        // ✅ FIX: one bad record (null email, missing role, …) used to throw
+        // and abort the WHOLE loop, so employeeEntity was never set and the
+        // drawer showed only Home + Settings. Each employee is now isolated.
         for (EmployeeEntityPro employee in allEmployeesEntities!) {
-          mapOfEmployeesWithEmailKey[employee.email!] = employee;
+          try {
+            if (employee.email == null || employee.email!.isEmpty) continue;
 
-          if (employee.email == currentEmployeeEmail) {
-            employeeEntity = employee;
-            // print("✓ Found current employeeEntity: ${employee.email}");
+            mapOfEmployeesWithEmailKey[employee.email!] = employee;
 
-            // Load role and initialize messaging
-            await loadEmployeeRole();
-            // MessagingInterfaceImplementation not available in demo_app (messaging module removed)
+            if (employee.email == currentEmployeeEmail) {
+              employeeEntity = employee;
+              print("✓ MainCore: Found current employeeEntity: ${employee.email}");
 
-            if (Get.context != null) {
-              login(Get.context!, employee.email!);
+              // ✅ FIX: keep global constants in sync so features that read
+              // Constant.emailUser (e.g. home calendar) get a real value.
+              Constant.emailUser = employee.email ?? '';
+              Constant.departmentId = employee.departmentId ?? '';
+              Constant.roleName = employee.role ?? '';
+              Constant.idUser = employee.id ?? '';
+
+              // Load role and initialize messaging — must not kill the loop.
+              try {
+                await loadEmployeeRole();
+              } catch (e) {
+                print("⚠️ MainCore: loadEmployeeRole failed (non-fatal): $e");
+              }
+
+              if (Get.context != null) {
+                login(Get.context!, employee.email!);
+              }
             }
+          } catch (e) {
+            print("⚠️ MainCore: skipped bad employee record: $e");
+            continue;
           }
         }
 
         if (employeeEntity == null) {
-          // print("⚠️ Warning: employeeEntity not found for email: $currentEmployeeEmail");
+          print("⚠️ MainCore: employeeEntity NOT found for email: $currentEmployeeEmail");
         }
       } else {
-        // print("❌ Error loading employees: ${result.fold((l) => l.errMessage, (r) => '')}");
+        print("❌ MainCore: Error loading employees: ${result.fold((l) => l.errMessage, (r) => '')}");
       }
 
       return allEmployeesEntities;
     } catch (e, stackTrace) {
-      // print("❌ MainCore.getAllNewEmployees error: $e");
-      // print("Stack trace: $stackTrace");
+      print("❌ MainCore.getAllNewEmployees error: $e");
+      print("Stack trace: $stackTrace");
       return [];
     }
   }

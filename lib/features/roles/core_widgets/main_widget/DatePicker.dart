@@ -69,7 +69,7 @@ class DatePicker {
           dayBorderRadius: BorderRadius.circular(8),
 
           customModePickerIcon: SvgPicture.asset(
-            'assets/images/downArrow.svg',
+            'assets/icons_assets/main_icons_assets/downArrow.svg',
             fit: BoxFit.fitHeight,
             color: AppColors.secondaryPrimary,
             height: isTablet ? 16.sp : null,
@@ -126,7 +126,7 @@ class DatePicker {
           lastMonthIcon: Transform.rotate(
             angle: Get.locale.toString().contains('en') ? 0 : 3.14,
             child: SvgPicture.asset(
-              'assets/icons/back_icon.svg',
+              'assets/icons_assets/main_icons_assets/back_icon.svg',
               // ignore: deprecated_member_use
               color: AppColors.secondaryPrimary,
             ),
@@ -134,7 +134,7 @@ class DatePicker {
           nextMonthIcon: Transform.rotate(
             angle: Get.locale.toString().contains('en') ? 3.14 : 0,
             child: SvgPicture.asset(
-              'assets/icons/back_icon.svg',
+              'assets/icons_assets/main_icons_assets/back_icon.svg',
               // ignore: deprecated_member_use
               color: AppColors.secondaryPrimary,
             ),

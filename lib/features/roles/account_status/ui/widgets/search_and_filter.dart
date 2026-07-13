@@ -99,7 +99,7 @@ class SearchAndFilter extends StatelessWidget {
                     child: SvgPicture.asset(
                         width: 15.sp,
                         height: 15.sp,
-                        "assets/images/filter_table.svg",
+                        "assets/icons_assets/main_icons_assets/filter_table.svg",
                         color: AppColors.secondaryText
                     ),
                   ),

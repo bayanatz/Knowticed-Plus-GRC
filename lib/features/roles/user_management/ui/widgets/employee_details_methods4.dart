@@ -105,7 +105,7 @@ extension EmployeeDetailsMethods4 on _RoleEmployeeDetailsPageState {
                     heightImage: 16.sp,
                     widthImage: 16.sp,
                     svgColor: AppColors.textButton,
-                    image: "assets/icons_drawer_news/message_new_icon.svg",
+                    image: "assets/icons_assets/main_icons_assets/message_new_icon.svg",
                     space: isMobile ? 0.sp : 8.sp,
                     colorBorder: Colors.transparent,
                   ),
@@ -120,13 +120,13 @@ extension EmployeeDetailsMethods4 on _RoleEmployeeDetailsPageState {
                       itemTextProduct(
                         value: phoneNumber,
                         label: "${S.of(context).phoneNumber}: ",
-                        image: "assets/images/phone_number.svg",
+                        image: "assets/icons_assets/main_icons_assets/phone_number.svg",
                       ),
                       SizedBox(height: 10.sp),
                       itemTextProduct(
                         value: email,
                         label: "${S.of(context).email}: ",
-                        image: "assets/images/email.svg",
+                        image: "assets/icons_assets/form_builder_assets/email.svg",
                       ),
                     ],
                   ),
@@ -183,12 +183,12 @@ extension EmployeeDetailsMethods4 on _RoleEmployeeDetailsPageState {
                               itemTextProduct(
                                   value: title,
                                   label: "Title: ",
-                                  image: "assets/images/page.svg"),
+                                  image: "assets/icons_assets/main_icons_assets/page.svg"),
                               SizedBox(height: 10.sp),
                               itemTextProduct(
                                   value: email,
                                   label: "Email: ",
-                                  image: "assets/images/email.svg"),
+                                  image: "assets/icons_assets/form_builder_assets/email.svg"),
                             ],
                           ),
                           SizedBox(width: 38.sp),
@@ -203,7 +203,7 @@ extension EmployeeDetailsMethods4 on _RoleEmployeeDetailsPageState {
                               itemTextProduct(
                                   value: phoneNumber,
                                   label: "Phone Number: ",
-                                  image: "assets/images/phone_number.svg"),
+                                  image: "assets/icons_assets/main_icons_assets/phone_number.svg"),
                             ],
                           ),
                         ],
@@ -274,12 +274,12 @@ extension EmployeeDetailsMethods4 on _RoleEmployeeDetailsPageState {
                           itemTextProduct(
                               value: title,
                               label: "${S.of(context).title}: ",
-                              image: "assets/images/page.svg"),
+                              image: "assets/icons_assets/main_icons_assets/page.svg"),
                           SizedBox(height: 10.sp),
                           itemTextProduct(
                               value: email,
                               label: "${S.of(context).email}: ",
-                              image: "assets/images/email.svg"),
+                              image: "assets/icons_assets/form_builder_assets/email.svg"),
                         ],
                       ),
                       SizedBox(width: 38.sp),
@@ -294,7 +294,7 @@ extension EmployeeDetailsMethods4 on _RoleEmployeeDetailsPageState {
                           itemTextProduct(
                               value: phoneNumber,
                               label: "${S.of(context).phoneNumber}: ",
-                              image: "assets/images/phone_number.svg"),
+                              image: "assets/icons_assets/main_icons_assets/phone_number.svg"),
                         ],
                       ),
                     ],

@@ -77,7 +77,7 @@ class _UpdateCompanyInfoDialogState extends State<UpdateCompanyInfoDialog> {
                   Padding(
                     padding: EdgeInsets.only(top: 0.02.h),
                     child: const FiltersAppBar(
-                        imageUrl: "assets/icons/reqToChange.svg",
+                        imageUrl: "assets/icons_assets/main_icons_assets/reqToChange.svg",
                         title: "Update Information"),
                   ),
                   Column(
@@ -101,11 +101,11 @@ class _UpdateCompanyInfoDialogState extends State<UpdateCompanyInfoDialog> {
                           borderRadius: 8,
                           dropdownBorderRadius: 8,
                           selectedOptionIcon: SvgPicture.asset(
-                               'assets/icons/CheckListOn.svg',
+                               'assets/icons_assets/main_icons_assets/CheckListOn.svg',
                                               color: AppColors.lightPrimary,
                               ),
                           clearIcon:
-                              SvgPicture.asset("assets/images/closefield.svg"),
+                              SvgPicture.asset("assets/icons_assets/main_icons_assets/closefield.svg"),
                           padding: EdgeInsets.only(
                               right: Get.locale.toString().contains('en')
                                   ? isTablet? 0.01.w : 0.04.w
@@ -120,7 +120,7 @@ class _UpdateCompanyInfoDialogState extends State<UpdateCompanyInfoDialog> {
                           optionsBackgroundColor:
                               Theme.of(context).colorScheme.inversePrimary,
                           suffixIcon: SvgPicture.asset(
-                            'assets/icons/NewDropDownIcon.svg',
+                            'assets/icons_assets/data_grc_assets/NewDropDownIcon.svg',
                             height: isTablet?(isVertical ? 0.025.h : 0.03.h) : 0.02.h,
                             width: isTablet? 0.01.h : 0.02.h,
                           ),
@@ -219,7 +219,7 @@ class _UpdateCompanyInfoDialogState extends State<UpdateCompanyInfoDialog> {
                                       : 0.01.h,
                                   top: isTablet ? 0.02.h : 0.03.h),
                               child: SettingsHeader(
-                                imagePath: 'assets/icons/companyInfo.svg',
+                                imagePath: 'assets/icons_assets/settings_assets/companyInfo.svg',
                                 text: 'Company Information'.tr,
                                 hideDiv: true,
                               ),
@@ -244,7 +244,7 @@ class _UpdateCompanyInfoDialogState extends State<UpdateCompanyInfoDialog> {
                                       : 0.01.h,
                                   top: 0.02.h),
                               child: SettingsHeader(
-                                imagePath: 'assets/icons/companyInfo.svg',
+                                imagePath: 'assets/icons_assets/settings_assets/companyInfo.svg',
                                 text: 'Company Services'.tr,
                                 hideDiv: true,
                               ),
@@ -269,7 +269,7 @@ class _UpdateCompanyInfoDialogState extends State<UpdateCompanyInfoDialog> {
                                       : 0.01.h,
                                   top: 0.02.h),
                               child: SettingsHeader(
-                                imagePath: 'assets/icons/companyInfo.svg',
+                                imagePath: 'assets/icons_assets/settings_assets/companyInfo.svg',
                                 text: 'Contact Information'.tr,
                                 hideDiv: true,
                               ),

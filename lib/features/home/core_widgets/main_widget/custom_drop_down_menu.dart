@@ -4,7 +4,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 import 'package:demo_app/core/theme/theme_controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';
@@ -154,7 +154,7 @@ class _CustomDropdownButton2State extends State<CustomDropdownButton2> {
                     ? widget.suffixPaddingDropDown ?? 0
                     : widget.suffixPaddingDropDown ?? 4.w),
             child: SvgPicture.asset(
-              'assets/icons/NewDropDownIcon.svg',
+              'assets/icons_assets/data_grc_assets/NewDropDownIcon.svg',
               height: widget.iconHeight??(orientation == Orientation.portrait
                   ? isTablet
                       ? 20.h

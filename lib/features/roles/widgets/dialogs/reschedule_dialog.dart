@@ -95,7 +95,7 @@ class _RescheduleDialogState extends State<RescheduleDialog> {
               Padding(
                 padding: EdgeInsets.only(top: 0.0.h),
                 child: FiltersAppBar(
-                    imageUrl: "assets/icons/SmallCalendar.svg",
+                    imageUrl: "assets/icons_assets/main_icons_assets/SmallCalendar.svg",
                     title: isTablet
                         ? "Select Date & Time For Rescheduling ${widget.dialogName}"
                         : "Select Date & Time"),

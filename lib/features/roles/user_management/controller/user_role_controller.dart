@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
+import 'package:demo_app/core/helper/employees/presentation/controller/employee_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/enums/controller_request_current_state.dart';
@@ -11,7 +12,7 @@ import 'package:demo_app/features/roles/role_management/controller/role_cubit.da
 
 import 'package:demo_app/features/roles/core_widgets/dialogs/response_dialog.dart';
 import 'package:demo_app/core/helper/employees/data/models/new_employee_model/emplyees_model/new_employee_model.dart';
-import 'package:demo_app/core/helper/employees/presentation/controller/employee_controller.dart';
+
 import 'package:demo_app/features/roles/role_management/data/models/role_model.dart';
 import 'package:demo_app/features/roles/role_management/domain/entity/user_permission_entity.dart';
 import 'package:demo_app/features/roles/role_management/domain/use_cases/delete_user_permission_use_case.dart';

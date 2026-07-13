@@ -519,6 +519,49 @@ class AppConstanstForm {
 // static const String analytics = 'Analytics';  // Already exists
   static const String exportAnalyticsData = 'Export Analytics Data';
 
+//grc permissions sections
+  static const String modulePermissions = 'Module Permissions';
+  static const String policyPermissions = 'Policy Permissions';
+  static const String controlPermissions = 'Control Permissions';
+  static const String dashboardsPermissions = 'Dashboards Permissions';
+
+//grc module permissions
+  static const String createModule = 'Create Module';
+  static const String editModule = 'Edit Module';
+  static const String changeStatusOfModule = 'Change Status Of Module';
+  static const String deleteModule = 'Delete Module';
+  static const String restoreModule = 'Restore Module';
+  static const String previousModuleOwnerHistory = 'Previous Module Owner History';
+  static const String showComplianceScore = 'Show Compliance Score';
+
+//grc dashboards permissions
+  static const String mainModuleDashboard = 'Main Module Dashboard';
+
+//grc policy permissions
+  static const String createSinglePolicy = 'Create Single Policy';
+  static const String createBulkUploadPolicy = 'Create Bulk Upload Policy';
+  static const String draftPolicy = 'Draft Policy';
+  static const String editPolicy = 'Edit Policy';
+  static const String changeStatusOfPolicy = 'Change Status Of Policy';
+  static const String deletePolicy = 'Delete Policy';
+  static const String policyWeightIssue = 'Policy Weight Issue';
+  static const String editPolicyWeightIssue = 'Edit Policy Weight Issue';
+  static const String policyScore = 'Policy Score';
+
+//grc control permissions
+  static const String createSingleControl = 'Create Single Control';
+  static const String createBulkUploadControl = 'Create Bulk Upload Control';
+  static const String draftControl = 'Draft Control';
+  static const String editControl = 'Edit Control';
+  static const String changeStatusOfControl = 'Change Status Of Control';
+  static const String deleteControl = 'Delete Control';
+  static const String controlWeightIssue = 'Control Weight Issue';
+  static const String editControlWeightIssue = 'Edit Control Weight Issue';
+  static const String previousControlOwners = 'Previous Control Owners';   
+
+
+ 
+
 
 
   static List<String> abbreviation = [

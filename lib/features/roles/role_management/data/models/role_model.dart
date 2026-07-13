@@ -3,8 +3,9 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:demo_app/features/roles/role_management/domain/enums/grc/grc_permissions_sections.dart';
 import 'package:intl/intl.dart';
-import 'package:demo_app/features/home/data/models/acces_type_model/edit_by_model.dart';
+import 'package:demo_app/features/home/home_page/data_source/models/acces_type_model/edit_by_model.dart';
 import 'package:demo_app/features/roles/role_management/domain/enums/messages/messages_permissions_sections.dart';
 import 'package:demo_app/features/roles/role_management/domain/enums/qiyas/qiyas_permissions_sections.dart';
 import 'package:demo_app/features/roles/role_management/domain/interfaces/module_permissions_sections_permissions.dart';
@@ -343,6 +344,16 @@ class RoleModel {
       )
           : null,
       settingsPermissions: getSettingsPermissions(map),
+
+     grcModule: map[GRC_MODULE_KEY] != null
+          ? ModulePermissionModel.fromMap(
+        map[GRC_MODULE_KEY],
+        constructedAdminSections: _getAdminSections(
+            map[GRC_MODULE_KEY], GrcPermissionsSections.values),
+        constructedSectionsPermissions: _getSectionsPermissions(
+            map[GRC_MODULE_KEY], GrcPermissionsSections.values),
+      )
+          : null, 
     );
   }
 

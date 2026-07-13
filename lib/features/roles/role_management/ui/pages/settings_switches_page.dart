@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:demo_app/features/roles/role_management/controller/role_switches_controllers.dart';
 
 import 'package:demo_app/core/enums/enum.dart';
-import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 import 'package:demo_app/features/roles/widgets/confirm_dialog.dart';
 import 'package:demo_app/features/roles/core_widgets/main_widget/custom_button.dart';
 import 'package:demo_app/features/roles/widgets/default_switch_button.dart';
@@ -246,8 +246,8 @@ class SettingsSwitchesPage extends StatelessWidget {
                       child: SvgPicture.asset(
                         (permissionSection.getName ==
                             SettingsPermissionsSections.settings.getName)
-                            ? 'assets/icons/setting.svg'
-                            : 'assets/icons/newSocial.svg',
+                            ? 'assets/icons_assets/main_icons_assets/setting.svg'
+                            : 'assets/icons_assets/roles_assets/newSocial.svg',
                         colorFilter: ColorFilter.mode(
                           AppColors.textButton,
                           BlendMode.srcIn,

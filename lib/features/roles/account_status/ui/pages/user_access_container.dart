@@ -3,6 +3,7 @@
 /// Purpose: Contains the ui for user access container roles_module screen.
 /// Author: Mohamed Elrashidy
 /// Refactored at: 28/1/2025
+import 'package:demo_app/core/helper/employees/presentation/controller/employee_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,7 +12,7 @@ import 'package:get/get.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:demo_app/core/custom/circle_progress.dart';
 import 'package:demo_app/features/roles/account_status/controller/account_status_cubit.dart';
-import 'package:demo_app/core/helper/employees/presentation/controller/employee_controller.dart';
+
 import 'package:lottie/lottie.dart';
 
 import 'package:demo_app/features/roles/account_status/controller/account_status_state.dart';

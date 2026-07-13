@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:demo_app/features/notification/notification_controller.dart';
+import 'package:demo_app/features/notification/presentation/controller/app_notification_controller.dart';
 import 'package:get/get.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/skeleton/controllers/notification_controller.dart';
 import 'package:demo_app/features/roles/account_status/domain/entity/account_status_access_entity.dart';

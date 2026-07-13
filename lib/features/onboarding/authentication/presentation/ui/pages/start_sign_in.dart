@@ -15,7 +15,7 @@ import 'package:demo_app/features/onboarding/authentication/presentation/ui/page
 import 'package:demo_app/core/enums/enum.dart';
 import 'package:demo_app/core/helper/main_helper/date_time_in_arabic.dart';
 import 'package:demo_app/features/onboarding/helper/functions.dart';
-import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 import 'package:demo_app/core/helper/main_helper/validator.dart';
 
 
@@ -155,7 +155,7 @@ class _StartSignInState extends State<StartSignIn> {
                     height: isPortrait ? 0.068.h : null,
                     decoration: BoxDecoration(),
                     child: CustomField(
-                      imagePath: "assets/icons/lock1.svg",
+                      imagePath: "assets/icons_assets/onboarding_assets/lock1.svg",
                       controller: loginController.passcontroller,
                       showSuffix: true,
                       onTap: () {
@@ -233,7 +233,7 @@ class _StartSignInState extends State<StartSignIn> {
                     return ResponseDialog(
                       title: "Error".tr,
                       subtitle: "Please Check Your Internet Connection".tr,
-                      lottieAsset: "assets/images/internet.json",
+                      lottieAsset: "assets/lottie_assets/main_lottie_assets/internet.json",
                     );
                   });
             }

@@ -10,7 +10,7 @@ import 'package:get/get.dart';
 import 'package:demo_app/core/enums/enum.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/features/settings/core_widgets/main_widget/custom_appbar_mobile.dart';
-import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/custom/37-custom_navigate.dart';
@@ -87,7 +87,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                           height: 36.h,
                           textStyle: StyleText.fontSize16Weight500
                               .copyWith(color: AppColors.textButton),
-                          image: 'assets/request_chnage.svg',
+                          image: 'assets/icons_assets/settings_assets/request_chnage.svg',
                           radius: 4.r,
                           svgColor: AppColors.textButton,
                           widthImage: 16.w,
@@ -159,7 +159,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                     height: 36.h,
                     textStyle: StyleText.fontSize16Weight500
                         .copyWith(color: AppColors.textButton),
-                    image: 'assets/request_chnage.svg',
+                    image: 'assets/icons_assets/settings_assets/request_chnage.svg',
                     radius: 4.r,
                     svgColor: AppColors.textButton,
                     widthImage: 16,

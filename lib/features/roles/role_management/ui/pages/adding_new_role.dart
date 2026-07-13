@@ -14,7 +14,7 @@ import 'package:demo_app/features/roles/role_management/domain/enums/modules_enu
 import 'package:lottie/lottie.dart';
 
 import 'package:demo_app/core/enums/enum.dart';
-import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 import 'package:demo_app/core/network/api_constants.dart';
 import 'package:demo_app/features/roles/core_widgets/main_widget/custom_button.dart';
 import 'package:demo_app/generated/l10n.dart';

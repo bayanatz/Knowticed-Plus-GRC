@@ -10,7 +10,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/enums/enum.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
-import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
@@ -107,7 +107,7 @@ class _SettingsHealthInsuranceState extends State<SettingsHealthInsurance> {
                                     return RequestToChangeDialogMobile(
                                       isSetting: true,
                                       title: "Request to Change",
-                                      imageUrl: "assets/icons/reqToChange.svg",
+                                      imageUrl: "assets/icons_assets/main_icons_assets/reqToChange.svg",
                                       isExclate: false,
                                     );
                                   },
@@ -193,7 +193,7 @@ class _SettingsHealthInsuranceState extends State<SettingsHealthInsurance> {
                       textStyle: StyleText.fontSize16Weight500
                           .copyWith(color: AppColors.textButton),
                       radius: 4.r,
-                      image: 'assets/request_chnage.svg',
+                      image: 'assets/icons_assets/settings_assets/request_chnage.svg',
                       svgColor: AppColors.textButton,
                       space: 8.w,
                       widthImage: 16.w,

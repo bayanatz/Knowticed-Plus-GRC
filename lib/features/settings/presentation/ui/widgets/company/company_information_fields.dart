@@ -155,7 +155,7 @@ class _CompanyInformationFieldsState extends State<CompanyInformationFields> {
               // Company Section
               Row(
                 children: [
-                  CustomSvg(assetPath: "assets/icon_drwaer/Comapny_icon.svg",width: 25.w,height: 25.h,fit: BoxFit.fill,),
+                  CustomSvg(assetPath: "assets/icons_assets/settings_assets/Comapny_icon.svg",width: 25.w,height: 25.h,fit: BoxFit.fill,),
                   SizedBox(width: 8.w),
                   Text(
                       S.of(context).company,
@@ -337,7 +337,7 @@ class _CompanyInformationFieldsState extends State<CompanyInformationFields> {
               // Service Section
               Row(
                 children: [
-                  CustomSvg(assetPath: "assets/icon_drwaer/services_icon.svg",width: 25.w,height: 25.h,fit: BoxFit.fill,),
+                  CustomSvg(assetPath: "assets/icons_assets/settings_assets/services_icon.svg",width: 25.w,height: 25.h,fit: BoxFit.fill,),
                   SizedBox(width: 8.w),
                   Text(
                       'Service'.tr,

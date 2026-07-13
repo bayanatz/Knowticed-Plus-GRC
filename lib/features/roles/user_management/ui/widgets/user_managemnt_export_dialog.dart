@@ -8,7 +8,7 @@ import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-// REMOVED_MODULE: import 'package:demo_app/features/external/data_grc_module/core/extensions/extensions.dart';
+// REMOVED_MODULE: import 'package:demo_app/core/helper/data_grc_module/core/extensions/extensions.dart';
 import 'package:demo_app/features/roles/role_management/controller/role_cubit.dart';
 import 'package:path_provider/path_provider.dart';
 

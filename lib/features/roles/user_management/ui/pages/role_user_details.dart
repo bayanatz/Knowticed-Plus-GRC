@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-// REMOVED_MODULE: import 'package:demo_app/features/external/data_grc_module/core/extensions/extensions.dart';
+// REMOVED_MODULE: import 'package:demo_app/core/helper/data_grc_module/core/extensions/extensions.dart';
 
 import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/helper/main_helper/cross_axis_count_helper.dart';
@@ -49,7 +49,7 @@ class RoleUserDetails extends StatelessWidget {
                         ),
                       );
                     },
-                    iconPath: 'assets/icons/edit.svg',
+                    iconPath: 'assets/edit.svg',
                   ),
                 ],
               ),

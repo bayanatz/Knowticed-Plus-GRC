@@ -18,7 +18,7 @@ import 'package:demo_app/features/roles/core_widgets/buttons/main_custom_icon_bu
 import 'package:demo_app/features/roles/core_widgets/form_fields/custom_search.dart';
 import 'package:demo_app/core/enums/enum.dart';
 
-import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 
 import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:demo_app/features/roles/system_logs/controller/system_logs_controller.dart';
@@ -98,7 +98,7 @@ class _SystemLogsAppBarState extends State<SystemLogsAppBar> {
                  ),
                  child: SizedBox(
                    child: CustomSvg(
-                     assetPath: "assets/images/filter_table.svg",
+                     assetPath: "assets/icons_assets/main_icons_assets/filter_table.svg",
                      width: 10.w,
                      height: 10.h,
                      fit: BoxFit.scaleDown,
@@ -150,7 +150,7 @@ class _SystemLogsAppBarState extends State<SystemLogsAppBar> {
                               ? AccountStatusHelper.getIconSize(context)
                               : 1.3,
                           child: SvgPicture.asset(
-                              "assets/images/filter_table.svg",
+                              "assets/icons_assets/main_icons_assets/filter_table.svg",
                               color: widget.isFilterDataShow
                                   ? AppColors.textButton
                                   : Theme.of(context).colorScheme.scrim),
@@ -231,7 +231,7 @@ class _SystemLogsAppBarState extends State<SystemLogsAppBar> {
                   ),
                   child: SizedBox(
                     child: CustomSvg(
-                      assetPath: "assets/icons/exportsquare.svg",
+                      assetPath: "assets/icons_assets/roles_assets/exportsquare.svg",
                       width: 10.w,
                       height: 10.h,
                       fit: BoxFit.scaleDown,
@@ -254,7 +254,7 @@ class _SystemLogsAppBarState extends State<SystemLogsAppBar> {
                           });
                     },
                     buttonText: "Export".tr,
-                    widgetIcon: "assets/icons/exportsquare.svg",
+                    widgetIcon: "assets/icons_assets/roles_assets/exportsquare.svg",
                     buttonStyle: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.signOut,
                       shape: const RoundedRectangleBorder(

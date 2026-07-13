@@ -70,7 +70,7 @@ class _SettingsHeaderState extends State<SettingsHeader> {
                   Navigator.pop(context, false);
                 },
                 child: SvgPicture.asset(
-                  "assets/icons/exit_x.svg",
+                  "assets/icons_assets/settings_assets/exit_x.svg",
                 ),
               ),
             widget.isSettings ? Spacer() : const SizedBox.shrink(),

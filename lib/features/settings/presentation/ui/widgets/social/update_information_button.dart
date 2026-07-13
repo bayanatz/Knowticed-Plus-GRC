@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:demo_app/core/helper/employees/presentation/controller/employee_controller.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,7 +8,7 @@ import 'package:get/get.dart';
 
 import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:demo_app/features/settings/core_widgets/dialogs/response_dialog.dart';
-import 'package:demo_app/core/helper/employees/presentation/controller/employee_controller.dart';
+
 import 'package:demo_app/features/settings/presentation/controller/settings_controller.dart';
 import 'package:demo_app/features/settings/presentation/controller/social_controller.dart';
 

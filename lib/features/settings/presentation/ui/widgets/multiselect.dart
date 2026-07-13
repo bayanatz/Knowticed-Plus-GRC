@@ -530,7 +530,7 @@ class _MultiSelectDropDownState<T> extends State<MultiSelectDropDown<T>> {
                   InkWell(
                     onTap: () => clear(),
                     child: SvgPicture.asset(
-                      "assets/images/closefield.svg",
+                      "assets/icons_assets/main_icons_assets/closefield.svg",
                       height:isPortrait? 0.02.h : 0.025.h,
                     ),
                   ),

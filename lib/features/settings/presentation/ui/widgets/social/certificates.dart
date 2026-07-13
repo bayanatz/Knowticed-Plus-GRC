@@ -28,7 +28,7 @@ class Certificates extends StatelessWidget {
           Padding(
             padding: EdgeInsets.symmetric(vertical: 0.02.h),
             child: SettingsHeader(
-              imagePath: 'assets/icons/certificates.svg',
+              imagePath: 'assets/icons_assets/main_icons_assets/certificates.svg',
               text: 'Certificates'.tr,
             ),
           ),

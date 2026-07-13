@@ -15,7 +15,7 @@ import 'package:demo_app/features/home/core_widgets/main_widget/title_time_meeti
 
 import 'package:demo_app/core/enums/enum.dart';
 
-import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 
 import 'package:demo_app/core/theme/app_font_size.dart';
 
@@ -339,7 +339,7 @@ class _TimelineWidgetState extends State<TimelineWidget> {
   String _getSortOptionIcon(ProgressService option) {
     switch (option) {
       case ProgressService.Edit:
-        return "assets/images/edit_pen.svg";
+        return "assets/icons_assets/data_grc_assets/edit_pen.svg";
       case ProgressService.Reschedule:
         return "assets/images/circle_res.svg";
       case ProgressService.cancel:

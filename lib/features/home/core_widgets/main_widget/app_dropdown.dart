@@ -1,7 +1,7 @@
 // Last update: 2/10/2024
 
-import 'package:demo_app/core/constants/app_assets.dart';
-import 'package:demo_app/core/constants/space_helper.dart';
+import 'package:demo_app/core/helper/form_builder_module/core/constants/app_assets.dart';
+import 'package:demo_app/core/helper/form_builder_module/core/helpers/spacing_helper.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +9,7 @@ import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-// REMOVED_MODULE: import 'package:demo_app/features/external/data_grc_module/core/extensions/extensions.dart';
+// REMOVED_MODULE: import 'package:demo_app/core/helper/data_grc_module/core/extensions/extensions.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/knowledge_hub_module/core/theming/new_theme.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';
 

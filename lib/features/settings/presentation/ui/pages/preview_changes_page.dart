@@ -19,7 +19,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/helper/main_helper/format_helper.dart';
-// REMOVED_MODULE: import 'package:demo_app/features/external/inventory_module/core/text_field.dart';
+// REMOVED_MODULE: import 'package:demo_app/core/helper/inventory_module/core/text_field.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/services_mangment_module/core/new_theme.dart';
 import 'package:demo_app/features/settings/widgets/countries.dart';
@@ -512,7 +512,7 @@ class _PreviewChangesPageState extends State<PreviewChangesPage> {
                 Row(
                   children: [
                     CustomSvg(
-                      assetPath: 'assets/phone_contact.svg',
+                      assetPath: 'assets/icons_assets/settings_assets/phone_contact.svg',
                       width: 16.w,
                       height: 16.h,
                       fit: BoxFit.scaleDown,
@@ -572,7 +572,7 @@ class _PreviewChangesPageState extends State<PreviewChangesPage> {
                 Row(
                   children: [
                     CustomSvg(
-                      assetPath: 'assets/new_location.svg',
+                      assetPath: 'assets/icons_assets/settings_assets/new_location.svg',
                       width: 16.w,
                       height: 16.h,
                       fit: BoxFit.scaleDown,

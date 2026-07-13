@@ -2,6 +2,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:demo_app/core/custom/2-custom_textfield.dart';
+import 'package:demo_app/core/helper/employees/presentation/controller/employee_controller.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 
 import 'package:flutter/material.dart';
@@ -13,7 +14,7 @@ import 'package:demo_app/features/onboarding/core_widgets/dialogs/response_dialo
 import 'package:demo_app/features/onboarding/core_widgets/main_widget/column_request_data.dart';
 
 import 'package:demo_app/features/onboarding/helper/functions.dart';
-import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 import 'package:demo_app/core/custom/loading.dart';
 
 import 'package:demo_app/core/theme/app_font_size.dart';
@@ -21,9 +22,9 @@ import 'package:demo_app/core/constants/system_actions.dart';
 import 'package:demo_app/core/helper/main_helper/validator.dart';
 import 'package:demo_app/features/employee/data/models/emplyees_model/new_employee_model.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/services_mangment_module/core/new_theme.dart';
-import 'package:demo_app/core/helper/employees/presentation/controller/employee_controller.dart';
+
 // REMOVED_MODULE: import 'package:demo_app/features/skeleton/authentication/welcome_screen/views/mobile_view/nav_bar.dart';
-import 'package:demo_app/features/home/presentation/ui/pages/dashboard_view_data/chart_settings_dialog.dart';
+import 'package:demo_app/features/home/home_page/presentation/ui/pages/dashboard_view_data/chart_settings_dialog.dart';
 import 'package:demo_app/core/helper/employees/data/models/new_employee_model/emplyees_model/new_employee_model.dart';
 import 'package:demo_app/generated/l10n.dart';
 import 'package:demo_app/features/roles/system_logs/controller/system_logs_controller.dart';
@@ -189,7 +190,7 @@ class _ForgotPassDialogState extends State<ForgotPassDialog> {
                                   subtitle:
                                   "Please Check Your Internet Connection"
                                       .tr,
-                                  lottieAsset: "assets/images/internet.json",
+                                  lottieAsset: "assets/lottie_assets/main_lottie_assets/internet.json",
                                 );
                               });
                         }
@@ -280,7 +281,7 @@ class _ForgotPassDialogState extends State<ForgotPassDialog> {
                   //                 subtitle:
                   //                     "Please Check Your Internet Connection"
                   //                         .tr,
-                  //                 lottieAsset: "assets/images/internet.json",
+                  //                 lottieAsset: "assets/lottie_assets/main_lottie_assets/internet.json",
                   //               );
                   //             });
                   //       }

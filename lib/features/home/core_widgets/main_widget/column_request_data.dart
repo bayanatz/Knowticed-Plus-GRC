@@ -180,7 +180,7 @@ class _ColumnRequestDataState extends State<ColumnRequestData> {
                     InkWell(
                       onTap: widget.editField,
                       child: SvgPicture.asset(
-                        'assets/icons/isEditIcon.svg',
+                        'assets/icons_assets/main_icons_assets/isEditIcon.svg',
                         height: 20.h,
                         color: AppColors.primary,
                       ),

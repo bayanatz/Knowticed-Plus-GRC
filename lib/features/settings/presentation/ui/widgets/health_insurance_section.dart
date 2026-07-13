@@ -6,6 +6,7 @@
 /// Updated By: Claude AI Assistant
 /// Changes: Updated to fetch data from NewEmployeeModelHistory model
 
+import 'package:demo_app/core/helper/employees/presentation/controller/employee_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:demo_app/core/custom/2-custom_textfield.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,7 +23,7 @@ import 'package:demo_app/features/settings/core_widgets/main_widget/intl_phone_f
 import '../../../../../generated/l10n.dart';
 import '../../../../employee/data/models/emplyees_model/new_employee_model.dart';
 import '../../../../employee/presentation/controller/main_core_employee_controller.dart';
-import 'package:demo_app/core/helper/employees/presentation/controller/employee_controller.dart';
+
 import 'settings_header.dart';
 
 class HealthInsuranceSection extends StatelessWidget {
@@ -113,7 +114,7 @@ class HealthInsuranceSection extends StatelessWidget {
         Padding(
           padding: EdgeInsets.only(bottom: 0.02.h, top: 0.01.h),
           child: SettingsHeader(
-              imagePath: 'assets/Insurance Details.svg',
+              imagePath: 'assets/icons_assets/main_icons_assets/Insurance Details.svg',
               text: 'Health Insurance'.tr),
         ),
         Row(

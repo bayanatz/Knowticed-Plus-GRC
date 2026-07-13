@@ -11,9 +11,17 @@ class MainCoreEmployeeRepository {
     Either<Failure, dynamic> result = await remoteDataSource.getAllEmployees();
     if (result.isLeft()) return Left(result.fold((l) => l, (r) => FirebaseFailure('Unknown error')));
     List<Map<String, dynamic>> employees = result.getOrElse(() => []);
-    List<NewEmployeeModelHistory> newEmployees = employees
-        .map((employee) => NewEmployeeModelHistory.fromMap(employee))
-        .toList();
+    // ✅ FIX: one malformed document used to throw inside .map() and lose
+    // ALL employees. Parse each record separately and skip the bad ones.
+    List<NewEmployeeModelHistory> newEmployees = [];
+    for (var employee in employees) {
+      try {
+        newEmployees.add(NewEmployeeModelHistory.fromMap(employee));
+      } catch (e) {
+        print("⚠️ MainCoreRepo: skipped malformed employee doc: $e");
+      }
+    }
+    print("✅ MainCoreRepo: parsed ${newEmployees.length}/${employees.length} employees");
     return Right(newEmployees);
   }
 }

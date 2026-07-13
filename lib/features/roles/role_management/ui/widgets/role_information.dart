@@ -7,7 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-// REMOVED_MODULE: import 'package:demo_app/features/external/data_grc_module/core/extensions/extensions.dart';
+// REMOVED_MODULE: import 'package:demo_app/core/helper/data_grc_module/core/extensions/extensions.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/services_mangment_module/core/new_theme.dart';
 import 'package:demo_app/features/roles/role_management/controller/role_cubit.dart';
 
@@ -329,7 +329,7 @@ class _RoleInformationState extends State<RoleInformation> {
           CustomIconButton(
               width: double.infinity,
               buttonText: 'Message'.tr,
-              iconPath: 'assets/icons_drawer_news/message_new_icon.svg',
+              iconPath: 'assets/icons_assets/main_icons_assets/message_new_icon.svg',
               onTap: () {
                 MessageInterfaceConsumer.openSingleChat(
                     controller.selectedRole!.currentCreatedBy,
@@ -360,7 +360,7 @@ class _RoleInformationState extends State<RoleInformation> {
               width: imageSize,
               height: imageSize,
               child: SvgPicture.asset(
-                'assets/skeleton/roles/icons/role_main_icon.svg',
+                'assets/icons_assets/main_icons_assets/role_main_icon.svg',
                 width: imageSize - 20.sp,
                 height: imageSize - 20.sp,
                 color: AppColors.text,
@@ -379,7 +379,7 @@ class _RoleInformationState extends State<RoleInformation> {
         width: imageSize,
         height: imageSize,
         child: SvgPicture.asset(
-          'assets/skeleton/roles/icons/role_main_icon.svg',
+          'assets/icons_assets/main_icons_assets/role_main_icon.svg',
           width: imageSize - 20.sp,
           height: imageSize - 20.sp,
           color: AppColors.text,

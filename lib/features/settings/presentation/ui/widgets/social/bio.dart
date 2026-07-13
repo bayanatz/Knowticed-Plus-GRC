@@ -13,7 +13,7 @@ import 'package:get/get.dart';
 
 import 'package:demo_app/core/theme/app_font_size.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/skeleton/authentication/welcome_screen/views/mobile_view/nav_bar.dart';
-// REMOVED_MODULE: import 'package:demo_app/features/external/inventory_module/core/text_field.dart';
+// REMOVED_MODULE: import 'package:demo_app/core/helper/inventory_module/core/text_field.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 
 import 'package:demo_app/core/theme/app_theme.dart';
@@ -80,7 +80,7 @@ class _BioState extends State<Bio> {
       child: Column(
         children: [
           SettingsHeader(
-            imagePath: 'assets/bio.svg',
+            imagePath: 'assets/icons_assets/settings_assets/bio.svg',
             text: FormatHelper.capitalize('Bio'.tr), // ✅ CAPITALIZE
           ),
           SizedBox(height: 10.sp),

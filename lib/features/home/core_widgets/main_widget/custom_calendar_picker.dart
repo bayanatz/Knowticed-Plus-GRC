@@ -51,7 +51,7 @@ class _CustomCalendarPickerState extends State<CustomCalendarPicker> {
         lastMonthIcon: Transform.rotate(
           angle: Get.locale.toString().contains('en') ? 0 : 3.14,
           child: SvgPicture.asset(
-            'assets/icons/back_icon.svg',
+            'assets/icons_assets/main_icons_assets/back_icon.svg',
             // ignore: deprecated_member_use
             color: AppColors.lightPrimary,
           ),
@@ -59,7 +59,7 @@ class _CustomCalendarPickerState extends State<CustomCalendarPicker> {
         nextMonthIcon: Transform.rotate(
           angle: Get.locale.toString().contains('en') ? 3.14 : 0,
           child: SvgPicture.asset(
-            'assets/icons/back_icon.svg',
+            'assets/icons_assets/main_icons_assets/back_icon.svg',
             // ignore: deprecated_member_use
             color: AppColors.lightPrimary,
           ),

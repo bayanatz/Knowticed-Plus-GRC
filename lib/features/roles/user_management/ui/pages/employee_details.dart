@@ -13,7 +13,7 @@ import 'package:intl/intl.dart';
 import 'package:demo_app/core/helper/main_helper/circle_progress.dart';
 import 'package:demo_app/core/custom/circle_progress.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/services_mangment_module/Category/presentation/ui/services_admin/Widget/W3_Frame_Screen_tablet.dart';
-// REMOVED_MODULE: import 'package:demo_app/features/external/services_mangment_module/core/custom_button_with_image.dart';
+// REMOVED_MODULE: import 'package:demo_app/core/local_widgets/services_management/custom_button_with_image.dart';
 import 'package:demo_app/features/roles/user_management/controller/user_management_cubit.dart';
 import 'package:demo_app/features/roles/user_management/ui/pages/showEditUserAccessDialog.dart';
 import 'dart:ui' as ui;

@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/custom/circle_progress.dart';
-// REMOVED_MODULE: import 'package:demo_app/features/external/inventory_module/core/svg_custom.dart';
+// REMOVED_MODULE: import 'package:demo_app/core/helper/inventory_module/core/svg_custom.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/services_mangment_module/core/new_theme.dart';
 import 'dart:ui' as ui;
 
@@ -163,7 +163,7 @@ class _ModulePermissionsWidgetState extends State<ModulePermissionsWidget> {
                       duration: Duration(milliseconds: 300),
                       curve: Curves.easeInOut,
                       child: CustomSvg(
-                        assetPath: "assets/arrowdown.svg",
+                        assetPath: "assets/icons_assets/main_icons_assets/arrowdown.svg",
                         width: 12.w,
                         height: 15.h,
                         fit: BoxFit.scaleDown,

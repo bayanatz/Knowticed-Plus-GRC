@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:demo_app/features/roles/role_management/domain/use_cases/delete_user_permission_use_case.dart';
-import 'package:demo_app/core/helper/settings/presentation/controller/add_company_controller.dart';
+import 'package:demo_app/features/settings/presentation/controller/add_company_controller.dart';
 
 import 'package:demo_app/core/network/failure_model.dart';
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
@@ -23,7 +23,7 @@ class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
   UserManagementAccessRepository repository = UserManagementAccessRepository();
   Map<String, List<UserPermissionEntity>> roleFilteredUsersPermissions = {};
   Map<UserAccessStatus, List<UserPermissionEntity>>
-      accessStatusFilteredUsersPermissions = {};
+  accessStatusFilteredUsersPermissions = {};
   String selectedRole = 'all';
   UserAccessStatus selectedUserAccessStatus = UserAccessStatus.all;
   List<UserPermissionEntity> filteredUsersPermissions = [];
@@ -50,8 +50,7 @@ class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
       // print("✅ [CUBIT] UserPermissionsDataLoading emitted");
 
       // print("🎮 [CUBIT] Step 2: Calling repository.getUsersPermissionsData()...");
-      Either<Failure, dynamic> result =
-          await repository.getUsersPermissionsData();
+      Either<Failure, dynamic> result = await repository.getUsersPermissionsData();
 
       // print("🎮 [CUBIT] Step 3: Checking result...");
       // print("   - isLeft: ${result.isLeft()}");
@@ -60,7 +59,7 @@ class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
       if (result.isLeft()) {
         Failure failure = result.fold((l) => l, (r) => null)!;
         // print("❌ [CUBIT] ERROR from repository: ${failure.errMessage}");
-        // emit(UserPermissionsDataError(failure.errMessage));
+       // emit(UserPermissionsDataError(failure.errMessage));
         // print("════════════════════════════════════════════════════════");
         return;
       }
@@ -72,9 +71,7 @@ class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
         // print("⚠️ [CUBIT] WARNING: No user permissions found!");
       } else {
         // print("🎮 [CUBIT] Sample permissions:");
-        for (int i = 0;
-            i < (userPermissions.length > 3 ? 3 : userPermissions.length);
-            i++) {
+        for (int i = 0; i < (userPermissions.length > 3 ? 3 : userPermissions.length); i++) {
           // print("   [$i] ${userPermissions[i].englishName} - ${userPermissions[i].accessName}");
         }
       }
@@ -94,12 +91,11 @@ class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
       // print("Error: $e");
       // print("Stack trace:\n$stackTrace");
       // print("════════════════════════════════════════════════════════");
-      // emit(UserPermissionsDataError(e.toString()));
+     // emit(UserPermissionsDataError(e.toString()));
     }
   }
 
-  void getUsersPermissionFilteredMaps(
-      List<UserPermissionEntity> userPermissions) {
+  void getUsersPermissionFilteredMaps(List<UserPermissionEntity> userPermissions) {
     // print("┌─────────────────────────────────────────────────────┐");
     // print("│ 🗂️  [CUBIT] getUsersPermissionFilteredMaps - START │");
     // print("│ Input: ${userPermissions.length.toString().padRight(3)} permissions                             │");
@@ -136,12 +132,9 @@ class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
         roleCount[roleKey] = (roleCount[roleKey] ?? 0) + 1;
 
         // Add to status filters
-        accessStatusFilteredUsersPermissions[userPermission.accessStatus]!
-            .add(userPermission);
-        accessStatusFilteredUsersPermissions[UserAccessStatus.all]!
-            .add(userPermission);
-        statusCount[userPermission.accessStatus] =
-            (statusCount[userPermission.accessStatus] ?? 0) + 1;
+        accessStatusFilteredUsersPermissions[userPermission.accessStatus]!.add(userPermission);
+        accessStatusFilteredUsersPermissions[UserAccessStatus.all]!.add(userPermission);
+        statusCount[userPermission.accessStatus] = (statusCount[userPermission.accessStatus] ?? 0) + 1;
       }
 
       // print("┌═════════════════════════════════════════════════════┐");
@@ -158,6 +151,7 @@ class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
       });
       // print("│   - all: ${accessStatusFilteredUsersPermissions[UserAccessStatus.all]!.length} users");
       // print("└═════════════════════════════════════════════════════┘");
+
     } catch (e, stackTrace) {
       // print("════════════════════════════════════════════════════════");
       // print("❌❌❌ [CUBIT] ERROR in getUsersPermissionFilteredMaps ❌❌❌");
@@ -166,7 +160,6 @@ class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
       // print("════════════════════════════════════════════════════════");
     }
   }
-
   void selectNewRole(String role) {
     // print("🎯 [CUBIT] selectNewRole: $role");
     selectedRole = role;
@@ -210,15 +203,10 @@ class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
       // Filter by role and search text
       int roleMatchCount = 0;
       for (UserPermissionEntity permission in roleUsers) {
-        if (permission.arabicName
-                .toLowerCase()
-                .contains(searchText.toLowerCase()) ||
-            permission.englishName
-                .toLowerCase()
-                .contains(searchText.toLowerCase())) {
+        if (permission.arabicName.toLowerCase().contains(searchText.toLowerCase()) ||
+            permission.englishName.toLowerCase().contains(searchText.toLowerCase())) {
           userPermissionCount.putIfAbsent(permission, () => 0);
-          userPermissionCount[permission] =
-              userPermissionCount[permission]! + 1;
+          userPermissionCount[permission] = userPermissionCount[permission]! + 1;
           roleMatchCount++;
         }
       }
@@ -231,15 +219,10 @@ class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
       // print("   🔍 Users with status '$selectedUserAccessStatus': ${statusUsers.length}");
 
       for (UserPermissionEntity permission in statusUsers) {
-        if (permission.arabicName
-                .toLowerCase()
-                .contains(searchText.toLowerCase()) ||
-            permission.englishName
-                .toLowerCase()
-                .contains(searchText.toLowerCase())) {
+        if (permission.arabicName.toLowerCase().contains(searchText.toLowerCase()) ||
+            permission.englishName.toLowerCase().contains(searchText.toLowerCase())) {
           userPermissionCount.putIfAbsent(permission, () => 0);
-          userPermissionCount[permission] =
-              userPermissionCount[permission]! + 1;
+          userPermissionCount[permission] = userPermissionCount[permission]! + 1;
           statusMatchCount++;
         }
       }
@@ -265,6 +248,7 @@ class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
       // // print("└═════════════════════════════════════════════════════┘");
 
       emit(UserPermissionsDataLoaded());
+
     } catch (e, stackTrace) {
       // print("════════════════════════════════════════════════════════");
       // print("❌❌❌ [CUBIT] ERROR in filterHomePageUser ❌❌❌");
@@ -282,10 +266,8 @@ class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
     // print("   - selectedUserAccessStatus set to: all");
   }
 
-  initNewAccessController(
-      List<String> roles, List<String> rolesAr, // ✅ Add rolesAr
-      {String? selectedRole,
-      DateTime? creationDate}) {
+  initNewAccessController(List<String> roles, List<String> rolesAr, // ✅ Add rolesAr
+          {String? selectedRole, DateTime? creationDate}) {
     accessGranted = DateTime.now();
     accessRevoked = DateTime.now().add(Duration(days: 30 * 6));
     newAccessSelectedRole = null;
@@ -301,21 +283,22 @@ class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
       getSelectedRoleUsers(selectedRole);
     }
   }
-
   void getUsersToGiveAccess() {
     employeeToGiveAccess = [];
-    for (var element
-        in Get.find<MainCoreEmployeeController>().allEmployeesEntities!) {
+    Get.find<MainCoreEmployeeController>()
+        .allEmployeesEntities!
+        .forEach((element) {
       if (element.email !=
           Get.find<MainCoreEmployeeController>().employeeEntity!.email) {
         employeeToGiveAccess
             .add(UserPermissionEntity.fromEmployeeEntity(element));
       }
-    }
+    });
     filterEmployeesToGiveAccess("");
   }
 
   void filterEmployeesToGiveAccess(String searchText) {
+
     filteredEmployeeToGiveAccess = [];
 
     // ✅ Check current employee email
@@ -328,31 +311,28 @@ class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
 
       final companyEmail = companyController.company?.email?.emails?.lastOrNull;
 
+
       for (int i = 0; i < employeeToGiveAccess.length; i++) {
         var element = employeeToGiveAccess[i];
 
-        if (i < 3) {}
+        if (i < 3) {
+        }
 
         // Search filter
-        bool matchesSearch = element.arabicName
-                .toLowerCase()
-                .contains(searchText.toLowerCase()) ||
-            element.englishName
-                .toLowerCase()
-                .contains(searchText.toLowerCase());
+        bool matchesSearch = element.arabicName.toLowerCase().contains(searchText.toLowerCase()) ||
+            element.englishName.toLowerCase().contains(searchText.toLowerCase());
 
         // Department filter
         bool matchesDepartment = (addNewAccessDepartmentId == null) ||
             (element.departmentId == addNewAccessDepartmentId);
 
-        if (i < 3) {}
+        if (i < 3) {
+        }
 
         if (matchesSearch && matchesDepartment) {
           // ✅ Safe comparison
-          bool isCurrentEmployee =
-              element.employeeEmail == currentEmployeeEmail;
-          bool isCompanyEmail =
-              companyEmail != null && element.employeeEmail == companyEmail;
+          bool isCurrentEmployee = element.employeeEmail == currentEmployeeEmail;
+          bool isCompanyEmail = companyEmail != null && element.employeeEmail == companyEmail;
 
           if (isCurrentEmployee || isCompanyEmail) {
             continue;
@@ -362,7 +342,9 @@ class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
         }
       }
 
+
       emit(EmployeeToGiveAccessDataLoaded());
+
     } catch (e, stackTrace) {
       rethrow;
     }
@@ -395,11 +377,11 @@ class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
 
   removeUserAccess(UserPermissionEntity userPermission) async {
     Either<Failure, dynamic> result =
-        await DeleteUserPermissionUseCase(repository).execute(
-            permission: userPermission,
-            employeeEmail: userPermission.employeeEmail,
-            currentUserEmail:
-                Get.find<MainCoreEmployeeController>().employeeEntity!.email!);
+    await DeleteUserPermissionUseCase(repository).execute(
+        permission: userPermission,
+        employeeEmail: userPermission.employeeEmail,
+        currentUserEmail:
+        Get.find<MainCoreEmployeeController>().employeeEntity!.email!);
     if (result.isRight()) {
       getUserAccess();
       getSelectedRoleUsers(selectedRole);
@@ -407,20 +389,21 @@ class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
   }
 
   updateSelectedMembersAccess() async {
+
     Either<Failure, dynamic> result =
-        await UpdateSelectedMembersUseCase(repository).execute(
+    await UpdateSelectedMembersUseCase(repository).execute(
       accessName: newAccessSelectedRole!,
       startDate:
-          DateFormat(Constants.userAccessDateFormat).format(accessGranted),
+      DateFormat(Constants.userAccessDateFormat).format(accessGranted),
       endDate: DateFormat(Constants.userAccessDateFormat).format(accessRevoked),
       selectedMembers: Get.find<MainCoreEmployeeController>()
           .allEmployeesEntities!
           .where(
             (element) => selectedUsersIdToChangeAccess.contains(element.id),
-          )
+      )
           .toList(),
       currentUserEmail:
-          Get.find<MainCoreEmployeeController>().employeeEntity!.email!,
+      Get.find<MainCoreEmployeeController>().employeeEntity!.email!,
     );
 
     if (result.isRight()) {
@@ -462,18 +445,18 @@ class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
   List<Map<String, dynamic>> exportUserAccessData() {
     return filteredUsersPermissions
         .map((user) => {
-              'employeeEmail': user.employeeEmail,
-              'englishName': user.englishName,
-              'arabicName': user.arabicName,
-              'accessName': user.accessName,
-              'accessStatus': user.accessStatus.toString(),
-              'startDate': user.startDate,
-              'endDate': user.endDate,
-              'grantorEnglishName': user.grantorEnglishName,
-              'grantorArabicName': user.grantorArabicName,
-              'departmentId': user.departmentId,
-              'jobTitle': user.englishJobTitle,
-            })
+      'employeeEmail': user.employeeEmail,
+      'englishName': user.englishName,
+      'arabicName': user.arabicName,
+      'accessName': user.accessName,
+      'accessStatus': user.accessStatus.toString(),
+      'startDate': user.startDate,
+      'endDate': user.endDate,
+      'grantorEnglishName': user.grantorEnglishName,
+      'grantorArabicName': user.grantorArabicName,
+      'departmentId': user.departmentId,
+      'jobTitle': user.englishJobTitle,
+    })
         .toList();
   }
 

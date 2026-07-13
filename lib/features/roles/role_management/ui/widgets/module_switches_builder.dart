@@ -11,7 +11,7 @@ import 'package:demo_app/features/roles/role_management/domain/enums/modules_enu
 import 'package:flutter/src/services/haptic_feedback.dart';
 
 import 'package:demo_app/core/enums/enum.dart';
-import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 import 'package:demo_app/features/roles/widgets/default_switch_button.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';
@@ -112,7 +112,7 @@ class _ModuleSwitchesBuilderState extends State<ModuleSwitchesBuilder> {
                   Transform.rotate(
                     angle: isExpanded ? 0 : pi,
                     child: SvgPicture.asset(
-                        "assets/icons/arrow_down.svg",
+                        "assets/icons_assets/form_builder_assets/arrow_down.svg",
                         height: 12.sp,
                         width: 12.sp,
                         color: lightMode ?  Colors.black : Colors.white

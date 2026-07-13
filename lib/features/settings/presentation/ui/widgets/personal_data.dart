@@ -15,7 +15,7 @@ import 'dart:ui' as ui;
 import 'package:intl/intl.dart';
 import 'package:demo_app/features/settings/widgets/form_fields/two_text_section.dart';
 import 'package:demo_app/core/helper/main_helper/date_time_in_arabic.dart';
-import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 import 'package:demo_app/core/helper/main_helper/validator.dart';
 
 import 'package:demo_app/core/theme/app_font_size.dart';
@@ -151,7 +151,7 @@ class PersonalData extends StatelessWidget {
                 top: 0.012.h,
                 bottom: 0.012.h),
             child: SvgPicture.asset(
-              'assets/icons/newCalenderFixed.svg',
+              'assets/icons_assets/main_icons_assets/newCalenderFixed.svg',
               color: themeController.currentTheme.value == AppColors.lightTheme
                   ? AppColors.colorBlack
                   : AppColors.colorWhite,

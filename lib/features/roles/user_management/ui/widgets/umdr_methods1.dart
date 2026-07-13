@@ -380,7 +380,7 @@ extension UmdrMethods1 on _UserManagementDetailsRequestSettingsState {
   String _getStatusIcon(String status) {
     switch (status.toLowerCase()) {
       case 'approved':
-        return 'assets/state_icon/approve_icon.svg';
+        return 'assets/icons_assets/main_icons_assets/approve_icon.svg';
       case 'pending':
         return 'assets/state_icon/pending_icon.svg';
       case 'rejected':

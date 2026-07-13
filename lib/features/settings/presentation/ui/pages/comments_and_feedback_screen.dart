@@ -12,11 +12,11 @@ import 'dart:ui' as ui;
 import 'package:demo_app/features/settings/core_widgets/main_widget/custom_appbar_mobile.dart';
 import 'package:demo_app/features/settings/widgets/dialogs/custom_dialog_box.dart';
 
-import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 import 'package:demo_app/features/settings/mode_changer.dart';
 
 import 'package:demo_app/core/theme/app_font_size.dart';
-// REMOVED_MODULE: import 'package:demo_app/features/external/inventory_module/core/custom_button_widget.dart';
+// REMOVED_MODULE: import 'package:demo_app/core/helper/inventory_module/core/custom_button_widget.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/services_mangment_module/Category/presentation/ui/services_admin/Widget/W3_Frame_Screen_tablet.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/services_mangment_module/core/new_theme.dart';
@@ -138,7 +138,7 @@ class _CommentsAndFeedbackScreenState extends State<CommentsAndFeedbackScreen> {
                       children: [
                         Center(
                           child: CustomSvg(
-                            assetPath: "assets/comment_and_feed_back.svg",
+                            assetPath: "assets/icons_assets/settings_assets/comment_and_feed_back.svg",
                             width: 25.w,
                             height: 25.h,
                             fit: BoxFit.fill,
@@ -318,7 +318,7 @@ class _CommentsAndFeedbackScreenState extends State<CommentsAndFeedbackScreen> {
                 children: [
                   Center(
                     child: CustomSvg(
-                      assetPath: "assets/comment_and_feed_back.svg",
+                      assetPath: "assets/icons_assets/settings_assets/comment_and_feed_back.svg",
                       width: 25.w,
                       height: 25.h,
                       fit: BoxFit.fill,

@@ -113,8 +113,8 @@ class CustomIconContainer extends StatelessWidget {
                           ),
                         ) /*SvgPicture.asset(
                           isEditIcon
-                              ? 'assets/icons/add_info.svg'
-                              : 'assets/icons/additionIcon.svg',
+                              ? 'assets/icons_assets/settings_assets/add_info.svg'
+                              : 'assets/icons_assets/settings_assets/additionIcon.svg',
                           color: isEditIcon
                               ? null
                               : image != null

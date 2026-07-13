@@ -4,7 +4,7 @@
 /// Author: Mohamed Elrashidy
 /// Date: 27/1/2025
 import 'package:dartz/dartz.dart';
-import 'package:demo_app/features/notification/notification_controller.dart';
+import 'package:demo_app/features/notification/presentation/controller/app_notification_controller.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/network/failure_model.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/skeleton/controllers/notification_controller.dart';

@@ -4,24 +4,25 @@ import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/custom/37-custom_navigate.dart';
 import 'package:demo_app/features/onboarding/presentation/ui/pages/onboarding.dart';
 import 'package:demo_app/core/nav_bar_package.dart/functions.dart';
-// REMOVED_MODULE: import 'package:demo_app/features/external/data_grc_module/feature/nav_bar_package.dart/functions.dart';
+// REMOVED_MODULE: import 'package:demo_app/core/nav_bar_package.dart/functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 
-import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 import 'package:demo_app/core/constants/image_paths.dart';
 
 // REMOVED_MODULE: import 'package:demo_app/feature/notification/notification_screen_mobile.dart';
-// REMOVED_MODULE: import 'package:demo_app/features/external/inventory_module/core/navigate.dart';
+// REMOVED_MODULE: import 'package:demo_app/core/helper/inventory_module/core/navigate.dart';
 import 'package:demo_app/features/settings/presentation/ui/pages/settings_screen.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/skeleton/authentication/welcome_screen/views/mobile_view/nav_bar.dart';
 import 'package:demo_app/features/home/nav_bar/presentation/controller/nav_bar_controller.dart';
-import 'package:demo_app/features/notification/notification_page.dart';
+import 'package:demo_app/features/notification/presentation/ui/pages/notification_page.dart';
 import 'package:demo_app/features/roles/role_management/domain/enums/modules_enum.dart';
-import 'package:demo_app/features/settings/presentation/controller/add_company_controller.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:demo_app/core/helper/settings/presentation/controller/add_company_controller.dart';
 
 
 //Date:April/3/2023
@@ -114,8 +115,9 @@ class _CustomAppBarMobileState extends State<CustomAppBarMobile> {
     print('🏗️ Dark mode: $darkMode');
     print('🏗️ isHome: ${widget.isHome}');
 
-    return GetBuilder<CompanyController>(
-      builder: (controller) {
+    return BlocBuilder<CompanyController, CompanyState>(
+      bloc: Get.find<CompanyController>(),
+      builder: (context, state) {
         print('');
         print('📦 ========================================');
         print('📦 GetBuilder BUILDER FUNCTION CALLED');
@@ -180,7 +182,7 @@ class _CustomAppBarMobileState extends State<CustomAppBarMobile> {
                               placeholderBuilder: (context) {
                                 print('🖼️ 📍 Placeholder shown while loading');
                                 return SvgPicture.asset(
-                                  darkMode ? "assets/light_app_icon.svg" : "assets/logo_app.svg",
+                                  darkMode ? "assets/icons_assets/main_icons_assets/light_app_icon.svg" : "assets/icons_assets/main_icons_assets/logo_app.svg",
                                   width: 25.w,
                                   height: 25.h,
                                   fit: BoxFit.fill,
@@ -190,7 +192,7 @@ class _CustomAppBarMobileState extends State<CustomAppBarMobile> {
                           } else if (darkMode) {
                             print('🖼️ ✅ RENDERING: light_app_icon.svg (dark mode, no custom logo)');
                             logoWidget = SvgPicture.asset(
-                              "assets/light_app_icon.svg",
+                              "assets/icons_assets/main_icons_assets/light_app_icon.svg",
                               width: 25.w,
                               height: 25.h,
                               fit: BoxFit.fill,
@@ -198,7 +200,7 @@ class _CustomAppBarMobileState extends State<CustomAppBarMobile> {
                           } else {
                             print('🖼️ ✅ RENDERING: logo_app.svg (light mode, no custom logo)');
                             logoWidget = SvgPicture.asset(
-                              "assets/logo_app.svg",
+                              "assets/icons_assets/main_icons_assets/logo_app.svg",
                               width: 25.w,
                               height: 25.h,
                               fit: BoxFit.fill,
@@ -265,7 +267,7 @@ class _CustomAppBarMobileState extends State<CustomAppBarMobile> {
                               navigateTo(context, NotificationLandPage());
                             },
                             child: SvgPicture.asset(
-                              "assets/noti.svg",
+                              "assets/icons_assets/main_icons_assets/noti.svg",
                               color: themeController.currentTheme ==
                                   AppColors.lightTheme
                                   ? null

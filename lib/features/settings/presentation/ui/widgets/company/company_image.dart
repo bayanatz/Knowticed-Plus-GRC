@@ -88,7 +88,7 @@ class _CompanyImageState extends State<CompanyImage> {
               child: Transform.scale(
                   scale: isTablet ? 1.2 : 0.8,
                   child: SvgPicture.asset(
-                      "assets/images/pic.svg")),
+                      "assets/icons_assets/main_icons_assets/pic.svg")),
             ),
           )
               : CircleAvatar(
@@ -122,7 +122,7 @@ class _CompanyImageState extends State<CompanyImage> {
                     backgroundColor: AppColors.signOut,
                     radius: isVertical ? 0.01.h : 0.013.h,
                     child: SvgPicture.asset(
-                      "assets/icons/CameraIcon.svg",
+                      "assets/icons_assets/main_icons_assets/CameraIcon.svg",
                       color: AppColors.textButton,
                       height: 0.015.h,
                     )),

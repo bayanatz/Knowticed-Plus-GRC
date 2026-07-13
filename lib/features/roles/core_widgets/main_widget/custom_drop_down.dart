@@ -216,7 +216,7 @@ class _CustomDropdownFormFieldAmrState extends State<CustomDropdownFormFieldAmr>
                             left: isArabic ? 4.sp : 0,
                           ),
                           child: Center(
-                            child: SvgPicture.asset('assets/arrowdown.svg',
+                            child: SvgPicture.asset('assets/icons_assets/main_icons_assets/arrowdown.svg',
                                 width: 16.sp,
                                 height: 16.sp,
                                 fit: BoxFit.scaleDown,

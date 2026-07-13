@@ -881,7 +881,7 @@ class _EditPageRequestState extends State<EditPageRequest> {
                         children: [
                           Row(
                             children: [
-                              CustomSvg(assetPath: 'assets/phone_contact.svg',width: 25.w,height: 25.h,fit: BoxFit.fill,),
+                              CustomSvg(assetPath: 'assets/icons_assets/settings_assets/phone_contact.svg',width: 25.w,height: 25.h,fit: BoxFit.fill,),
                               SizedBox(width: 8.sp),
                               Text(S.of(context).contact,style: StyleText.fontSize16Weight600.copyWith(
                                   color: AppColors.text,
@@ -905,7 +905,7 @@ class _EditPageRequestState extends State<EditPageRequest> {
                         children: [
                           Row(
                             children: [
-                              CustomSvg(assetPath: 'assets/new_location.svg',width: 25.w,height: 25.h,fit: BoxFit.fill,),
+                              CustomSvg(assetPath: 'assets/icons_assets/settings_assets/new_location.svg',width: 25.w,height: 25.h,fit: BoxFit.fill,),
                               SizedBox(width: 8.sp),
                               Text(S.of(context).location,style: StyleText.fontSize16Weight600.copyWith(
                                   color: AppColors.text,

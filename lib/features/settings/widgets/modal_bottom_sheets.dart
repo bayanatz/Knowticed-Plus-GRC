@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/features/settings/core_widgets/buttons/main_custom_icon_button.dart';
 import 'package:demo_app/core/enums/enum.dart';
-import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:lottie/lottie.dart';
 
@@ -32,7 +32,7 @@ mixin ModalBottomSheets {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Lottie.asset('assets/images/check.json',
+              Lottie.asset('assets/lottie_assets/main_lottie_assets/check.json',
                   width: 0.42.w, height: 0.17.h),
               SizedBox(height: 0.020.h),
               Text(

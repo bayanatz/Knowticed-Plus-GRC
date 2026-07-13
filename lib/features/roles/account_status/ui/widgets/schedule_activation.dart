@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-// REMOVED_MODULE: import 'package:demo_app/features/external/data_grc_module/core/extensions/extensions.dart';
+// REMOVED_MODULE: import 'package:demo_app/core/helper/data_grc_module/core/extensions/extensions.dart';
 import 'package:demo_app/features/roles/account_status/domain/entity/account_status_access_entity.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 
@@ -56,7 +56,7 @@ class _ScheduleActivationState extends State<ScheduleActivation> {
                 backgroundColor: AppColors.primary,
                 child: Container(
                   padding: EdgeInsets.all(4.sp),
-                  child: SvgPicture.asset('assets/skeleton/roles/icons/edit_schedule_icon.svg',
+                  child: SvgPicture.asset('assets/icons_assets/roles_assets/edit_schedule_icon.svg',
                   width: 16.sp,
                     height: 16.sp,
                     color: AppColors.textButton,

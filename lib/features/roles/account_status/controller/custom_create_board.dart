@@ -91,7 +91,7 @@ class _CustomCreateBoardContainerState
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  //SvgPicture.asset("assets/images/imagePickerPhoto.svg"),
+                  //SvgPicture.asset("assets/icons_assets/main_icons_assets/imagePickerPhoto.svg"),
                   InkWell(
                     onTap: () {
                       taskController.uploadImage("board_images");
@@ -106,7 +106,7 @@ class _CustomCreateBoardContainerState
                                   child: Transform.scale(
                                       scale: isTablet ? 1.2 : 0.8,
                                       child: SvgPicture.asset(
-                                          "assets/images/pic.svg")),
+                                          "assets/icons_assets/main_icons_assets/pic.svg")),
                                 ),
                               )
                             : CircleAvatar(
@@ -134,7 +134,7 @@ class _CustomCreateBoardContainerState
                                     backgroundColor: AppColors.signOut,
                                     radius: 0.01.h,
                                     child: SvgPicture.asset(
-                                      "assets/icons/CameraIcon.svg",
+                                      "assets/icons_assets/main_icons_assets/CameraIcon.svg",
                                       color: AppColors.textButton,
                                       height: 0.015.h,
                                     )),

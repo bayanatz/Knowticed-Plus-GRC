@@ -97,8 +97,8 @@ extension UmdrMethods3 on _UserManagementDetailsRequestSettingsState {
           child: Center(
             child: CustomSvg(
               assetPath: isInsuranceSection
-                  ? "assets/Insurance Details.svg"
-                  : "assets/Emergency Contact.svg",
+                  ? "assets/icons_assets/main_icons_assets/Insurance Details.svg"
+                  : "assets/icons_assets/main_icons_assets/Emergency Contact.svg",
               width: 16.w,
               height: 16.h,
               fit: BoxFit.fill,

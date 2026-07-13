@@ -4,7 +4,7 @@ import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-// REMOVED_MODULE: import 'package:demo_app/features/external/data_grc_module/core/extensions/extensions.dart';
+// REMOVED_MODULE: import 'package:demo_app/core/helper/data_grc_module/core/extensions/extensions.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/knowledge_hub_module/core/theming/new_theme.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';
@@ -98,7 +98,7 @@ class PaginationAppBar extends StatelessWidget implements PreferredSizeWidget {
                 child: SvgPicture.asset(
                   height: 25.sp,
                   width: 25.sp,
-                  "assets/icons/arrow_right_mobile.svg",
+                  "assets/icons_assets/main_icons_assets/arrow_right_mobile.svg",
                   fit: BoxFit.fill,
                   colorFilter:
                   ColorFilter.mode(AppColors.text, BlendMode.srcIn),

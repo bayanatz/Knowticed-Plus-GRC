@@ -20,7 +20,7 @@ import 'package:demo_app/features/settings/presentation/controller/settings_cont
 import 'package:demo_app/generated/l10n.dart';
 
 import 'package:demo_app/core/enums/enum.dart';
-import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 import 'package:demo_app/features/settings/widgets/custom_cards.dart';
 import 'package:demo_app/features/settings/presentation/ui/pages/language_screen.dart';
 import 'package:demo_app/features/settings/presentation/ui/widgets/settings_appbar.dart';
@@ -30,7 +30,7 @@ import '../../../../employee/data/models/emplyees_model/new_employee_model.dart'
 import '../../../../employee/presentation/controller/main_core_employee_controller.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/core/helper/employees/employee_branding/presentation/ui/employee_branding_screen.dart';
-import '../../../../home/presentation/ui/pages/edit_home_page.dart';
+import 'package:demo_app/features/home/home_page/presentation/ui/pages/edit_home_page.dart';
 import 'package:demo_app/features/roles/role_management/domain/enums/modules_enum.dart';
 import 'package:demo_app/features/roles/role_management/domain/enums/settings/settings_permissions.dart';
 import 'package:demo_app/features/roles/role_management/domain/enums/settings/settings_permissions_sections.dart';
@@ -208,7 +208,7 @@ class _SettingsLayoutState extends State<SettingsLayout> {
                                                   width: 15.w,
                                                   height: 15.h,
                                                   fit: BoxFit.fill,
-                                                  'assets/icons_settings_new/Personal Information.svg',
+                                                  'assets/icons_assets/main_icons_assets/Personal Information.svg',
                                                   color: settingsController.selectedContainerIndex == 0
                                                       ? AppColors.secondaryPrimary
                                                       : AppColors.secondaryPrimary
@@ -235,7 +235,7 @@ class _SettingsLayoutState extends State<SettingsLayout> {
                                                   width: 20.w,
                                                   height:  18.h,
                                                   fit: BoxFit.fill,
-                                                  'assets/icons_settings_new/Health Insurance.svg',
+                                                  'assets/icons_assets/main_icons_assets/Health Insurance.svg',
                                                   color: settingsController.selectedContainerIndex == 10
                                                       ? AppColors.secondaryPrimary
                                                       : AppColors.secondaryPrimary
@@ -258,7 +258,7 @@ class _SettingsLayoutState extends State<SettingsLayout> {
                                                   width: 20.w,
                                                   height:  18.h,
                                                   fit: BoxFit.fill,
-                                                  'assets/icons_settings_new/Social Information.svg',
+                                                  'assets/icons_assets/settings_assets/Social Information.svg',
                                                   color: settingsController.selectedContainerIndex == 12
                                                       ? AppColors.secondaryPrimary
                                                       : AppColors.secondaryPrimary
@@ -324,7 +324,7 @@ class _SettingsLayoutState extends State<SettingsLayout> {
                                                     width: 20.w,
                                                     height:  18.h,
                                                     fit: BoxFit.fill,
-                                                    'assets/icons_settings_new/Branding and Theme.svg',
+                                                    'assets/icons_assets/settings_assets/Branding and Theme.svg',
                                                     color: settingsController.selectedContainerIndex == 14
                                                         ? AppColors.secondaryPrimary
                                                         : AppColors.secondaryPrimary
@@ -348,7 +348,7 @@ class _SettingsLayoutState extends State<SettingsLayout> {
                                           //         width: 20.w,
                                           //         height: 18.h,
                                           //         fit: BoxFit.fill,
-                                          //         'assets/icons_settings_new/Branding and Theme.svg', // Reusing same icon, or create a new one
+                                          //         'assets/icons_assets/settings_assets/Branding and Theme.svg', // Reusing same icon, or create a new one
                                           //         color: settingsController.selectedContainerIndex == 17
                                           //             ? AppColors.secondaryPrimary
                                           //             : AppColors.secondaryPrimary
@@ -376,7 +376,7 @@ class _SettingsLayoutState extends State<SettingsLayout> {
                                                   width: 20.w,
                                                   height:  18.h,
                                                   fit: BoxFit.fill,
-                                                  'assets/icons_settings_new/Home Layout.svg',
+                                                  'assets/icons_assets/settings_assets/Home Layout.svg',
                                                   color: AppColors.secondaryPrimary,
                                                 ),
                                                 index: 15,
@@ -394,7 +394,7 @@ class _SettingsLayoutState extends State<SettingsLayout> {
                                                     width: 20.w,
                                                     height:  18.h,
                                                     fit: BoxFit.fill,
-                                                    'assets/icons_settings_new/Company Information.svg',
+                                                    'assets/icons_assets/settings_assets/Company Information.svg',
                                                     color: settingsController.selectedContainerIndex == 8
                                                         ? AppColors.secondaryPrimary
                                                         : AppColors.secondaryPrimary
@@ -453,7 +453,7 @@ class _SettingsLayoutState extends State<SettingsLayout> {
                                                 : AppColors.card,
                                             child: CustomCard(
                                               icon: SvgPicture.asset(
-                                                  'assets/icons_settings_new/Comments and Feedbacks.svg',
+                                                  'assets/icons_assets/settings_assets/Comments and Feedbacks.svg',
                                                   width: 20.w,
                                                   height:  18.h,
                                                   fit: BoxFit.fill,
@@ -476,7 +476,7 @@ class _SettingsLayoutState extends State<SettingsLayout> {
                                                 : AppColors.card,
                                             child: CustomCard(
                                               icon: SvgPicture.asset(
-                                                  'assets/icons_settings_new/About This App.svg',
+                                                  'assets/icons_assets/settings_assets/About This App.svg',
                                                   width: 20.w,
                                                   height:  18.h,
                                                   fit: BoxFit.fill,
@@ -499,7 +499,7 @@ class _SettingsLayoutState extends State<SettingsLayout> {
                                                 : AppColors.card,
                                             child: CustomCard(
                                               icon: SvgPicture.asset(
-                                                  'assets/icons_settings_new/termsAndCondtion.svg',
+                                                  'assets/icons_assets/settings_assets/termsAndCondtion.svg',
                                                   width: 20.w,
                                                   height:  18.h,
                                                   fit: BoxFit.fill,
@@ -559,7 +559,7 @@ class _SettingsLayoutState extends State<SettingsLayout> {
                                         CustomCard(
                                           icon: Center(
                                             child: SvgPicture.asset(
-                                              'assets/icons_settings_new/Haptic Feedback.svg',
+                                              'assets/icons_assets/settings_assets/Haptic Feedback.svg',
                                               width: 20.w,
                                               height:  18.h,
                                               fit: BoxFit.fill,
@@ -579,7 +579,7 @@ class _SettingsLayoutState extends State<SettingsLayout> {
                                           CustomCard(
                                             icon: Center(
                                               child: SvgPicture.asset(
-                                                'assets/icons_settings_new/Biometrics.svg',
+                                                'assets/icons_assets/settings_assets/Biometrics.svg',
                                                 width: 20.w,
                                                 height:  18.h,
                                                 fit: BoxFit.fill,
@@ -602,7 +602,7 @@ class _SettingsLayoutState extends State<SettingsLayout> {
                                         CustomCard(
                                           icon: Center(
                                             child: SvgPicture.asset(
-                                              'assets/icons_settings_new/Dark Mode.svg',
+                                              'assets/icons_assets/settings_assets/Dark Mode.svg',
                                               width: 20.w,
                                               height:  18.h,
                                               fit: BoxFit.fill,
@@ -632,7 +632,7 @@ class _SettingsLayoutState extends State<SettingsLayout> {
                                           CustomCard(
                                             icon: Center(
                                               child: SvgPicture.asset(
-                                                'assets/icons_settings_new/Animation.svg',
+                                                'assets/icons_assets/settings_assets/Animation.svg',
                                                 width: 20.w,
                                                 height:  18.h,
                                                 fit: BoxFit.fill,
@@ -652,7 +652,7 @@ class _SettingsLayoutState extends State<SettingsLayout> {
                                         CustomCard(
                                           icon: Center(
                                             child: SvgPicture.asset(
-                                              'assets/icons_settings_new/Notification.svg',
+                                              'assets/icons_assets/settings_assets/Notification.svg',
                                               width: 20.w,
                                               height:  18.h,
                                               fit: BoxFit.fill,

@@ -114,8 +114,8 @@ class _CustomNotificationChatMobileState
                           scale: isTablet ? (isPortrait ? 0.6 : 0.7) : 0.6,
                           child: SvgPicture.asset(
                             widget.isChat == false
-                                ? "assets/images/service_notification.svg"
-                                : "assets/images/chat_notifi_mob.svg",
+                                ? "assets/icons_assets/notification_assets/service_notification.svg"
+                                : "assets/icons_assets/main_icons_assets/chat_notifi_mob.svg",
                             color: AppColors.textButton,
                           )),
                     ),

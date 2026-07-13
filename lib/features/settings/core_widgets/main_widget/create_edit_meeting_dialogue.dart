@@ -15,7 +15,7 @@ import 'package:demo_app/features/settings/core_widgets/main_widget/column_reque
 import 'package:demo_app/features/settings/core_widgets/main_widget/filters_appbar.dart';
 import 'package:demo_app/core/enums/enum.dart';
 
-import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';
 
@@ -124,7 +124,7 @@ class _CreateEditMeetingDialougeState extends State<CreateEditMeetingDialouge> {
                           fillColor:
                               Theme.of(context).colorScheme.inversePrimary,
                           hasSuffix: true,
-                          suffixUrl: "assets/images/closefield.svg",
+                          suffixUrl: "assets/icons_assets/main_icons_assets/closefield.svg",
                           maxlength: 120,
                                        isDescription: true,
 
@@ -148,7 +148,7 @@ class _CreateEditMeetingDialougeState extends State<CreateEditMeetingDialouge> {
                                   Theme.of(context).colorScheme.inversePrimary,
                               hasPrefix: true,
                               hasSuffix: true,
-                              suffixUrl: "assets/images/closefield.svg",
+                              suffixUrl: "assets/icons_assets/main_icons_assets/closefield.svg",
                             ),
                           ),
                           SizedBox(
@@ -165,7 +165,7 @@ class _CreateEditMeetingDialougeState extends State<CreateEditMeetingDialouge> {
                               fillColor:
                                   Theme.of(context).colorScheme.inversePrimary,
                               hasPrefix: true,
-                              suffixUrl: "assets/images/closefield.svg",
+                              suffixUrl: "assets/icons_assets/main_icons_assets/closefield.svg",
                             ),
                           ),
                         ],
@@ -202,7 +202,7 @@ class _CreateEditMeetingDialougeState extends State<CreateEditMeetingDialouge> {
                                           .colorScheme
                                           .inversePrimary,
                                   hasSuffix: true,
-                                  suffixUrl: "assets/icons/newCalenderFixed.svg",
+                                  suffixUrl: "assets/icons_assets/main_icons_assets/newCalenderFixed.svg",
                                 ),
                               ),
                             ),
@@ -226,7 +226,7 @@ class _CreateEditMeetingDialougeState extends State<CreateEditMeetingDialouge> {
                                         .inversePrimary,
                                 isExpanded: isTablet ? true : true,
                                 hasSuffix: true,
-                                suffixUrl: "assets/images/circle_icon.svg",
+                                suffixUrl: "assets/icons_assets/main_icons_assets/circle_icon.svg",
                               ),
                             ),
                             widget.isReschedule == true
@@ -268,7 +268,7 @@ class _CreateEditMeetingDialougeState extends State<CreateEditMeetingDialouge> {
                                   Theme.of(context).colorScheme.inversePrimary,
                               isExpanded: true,
                               hasSuffix: true,
-                              suffixUrl: "assets/images/closefield.svg",
+                              suffixUrl: "assets/icons_assets/main_icons_assets/closefield.svg",
                             ),
                           ),
                           ColumnRequestData(

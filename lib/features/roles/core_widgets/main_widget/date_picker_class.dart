@@ -56,7 +56,7 @@ class DatePicker {
                 horizontal: isTablet ? 0.004.w : 0.014.w,
                 vertical: isTablet ? 0.0.h : 0.02.h),
             child: SvgPicture.asset(
-              'assets/images/downArrow.svg',
+              'assets/icons_assets/main_icons_assets/downArrow.svg',
               fit: BoxFit.fitHeight,
               color: AppColors.lightPrimary,
               height: isTablet ? 0.053.h : null,
@@ -111,7 +111,7 @@ class DatePicker {
           lastMonthIcon: Transform.rotate(
             angle: Get.locale.toString().contains('en') ? 0 : 3.14,
             child: SvgPicture.asset(
-              'assets/icons/back_icon.svg',
+              'assets/icons_assets/main_icons_assets/back_icon.svg',
               // ignore: deprecated_member_use
               color: AppColors.lightPrimary,
             ),
@@ -119,7 +119,7 @@ class DatePicker {
           nextMonthIcon: Transform.rotate(
             angle: Get.locale.toString().contains('en') ? 3.14 : 0,
             child: SvgPicture.asset(
-              'assets/icons/back_icon.svg',
+              'assets/icons_assets/main_icons_assets/back_icon.svg',
               // ignore: deprecated_member_use
               color: AppColors.lightPrimary,
             ),

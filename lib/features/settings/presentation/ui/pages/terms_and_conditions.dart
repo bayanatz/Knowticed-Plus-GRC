@@ -27,7 +27,7 @@ class _TermsConditionsState extends State<TermsConditions> {
                 padding: EdgeInsets.only(top: 0.02.h),
                 child: const FiltersAppBar(
                   hideIcon: true,
-                  imageUrl: "assets/images/requests.svg",
+                  imageUrl: "assets/icons_assets/inventory_assets/requests.svg",
                   title: "Terms And Conditions",
                 ),
               ),

@@ -1,5 +1,6 @@
 // ignore_for_file: unrelated_type_equality_checks, unnecessary_string_interpolations
 
+import 'package:demo_app/core/helper/employees/presentation/controller/employee_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -16,10 +17,10 @@ import 'package:demo_app/core/helper/main_helper/date_time_in_arabic.dart';
 import 'package:demo_app/core/enums/enum.dart';
 import 'package:demo_app/features/roles/helper/expiration_calculation.dart';
 
-import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 
 import 'package:demo_app/core/theme/app_font_size.dart';
-import 'package:demo_app/core/helper/employees/presentation/controller/employee_controller.dart';
+
 import 'package:demo_app/features/onboarding/presentation/ui/pages/onboarding.dart';
 import 'package:demo_app/features/roles/account_status/ui/widgets/custom_user_access_menu.dart';
 
@@ -241,7 +242,7 @@ class _CustomUserAccessContainerVerticalState
                                   width: isTablet ? 0.05.w : 0.07.w,
                                   padding: EdgeInsets.all(0.005.h),
                                   child: SvgPicture.asset(
-                                    'assets/icons/threeDotsDialog.svg',
+                                    'assets/icons_assets/main_icons_assets/threeDotsDialog.svg',
                                     color: themeController.currentTheme ==
                                             AppColors.lightTheme
                                         ? AppColors.colorBlack
@@ -403,7 +404,7 @@ class _CustomUserAccessContainerVerticalState
               child: customCalendarTimeWidget(
                 context: context,
                 text: date,
-                svgPath: 'assets/icons/SmallCalendar.svg',
+                svgPath: 'assets/icons_assets/main_icons_assets/SmallCalendar.svg',
               ),
             ),
             SizedBox(height: 0.005.h),
@@ -411,7 +412,7 @@ class _CustomUserAccessContainerVerticalState
               child: customCalendarTimeWidget(
                 context: context,
                 text: time,
-                svgPath: 'assets/icons/ClockCircleSmall.svg',
+                svgPath: 'assets/icons_assets/main_icons_assets/ClockCircleSmall.svg',
               ),
             ),
           ],

@@ -63,7 +63,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                         child: Transform.rotate(
                           angle: context.isArabic ? -3.14 : 0,
                           child: SvgPicture.asset(
-                            "assets/icons/arrowCalendar.svg",
+                            "assets/icons_assets/main_icons_assets/arrowCalendar.svg",
                             color: AppColors.text,
                             width: 20.sp,
                             height: 20.sp,

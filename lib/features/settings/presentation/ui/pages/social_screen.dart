@@ -3,6 +3,7 @@
 /// Purpose: Responsive social / general information screen (phone + tablet in
 /// one page).
 /// Author: Mohamed Elrashidy
+import 'package:demo_app/core/helper/employees/presentation/controller/employee_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -11,7 +12,7 @@ import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/settings/core_widgets/main_widget/custom_appbar_mobile.dart';
 import 'package:demo_app/features/settings/core_widgets/main_widget/custom_button_widget.dart';
-import 'package:demo_app/core/helper/employees/presentation/controller/employee_controller.dart';
+
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
 import 'package:demo_app/features/settings/presentation/controller/settings_controller.dart';
 import 'package:demo_app/features/settings/presentation/controller/social_controller.dart';

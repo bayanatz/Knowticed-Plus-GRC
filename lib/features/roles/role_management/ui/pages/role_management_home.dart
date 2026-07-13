@@ -11,7 +11,7 @@ import 'package:flutter/src/services/haptic_feedback.dart';
 import 'package:demo_app/core/enums/enum.dart';
 import 'package:demo_app/features/roles/role_management/utils/role_log_service.dart';
 import 'package:demo_app/core/helper/main_helper/circle_progress.dart';
-import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 import 'package:demo_app/core/custom/circle_progress.dart';
 import 'package:demo_app/features/roles/role_management/data/models/role_model.dart';
 import 'package:demo_app/features/roles/role_management/ui/widgets/export_role_widget.dart';

@@ -71,7 +71,7 @@ extension UploadBuildPage on _UploadFileDetailsTabletRolesState {
                             child: Transform.rotate(
                               angle: Localizations.localeOf(context).languageCode == 'ar' ? 3.14159 : 0, // 180 degrees in radians for RTL
                               child: SvgPicture.asset(
-                                "assets/arrowleft.svg",
+                                "assets/icons_assets/main_icons_assets/arrowleft.svg",
                                 width: 15.sp,
                                 height: 15.sp,
                                 color: errorLocations.isEmpty

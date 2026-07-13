@@ -7,6 +7,7 @@
 /// Changes: Updated to fetch data from NewEmployeeModelHistory model
 /// Description: Added support for both 1st and 2nd emergency contacts from history data
 
+import 'package:demo_app/core/helper/employees/presentation/controller/employee_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:demo_app/core/custom/2-custom_textfield.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -17,7 +18,7 @@ import 'package:demo_app/features/settings/presentation/controller/settings_cont
 import '../../../../../generated/l10n.dart';
 import '../../../../employee/data/models/emplyees_model/new_employee_model.dart';
 import '../../../../employee/presentation/controller/main_core_employee_controller.dart';
-import 'package:demo_app/core/helper/employees/presentation/controller/employee_controller.dart';
+
 import 'settings_header.dart';
 
 class EmergencyContactInformationSection extends StatelessWidget {

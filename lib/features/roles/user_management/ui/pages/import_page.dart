@@ -16,7 +16,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart' hide Border, BorderStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-// REMOVED_MODULE: import 'package:demo_app/features/external/inventory_module/core/navigate.dart';
+// REMOVED_MODULE: import 'package:demo_app/core/helper/inventory_module/core/navigate.dart';
 import 'package:demo_app/features/roles/user_management/ui/pages/uoload_file_details.dart';
 import 'package:lottie/lottie.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -214,7 +214,7 @@ class _UploadFileTabletRolesState extends State<UploadFileTabletRoles> {
                                 color: AppColors.primary,
                               )
                                   : SvgPicture.asset(
-                                "assets/uploadfile.svg",
+                                "assets/icons_assets/main_icons_assets/uploadfile.svg",
                                 key: ValueKey('normal'),
                                 width: 100.sp,
                                 height: 100.sp,

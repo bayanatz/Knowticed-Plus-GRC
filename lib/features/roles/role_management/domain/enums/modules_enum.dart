@@ -1,4 +1,5 @@
 import 'package:demo_app/features/grc/presentation/ui/pages/grc_page.dart';
+import 'package:demo_app/features/roles/role_management/domain/enums/grc/grc_permissions_sections.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/features/roles/widgets/module_page_stubs.dart';
@@ -24,9 +25,9 @@ import 'package:demo_app/features/roles/role_management/domain/enums/services/se
 
 // REMOVED_MODULE: import '../../../../external/tracking_module/tracking_responsive_page.dart';
 import 'package:demo_app/core/helper/employees/presentation/ui/pages/employees_responsive_page.dart';
-import 'package:demo_app/features/home/presentation/ui/pages/home_responsive_page.dart';
+import 'package:demo_app/features/home/home_page/presentation/ui/pages/home_responsive_page.dart';
 import 'package:demo_app/features/home/nav_bar/presentation/ui/pages/more_page.dart';
-import 'package:demo_app/features/notification/notification_control.dart';
+import 'package:demo_app/features/notification/presentation/ui/pages/notification_control.dart';
 import 'package:demo_app/features/settings/presentation/ui/pages/settings_screen.dart';
 import 'package:demo_app/features/roles/role_management/ui/pages/role_responsive_page.dart';
 import 'form/form_permissions_sections.dart';
@@ -71,47 +72,47 @@ enum Modules {
   String get iconPath {
     switch (this) {
       case Modules.home:
-        return 'assets/icons_drawer_news/Home_last_icon.svg';
+        return 'assets/icons_assets/roles_assets/Home_last_icon.svg';
       case Modules.tasks:
-        return 'assets/images/task_manage.svg';
+        return 'assets/icons_assets/main_icons_assets/task_manage.svg';
       case Modules.employees:
-        return 'assets/icons_drawer_news/org_new.svg';
+        return 'assets/icons_assets/roles_assets/org_new.svg';
       case Modules.messages:
-        return 'assets/icons_drawer_news/message_new_icon.svg';
+        return 'assets/icons_assets/main_icons_assets/message_new_icon.svg';
       case Modules.inventory:
-        return 'assets/icons_drawer_news/inventory_news_icons.svg';
+        return 'assets/icons_assets/roles_assets/inventory_news_icons.svg';
       case Modules.roles:
-        return 'assets/icons_drawer_news/icons_roles_news.svg';
+        return 'assets/icons_assets/roles_assets/icons_roles_news.svg';
       case Modules.services:
-        return 'assets/icons_drawer_news/services_last_icon.svg';
+        return 'assets/icons_assets/roles_assets/services_last_icon.svg';
       case Modules.todo:
-        return 'assets/icons_drawer_news/todo_last_icon.svg';
+        return 'assets/icons_assets/roles_assets/todo_last_icon.svg';
       case Modules.grc:
-        return 'assets/icons_drawer_news/grc_new.svg';
+        return 'assets/icons_assets/roles_assets/grc_new.svg';
       case Modules.requests:
-        return 'assets/icons/DocumentAdd.svg';
+        return 'assets/icons_assets/main_icons_assets/DocumentAdd.svg';
       case Modules.events:
-        return 'assets/images/events_knwoticed.svg';
+        return 'assets/icons_assets/main_icons_assets/events_knwoticed.svg';
       case Modules.notes:
-        return 'assets/images/Notes.svg';
+        return 'assets/icons_assets/todo_new_assets/Notes.svg';
       case Modules.tracking:
-        return 'assets/icons_drawer_news/tracking_new.svg';
+        return 'assets/icons_assets/roles_assets/tracking_new.svg';
       case Modules.knowledgeHub:
-        return 'assets/icons_drawer_news/Knowledge_last_icon.svg';
+        return 'assets/icons_assets/roles_assets/Knowledge_last_icon.svg';
       case Modules.qiyas:
-        return 'assets/icons_drawer_news/grs_icons_new.svg';
+        return 'assets/icons_assets/roles_assets/grs_icons_new.svg';
       case Modules.formBuilder:
-        return 'assets/icons_drawer_news/form_last_icon.svg';
+        return 'assets/icons_assets/roles_assets/form_last_icon.svg';
       case Modules.database:
-        return 'assets/icons_drawer_news/database.svg';
+        return 'assets/icons_assets/home_assets/database.svg';
       case Modules.settings:
-        return 'assets/icons_drawer_news/settings_new_icon.svg';
+        return 'assets/icons_assets/roles_assets/settings_new_icon.svg';
       case Modules.hr: // ✅ ADDED
-        return 'assets/icons_drawer_news/hr_modules.svg';
+        return 'assets/icons_assets/roles_assets/hr_modules.svg';
       case Modules.notification: // ✅ ADDED
-        return 'assets/svg/Bell.svg';
+        return 'assets/icons_assets/main_icons_assets/Bell.svg';
       case Modules.more:
-        return 'assets/icons/more_horizontal_lines.svg';
+        return 'assets/icons_assets/roles_assets/more_horizontal_lines.svg';
       default:
         return 'home';
     }
@@ -120,13 +121,13 @@ enum Modules {
   String get iconPathRole {
     switch (this) {
       case Modules.home:
-        return 'assets/icons_drawer_news/Home_last_icon.svg';
+        return 'assets/icons_assets/roles_assets/Home_last_icon.svg';
       case Modules.tasks:
-        return 'assets/images/task_manage.svg';
+        return 'assets/icons_assets/main_icons_assets/task_manage.svg';
       case Modules.employees:
-        return 'assets/icons_drawer_news/org_new.svg';
+        return 'assets/icons_assets/roles_assets/org_new.svg';
       case Modules.messages:
-        return 'assets/roles_icons/Messages.svg';
+        return 'assets/roles_module/Messages.svg';
       case Modules.inventory:
         return 'assets/roles_icons/Inventory.svg';
       case Modules.roles:
@@ -136,31 +137,31 @@ enum Modules {
       case Modules.todo:
         return 'assets/roles_icons/To Do List.svg';
       case Modules.requests:
-        return 'assets/icons/DocumentAdd.svg';
+        return 'assets/icons_assets/main_icons_assets/DocumentAdd.svg';
       case Modules.events:
-        return 'assets/images/events_knwoticed.svg';
+        return 'assets/icons_assets/main_icons_assets/events_knwoticed.svg';
       case Modules.notes:
-        return 'assets/images/Notes.svg';
+        return 'assets/icons_assets/todo_new_assets/Notes.svg';
       case Modules.tracking:
-        return 'assets/icons_drawer_news/tracking_new.svg';
+        return 'assets/icons_assets/roles_assets/tracking_new.svg';
       case Modules.knowledgeHub:
         return 'assets/roles_icons/Knowledge Hub.svg';
       case Modules.qiyas:
         return 'assets/roles_icons/Qiyas.svg';
       case Modules.grc:
-        return 'assets/icons_drawer_news/grc_new.svg';
+        return 'assets/icons_assets/roles_assets/grc_new.svg';
       case Modules.formBuilder:
         return 'assets/roles_icons/Form.svg';
       case Modules.database:
-        return 'assets/icons_drawer_news/database.svg';
+        return 'assets/icons_assets/home_assets/database.svg';
       case Modules.settings:
         return 'assets/roles_icons/Settings.svg';
       case Modules.hr: // ✅ ADDED
         return 'assets/roles_icons/HR.svg';
       case Modules.notification: // ✅ ADDED
-        return 'assets/svg/Bell.svg';
+        return 'assets/icons_assets/main_icons_assets/Bell.svg';
       case Modules.more:
-        return 'assets/icons/more_horizontal_lines.svg';
+        return 'assets/icons_assets/roles_assets/more_horizontal_lines.svg';
       default:
         return 'home';
     }
@@ -308,6 +309,9 @@ enum Modules {
         return HRPermissionsSections.firstColumnValues;
       case Modules.notification: // ✅ ADDED
         return NotificationPermissionsSections.firstColumnValues;
+      case Modules.grc:
+        return GrcPermissionsSections.firstColumnValues;
+
       default:
         return [];
     }
@@ -335,6 +339,8 @@ enum Modules {
         return HRPermissionsSections.lastColumnValues;
       case Modules.notification: // ✅ ADDED
         return NotificationPermissionsSections.lastColumnValues;
+      case Modules.grc:
+        return GrcPermissionsSections.lastColumnValues;
       default:
         return [];
     }
@@ -352,6 +358,7 @@ enum Modules {
       Modules.knowledgeHub,
       Modules.hr, // ✅ ADDED
       Modules.notification, // ✅ ADDED
+      Modules.grc,
     ];
   }
 }

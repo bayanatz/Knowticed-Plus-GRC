@@ -11,7 +11,7 @@ import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:demo_app/features/settings/mode_changer.dart';
 import 'package:demo_app/core/enums/enum.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
-import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 import 'package:demo_app/features/settings/core_widgets/main_widget/custom_appbar_mobile.dart';
 import 'package:demo_app/features/settings/core_widgets/main_widget/request_escalate_dialog.dart';
 import 'package:demo_app/features/settings/presentation/controller/request_controller.dart';
@@ -81,7 +81,7 @@ class _SettingsAdditionalInfoState extends State<SettingsAdditionalInfo> {
                               padding:
                                   EdgeInsets.only(bottom: 0.02.h, top: 0.01.h),
                               child: SettingsHeader(
-                                imagePath: 'assets/icons/newAddInfo.svg',
+                                imagePath: 'assets/icons_assets/main_icons_assets/newAddInfo.svg',
                                 text: 'Additional Information'.tr,
                               ),
                             ),
@@ -117,7 +117,7 @@ class _SettingsAdditionalInfoState extends State<SettingsAdditionalInfo> {
                                     return RequestToChangeDialogMobile(
                                       isSetting: true,
                                       title: "Request to Change",
-                                      imageUrl: "assets/icons/reqToChange.svg",
+                                      imageUrl: "assets/icons_assets/main_icons_assets/reqToChange.svg",
                                       isExclate: false,
                                     );
                                   },
@@ -179,7 +179,7 @@ class _SettingsAdditionalInfoState extends State<SettingsAdditionalInfo> {
                               padding:
                                   EdgeInsets.only(bottom: 0.02.h, top: 0.01.h),
                               child: SettingsHeader(
-                                imagePath: 'assets/icons/newAddInfo.svg',
+                                imagePath: 'assets/icons_assets/main_icons_assets/newAddInfo.svg',
                                 text: 'Additional Information'.tr,
                               ),
                             ),
@@ -224,7 +224,7 @@ class _SettingsAdditionalInfoState extends State<SettingsAdditionalInfo> {
                               return RequestExcalateDialog(
                                   isSetting: true,
                                   title: "Request to Change",
-                                  imageUrl: "assets/icons/reqToChange.svg",
+                                  imageUrl: "assets/icons_assets/main_icons_assets/reqToChange.svg",
                                   isExclate: false,
                                   onPressed: () {});
                             },

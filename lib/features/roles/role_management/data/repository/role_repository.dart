@@ -2,10 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/network/failure_model.dart';
-import 'package:demo_app/features/home/data/models/acces_type_model/edit_by_model.dart';
+import 'package:demo_app/features/home/home_page/data_source/models/acces_type_model/edit_by_model.dart';
 import 'package:demo_app/core/network/get_base_url.dart';
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
-import 'package:demo_app/core/helper/settings/presentation/controller/add_company_controller.dart';
+import 'package:demo_app/features/settings/presentation/controller/add_company_controller.dart';
 import 'package:demo_app/features/roles/role_management/domain/enums/role_status.dart';
 import 'package:demo_app/features/roles/role_management/data/data_source/remote_data_source/role_remote_data_source.dart';
 import 'package:demo_app/features/roles/role_management/data/models/role_model.dart';
@@ -17,24 +17,20 @@ class RoleRepository {
   // Collection names
   static const String ROLES_COLLECTION = 'Roles';
   static const String SUBSCRIPTION_ADMIN_COLLECTION = 'Subscription_Admin';
-  static const String SUBSCRIPTION_PERMISSION_ADMIN_COLLECTION =
-      'Subscription_Permission_Admin';
+  static const String SUBSCRIPTION_PERMISSION_ADMIN_COLLECTION = 'Subscription_Permission_Admin';
 
   // Regular employee permission collections
   static const String SERVICES_PERMISSIONS = 'services_module_permissions';
-  static const String FORM_BUILDER_PERMISSIONS =
-      'form_builder_module_permissions';
+  static const String FORM_BUILDER_PERMISSIONS = 'form_builder_module_permissions';
   static const String MESSAGES_PERMISSIONS = 'messages_module_permissions';
   static const String INVENTORY_PERMISSIONS = 'inventory_module_permissions';
   static const String SETTINGS_PERMISSIONS = 'settings_module_permissions';
   static const String QIYAS_PERMISSIONS = 'qiyas_module_permissions';
   static const String GRC_PERMISSIONS = 'grc_module_permissions';
-  static const String KNOWLEDGE_HUB_PERMISSIONS =
-      'knowledge_hub_module_permissions';
+  static const String KNOWLEDGE_HUB_PERMISSIONS = 'knowledge_hub_module_permissions';
   static const String ROLES_PERMISSIONS = 'roles_permissions';
   static const String HR_PERMISSIONS = 'hr_module_permissions';
-  static const String NOTIFICATION_PERMISSIONS =
-      'notification_module_permissions';
+  static const String NOTIFICATION_PERMISSIONS = 'notification_module_permissions';
 
   // Helper method to get collection reference with base path
   CollectionReference _getCollection(String collectionName) {
@@ -50,29 +46,28 @@ class RoleRepository {
         return false;
       }
 
-      bool isAdmin =
-          (email.toLowerCase().trim() == adminEmail.toLowerCase().trim());
+      bool isAdmin = (email.toLowerCase().trim() == adminEmail.toLowerCase().trim());
       return isAdmin;
     } catch (e) {
       return false;
     }
   }
 
-  Future<Either<FirebaseFailure, Map<String, bool>>>
-      getAdminRestrictionsForModule({
+  Future<Either<FirebaseFailure, Map<String, bool>>> getAdminRestrictionsForModule({
     required String companyId,
     required String moduleName,
   }) async {
     try {
-      DocumentSnapshot demoPermDoc =
-          await firestore.collection('Demo_Permissions').doc(companyId).get();
+      DocumentSnapshot demoPermDoc = await firestore
+          .collection('Demo_Permissions')
+          .doc(companyId)
+          .get();
 
       if (!demoPermDoc.exists) {
         return Right({});
       }
 
-      Map<String, dynamic> demoPermissions =
-          demoPermDoc.data() as Map<String, dynamic>;
+      Map<String, dynamic> demoPermissions = demoPermDoc.data() as Map<String, dynamic>;
 
       if (!demoPermissions.containsKey(moduleName)) {
         return Right({});
@@ -82,8 +77,7 @@ class RoleRepository {
         return Right({});
       }
 
-      Map<String, dynamic> modulePerms =
-          Map<String, dynamic>.from(demoPermissions[moduleName]);
+      Map<String, dynamic> modulePerms = Map<String, dynamic>.from(demoPermissions[moduleName]);
       Map<String, bool> restrictions = {};
 
       modulePerms.forEach((key, value) {
@@ -93,6 +87,7 @@ class RoleRepository {
       });
 
       return Right(restrictions);
+
     } catch (e, stackTrace) {
       return Left(FirebaseFailure(e.toString()));
     }
@@ -112,18 +107,16 @@ class RoleRepository {
         return Left(FirebaseFailure('Cannot access employee controller'));
       }
 
-      QuerySnapshot snapshot =
-          await _getCollection(SUBSCRIPTION_ADMIN_COLLECTION)
-              .where('email', isEqualTo: currentUserEmail)
-              .limit(1)
-              .get();
+      QuerySnapshot snapshot = await _getCollection(SUBSCRIPTION_ADMIN_COLLECTION)
+          .where('email', isEqualTo: currentUserEmail)
+          .limit(1)
+          .get();
 
       if (snapshot.docs.isEmpty) {
         return Right(null);
       }
 
-      Map<String, dynamic> data =
-          snapshot.docs.first.data() as Map<String, dynamic>;
+      Map<String, dynamic> data = snapshot.docs.first.data() as Map<String, dynamic>;
       data['_documentId'] = snapshot.docs.first.id;
 
       RoleHistoryModel role = RoleHistoryModel.fromMap(data);
@@ -134,13 +127,11 @@ class RoleRepository {
     }
   }
 
-  Future<Either<FirebaseFailure, Map<String, Map<String, bool>>>>
-      getAdminPermissions(String roleId) async {
+  Future<Either<FirebaseFailure, Map<String, Map<String, bool>>>> getAdminPermissions(String roleId) async {
     try {
-      DocumentSnapshot doc =
-          await _getCollection(SUBSCRIPTION_PERMISSION_ADMIN_COLLECTION)
-              .doc(roleId)
-              .get();
+      DocumentSnapshot doc = await _getCollection(SUBSCRIPTION_PERMISSION_ADMIN_COLLECTION)
+          .doc(roleId)
+          .get();
 
       if (!doc.exists) {
         return Right({});
@@ -160,7 +151,7 @@ class RoleRepository {
 
         if (value is Map) {
           Map<String, bool> modulePerms = {};
-          (value).forEach((permKey, permValue) {
+          (value as Map).forEach((permKey, permValue) {
             modulePerms[permKey.toString()] = permValue == true;
           });
           adminPermissions[key] = modulePerms;
@@ -173,28 +164,28 @@ class RoleRepository {
     }
   }
 
-  Future<Either<FirebaseFailure, Map<String, Map<String, bool>>>>
-      validatePermissionsAgainstAdmin({
+  Future<Either<FirebaseFailure, Map<String, Map<String, bool>>>> validatePermissionsAgainstAdmin({
     required Map<String, Map<String, bool>> requestedPermissions,
     required String companyId,
   }) async {
     try {
-      DocumentSnapshot demoPermDoc =
-          await firestore.collection('Demo_Permissions').doc(companyId).get();
+      DocumentSnapshot demoPermDoc = await firestore
+          .collection('Demo_Permissions')
+          .doc(companyId)
+          .get();
 
       if (!demoPermDoc.exists) {
         return Right(requestedPermissions);
       }
 
-      Map<String, dynamic> demoPermissions =
-          demoPermDoc.data() as Map<String, dynamic>;
+      Map<String, dynamic> demoPermissions = demoPermDoc.data() as Map<String, dynamic>;
       Map<String, Map<String, bool>> validatedPermissions = {};
 
       requestedPermissions.forEach((moduleName, modulePermissions) {
         if (demoPermissions.containsKey(moduleName) &&
             demoPermissions[moduleName] is Map) {
           Map<String, dynamic> adminModulePerms =
-              Map<String, dynamic>.from(demoPermissions[moduleName]);
+          Map<String, dynamic>.from(demoPermissions[moduleName]);
 
           Map<String, bool> validatedModulePerms = {};
 
@@ -215,6 +206,7 @@ class RoleRepository {
       });
 
       return Right(validatedPermissions);
+
     } catch (e, stackTrace) {
       return Left(FirebaseFailure(e.toString()));
     }
@@ -226,25 +218,27 @@ class RoleRepository {
     required String permissionKey,
   }) async {
     try {
-      DocumentSnapshot demoPermDoc =
-          await firestore.collection('Demo_Permissions').doc(companyId).get();
+      DocumentSnapshot demoPermDoc = await firestore
+          .collection('Demo_Permissions')
+          .doc(companyId)
+          .get();
 
       if (!demoPermDoc.exists) {
         return true;
       }
 
-      Map<String, dynamic> demoPermissions =
-          demoPermDoc.data() as Map<String, dynamic>;
+      Map<String, dynamic> demoPermissions = demoPermDoc.data() as Map<String, dynamic>;
 
       if (demoPermissions.containsKey(moduleName) &&
           demoPermissions[moduleName] is Map) {
         Map<String, dynamic> modulePerms =
-            Map<String, dynamic>.from(demoPermissions[moduleName]);
+        Map<String, dynamic>.from(demoPermissions[moduleName]);
 
         return modulePerms[permissionKey] == true;
       }
 
       return true;
+
     } catch (e) {
       return false;
     }
@@ -262,11 +256,10 @@ class RoleRepository {
     RoleStatus status = RoleStatus.active,
   }) async {
     try {
-      String companyId =
-          getBaseUrl('').split('/').where((s) => s.isNotEmpty).last;
+      String companyId = getBaseUrl('').split('/').where((s) => s.isNotEmpty).last;
 
       Either<FirebaseFailure, Map<String, Map<String, bool>>> validationResult =
-          await validatePermissionsAgainstAdmin(
+      await validatePermissionsAgainstAdmin(
         requestedPermissions: modulePermissions,
         companyId: companyId,
       );
@@ -276,15 +269,14 @@ class RoleRepository {
       }
 
       Map<String, Map<String, bool>> validatedPermissions =
-          validationResult.getOrElse(() => {});
+      validationResult.getOrElse(() => {});
 
       for (var module in validatedPermissions.keys) {
         var perms = validatedPermissions[module];
         if (perms != null) {
           for (var permValue in perms.values) {
             if (permValue is List) {
-              throw Exception(
-                  "Nested array detected in module '$module' permissions");
+              throw Exception("Nested array detected in module '$module' permissions");
             }
           }
         }
@@ -292,35 +284,30 @@ class RoleRepository {
 
       String roleId = await RoleHistoryModel.generateNextRoleId();
 
-      DocumentSnapshot existingDoc =
-          await _getCollection(ROLES_COLLECTION).doc(roleId).get();
+      DocumentSnapshot existingDoc = await _getCollection(ROLES_COLLECTION).doc(roleId).get();
       if (existingDoc.exists) {
-        throw Exception(
-            "Role ID collision detected - ID $roleId already exists!");
+        throw Exception("Role ID collision detected - ID $roleId already exists!");
       }
 
       String? roleImageLink;
       if (roleImage != null) {
         try {
-          dynamic uploadResult =
-              await remoteDataSource.uploadRoleImage(roleImage);
+          dynamic uploadResult = await remoteDataSource.uploadRoleImage(roleImage);
 
           if (uploadResult is Either) {
             dynamic value = uploadResult.fold(
-              (failure) => null,
-              (success) => success,
+                  (failure) => null,
+                  (success) => success,
             );
 
             if (value == null) {
-              Failure failure = uploadResult.fold(
-                  (l) => l, (r) => FirebaseFailure('Unexpected'));
+              Failure failure = uploadResult.fold((l) => l, (r) => FirebaseFailure('Unexpected'));
               return Left(failure);
             }
 
             roleImageLink = value.toString();
           } else {
-            return Left(
-                FirebaseFailure('Unexpected result type from image upload'));
+            return Left(FirebaseFailure('Unexpected result type from image upload'));
           }
         } catch (imageError, stackTrace) {
           return Left(FirebaseFailure('Image upload failed: $imageError'));
@@ -350,16 +337,14 @@ class RoleRepository {
         var modules = roleMap['Selected_Modules'] as List;
         for (var module in modules) {
           if (module is List) {
-            throw Exception(
-                "Nested arrays in Selected_Modules are not supported");
+            throw Exception("Nested arrays in Selected_Modules are not supported");
           }
         }
       }
 
       batch.set(roleRef, roleMap);
 
-      await _createPermissionDocuments(
-          batch, roleId, selectedModules, validatedPermissions);
+      await _createPermissionDocuments(batch, roleId, selectedModules, validatedPermissions);
 
       await batch.commit();
 
@@ -385,11 +370,10 @@ class RoleRepository {
       String roleId = role.roleId;
       int timestamp = DateTime.now().millisecondsSinceEpoch;
 
-      String companyId =
-          getBaseUrl('').split('/').where((s) => s.isNotEmpty).last;
+      String companyId = getBaseUrl('').split('/').where((s) => s.isNotEmpty).last;
 
       Either<FirebaseFailure, Map<String, Map<String, bool>>> validationResult =
-          await validatePermissionsAgainstAdmin(
+      await validatePermissionsAgainstAdmin(
         requestedPermissions: modulePermissions,
         companyId: companyId,
       );
@@ -399,16 +383,13 @@ class RoleRepository {
       }
 
       Map<String, Map<String, bool>> validatedPermissions =
-          validationResult.getOrElse(() => {});
+      validationResult.getOrElse(() => {});
 
       WriteBatch batch = firestore.batch();
 
-      EditBy currentEditBy =
-          role.currentEditBy ?? EditBy(editorEmail: [], timestamps: []);
-      List<String?> editorEmails =
-          List<String?>.from(currentEditBy.editorEmail ?? []);
-      List<Timestamp?> editTimestamps =
-          List<Timestamp?>.from(currentEditBy.timestamps ?? []);
+      EditBy currentEditBy = role.currentEditBy ?? EditBy(editorEmail: [], timestamps: []);
+      List<String?> editorEmails = List<String?>.from(currentEditBy.editorEmail ?? []);
+      List<Timestamp?> editTimestamps = List<Timestamp?>.from(currentEditBy.timestamps ?? []);
       editorEmails.add(currentUserEmail);
       editTimestamps.add(Timestamp.now());
       EditBy updatedEditBy = EditBy(
@@ -419,25 +400,22 @@ class RoleRepository {
       String? roleImageLink;
       if (roleImage != null) {
         try {
-          dynamic uploadResult =
-              await remoteDataSource.uploadRoleImage(roleImage);
+          dynamic uploadResult = await remoteDataSource.uploadRoleImage(roleImage);
 
           if (uploadResult is Either) {
             dynamic value = uploadResult.fold(
-              (failure) => null,
-              (success) => success,
+                  (failure) => null,
+                  (success) => success,
             );
 
             if (value == null) {
-              Failure failure = uploadResult.fold(
-                  (l) => l, (r) => FirebaseFailure('Unexpected'));
+              Failure failure = uploadResult.fold((l) => l, (r) => FirebaseFailure('Unexpected'));
               return Left(failure);
             }
 
             roleImageLink = value.toString();
           } else {
-            return Left(
-                FirebaseFailure('Unexpected result type from image upload'));
+            return Left(FirebaseFailure('Unexpected result type from image upload'));
           }
         } catch (imageError, stackTrace) {
           return Left(FirebaseFailure('Image upload failed: $imageError'));
@@ -469,8 +447,7 @@ class RoleRepository {
         Map<String, dynamic> synchronizedPermissionData;
 
         if (permDoc.exists) {
-          Map<String, dynamic> existingPermissions =
-              permDoc.data() as Map<String, dynamic>;
+          Map<String, dynamic> existingPermissions = permDoc.data() as Map<String, dynamic>;
           synchronizedPermissionData = _synchronizeModulePermissions(
             existingPermissions: existingPermissions,
             newPermissions: validatedPermissions[moduleName] ?? {},
@@ -507,15 +484,13 @@ class RoleRepository {
       batch.set(subPermRef, subPermData, SetOptions(merge: true));
 
       List<String> oldModules = role.currentSelectedModules;
-      List<String> removedModules =
-          oldModules.where((m) => !selectedModules.contains(m)).toList();
+      List<String> removedModules = oldModules.where((m) => !selectedModules.contains(m)).toList();
 
       if (removedModules.isNotEmpty) {
         for (String moduleName in removedModules) {
           String collectionName = _getPermissionCollectionName(moduleName);
           if (collectionName.isNotEmpty) {
-            DocumentReference permRef =
-                _getCollection(collectionName).doc(roleId);
+            DocumentReference permRef = _getCollection(collectionName).doc(roleId);
             batch.delete(permRef);
           }
         }
@@ -534,11 +509,11 @@ class RoleRepository {
       List<RoleHistoryModel> roleTypeList = [];
 
       try {
-        String subscriptionAdminPath =
-            getBaseUrl(SUBSCRIPTION_ADMIN_COLLECTION);
+        String subscriptionAdminPath = getBaseUrl(SUBSCRIPTION_ADMIN_COLLECTION);
 
-        QuerySnapshot subscriptionSnapshot =
-            await firestore.collection(subscriptionAdminPath).get();
+        QuerySnapshot subscriptionSnapshot = await firestore
+            .collection(subscriptionAdminPath)
+            .get();
 
         for (QueryDocumentSnapshot doc in subscriptionSnapshot.docs) {
           try {
@@ -548,17 +523,21 @@ class RoleRepository {
             RoleHistoryModel role = RoleHistoryModel.fromMap(data);
 
             roleTypeList.add(role);
+
           } catch (e, stackTrace) {
             continue;
           }
         }
-      } catch (e, stackTrace) {}
+
+      } catch (e, stackTrace) {
+      }
 
       try {
         String rolesPath = getBaseUrl(ROLES_COLLECTION);
 
-        QuerySnapshot rolesSnapshot =
-            await firestore.collection(rolesPath).get();
+        QuerySnapshot rolesSnapshot = await firestore
+            .collection(rolesPath)
+            .get();
 
         for (QueryDocumentSnapshot doc in rolesSnapshot.docs) {
           try {
@@ -574,9 +553,12 @@ class RoleRepository {
             continue;
           }
         }
-      } catch (e, stackTrace) {}
+
+      } catch (e, stackTrace) {
+      }
 
       return Right(roleTypeList);
+
     } catch (e, stackTrace) {
       return Left(FirebaseFailure(e.toString()));
     }
@@ -591,12 +573,9 @@ class RoleRepository {
 
       WriteBatch batch = firestore.batch();
 
-      EditBy currentEditBy =
-          role.currentEditBy ?? EditBy(editorEmail: [], timestamps: []);
-      List<String?> editorEmails =
-          List<String?>.from(currentEditBy.editorEmail ?? []);
-      List<Timestamp?> editTimestamps =
-          List<Timestamp?>.from(currentEditBy.timestamps ?? []);
+      EditBy currentEditBy = role.currentEditBy ?? EditBy(editorEmail: [], timestamps: []);
+      List<String?> editorEmails = List<String?>.from(currentEditBy.editorEmail ?? []);
+      List<Timestamp?> editTimestamps = List<Timestamp?>.from(currentEditBy.timestamps ?? []);
       editorEmails.add(currentUserEmail);
       editTimestamps.add(Timestamp.now());
       EditBy updatedEditBy = EditBy(
@@ -613,8 +592,7 @@ class RoleRepository {
       DocumentSnapshot docSnapshot = await roleRef.get();
 
       if (!docSnapshot.exists) {
-        return Left(
-            FirebaseFailure('Role document not found with ID: $roleId'));
+        return Left(FirebaseFailure('Role document not found with ID: $roleId'));
       }
 
       batch.update(roleRef, updatedRole.toMap());
@@ -641,8 +619,7 @@ class RoleRepository {
         }
       }
 
-      String companyId =
-          getBaseUrl('').split('/').where((s) => s.isNotEmpty).last;
+      String companyId = getBaseUrl('').split('/').where((s) => s.isNotEmpty).last;
       DocumentReference subPermRef = firestore
           .collection(getBaseUrl('Subscription_Permission_Admin'))
           .doc(roleId);
@@ -656,8 +633,7 @@ class RoleRepository {
     }
   }
 
-  Future<Either<FirebaseFailure, String>> fixCorruptedQiyasDocument(
-      String roleId) async {
+  Future<Either<FirebaseFailure, String>> fixCorruptedQiyasDocument(String roleId) async {
     try {
       DocumentReference permRef = _getCollection(QIYAS_PERMISSIONS).doc(roleId);
       await permRef.delete();
@@ -692,11 +668,11 @@ class RoleRepository {
   }
 
   Future<void> _createPermissionDocuments(
-    WriteBatch batch,
-    String roleId,
-    List<String> selectedModules,
-    Map<String, Map<String, bool>> modulePermissions,
-  ) async {
+      WriteBatch batch,
+      String roleId,
+      List<String> selectedModules,
+      Map<String, Map<String, bool>> modulePermissions,
+      ) async {
     for (int i = 0; i < selectedModules.length; i++) {
       String module = selectedModules[i];
       String collectionName = _getPermissionCollectionName(module);
@@ -777,8 +753,7 @@ class RoleRepository {
     Map<String, dynamic> synchronizedData = {'Role_Id': roleId};
 
     List<int> timestamps = [];
-    if (existingPermissions.containsKey('timestamps') &&
-        existingPermissions['timestamps'] is List) {
+    if (existingPermissions.containsKey('timestamps') && existingPermissions['timestamps'] is List) {
       timestamps = List<int>.from(existingPermissions['timestamps']).toList();
     }
 
@@ -801,17 +776,15 @@ class RoleRepository {
     for (String permissionKey in allPermissionKeys) {
       List<bool> permissionHistory = [];
 
-      if (existingPermissions.containsKey(permissionKey) &&
-          existingPermissions[permissionKey] is List) {
+      if (existingPermissions.containsKey(permissionKey) && existingPermissions[permissionKey] is List) {
         permissionHistory = List<bool>.from(
-            existingPermissions[permissionKey].map((v) => v == true)).toList();
+            existingPermissions[permissionKey].map((v) => v == true)
+        ).toList();
       } else {
-        permissionHistory =
-            List.filled(timestamps.length - 1, false, growable: true);
+        permissionHistory = List.filled(timestamps.length - 1, false, growable: true);
       }
 
-      bool currentValue =
-          permissionHistory.isNotEmpty ? permissionHistory.last : false;
+      bool currentValue = permissionHistory.isNotEmpty ? permissionHistory.last : false;
       bool newValue = currentValue;
 
       for (String newPermKey in newPermissions.keys) {
@@ -857,8 +830,7 @@ class RoleRepository {
         return Right(null);
       }
 
-      DocumentSnapshot doc =
-          await _getCollection(collectionName).doc(roleId).get();
+      DocumentSnapshot doc = await _getCollection(collectionName).doc(roleId).get();
 
       if (doc.exists) {
         return Right(doc.data() as Map<String, dynamic>);
@@ -870,8 +842,7 @@ class RoleRepository {
     }
   }
 
-  Future<Either<FirebaseFailure, Map<String, Map<String, dynamic>>>>
-      getAllRolePermissions({
+  Future<Either<FirebaseFailure, Map<String, Map<String, dynamic>>>> getAllRolePermissions({
     required String roleId,
     required List<String> selectedModules,
   }) async {
@@ -880,7 +851,7 @@ class RoleRepository {
 
       for (String module in selectedModules) {
         Either<FirebaseFailure, Map<String, dynamic>?> result =
-            await getRolePermissions(roleId: roleId, module: module);
+        await getRolePermissions(roleId: roleId, module: module);
 
         if (result.isRight()) {
           Map<String, dynamic>? permissions = result.getOrElse(() => null);
@@ -928,8 +899,7 @@ class RoleRepository {
 
       permissions.forEach((key, value) {
         String dbKey = key.trim().replaceAll(RegExp(r'\s+'), '_');
-        List<bool> permissionHistory =
-            List<bool>.from(existingData[dbKey] ?? []);
+        List<bool> permissionHistory = List<bool>.from(existingData[dbKey] ?? []);
         permissionHistory.add(value);
         existingData[dbKey] = permissionHistory;
       });

@@ -9,7 +9,7 @@ import 'package:demo_app/features/roles/role_management/ui/pages/role_management
 import 'package:demo_app/generated/l10n.dart';
 
 import 'package:demo_app/core/enums/enum.dart';
-import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
+import 'package:demo_app/core/haptic/haptic_controller.dart';
 import 'package:demo_app/features/roles/widgets/confirm_dialog.dart';
 import 'package:demo_app/features/roles/core_widgets/main_widget/custom_icon_button.dart';
 import 'package:demo_app/core/custom/loading.dart';
@@ -83,7 +83,7 @@ class _RoleDetailsPageState extends State<RoleDetailsPage> {
                         ? CustomIconButton(
                       width: isTablet ? 135 : null,
                       iconPath:
-                      'assets/skeleton/common/icons/edit.svg',
+                      'assets/edit.svg',
                       buttonText: isTablet ? S.of(context).edit : '',
                       onTap: () {
                         hapticController.triggerHapticFeedback(

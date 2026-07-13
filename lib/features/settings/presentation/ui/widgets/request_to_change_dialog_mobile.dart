@@ -237,15 +237,15 @@ class _RequestToChangeDialogMobileState
                           ),
                         ),
                       _buildOptionSection(optionsD, "Additional Information".tr,
-                          'assets/icons/add_info_title.svg', AdditionalInfoUpdate()),
+                          'assets/icons_assets/main_icons_assets/add_info_title.svg', AdditionalInfoUpdate()),
                       _buildOptionSection(optionsD, "Health Insurance".tr,
-                          'assets/icons/Hospital.svg', const HealthInsuranceUpdate(isRequestMobile: true)),
+                          'assets/icons_assets/main_icons_assets/Hospital.svg', const HealthInsuranceUpdate(isRequestMobile: true)),
                       _buildOptionSection(optionsD, "Emergency Contact Information".tr,
-                          'assets/icons/UsersGroup.svg', const EmergencyContactInfoUpdate(isRequestMobile: true)),
+                          'assets/icons_assets/main_icons_assets/UsersGroup.svg', const EmergencyContactInfoUpdate(isRequestMobile: true)),
                       _buildOptionSection(optionsD, "Personal Data".tr,
-                          'assets/icons/personalInfo.svg', const PersonalDataUpdate()),
+                          'assets/icons_assets/main_icons_assets/personalInfo.svg', const PersonalDataUpdate()),
                       _buildOptionSection(optionsD, "Contact Information".tr,
-                          'assets/icons/contactInfoPhone.svg', ContactInfoUpdate(isRequestMobile: true)),
+                          'assets/icons_assets/main_icons_assets/contactInfoPhone.svg', ContactInfoUpdate(isRequestMobile: true)),
                     ],
                   ),
                   if (optionsD.isNotEmpty) SizedBox(height: 0.02.h),
@@ -258,7 +258,7 @@ class _RequestToChangeDialogMobileState
                           buttonText: "Send".tr,
                           buttonStyle: widget.isSetting == false &&
                                   requestType == null
-                              ? buttonStyle(AppColors.greyBack)
+                              ? buttonStyle(AppColors.greyDark)
                               : buttonStyle(AppColors.signOut),
                         ),
                       ],

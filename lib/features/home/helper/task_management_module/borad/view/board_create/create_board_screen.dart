@@ -1,12 +1,13 @@
+import 'package:demo_app/core/helper/task_management_module/core/components/custom_create_board.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:demo_app/core/helper/task_management_module/core/components/selection_user.dart';
 import 'package:demo_app/core/theme/app_font_size.dart';
-import 'package:demo_app/features/home/helper/task_management_module/task/data/model/board_model/board_model.dart';
+import 'package:demo_app/core/helper/task_management_module/task/data/model/board_model/board_model.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 
-import 'package:demo_app/core/helper/task_management_module/core/components/custom_appbar_mobile.dart';
-import 'package:demo_app/core/helper/task_management_module/core/components/custom_create_board.dart';
+
+import 'package:demo_app/core/helper/data_grc_module/constant/theme_controller.dart';
+import '../../../../../../../core/local_widgets/custom_appbar_mobile.dart';
 
 /// Date Created :12/November/2023
 /// Developer Name : Nour Nabil
@@ -60,7 +61,7 @@ class CreateBoardScreenMobile extends StatelessWidget {
                           child: Column(
                             children: [
                               CustomCreateBoardContainer(
-                                // boardModel: board,
+                                boardModel: board,
                               )
                             ],
                           ),

@@ -147,7 +147,7 @@ class _ContactInformationState extends State<ContactInformation> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SettingsHeader(
-                      imagePath: 'assets/phone_contact.svg',
+                      imagePath: 'assets/icons_assets/settings_assets/phone_contact.svg',
                       text: S.of(context).contact),
 
                   SizedBox(height: 15.h),

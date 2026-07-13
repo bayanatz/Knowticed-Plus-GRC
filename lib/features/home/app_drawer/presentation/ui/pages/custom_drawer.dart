@@ -7,14 +7,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
-// REMOVED_MODULE: import 'package:demo_app/features/external/inventory_module/core/svg_custom.dart';
+// REMOVED_MODULE: import 'package:demo_app/core/helper/inventory_module/core/svg_custom.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:animated_reorderable_list/animated_reorderable_list.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/timeline_widget.dart';
 import 'package:demo_app/core/constants/image_paths.dart';
 import 'package:demo_app/features/settings/mode_changer.dart';
 import 'package:demo_app/core/enums/enum.dart';
-import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
 
 import 'package:demo_app/core/theme/app_font_size.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/custom_appbar.dart';
@@ -23,19 +22,19 @@ import 'package:demo_app/features/home/core_widgets/dialogs/custom_logout_dialog
 // REMOVED_MODULE: import 'package:demo_app/feature/notification/notification_screen.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/skeleton/authentication/welcome_screen/views/mobile_view/nav_bar.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/skeleton/authentication/welcome_screen/views/start_sign_in.dart';
-// REMOVED_MODULE: import 'package:demo_app/features/external/inventory_module/core/navigate.dart';
+// REMOVED_MODULE: import 'package:demo_app/core/helper/inventory_module/core/navigate.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
-import 'package:demo_app/features/home/presentation/controller/home_cubit.dart';
+import 'package:demo_app/features/home/home_page/presentation/controller/home_cubit.dart';
 import 'package:demo_app/main.dart';
 import 'package:demo_app/core/theme/theme_controller.dart';
-import 'package:demo_app/features/home/presentation/ui/pages/no_internet_screen.dart';
+import 'package:demo_app/features/home/home_page/presentation/ui/pages/no_internet_screen.dart';
 import 'package:page_transition/page_transition.dart';
 
 // REMOVED_MODULE: import '../../../../../external/calender/calendar_screen.dart';
-import '../../../../../notification/notification_page.dart';
-import '../../../../../notification/clear_page_notification.dart';
-import '../../../../../notification/pin_notification.dart';
+import 'package:demo_app/features/notification/presentation/ui/pages/notification_page.dart';
+import 'package:demo_app/features/notification/presentation/ui/pages/clear_page_notification.dart';
+import 'package:demo_app/features/notification/presentation/ui/pages/pin_notification.dart';
 import 'package:demo_app/features/roles/role_management/domain/enums/modules_enum.dart';
 import 'package:demo_app/features/roles/role_management/ui/pages/role_management_home.dart';
 import '../../../../../settings/presentation/controller/settings_controller.dart';
@@ -141,7 +140,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
           return CustomLogOutDialogBox(
             title: "Sign Out",
             subtitle: "Are You Sure You Want To Sign Out?",
-            imagePath: "assets/images/newLogOut.json",
+            imagePath: "assets/lottie_assets/home_lottie_assets/newLogOut.json",
             backgroundColor: AppColors.primary,
             showButtons: true,
             buttonText: 'Yes',
@@ -297,7 +296,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             child: _buildMenuItem(
                               orientation,
                               appDrawerController.allowedDrawerModules.length,
-                              'assets/g1441.svg',
+                              'assets/icons_assets/home_assets/g1441.svg',
                               "Log Out".tr,
                               isLogout: true,
                             ),
@@ -369,7 +368,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
           child: storage.read('logo') == null
               ? SvgPicture.asset(
             lightMode
-                ? "assets/new_size_logo.svg"
+                ? "assets/icons_assets/home_assets/new_size_logo.svg"
                 : "assets/images/demo_app_logo_dark.svg",
             width: 60.w,
             height: 60.w,

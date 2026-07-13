@@ -408,7 +408,7 @@ class _MyRequestPageState extends State<MyRequestPage> {
                                               : AppColors.background),
                                       child: Center(
                                         child: CustomSvg(
-                                          assetPath: "assets/employee_request.svg",
+                                          assetPath: "assets/icons_assets/settings_assets/employee_request.svg",
                                           width: 28.w,
                                           height: 28.h,
                                           fit: BoxFit.scaleDown,
@@ -663,7 +663,7 @@ class _MyRequestPageState extends State<MyRequestPage> {
                                     ),
                                     child: Center(
                                       child: CustomSvg(
-                                        assetPath: "assets/employee_request.svg",
+                                        assetPath: "assets/icons_assets/settings_assets/employee_request.svg",
                                         width: 28.w,
                                         height: 28.h,
                                         fit: BoxFit.scaleDown,

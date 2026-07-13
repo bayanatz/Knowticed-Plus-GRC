@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'package:demo_app/core/custom/2-custom_textfield.dart';
 import 'package:demo_app/core/helper/main_helper/circle_progress.dart';
 import 'package:demo_app/core/helper/main_helper/format_helper.dart';
-// REMOVED_MODULE: import 'package:demo_app/features/external/inventory_module/core/navigate.dart';
+// REMOVED_MODULE: import 'package:demo_app/core/helper/inventory_module/core/navigate.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/services_mangment_module/Category/presentation/ui/service_department_manager/tablet/s2_details_service/details_service/widget/info_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
@@ -335,8 +335,8 @@ class _RequestPageApprovalState extends State<RequestPageApproval> {
                                     child: CustomSvg(
                                       assetPath: request["section"] ==
                                           "Personal Information"
-                                          ? "assets/icons_settings_new/Personal Information.svg"
-                                          : "assets/icons_settings_new/Health Insurance.svg",
+                                          ? "assets/icons_assets/main_icons_assets/Personal Information.svg"
+                                          : "assets/icons_assets/main_icons_assets/Health Insurance.svg",
                                       width: 30.w,
                                       height: 30.h,
                                       fit: BoxFit.fill,
@@ -372,7 +372,7 @@ class _RequestPageApprovalState extends State<RequestPageApproval> {
 
                             // ── Job Title ───────────────────────
                             _infoRow(
-                              icon: "assets/job_title.svg",
+                              icon: "assets/icons_assets/roles_assets/job_title.svg",
                               label:
                               "${S.of(context).jobTitle}: ",
                               value: FormatHelper.capitalize(

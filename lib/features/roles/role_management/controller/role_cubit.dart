@@ -26,6 +26,7 @@ class RoleCubit extends Cubit<RoleState> {
 
   Map<String, Map<String, bool>> modulePermissions = {};
   bool isActive = true;
+
   /// Cache for role permissions to avoid reloading
   final Map<String, Map<String, List<String>>> _rolePermissionsCache = {};
 
@@ -67,19 +68,17 @@ class RoleCubit extends Cubit<RoleState> {
     'tracking',
     'database_builder',
     'roles',
-    'hr',           // ✅ ADDED
+    'hr', // ✅ ADDED
     'notification', // ✅ ADDED
   ];
 
-  Map<String, Map<String, bool>> _adminRestrictions = {};
+  final Map<String, Map<String, bool>> _adminRestrictions = {};
 
   String _getCompanyId() {
     try {
       String baseUrl = getBaseUrl('');
-      String companyId = baseUrl
-          .replaceAll('Demo/', '')
-          .replaceAll('/', '')
-          .trim();
+      String companyId =
+          baseUrl.replaceAll('Demo/', '').replaceAll('/', '').trim();
 
       //print("🔍 _getCompanyId() extracted: '$companyId' from baseUrl: '$baseUrl'");
 
@@ -94,7 +93,7 @@ class RoleCubit extends Cubit<RoleState> {
     emit(RoleLoading()); // Show loading state
 
     Either<FirebaseFailure, dynamic> result =
-    await roleRepository.getUnDeletedRoles();
+        await roleRepository.getUnDeletedRoles();
 
     if (result.isLeft()) {
       emit(RoleError(result.fold((l) => l.errMessage, (r) => 'Unknown error')));
@@ -124,8 +123,7 @@ class RoleCubit extends Cubit<RoleState> {
     //print("\n=== Preloading permissions for ${filteredRoles.length} roles ===");
 
     await Future.wait(
-        filteredRoles.map((role) => _preloadRolePermissions(role))
-    );
+        filteredRoles.map((role) => _preloadRolePermissions(role)));
 
     //print("✓ All role permissions preloaded (${_rolePermissionsCache.length} cached)\n");
   }
@@ -149,7 +147,8 @@ class RoleCubit extends Cubit<RoleState> {
       );
 
       if (result.isRight()) {
-        Map<String, Map<String, dynamic>> allPermissions = result.getOrElse(() => {});
+        Map<String, Map<String, dynamic>> allPermissions =
+            result.getOrElse(() => {});
         Map<String, List<String>> rolePermissions = {};
 
         for (String moduleName in activeModuleStrings) {
@@ -164,7 +163,8 @@ class RoleCubit extends Cubit<RoleState> {
 
                 if (value is List && value.isNotEmpty) {
                   var lastValue = value.last;
-                  isActive = (lastValue == true || lastValue == 1 || lastValue == '1');
+                  isActive =
+                      (lastValue == true || lastValue == 1 || lastValue == '1');
                 } else if (value is bool) {
                   isActive = value;
                 }
@@ -206,8 +206,8 @@ class RoleCubit extends Cubit<RoleState> {
         .replaceAll('_', ' ')
         .split(' ')
         .map((word) => word.isNotEmpty
-        ? '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}'
-        : '')
+            ? '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}'
+            : '')
         .join(' ');
   }
 
@@ -222,7 +222,7 @@ class RoleCubit extends Cubit<RoleState> {
         //print("   Loading restrictions for: $moduleName");
 
         Either<FirebaseFailure, Map<String, bool>> result =
-        await roleRepository.getAdminRestrictionsForModule(
+            await roleRepository.getAdminRestrictionsForModule(
           companyId: companyId,
           moduleName: moduleName,
         );
@@ -287,7 +287,8 @@ class RoleCubit extends Cubit<RoleState> {
 
     String? currentUserEmail;
     try {
-      currentUserEmail = Get.find<MainCoreEmployeeController>().employeeEntity?.email;
+      currentUserEmail =
+          Get.find<MainCoreEmployeeController>().employeeEntity?.email;
     } catch (e) {
       //print("   ❌ ERROR: Could not get MainCoreEmployeeController: $e");
     }
@@ -297,7 +298,8 @@ class RoleCubit extends Cubit<RoleState> {
       //print("   Loading default permissions for all modules...");
 
       for (String moduleName in modulesToLoad) {
-        modulePermissions[moduleName] = await _getDefaultPermissionsForModule(moduleName);
+        modulePermissions[moduleName] =
+            await _getDefaultPermissionsForModule(moduleName);
       }
       //print("🔍 ════════════════════════════════════════\n");
       return;
@@ -305,7 +307,8 @@ class RoleCubit extends Cubit<RoleState> {
 
     //print("   📧 Current User Email: $currentUserEmail");
 
-    bool isCurrentUserAdmin = roleRepository.isCompanyAdminByEmail(currentUserEmail);
+    bool isCurrentUserAdmin =
+        roleRepository.isCompanyAdminByEmail(currentUserEmail);
 
     //print("   ════════════════════════════════════════");
     if (isCurrentUserAdmin) {
@@ -322,11 +325,11 @@ class RoleCubit extends Cubit<RoleState> {
 
     if (isCurrentUserAdmin) {
       Either<FirebaseFailure, Map<String, Map<String, bool>>> adminResult =
-      await roleRepository.getAdminPermissions(roleId);
+          await roleRepository.getAdminPermissions(roleId);
 
       if (adminResult.isRight()) {
         Map<String, Map<String, bool>> adminPermissions =
-        adminResult.getOrElse(() => {});
+            adminResult.getOrElse(() => {});
 
         //print("   ✅ Found admin permissions for ${adminPermissions.length} modules");
 
@@ -342,18 +345,20 @@ class RoleCubit extends Cubit<RoleState> {
         //print("   Creating default permissions as fallback...");
 
         for (String moduleName in modulesToLoad) {
-          modulePermissions[moduleName] = await _getDefaultPermissionsForModule(moduleName);
+          modulePermissions[moduleName] =
+              await _getDefaultPermissionsForModule(moduleName);
         }
       }
     } else {
       Either<FirebaseFailure, Map<String, Map<String, dynamic>>> result =
-      await roleRepository.getAllRolePermissions(
+          await roleRepository.getAllRolePermissions(
         roleId: roleId,
         selectedModules: modulesToLoad,
       );
 
       if (result.isRight()) {
-        Map<String, Map<String, dynamic>> allPermissions = result.getOrElse(() => {});
+        Map<String, Map<String, dynamic>> allPermissions =
+            result.getOrElse(() => {});
 
         //print("   ✅ Found permissions for ${allPermissions.length} modules in Firestore");
 
@@ -364,7 +369,8 @@ class RoleCubit extends Cubit<RoleState> {
             Map<String, dynamic> moduleData = allPermissions[moduleName]!;
 
             //print("      Loading allowed switches from admin restrictions...");
-            Map<String, bool> allowedSwitches = await _getDefaultPermissionsForModule(moduleName);
+            Map<String, bool> allowedSwitches =
+                await _getDefaultPermissionsForModule(moduleName);
             //print("      Allowed switches count: ${allowedSwitches.length}");
 
             modulePermissions[moduleName] = {};
@@ -381,7 +387,9 @@ class RoleCubit extends Cubit<RoleState> {
 
                     if (lastValue is bool) {
                       boolValue = lastValue;
-                    } else if (lastValue == true || lastValue == 'true' || lastValue == 1) {
+                    } else if (lastValue == true ||
+                        lastValue == 'true' ||
+                        lastValue == 1) {
                       boolValue = true;
                     }
 
@@ -404,7 +412,8 @@ class RoleCubit extends Cubit<RoleState> {
           } else {
             //print("      ⚠️ Module not found in Firestore");
             //print("      Creating filtered default permissions...");
-            modulePermissions[moduleName] = await _getDefaultPermissionsForModule(moduleName);
+            modulePermissions[moduleName] =
+                await _getDefaultPermissionsForModule(moduleName);
             //print("      Created ${modulePermissions[moduleName]?.length ?? 0} default permissions");
           }
         }
@@ -413,7 +422,8 @@ class RoleCubit extends Cubit<RoleState> {
         //print("   Creating filtered default permissions for all modules...");
 
         for (String moduleName in modulesToLoad) {
-          modulePermissions[moduleName] = await _getDefaultPermissionsForModule(moduleName);
+          modulePermissions[moduleName] =
+              await _getDefaultPermissionsForModule(moduleName);
           //print("      Created ${modulePermissions[moduleName]?.length ?? 0} permissions for $moduleName");
         }
       }
@@ -430,7 +440,8 @@ class RoleCubit extends Cubit<RoleState> {
       selectedModules.add('settings');
       if (!modulePermissions.containsKey('settings')) {
         //print("   Loading filtered permissions for settings...");
-        modulePermissions['settings'] = await _getDefaultPermissionsForModule('settings');
+        modulePermissions['settings'] =
+            await _getDefaultPermissionsForModule('settings');
         //print("   Loaded ${modulePermissions['settings']?.length ?? 0} permissions for settings");
       }
       //print('✅ Auto-added Settings module to selectedModules');
@@ -446,11 +457,11 @@ class RoleCubit extends Cubit<RoleState> {
     var result = await roleRepository.fixCorruptedQiyasDocument(roleId);
 
     result.fold(
-          (failure) {
+      (failure) {
         //print("❌ Failed to fix qiyas document: ${failure.errMessage}");
         emit(RoleError(failure.errMessage));
       },
-          (success) {
+      (success) {
         //print("✅ $success");
         //print("✅ Reloading role...");
         getUnDeletedRoles();
@@ -505,7 +516,8 @@ class RoleCubit extends Cubit<RoleState> {
         Map<String, bool> modulePerms = modulePermissions[moduleName]!;
 
         modulePerms.forEach((permKey, permValue) {
-          if (permValue == true && !isPermissionAllowedByAdmin(moduleName, permKey)) {
+          if (permValue == true &&
+              !isPermissionAllowedByAdmin(moduleName, permKey)) {
             hasViolations = true;
             violations.add("$moduleName.$permKey");
           }
@@ -520,8 +532,7 @@ class RoleCubit extends Cubit<RoleState> {
       }
 
       emit(RoleError(
-          "Cannot create role: The following permissions are restricted by administrator:\n${violations.join('\n')}"
-      ));
+          "Cannot create role: The following permissions are restricted by administrator:\n${violations.join('\n')}"));
       return;
     }
 
@@ -554,10 +565,12 @@ class RoleCubit extends Cubit<RoleState> {
     }
   }
 
-  Future<Map<String, bool>> _getDefaultPermissionsForModule(String moduleName) async {
+  Future<Map<String, bool>> _getDefaultPermissionsForModule(
+      String moduleName) async {
     //print("\n🔍 _getDefaultPermissionsForModule called for: $moduleName");
 
-    Map<String, bool> permissions = await modulesController.getFilteredDefaultPermissionsForModule(moduleName);
+    Map<String, bool> permissions = await modulesController
+        .getFilteredDefaultPermissionsForModule(moduleName);
 
     //print("✅ Got ${permissions.length} FILTERED permissions for $moduleName");
     //print("   Permission keys: ${permissions.keys.toList()}\n");
@@ -576,7 +589,8 @@ class RoleCubit extends Cubit<RoleState> {
         //print("   Settings not selected, adding it...");
         selectedModules.add(moduleName);
         //print("   Loading filtered permissions for settings...");
-        modulePermissions[moduleName] = await _getDefaultPermissionsForModule(moduleName);
+        modulePermissions[moduleName] =
+            await _getDefaultPermissionsForModule(moduleName);
         //print("   Loaded ${modulePermissions[moduleName]?.length ?? 0} permissions");
         emit(RoleModuleSelected());
       } else {
@@ -599,10 +613,12 @@ class RoleCubit extends Cubit<RoleState> {
       //print("   After: selectedModules = $selectedModules");
       //print("   Loading filtered permissions for $moduleName...");
 
-      modulePermissions[moduleName] = await _getDefaultPermissionsForModule(moduleName);
+      modulePermissions[moduleName] =
+          await _getDefaultPermissionsForModule(moduleName);
 
       //print("   ✅ Loaded ${modulePermissions[moduleName]?.length ?? 0} permissions");
-      if (modulePermissions[moduleName] != null && modulePermissions[moduleName]!.isNotEmpty) {
+      if (modulePermissions[moduleName] != null &&
+          modulePermissions[moduleName]!.isNotEmpty) {
         //print("   📋 First 5 permission keys: ${modulePermissions[moduleName]!.keys.take(5).toList()}");
       }
     }
@@ -617,7 +633,8 @@ class RoleCubit extends Cubit<RoleState> {
     emit(RoleModuleSelected());
   }
 
-  void updateModulePermission(String moduleName, String permission, bool value) {
+  void updateModulePermission(
+      String moduleName, String permission, bool value) {
     //print("\n🔧 updateModulePermission called");
     //print("   Module: $moduleName");
     //print("   Permission: $permission");
@@ -631,8 +648,7 @@ class RoleCubit extends Cubit<RoleState> {
     if (value == true && !isPermissionAllowedByAdmin(moduleName, permission)) {
       //print("   ❌ Permission blocked by administrator");
       emit(RoleError(
-          "Cannot enable '$permission' in module '$moduleName': This permission is restricted by the administrator."
-      ));
+          "Cannot enable '$permission' in module '$moduleName': This permission is restricted by the administrator."));
       return;
     }
 
@@ -641,13 +657,10 @@ class RoleCubit extends Cubit<RoleState> {
     emit(RolePermissionUpdated());
   }
 
-
-
 // Add this at the top of your RoleCubit class
 
   pickRoleImage({required bool camera}) async {
     try {
-
       final ImagePicker picker = ImagePicker();
 
       final result = await picker.pickImage(
@@ -657,11 +670,9 @@ class RoleCubit extends Cubit<RoleState> {
         imageQuality: 85,
       );
 
-
       if (result == null) {
         return;
       }
-
 
       // Check file size
       try {
@@ -671,7 +682,15 @@ class RoleCubit extends Cubit<RoleState> {
         final extension = result.path.split('.').last.toLowerCase();
 
         // Validate image format
-        final validFormats = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'heic'];
+        final validFormats = [
+          'jpg',
+          'jpeg',
+          'png',
+          'gif',
+          'webp',
+          'bmp',
+          'heic'
+        ];
         if (!validFormats.contains(extension)) {
           emit(RoleError("Invalid format. Please use JPG, PNG, or WEBP"));
           return;
@@ -694,7 +713,6 @@ class RoleCubit extends Cubit<RoleState> {
           final ui.FrameInfo frameInfo = await codec.getNextFrame();
           final ui.Image decodedImage = frameInfo.image;
 
-
           decodedImage.dispose();
           codec.dispose();
         } catch (decodeError, decodeStack) {
@@ -712,14 +730,11 @@ class RoleCubit extends Cubit<RoleState> {
         roleImage = file;
 
         emit(RoleImagePicked());
-
       } catch (readError, readStack) {
         emit(RoleError("Failed to read image data"));
         return;
       }
-
     } catch (e, stackTrace) {
-
       emit(RoleError("Failed to load image: $e"));
     }
   }
@@ -790,6 +805,8 @@ class RoleCubit extends Cubit<RoleState> {
         return 'tasks';
       case Modules.todo:
         return 'todo';
+      case Modules.grc:
+        return 'grc';
       case Modules.events:
         return 'events';
       case Modules.notes:
@@ -814,9 +831,9 @@ class RoleCubit extends Cubit<RoleState> {
         return 'roles';
       case Modules.settings:
         return 'settings';
-      case Modules.hr:  // ✅ ADDED
+      case Modules.hr: // ✅ ADDED
         return 'hr';
-      case Modules.notification:  // ✅ ADDED
+      case Modules.notification: // ✅ ADDED
         return 'notification';
       default:
         return 'employees';
@@ -838,7 +855,8 @@ class RoleCubit extends Cubit<RoleState> {
         Map<String, bool> modulePerms = modulePermissions[moduleName]!;
 
         modulePerms.forEach((permKey, permValue) {
-          if (permValue == true && !isPermissionAllowedByAdmin(moduleName, permKey)) {
+          if (permValue == true &&
+              !isPermissionAllowedByAdmin(moduleName, permKey)) {
             hasViolations = true;
             violations.add("$moduleName.$permKey");
           }
@@ -848,20 +866,19 @@ class RoleCubit extends Cubit<RoleState> {
 
     if (hasViolations) {
       emit(RoleError(
-          "Cannot update role: The following permissions are restricted by administrator:\n${violations.join('\n')}"
-      ));
+          "Cannot update role: The following permissions are restricted by administrator:\n${violations.join('\n')}"));
       return;
     }
 
     Either<Failure, dynamic> result = await roleRepository.updateRole(
       role: selectedRole!,
       status: isActive ? RoleStatus.active : RoleStatus.inactive,
-      currentUserEmail: Get.find<MainCoreEmployeeController>().employeeEntity!.email!,
+      currentUserEmail:
+          Get.find<MainCoreEmployeeController>().employeeEntity!.email!,
       roleDescription: roleDescriptionController.text,
       roleDescriptionAr: roleDescriptionControllerAr.text,
       roleNameAr: roleNameControllerAr.text,
       roleImage: roleImage?.path,
-
       selectedModules: selectedModules,
       modulePermissions: modulePermissions,
     );
@@ -891,7 +908,8 @@ class RoleCubit extends Cubit<RoleState> {
 
     Either<FirebaseFailure, dynamic> result = await roleRepository.deleteRole(
       role: selectedRole!,
-      currentUserEmail: Get.find<MainCoreEmployeeController>().employeeEntity!.email!,
+      currentUserEmail:
+          Get.find<MainCoreEmployeeController>().employeeEntity!.email!,
     );
 
     if (result.isRight()) {
@@ -903,7 +921,8 @@ class RoleCubit extends Cubit<RoleState> {
       await getUnDeletedRoles();
       emit(RoleDeleted());
     } else {
-      String errorMessage = result.fold((l) => l.errMessage, (r) => 'Unknown error');
+      String errorMessage =
+          result.fold((l) => l.errMessage, (r) => 'Unknown error');
       //print("❌ Error deleting role: $errorMessage\n");
       emit(RoleError(errorMessage));
     }
@@ -912,12 +931,14 @@ class RoleCubit extends Cubit<RoleState> {
   Future<void> saveDraft() async {
     //print("\n🔍 Saving role as draft");
 
-    if (selectedRole != null && selectedRole!.currentStatus == RoleStatus.draft) {
+    if (selectedRole != null &&
+        selectedRole!.currentStatus == RoleStatus.draft) {
       //print("   Updating existing draft: ${selectedRole!.roleId}");
 
       Either<Failure, dynamic> result = await roleRepository.updateRole(
         role: selectedRole!,
-        currentUserEmail: Get.find<MainCoreEmployeeController>().employeeEntity!.email!,
+        currentUserEmail:
+            Get.find<MainCoreEmployeeController>().employeeEntity!.email!,
         roleDescription: roleDescriptionController.text,
         roleDescriptionAr: roleDescriptionControllerAr.text,
         roleNameAr: roleNameControllerAr.text,
@@ -936,7 +957,8 @@ class RoleCubit extends Cubit<RoleState> {
         emit(RoleDraftSaved());
       } else {
         //print("❌ Error updating draft: ${result.fold((l) => l.errMessage, (r) => 'Unknown error')}\n");
-        emit(RoleError(result.fold((l) => l.errMessage, (r) => 'Unknown error')));
+        emit(RoleError(
+            result.fold((l) => l.errMessage, (r) => 'Unknown error')));
       }
     } else {
       //print("   Creating new draft");
@@ -947,7 +969,8 @@ class RoleCubit extends Cubit<RoleState> {
         roleNameAr: roleNameControllerAr.text,
         roleDescription: roleDescriptionController.text,
         roleDescriptionAr: roleDescriptionControllerAr.text,
-        createdBy: Get.find<MainCoreEmployeeController>().employeeEntity!.email!,
+        createdBy:
+            Get.find<MainCoreEmployeeController>().employeeEntity!.email!,
         roleImage: roleImage?.path,
         modulePermissions: modulePermissions,
         status: RoleStatus.draft,
@@ -964,7 +987,8 @@ class RoleCubit extends Cubit<RoleState> {
         emit(RoleDraftSaved());
       } else {
         //print("❌ Error creating draft: ${result.fold((l) => l.errMessage, (r) => 'Unknown error')}\n");
-        emit(RoleError(result.fold((l) => l.errMessage, (r) => 'Unknown error')));
+        emit(RoleError(
+            result.fold((l) => l.errMessage, (r) => 'Unknown error')));
       }
     }
   }
@@ -990,7 +1014,8 @@ class RoleCubit extends Cubit<RoleState> {
     }
 
     if (section is ModulePermissionsSectionsPermission) {
-      String sectionKey = _convertToDbFormat((section as ModulePermissionsSectionsPermission).getDataBaseName);
+      String sectionKey = _convertToDbFormat(
+          (section as ModulePermissionsSectionsPermission).getDataBaseName);
       return modulePermissions[moduleName]?[sectionKey] ?? false;
     }
 
@@ -1006,16 +1031,18 @@ class RoleCubit extends Cubit<RoleState> {
     bool newState = !currentState;
 
     if (!modulePermissions.containsKey(moduleName)) {
-      modulePermissions[moduleName] = await _getDefaultPermissionsForModule(moduleName);
+      modulePermissions[moduleName] =
+          await _getDefaultPermissionsForModule(moduleName);
     }
 
     if (section is ModulePermissionsSectionsPermission) {
-      String sectionKey = _convertToDbFormat((section as ModulePermissionsSectionsPermission).getDataBaseName);
+      String sectionKey = _convertToDbFormat(
+          (section as ModulePermissionsSectionsPermission).getDataBaseName);
 
-      if (newState == true && !isPermissionAllowedByAdmin(moduleName, sectionKey)) {
+      if (newState == true &&
+          !isPermissionAllowedByAdmin(moduleName, sectionKey)) {
         emit(RoleError(
-            "Cannot enable this section: It is restricted by the administrator."
-        ));
+            "Cannot enable this section: It is restricted by the administrator."));
         return;
       }
 
@@ -1023,9 +1050,11 @@ class RoleCubit extends Cubit<RoleState> {
     }
 
     for (var permission in section.sectionPermissions) {
-      String permissionKey = _convertToDbFormat((permission as ModulePermissionsSectionsPermission).getDataBaseName);
+      String permissionKey = _convertToDbFormat(
+          (permission as ModulePermissionsSectionsPermission).getDataBaseName);
 
-      if (newState == true && !isPermissionAllowedByAdmin(moduleName, permissionKey)) {
+      if (newState == true &&
+          !isPermissionAllowedByAdmin(moduleName, permissionKey)) {
         continue;
       }
 
@@ -1036,10 +1065,10 @@ class RoleCubit extends Cubit<RoleState> {
   }
 
   bool isSwitchActive(
-      Modules module,
-      ModulePermissionsSections section,
-      ModulePermissionsSectionsPermission permission,
-      ) {
+    Modules module,
+    ModulePermissionsSections section,
+    ModulePermissionsSectionsPermission permission,
+  ) {
     String moduleName = moduleEnumToString(module);
     String permissionKey = _convertToDbFormat(permission.getDataBaseName);
 
@@ -1055,16 +1084,17 @@ class RoleCubit extends Cubit<RoleState> {
     String permissionKey = _convertToDbFormat(permission.getDataBaseName);
 
     if (!modulePermissions.containsKey(moduleName)) {
-      modulePermissions[moduleName] = await _getDefaultPermissionsForModule(moduleName);
+      modulePermissions[moduleName] =
+          await _getDefaultPermissionsForModule(moduleName);
     }
 
     bool currentValue = modulePermissions[moduleName]![permissionKey] ?? false;
     bool newValue = !currentValue;
 
-    if (newValue == true && !isPermissionAllowedByAdmin(moduleName, permissionKey)) {
+    if (newValue == true &&
+        !isPermissionAllowedByAdmin(moduleName, permissionKey)) {
       emit(RoleError(
-          "Cannot enable '${permission.getDataBaseName}': This permission is restricted by the administrator."
-      ));
+          "Cannot enable '${permission.getDataBaseName}': This permission is restricted by the administrator."));
       return;
     }
 
@@ -1091,7 +1121,8 @@ class RoleCubit extends Cubit<RoleState> {
 
     Either<Failure, dynamic> result = await roleRepository.updateRole(
       role: updatedRole,
-      currentUserEmail: Get.find<MainCoreEmployeeController>().employeeEntity!.email!,
+      currentUserEmail:
+          Get.find<MainCoreEmployeeController>().employeeEntity!.email!,
       roleDescription: roleDescriptionController.text,
       roleDescriptionAr: roleDescriptionControllerAr.text,
       roleNameAr: roleNameControllerAr.text,
@@ -1123,11 +1154,14 @@ class RoleCubit extends Cubit<RoleState> {
         'timestamp': DateTime.fromMillisecondsSinceEpoch(role.timestamps[i]),
         'roleName': i < role.roleName.length ? role.roleName[i] : '',
         'roleNameAr': i < role.roleNameAr.length ? role.roleNameAr[i] : '',
-        'roleDescription': i < role.roleDescription.length ? role.roleDescription[i] : '',
-        'roleDescriptionAr': i < role.roleDescriptionAr.length ? role.roleDescriptionAr[i] : '',
+        'roleDescription':
+            i < role.roleDescription.length ? role.roleDescription[i] : '',
+        'roleDescriptionAr':
+            i < role.roleDescriptionAr.length ? role.roleDescriptionAr[i] : '',
         'status': i < role.status.length ? role.status[i] : '',
         'roleImage': i < role.roleImage.length ? role.roleImage[i] : '',
-        'selectedModules': i < role.selectedModules.length ? role.selectedModules[i] : [],
+        'selectedModules':
+            i < role.selectedModules.length ? role.selectedModules[i] : [],
       };
       history.add(historyEntry);
     }
@@ -1140,17 +1174,22 @@ class RoleCubit extends Cubit<RoleState> {
     List<Map<String, dynamic>> changes = [];
 
     for (int i = 0; i < role.timestamps.length; i++) {
-      DateTime changeDate = DateTime.fromMillisecondsSinceEpoch(role.timestamps[i]);
+      DateTime changeDate =
+          DateTime.fromMillisecondsSinceEpoch(role.timestamps[i]);
       if (changeDate.isAfter(startDate) && changeDate.isBefore(endDate)) {
         Map<String, dynamic> change = {
           'timestamp': changeDate,
           'roleName': i < role.roleName.length ? role.roleName[i] : '',
           'roleNameAr': i < role.roleNameAr.length ? role.roleNameAr[i] : '',
-          'roleDescription': i < role.roleDescription.length ? role.roleDescription[i] : '',
-          'roleDescriptionAr': i < role.roleDescriptionAr.length ? role.roleDescriptionAr[i] : '',
+          'roleDescription':
+              i < role.roleDescription.length ? role.roleDescription[i] : '',
+          'roleDescriptionAr': i < role.roleDescriptionAr.length
+              ? role.roleDescriptionAr[i]
+              : '',
           'status': i < role.status.length ? role.status[i] : '',
           'roleImage': i < role.roleImage.length ? role.roleImage[i] : '',
-          'selectedModules': i < role.selectedModules.length ? role.selectedModules[i] : [],
+          'selectedModules':
+              i < role.selectedModules.length ? role.selectedModules[i] : [],
         };
         changes.add(change);
       }
@@ -1174,7 +1213,8 @@ class RoleCubit extends Cubit<RoleState> {
   void addModule(String moduleName) async {
     if (!selectedModules.contains(moduleName)) {
       selectedModules.add(moduleName);
-      modulePermissions[moduleName] = await _getDefaultPermissionsForModule(moduleName);
+      modulePermissions[moduleName] =
+          await _getDefaultPermissionsForModule(moduleName);
       emit(RoleModuleSelected());
     }
   }
@@ -1190,7 +1230,8 @@ class RoleCubit extends Cubit<RoleState> {
     emit(RoleModuleSelected());
   }
 
-  void updateModulePermissions(String moduleName, Map<String, bool> permissions) {
+  void updateModulePermissions(
+      String moduleName, Map<String, bool> permissions) {
     if (modulePermissions.containsKey(moduleName)) {
       modulePermissions[moduleName]!.addAll(permissions);
       emit(RolePermissionUpdated());
@@ -1201,15 +1242,18 @@ class RoleCubit extends Cubit<RoleState> {
     if (selectedRole == null) return;
 
     String roleId = selectedRole!.currentRoleName;
-    Either<FirebaseFailure, Map<String, dynamic>?> result =
-    await roleRepository.getRolePermissions(roleId: roleId, module: moduleName);
+    Either<FirebaseFailure, Map<String, dynamic>?> result = await roleRepository
+        .getRolePermissions(roleId: roleId, module: moduleName);
 
     if (result.isRight()) {
       Map<String, dynamic>? permissions = result.getOrElse(() => null);
       if (permissions != null) {
         modulePermissions[moduleName] = {};
         permissions.forEach((key, value) {
-          if (key != 'Role_Id' && key != 'timestamps' && value is List && value.isNotEmpty) {
+          if (key != 'Role_Id' &&
+              key != 'timestamps' &&
+              value is List &&
+              value.isNotEmpty) {
             modulePermissions[moduleName]![key] = value.last == true;
           }
         });
@@ -1219,10 +1263,12 @@ class RoleCubit extends Cubit<RoleState> {
   }
 
   Future<void> saveModulePermissions(String moduleName) async {
-    if (selectedRole == null || !modulePermissions.containsKey(moduleName)) return;
+    if (selectedRole == null || !modulePermissions.containsKey(moduleName))
+      return;
 
     String roleId = selectedRole!.currentRoleName;
-    Either<FirebaseFailure, String> result = await roleRepository.updateModulePermissions(
+    Either<FirebaseFailure, String> result =
+        await roleRepository.updateModulePermissions(
       roleId: roleId,
       module: moduleName,
       permissions: modulePermissions[moduleName]!,
@@ -1248,7 +1294,9 @@ class RoleCubit extends Cubit<RoleState> {
   }
 
   List<String> getAvailableModules() {
-    return availableModules.where((module) => !selectedModules.contains(module)).toList();
+    return availableModules
+        .where((module) => !selectedModules.contains(module))
+        .toList();
   }
 
   List<String> getDemoActiveModules() {
@@ -1297,8 +1345,10 @@ class RoleCubit extends Cubit<RoleState> {
   Map<String, dynamic> getRoleStatistics() {
     return {
       'totalRoles': roles.length,
-      'activeRoles': roles.where((r) => r.currentStatus == RoleStatus.active).length,
-      'draftRoles': roles.where((r) => r.currentStatus == RoleStatus.draft).length,
+      'activeRoles':
+          roles.where((r) => r.currentStatus == RoleStatus.active).length,
+      'draftRoles':
+          roles.where((r) => r.currentStatus == RoleStatus.draft).length,
       'selectedModulesCount': selectedModules.length,
       'totalPermissionsCount': modulePermissions.values
           .map((perms) => perms.length)
@@ -1307,8 +1357,10 @@ class RoleCubit extends Cubit<RoleState> {
   }
 
   @Deprecated('Use new architecture methods instead')
-  Map<Modules, Map<ModulePermissionsSections, Set<ModulePermissionsSectionsPermission>>>
-  activeSwitches = {};
+  Map<
+      Modules,
+      Map<ModulePermissionsSections,
+          Set<ModulePermissionsSectionsPermission>>> activeSwitches = {};
 
   @Deprecated('Use new architecture methods instead')
   Set<Modules> adminAccessModules = {};

@@ -16,7 +16,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/grc/grc_module/grc_owner/presentation/ui/create_policy.dart';
-// REMOVED_MODULE: import 'package:demo_app/features/external/inventory_module/core/text_field.dart';
+// REMOVED_MODULE: import 'package:demo_app/core/helper/inventory_module/core/text_field.dart';
 // REMOVED_MODULE: import 'package:demo_app/features/external/services_mangment_module/core/new_theme.dart';
 import 'package:lottie/lottie.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -371,7 +371,7 @@ class _PreviewHealthInsuranceChangesPageState extends State<PreviewHealthInsuran
                 Row(
                   children: [
                     CustomSvg(
-                      assetPath: 'assets/Insurance Details.svg',
+                      assetPath: 'assets/icons_assets/main_icons_assets/Insurance Details.svg',
                       width: 25.w,
                       height: 25.h,
                       fit: BoxFit.fill,
@@ -436,7 +436,7 @@ class _PreviewHealthInsuranceChangesPageState extends State<PreviewHealthInsuran
                 Row(
                   children: [
                     CustomSvg(
-                      assetPath: 'assets/Emergency Contact.svg',
+                      assetPath: 'assets/icons_assets/main_icons_assets/Emergency Contact.svg',
                       width: 25.w,
                       height: 25.h,
                       fit: BoxFit.fill,
@@ -602,7 +602,7 @@ class _PreviewHealthInsuranceChangesPageState extends State<PreviewHealthInsuran
                 Row(
                   children: [
                     CustomSvg(
-                      assetPath: 'assets/Emergency Contact.svg',
+                      assetPath: 'assets/icons_assets/main_icons_assets/Emergency Contact.svg',
                       width: 25.w,
                       height: 25.h,
                       fit: BoxFit.fill,

@@ -62,7 +62,7 @@ class MorePage extends StatelessWidget {
                           return CustomLogOutDialogBox(
                             title: "Sign Out",
                             subtitle: "Are You Sure You Want To Sign Out?",
-                            imagePath: "assets/images/newLogOut.json",
+                            imagePath: "assets/lottie_assets/home_lottie_assets/newLogOut.json",
                             backgroundColor: AppColors.signOut,
                             showButtons: true,
                             buttonText: 'Yes',
@@ -94,7 +94,7 @@ class MorePage extends StatelessWidget {
                               borderRadius: BorderRadius.circular(8.r)),
                           padding: EdgeInsets.symmetric(
                               horizontal: 10.w, vertical: 10.h),
-                          child: SvgPicture.asset("assets/logout_new.svg",
+                          child: SvgPicture.asset("assets/icons_assets/home_assets/logout_new.svg",
                               color: AppColors.primary),
                         ),
                         SizedBox(width: 16.h),

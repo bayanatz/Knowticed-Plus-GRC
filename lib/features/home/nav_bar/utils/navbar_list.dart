@@ -3,7 +3,7 @@
 // import 'package:flutter_svg/svg.dart';
 // import 'package:get/get.dart';
 // import 'package:demo_app/features/settings/mode_changer.dart';
-// import 'package:demo_app/core/helper/date_time_in_arabic.dart';
+// import 'package:demo_app/core/helper/main_helper/date_time_in_arabic.dart';
 // import 'package:demo_app/core/theme/app_colors.dart';
 //
 //
@@ -57,10 +57,10 @@
 // //   employeeNavBarItems = [
 // //     PersistentBottomNavBarItem(
 // //         icon: SvgPicture.asset(
-// //           'assets/icons/newHomeIconFinal.svg',
+// //           'assets/icons_assets/home_assets/newHomeIconFinal.svg',
 // //         ),
 // //         inactiveIcon: SvgPicture.asset(
-// //           'assets/icons/newHomeIconFinal.svg',
+// //           'assets/icons_assets/home_assets/newHomeIconFinal.svg',
 // //           color: themeController.currentTheme == AppColors.lightTheme
 // //               ? AppColors.colorGreyDark
 // //               : AppColors.colorWhite,
@@ -74,10 +74,10 @@
 // //     if (view == 'employee')
 // //       PersistentBottomNavBarItem(
 // //           icon: SvgPicture.asset(
-// //             'assets/icons/clipboardList.svg',
+// //             'assets/icons_assets/home_assets/clipboardList.svg',
 // //           ),
 // //           inactiveIcon: SvgPicture.asset(
-// //             'assets/icons/clipboardList.svg',
+// //             'assets/icons_assets/home_assets/clipboardList.svg',
 // //             color: themeController.currentTheme == AppColors.lightTheme
 // //                 ? AppColors.colorGreyDark
 // //                 : AppColors.colorWhite,
@@ -91,10 +91,10 @@
 // //     if (view == 'owner')
 // //       PersistentBottomNavBarItem(
 // //           icon: SvgPicture.asset(
-// //             'assets/icons/NewRoleIconMobile.svg',
+// //             'assets/icons_assets/home_assets/NewRoleIconMobile.svg',
 // //           ),
 // //           inactiveIcon: SvgPicture.asset(
-// //             'assets/icons/NewRoleIconMobile.svg',
+// //             'assets/icons_assets/home_assets/NewRoleIconMobile.svg',
 // //             color: themeController.currentTheme == AppColors.lightTheme
 // //                 ? AppColors.colorGreyDark
 // //                 : AppColors.colorWhite,
@@ -120,10 +120,10 @@
 // //       PersistentBottomNavBarItem(
 // //           activeColorSecondary: AppColors.primary,
 // //           icon: SvgPicture.asset(
-// //             'assets/icons/Case.svg',
+// //             'assets/icons_assets/main_icons_assets/Case.svg',
 // //           ),
 // //           inactiveIcon: SvgPicture.asset(
-// //             'assets/icons/Case.svg',
+// //             'assets/icons_assets/main_icons_assets/Case.svg',
 // //             color: themeController.currentTheme == AppColors.lightTheme
 // //                 ? AppColors.colorGreyDark
 // //                 : AppColors.colorWhite,
@@ -143,10 +143,10 @@
 // //     employeeNavBarItems.add(
 // //       PersistentBottomNavBarItem(
 // //           icon: SvgPicture.asset(
-// //             "assets/icons/DocumentAdd.svg",
+// //             "assets/icons_assets/main_icons_assets/DocumentAdd.svg",
 // //           ),
 // //           inactiveIcon: SvgPicture.asset(
-// //             "assets/icons/message_without_notif.svg",
+// //             "assets/icons_assets/main_icons_assets/message_without_notif.svg",
 // //             color: themeController.currentTheme == AppColors.lightTheme
 // //                 ? AppColors.colorGreyDark
 // //                 : AppColors.colorWhite,
@@ -166,10 +166,10 @@
 // //     employeeNavBarItems.add(
 // //       PersistentBottomNavBarItem(
 // //           icon: SvgPicture.asset(
-// //             'assets/icons/boredIcon.svg',
+// //             'assets/icons_assets/home_assets/boredIcon.svg',
 // //           ),
 // //           inactiveIcon: SvgPicture.asset(
-// //             'assets/icons/boredIcon.svg',
+// //             'assets/icons_assets/home_assets/boredIcon.svg',
 // //             color: themeController.currentTheme == AppColors.lightTheme
 // //                 ? AppColors.colorGreyDark
 // //                 : AppColors.colorWhite,
@@ -189,10 +189,10 @@
 // //     employeeNavBarItems.add(
 // //       PersistentBottomNavBarItem(
 // //           icon: SvgPicture.asset(
-// //             'assets/icons/service.svg',
+// //             'assets/icons_assets/home_assets/service.svg',
 // //           ),
 // //           inactiveIcon: SvgPicture.asset(
-// //             'assets/icons/service.svg',
+// //             'assets/icons_assets/home_assets/service.svg',
 // //             color: themeController.currentTheme == AppColors.lightTheme
 // //                   ? AppColors.colorGreyDark
 // //                 : AppColors.colorWhite,
@@ -212,10 +212,10 @@
 // //     employeeNavBarItems.add(
 // //       PersistentBottomNavBarItem(
 // //           icon: SvgPicture.asset(
-// //             'assets/icons/request.svg',
+// //             'assets/icons_assets/home_assets/request.svg',
 // //           ),
 // //           inactiveIcon: SvgPicture.asset(
-// //             'assets/icons/request.svg',
+// //             'assets/icons_assets/home_assets/request.svg',
 // //             color: themeController.currentTheme == AppColors.lightTheme
 // //                 ? AppColors.colorGreyDark
 // //                 : AppColors.colorWhite,
@@ -304,10 +304,10 @@
 // //     employeeNavBarItems.add(
 // //       PersistentBottomNavBarItem(
 // //           icon: SvgPicture.asset(
-// //             'assets/icons/database.svg',
+// //             'assets/icons_assets/home_assets/database.svg',
 // //           ),
 // //           inactiveIcon: SvgPicture.asset(
-// //             'assets/icons/database.svg',
+// //             'assets/icons_assets/home_assets/database.svg',
 // //             color: themeController.currentTheme == AppColors.lightTheme
 // //                 ? AppColors.colorGreyDark
 // //                 : AppColors.colorWhite,
@@ -419,10 +419,10 @@
 // //     employeeNavBarItems.add(
 // //       PersistentBottomNavBarItem(
 // //           icon: SvgPicture.asset(
-// //             'assets/icons/clipboardList.svg',
+// //             'assets/icons_assets/home_assets/clipboardList.svg',
 // //           ),
 // //           inactiveIcon: SvgPicture.asset(
-// //             'assets/icons/clipboardList.svg',
+// //             'assets/icons_assets/home_assets/clipboardList.svg',
 // //             color: themeController.currentTheme == AppColors.lightTheme
 // //                 ? AppColors.colorGreyDark
 // //                 : AppColors.colorWhite,
@@ -446,14 +446,14 @@
 // //     employeeNavBarItems.add(
 // //       PersistentBottomNavBarItem(
 // //           icon: SvgPicture.asset(
-// //             "assets/icons/bellIcon.svg",
+// //             "assets/icons_assets/main_icons_assets/bellIcon.svg",
 // //           ),
 // //           inactiveIcon: StreamBuilder<QuerySnapshot>(
 // //             stream: appNotificationController.getUnseenNotificationsStream(),
 // //             builder: (context, snapshot) {
 // //               if (snapshot.connectionState == ConnectionState.waiting) {
 // //                 return SvgPicture.asset(
-// //                   "assets/icons/bellIcon.svg",
+// //                   "assets/icons_assets/main_icons_assets/bellIcon.svg",
 // //                   color: themeController.currentTheme == AppColors.lightTheme
 // //                       ? AppColors.colorGreyDark
 // //                       : AppColors.colorGreydark,
@@ -461,7 +461,7 @@
 // //               } else if (snapshot.hasError ||
 // //                   snapshot.data?.docs.isEmpty == true) {
 // //                 return SvgPicture.asset(
-// //                   "assets/icons/bellIcon.svg",
+// //                   "assets/icons_assets/main_icons_assets/bellIcon.svg",
 // //                   color: themeController.currentTheme == AppColors.lightTheme
 // //                       ? AppColors.colorGreyDark
 // //                       : AppColors.colorGreydark,
@@ -483,7 +483,7 @@
 // //                     color: Theme.of(context).colorScheme.inverseSurface,
 // //                   ),
 // //                   child: SvgPicture.asset(
-// //                     "assets/icons/bellIcon.svg",
+// //                     "assets/icons_assets/main_icons_assets/bellIcon.svg",
 // //                     color:
 // //                     themeController.currentTheme == AppColors.lightTheme
 // //                         ? AppColors.colorGreyDark
@@ -512,10 +512,10 @@
 // //     employeeNavBarItems.add(
 // //       PersistentBottomNavBarItem(
 // //           icon: SvgPicture.asset(
-// //             "assets/icons/SettingHome.svg",
+// //             "assets/icons_assets/main_icons_assets/SettingHome.svg",
 // //           ),
 // //           inactiveIcon: SvgPicture.asset(
-// //             "assets/icons/SettingHome.svg",
+// //             "assets/icons_assets/main_icons_assets/SettingHome.svg",
 // //             color: themeController.currentTheme == AppColors.lightTheme
 // //                 ? AppColors.colorGreyDark
 // //                 : AppColors.colorWhite,
@@ -539,10 +539,10 @@
 // //       PersistentBottomNavBarItem(
 // //           activeColorSecondary: AppColors.primary,
 // //           icon: SvgPicture.asset(
-// //             'assets/icons/Case.svg',
+// //             'assets/icons_assets/main_icons_assets/Case.svg',
 // //           ),
 // //           inactiveIcon: SvgPicture.asset(
-// //             'assets/icons/Case.svg',
+// //             'assets/icons_assets/main_icons_assets/Case.svg',
 // //             color: themeController.currentTheme == AppColors.lightTheme
 // //                 ? AppColors.colorGreyDark
 // //                 : AppColors.colorWhite,

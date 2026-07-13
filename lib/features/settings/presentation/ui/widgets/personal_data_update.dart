@@ -402,7 +402,7 @@ class _PersonalDataUpdateState extends State<PersonalDataUpdate> {
                             : 0.038.w),
                       ),
                       child: SvgPicture.asset(
-                        'assets/icons/newCalenderFixed.svg',
+                        'assets/icons_assets/main_icons_assets/newCalenderFixed.svg',
                         color: birthDate2?.isEmpty ??
                                 true  
                             ? null
