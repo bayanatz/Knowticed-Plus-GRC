@@ -29,6 +29,7 @@ import 'package:demo_app/features/grc/presentation/ui/widgets/grc_details_widget
 import 'package:demo_app/features/grc/presentation/ui/widgets/grc_policy_widget/policy_control_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 
 import 'policy_document_preview_widget.dart';
 
@@ -252,10 +253,10 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
             Row(children: [
               Expanded(
                 child: _textField(
-                  label: 'Control Number',
+                  label: 'Control Number'.tr,
                   hint: 'Text here',
                   controller: control.numberController,
-                  englishOnlyError: 'Control Number must be written in English',
+                  englishOnlyError: 'Control Number must be written in English'.tr,
                 ),
               ),
               SizedBox(width: 10.w),
@@ -271,10 +272,10 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
             ])
           else ...[
             _textField(
-              label: 'Control Number',
+              label: 'Control Number'.tr,
               hint: 'Text here',
               controller: control.numberController,
-              englishOnlyError: 'Control Number must be written in English',
+              englishOnlyError: 'Control Number must be written in English'.tr,
             ),
             if (isArabicEnabled) ...[
               SizedBox(height: 15.h),
