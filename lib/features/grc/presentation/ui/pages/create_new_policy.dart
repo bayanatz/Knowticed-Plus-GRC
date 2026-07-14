@@ -29,6 +29,7 @@ import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart' hide showUp
 import 'package:demo_app/core/custom/loading.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
+import 'package:demo_app/features/grc/domain/entities/control_status.dart';
 import 'package:demo_app/features/grc/domain/repository/policy_repository.dart';
 import 'package:demo_app/features/grc/domain/use_cases/create_control_usecase.dart';
 import 'package:demo_app/features/grc/presentation/controller/policy_cubit.dart';
@@ -224,6 +225,30 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
   ///            [PolicyCubit] cubit: the cubit instance from the BlocProvider
   ///
   /// return type: void
+  List<PendingControlInput> _buildPendingControls(ControlStatus status) {
+    return _controls
+        .where((c) => c.nameController.text.trim().isNotEmpty)
+        .map((c) => PendingControlInput(
+              controlsNameEn: c.nameController.text.trim(),
+              controlsNameAr: c.nameArController.text.trim(),
+              controlsNumberEn: c.numberController.text.trim(),
+              controlsNumberAr: c.numberArController.text.trim(),
+              controlsDescriptionEn: c.descriptionController.text.trim(),
+              controlsDescriptionAr: c.descriptionArController.text.trim(),
+              controlsWeight: double.tryParse(c.weightController.text.trim()) ?? 0,
+              frequency: c.frequency ?? '',
+              startDate: c.startDate ?? _startDate ?? DateTime.now(),
+              endDate: c.endDate ?? _endDate ?? DateTime.now(),
+              departments: const [],
+              equalWeights: false,
+              score: 0,
+              status: status,
+              controlsDocumentFileEn: c.documentEn?.file,
+              controlsDocumentFileAr: c.documentAr?.file,
+            ))
+        .toList();
+  }
+
   void _onSaveForLater(PolicyCubit cubit) {
     cubit.saveAsDraft(
       policyNameEn: _nameController.text.trim(),
@@ -236,6 +261,10 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
       endDate: _endDate ?? DateTime.now(),
       policyWeight: double.tryParse(_weightController.text.trim()) ?? 0,
       moduleId: widget.moduleId,
+      controls: _buildPendingControls(ControlStatus.draft),
+      imageFile: _imageFile,
+      policyDocumentFileEn: _documentEn?.file,
+      policyDocumentFileAr: _documentAr?.file,
     );
   }
 
@@ -269,6 +298,10 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
       endDate: _endDate ?? DateTime.now(),
       policyWeight: double.tryParse(_weightController.text.trim()) ?? 0,
       moduleId: widget.moduleId,
+      controls: _buildPendingControls(ControlStatus.active),
+      imageFile: _imageFile,
+      policyDocumentFileEn: _documentEn?.file,
+      policyDocumentFileAr: _documentAr?.file,
     );
   }
 
