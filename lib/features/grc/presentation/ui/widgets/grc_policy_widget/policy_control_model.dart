@@ -29,6 +29,8 @@ class PolicyControlModel {
   final TextEditingController weightController;
 
   String? frequency;
+  DateTime? startDate;
+  DateTime? endDate;
   PolicyDocumentInfo? documentEn;
   PolicyDocumentInfo? documentAr;
 
@@ -41,6 +43,8 @@ class PolicyControlModel {
     TextEditingController? descriptionArController,
     TextEditingController? weightController,
     this.frequency,
+    this.startDate,
+    this.endDate,
     this.documentEn,
     this.documentAr,
   })  : nameController = nameController ?? TextEditingController(),

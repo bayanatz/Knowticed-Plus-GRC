@@ -37,11 +37,15 @@ import 'package:get/get_utils/src/extensions/internacionalization.dart';
 class AddPolicyControlsPage extends StatefulWidget {
   final bool isArabicEnabled;
   final List<PolicyControlModel> controls;
+  final DateTime? policyStartDate;
+  final DateTime? policyEndDate;
 
   const AddPolicyControlsPage({
     super.key,
     required this.isArabicEnabled,
     required this.controls,
+    required this.policyStartDate,
+    required this.policyEndDate,
   });
 
   @override
@@ -60,6 +64,20 @@ class _AddPolicyControlsPageState extends State<AddPolicyControlsPage> {
       _controls[index].dispose();
       _controls.removeAt(index);
     });
+  }
+
+  void _onControlStartDateChanged(int index, DateTime? date) {
+    setState(() {
+      _controls[index].startDate = date;
+      final end = _controls[index].endDate;
+      if (end != null && date != null && end.isBefore(date)) {
+        _controls[index].endDate = null;
+      }
+    });
+  }
+
+  void _onControlEndDateChanged(int index, DateTime? date) {
+    setState(() => _controls[index].endDate = date);
   }
 
   void _onUploadDocumentEn(int index) {
@@ -133,6 +151,12 @@ class _AddPolicyControlsPageState extends State<AddPolicyControlsPage> {
                           setState(() => _controls[i].documentAr = null),
                       onFrequencyChanged: (value) =>
                           setState(() => _controls[i].frequency = value),
+                      policyStartDate: widget.policyStartDate,
+                      policyEndDate: widget.policyEndDate,
+                      onStartDateChanged: (date) =>
+                          _onControlStartDateChanged(i, date),
+                      onEndDateChanged: (date) =>
+                          _onControlEndDateChanged(i, date),
                     ),
                   Align(
                     alignment: Alignment.centerLeft,

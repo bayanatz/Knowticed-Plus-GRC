@@ -419,6 +419,8 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
     return AddPolicyControlsPage(
       isArabicEnabled: _isArabicEnabled,
       controls: _controls,
+      policyStartDate: _startDate,
+      policyEndDate: _endDate,
     );
   }
 
