@@ -5,12 +5,16 @@
 /// Dependencies: Flutter SDK, AppColors, AppTheme, PolicyControlModel, PolicyDocumentPreviewWidget
 /// Revision History: 2026-07-01 - Initial creation
 ///                   2026-07-14 - Split Control Document into English/Arabic
+///                   2026-07-14 - Converted to StatefulWidget; added Control
+///                                Number field and English/Arabic
+///                                language-mismatch validation
 library;
 
 /// ************************* FILE INFO *************************** ///
 /// File Name: policy_control_item_widget.dart
 /// Purpose: Contains PolicyControlItemWidget, a card widget that renders
-///          all fields for a single policy control entry.
+///          all fields for a single policy control entry. Validates that EN
+///          fields contain no Arabic letters and vice versa.
 /// Author: Mohamed Magdy Abdelkhalek
 /// Created At: 1/7/2026
 
@@ -20,22 +24,15 @@ import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
+import 'package:demo_app/features/grc/presentation/ui/widgets/grc_details_widget/grc_form_fields.dart'
+    show containsEnglishLetters, containsArabicLetters;
 import 'package:demo_app/features/grc/presentation/ui/widgets/grc_policy_widget/policy_control_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'policy_document_preview_widget.dart';
 
-/// class name: [PolicyControlItemWidget]
-///
-/// purpose: stateless card that renders all input fields for one
-///          PolicyControlModel. The parent list widget owns the state and
-///          passes callbacks for document upload, removal, and frequency change.
-///
-/// authors: Mohamed Magdy Abdelkhalek
-///
-/// created at: 1/7/2026
-class PolicyControlItemWidget extends StatelessWidget {
+class PolicyControlItemWidget extends StatefulWidget {
   final PolicyControlModel control;
   final bool isArabicEnabled;
   final bool showRemoveButton;
@@ -59,6 +56,39 @@ class PolicyControlItemWidget extends StatelessWidget {
     this.onRemove,
   });
 
+  @override
+  State<PolicyControlItemWidget> createState() =>
+      _PolicyControlItemWidgetState();
+}
+
+class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
+  List<TextEditingController> get _bilingualControllers => [
+        widget.control.nameController,
+        widget.control.nameArController,
+        widget.control.numberController,
+        widget.control.numberArController,
+        widget.control.descriptionController,
+        widget.control.descriptionArController,
+      ];
+
+  @override
+  void initState() {
+    super.initState();
+    for (final c in _bilingualControllers) {
+      c.addListener(_onTextChanged);
+    }
+  }
+
+  @override
+  void dispose() {
+    for (final c in _bilingualControllers) {
+      c.removeListener(_onTextChanged);
+    }
+    super.dispose();
+  }
+
+  void _onTextChanged() => setState(() {});
+
   TextStyle get _labelStyle =>
       AppTextStyles.font16BlackRegularCairo.copyWith(fontSize: 14.sp);
   TextStyle get _valueStyle =>
@@ -75,12 +105,19 @@ class PolicyControlItemWidget extends StatelessWidget {
     int? minLines,
     int? maxLength,
     bool showCharCount = false,
+    String? englishOnlyError,
+    String? arabicOnlyError,
   }) {
+    final languageError = rtl
+        ? (containsEnglishLetters(controller.text) ? arabicOnlyError : null)
+        : (containsArabicLetters(controller.text) ? englishOnlyError : null);
+
     final field = CustomTextField(
       label: label,
       hint: hint,
       controller: controller,
       required: true,
+      errorText: languageError,
       maxLines: maxLines,
       minLines: minLines,
       maxLength: maxLength,
@@ -118,6 +155,8 @@ class PolicyControlItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final control = widget.control;
+    final isArabicEnabled = widget.isArabicEnabled;
     final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
 
     final frequencyField = CustomDropdown<String>(
@@ -132,7 +171,7 @@ class PolicyControlItemWidget extends StatelessWidget {
         'Annually',
       ].map((d) => DropdownItem<String>(value: d, label: d)).toList(),
       value: control.frequency,
-      onChanged: onFrequencyChanged,
+      onChanged: widget.onFrequencyChanged,
       fillColor: AppColors.background,
       labelStyle: StyleText.fontSize16Weight500.copyWith(color: AppColors.text),
       hintStyle: StyleText.fontSize14Weight500
@@ -160,11 +199,11 @@ class PolicyControlItemWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (showRemoveButton)
+          if (widget.showRemoveButton)
             Align(
               alignment: Alignment.centerRight,
               child: InkWell(
-                onTap: onRemove,
+                onTap: widget.onRemove,
                 child: Icon(Icons.close,
                     color: AppColors.secondaryText, size: 18.sp),
               ),
@@ -173,31 +212,79 @@ class PolicyControlItemWidget extends StatelessWidget {
             Row(children: [
               Expanded(
                 child: _textField(
-                    label: 'Control Name',
-                    hint: 'Text here',
-                    controller: control.nameController),
+                  label: 'Control Name',
+                  hint: 'Text here',
+                  controller: control.nameController,
+                  englishOnlyError: 'Control Name must be written in English',
+                ),
               ),
               SizedBox(width: 10.w),
               Expanded(
                 child: _textField(
-                    label: 'اسم ضابط',
-                    hint: 'اكتب هنا',
-                    controller: control.nameArController,
-                    rtl: true),
+                  label: 'اسم ضابط',
+                  hint: 'اكتب هنا',
+                  controller: control.nameArController,
+                  rtl: true,
+                  arabicOnlyError: 'يجب كتابة اسم ضابط باللغة العربية',
+                ),
               ),
             ])
           else ...[
             _textField(
-                label: 'Control Name',
-                hint: 'Text here',
-                controller: control.nameController),
+              label: 'Control Name',
+              hint: 'Text here',
+              controller: control.nameController,
+              englishOnlyError: 'Control Name must be written in English',
+            ),
             if (isArabicEnabled) ...[
               SizedBox(height: 15.h),
               _textField(
-                  label: 'اسم ضابط',
+                label: 'اسم ضابط',
+                hint: 'اكتب هنا',
+                controller: control.nameArController,
+                rtl: true,
+                arabicOnlyError: 'يجب كتابة اسم ضابط باللغة العربية',
+              ),
+            ],
+          ],
+          SizedBox(height: 15.h),
+          if (isArabicEnabled && isTablet)
+            Row(children: [
+              Expanded(
+                child: _textField(
+                  label: 'Control Number',
+                  hint: 'Text here',
+                  controller: control.numberController,
+                  englishOnlyError: 'Control Number must be written in English',
+                ),
+              ),
+              SizedBox(width: 10.w),
+              Expanded(
+                child: _textField(
+                  label: 'رقم ضابط',
                   hint: 'اكتب هنا',
-                  controller: control.nameArController,
-                  rtl: true),
+                  controller: control.numberArController,
+                  rtl: true,
+                  arabicOnlyError: 'يجب كتابة رقم ضابط باللغة العربية',
+                ),
+              ),
+            ])
+          else ...[
+            _textField(
+              label: 'Control Number',
+              hint: 'Text here',
+              controller: control.numberController,
+              englishOnlyError: 'Control Number must be written in English',
+            ),
+            if (isArabicEnabled) ...[
+              SizedBox(height: 15.h),
+              _textField(
+                label: 'رقم ضابط',
+                hint: 'اكتب هنا',
+                controller: control.numberArController,
+                rtl: true,
+                arabicOnlyError: 'يجب كتابة رقم ضابط باللغة العربية',
+              ),
             ],
           ],
           SizedBox(height: 15.h),
@@ -209,6 +296,7 @@ class PolicyControlItemWidget extends StatelessWidget {
             minLines: 3,
             maxLength: 500,
             showCharCount: true,
+            englishOnlyError: 'Control Description must be written in English',
           ),
           SizedBox(height: 15.h),
           if (isArabicEnabled) ...[
@@ -221,6 +309,7 @@ class PolicyControlItemWidget extends StatelessWidget {
               minLines: 3,
               maxLength: 500,
               showCharCount: true,
+              arabicOnlyError: 'يجب كتابة وصف ضابط باللغة العربية',
             ),
             SizedBox(height: 15.h),
           ],
@@ -238,10 +327,10 @@ class PolicyControlItemWidget extends StatelessWidget {
                     control.documentEn != null
                         ? PolicyDocumentPreviewWidget(
                             document: control.documentEn!,
-                            onRemove: onRemoveDocumentEn,
+                            onRemove: widget.onRemoveDocumentEn,
                           )
                         : _documentButton(
-                            onTap: onUploadDocumentEn,
+                            onTap: widget.onUploadDocumentEn,
                             title: 'Upload Document (English)',
                           ),
                     if (isArabicEnabled) ...[
@@ -249,10 +338,10 @@ class PolicyControlItemWidget extends StatelessWidget {
                       control.documentAr != null
                           ? PolicyDocumentPreviewWidget(
                               document: control.documentAr!,
-                              onRemove: onRemoveDocumentAr,
+                              onRemove: widget.onRemoveDocumentAr,
                             )
                           : _documentButton(
-                              onTap: onUploadDocumentAr,
+                              onTap: widget.onUploadDocumentAr,
                               title: 'رفع المستند (عربي)',
                             ),
                     ],

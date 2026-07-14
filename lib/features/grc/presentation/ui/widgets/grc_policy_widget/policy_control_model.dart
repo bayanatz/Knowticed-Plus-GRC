@@ -5,6 +5,7 @@
 /// Dependencies: Flutter SDK
 /// Revision History: 2026-07-01 - Initial creation
 ///                   2026-07-14 - Split single `document` into `documentEn`/`documentAr`
+///                   2026-07-14 - Added Control Number (EN/AR) controllers
 library;
 
 /// ************************* FILE INFO *************************** ///
@@ -18,18 +19,11 @@ import 'package:flutter/material.dart';
 
 import 'policy_document_info.dart';
 
-/// class name: [PolicyControlModel]
-///
-/// purpose: holds the TextEditingControllers and mutable state for one
-///          control card. Each item in AddPolicyControlsPage's list is
-///          an independent instance of this model.
-///
-/// authors: Mohamed Magdy Abdelkhalek
-///
-/// created at: 1/7/2026
 class PolicyControlModel {
   final TextEditingController nameController;
   final TextEditingController nameArController;
+  final TextEditingController numberController;
+  final TextEditingController numberArController;
   final TextEditingController descriptionController;
   final TextEditingController descriptionArController;
   final TextEditingController weightController;
@@ -41,6 +35,8 @@ class PolicyControlModel {
   PolicyControlModel({
     TextEditingController? nameController,
     TextEditingController? nameArController,
+    TextEditingController? numberController,
+    TextEditingController? numberArController,
     TextEditingController? descriptionController,
     TextEditingController? descriptionArController,
     TextEditingController? weightController,
@@ -49,6 +45,8 @@ class PolicyControlModel {
     this.documentAr,
   })  : nameController = nameController ?? TextEditingController(),
         nameArController = nameArController ?? TextEditingController(),
+        numberController = numberController ?? TextEditingController(),
+        numberArController = numberArController ?? TextEditingController(),
         descriptionController =
             descriptionController ?? TextEditingController(),
         descriptionArController =
@@ -58,6 +56,8 @@ class PolicyControlModel {
   void dispose() {
     nameController.dispose();
     nameArController.dispose();
+    numberController.dispose();
+    numberArController.dispose();
     descriptionController.dispose();
     descriptionArController.dispose();
     weightController.dispose();
