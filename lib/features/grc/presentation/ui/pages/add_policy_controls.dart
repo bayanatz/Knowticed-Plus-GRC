@@ -14,6 +14,7 @@ library;
 /// Created At: 1/7/2026
 
 import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
+import 'package:demo_app/core/custom/10_custom_upload_document.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
@@ -61,14 +62,39 @@ class _AddPolicyControlsPageState extends State<AddPolicyControlsPage> {
     });
   }
 
-  void _onUploadDocument(int index) {
-    setState(() {
-      _controls[index].document = const PolicyDocumentInfo(
-        name: 'Control Doc.pdf',
-        sizeLabel: '40 KB',
-        dateLabel: '28 Dec 2023',
-      );
-    });
+  void _onUploadDocumentEn(int index) {
+    showUploadDialog(
+      context: context,
+      dialogTitle: 'Upload Control Document (English)'.tr,
+      titleFieldLabel: 'Document Title'.tr,
+      titleFieldHint: 'Text here'.tr,
+      browseLabel: 'Browse Files'.tr,
+      submitLabel: 'Submit'.tr,
+      discardLabel: 'Discard'.tr,
+      allowedExtensions: const ['pdf', 'doc', 'docx'],
+      onSubmit: (file, title) {
+        setState(() =>
+            _controls[index].documentEn = PolicyDocumentInfo.fromPlatformFile(file));
+      },
+    );
+  }
+
+  void _onUploadDocumentAr(int index) {
+    showUploadDialog(
+      context: context,
+      dialogTitle: 'رفع مستند الضابط (عربي)',
+      titleFieldLabel: 'عنوان المستند',
+      titleFieldHint: 'اكتب هنا',
+      browseLabel: 'تصفح الملفات',
+      submitLabel: 'إرسال',
+      discardLabel: 'إلغاء',
+      textDirection: TextDirection.rtl,
+      allowedExtensions: const ['pdf', 'doc', 'docx'],
+      onSubmit: (file, title) {
+        setState(() =>
+            _controls[index].documentAr = PolicyDocumentInfo.fromPlatformFile(file));
+      },
+    );
   }
 
   @override
@@ -99,9 +125,12 @@ class _AddPolicyControlsPageState extends State<AddPolicyControlsPage> {
                       isArabicEnabled: widget.isArabicEnabled,
                       showRemoveButton: _controls.length > 1,
                       onRemove: () => _removeControl(i),
-                      onUploadDocument: () => _onUploadDocument(i),
-                      onRemoveDocument: () =>
-                          setState(() => _controls[i].document = null),
+                      onUploadDocumentEn: () => _onUploadDocumentEn(i),
+                      onUploadDocumentAr: () => _onUploadDocumentAr(i),
+                      onRemoveDocumentEn: () =>
+                          setState(() => _controls[i].documentEn = null),
+                      onRemoveDocumentAr: () =>
+                          setState(() => _controls[i].documentAr = null),
                       onFrequencyChanged: (value) =>
                           setState(() => _controls[i].frequency = value),
                     ),

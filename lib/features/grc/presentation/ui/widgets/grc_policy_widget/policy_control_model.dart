@@ -4,6 +4,7 @@
 /// Date: 2026-07-01
 /// Dependencies: Flutter SDK
 /// Revision History: 2026-07-01 - Initial creation
+///                   2026-07-14 - Split single `document` into `documentEn`/`documentAr`
 library;
 
 /// ************************* FILE INFO *************************** ///
@@ -34,7 +35,8 @@ class PolicyControlModel {
   final TextEditingController weightController;
 
   String? frequency;
-  PolicyDocumentInfo? document;
+  PolicyDocumentInfo? documentEn;
+  PolicyDocumentInfo? documentAr;
 
   PolicyControlModel({
     TextEditingController? nameController,
@@ -43,7 +45,8 @@ class PolicyControlModel {
     TextEditingController? descriptionArController,
     TextEditingController? weightController,
     this.frequency,
-    this.document,
+    this.documentEn,
+    this.documentAr,
   })  : nameController = nameController ?? TextEditingController(),
         nameArController = nameArController ?? TextEditingController(),
         descriptionController =

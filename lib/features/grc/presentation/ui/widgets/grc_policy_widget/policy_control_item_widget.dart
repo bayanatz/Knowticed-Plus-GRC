@@ -4,6 +4,7 @@
 /// Date: 2026-07-01
 /// Dependencies: Flutter SDK, AppColors, AppTheme, PolicyControlModel, PolicyDocumentPreviewWidget
 /// Revision History: 2026-07-01 - Initial creation
+///                   2026-07-14 - Split Control Document into English/Arabic
 library;
 
 /// ************************* FILE INFO *************************** ///
@@ -39,16 +40,20 @@ class PolicyControlItemWidget extends StatelessWidget {
   final bool isArabicEnabled;
   final bool showRemoveButton;
   final VoidCallback? onRemove;
-  final VoidCallback onUploadDocument;
-  final VoidCallback onRemoveDocument;
+  final VoidCallback onUploadDocumentEn;
+  final VoidCallback onUploadDocumentAr;
+  final VoidCallback onRemoveDocumentEn;
+  final VoidCallback onRemoveDocumentAr;
   final ValueChanged<String?> onFrequencyChanged;
 
   const PolicyControlItemWidget({
     super.key,
     required this.control,
     required this.isArabicEnabled,
-    required this.onUploadDocument,
-    required this.onRemoveDocument,
+    required this.onUploadDocumentEn,
+    required this.onUploadDocumentAr,
+    required this.onRemoveDocumentEn,
+    required this.onRemoveDocumentAr,
     required this.onFrequencyChanged,
     this.showRemoveButton = false,
     this.onRemove,
@@ -91,6 +96,24 @@ class PolicyControlItemWidget extends StatelessWidget {
 
     if (!rtl) return field;
     return Directionality(textDirection: TextDirection.rtl, child: field);
+  }
+
+  Widget _documentButton({required VoidCallback onTap, required String title}) {
+    return customButtonWithSvg(
+      colorBorder: AppColors.primary,
+      space: 10.w,
+      radius: 8.r,
+      widthImage: 16.w,
+      heightImage: 16.h,
+      function: onTap,
+      title: title,
+      textStyle: StyleText.fontSize14Weight500.copyWith(color: AppColors.textButton),
+      image: 'assets/hrAsset/Upload.svg',
+      color: AppColors.primary,
+      width: 220.w,
+      height: 36.h,
+      svgColor: AppColors.textButton,
+    );
   }
 
   @override
@@ -146,7 +169,6 @@ class PolicyControlItemWidget extends StatelessWidget {
                     color: AppColors.secondaryText, size: 18.sp),
               ),
             ),
-          // Control Name (+ AR name on tablet when Arabic enabled)
           if (isArabicEnabled && isTablet)
             Row(children: [
               Expanded(
@@ -209,34 +231,37 @@ class PolicyControlItemWidget extends StatelessWidget {
                   style: StyleText.fontSize16Weight500
                       .copyWith(color: AppColors.text)),
               const Spacer(),
-              if (control.document != null)
-                Flexible(
-                  child: PolicyDocumentPreviewWidget(
-                    document: control.document!,
-                    onRemove: onRemoveDocument,
-                  ),
-                )
-              else
-                customButtonWithSvg(
-                  colorBorder: AppColors.primary,
-                  space: 10.w,
-                  radius: 8.r,
-                  widthImage: 16.w,
-                  heightImage: 16.h,
-                  function: onUploadDocument,
-                  title: 'Control Document',
-                  textStyle: StyleText.fontSize14Weight500
-                      .copyWith(color: AppColors.textButton),
-                  image: 'assets/hrAsset/Upload.svg',
-                  color: AppColors.primary,
-                  width: 180.w,
-                  height: 36.h,
-                  svgColor: AppColors.textButton,
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    control.documentEn != null
+                        ? PolicyDocumentPreviewWidget(
+                            document: control.documentEn!,
+                            onRemove: onRemoveDocumentEn,
+                          )
+                        : _documentButton(
+                            onTap: onUploadDocumentEn,
+                            title: 'Upload Document (English)',
+                          ),
+                    if (isArabicEnabled) ...[
+                      SizedBox(height: 10.h),
+                      control.documentAr != null
+                          ? PolicyDocumentPreviewWidget(
+                              document: control.documentAr!,
+                              onRemove: onRemoveDocumentAr,
+                            )
+                          : _documentButton(
+                              onTap: onUploadDocumentAr,
+                              title: 'رفع المستند (عربي)',
+                            ),
+                    ],
+                  ],
                 ),
+              ),
             ],
           ),
           SizedBox(height: 15.h),
-          // Frequency + Weight — side by side on tablet, stacked on mobile
           isTablet
               ? Row(children: [
                   Expanded(child: frequencyField),
