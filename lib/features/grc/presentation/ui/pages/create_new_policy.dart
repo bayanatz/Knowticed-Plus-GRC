@@ -34,6 +34,8 @@ import 'package:demo_app/features/grc/domain/repository/policy_repository.dart';
 import 'package:demo_app/features/grc/domain/use_cases/create_control_usecase.dart';
 import 'package:demo_app/features/grc/presentation/controller/policy_cubit.dart';
 import 'package:demo_app/features/grc/presentation/ui/pages/add_policy_controls.dart';
+import 'package:demo_app/features/grc/presentation/ui/widgets/grc_details_widget/grc_form_fields.dart'
+    show containsEnglishLetters, containsArabicLetters;
 import 'package:demo_app/features/grc/presentation/ui/widgets/grc_policy_widget/policy_control_model.dart';
 import 'package:demo_app/features/grc/presentation/ui/widgets/grc_policy_widget/policy_controls_table_widget.dart';
 import 'package:demo_app/features/grc/presentation/ui/widgets/grc_policy_widget/policy_document_info.dart';
@@ -207,10 +209,76 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
         (!_isArabicEnabled ||
             (_nameArController.text.trim().isNotEmpty &&
                 _numberArController.text.trim().isNotEmpty &&
-                _descriptionArController.text.trim().isNotEmpty));
+                _descriptionArController.text.trim().isNotEmpty)) &&
+        !_hasPolicyLanguageErrors;
   }
 
-  
+  /// function name: [_hasPolicyLanguageErrors]
+  ///
+  /// purpose: true if any policy-level EN/AR field currently shows a
+  ///          language-mismatch error (English field containing Arabic
+  ///          letters, or vice versa). Used to block Publish/Save For Later
+  ///          until the user fixes highlighted errors.
+  bool get _hasPolicyLanguageErrors {
+    if (containsArabicLetters(_nameController.text)) return true;
+    if (containsArabicLetters(_numberController.text)) return true;
+    if (containsArabicLetters(_descriptionController.text)) return true;
+    if (_isArabicEnabled) {
+      if (containsEnglishLetters(_nameArController.text)) return true;
+      if (containsEnglishLetters(_numberArController.text)) return true;
+      if (containsEnglishLetters(_descriptionArController.text)) return true;
+    }
+    return false;
+  }
+
+  /// function name: [_controlHasErrors]
+  ///
+  /// purpose: true if [control] currently shows a language-mismatch error
+  ///          on Name/Number/Description, or a date-range error (its own
+  ///          End Date before its Start Date, or either date falling
+  ///          outside the parent Policy's own Start/End Date range).
+  bool _controlHasErrors(PolicyControlModel control) {
+    if (containsArabicLetters(control.nameController.text)) return true;
+    if (containsArabicLetters(control.numberController.text)) return true;
+    if (containsArabicLetters(control.descriptionController.text)) return true;
+    if (_isArabicEnabled) {
+      if (containsEnglishLetters(control.nameArController.text)) return true;
+      if (containsEnglishLetters(control.numberArController.text)) return true;
+      if (containsEnglishLetters(control.descriptionArController.text)) return true;
+    }
+    final start = control.startDate;
+    final end = control.endDate;
+    if (start != null && end != null && end.isBefore(start)) return true;
+    for (final date in [start, end]) {
+      if (date == null) continue;
+      if (_startDate != null && date.isBefore(_startDate!)) return true;
+      if (_endDate != null && date.isAfter(_endDate!)) return true;
+    }
+    return false;
+  }
+
+  /// function name: [_hasControlErrors]
+  ///
+  /// purpose: true if any filled-in control (non-empty English name — the
+  ///          same filter [_buildPendingControls] uses to decide which
+  ///          controls are actually sent to the cubit) currently has a
+  ///          language or date-range error.
+  bool get _hasControlErrors => _controls.any((c) =>
+      c.nameController.text.trim().isNotEmpty && _controlHasErrors(c));
+
+  /// function name: [_showBlockingErrorsSnackbar]
+  ///
+  /// purpose: show the shared red snackbar used whenever Save For Later or
+  ///          Publish is blocked by an unresolved validation error.
+  void _showBlockingErrorsSnackbar() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Please fix the highlighted errors before continuing.'.tr),
+        backgroundColor: AppColors.red,
+      ),
+    );
+  }
+
   // ----------------------------------------------------------------
   // Cubit actions
   // ----------------------------------------------------------------
@@ -593,15 +661,21 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
       children: [
         customButton(
           title: 'Save For Later'.tr,
-          function: () => showConfirmDialog(
-            context: context,
-            title: 'Save As Draft'.tr,
-            subtitle:
-                'Are you sure you want to save this policy as a draft?'.tr,
-            confirmLabel: 'Save'.tr,
-            cancelLabel: 'Cancel'.tr,
-            onConfirm: () => _onSaveForLater(cubit),
-          ),
+          function: () {
+            if (_hasPolicyLanguageErrors || _hasControlErrors) {
+              _showBlockingErrorsSnackbar();
+              return;
+            }
+            showConfirmDialog(
+              context: context,
+              title: 'Save As Draft'.tr,
+              subtitle:
+                  'Are you sure you want to save this policy as a draft?'.tr,
+              confirmLabel: 'Save'.tr,
+              cancelLabel: 'Cancel'.tr,
+              onConfirm: () => _onSaveForLater(cubit),
+            );
+          },
           height: 38.h,
           width: 150.w,
           color: AppColors.grey,
@@ -627,15 +701,21 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
       children: [
         customButton(
           title: 'Save For Later'.tr,
-          function: () => showConfirmDialog(
-            context: context,
-            title: 'Save As Draft'.tr,
-            subtitle:
-                'Are you sure you want to save this policy as a draft?'.tr,
-            confirmLabel: 'Save'.tr,
-            cancelLabel: 'Cancel'.tr,
-            onConfirm: () => _onSaveForLater(cubit),
-          ),
+          function: () {
+            if (_hasPolicyLanguageErrors || _hasControlErrors) {
+              _showBlockingErrorsSnackbar();
+              return;
+            }
+            showConfirmDialog(
+              context: context,
+              title: 'Save As Draft'.tr,
+              subtitle:
+                  'Are you sure you want to save this policy as a draft?'.tr,
+              confirmLabel: 'Save'.tr,
+              cancelLabel: 'Cancel'.tr,
+              onConfirm: () => _onSaveForLater(cubit),
+            );
+          },
           height: 38.h,
           width: 150.w,
           color: AppColors.grey,
@@ -652,6 +732,10 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
                   backgroundColor: AppColors.red,
                 ),
               );
+              return;
+            }
+            if (_hasPolicyLanguageErrors || _hasControlErrors) {
+              _showBlockingErrorsSnackbar();
               return;
             }
             showConfirmDialog(
