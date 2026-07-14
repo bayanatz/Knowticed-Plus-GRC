@@ -2626,3 +2626,363 @@ Run the app, create a policy end to end: fill step 0 (including an image and EN 
 git add lib/features/grc/presentation/ui/pages/create_new_policy.dart
 git commit -m "fix(grc): send controls, image, and documents to PolicyCubit on Publish/Save For Later"
 ```
+
+---
+
+### Task 8: Block Save For Later / Publish while unresolved errors exist
+
+**Added after the final whole-branch review.** The review found that the language-mismatch and control-date-range validation added in Tasks 3-5 is purely cosmetic — a visible red error does not stop the user from tapping Save For Later or Publish. Asked directly, the human decided: **block submission until every highlighted error is resolved.**
+
+**Files:**
+- Modify: `lib/features/grc/presentation/ui/pages/create_new_policy.dart`
+
+**Interfaces:**
+- Consumes: `containsEnglishLetters`/`containsArabicLetters` from `lib/features/grc/presentation/ui/widgets/grc_details_widget/grc_form_fields.dart` (same functions Tasks 3/4 already use inside the widgets — this task recomputes the same checks at the page level, since the page owns all the controllers and `_controls`, and neither `PolicyInfoFormWidget` nor `PolicyControlItemWidget` currently exposes an "is this valid" signal to its parent).
+- Produces: `_hasPolicyLanguageErrors` (bool getter), `_hasControlErrors` (bool getter), `_showBlockingErrorsSnackbar()` (void) — all private to `_CreateNewPolicyPageState`.
+
+- [ ] **Step 1: Import the validation helpers**
+
+Replace:
+```dart
+import 'package:demo_app/features/grc/presentation/ui/pages/add_policy_controls.dart';
+import 'package:demo_app/features/grc/presentation/ui/widgets/grc_policy_widget/policy_control_model.dart';
+```
+with:
+```dart
+import 'package:demo_app/features/grc/presentation/ui/pages/add_policy_controls.dart';
+import 'package:demo_app/features/grc/presentation/ui/widgets/grc_details_widget/grc_form_fields.dart'
+    show containsEnglishLetters, containsArabicLetters;
+import 'package:demo_app/features/grc/presentation/ui/widgets/grc_policy_widget/policy_control_model.dart';
+```
+
+- [ ] **Step 2: Add the error-detection helpers, and gate `_validateStep0`**
+
+Replace:
+```dart
+  bool _validateStep0() {
+    final today = DateTime.now();
+    final startOfToday = DateTime(today.year, today.month, today.day);
+    return _nameController.text.trim().isNotEmpty &&
+        _numberController.text.trim().isNotEmpty &&
+        _descriptionController.text.trim().isNotEmpty &&
+        _startDate != null &&
+        _endDate != null &&
+        !_startDate!.isBefore(startOfToday) &&
+        !_endDate!.isBefore(_startDate!) &&
+        _weightController.text.trim().isNotEmpty &&
+        (!_isArabicEnabled ||
+            (_nameArController.text.trim().isNotEmpty &&
+                _numberArController.text.trim().isNotEmpty &&
+                _descriptionArController.text.trim().isNotEmpty));
+  }
+```
+with:
+```dart
+  bool _validateStep0() {
+    final today = DateTime.now();
+    final startOfToday = DateTime(today.year, today.month, today.day);
+    return _nameController.text.trim().isNotEmpty &&
+        _numberController.text.trim().isNotEmpty &&
+        _descriptionController.text.trim().isNotEmpty &&
+        _startDate != null &&
+        _endDate != null &&
+        !_startDate!.isBefore(startOfToday) &&
+        !_endDate!.isBefore(_startDate!) &&
+        _weightController.text.trim().isNotEmpty &&
+        (!_isArabicEnabled ||
+            (_nameArController.text.trim().isNotEmpty &&
+                _numberArController.text.trim().isNotEmpty &&
+                _descriptionArController.text.trim().isNotEmpty)) &&
+        !_hasPolicyLanguageErrors;
+  }
+
+  /// function name: [_hasPolicyLanguageErrors]
+  ///
+  /// purpose: true if any policy-level EN/AR field currently shows a
+  ///          language-mismatch error (English field containing Arabic
+  ///          letters, or vice versa). Used to block Publish/Save For Later
+  ///          until the user fixes highlighted errors.
+  bool get _hasPolicyLanguageErrors {
+    if (containsArabicLetters(_nameController.text)) return true;
+    if (containsArabicLetters(_numberController.text)) return true;
+    if (containsArabicLetters(_descriptionController.text)) return true;
+    if (_isArabicEnabled) {
+      if (containsEnglishLetters(_nameArController.text)) return true;
+      if (containsEnglishLetters(_numberArController.text)) return true;
+      if (containsEnglishLetters(_descriptionArController.text)) return true;
+    }
+    return false;
+  }
+
+  /// function name: [_controlHasErrors]
+  ///
+  /// purpose: true if [control] currently shows a language-mismatch error
+  ///          on Name/Number/Description, or a date-range error (its own
+  ///          End Date before its Start Date, or either date falling
+  ///          outside the parent Policy's own Start/End Date range).
+  bool _controlHasErrors(PolicyControlModel control) {
+    if (containsArabicLetters(control.nameController.text)) return true;
+    if (containsArabicLetters(control.numberController.text)) return true;
+    if (containsArabicLetters(control.descriptionController.text)) return true;
+    if (_isArabicEnabled) {
+      if (containsEnglishLetters(control.nameArController.text)) return true;
+      if (containsEnglishLetters(control.numberArController.text)) return true;
+      if (containsEnglishLetters(control.descriptionArController.text)) return true;
+    }
+    final start = control.startDate;
+    final end = control.endDate;
+    if (start != null && end != null && end.isBefore(start)) return true;
+    for (final date in [start, end]) {
+      if (date == null) continue;
+      if (_startDate != null && date.isBefore(_startDate!)) return true;
+      if (_endDate != null && date.isAfter(_endDate!)) return true;
+    }
+    return false;
+  }
+
+  /// function name: [_hasControlErrors]
+  ///
+  /// purpose: true if any filled-in control (non-empty English name — the
+  ///          same filter [_buildPendingControls] uses to decide which
+  ///          controls are actually sent to the cubit) currently has a
+  ///          language or date-range error.
+  bool get _hasControlErrors => _controls.any((c) =>
+      c.nameController.text.trim().isNotEmpty && _controlHasErrors(c));
+
+  /// function name: [_showBlockingErrorsSnackbar]
+  ///
+  /// purpose: show the shared red snackbar used whenever Save For Later or
+  ///          Publish is blocked by an unresolved validation error.
+  void _showBlockingErrorsSnackbar() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Please fix the highlighted errors before continuing.'.tr),
+        backgroundColor: AppColors.red,
+      ),
+    );
+  }
+```
+
+- [ ] **Step 3: Gate the Save For Later button in step 1**
+
+Replace:
+```dart
+  Widget _buildStep1Buttons(PolicyCubit cubit) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        customButton(
+          title: 'Save For Later'.tr,
+          function: () => showConfirmDialog(
+            context: context,
+            title: 'Save As Draft'.tr,
+            subtitle:
+                'Are you sure you want to save this policy as a draft?'.tr,
+            confirmLabel: 'Save'.tr,
+            cancelLabel: 'Cancel'.tr,
+            onConfirm: () => _onSaveForLater(cubit),
+          ),
+          height: 38.h,
+          width: 150.w,
+          color: AppColors.grey,
+          textStyle:
+              StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
+        ),
+        customButton(
+          title: 'Preview'.tr,
+          function: () => setState(() => _step = 2),
+          height: 38.h,
+          width: 150.w,
+          color: AppColors.primary,
+          textStyle: StyleText.fontSize14Weight500
+              .copyWith(color: AppColors.textButton),
+        ),
+      ],
+    );
+  }
+```
+with:
+```dart
+  Widget _buildStep1Buttons(PolicyCubit cubit) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        customButton(
+          title: 'Save For Later'.tr,
+          function: () {
+            if (_hasPolicyLanguageErrors || _hasControlErrors) {
+              _showBlockingErrorsSnackbar();
+              return;
+            }
+            showConfirmDialog(
+              context: context,
+              title: 'Save As Draft'.tr,
+              subtitle:
+                  'Are you sure you want to save this policy as a draft?'.tr,
+              confirmLabel: 'Save'.tr,
+              cancelLabel: 'Cancel'.tr,
+              onConfirm: () => _onSaveForLater(cubit),
+            );
+          },
+          height: 38.h,
+          width: 150.w,
+          color: AppColors.grey,
+          textStyle:
+              StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
+        ),
+        customButton(
+          title: 'Preview'.tr,
+          function: () => setState(() => _step = 2),
+          height: 38.h,
+          width: 150.w,
+          color: AppColors.primary,
+          textStyle: StyleText.fontSize14Weight500
+              .copyWith(color: AppColors.textButton),
+        ),
+      ],
+    );
+  }
+```
+
+- [ ] **Step 4: Gate the Save For Later and Publish buttons in step 2**
+
+Replace:
+```dart
+  Widget _buildStep2Buttons(PolicyCubit cubit) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        customButton(
+          title: 'Save For Later'.tr,
+          function: () => showConfirmDialog(
+            context: context,
+            title: 'Save As Draft'.tr,
+            subtitle:
+                'Are you sure you want to save this policy as a draft?'.tr,
+            confirmLabel: 'Save'.tr,
+            cancelLabel: 'Cancel'.tr,
+            onConfirm: () => _onSaveForLater(cubit),
+          ),
+          height: 38.h,
+          width: 150.w,
+          color: AppColors.grey,
+          textStyle:
+              StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
+        ),
+        customButton(
+          title: 'Publish'.tr,
+          function: () {
+            if (!_isWeightValid) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Total Weight should be 100'.tr),
+                  backgroundColor: AppColors.red,
+                ),
+              );
+              return;
+            }
+            showConfirmDialog(
+              context: context,
+              title: 'Publish Policy'.tr,
+              subtitle:
+                  'Are you sure you want to publish this policy? This will make it active.'
+                      .tr,
+              confirmLabel: 'Publish'.tr,
+              cancelLabel: 'Cancel'.tr,
+              onConfirm: () => _onPublish(cubit),
+            );
+          },
+          height: 38.h,
+          width: 150.w,
+          color: AppColors.primary,
+          textStyle: StyleText.fontSize14Weight500
+              .copyWith(color: AppColors.textButton),
+        ),
+      ],
+    );
+  }
+}
+```
+with:
+```dart
+  Widget _buildStep2Buttons(PolicyCubit cubit) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        customButton(
+          title: 'Save For Later'.tr,
+          function: () {
+            if (_hasPolicyLanguageErrors || _hasControlErrors) {
+              _showBlockingErrorsSnackbar();
+              return;
+            }
+            showConfirmDialog(
+              context: context,
+              title: 'Save As Draft'.tr,
+              subtitle:
+                  'Are you sure you want to save this policy as a draft?'.tr,
+              confirmLabel: 'Save'.tr,
+              cancelLabel: 'Cancel'.tr,
+              onConfirm: () => _onSaveForLater(cubit),
+            );
+          },
+          height: 38.h,
+          width: 150.w,
+          color: AppColors.grey,
+          textStyle:
+              StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
+        ),
+        customButton(
+          title: 'Publish'.tr,
+          function: () {
+            if (!_isWeightValid) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Total Weight should be 100'.tr),
+                  backgroundColor: AppColors.red,
+                ),
+              );
+              return;
+            }
+            if (_hasPolicyLanguageErrors || _hasControlErrors) {
+              _showBlockingErrorsSnackbar();
+              return;
+            }
+            showConfirmDialog(
+              context: context,
+              title: 'Publish Policy'.tr,
+              subtitle:
+                  'Are you sure you want to publish this policy? This will make it active.'
+                      .tr,
+              confirmLabel: 'Publish'.tr,
+              cancelLabel: 'Cancel'.tr,
+              onConfirm: () => _onPublish(cubit),
+            );
+          },
+          height: 38.h,
+          width: 150.w,
+          color: AppColors.primary,
+          textStyle: StyleText.fontSize14Weight500
+              .copyWith(color: AppColors.textButton),
+        ),
+      ],
+    );
+  }
+}
+```
+
+- [ ] **Step 5: Compile sanity check**
+
+Run: `dart analyze lib/features/grc/presentation/ui/pages/create_new_policy.dart`
+Expected: no `error`-level issues (the pre-existing unused-import warnings and one curly-braces info are unrelated and fine).
+
+- [ ] **Step 6: Manual verification**
+
+Run the app. On step 0, type Arabic into "Policy Name" — try to advance via "Next": confirm it's blocked (same snackbar as the existing "fill all required fields" one, or the new one — either is acceptable, `_validateStep0` now returns false either way). Fix the field, advance normally. In step 1, add a control, type Arabic into "Control Name" (EN field) — try "Save For Later": confirm the new red snackbar appears and the save is blocked. Fix the control's Name, try again: confirm it proceeds to the confirm dialog. In step 2, set a control's Start Date outside the Policy's own date range (if the picker allows entering one) or leave a lingering language error, try "Publish": confirm it's blocked with the same snackbar. Fix everything, Publish: confirm it succeeds.
+
+- [ ] **Step 7: Commit**
+
+```bash
+git add lib/features/grc/presentation/ui/pages/create_new_policy.dart
+git commit -m "feat(grc): block Save For Later / Publish while validation errors are unresolved"
+```
