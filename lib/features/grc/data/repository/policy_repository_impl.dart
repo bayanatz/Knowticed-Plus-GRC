@@ -103,7 +103,7 @@ class PolicyRepositoryImpl implements PolicyRepository {
       final model = PolicyModel.create(
         id: policyId,
         moduleId: moduleId,
-        policyImage: resolvedImage ?? '',
+        policyImage: resolvedImage,
         policyNameEn: policyNameEn,
         policyNameAr: policyNameAr,
         policyNumberEn: policyNumberEn,
@@ -113,8 +113,8 @@ class PolicyRepositoryImpl implements PolicyRepository {
         startDate: startDate,
         endDate: endDate,
         policyWeight: policyWeight,
-        policyDocumentEn: resolvedDocumentEn ?? '',
-        policyDocumentAr: resolvedDocumentAr ?? '',
+        policyDocumentEn: resolvedDocumentEn,
+        policyDocumentAr: resolvedDocumentAr,
         status: status,
         editorId: editorId,
       );

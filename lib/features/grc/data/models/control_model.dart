@@ -17,6 +17,7 @@
 ///                                (Mohamed Magdy Abdelkhalek)
 library;
 
+import 'package:intl/intl.dart';
 import 'package:demo_app/features/grc/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/domain/entities/control_status.dart';
 
@@ -28,6 +29,8 @@ import 'package:demo_app/features/grc/domain/entities/control_status.dart';
 ///          history and tracking, exactly like PolicyModel.
 /// Author: Mohamed Magdy Abdelkhalek
 /// Created At: 5/7/2026
+
+final DateFormat _storageDateFormat = DateFormat('d MMM yyyy', 'en');
 
 /// class name: [ControlModel]
 ///
@@ -51,19 +54,19 @@ class ControlModel {
   final List<String> controlsNumberAr;
   final List<String> controlsDescriptionEn;
   final List<String> controlsDescriptionAr;
-  final List<String> controlsDocumentEn;
-  final List<String> controlsDocumentAr;
+  final List<String?> controlsDocumentEn;
+  final List<String?> controlsDocumentAr;
   final List<double> controlsWeight;
   final List<String> frequency;
-  final List<String> startDate;
-  final List<String> endDate;
+  final List<DateTime> startDate;
+  final List<DateTime> endDate;
   final List<List<String>> departments;
   final List<bool> equalWeights;
   final List<int> score;
   final List<String> status; // ControlStatus.value strings
 
   // Tracking
-  final List<String> lastModifiedDate;
+  final List<DateTime> lastModifiedDate;
   final List<String> editors;
 
   ControlModel({
@@ -142,8 +145,8 @@ class ControlModel {
   ///            [String] controlsNumberAr: initial Arabic control number
   ///            [String] controlsDescriptionEn: initial English description
   ///            [String] controlsDescriptionAr: initial Arabic description
-  ///            [String] controlsDocumentEn: initial English document url/path
-  ///            [String] controlsDocumentAr: initial Arabic document url/path
+  ///            [String?] controlsDocumentEn: initial English document url/path
+  ///            [String?] controlsDocumentAr: initial Arabic document url/path
   ///            [double] controlsWeight: initial weight value
   ///            [String] frequency: initial frequency value
   ///            [DateTime] startDate: initial start date
@@ -164,8 +167,8 @@ class ControlModel {
     required String controlsNumberAr,
     required String controlsDescriptionEn,
     required String controlsDescriptionAr,
-    required String controlsDocumentEn,
-    required String controlsDocumentAr,
+    String? controlsDocumentEn,
+    String? controlsDocumentAr,
     required double controlsWeight,
     required String frequency,
     required DateTime startDate,
@@ -176,7 +179,7 @@ class ControlModel {
     required ControlStatus status,
     required String editorId,
   }) {
-    final now = DateTime.now().toIso8601String();
+    final now = DateTime.now();
     return ControlModel(
       id: id,
       policyId: policyId,
@@ -190,8 +193,8 @@ class ControlModel {
       controlsDocumentAr: [controlsDocumentAr],
       controlsWeight: [controlsWeight],
       frequency: [frequency],
-      startDate: [startDate.toIso8601String()],
-      endDate: [endDate.toIso8601String()],
+      startDate: [startDate],
+      endDate: [endDate],
       departments: [departments],
       equalWeights: [equalWeights],
       score: [score],
@@ -214,8 +217,8 @@ class ControlModel {
   ///            [String] controlsNumberAr: new Arabic control number, if changed
   ///            [String] controlsDescriptionEn: new English description, if changed
   ///            [String] controlsDescriptionAr: new Arabic description, if changed
-  ///            [String] controlsDocumentEn: new English document url/path, if changed
-  ///            [String] controlsDocumentAr: new Arabic document url/path, if changed
+  ///            [String?] controlsDocumentEn: new English document url/path, if changed
+  ///            [String?] controlsDocumentAr: new Arabic document url/path, if changed
   ///            [double] controlsWeight: new weight value, if changed
   ///            [String] frequency: new frequency value, if changed
   ///            [DateTime] startDate: new start date, if changed
@@ -246,7 +249,7 @@ class ControlModel {
     ControlStatus? status,
     required String editorId,
   }) {
-    final now = DateTime.now().toIso8601String();
+    final now = DateTime.now();
     return ControlModel(
       id: id,
       policyId: policyId,
@@ -289,11 +292,11 @@ class ControlModel {
       frequency: [...this.frequency, frequency ?? this.frequency.last],
       startDate: [
         ...this.startDate,
-        startDate?.toIso8601String() ?? this.startDate.last,
+        startDate ?? this.startDate.last,
       ],
       endDate: [
         ...this.endDate,
-        endDate?.toIso8601String() ?? this.endDate.last,
+        endDate ?? this.endDate.last,
       ],
       departments: [...this.departments, departments ?? this.departments.last],
       equalWeights: [
@@ -330,8 +333,12 @@ class ControlModel {
       'Controls_Document_Ar': controlsDocumentAr,
       'Controls_Weight': controlsWeight,
       'Controls_Frequency': frequency,
-      'Controls_Start_Date': startDate,
-      'Controls_End_Date': endDate,
+      'Controls_Start_Date': startDate
+          .map((d) => _storageDateFormat.format(d))
+          .toList(),
+      'Controls_End_Date': endDate
+          .map((d) => _storageDateFormat.format(d))
+          .toList(),
       // Firestore rejects arrays that directly contain other arrays, so each
       // revision's department list is wrapped in a map (List<List<String>>
       // would otherwise serialize as a nested array and the write would
@@ -340,7 +347,9 @@ class ControlModel {
       'Controls_Equal_Weights': equalWeights,
       'Controls_Score': score,
       'Controls_Status': status,
-      'Modification_Date': lastModifiedDate,
+      'Modification_Date': lastModifiedDate
+          .map((d) => _storageDateFormat.format(d))
+          .toList(),
       'Modifiers': editors,
     };
   }
@@ -367,14 +376,18 @@ class ControlModel {
           List<String>.from(json['Controls_Description_En'] ?? []),
       controlsDescriptionAr:
           List<String>.from(json['Controls_Description_Ar'] ?? []),
-      controlsDocumentEn: List<String>.from(json['Controls_Document_En'] ?? []),
-      controlsDocumentAr: List<String>.from(json['Controls_Document_Ar'] ?? []),
+      controlsDocumentEn: List<String?>.from(json['Controls_Document_En'] ?? []),
+      controlsDocumentAr: List<String?>.from(json['Controls_Document_Ar'] ?? []),
       controlsWeight: (json['Controls_Weight'] as List? ?? [])
           .map((e) => (e as num).toDouble())
           .toList(),
       frequency: List<String>.from(json['Controls_Frequency'] ?? []),
-      startDate: List<String>.from(json['Controls_Start_Date'] ?? []),
-      endDate: List<String>.from(json['Controls_End_Date'] ?? []),
+      startDate: (json['Controls_Start_Date'] as List? ?? [])
+          .map((d) => _storageDateFormat.parse(d as String))
+          .toList(),
+      endDate: (json['Controls_End_Date'] as List? ?? [])
+          .map((d) => _storageDateFormat.parse(d as String))
+          .toList(),
       departments: (json['Controls_Departments'] as List? ?? [])
           .map((rev) =>
               List<String>.from((rev as Map<String, dynamic>)['Items'] ?? []))
@@ -385,7 +398,9 @@ class ControlModel {
           ? List<String>.from(json['Controls_Status'])
           : List<String>.filled(
               editorsRaw.length, ControlStatus.unassigned.value),
-      lastModifiedDate: List<String>.from(json['Modification_Date'] ?? []),
+      lastModifiedDate: (json['Modification_Date'] as List? ?? [])
+          .map((d) => _storageDateFormat.parse(d as String))
+          .toList(),
       editors: editorsRaw,
     );
   }
@@ -413,14 +428,14 @@ class ControlModel {
       controlsDocumentAr: controlsDocumentAr.last,
       controlsWeight: controlsWeight.last,
       frequency: frequency.last,
-      startDate: DateTime.parse(startDate.last),
-      endDate: DateTime.parse(endDate.last),
+      startDate: startDate.last,
+      endDate: endDate.last,
       departments: departments.last,
       equalWeights: equalWeights.last,
       score: score.last,
       status: ControlStatus.fromString(status.last),
-      lastModifiedDate: DateTime.parse(lastModifiedDate.last),
-      lastEditorId: editors.last,
+      lastModifiedDate: lastModifiedDate.last,
+      lastEditor: editors.last,
     );
   }
 }

@@ -130,13 +130,13 @@ class PolicyCubit extends Cubit<PolicyState> {
   final DeleteControlUseCase _deleteControlUseCase;
   final GetAllControlsUseCase _getAllControlsUseCase;
 
-  /// Resolves the currently logged-in user's id.
-  String get _currentUserId {
-    final fromConstant = Constant.idUser;
+  /// Resolves the currently logged-in user's email.
+  String get _currentUserEmail {
+    final fromConstant = Constant.emailUser;
     if (fromConstant != null && fromConstant.isNotEmpty) return fromConstant;
     if (Get.isRegistered<MainCoreEmployeeController>()) {
-      final id = Get.find<MainCoreEmployeeController>().employeeEntity?.id;
-      if (id != null && id.isNotEmpty) return id;
+      final email = Get.find<MainCoreEmployeeController>().employeeEntity?.email;
+      if (email != null && email.isNotEmpty) return email;
     }
     return '';
   }
@@ -296,7 +296,7 @@ class PolicyCubit extends Cubit<PolicyState> {
     String? policyDocumentUrlAr,
   }) async {
     emit(PolicyLoading());
-    final editorId = _currentUserId;
+    final editorId = _currentUserEmail;
     final result = await _createUseCase.call(
       CreatePolicyParams(
         policyNameEn: policyNameEn,
@@ -399,7 +399,7 @@ class PolicyCubit extends Cubit<PolicyState> {
     final result = await _updateUseCase.call(
       UpdatePolicyParams(
         id: id,
-        editorId: _currentUserId,
+        editorId: _currentUserEmail,
         moduleId: moduleId,
         status: status,
         policyNameEn: policyNameEn,
@@ -431,7 +431,7 @@ class PolicyCubit extends Cubit<PolicyState> {
   }) async {
     emit(PolicyLoading());
     final result = await _deleteUseCase.call(
-      DeletePolicyParams(id: id, editorId: _currentUserId, moduleId: moduleId),
+      DeletePolicyParams(id: id, editorId: _currentUserEmail, moduleId: moduleId),
     );
     result.fold(
       (failure) => emit(PolicyFailure(failure.message)),
@@ -445,7 +445,7 @@ class PolicyCubit extends Cubit<PolicyState> {
   }) async {
     emit(PolicyLoading());
     final result = await _restoreUseCase.call(
-      RestorePolicyParams(id: id, editorId: _currentUserId, moduleId: moduleId),
+      RestorePolicyParams(id: id, editorId: _currentUserEmail, moduleId: moduleId),
     );
     result.fold(
       (failure) => emit(PolicyFailure(failure.message)),
@@ -484,7 +484,7 @@ class PolicyCubit extends Cubit<PolicyState> {
       CreateControlParams(
         moduleId: moduleId,
         policyId: policyId,
-        editorId: _currentUserId,
+        editorId: _currentUserEmail,
         controlsNameEn: controlsNameEn,
         controlsNameAr: controlsNameAr,
         controlsNumberEn: controlsNumberEn,
@@ -540,7 +540,7 @@ class PolicyCubit extends Cubit<PolicyState> {
         id: id,
         moduleId: moduleId,
         policyId: policyId,
-        editorId: _currentUserId,
+        editorId: _currentUserEmail,
         controlsNameEn: controlsNameEn,
         controlsNameAr: controlsNameAr,
         controlsNumberEn: controlsNumberEn,

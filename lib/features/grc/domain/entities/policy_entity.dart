@@ -39,7 +39,7 @@ import 'policy_status.dart';
 class PolicyEntity {
   final String id;
   final String moduleId;
-  final String policyImage;
+  final String? policyImage;
   final String policyNameEn;
   final String policyNameAr;
   final String policyNumberEn;
@@ -49,13 +49,13 @@ class PolicyEntity {
   final DateTime startDate;
   final DateTime endDate;
   final double policyWeight;
-  final String policyDocumentEn;
-  final String policyDocumentAr;
+  final String? policyDocumentEn;
+  final String? policyDocumentAr;
   final PolicyStatus status;
 
   // Tracking fields (latest values only)
   final DateTime lastModifiedDate;
-  final String lastEditorId;
+  final String lastEditor;
 
   const PolicyEntity({
     required this.id,
@@ -74,7 +74,7 @@ class PolicyEntity {
     required this.policyDocumentAr,
     required this.status,
     required this.lastModifiedDate,
-    required this.lastEditorId,
+    required this.lastEditor,
   });
 
   /// function name: [copyWith]
@@ -130,7 +130,7 @@ class PolicyEntity {
       policyDocumentAr: policyDocumentAr ?? this.policyDocumentAr,
       status: status ?? this.status,
       lastModifiedDate: lastModifiedDate,
-      lastEditorId: lastEditorId,
+      lastEditor: lastEditor,
     );
   }
 }

@@ -47,8 +47,8 @@ class ControlEntity {
   final String controlsNumberAr;
   final String controlsDescriptionEn;
   final String controlsDescriptionAr;
-  final String controlsDocumentEn;
-  final String controlsDocumentAr;
+  final String? controlsDocumentEn;
+  final String? controlsDocumentAr;
   final double controlsWeight;
   final String frequency;
   final DateTime startDate;
@@ -60,7 +60,7 @@ class ControlEntity {
 
   // Tracking fields (latest values only)
   final DateTime lastModifiedDate;
-  final String lastEditorId;
+  final String lastEditor;
 
   const ControlEntity({
     required this.id,
@@ -82,7 +82,7 @@ class ControlEntity {
     required this.score,
     required this.status,
     required this.lastModifiedDate,
-    required this.lastEditorId,
+    required this.lastEditor,
   });
 
   /// function name: [copyWith]
@@ -149,7 +149,7 @@ class ControlEntity {
       score: score ?? this.score,
       status: status ?? this.status,
       lastModifiedDate: lastModifiedDate,
-      lastEditorId: lastEditorId,
+      lastEditor: lastEditor,
     );
   }
 }

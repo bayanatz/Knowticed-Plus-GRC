@@ -22,6 +22,7 @@
 ///                                PolicyStatus.removed (Mohamed Elrashidy)
 library;
 
+import 'package:intl/intl.dart';
 import '../../domain/entities/policy_entity.dart';
 import '../../domain/entities/policy_status.dart';
 
@@ -31,6 +32,8 @@ import '../../domain/entities/policy_status.dart';
 ///          (de)serialization with full revision history per field.
 /// Author: Mohamed Elrashidy
 /// Created At: 15/1/2025
+
+final DateFormat _storageDateFormat = DateFormat('d MMM yyyy', 'en');
 
 /// class name: [PolicyModel]
 ///
@@ -48,22 +51,22 @@ import '../../domain/entities/policy_status.dart';
 class PolicyModel {
   final String id;
   final String moduleId;
-  final List<String> policyImage;
+  final List<String?> policyImage;
   final List<String> policyNameEn;
   final List<String> policyNameAr;
   final List<String> policyNumberEn;
   final List<String> policyNumberAr;
   final List<String> policyDescriptionEn;
   final List<String> policyDescriptionAr;
-  final List<String> startDate;
-  final List<String> endDate;
+  final List<DateTime> startDate;
+  final List<DateTime> endDate;
   final List<double> policyWeight;
-  final List<String> policyDocumentEn;
-  final List<String> policyDocumentAr;
+  final List<String?> policyDocumentEn;
+  final List<String?> policyDocumentAr;
   final List<String> status; // PolicyStatus.value strings
 
   // Tracking
-  final List<String> lastModifiedDate;
+  final List<DateTime> lastModifiedDate;
   final List<String> editors;
 
   PolicyModel({
@@ -125,7 +128,7 @@ class PolicyModel {
   /// parameters:
   ///            [String] id: unique identifier (Policy_ID)
   ///            [String] moduleId: parent module id (denormalized)
-  ///            [String] policyImage: initial image url/path
+  ///            [String?] policyImage: initial image url/path
   ///            [String] policyNameEn: initial English name
   ///            [String] policyNameAr: initial Arabic name
   ///            [String] policyNumberEn: initial English number
@@ -135,8 +138,8 @@ class PolicyModel {
   ///            [DateTime] startDate: initial start date
   ///            [DateTime] endDate: initial end date
   ///            [double] policyWeight: initial weight
-  ///            [String] policyDocumentEn: initial English document url/path
-  ///            [String] policyDocumentAr: initial Arabic document url/path
+  ///            [String?] policyDocumentEn: initial English document url/path
+  ///            [String?] policyDocumentAr: initial Arabic document url/path
   ///            [PolicyStatus] status: initial lifecycle status
   ///            [String] editorId: id/email of the creating user
   ///
@@ -144,7 +147,7 @@ class PolicyModel {
   factory PolicyModel.create({
     required String id,
     required String moduleId,
-    required String policyImage,
+    String? policyImage,
     required String policyNameEn,
     required String policyNameAr,
     required String policyNumberEn,
@@ -154,12 +157,12 @@ class PolicyModel {
     required DateTime startDate,
     required DateTime endDate,
     required double policyWeight,
-    required String policyDocumentEn,
-    required String policyDocumentAr,
+    String? policyDocumentEn,
+    String? policyDocumentAr,
     required PolicyStatus status,
     required String editorId,
   }) {
-    final now = DateTime.now().toIso8601String();
+    final now = DateTime.now();
     return PolicyModel(
       id: id,
       moduleId: moduleId,
@@ -170,8 +173,8 @@ class PolicyModel {
       policyNumberAr: [policyNumberAr],
       policyDescriptionEn: [policyDescriptionEn],
       policyDescriptionAr: [policyDescriptionAr],
-      startDate: [startDate.toIso8601String()],
-      endDate: [endDate.toIso8601String()],
+      startDate: [startDate],
+      endDate: [endDate],
       policyWeight: [policyWeight],
       policyDocumentEn: [policyDocumentEn],
       policyDocumentAr: [policyDocumentAr],
@@ -187,7 +190,7 @@ class PolicyModel {
   ///          their last value so all Lists stay the same length.
   ///
   /// parameters:
-  ///            [String] policyImage: new image url/path, if changed
+  ///            [String?] policyImage: new image url/path, if changed
   ///            [String] policyNameEn: new English name, if changed
   ///            [String] policyNameAr: new Arabic name, if changed
   ///            [String] policyNumberEn: new English number, if changed
@@ -197,8 +200,8 @@ class PolicyModel {
   ///            [DateTime] startDate: new start date, if changed
   ///            [DateTime] endDate: new end date, if changed
   ///            [double] policyWeight: new weight, if changed
-  ///            [String] policyDocumentEn: new English document url/path, if changed
-  ///            [String] policyDocumentAr: new Arabic document url/path, if changed
+  ///            [String?] policyDocumentEn: new English document url/path, if changed
+  ///            [String?] policyDocumentAr: new Arabic document url/path, if changed
   ///            [PolicyStatus] status: new lifecycle status, if changed
   ///            [String] editorId: id/email of the user performing the update (required)
   ///
@@ -219,7 +222,7 @@ class PolicyModel {
     PolicyStatus? status,
     required String editorId,
   }) {
-    final now = DateTime.now().toIso8601String();
+    final now = DateTime.now();
     return PolicyModel(
       id: id,
       moduleId: moduleId,
@@ -250,11 +253,11 @@ class PolicyModel {
       ],
       startDate: [
         ...this.startDate,
-        startDate?.toIso8601String() ?? this.startDate.last
+        startDate ?? this.startDate.last
       ],
       endDate: [
         ...this.endDate,
-        endDate?.toIso8601String() ?? this.endDate.last
+        endDate ?? this.endDate.last
       ],
       policyWeight: [
         ...this.policyWeight,
@@ -293,13 +296,19 @@ class PolicyModel {
       'Policy_Number_Ar': policyNumberAr,
       'Policy_Description_En': policyDescriptionEn,
       'Policy_Description_Ar': policyDescriptionAr,
-      'Policy_Start_Date': startDate,
-      'Policy_End_Date': endDate,
+      'Policy_Start_Date': startDate
+          .map((d) => _storageDateFormat.format(d))
+          .toList(),
+      'Policy_End_Date': endDate
+          .map((d) => _storageDateFormat.format(d))
+          .toList(),
       'Policy_Weight': policyWeight,
       'Policy_Document_En': policyDocumentEn,
       'Policy_Document_Ar': policyDocumentAr,
       'Policy_Status': status,
-      'Modification_Date': lastModifiedDate,
+      'Modification_Date': lastModifiedDate
+          .map((d) => _storageDateFormat.format(d))
+          .toList(),
       'Modifiers': editors,
     };
   }
@@ -317,7 +326,7 @@ class PolicyModel {
     return PolicyModel(
       id: json['Policy_ID'] as String,
       moduleId: json['Module_ID'] as String,
-      policyImage: List<String>.from(json['Policy_Image'] ?? []),
+      policyImage: List<String?>.from(json['Policy_Image'] ?? []),
       policyNameEn: List<String>.from(json['Policy_Name_En'] ?? []),
       policyNameAr: List<String>.from(json['Policy_Name_Ar'] ?? []),
       policyNumberEn: List<String>.from(json['Policy_Number_En'] ?? []),
@@ -326,17 +335,23 @@ class PolicyModel {
           List<String>.from(json['Policy_Description_En'] ?? []),
       policyDescriptionAr:
           List<String>.from(json['Policy_Description_Ar'] ?? []),
-      startDate: List<String>.from(json['Policy_Start_Date'] ?? []),
-      endDate: List<String>.from(json['Policy_End_Date'] ?? []),
+      startDate: (json['Policy_Start_Date'] as List? ?? [])
+          .map((d) => _storageDateFormat.parse(d as String))
+          .toList(),
+      endDate: (json['Policy_End_Date'] as List? ?? [])
+          .map((d) => _storageDateFormat.parse(d as String))
+          .toList(),
       policyWeight: (json['Policy_Weight'] as List? ?? [])
           .map((e) => (e as num).toDouble())
           .toList(),
-      policyDocumentEn: List<String>.from(json['Policy_Document_En'] ?? []),
-      policyDocumentAr: List<String>.from(json['Policy_Document_Ar'] ?? []),
+      policyDocumentEn: List<String?>.from(json['Policy_Document_En'] ?? []),
+      policyDocumentAr: List<String?>.from(json['Policy_Document_Ar'] ?? []),
       status: json['Policy_Status'] != null
           ? List<String>.from(json['Policy_Status'])
           : List<String>.filled(editorsRaw.length, PolicyStatus.draft.value),
-      lastModifiedDate: List<String>.from(json['Modification_Date'] ?? []),
+      lastModifiedDate: (json['Modification_Date'] as List? ?? [])
+          .map((d) => _storageDateFormat.parse(d as String))
+          .toList(),
       editors: editorsRaw,
     );
   }
@@ -362,14 +377,14 @@ class PolicyModel {
       policyNumberAr: policyNumberAr.last,
       policyDescriptionEn: policyDescriptionEn.last,
       policyDescriptionAr: policyDescriptionAr.last,
-      startDate: DateTime.parse(startDate.last),
-      endDate: DateTime.parse(endDate.last),
+      startDate: startDate.last,
+      endDate: endDate.last,
       policyWeight: policyWeight.last,
       policyDocumentEn: policyDocumentEn.last,
       policyDocumentAr: policyDocumentAr.last,
       status: PolicyStatus.fromString(status.last),
-      lastModifiedDate: DateTime.parse(lastModifiedDate.last),
-      lastEditorId: editors.last,
+      lastModifiedDate: lastModifiedDate.last,
+      lastEditor: editors.last,
     );
   }
 }

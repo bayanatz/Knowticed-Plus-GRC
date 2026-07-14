@@ -49,13 +49,13 @@ class PolicyBulkUploadCubit extends Cubit<PolicyBulkUploadState> {
   /// The editable row collection backing the preview table.
   PolicyBulkUploadRows get rowsData => _rows;
 
-  /// Resolves the currently logged-in user's id (same lookup as [PolicyCubit]).
-  String get _currentUserId {
-    final fromConstant = Constant.idUser;
+  /// Resolves the currently logged-in user's email (same lookup as [PolicyCubit]).
+  String get _currentUserEmail {
+    final fromConstant = Constant.emailUser;
     if (fromConstant != null && fromConstant.isNotEmpty) return fromConstant;
     if (Get.isRegistered<MainCoreEmployeeController>()) {
-      final id = Get.find<MainCoreEmployeeController>().employeeEntity?.id;
-      if (id != null && id.isNotEmpty) return id;
+      final email = Get.find<MainCoreEmployeeController>().employeeEntity?.email;
+      if (email != null && email.isNotEmpty) return email;
     }
     return '';
   }
@@ -106,7 +106,7 @@ class PolicyBulkUploadCubit extends Cubit<PolicyBulkUploadState> {
     var succeededCount = 0;
     final failed = <PolicyBulkRowFailure>[];
     final indexesToRemove = <int>[];
-    final editorId = _currentUserId;
+    final editorId = _currentUserEmail;
 
     for (var i = 0; i < _rows.rows.length; i++) {
       final row = _rows.rows[i];
