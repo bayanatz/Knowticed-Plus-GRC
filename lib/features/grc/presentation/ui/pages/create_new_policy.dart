@@ -684,7 +684,13 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
         ),
         customButton(
           title: 'Preview'.tr,
-          function: () => setState(() => _step = 2),
+          function: () {
+            if (_hasPolicyLanguageErrors || _hasControlErrors) {
+              _showBlockingErrorsSnackbar();
+              return;
+            }
+            setState(() => _step = 2);
+          },
           height: 38.h,
           width: 150.w,
           color: AppColors.primary,
