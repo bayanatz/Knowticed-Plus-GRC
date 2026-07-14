@@ -21,7 +21,9 @@ library;
 /// Created At: 1/7/2026
 
 import 'package:demo_app/core/custom/10_custom_upload_document.dart';
-import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart' as dialogs;
+// 11's own showUploadDialog is a near-duplicate of 10's — hidden here to
+// avoid an ambiguous-import error; section 10 already demos the dedicated one.
+import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart' hide showUploadDialog;
 import 'package:demo_app/core/custom/loading.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
@@ -291,7 +293,7 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
 
     if (state is PolicyActionSuccess) {
       final isDraft = state.policy.status.value == 'Draft';
-      dialogs.showSuccessDialog(
+      showSuccessDialog(
         context: context,
         title: isDraft ? 'Saved as Draft'.tr : 'Policy Created'.tr,
         subtitle: isDraft
@@ -504,7 +506,7 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
       children: [
         customButton(
           title: 'Discard'.tr,
-          function: () => dialogs.showConfirmDialog(
+          function: () => showConfirmDialog(
             context: context,
             title: 'Discard Policy'.tr,
             subtitle:
@@ -551,7 +553,7 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
       children: [
         customButton(
           title: 'Save For Later'.tr,
-          function: () => dialogs.showConfirmDialog(
+          function: () => showConfirmDialog(
             context: context,
             title: 'Save As Draft'.tr,
             subtitle:
@@ -585,7 +587,7 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
       children: [
         customButton(
           title: 'Save For Later'.tr,
-          function: () => dialogs.showConfirmDialog(
+          function: () => showConfirmDialog(
             context: context,
             title: 'Save As Draft'.tr,
             subtitle:
@@ -612,7 +614,7 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
               );
               return;
             }
-            dialogs.showConfirmDialog(
+            showConfirmDialog(
               context: context,
               title: 'Publish Policy'.tr,
               subtitle:
