@@ -6,10 +6,42 @@
 /// Date: 2026-07-5
 /// Dependencies: firebase_storage
 /// Revision History: 2025-01-15 - Initial creation
+///                   2026-07-14 - Migrated to the new schema: Policy and
+///                                Control documents are now split into
+///                                separate En/Ar fields, so uploads take a
+///                                [DocumentLanguage] and are stored under
+///                                per-language subfolders (Mohamed Magdy
+///                                Abdelkhalek)
 
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
+
+/// class name: [DocumentLanguage]
+///
+/// purpose: distinguish which localized document variant (English or
+///          Arabic) a Policy/Control document upload belongs to, matching
+///          the `_En` / `_Ar` suffixed fields in the new schema
+///          (Policy_Document_En/Ar, Controls_Document_En/Ar).
+///
+/// authors: Mohamed Magdy Abdelkhalek
+///
+/// created at: 14/7/2026
+enum DocumentLanguage {
+  en,
+  ar;
+
+  /// the folder segment used when building the Storage path for this
+  /// language, e.g. ".../Documents/En/...".
+  String get folderName {
+    switch (this) {
+      case DocumentLanguage.en:
+        return 'En';
+      case DocumentLanguage.ar:
+        return 'Ar';
+    }
+  }
+}
 
 /// ************************* FILE INFO *************************** ///
 /// File Name: policy_storage_data_source.dart
@@ -21,11 +53,12 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 /// class name: [PolicyStorageDataSource]
 ///
-/// purpose: upload Policy images and documents (Policy_Document,
-///          Controls_Document) to Firebase Storage and return their public
-///          download URLs, which are then saved inside the corresponding
-///          Firestore fields. Each upload is stored under a structured path
-///          that keeps policy and control files separated.
+/// purpose: upload Policy images and documents (Policy_Document_En/Ar,
+///          Controls_Document_En/Ar) to Firebase Storage and return their
+///          public download URLs, which are then saved inside the
+///          corresponding Firestore fields. Each upload is stored under a
+///          structured path that keeps policy and control files, and their
+///          English/Arabic variants, separated.
 ///
 /// authors: Mohamed Magdy Abdelkhalek
 ///
@@ -39,11 +72,15 @@ class PolicyStorageDataSource {
   // Storage folder structure:
   // Policies_Files/
   //   └── {policyId}/
-  //         ├── Images/         ← policy image
-  //         ├── Documents/      ← policy document
+  //         ├── Images/                  ← policy image
+  //         ├── Documents/
+  //         │     ├── En/                ← policy document (English)
+  //         │     └── Ar/                ← policy document (Arabic)
   //         └── Controls/
   //               └── {controlId}/
-  //                     └── Documents/  ← control document
+  //                     └── Documents/
+  //                           ├── En/     ← control document (English)
+  //                           └── Ar/     ← control document (Arabic)
   static const String _rootFolder = 'Policies_Files';
 
   // ------------------------------------------------------------------
@@ -54,7 +91,7 @@ class PolicyStorageDataSource {
   ///
   /// purpose: upload a Policy image file to Firebase Storage and return
   ///          its public download URL. The URL is what should be passed
-  ///          as the [image] field in [PolicyModel.create] or
+  ///          as the [policyImage] field in [PolicyModel.create] or
   ///          [PolicyModel.copyWithUpdate].
   ///
   /// parameters:
@@ -83,24 +120,28 @@ class PolicyStorageDataSource {
 
   /// function name: [uploadPolicyDocument]
   ///
-  /// purpose: upload a Policy document file to Firebase Storage and return
-  ///          its public download URL. The URL is what should be passed as
-  ///          the [policyDocument] field in [PolicyModel.create] or
-  ///          [PolicyModel.copyWithUpdate].
+  /// purpose: upload a Policy document file (English or Arabic variant) to
+  ///          Firebase Storage and return its public download URL. The URL
+  ///          is what should be passed as the [policyDocumentEn] or
+  ///          [policyDocumentAr] field in [PolicyModel.create] or
+  ///          [PolicyModel.copyWithUpdate], depending on [language].
   ///
   /// parameters:
   ///            [String] policyId: id of the Policy the document belongs to
   ///            [File] documentFile: the local document file to upload
+  ///            [DocumentLanguage] language: which localized field this upload is for (En/Ar)
   ///
   /// return type: [Future<String>] - the download URL of the uploaded document, or throws an Exception on failure
   Future<String> uploadPolicyDocument({
     required String policyId,
     required File documentFile,
+    required DocumentLanguage language,
   }) async {
     try {
       final fileName = _buildFileName(documentFile);
-      final ref =
-          _storage.ref('$_rootFolder/$policyId/Documents/$fileName');
+      final ref = _storage.ref(
+        '$_rootFolder/$policyId/Documents/${language.folderName}/$fileName',
+      );
       final uploadTask = await ref.putFile(documentFile);
       return await uploadTask.ref.getDownloadURL();
     } catch (e) {
@@ -114,27 +155,30 @@ class PolicyStorageDataSource {
 
   /// function name: [uploadControlDocument]
   ///
-  /// purpose: upload a Control document file to Firebase Storage and return
-  ///          its public download URL. The URL is what should be passed as
-  ///          the [controlsDocument] field when building a [ControlModel].
-  ///          Files are stored under the policy's folder to keep all
-  ///          related assets together.
+  /// purpose: upload a Control document file (English or Arabic variant) to
+  ///          Firebase Storage and return its public download URL. The URL
+  ///          is what should be passed as the [controlsDocumentEn] or
+  ///          [controlsDocumentAr] field when building a [ControlModel],
+  ///          depending on [language]. Files are stored under the policy's
+  ///          folder to keep all related assets together.
   ///
   /// parameters:
   ///            [String] policyId: id of the Policy that owns this Control
   ///            [String] controlId: id of the Control the document belongs to
   ///            [File] documentFile: the local document file to upload
+  ///            [DocumentLanguage] language: which localized field this upload is for (En/Ar)
   ///
   /// return type: [Future<String>] - the download URL of the uploaded control document, or throws an Exception on failure
   Future<String> uploadControlDocument({
     required String policyId,
     required String controlId,
     required File documentFile,
+    required DocumentLanguage language,
   }) async {
     try {
       final fileName = _buildFileName(documentFile);
       final ref = _storage.ref(
-        '$_rootFolder/$policyId/Controls/$controlId/Documents/$fileName',
+        '$_rootFolder/$policyId/Controls/$controlId/Documents/${language.folderName}/$fileName',
       );
       final uploadTask = await ref.putFile(documentFile);
       return await uploadTask.ref.getDownloadURL();

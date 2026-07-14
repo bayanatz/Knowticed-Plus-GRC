@@ -7,6 +7,7 @@
 /// Date: 2026-07-13
 /// Dependencies: None
 /// Revision History: 2026-07-13 - Initial creation
+library;
 
 /// class name: [GRCModuleOwnerHistoryEntry]
 ///

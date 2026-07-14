@@ -5,6 +5,8 @@
 /// Date: 2026-07-06
 /// Dependencies: None
 /// Revision History: 2026-07-06 - Initial creation
+///                   2026-07-14 - Added Scheduled and Removed to match the
+///                                new Firestore schema (Mohamed Elrashidy)
 
 /// ************************* FILE INFO *************************** ///
 /// File Name: policy_status.dart
@@ -16,10 +18,12 @@
 /// class name: [PolicyStatus]
 ///
 /// purpose: represent the lifecycle state of a Policy record.
-///          - [draft]    → created but not yet published (Save For Later)
-///          - [active]   → published and currently in effect
-///          - [inactive] → manually deactivated
-///          - [expired]  → past the End Date
+///          - [draft]      → created but not yet published (Save For Later)
+///          - [active]     → published and currently in effect
+///          - [inactive]   → manually deactivated
+///          - [scheduled]  → published but Start Date is still in the future
+///          - [expired]    → past the End Date
+///          - [removed]    → soft-deleted (replaces the old Is_Deleted flag)
 ///
 /// authors: Mohamed Elrashidy
 ///
@@ -28,7 +32,9 @@ enum PolicyStatus {
   draft,
   active,
   inactive,
-  expired;
+  scheduled,
+  expired,
+  removed;
 
   /// function name: [value]
   ///
@@ -45,8 +51,12 @@ enum PolicyStatus {
         return 'Active';
       case PolicyStatus.inactive:
         return 'Inactive';
+      case PolicyStatus.scheduled:
+        return 'Scheduled';
       case PolicyStatus.expired:
         return 'Expired';
+      case PolicyStatus.removed:
+        return 'Removed';
     }
   }
 
@@ -65,8 +75,12 @@ enum PolicyStatus {
         return PolicyStatus.active;
       case 'inactive':
         return PolicyStatus.inactive;
+      case 'scheduled':
+        return PolicyStatus.scheduled;
       case 'expired':
         return PolicyStatus.expired;
+      case 'removed':
+        return PolicyStatus.removed;
       case 'draft':
       default:
         return PolicyStatus.draft;

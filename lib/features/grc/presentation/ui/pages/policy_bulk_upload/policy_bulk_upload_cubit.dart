@@ -134,9 +134,9 @@ class PolicyBulkUploadCubit extends Cubit<PolicyBulkUploadState> {
           policyWeight: weight,
           editorId: editorId,
           moduleId: moduleId,
-          controls: const [],
           status: PolicyStatus.active,
-          policyDocumentUrl: document.isEmpty ? null : document,
+          policyDocumentUrlAr: document.isEmpty ? null : document,
+          policyDocumentUrlEn: document.isEmpty ? null : document,
         ),
       );
 
@@ -154,7 +154,8 @@ class PolicyBulkUploadCubit extends Cubit<PolicyBulkUploadState> {
       _rows.removeAt(index);
     }
 
-    emit(PolicyBulkUploadSubmitResult(succeededCount: succeededCount, failed: failed));
+    emit(PolicyBulkUploadSubmitResult(
+        succeededCount: succeededCount, failed: failed));
   }
 
   @override

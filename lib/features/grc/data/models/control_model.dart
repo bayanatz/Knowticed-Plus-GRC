@@ -1,20 +1,31 @@
 /// Module: Policy Management
 /// Description: Defines the Control Model used for data persistence. Every
 ///              field is stored as a history List so that previous values
-///              are never lost and each edit is fully traceable.
+///              are never lost and each edit is fully traceable. Controls
+///              are stored in Firestore as their own subcollection:
+///              GRC_Modules/{Module_ID}/Policies/{Policy_ID}/Controls/{Control_ID}
 /// Author: Mohamed Magdy Abdelkhalek
 /// Date: 2026-07-5
-/// Dependencies: ControlEntity
-/// Revision History: 2026-07-5 - Initial creation
+/// Dependencies: ControlEntity, ControlStatus
+/// Revision History: 2026-07-5  - Initial creation
+///                   2026-07-14 - Migrated to the Controls subcollection
+///                                schema: added policyId, number fields,
+///                                split documents (En/Ar), start/end dates,
+///                                departments, equalWeights, score, and
+///                                Controls_Status history. Removed
+///                                isDeleted in favor of ControlStatus
+///                                (Mohamed Magdy Abdelkhalek)
+library;
 
 import 'package:demo_app/features/grc/domain/entities/control_entity.dart';
-
+import 'package:demo_app/features/grc/domain/entities/control_status.dart';
 
 /// ************************* FILE INFO *************************** ///
 /// File Name: control_model.dart
 /// Purpose: Contains the ControlModel class used for Firestore
-///          (de)serialization. Controls are nested within PolicyModel but
-///          carry their own revision history and tracking.
+///          (de)serialization. Controls now live in their own subcollection
+///          under a Policy document, but still carry their own revision
+///          history and tracking, exactly like PolicyModel.
 /// Author: Mohamed Magdy Abdelkhalek
 /// Created At: 5/7/2026
 
@@ -25,39 +36,55 @@ import 'package:demo_app/features/grc/domain/entities/control_entity.dart';
 ///          [editors] and [lastModifiedDate]) represents one historical
 ///          version of the Control at the same point in time.
 ///
-///          Controls are stored as a nested list inside [PolicyModel]:
-///          PolicyModel.controls = List<List<ControlModel>>
-///          where the outer index = policy revision, inner list = controls
-///          at that revision.
+///          Firestore path:
+///          GRC_Modules/{Module_ID}/Policies/{Policy_ID}/Controls/{Control_ID}
 ///
 /// authors: Mohamed Magdy Abdelkhalek
 ///
 /// created at: 5/7/2026
 class ControlModel {
   final String id;
+  final String policyId;
   final List<String> controlsNameEn;
   final List<String> controlsNameAr;
+  final List<String> controlsNumberEn;
+  final List<String> controlsNumberAr;
   final List<String> controlsDescriptionEn;
   final List<String> controlsDescriptionAr;
-  final List<String> controlsDocument;
+  final List<String> controlsDocumentEn;
+  final List<String> controlsDocumentAr;
   final List<double> controlsWeight;
   final List<String> frequency;
-  final List<bool> isDeleted;
+  final List<String> startDate;
+  final List<String> endDate;
+  final List<List<String>> departments;
+  final List<bool> equalWeights;
+  final List<int> score;
+  final List<String> status; // ControlStatus.value strings
 
-  // Tracking fields
-  final List<DateTime> lastModifiedDate;
+  // Tracking
+  final List<String> lastModifiedDate;
   final List<String> editors;
 
   ControlModel({
     required this.id,
+    required this.policyId,
     required this.controlsNameEn,
     required this.controlsNameAr,
+    required this.controlsNumberEn,
+    required this.controlsNumberAr,
     required this.controlsDescriptionEn,
     required this.controlsDescriptionAr,
-    required this.controlsDocument,
+    required this.controlsDocumentEn,
+    required this.controlsDocumentAr,
     required this.controlsWeight,
     required this.frequency,
-    required this.isDeleted,
+    required this.startDate,
+    required this.endDate,
+    required this.departments,
+    required this.equalWeights,
+    required this.score,
+    required this.status,
     required this.lastModifiedDate,
     required this.editors,
   }) {
@@ -80,12 +107,20 @@ class ControlModel {
     final lengths = <int>{
       controlsNameEn.length,
       controlsNameAr.length,
+      controlsNumberEn.length,
+      controlsNumberAr.length,
       controlsDescriptionEn.length,
       controlsDescriptionAr.length,
-      controlsDocument.length,
+      controlsDocumentEn.length,
+      controlsDocumentAr.length,
       controlsWeight.length,
       frequency.length,
-      isDeleted.length,
+      startDate.length,
+      endDate.length,
+      departments.length,
+      equalWeights.length,
+      score.length,
+      status.length,
       lastModifiedDate.length,
       editors.length,
     };
@@ -99,39 +134,68 @@ class ControlModel {
   ///          first (creation) revision of this Control.
   ///
   /// parameters:
-  ///            [String] id: unique identifier of the new control
+  ///            [String] id: unique identifier of the new control (Controls_ID)
+  ///            [String] policyId: id of the parent Policy document
   ///            [String] controlsNameEn: initial English control name
   ///            [String] controlsNameAr: initial Arabic control name
+  ///            [String] controlsNumberEn: initial English control number
+  ///            [String] controlsNumberAr: initial Arabic control number
   ///            [String] controlsDescriptionEn: initial English description
   ///            [String] controlsDescriptionAr: initial Arabic description
-  ///            [String] controlsDocument: initial document url/path
+  ///            [String] controlsDocumentEn: initial English document url/path
+  ///            [String] controlsDocumentAr: initial Arabic document url/path
   ///            [double] controlsWeight: initial weight value
   ///            [String] frequency: initial frequency value
-  ///            [String] editorId: id of the user creating this control
+  ///            [DateTime] startDate: initial start date
+  ///            [DateTime] endDate: initial end date
+  ///            [List<String>] departments: initial departments list
+  ///            [bool] equalWeights: initial equal-weights flag
+  ///            [int] score: initial score value
+  ///            [ControlStatus] status: initial lifecycle status
+  ///            [String] editorId: id/email of the user creating this control
   ///
   /// return type: [ControlModel] - the newly created model instance
   factory ControlModel.create({
     required String id,
+    required String policyId,
     required String controlsNameEn,
     required String controlsNameAr,
+    required String controlsNumberEn,
+    required String controlsNumberAr,
     required String controlsDescriptionEn,
     required String controlsDescriptionAr,
-    required String controlsDocument,
+    required String controlsDocumentEn,
+    required String controlsDocumentAr,
     required double controlsWeight,
     required String frequency,
+    required DateTime startDate,
+    required DateTime endDate,
+    required List<String> departments,
+    required bool equalWeights,
+    required int score,
+    required ControlStatus status,
     required String editorId,
   }) {
-    final now = DateTime.now();
+    final now = DateTime.now().toIso8601String();
     return ControlModel(
       id: id,
+      policyId: policyId,
       controlsNameEn: [controlsNameEn],
       controlsNameAr: [controlsNameAr],
+      controlsNumberEn: [controlsNumberEn],
+      controlsNumberAr: [controlsNumberAr],
       controlsDescriptionEn: [controlsDescriptionEn],
       controlsDescriptionAr: [controlsDescriptionAr],
-      controlsDocument: [controlsDocument],
+      controlsDocumentEn: [controlsDocumentEn],
+      controlsDocumentAr: [controlsDocumentAr],
       controlsWeight: [controlsWeight],
       frequency: [frequency],
-      isDeleted: [false],
+      startDate: [startDate.toIso8601String()],
+      endDate: [endDate.toIso8601String()],
+      departments: [departments],
+      equalWeights: [equalWeights],
+      score: [score],
+      status: [status.value],
       lastModifiedDate: [now],
       editors: [editorId],
     );
@@ -146,29 +210,46 @@ class ControlModel {
   /// parameters:
   ///            [String] controlsNameEn: new English control name, if changed
   ///            [String] controlsNameAr: new Arabic control name, if changed
+  ///            [String] controlsNumberEn: new English control number, if changed
+  ///            [String] controlsNumberAr: new Arabic control number, if changed
   ///            [String] controlsDescriptionEn: new English description, if changed
   ///            [String] controlsDescriptionAr: new Arabic description, if changed
-  ///            [String] controlsDocument: new document url/path, if changed
+  ///            [String] controlsDocumentEn: new English document url/path, if changed
+  ///            [String] controlsDocumentAr: new Arabic document url/path, if changed
   ///            [double] controlsWeight: new weight value, if changed
   ///            [String] frequency: new frequency value, if changed
-  ///            [bool] isDeleted: new soft-delete flag, if changed
-  ///            [String] editorId: id of the user performing the update (required)
+  ///            [DateTime] startDate: new start date, if changed
+  ///            [DateTime] endDate: new end date, if changed
+  ///            [List<String>] departments: new departments list, if changed
+  ///            [bool] equalWeights: new equal-weights flag, if changed
+  ///            [int] score: new score value, if changed
+  ///            [ControlStatus] status: new lifecycle status, if changed
+  ///            [String] editorId: id/email of the user performing the update (required)
   ///
   /// return type: [ControlModel] - a new model instance with the appended revision
   ControlModel copyWithUpdate({
     String? controlsNameEn,
     String? controlsNameAr,
+    String? controlsNumberEn,
+    String? controlsNumberAr,
     String? controlsDescriptionEn,
     String? controlsDescriptionAr,
-    String? controlsDocument,
+    String? controlsDocumentEn,
+    String? controlsDocumentAr,
     double? controlsWeight,
     String? frequency,
-    bool? isDeleted,
+    DateTime? startDate,
+    DateTime? endDate,
+    List<String>? departments,
+    bool? equalWeights,
+    int? score,
+    ControlStatus? status,
     required String editorId,
   }) {
-    final now = DateTime.now();
+    final now = DateTime.now().toIso8601String();
     return ControlModel(
       id: id,
+      policyId: policyId,
       controlsNameEn: [
         ...this.controlsNameEn,
         controlsNameEn ?? this.controlsNameEn.last,
@@ -176,6 +257,14 @@ class ControlModel {
       controlsNameAr: [
         ...this.controlsNameAr,
         controlsNameAr ?? this.controlsNameAr.last,
+      ],
+      controlsNumberEn: [
+        ...this.controlsNumberEn,
+        controlsNumberEn ?? this.controlsNumberEn.last,
+      ],
+      controlsNumberAr: [
+        ...this.controlsNumberAr,
+        controlsNumberAr ?? this.controlsNumberAr.last,
       ],
       controlsDescriptionEn: [
         ...this.controlsDescriptionEn,
@@ -185,16 +274,34 @@ class ControlModel {
         ...this.controlsDescriptionAr,
         controlsDescriptionAr ?? this.controlsDescriptionAr.last,
       ],
-      controlsDocument: [
-        ...this.controlsDocument,
-        controlsDocument ?? this.controlsDocument.last,
+      controlsDocumentEn: [
+        ...this.controlsDocumentEn,
+        controlsDocumentEn ?? this.controlsDocumentEn.last,
+      ],
+      controlsDocumentAr: [
+        ...this.controlsDocumentAr,
+        controlsDocumentAr ?? this.controlsDocumentAr.last,
       ],
       controlsWeight: [
         ...this.controlsWeight,
         controlsWeight ?? this.controlsWeight.last,
       ],
       frequency: [...this.frequency, frequency ?? this.frequency.last],
-      isDeleted: [...this.isDeleted, isDeleted ?? this.isDeleted.last],
+      startDate: [
+        ...this.startDate,
+        startDate?.toIso8601String() ?? this.startDate.last,
+      ],
+      endDate: [
+        ...this.endDate,
+        endDate?.toIso8601String() ?? this.endDate.last,
+      ],
+      departments: [...this.departments, departments ?? this.departments.last],
+      equalWeights: [
+        ...this.equalWeights,
+        equalWeights ?? this.equalWeights.last,
+      ],
+      score: [...this.score, score ?? this.score.last],
+      status: [...this.status, status?.value ?? this.status.last],
       lastModifiedDate: [...lastModifiedDate, now],
       editors: [...editors, editorId],
     );
@@ -203,58 +310,82 @@ class ControlModel {
   /// function name: [toJson]
   ///
   /// purpose: serialize the control model into a Map ready to be stored
-  ///          as a nested object inside a Firestore Policy document.
-  ///          Keys follow the convention: each word capitalized, separated
-  ///          by underscores (e.g. "Controls_Name_En"). ID is stored as "ID".
+  ///          as a document inside the Controls subcollection. Keys follow
+  ///          the Capital_Underscore convention used across the schema.
   ///
   /// parameters: none
   ///
   /// return type: [Map<String, dynamic>] - the Firestore-ready representation of this control
   Map<String, dynamic> toJson() {
     return {
-      'ID': id,
+      'Policy_ID': policyId,
+      'Controls_ID': id,
       'Controls_Name_En': controlsNameEn,
       'Controls_Name_Ar': controlsNameAr,
+      'Controls_Number_En': controlsNumberEn,
+      'Controls_Number_Ar': controlsNumberAr,
       'Controls_Description_En': controlsDescriptionEn,
       'Controls_Description_Ar': controlsDescriptionAr,
-      'Controls_Document': controlsDocument,
+      'Controls_Document_En': controlsDocumentEn,
+      'Controls_Document_Ar': controlsDocumentAr,
       'Controls_Weight': controlsWeight,
-      'Frequency': frequency,
-      'Is_Deleted': isDeleted,
-      'Last_Modified_Date':
-          lastModifiedDate.map((d) => d.toIso8601String()).toList(),
-      'Editors': editors,
+      'Controls_Frequency': frequency,
+      'Controls_Start_Date': startDate,
+      'Controls_End_Date': endDate,
+      // Firestore rejects arrays that directly contain other arrays, so each
+      // revision's department list is wrapped in a map (List<List<String>>
+      // would otherwise serialize as a nested array and the write would
+      // throw).
+      'Controls_Departments': departments.map((rev) => {'Items': rev}).toList(),
+      'Controls_Equal_Weights': equalWeights,
+      'Controls_Score': score,
+      'Controls_Status': status,
+      'Modification_Date': lastModifiedDate,
+      'Modifiers': editors,
     };
   }
 
   /// function name: [ControlModel.fromJson]
   ///
-  /// purpose: rebuild a [ControlModel] instance from the raw nested Map
-  ///          retrieved from Firestore.
+  /// purpose: rebuild a [ControlModel] instance from the raw document data
+  ///          retrieved from the Controls subcollection.
   ///
   /// parameters:
-  ///            [Map<String, dynamic>] json: the raw nested control data from Firestore
+  ///            [Map<String, dynamic>] json: the raw control document data from Firestore
   ///
   /// return type: [ControlModel] - the reconstructed model instance
   factory ControlModel.fromJson(Map<String, dynamic> json) {
-    final editorsRaw = List<String>.from(json['Editors'] ?? []);
+    final editorsRaw = List<String>.from(json['Modifiers'] ?? []);
     return ControlModel(
-      id: json['ID'] as String,
+      id: json['Controls_ID'] as String,
+      policyId: json['Policy_ID'] as String,
       controlsNameEn: List<String>.from(json['Controls_Name_En'] ?? []),
       controlsNameAr: List<String>.from(json['Controls_Name_Ar'] ?? []),
+      controlsNumberEn: List<String>.from(json['Controls_Number_En'] ?? []),
+      controlsNumberAr: List<String>.from(json['Controls_Number_Ar'] ?? []),
       controlsDescriptionEn:
           List<String>.from(json['Controls_Description_En'] ?? []),
       controlsDescriptionAr:
           List<String>.from(json['Controls_Description_Ar'] ?? []),
-      controlsDocument: List<String>.from(json['Controls_Document'] ?? []),
-      controlsWeight: List<double>.from(json['Controls_Weight'] ?? []),
-      frequency: List<String>.from(json['Frequency'] ?? []),
-      isDeleted: json['Is_Deleted'] != null
-          ? List<bool>.from(json['Is_Deleted'])
-          : List<bool>.filled(editorsRaw.length, false),
-      lastModifiedDate: (json['Last_Modified_Date'] as List? ?? [])
-          .map((d) => DateTime.parse(d as String))
+      controlsDocumentEn: List<String>.from(json['Controls_Document_En'] ?? []),
+      controlsDocumentAr: List<String>.from(json['Controls_Document_Ar'] ?? []),
+      controlsWeight: (json['Controls_Weight'] as List? ?? [])
+          .map((e) => (e as num).toDouble())
           .toList(),
+      frequency: List<String>.from(json['Controls_Frequency'] ?? []),
+      startDate: List<String>.from(json['Controls_Start_Date'] ?? []),
+      endDate: List<String>.from(json['Controls_End_Date'] ?? []),
+      departments: (json['Controls_Departments'] as List? ?? [])
+          .map((rev) =>
+              List<String>.from((rev as Map<String, dynamic>)['Items'] ?? []))
+          .toList(),
+      equalWeights: List<bool>.from(json['Controls_Equal_Weights'] ?? []),
+      score: List<int>.from(json['Controls_Score'] ?? []),
+      status: json['Controls_Status'] != null
+          ? List<String>.from(json['Controls_Status'])
+          : List<String>.filled(
+              editorsRaw.length, ControlStatus.unassigned.value),
+      lastModifiedDate: List<String>.from(json['Modification_Date'] ?? []),
       editors: editorsRaw,
     );
   }
@@ -271,15 +402,24 @@ class ControlModel {
   ControlEntity toEntity() {
     return ControlEntity(
       id: id,
+      policyId: policyId,
       controlsNameEn: controlsNameEn.last,
       controlsNameAr: controlsNameAr.last,
+      controlsNumberEn: controlsNumberEn.last,
+      controlsNumberAr: controlsNumberAr.last,
       controlsDescriptionEn: controlsDescriptionEn.last,
       controlsDescriptionAr: controlsDescriptionAr.last,
-      controlsDocument: controlsDocument.last,
+      controlsDocumentEn: controlsDocumentEn.last,
+      controlsDocumentAr: controlsDocumentAr.last,
       controlsWeight: controlsWeight.last,
       frequency: frequency.last,
-      isDeleted: isDeleted.last,
-      lastModifiedDate: lastModifiedDate.last,
+      startDate: DateTime.parse(startDate.last),
+      endDate: DateTime.parse(endDate.last),
+      departments: departments.last,
+      equalWeights: equalWeights.last,
+      score: score.last,
+      status: ControlStatus.fromString(status.last),
+      lastModifiedDate: DateTime.parse(lastModifiedDate.last),
       lastEditorId: editors.last,
     );
   }

@@ -7,6 +7,7 @@
 /// Date: 2026-06-30
 /// Dependencies: dartz, Failure, GRCModuleEntity
 /// Revision History: 2026-06-30 - Initial creation
+library;
 
 import 'dart:io';
 

@@ -1,16 +1,29 @@
 /// Module: Policy Management
 /// Description: Defines the Policy Model used for data persistence with
 ///              full revision history per field, including status lifecycle.
+///              Policies are stored in Firestore at:
+///              GRC_Modules/{Module_ID}/Policies/{Policy_ID}
+///              Controls now live in their own subcollection underneath this
+///              document and are no longer embedded here.
 /// Author: Mohamed Elrashidy
 /// Date: 2025-01-15
-/// Dependencies: ControlModel, PolicyEntity, PolicyStatus
+/// Dependencies: PolicyEntity, PolicyStatus
 /// Revision History: 2025-01-15 - Initial creation
 ///                   2026-07-06 - Added status history list (Mohamed Elrashidy)
+///                   2026-07-14 - Migrated to the new schema: removed the
+///                                nested controls List<List<ControlModel>>
+///                                (Controls are now a Firestore
+///                                subcollection), renamed Image to
+///                                Policy_Image, split Policy_Document into
+///                                En/Ar, dates now stored as ISO strings,
+///                                and tracking fields renamed to
+///                                Modification_Date/Modifiers. Removed
+///                                Is_Deleted in favor of
+///                                PolicyStatus.removed (Mohamed Elrashidy)
 library;
 
 import '../../domain/entities/policy_entity.dart';
 import '../../domain/entities/policy_status.dart';
-import 'control_model.dart';
 
 /// ************************* FILE INFO *************************** ///
 /// File Name: policy_model.dart
@@ -24,9 +37,10 @@ import 'control_model.dart';
 /// purpose: represents a Policy record where every field is kept as a
 ///          List<...>. Each index across all Lists represents one historical
 ///          version at the same point in time. The [status] List tracks the
-///          policy lifecycle (Draft → Active → Inactive / Expired).
-///          [controls] is List<List<ControlModel>>:
-///            outer index → policy revision | inner list → controls snapshot
+///          policy lifecycle (Draft → Active → Inactive / Scheduled /
+///          Expired / Removed). Controls are intentionally NOT included
+///          here - they live in their own Controls subcollection under this
+///          Policy document and should be fetched/managed via ControlModel.
 ///
 /// authors: Mohamed Elrashidy
 ///
@@ -34,29 +48,28 @@ import 'control_model.dart';
 class PolicyModel {
   final String id;
   final String moduleId;
-  final List<String> image;
+  final List<String> policyImage;
   final List<String> policyNameEn;
   final List<String> policyNameAr;
   final List<String> policyNumberEn;
   final List<String> policyNumberAr;
   final List<String> policyDescriptionEn;
   final List<String> policyDescriptionAr;
-  final List<DateTime> startDate;
-  final List<DateTime> endDate;
+  final List<String> startDate;
+  final List<String> endDate;
   final List<double> policyWeight;
-  final List<String> policyDocument;
-  final List<List<ControlModel>> controls;
+  final List<String> policyDocumentEn;
+  final List<String> policyDocumentAr;
   final List<String> status; // PolicyStatus.value strings
-  final List<bool> isDeleted;
 
   // Tracking
-  final List<DateTime> lastModifiedDate;
+  final List<String> lastModifiedDate;
   final List<String> editors;
 
   PolicyModel({
     required this.id,
     required this.moduleId,
-    required this.image,
+    required this.policyImage,
     required this.policyNameEn,
     required this.policyNameAr,
     required this.policyNumberEn,
@@ -66,10 +79,9 @@ class PolicyModel {
     required this.startDate,
     required this.endDate,
     required this.policyWeight,
-    required this.policyDocument,
-    required this.controls,
+    required this.policyDocumentEn,
+    required this.policyDocumentAr,
     required this.status,
-    required this.isDeleted,
     required this.lastModifiedDate,
     required this.editors,
   }) {
@@ -86,7 +98,7 @@ class PolicyModel {
   /// return type: [bool] - true if all lengths match
   bool _allSameLength() {
     final lengths = <int>{
-      image.length,
+      policyImage.length,
       policyNameEn.length,
       policyNameAr.length,
       policyNumberEn.length,
@@ -96,10 +108,9 @@ class PolicyModel {
       startDate.length,
       endDate.length,
       policyWeight.length,
-      policyDocument.length,
-      controls.length,
+      policyDocumentEn.length,
+      policyDocumentAr.length,
       status.length,
-      isDeleted.length,
       lastModifiedDate.length,
       editors.length,
     };
@@ -112,8 +123,9 @@ class PolicyModel {
   ///          starts with exactly one element.
   ///
   /// parameters:
-  ///            [String] id: unique identifier
-  ///            [String] image: initial image url/path
+  ///            [String] id: unique identifier (Policy_ID)
+  ///            [String] moduleId: parent module id (denormalized)
+  ///            [String] policyImage: initial image url/path
   ///            [String] policyNameEn: initial English name
   ///            [String] policyNameAr: initial Arabic name
   ///            [String] policyNumberEn: initial English number
@@ -123,16 +135,16 @@ class PolicyModel {
   ///            [DateTime] startDate: initial start date
   ///            [DateTime] endDate: initial end date
   ///            [double] policyWeight: initial weight
-  ///            [String] policyDocument: initial document url/path
-  ///            [List<ControlModel>] controls: initial controls snapshot
+  ///            [String] policyDocumentEn: initial English document url/path
+  ///            [String] policyDocumentAr: initial Arabic document url/path
   ///            [PolicyStatus] status: initial lifecycle status
-  ///            [String] editorId: id of the creating user
+  ///            [String] editorId: id/email of the creating user
   ///
   /// return type: [PolicyModel] - the newly created model instance
   factory PolicyModel.create({
     required String id,
     required String moduleId,
-    required String image,
+    required String policyImage,
     required String policyNameEn,
     required String policyNameAr,
     required String policyNumberEn,
@@ -142,29 +154,28 @@ class PolicyModel {
     required DateTime startDate,
     required DateTime endDate,
     required double policyWeight,
-    required String policyDocument,
-    required List<ControlModel> controls,
+    required String policyDocumentEn,
+    required String policyDocumentAr,
     required PolicyStatus status,
     required String editorId,
   }) {
-    final now = DateTime.now();
+    final now = DateTime.now().toIso8601String();
     return PolicyModel(
       id: id,
       moduleId: moduleId,
-      image: [image],
+      policyImage: [policyImage],
       policyNameEn: [policyNameEn],
       policyNameAr: [policyNameAr],
       policyNumberEn: [policyNumberEn],
       policyNumberAr: [policyNumberAr],
       policyDescriptionEn: [policyDescriptionEn],
       policyDescriptionAr: [policyDescriptionAr],
-      startDate: [startDate],
-      endDate: [endDate],
+      startDate: [startDate.toIso8601String()],
+      endDate: [endDate.toIso8601String()],
       policyWeight: [policyWeight],
-      policyDocument: [policyDocument],
-      controls: [controls],
+      policyDocumentEn: [policyDocumentEn],
+      policyDocumentAr: [policyDocumentAr],
       status: [status.value],
-      isDeleted: [false],
       lastModifiedDate: [now],
       editors: [editorId],
     );
@@ -176,7 +187,7 @@ class PolicyModel {
   ///          their last value so all Lists stay the same length.
   ///
   /// parameters:
-  ///            [String] image: new image url/path, if changed
+  ///            [String] policyImage: new image url/path, if changed
   ///            [String] policyNameEn: new English name, if changed
   ///            [String] policyNameAr: new Arabic name, if changed
   ///            [String] policyNumberEn: new English number, if changed
@@ -186,15 +197,14 @@ class PolicyModel {
   ///            [DateTime] startDate: new start date, if changed
   ///            [DateTime] endDate: new end date, if changed
   ///            [double] policyWeight: new weight, if changed
-  ///            [String] policyDocument: new document url/path, if changed
-  ///            [List<ControlModel>] controls: new controls snapshot, if changed
+  ///            [String] policyDocumentEn: new English document url/path, if changed
+  ///            [String] policyDocumentAr: new Arabic document url/path, if changed
   ///            [PolicyStatus] status: new lifecycle status, if changed
-  ///            [bool] isDeleted: soft-delete flag (true=delete, false=restore)
-  ///            [String] editorId: id of the user performing the update (required)
+  ///            [String] editorId: id/email of the user performing the update (required)
   ///
   /// return type: [PolicyModel] - a new model with the appended revision
   PolicyModel copyWithUpdate({
-    String? image,
+    String? policyImage,
     String? policyNameEn,
     String? policyNameAr,
     String? policyNumberEn,
@@ -204,17 +214,16 @@ class PolicyModel {
     DateTime? startDate,
     DateTime? endDate,
     double? policyWeight,
-    String? policyDocument,
-    List<ControlModel>? controls,
+    String? policyDocumentEn,
+    String? policyDocumentAr,
     PolicyStatus? status,
-    bool? isDeleted,
     required String editorId,
   }) {
-    final now = DateTime.now();
+    final now = DateTime.now().toIso8601String();
     return PolicyModel(
       id: id,
       moduleId: moduleId,
-      image: [...this.image, image ?? this.image.last],
+      policyImage: [...this.policyImage, policyImage ?? this.policyImage.last],
       policyNameEn: [
         ...this.policyNameEn,
         policyNameEn ?? this.policyNameEn.last
@@ -239,19 +248,27 @@ class PolicyModel {
         ...this.policyDescriptionAr,
         policyDescriptionAr ?? this.policyDescriptionAr.last
       ],
-      startDate: [...this.startDate, startDate ?? this.startDate.last],
-      endDate: [...this.endDate, endDate ?? this.endDate.last],
+      startDate: [
+        ...this.startDate,
+        startDate?.toIso8601String() ?? this.startDate.last
+      ],
+      endDate: [
+        ...this.endDate,
+        endDate?.toIso8601String() ?? this.endDate.last
+      ],
       policyWeight: [
         ...this.policyWeight,
         policyWeight ?? this.policyWeight.last
       ],
-      policyDocument: [
-        ...this.policyDocument,
-        policyDocument ?? this.policyDocument.last
+      policyDocumentEn: [
+        ...this.policyDocumentEn,
+        policyDocumentEn ?? this.policyDocumentEn.last
       ],
-      controls: [...this.controls, controls ?? this.controls.last],
+      policyDocumentAr: [
+        ...this.policyDocumentAr,
+        policyDocumentAr ?? this.policyDocumentAr.last
+      ],
       status: [...this.status, status?.value ?? this.status.last],
-      isDeleted: [...this.isDeleted, isDeleted ?? this.isDeleted.last],
       lastModifiedDate: [...lastModifiedDate, now],
       editors: [...editors, editorId],
     );
@@ -260,37 +277,30 @@ class PolicyModel {
   /// function name: [toJson]
   ///
   /// purpose: serialize to a Firestore-ready Map using Capital_Underscore
-  ///          keys. ID is stored as "ID".
+  ///          keys.
   ///
   /// parameters: none
   ///
   /// return type: [Map<String, dynamic>] - the Firestore representation
   Map<String, dynamic> toJson() {
     return {
-      'ID': id,
       'Module_ID': moduleId,
-      'Image': image,
+      'Policy_ID': id,
+      'Policy_Image': policyImage,
       'Policy_Name_En': policyNameEn,
       'Policy_Name_Ar': policyNameAr,
       'Policy_Number_En': policyNumberEn,
       'Policy_Number_Ar': policyNumberAr,
       'Policy_Description_En': policyDescriptionEn,
       'Policy_Description_Ar': policyDescriptionAr,
-      'Start_Date': startDate.map((d) => d.toIso8601String()).toList(),
-      'End_Date': endDate.map((d) => d.toIso8601String()).toList(),
+      'Policy_Start_Date': startDate,
+      'Policy_End_Date': endDate,
       'Policy_Weight': policyWeight,
-      'Policy_Document': policyDocument,
-      // Firestore rejects arrays that directly contain other arrays, so each
-      // revision's control list is wrapped in a map (List<List<...>> would
-      // otherwise serialize as a nested array and the write would throw).
-      'Controls': controls
-          .map((rev) => {'Items': rev.map((c) => c.toJson()).toList()})
-          .toList(),
-      'Status': status,
-      'Is_Deleted': isDeleted,
-      'Last_Modified_Date':
-          lastModifiedDate.map((d) => d.toIso8601String()).toList(),
-      'Editors': editors,
+      'Policy_Document_En': policyDocumentEn,
+      'Policy_Document_Ar': policyDocumentAr,
+      'Policy_Status': status,
+      'Modification_Date': lastModifiedDate,
+      'Modifiers': editors,
     };
   }
 
@@ -303,11 +313,11 @@ class PolicyModel {
   ///
   /// return type: [PolicyModel] - the reconstructed model instance
   factory PolicyModel.fromJson(Map<String, dynamic> json) {
-    final editorsRaw = List<String>.from(json['Editors'] ?? []);
+    final editorsRaw = List<String>.from(json['Modifiers'] ?? []);
     return PolicyModel(
-      id: json['ID'] as String,
+      id: json['Policy_ID'] as String,
       moduleId: json['Module_ID'] as String,
-      image: List<String>.from(json['Image'] ?? []),
+      policyImage: List<String>.from(json['Policy_Image'] ?? []),
       policyNameEn: List<String>.from(json['Policy_Name_En'] ?? []),
       policyNameAr: List<String>.from(json['Policy_Name_Ar'] ?? []),
       policyNumberEn: List<String>.from(json['Policy_Number_En'] ?? []),
@@ -316,28 +326,17 @@ class PolicyModel {
           List<String>.from(json['Policy_Description_En'] ?? []),
       policyDescriptionAr:
           List<String>.from(json['Policy_Description_Ar'] ?? []),
-      startDate: (json['Start_Date'] as List? ?? [])
-          .map((d) => DateTime.parse(d as String))
+      startDate: List<String>.from(json['Policy_Start_Date'] ?? []),
+      endDate: List<String>.from(json['Policy_End_Date'] ?? []),
+      policyWeight: (json['Policy_Weight'] as List? ?? [])
+          .map((e) => (e as num).toDouble())
           .toList(),
-      endDate: (json['End_Date'] as List? ?? [])
-          .map((d) => DateTime.parse(d as String))
-          .toList(),
-      policyWeight: List<double>.from(json['Policy_Weight'] ?? []),
-      policyDocument: List<String>.from(json['Policy_Document'] ?? []),
-      controls: (json['Controls'] as List? ?? [])
-          .map((rev) => ((rev as Map<String, dynamic>)['Items'] as List? ?? [])
-              .map((c) => ControlModel.fromJson(c as Map<String, dynamic>))
-              .toList())
-          .toList(),
-      status: json['Status'] != null
-          ? List<String>.from(json['Status'])
+      policyDocumentEn: List<String>.from(json['Policy_Document_En'] ?? []),
+      policyDocumentAr: List<String>.from(json['Policy_Document_Ar'] ?? []),
+      status: json['Policy_Status'] != null
+          ? List<String>.from(json['Policy_Status'])
           : List<String>.filled(editorsRaw.length, PolicyStatus.draft.value),
-      isDeleted: json['Is_Deleted'] != null
-          ? List<bool>.from(json['Is_Deleted'])
-          : List<bool>.filled(editorsRaw.length, false),
-      lastModifiedDate: (json['Last_Modified_Date'] as List? ?? [])
-          .map((d) => DateTime.parse(d as String))
-          .toList(),
+      lastModifiedDate: List<String>.from(json['Modification_Date'] ?? []),
       editors: editorsRaw,
     );
   }
@@ -345,36 +344,31 @@ class PolicyModel {
   /// function name: [toEntity]
   ///
   /// purpose: convert the full history model to a [PolicyEntity] holding
-  ///          only the latest value of every field. Soft-deleted controls
-  ///          are automatically filtered out.
+  ///          only the latest value of every field. Controls are not part
+  ///          of this conversion - fetch them separately from the Controls
+  ///          subcollection via ControlModel.
   ///
   /// parameters: none
   ///
   /// return type: [PolicyEntity] - the entity built from the last index of every List
   PolicyEntity toEntity() {
-    final latestControls = controls.last
-        .where((c) => !c.isDeleted.last)
-        .map((c) => c.toEntity())
-        .toList();
-
     return PolicyEntity(
       id: id,
       moduleId: moduleId,
-      image: image.last,
+      policyImage: policyImage.last,
       policyNameEn: policyNameEn.last,
       policyNameAr: policyNameAr.last,
       policyNumberEn: policyNumberEn.last,
       policyNumberAr: policyNumberAr.last,
       policyDescriptionEn: policyDescriptionEn.last,
       policyDescriptionAr: policyDescriptionAr.last,
-      startDate: startDate.last,
-      endDate: endDate.last,
+      startDate: DateTime.parse(startDate.last),
+      endDate: DateTime.parse(endDate.last),
       policyWeight: policyWeight.last,
-      policyDocument: policyDocument.last,
-      controls: latestControls,
+      policyDocumentEn: policyDocumentEn.last,
+      policyDocumentAr: policyDocumentAr.last,
       status: PolicyStatus.fromString(status.last),
-      isDeleted: isDeleted.last,
-      lastModifiedDate: lastModifiedDate.last,
+      lastModifiedDate: DateTime.parse(lastModifiedDate.last),
       lastEditorId: editors.last,
     );
   }

@@ -12,6 +12,7 @@
 ///                                Editors→Modifiers stores user email;
 ///                                added "Scheduled" status value
 ///                                (Mohamed Magdy Abdelkhalek)
+library;
 
 import 'dart:convert';
 
@@ -244,8 +245,14 @@ class GRCModuleModel {
     return GRCModuleModel(
       moduleId: moduleId,
       moduleImage: [...this.moduleImage, moduleImage ?? this.moduleImage.last],
-      moduleNameEn: [...this.moduleNameEn, moduleNameEn ?? this.moduleNameEn.last],
-      moduleNameAr: [...this.moduleNameAr, moduleNameAr ?? this.moduleNameAr.last],
+      moduleNameEn: [
+        ...this.moduleNameEn,
+        moduleNameEn ?? this.moduleNameEn.last
+      ],
+      moduleNameAr: [
+        ...this.moduleNameAr,
+        moduleNameAr ?? this.moduleNameAr.last
+      ],
       moduleDescriptionEn: [
         ...this.moduleDescriptionEn,
         moduleDescriptionEn ?? this.moduleDescriptionEn.last,
@@ -265,14 +272,15 @@ class GRCModuleModel {
       // JSON-encode the new owners list if provided; otherwise carry forward
       // the last encoded string as-is (already encoded from a previous revision).
       moduleOwners: [
-        ...this.moduleOwners,
-        owners != null ? jsonEncode(owners) : this.moduleOwners.last,
+        ...moduleOwners,
+        owners != null ? jsonEncode(owners) : moduleOwners.last,
       ],
       status: [
         ...this.status,
         _deriveStatus(
           requestedStatus: status ?? this.status.last,
-          activationDate: moduleActivationDate ?? this.moduleActivationDate.last,
+          activationDate:
+              moduleActivationDate ?? this.moduleActivationDate.last,
         ),
       ],
       modificationDate: [...modificationDate, now],
@@ -302,8 +310,9 @@ class GRCModuleModel {
       'Module_Description_En': moduleDescriptionEn,
       'Module_Description_Ar': moduleDescriptionAr,
       'Module_Owning_Department': moduleOwningDepartment,
-      'Module_Activation_Date':
-          moduleActivationDate.map((d) => _storageDateFormat.format(d)).toList(),
+      'Module_Activation_Date': moduleActivationDate
+          .map((d) => _storageDateFormat.format(d))
+          .toList(),
       // Already JSON-encoded strings — stored as List<String> in Firestore.
       'Module_Owners': moduleOwners,
       'Status': status,

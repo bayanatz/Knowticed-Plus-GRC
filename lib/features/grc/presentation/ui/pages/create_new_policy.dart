@@ -25,6 +25,7 @@ import 'package:demo_app/core/custom/loading.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/grc/domain/repository/policy_repository.dart';
+import 'package:demo_app/features/grc/domain/use_cases/create_control_usecase.dart';
 import 'package:demo_app/features/grc/presentation/controller/policy_cubit.dart';
 import 'package:demo_app/features/grc/presentation/ui/pages/add_policy_controls.dart';
 import 'package:demo_app/features/grc/presentation/ui/widgets/grc_policy_widget/policy_control_model.dart';
@@ -178,30 +179,7 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
                 _descriptionArController.text.trim().isNotEmpty));
   }
 
-  /// function name: [_buildControlParams]
-  ///
-  /// purpose: map the local [PolicyControlModel] list to a list of
-  ///          [CreateControlParams] ready for the cubit.
-  ///
-  /// parameters: none
-  ///
-  /// return type: [List<CreateControlParams>]
-  List<CreateControlParams> _buildControlParams() {
-    return _controls
-        .map(
-          (c) => CreateControlParams(
-            controlsNameEn: c.nameController.text.trim(),
-            controlsNameAr: c.nameArController.text.trim(),
-            controlsDescriptionEn: c.descriptionController.text.trim(),
-            controlsDescriptionAr: c.descriptionArController.text.trim(),
-            controlsWeight:
-                double.tryParse(c.weightController.text.trim()) ?? 0,
-            frequency: c.frequency ?? '',
-          ),
-        )
-        .toList();
-  }
-
+  
   // ----------------------------------------------------------------
   // Cubit actions
   // ----------------------------------------------------------------
@@ -226,9 +204,7 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
       policyDescriptionAr: _descriptionArController.text.trim(),
       startDate: _startDate ?? DateTime.now(),
       endDate: _endDate ?? DateTime.now(),
-      policyWeight:
-          double.tryParse(_weightController.text.trim()) ?? 0,
-      controls: _buildControlParams(),
+      policyWeight: double.tryParse(_weightController.text.trim()) ?? 0,
       moduleId: widget.moduleId,
     );
   }
@@ -261,9 +237,7 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
       policyDescriptionAr: _descriptionArController.text.trim(),
       startDate: _startDate ?? DateTime.now(),
       endDate: _endDate ?? DateTime.now(),
-      policyWeight:
-          double.tryParse(_weightController.text.trim()) ?? 0,
-      controls: _buildControlParams(),
+      policyWeight: double.tryParse(_weightController.text.trim()) ?? 0,
       moduleId: widget.moduleId,
     );
   }
@@ -380,8 +354,7 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
             children: [
               PolicyHeaderWidget(
                 isArabicEnabled: _isArabicEnabled,
-                onArabicToggle: (v) =>
-                    setState(() => _isArabicEnabled = v),
+                onArabicToggle: (v) => setState(() => _isArabicEnabled = v),
               ),
               SizedBox(height: 15.h),
               PolicyInfoFormWidget(
@@ -503,7 +476,9 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
           function: () => showConfirmDialog(
             context: context,
             title: 'Discard Policy'.tr,
-            subtitle: 'Are you sure you want to discard this policy? Any unsaved changes will be lost.'.tr,
+            subtitle:
+                'Are you sure you want to discard this policy? Any unsaved changes will be lost.'
+                    .tr,
             confirmLabel: 'Discard'.tr,
             cancelLabel: 'Cancel'.tr,
             onConfirm: () => Navigator.of(context).pop(),
@@ -548,7 +523,8 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
           function: () => showConfirmDialog(
             context: context,
             title: 'Save As Draft'.tr,
-            subtitle: 'Are you sure you want to save this policy as a draft?'.tr,
+            subtitle:
+                'Are you sure you want to save this policy as a draft?'.tr,
             confirmLabel: 'Save'.tr,
             cancelLabel: 'Cancel'.tr,
             onConfirm: () => _onSaveForLater(cubit),
@@ -581,7 +557,8 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
           function: () => showConfirmDialog(
             context: context,
             title: 'Save As Draft'.tr,
-            subtitle: 'Are you sure you want to save this policy as a draft?'.tr,
+            subtitle:
+                'Are you sure you want to save this policy as a draft?'.tr,
             confirmLabel: 'Save'.tr,
             cancelLabel: 'Cancel'.tr,
             onConfirm: () => _onSaveForLater(cubit),
@@ -607,7 +584,9 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
             showConfirmDialog(
               context: context,
               title: 'Publish Policy'.tr,
-              subtitle: 'Are you sure you want to publish this policy? This will make it active.'.tr,
+              subtitle:
+                  'Are you sure you want to publish this policy? This will make it active.'
+                      .tr,
               confirmLabel: 'Publish'.tr,
               cancelLabel: 'Cancel'.tr,
               onConfirm: () => _onPublish(cubit),
