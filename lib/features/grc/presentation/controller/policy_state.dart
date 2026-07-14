@@ -5,6 +5,11 @@ part of 'policy_cubit.dart';
 /// Purpose: Contains all sealed state classes emitted by [PolicyCubit].
 /// Author: Mohamed Magdy Abdelkhalek
 /// Created At: 5/7/2026
+/// Revision History: 2026-07-14 - Added PolicyActionPartialSuccess,
+///                                PolicyControlActionSuccess,
+///                                PolicyControlsListLoaded,
+///                                PolicyControlDeleted for the Control side
+///                                of PolicyCubit
 
 sealed class PolicyState {}
 
@@ -36,9 +41,42 @@ final class PolicyActionSuccess extends PolicyState {
   PolicyActionSuccess(this.policy);
 }
 
+/// State emitted when a Policy was created successfully but one or more of
+/// its initial Controls failed to be created. The Policy already exists in
+/// Firestore at this point (Policy + Controls creation is not
+/// transactional), so this is surfaced distinctly from [PolicyActionSuccess]
+/// instead of silently dropping the failed controls.
+final class PolicyActionPartialSuccess extends PolicyState {
+  final PolicyEntity policy;
+  final List<({PendingControlInput input, String message})> failedControls;
+
+  PolicyActionPartialSuccess(this.policy, this.failedControls);
+}
+
 /// State emitted when any operation fails.
 final class PolicyFailure extends PolicyState {
   final String message;
 
   PolicyFailure(this.message);
+}
+
+/// State emitted when a single Control create/update completes successfully.
+final class PolicyControlActionSuccess extends PolicyState {
+  final ControlEntity control;
+
+  PolicyControlActionSuccess(this.control);
+}
+
+/// State emitted when a Policy's Controls have been fetched successfully.
+final class PolicyControlsListLoaded extends PolicyState {
+  final List<ControlEntity> controls;
+
+  PolicyControlsListLoaded(this.controls);
+}
+
+/// State emitted when a Control has been deleted successfully.
+final class PolicyControlDeleted extends PolicyState {
+  final String controlId;
+
+  PolicyControlDeleted(this.controlId);
 }

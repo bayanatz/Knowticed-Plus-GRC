@@ -1,50 +1,100 @@
 /// Module: Policy Management
-/// Description: BLoC Cubit that manages Policy state for the presentation
-///              layer. Delegates all operations to the corresponding use
-///              cases and emits typed [PolicyState] subclasses.
+/// Description: BLoC Cubit that manages Policy and Control state for the
+///              presentation layer. Delegates all operations to the
+///              corresponding use cases and emits typed [PolicyState]
+///              subclasses. Owns both Policy and Control operations (one
+///              cubit for this feature) because the Create-Policy UI treats
+///              "policy + its initial controls" as a single user action.
 /// Author: Mohamed Magdy Abdelkhalek
 /// Date: 2026-07-05
-/// Dependencies: flutter_bloc, use cases, PolicyEntity, PolicyStatus
+/// Dependencies: flutter_bloc, use cases, PolicyEntity, ControlEntity
 /// Revision History: 2026-07-05 - Initial creation
 ///                   2026-07-06 - Added saveAsDraft and status-aware methods
-///                                (Mohamed Elrashidy)
+///                   2026-07-14 - Reworked for the new schema: Policy
+///                                creation no longer bundles Controls at the
+///                                repository level (see
+///                                _createPolicyWithControls for the
+///                                orchestration), split single document
+///                                fields into En/Ar, added standalone
+///                                Control methods (createControl/
+///                                updateControl/deleteControl/getAllControls)
 library;
 
 import 'dart:io';
 
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
+import 'package:demo_app/features/grc/domain/entities/control_entity.dart';
+import 'package:demo_app/features/grc/domain/entities/control_status.dart';
 import 'package:demo_app/features/grc/domain/entities/policy_entity.dart';
 import 'package:demo_app/features/grc/domain/entities/policy_status.dart';
-import 'package:demo_app/features/grc/domain/repository/policy_repository.dart';
+import 'package:demo_app/features/grc/domain/use_cases/create_control_usecase.dart';
 import 'package:demo_app/features/grc/domain/use_cases/create_policy_usecase.dart';
+import 'package:demo_app/features/grc/domain/use_cases/get_control_usecases.dart';
 import 'package:demo_app/features/grc/domain/use_cases/get_policy_usecases.dart';
+import 'package:demo_app/features/grc/domain/use_cases/update_control_usecase.dart';
 import 'package:demo_app/features/grc/domain/use_cases/update_policy_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 
 part 'policy_state.dart';
 
-/// ************************* FILE INFO *************************** ///
-/// File Name: policy_cubit.dart
-/// Purpose: Contains the PolicyCubit class, the presentation-layer state
-///          manager for all Policy CRUD operations.
-/// Author: Mohamed Magdy Abdelkhalek
-/// Created At: 5/7/2026
+/// class name: [PendingControlInput]
+///
+/// purpose: groups the fields needed to create one Control alongside a new
+///          Policy, before that Policy's id exists yet.
+///          [PolicyCubit.createPolicy]/[PolicyCubit.saveAsDraft] resolve
+///          moduleId/policyId/editorId for each of these once the Policy
+///          itself has been created, then forward the rest to
+///          [CreateControlUseCase].
+class PendingControlInput {
+  final String controlsNameEn;
+  final String controlsNameAr;
+  final String controlsNumberEn;
+  final String controlsNumberAr;
+  final String controlsDescriptionEn;
+  final String controlsDescriptionAr;
+  final double controlsWeight;
+  final String frequency;
+  final DateTime startDate;
+  final DateTime endDate;
+  final List<String> departments;
+  final bool equalWeights;
+  final int score;
+  final ControlStatus status;
+  final File? controlsDocumentFileEn;
+  final String? controlsDocumentUrlEn;
+  final File? controlsDocumentFileAr;
+  final String? controlsDocumentUrlAr;
+
+  const PendingControlInput({
+    required this.controlsNameEn,
+    required this.controlsNameAr,
+    required this.controlsNumberEn,
+    required this.controlsNumberAr,
+    required this.controlsDescriptionEn,
+    required this.controlsDescriptionAr,
+    required this.controlsWeight,
+    required this.frequency,
+    required this.startDate,
+    required this.endDate,
+    required this.departments,
+    required this.equalWeights,
+    required this.score,
+    required this.status,
+    this.controlsDocumentFileEn,
+    this.controlsDocumentUrlEn,
+    this.controlsDocumentFileAr,
+    this.controlsDocumentUrlAr,
+  });
+}
 
 /// class name: [PolicyCubit]
 ///
-/// purpose: manage all Policy UI state. Each public method maps to one
-///          use case and follows the pattern: emit [PolicyLoading] → call
-///          use case → emit success state or [PolicyFailure].
-///
-///          Status-aware methods:
-///           - [createPolicy] → publishes with [PolicyStatus.active]
-///           - [saveAsDraft]  → persists with [PolicyStatus.draft]
-///           - [updatePolicy] → accepts an optional new status
-///
-/// authors: Mohamed Magdy Abdelkhalek
-///
-/// created at: 5/7/2026
+/// purpose: manage all Policy and Control UI state. Each public method maps
+///          to one use case (or, for [createPolicy]/[saveAsDraft], two —
+///          Policy then Controls) and follows the pattern: emit
+///          [PolicyLoading] → call use case(s) → emit a success state or
+///          [PolicyFailure].
 class PolicyCubit extends Cubit<PolicyState> {
   PolicyCubit({
     required CreatePolicyUseCase createPolicyUseCase,
@@ -53,12 +103,20 @@ class PolicyCubit extends Cubit<PolicyState> {
     required UpdatePolicyUseCase updatePolicyUseCase,
     required DeletePolicyUseCase deletePolicyUseCase,
     required RestorePolicyUseCase restorePolicyUseCase,
+    required CreateControlUseCase createControlUseCase,
+    required UpdateControlUseCase updateControlUseCase,
+    required DeleteControlUseCase deleteControlUseCase,
+    required GetAllControlsUseCase getAllControlsUseCase,
   })  : _createUseCase = createPolicyUseCase,
         _getUseCase = getPolicyUseCase,
         _getAllUseCase = getAllPoliciesUseCase,
         _updateUseCase = updatePolicyUseCase,
         _deleteUseCase = deletePolicyUseCase,
         _restoreUseCase = restorePolicyUseCase,
+        _createControlUseCase = createControlUseCase,
+        _updateControlUseCase = updateControlUseCase,
+        _deleteControlUseCase = deleteControlUseCase,
+        _getAllControlsUseCase = getAllControlsUseCase,
         super(PolicyInitial());
 
   final CreatePolicyUseCase _createUseCase;
@@ -67,6 +125,10 @@ class PolicyCubit extends Cubit<PolicyState> {
   final UpdatePolicyUseCase _updateUseCase;
   final DeletePolicyUseCase _deleteUseCase;
   final RestorePolicyUseCase _restoreUseCase;
+  final CreateControlUseCase _createControlUseCase;
+  final UpdateControlUseCase _updateControlUseCase;
+  final DeleteControlUseCase _deleteControlUseCase;
+  final GetAllControlsUseCase _getAllControlsUseCase;
 
   /// Resolves the currently logged-in user's id.
   String get _currentUserId {
@@ -80,27 +142,17 @@ class PolicyCubit extends Cubit<PolicyState> {
   }
 
   // ================================================================
-  // GET ALL
+  // GET ALL / GET SINGLE
   // ================================================================
 
-  /// function name: [getAllPolicies]
-  ///
-  /// purpose: fetch all Policy records and emit [PolicyListLoaded] on
-  ///          success or [PolicyFailure] on failure.
-  ///
-  /// parameters:
-  ///            [String] moduleId: unique identifier of the parent GRC Module
-  ///            [bool] includeDeleted: include soft-deleted policies (default: false)
-  ///
-  /// return type: [Future<void>]
   Future<void> getAllPolicies({
     required String moduleId,
-    bool includeDeleted = false,
+    bool includeRemoved = false,
   }) async {
     emit(PolicyLoading());
     final result = await _getAllUseCase.call(
       moduleId: moduleId,
-      includeDeleted: includeDeleted,
+      includeRemoved: includeRemoved,
     );
     result.fold(
       (failure) => emit(PolicyFailure(failure.message)),
@@ -108,20 +160,6 @@ class PolicyCubit extends Cubit<PolicyState> {
     );
   }
 
-  // ================================================================
-  // GET SINGLE
-  // ================================================================
-
-  /// function name: [getPolicy]
-  ///
-  /// purpose: fetch a single Policy by [id] and emit [PolicySingleLoaded]
-  ///          on success or [PolicyFailure] on failure.
-  ///
-  /// parameters:
-  ///            [String] id: unique identifier of the policy to fetch
-  ///            [String] moduleId: unique identifier of the parent GRC Module
-  ///
-  /// return type: [Future<void>]
   Future<void> getPolicy(String id, {required String moduleId}) async {
     emit(PolicyLoading());
     final result = await _getUseCase.call(id, moduleId: moduleId);
@@ -132,33 +170,14 @@ class PolicyCubit extends Cubit<PolicyState> {
   }
 
   // ================================================================
-  // CREATE  (Active / Publish)
+  // CREATE (Active / Publish) and SAVE AS DRAFT
   // ================================================================
 
   /// function name: [createPolicy]
   ///
-  /// purpose: create a new Policy with [PolicyStatus.active] (Publish).
-  ///          Emits [PolicyActionSuccess] on success or [PolicyFailure]
-  ///          on failure.
-  ///
-  /// parameters:
-  ///            [String] policyNameEn: English policy name
-  ///            [String] policyNameAr: Arabic policy name
-  ///            [String] policyNumberEn: English policy number
-  ///            [String] policyNumberAr: Arabic policy number
-  ///            [String] policyDescriptionEn: English description
-  ///            [String] policyDescriptionAr: Arabic description
-  ///            [DateTime] startDate: policy start date
-  ///            [DateTime] endDate: policy end date
-  ///            [double] policyWeight: policy weight value
-  ///            [List<CreateControlParams>] controls: initial controls to attach
-  ///            [String] moduleId: unique identifier of the parent GRC Module
-  ///            [File] imageFile: local image file to upload, if any
-  ///            [String] imageUrl: already-hosted image URL, if any
-  ///            [File] policyDocumentFile: local document file to upload, if any
-  ///            [String] policyDocumentUrl: already-hosted document URL, if any
-  ///
-  /// return type: [Future<void>]
+  /// purpose: create a new Policy with [PolicyStatus.active] (Publish),
+  ///          then create every [controls] entry against the new Policy's
+  ///          id. See [_createPolicyWithControls] for state semantics.
   Future<void> createPolicy({
     required String policyNameEn,
     required String policyNameAr,
@@ -169,70 +188,41 @@ class PolicyCubit extends Cubit<PolicyState> {
     required DateTime startDate,
     required DateTime endDate,
     required double policyWeight,
-    required List<CreateControlParams> controls,
     required String moduleId,
+    List<PendingControlInput> controls = const [],
     File? imageFile,
     String? imageUrl,
-    File? policyDocumentFile,
-    String? policyDocumentUrl,
+    File? policyDocumentFileEn,
+    String? policyDocumentUrlEn,
+    File? policyDocumentFileAr,
+    String? policyDocumentUrlAr,
   }) async {
-    emit(PolicyLoading());
-    final result = await _createUseCase.call(
-      CreatePolicyParams(
-        policyNameEn: policyNameEn,
-        policyNameAr: policyNameAr,
-        policyNumberEn: policyNumberEn,
-        policyNumberAr: policyNumberAr,
-        policyDescriptionEn: policyDescriptionEn,
-        policyDescriptionAr: policyDescriptionAr,
-        startDate: startDate,
-        endDate: endDate,
-        policyWeight: policyWeight,
-        editorId: _currentUserId,
-        moduleId: moduleId,
-        controls: controls,
-        status: PolicyStatus.active, // Publish = Active
-        imageFile: imageFile,
-        imageUrl: imageUrl,
-        policyDocumentFile: policyDocumentFile,
-        policyDocumentUrl: policyDocumentUrl,
-      ),
-    );
-    result.fold(
-      (failure) => emit(PolicyFailure(failure.message)),
-      (policy) => emit(PolicyActionSuccess(policy)),
+    await _createPolicyWithControls(
+      status: PolicyStatus.active, // Publish = Active
+      policyNameEn: policyNameEn,
+      policyNameAr: policyNameAr,
+      policyNumberEn: policyNumberEn,
+      policyNumberAr: policyNumberAr,
+      policyDescriptionEn: policyDescriptionEn,
+      policyDescriptionAr: policyDescriptionAr,
+      startDate: startDate,
+      endDate: endDate,
+      policyWeight: policyWeight,
+      moduleId: moduleId,
+      controls: controls,
+      imageFile: imageFile,
+      imageUrl: imageUrl,
+      policyDocumentFileEn: policyDocumentFileEn,
+      policyDocumentUrlEn: policyDocumentUrlEn,
+      policyDocumentFileAr: policyDocumentFileAr,
+      policyDocumentUrlAr: policyDocumentUrlAr,
     );
   }
 
-  // ================================================================
-  // SAVE AS DRAFT
-  // ================================================================
-
   /// function name: [saveAsDraft]
   ///
-  /// purpose: create a new Policy with [PolicyStatus.draft] (Save For Later).
-  ///          Controls may be empty or partially filled.
-  ///          Emits [PolicyActionSuccess] on success or [PolicyFailure]
-  ///          on failure.
-  ///
-  /// parameters:
-  ///            [String] policyNameEn: English policy name
-  ///            [String] policyNameAr: Arabic policy name
-  ///            [String] policyNumberEn: English policy number
-  ///            [String] policyNumberAr: Arabic policy number
-  ///            [String] policyDescriptionEn: English description
-  ///            [String] policyDescriptionAr: Arabic description
-  ///            [DateTime] startDate: policy start date
-  ///            [DateTime] endDate: policy end date
-  ///            [double] policyWeight: policy weight value
-  ///            [List<CreateControlParams>] controls: controls snapshot (can be empty)
-  ///            [String] moduleId: unique identifier of the parent GRC Module
-  ///            [File] imageFile: local image file to upload, if any
-  ///            [String] imageUrl: already-hosted image URL, if any
-  ///            [File] policyDocumentFile: local document file to upload, if any
-  ///            [String] policyDocumentUrl: already-hosted document URL, if any
-  ///
-  /// return type: [Future<void>]
+  /// purpose: create a new Policy with [PolicyStatus.draft] (Save For
+  ///          Later), then create every [controls] entry (may be empty).
   Future<void> saveAsDraft({
     required String policyNameEn,
     required String policyNameAr,
@@ -243,14 +233,70 @@ class PolicyCubit extends Cubit<PolicyState> {
     required DateTime startDate,
     required DateTime endDate,
     required double policyWeight,
-    required List<CreateControlParams> controls,
     required String moduleId,
+    List<PendingControlInput> controls = const [],
     File? imageFile,
     String? imageUrl,
-    File? policyDocumentFile,
-    String? policyDocumentUrl,
+    File? policyDocumentFileEn,
+    String? policyDocumentUrlEn,
+    File? policyDocumentFileAr,
+    String? policyDocumentUrlAr,
+  }) async {
+    await _createPolicyWithControls(
+      status: PolicyStatus.draft, // Save For Later = Draft
+      policyNameEn: policyNameEn,
+      policyNameAr: policyNameAr,
+      policyNumberEn: policyNumberEn,
+      policyNumberAr: policyNumberAr,
+      policyDescriptionEn: policyDescriptionEn,
+      policyDescriptionAr: policyDescriptionAr,
+      startDate: startDate,
+      endDate: endDate,
+      policyWeight: policyWeight,
+      moduleId: moduleId,
+      controls: controls,
+      imageFile: imageFile,
+      imageUrl: imageUrl,
+      policyDocumentFileEn: policyDocumentFileEn,
+      policyDocumentUrlEn: policyDocumentUrlEn,
+      policyDocumentFileAr: policyDocumentFileAr,
+      policyDocumentUrlAr: policyDocumentUrlAr,
+    );
+  }
+
+  /// function name: [_createPolicyWithControls]
+  ///
+  /// purpose: shared orchestration for [createPolicy]/[saveAsDraft]. Creates
+  ///          the Policy first (repository/use-case layer knows nothing
+  ///          about Controls); if that fails, emits [PolicyFailure] and
+  ///          stops — no Control is ever attempted without a persisted
+  ///          Policy. On Policy success, creates every [controls] entry
+  ///          against the new `policy.id`, collecting failures instead of
+  ///          throwing, then emits [PolicyActionSuccess] if all controls
+  ///          succeeded (or there were none) or
+  ///          [PolicyActionPartialSuccess] if some failed.
+  Future<void> _createPolicyWithControls({
+    required PolicyStatus status,
+    required String policyNameEn,
+    required String policyNameAr,
+    required String policyNumberEn,
+    required String policyNumberAr,
+    required String policyDescriptionEn,
+    required String policyDescriptionAr,
+    required DateTime startDate,
+    required DateTime endDate,
+    required double policyWeight,
+    required String moduleId,
+    required List<PendingControlInput> controls,
+    File? imageFile,
+    String? imageUrl,
+    File? policyDocumentFileEn,
+    String? policyDocumentUrlEn,
+    File? policyDocumentFileAr,
+    String? policyDocumentUrlAr,
   }) async {
     emit(PolicyLoading());
+    final editorId = _currentUserId;
     final result = await _createUseCase.call(
       CreatePolicyParams(
         policyNameEn: policyNameEn,
@@ -262,53 +308,73 @@ class PolicyCubit extends Cubit<PolicyState> {
         startDate: startDate,
         endDate: endDate,
         policyWeight: policyWeight,
-        editorId: _currentUserId,
+        editorId: editorId,
         moduleId: moduleId,
-        controls: controls,
-        status: PolicyStatus.draft, // Save For Later = Draft
+        status: status,
         imageFile: imageFile,
         imageUrl: imageUrl,
-        policyDocumentFile: policyDocumentFile,
-        policyDocumentUrl: policyDocumentUrl,
+        policyDocumentFileEn: policyDocumentFileEn,
+        policyDocumentUrlEn: policyDocumentUrlEn,
+        policyDocumentFileAr: policyDocumentFileAr,
+        policyDocumentUrlAr: policyDocumentUrlAr,
       ),
     );
-    result.fold(
-      (failure) => emit(PolicyFailure(failure.message)),
-      (policy) => emit(PolicyActionSuccess(policy)),
+
+    await result.fold(
+      (failure) async => emit(PolicyFailure(failure.message)),
+      (policy) async {
+        if (controls.isEmpty) {
+          emit(PolicyActionSuccess(policy));
+          return;
+        }
+
+        final failedControls = <({PendingControlInput input, String message})>[];
+        for (final input in controls) {
+          final controlResult = await _createControlUseCase.call(
+            CreateControlParams(
+              moduleId: moduleId,
+              policyId: policy.id,
+              editorId: editorId,
+              controlsNameEn: input.controlsNameEn,
+              controlsNameAr: input.controlsNameAr,
+              controlsNumberEn: input.controlsNumberEn,
+              controlsNumberAr: input.controlsNumberAr,
+              controlsDescriptionEn: input.controlsDescriptionEn,
+              controlsDescriptionAr: input.controlsDescriptionAr,
+              controlsWeight: input.controlsWeight,
+              frequency: input.frequency,
+              startDate: input.startDate,
+              endDate: input.endDate,
+              departments: input.departments,
+              equalWeights: input.equalWeights,
+              score: input.score,
+              status: input.status,
+              controlsDocumentFileEn: input.controlsDocumentFileEn,
+              controlsDocumentUrlEn: input.controlsDocumentUrlEn,
+              controlsDocumentFileAr: input.controlsDocumentFileAr,
+              controlsDocumentUrlAr: input.controlsDocumentUrlAr,
+            ),
+          );
+          controlResult.fold(
+            (failure) =>
+                failedControls.add((input: input, message: failure.message)),
+            (_) {},
+          );
+        }
+
+        if (failedControls.isEmpty) {
+          emit(PolicyActionSuccess(policy));
+        } else {
+          emit(PolicyActionPartialSuccess(policy, failedControls));
+        }
+      },
     );
   }
 
   // ================================================================
-  // UPDATE
+  // UPDATE / DELETE / RESTORE (Policy)
   // ================================================================
 
-  /// function name: [updatePolicy]
-  ///
-  /// purpose: update an existing Policy. Accepts an optional [status] to
-  ///          change the lifecycle (e.g. Active → Inactive).
-  ///          Emits [PolicyActionSuccess] on success or [PolicyFailure]
-  ///          on failure.
-  ///
-  /// parameters:
-  ///            [String] id: unique identifier of the policy to update
-  ///            [String] moduleId: unique identifier of the parent GRC Module
-  ///            [PolicyStatus] status: new lifecycle status, if changed
-  ///            [String] policyNameEn: new English name, if changed
-  ///            [String] policyNameAr: new Arabic name, if changed
-  ///            [String] policyNumberEn: new English number, if changed
-  ///            [String] policyNumberAr: new Arabic number, if changed
-  ///            [String] policyDescriptionEn: new English description, if changed
-  ///            [String] policyDescriptionAr: new Arabic description, if changed
-  ///            [DateTime] startDate: new start date, if changed
-  ///            [DateTime] endDate: new end date, if changed
-  ///            [double] policyWeight: new weight, if changed
-  ///            [List<CreateControlParams>] controls: new controls snapshot, if changed
-  ///            [File] imageFile: new local image file to upload, if changed
-  ///            [String] imageUrl: new already-hosted image URL, if changed
-  ///            [File] policyDocumentFile: new local document file, if changed
-  ///            [String] policyDocumentUrl: new already-hosted document URL, if changed
-  ///
-  /// return type: [Future<void>]
   Future<void> updatePolicy({
     required String id,
     required String moduleId,
@@ -322,11 +388,12 @@ class PolicyCubit extends Cubit<PolicyState> {
     DateTime? startDate,
     DateTime? endDate,
     double? policyWeight,
-    List<CreateControlParams>? controls,
     File? imageFile,
     String? imageUrl,
-    File? policyDocumentFile,
-    String? policyDocumentUrl,
+    File? policyDocumentFileEn,
+    String? policyDocumentUrlEn,
+    File? policyDocumentFileAr,
+    String? policyDocumentUrlAr,
   }) async {
     emit(PolicyLoading());
     final result = await _updateUseCase.call(
@@ -344,11 +411,12 @@ class PolicyCubit extends Cubit<PolicyState> {
         startDate: startDate,
         endDate: endDate,
         policyWeight: policyWeight,
-        controls: controls,
         imageFile: imageFile,
         imageUrl: imageUrl,
-        policyDocumentFile: policyDocumentFile,
-        policyDocumentUrl: policyDocumentUrl,
+        policyDocumentFileEn: policyDocumentFileEn,
+        policyDocumentUrlEn: policyDocumentUrlEn,
+        policyDocumentFileAr: policyDocumentFileAr,
+        policyDocumentUrlAr: policyDocumentUrlAr,
       ),
     );
     result.fold(
@@ -357,20 +425,6 @@ class PolicyCubit extends Cubit<PolicyState> {
     );
   }
 
-  // ================================================================
-  // DELETE  (soft)
-  // ================================================================
-
-  /// function name: [deletePolicy]
-  ///
-  /// purpose: soft-delete a Policy and emit [PolicyActionSuccess] on
-  ///          success or [PolicyFailure] on failure.
-  ///
-  /// parameters:
-  ///            [String] id: unique identifier of the policy to delete
-  ///            [String] moduleId: unique identifier of the parent GRC Module
-  ///
-  /// return type: [Future<void>]
   Future<void> deletePolicy({
     required String id,
     required String moduleId,
@@ -385,20 +439,6 @@ class PolicyCubit extends Cubit<PolicyState> {
     );
   }
 
-  // ================================================================
-  // RESTORE
-  // ================================================================
-
-  /// function name: [restorePolicy]
-  ///
-  /// purpose: restore a soft-deleted Policy and emit [PolicyActionSuccess]
-  ///          on success or [PolicyFailure] on failure.
-  ///
-  /// parameters:
-  ///            [String] id: unique identifier of the policy to restore
-  ///            [String] moduleId: unique identifier of the parent GRC Module
-  ///
-  /// return type: [Future<void>]
   Future<void> restorePolicy({
     required String id,
     required String moduleId,
@@ -410,6 +450,150 @@ class PolicyCubit extends Cubit<PolicyState> {
     result.fold(
       (failure) => emit(PolicyFailure(failure.message)),
       (policy) => emit(PolicyActionSuccess(policy)),
+    );
+  }
+
+  // ================================================================
+  // CONTROL (standalone — always against an existing Policy)
+  // ================================================================
+
+  Future<void> createControl({
+    required String moduleId,
+    required String policyId,
+    required String controlsNameEn,
+    required String controlsNameAr,
+    required String controlsNumberEn,
+    required String controlsNumberAr,
+    required String controlsDescriptionEn,
+    required String controlsDescriptionAr,
+    required double controlsWeight,
+    required String frequency,
+    required DateTime startDate,
+    required DateTime endDate,
+    required List<String> departments,
+    required bool equalWeights,
+    required int score,
+    required ControlStatus status,
+    File? controlsDocumentFileEn,
+    String? controlsDocumentUrlEn,
+    File? controlsDocumentFileAr,
+    String? controlsDocumentUrlAr,
+  }) async {
+    emit(PolicyLoading());
+    final result = await _createControlUseCase.call(
+      CreateControlParams(
+        moduleId: moduleId,
+        policyId: policyId,
+        editorId: _currentUserId,
+        controlsNameEn: controlsNameEn,
+        controlsNameAr: controlsNameAr,
+        controlsNumberEn: controlsNumberEn,
+        controlsNumberAr: controlsNumberAr,
+        controlsDescriptionEn: controlsDescriptionEn,
+        controlsDescriptionAr: controlsDescriptionAr,
+        controlsWeight: controlsWeight,
+        frequency: frequency,
+        startDate: startDate,
+        endDate: endDate,
+        departments: departments,
+        equalWeights: equalWeights,
+        score: score,
+        status: status,
+        controlsDocumentFileEn: controlsDocumentFileEn,
+        controlsDocumentUrlEn: controlsDocumentUrlEn,
+        controlsDocumentFileAr: controlsDocumentFileAr,
+        controlsDocumentUrlAr: controlsDocumentUrlAr,
+      ),
+    );
+    result.fold(
+      (failure) => emit(PolicyFailure(failure.message)),
+      (control) => emit(PolicyControlActionSuccess(control)),
+    );
+  }
+
+  Future<void> updateControl({
+    required String id,
+    required String moduleId,
+    required String policyId,
+    String? controlsNameEn,
+    String? controlsNameAr,
+    String? controlsNumberEn,
+    String? controlsNumberAr,
+    String? controlsDescriptionEn,
+    String? controlsDescriptionAr,
+    double? controlsWeight,
+    String? frequency,
+    DateTime? startDate,
+    DateTime? endDate,
+    List<String>? departments,
+    bool? equalWeights,
+    int? score,
+    ControlStatus? status,
+    File? controlsDocumentFileEn,
+    String? controlsDocumentUrlEn,
+    File? controlsDocumentFileAr,
+    String? controlsDocumentUrlAr,
+  }) async {
+    emit(PolicyLoading());
+    final result = await _updateControlUseCase.call(
+      UpdateControlParams(
+        id: id,
+        moduleId: moduleId,
+        policyId: policyId,
+        editorId: _currentUserId,
+        controlsNameEn: controlsNameEn,
+        controlsNameAr: controlsNameAr,
+        controlsNumberEn: controlsNumberEn,
+        controlsNumberAr: controlsNumberAr,
+        controlsDescriptionEn: controlsDescriptionEn,
+        controlsDescriptionAr: controlsDescriptionAr,
+        controlsWeight: controlsWeight,
+        frequency: frequency,
+        startDate: startDate,
+        endDate: endDate,
+        departments: departments,
+        equalWeights: equalWeights,
+        score: score,
+        status: status,
+        controlsDocumentFileEn: controlsDocumentFileEn,
+        controlsDocumentUrlEn: controlsDocumentUrlEn,
+        controlsDocumentFileAr: controlsDocumentFileAr,
+        controlsDocumentUrlAr: controlsDocumentUrlAr,
+      ),
+    );
+    result.fold(
+      (failure) => emit(PolicyFailure(failure.message)),
+      (control) => emit(PolicyControlActionSuccess(control)),
+    );
+  }
+
+  Future<void> deleteControl({
+    required String id,
+    required String moduleId,
+    required String policyId,
+  }) async {
+    emit(PolicyLoading());
+    final result = await _deleteControlUseCase.call(
+      DeleteControlParams(id: id, moduleId: moduleId, policyId: policyId),
+    );
+    result.fold(
+      (failure) => emit(PolicyFailure(failure.message)),
+      (_) => emit(PolicyControlDeleted(id)),
+    );
+  }
+
+  Future<void> getAllControls({
+    required String moduleId,
+    required String policyId,
+  }) async {
+    emit(PolicyLoading());
+    final result = await _getAllControlsUseCase.call(
+      moduleId: moduleId,
+      policyId: policyId,
+    );
+    result.fold(
+      (failure) => emit(PolicyFailure(failure.message)),
+      (controls) => emit(PolicyControlsListLoaded(controls)),
     );
   }
 }
