@@ -21,6 +21,7 @@ import 'package:demo_app/features/grc/domain/repository/grc_module_repository.da
 import 'package:uuid/uuid.dart';
 
 import '../../domain/entities/grc_module_entity.dart';
+import '../../domain/entities/grc_module_owner_history_entry.dart';
 
 import '../models/grc_module_model.dart';
 
@@ -244,6 +245,29 @@ class GRCModuleRepositoryImpl implements GRCModuleRepository {
       final restoredModel =
           await _firebaseDataSource.restore(id, editorId: editorId);
       return Right(restoredModel.toEntity());
+    } catch (e) {
+      return Left(FirebaseFailure(e.toString()));
+    }
+  }
+
+  /// function name: [getModuleOwnerHistory]
+  ///
+  /// purpose: fetch a module by id from the Firestore data source and map
+  ///          its full revision history to completed owner-assignment
+  ///          stints via [GRCModuleModel.toOwnerHistory].
+  ///
+  /// parameters: see [GRCModuleRepository.getModuleOwnerHistory]
+  ///
+  /// return type: [Future<Either<Failure, List<GRCModuleOwnerHistoryEntry>>>] - completed owner stints, a [ValidationError], or a [FirebaseFailure]
+  @override
+  Future<Either<Failure, List<GRCModuleOwnerHistoryEntry>>>
+      getModuleOwnerHistory(String id) async {
+    try {
+      final model = await _firebaseDataSource.get(id);
+      if (model == null) {
+        return Left(ValidationError('GRC Module not found (id: $id)'));
+      }
+      return Right(model.toOwnerHistory());
     } catch (e) {
       return Left(FirebaseFailure(e.toString()));
     }

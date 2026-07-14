@@ -16,6 +16,7 @@
 import 'dart:convert';
 
 import 'package:demo_app/features/grc/domain/entities/grc_module_entity.dart';
+import 'package:demo_app/features/grc/domain/entities/grc_module_owner_history_entry.dart';
 import 'package:intl/intl.dart';
 
 /// ************************* FILE INFO *************************** ///
@@ -49,6 +50,15 @@ String _deriveStatus({
   final today = DateTime.now();
   final startOfToday = DateTime(today.year, today.month, today.day);
   return activationDate.isAfter(startOfToday) ? 'Scheduled' : 'Active';
+}
+
+/// Tracks an owner stint that has been opened (added) but not yet closed
+/// (removed), while [GRCModuleModel.toOwnerHistory] walks the revisions.
+class _OpenOwnerStint {
+  final DateTime startDate;
+  final String assignedByEmail;
+
+  _OpenOwnerStint({required this.startDate, required this.assignedByEmail});
 }
 
 /// class name: [GRCModuleModel]
@@ -376,5 +386,62 @@ class GRCModuleModel {
       modificationDate: modificationDate.last,
       lastModifier: modifiers.last,
     );
+  }
+
+  /// function name: [toOwnerHistory]
+  ///
+  /// purpose: reconstruct every completed owner-assignment stint by diffing
+  ///          [moduleOwners] between consecutive revisions. An owner email
+  ///          appearing in revision N but not N-1 opens a stint (assigned by
+  ///          [modifiers] at N); an owner email disappearing between N-1 and
+  ///          N closes their currently open stint (ends at
+  ///          [modificationDate] at N) and emits one
+  ///          [GRCModuleOwnerHistoryEntry]. Currently-active owners (never
+  ///          removed) never appear in the result. If the same owner is
+  ///          added and removed multiple times, each removal produces its
+  ///          own entry.
+  ///
+  /// parameters: none
+  ///
+  /// return type: [List<GRCModuleOwnerHistoryEntry>] - completed stints only, sorted by endDate descending
+  List<GRCModuleOwnerHistoryEntry> toOwnerHistory() {
+    final ownerSets = moduleOwners
+        .map((raw) => Set<String>.from(jsonDecode(raw) as List))
+        .toList();
+
+    final openStints = <String, _OpenOwnerStint>{};
+    for (final email in ownerSets.first) {
+      openStints[email] = _OpenOwnerStint(
+        startDate: modificationDate.first,
+        assignedByEmail: modifiers.first,
+      );
+    }
+
+    final entries = <GRCModuleOwnerHistoryEntry>[];
+    for (var i = 1; i < ownerSets.length; i++) {
+      final previous = ownerSets[i - 1];
+      final current = ownerSets[i];
+
+      for (final email in current.difference(previous)) {
+        openStints[email] = _OpenOwnerStint(
+          startDate: modificationDate[i],
+          assignedByEmail: modifiers[i],
+        );
+      }
+
+      for (final email in previous.difference(current)) {
+        final stint = openStints.remove(email);
+        if (stint == null) continue;
+        entries.add(GRCModuleOwnerHistoryEntry(
+          ownerEmail: email,
+          assignedByEmail: stint.assignedByEmail,
+          startDate: stint.startDate,
+          endDate: modificationDate[i],
+        ));
+      }
+    }
+
+    entries.sort((a, b) => b.endDate.compareTo(a.endDate));
+    return entries;
   }
 }

@@ -29,6 +29,7 @@ import 'package:demo_app/features/grc/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/presentation/controller/grc_module_cubit.dart';
 import 'package:demo_app/features/grc/presentation/ui/pages/grc_details_page.dart';
 import 'package:demo_app/features/grc/presentation/ui/pages/grc_module_details_page.dart';
+import 'package:demo_app/features/grc/presentation/ui/pages/grc_previous_module_owners_page.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
 import 'package:demo_app/features/roles/core_widgets/main_widget/responsive_helper.dart';
 import 'package:demo_app/features/roles/widgets/filter_bar_item.dart';
@@ -217,6 +218,10 @@ class _GovernanceRiskAndCompliancePageState
                 child: Text('Edit'.tr),
               ),
               PopupMenuItem<String>(
+                value: 'previousModuleOwners',
+                child: Text('Previous Module Owners'.tr),
+              ),
+              PopupMenuItem<String>(
                 value: 'delete',
                 child: Text('Delete'.tr),
               ),
@@ -238,6 +243,16 @@ class _GovernanceRiskAndCompliancePageState
         GrcPageMode.view,
         entity: module,
         autoDelete: true,
+      );
+      return;
+    }
+
+    if (selected == 'previousModuleOwners') {
+      if (!context.mounted) return;
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => GrcPreviousModuleOwnersPage(module: module),
+        ),
       );
       return;
     }

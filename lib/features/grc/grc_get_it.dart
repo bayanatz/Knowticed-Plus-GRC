@@ -23,11 +23,13 @@ import 'package:demo_app/features/grc/domain/use_cases/create_policy_usecase.dar
 import 'package:demo_app/features/grc/domain/use_cases/delete_grc_module_use_case.dart';
 import 'package:demo_app/features/grc/domain/use_cases/get_all_grc_modules_use_case.dart';
 import 'package:demo_app/features/grc/domain/use_cases/get_grc_module_use_case.dart';
+import 'package:demo_app/features/grc/domain/use_cases/get_grc_module_owner_history_use_case.dart';
 import 'package:demo_app/features/grc/domain/use_cases/get_policy_usecases.dart';
 import 'package:demo_app/features/grc/domain/use_cases/restore_grc_module_use_case.dart';
 import 'package:demo_app/features/grc/domain/use_cases/update_grc_module_use_case.dart';
 import 'package:demo_app/features/grc/domain/use_cases/update_policy_usecase.dart';
 import 'package:demo_app/features/grc/presentation/controller/grc_module_cubit.dart';
+import 'package:demo_app/features/grc/presentation/controller/grc_previous_owners_cubit.dart';
 import 'package:demo_app/features/grc/presentation/controller/policy_cubit.dart';
 import 'package:get_it/get_it.dart';
 
@@ -139,6 +141,12 @@ void setupGRCDependencies(GetIt sl) {
     () => RestoreGRCModuleUseCase(sl<GRCModuleRepository>()),
   );
 
+  /// class name: [GetGRCModuleOwnerHistoryUseCase]
+  /// purpose: business logic for fetching a module's previous owner history.
+  sl.registerLazySingleton<GetGRCModuleOwnerHistoryUseCase>(
+    () => GetGRCModuleOwnerHistoryUseCase(sl<GRCModuleRepository>()),
+  );
+
   /// class name: [CreatePolicyUseCase]
   /// purpose: business logic for creating a new Policy (with its Controls).
   sl.registerLazySingleton<CreatePolicyUseCase>(
@@ -189,6 +197,15 @@ void setupGRCDependencies(GetIt sl) {
       updateGRCModuleUseCase: sl<UpdateGRCModuleUseCase>(),
       deleteGRCModuleUseCase: sl<DeleteGRCModuleUseCase>(),
       restoreGRCModuleUseCase: sl<RestoreGRCModuleUseCase>(),
+    ),
+  );
+
+  /// class name: [GrcPreviousOwnersCubit]
+  /// purpose: presentation-layer state manager for the previous module owners page.
+  /// Registered as a factory so each page gets an independent cubit instance.
+  sl.registerFactory<GrcPreviousOwnersCubit>(
+    () => GrcPreviousOwnersCubit(
+      getOwnerHistoryUseCase: sl<GetGRCModuleOwnerHistoryUseCase>(),
     ),
   );
 

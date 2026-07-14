@@ -14,6 +14,7 @@ import 'package:dartz/dartz.dart';
 import 'package:demo_app/core/network/failure_model.dart';
 
 import '../entities/grc_module_entity.dart';
+import '../entities/grc_module_owner_history_entry.dart';
 
 /// ************************* FILE INFO *************************** ///
 /// File Name: grc_module_repository.dart
@@ -159,4 +160,17 @@ abstract class GRCModuleRepository {
     required String id,
     required String editorId,
   });
+
+  /// function name: [getModuleOwnerHistory]
+  ///
+  /// purpose: fetch the full owner-assignment history of a GRC Module —
+  ///          every owner who has since been removed, who assigned them,
+  ///          and the date range they held the role.
+  ///
+  /// parameters:
+  ///            [String] id: unique identifier of the module
+  ///
+  /// return type: [Future<Either<Failure, List<GRCModuleOwnerHistoryEntry>>>] - completed owner stints, or a Failure
+  Future<Either<Failure, List<GRCModuleOwnerHistoryEntry>>>
+      getModuleOwnerHistory(String id);
 }
