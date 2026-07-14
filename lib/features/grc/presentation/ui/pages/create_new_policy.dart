@@ -20,6 +20,8 @@ library;
 /// Author: Mohamed Magdy Abdelkhalek
 /// Created At: 1/7/2026
 
+import 'dart:io';
+
 import 'package:demo_app/core/custom/10_custom_upload_document.dart';
 // 11's own showUploadDialog is a near-duplicate of 10's — hidden here to
 // avoid an ambiguous-import error; section 10 already demos the dedicated one.
@@ -91,6 +93,7 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
 
   DateTime? _startDate;
   DateTime? _endDate;
+  File? _imageFile;
   PolicyDocumentInfo? _documentEn;
   PolicyDocumentInfo? _documentAr;
 
@@ -382,6 +385,8 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
               PolicyHeaderWidget(
                 isArabicEnabled: _isArabicEnabled,
                 onArabicToggle: (v) => setState(() => _isArabicEnabled = v),
+                imageFile: _imageFile,
+                onImagePicked: (file) => setState(() => _imageFile = file),
               ),
               SizedBox(height: 15.h),
               PolicyInfoFormWidget(

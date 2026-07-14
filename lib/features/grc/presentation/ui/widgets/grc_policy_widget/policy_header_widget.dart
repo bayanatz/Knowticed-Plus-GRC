@@ -2,17 +2,22 @@
 /// Description: Header row widget with avatar and Arabic version toggle.
 /// Author: Mohamed Magdy Abdelkhalek
 /// Date: 2026-07-01
-/// Dependencies: Flutter SDK, AppColors, FlutterSwitch
+/// Dependencies: Flutter SDK, AppColors, FlutterSwitch, CustomImagePicker
 /// Revision History: 2026-07-01 - Initial creation
+///                   2026-07-14 - Replaced the static avatar placeholder with
+///                                CustomImagePicker for real image picking
 library;
 
 /// ************************* FILE INFO *************************** ///
 /// File Name: policy_header_widget.dart
-/// Purpose: Contains PolicyHeaderWidget, the avatar placeholder and
+/// Purpose: Contains PolicyHeaderWidget, the policy image picker and
 ///          "Create Arabic Version" toggle row at the top of the policy form.
 /// Author: Mohamed Magdy Abdelkhalek
 /// Created At: 1/7/2026
 
+import 'dart:io';
+
+import 'package:demo_app/core/custom/46_custom_image_picker.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -21,9 +26,10 @@ import 'package:get/get_utils/src/extensions/internacionalization.dart';
 
 /// class name: [PolicyHeaderWidget]
 ///
-/// purpose: stateless row containing the policy avatar (with edit overlay)
-///          and the "Create Arabic Version" toggle. The owning page holds
-///          the isArabicEnabled state and receives changes via onArabicToggle.
+/// purpose: row containing the policy image picker (backed by
+///          [CustomImagePicker]) and the "Create Arabic Version" toggle. The
+///          owning page holds the isArabicEnabled/imageFile state and
+///          receives changes via onArabicToggle/onImagePicked.
 ///
 /// authors: Mohamed Magdy Abdelkhalek
 ///
@@ -31,13 +37,15 @@ import 'package:get/get_utils/src/extensions/internacionalization.dart';
 class PolicyHeaderWidget extends StatelessWidget {
   final bool isArabicEnabled;
   final ValueChanged<bool> onArabicToggle;
-  final VoidCallback? onImageTap;
+  final File? imageFile;
+  final ValueChanged<File> onImagePicked;
 
   const PolicyHeaderWidget({
     super.key,
     required this.isArabicEnabled,
     required this.onArabicToggle,
-    this.onImageTap,
+    required this.onImagePicked,
+    this.imageFile,
   });
 
   @override
@@ -45,32 +53,11 @@ class PolicyHeaderWidget extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Stack(
-          clipBehavior: Clip.none,
-          children: [
-            CircleAvatar(
-              radius: 30.r,
-              backgroundColor: AppColors.background,
-              child: Icon(
-                Icons.image_outlined,
-                color: AppColors.secondaryText,
-                size: 26.sp,
-              ),
-            ),
-            Positioned(
-              bottom: -2,
-              right: -2,
-              child: GestureDetector(
-                onTap: onImageTap,
-                child: CircleAvatar(
-                  radius: 11.r,
-                  backgroundColor: AppColors.primary,
-                  child: Icon(Icons.camera_alt,
-                      color: Colors.white, size: 13.sp),
-                ),
-              ),
-            ),
-          ],
+        CustomImagePicker(
+          radius: 30.r,
+          badgeRadius: 11.r,
+          imageFile: imageFile,
+          onImagePicked: onImagePicked,
         ),
         Row(
           children: [
