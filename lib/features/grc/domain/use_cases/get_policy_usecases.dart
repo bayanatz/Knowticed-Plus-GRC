@@ -72,16 +72,16 @@ class GetAllPoliciesUseCase {
   /// purpose: forward the fetch-all request to [PolicyRepository.getAllPolicies].
   ///
   /// parameters:
-  ///            [bool] includeDeleted: when false (default), soft-deleted policies are excluded
+  ///            [bool] includeRemoved: when false (default), removed policies are excluded
   ///
   /// return type: [Future<Either<Failure, List<PolicyEntity>>>] - the list of entities, or a Failure
   Future<Either<Failure, List<PolicyEntity>>> call({
     required String moduleId,
-    bool includeDeleted = false,
+    bool includeRemoved = false,
   }) {
     return _repository.getAllPolicies(
       moduleId: moduleId,
-      includeDeleted: includeDeleted,
+      includeRemoved: includeRemoved,
     );
   }
 }

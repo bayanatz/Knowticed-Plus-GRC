@@ -1,9 +1,14 @@
 /// Module: Policy Management
-/// Description: Use case responsible for updating an existing Policy record.
+/// Description: Use case responsible for updating an existing Policy
+///              record. Controls are updated separately via
+///              UpdateControlUseCase.
 /// Author: Mohamed Magdy Abdelkhalek
 /// Date: 2026-07-5
 /// Dependencies: dartz, Failure, PolicyEntity, PolicyRepository
-/// Revision History: 2026-07-5 - Initial creation
+/// Revision History: 2026-07-5  - Initial creation
+///                   2026-07-14 - Removed the `controls` field and split
+///                                policyDocumentFile/Url into En/Ar pairs
+library;
 
 import 'dart:io';
 
@@ -13,23 +18,10 @@ import 'package:demo_app/features/grc/domain/entities/policy_entity.dart';
 import 'package:demo_app/features/grc/domain/entities/policy_status.dart';
 import 'package:demo_app/features/grc/domain/repository/policy_repository.dart';
 
-
-
-/// ************************* FILE INFO *************************** ///
-/// File Name: update_policy_usecase.dart
-/// Purpose: Contains the UpdatePolicyUseCase class and its Params.
-/// Author: Mohamed Magdy Abdelkhalek
-/// Created At: 5/7/2026
-
 /// class name: [UpdatePolicyParams]
 ///
 /// purpose: groups every field that can be changed on an existing Policy
-///          record into a single object. Fields left null are not changed
-///          and keep their last value.
-///
-/// authors: Mohamed Magdy Abdelkhalek
-///
-/// created at: 5/7/2026
+///          record. Fields left null are not changed.
 class UpdatePolicyParams {
   final String id;
   final String editorId;
@@ -43,12 +35,13 @@ class UpdatePolicyParams {
   final DateTime? startDate;
   final DateTime? endDate;
   final double? policyWeight;
-  final List<CreateControlParams>? controls;
   final PolicyStatus? status;
   final File? imageFile;
   final String? imageUrl;
-  final File? policyDocumentFile;
-  final String? policyDocumentUrl;
+  final File? policyDocumentFileEn;
+  final String? policyDocumentUrlEn;
+  final File? policyDocumentFileAr;
+  final String? policyDocumentUrlAr;
 
   const UpdatePolicyParams({
     required this.id,
@@ -63,36 +56,24 @@ class UpdatePolicyParams {
     this.startDate,
     this.endDate,
     this.policyWeight,
-    this.controls,
     this.status,
     this.imageFile,
     this.imageUrl,
-    this.policyDocumentFile,
-    this.policyDocumentUrl,
+    this.policyDocumentFileEn,
+    this.policyDocumentUrlEn,
+    this.policyDocumentFileAr,
+    this.policyDocumentUrlAr,
   });
 }
 
 /// class name: [UpdatePolicyUseCase]
 ///
-/// purpose: encapsulate the "update a Policy" business action. The Bloc
-///          calls this use case instead of [PolicyRepository] directly.
-///
-/// authors: Mohamed Magdy Abdelkhalek
-///
-/// created at: 5/7/2026
+/// purpose: encapsulate the "update a Policy" business action.
 class UpdatePolicyUseCase {
   const UpdatePolicyUseCase(this._repository);
 
   final PolicyRepository _repository;
 
-  /// function name: [call]
-  ///
-  /// purpose: forward the update request to [PolicyRepository.updatePolicy].
-  ///
-  /// parameters:
-  ///            [UpdatePolicyParams] params: the id and the fields to be updated
-  ///
-  /// return type: [Future<Either<Failure, PolicyEntity>>] - the updated entity, or a Failure
   Future<Either<Failure, PolicyEntity>> call(UpdatePolicyParams params) {
     return _repository.updatePolicy(
       id: params.id,
@@ -107,12 +88,13 @@ class UpdatePolicyUseCase {
       startDate: params.startDate,
       endDate: params.endDate,
       policyWeight: params.policyWeight,
-      controls: params.controls,
       status: params.status,
       imageFile: params.imageFile,
       imageUrl: params.imageUrl,
-      policyDocumentFile: params.policyDocumentFile,
-      policyDocumentUrl: params.policyDocumentUrl,
+      policyDocumentFileEn: params.policyDocumentFileEn,
+      policyDocumentUrlEn: params.policyDocumentUrlEn,
+      policyDocumentFileAr: params.policyDocumentFileAr,
+      policyDocumentUrlAr: params.policyDocumentUrlAr,
     );
   }
 }
