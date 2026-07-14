@@ -4,6 +4,7 @@
 /// Date: 2026-07-01
 /// Dependencies: Flutter SDK, AppColors, AppTheme, CustomTextField, CustomDropdownCalendar
 /// Revision History: 2026-07-01 - Initial creation
+///                   2026-07-14 - Split Policy Document into English/Arabic
 library;
 
 /// ************************* FILE INFO *************************** ///
@@ -55,9 +56,12 @@ class PolicyInfoFormWidget extends StatelessWidget {
   final ValueChanged<DateTime?> onStartDateChanged;
   final ValueChanged<DateTime?> onEndDateChanged;
 
-  final PolicyDocumentInfo? document;
-  final VoidCallback onUploadDocument;
-  final VoidCallback onRemoveDocument;
+  final PolicyDocumentInfo? documentEn;
+  final PolicyDocumentInfo? documentAr;
+  final VoidCallback onUploadDocumentEn;
+  final VoidCallback onUploadDocumentAr;
+  final VoidCallback onRemoveDocumentEn;
+  final VoidCallback onRemoveDocumentAr;
 
   const PolicyInfoFormWidget({
     super.key,
@@ -74,9 +78,12 @@ class PolicyInfoFormWidget extends StatelessWidget {
     required this.endDate,
     required this.onStartDateChanged,
     required this.onEndDateChanged,
-    required this.onUploadDocument,
-    required this.onRemoveDocument,
-    this.document,
+    required this.onUploadDocumentEn,
+    required this.onUploadDocumentAr,
+    required this.onRemoveDocumentEn,
+    required this.onRemoveDocumentAr,
+    this.documentEn,
+    this.documentAr,
   });
 
   TextStyle get _labelStyle =>
@@ -120,6 +127,24 @@ class PolicyInfoFormWidget extends StatelessWidget {
     return Directionality(textDirection: TextDirection.rtl, child: field);
   }
 
+  Widget _documentButton({required VoidCallback onTap, required String title}) {
+    return customButtonWithSvg(
+      colorBorder: AppColors.primary,
+      space: 10.w,
+      radius: 8.r,
+      widthImage: 16.w,
+      heightImage: 16.h,
+      function: onTap,
+      title: title,
+      textStyle: StyleText.fontSize14Weight500.copyWith(color: AppColors.textButton),
+      image: 'assets/hrAsset/Upload.svg',
+      color: AppColors.primary,
+      width: 220.w,
+      height: 36.h,
+      svgColor: AppColors.textButton,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
@@ -146,7 +171,6 @@ class PolicyInfoFormWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Policy Name + AR name (or Policy Number when AR disabled)
         twoColumns(
           _textField(label: 'Policy Name', hint: 'Text here', controller: nameController, isMandatory: true),
           isArabicEnabled
@@ -186,7 +210,6 @@ class PolicyInfoFormWidget extends StatelessWidget {
           ),
           SizedBox(height: 15.h),
         ],
-        // Start Date + End Date
         twoColumns(
           CustomDropdownCalendar(
             borderRadius: BorderRadius.circular(4.r),
@@ -230,7 +253,6 @@ class PolicyInfoFormWidget extends StatelessWidget {
           ),
         ),
         SizedBox(height: 15.h),
-        // Policy Weight (half-width on tablet, full-width on mobile)
         isTablet
             ? Row(children: [
                 Expanded(child: _textField(label: 'Policy Weight', hint: 'Text here', controller: weightController, isMandatory: true)),
@@ -242,36 +264,24 @@ class PolicyInfoFormWidget extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Policy Document',
-              style:
-                  StyleText.fontSize16Weight500.copyWith(color: AppColors.text),
-            ),
+            Text('Policy Document', style: StyleText.fontSize16Weight500.copyWith(color: AppColors.text)),
             const Spacer(),
-            if (document != null)
-              Flexible(
-                child: PolicyDocumentPreviewWidget(
-                  document: document!,
-                  onRemove: onRemoveDocument,
-                ),
-              )
-            else
-              customButtonWithSvg(
-                colorBorder: AppColors.primary,
-                space: 10.w,
-                radius: 8.r,
-                widthImage: 16.w,
-                heightImage: 16.h,
-                function: onUploadDocument,
-                title: 'Policy Document',
-                textStyle: StyleText.fontSize14Weight500
-                    .copyWith(color: AppColors.textButton),
-                image: 'assets/hrAsset/Upload.svg',
-                color: AppColors.primary,
-                width: 180.w,
-                height: 36.h,
-                svgColor: AppColors.textButton,
+            Flexible(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  documentEn != null
+                      ? PolicyDocumentPreviewWidget(document: documentEn!, onRemove: onRemoveDocumentEn)
+                      : _documentButton(onTap: onUploadDocumentEn, title: 'Upload Document (English)'),
+                  if (isArabicEnabled) ...[
+                    SizedBox(height: 10.h),
+                    documentAr != null
+                        ? PolicyDocumentPreviewWidget(document: documentAr!, onRemove: onRemoveDocumentAr)
+                        : _documentButton(onTap: onUploadDocumentAr, title: 'رفع المستند (عربي)'),
+                  ],
+                ],
               ),
+            ),
           ],
         ),
         SizedBox(height: 30.h),

@@ -20,7 +20,8 @@ library;
 /// Author: Mohamed Magdy Abdelkhalek
 /// Created At: 1/7/2026
 
-import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart';
+import 'package:demo_app/core/custom/10_custom_upload_document.dart';
+import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart' as dialogs;
 import 'package:demo_app/core/custom/loading.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
@@ -88,7 +89,8 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
 
   DateTime? _startDate;
   DateTime? _endDate;
-  PolicyDocumentInfo? _document;
+  PolicyDocumentInfo? _documentEn;
+  PolicyDocumentInfo? _documentAr;
 
   // ----------------------------------------------------------------
   // Lifecycle
@@ -125,14 +127,37 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
 
   bool get _isWeightValid => _totalControlWeight == 100;
 
-  void _onUploadDocument() {
-    setState(() {
-      _document = const PolicyDocumentInfo(
-        name: 'Submission 1.pdf',
-        sizeLabel: '62 KB',
-        dateLabel: '28 Dec 2023',
-      );
-    });
+  void _onUploadDocumentEn() {
+    showUploadDialog(
+      context: context,
+      dialogTitle: 'Upload Policy Document (English)'.tr,
+      titleFieldLabel: 'Document Title'.tr,
+      titleFieldHint: 'Text here'.tr,
+      browseLabel: 'Browse Files'.tr,
+      submitLabel: 'Submit'.tr,
+      discardLabel: 'Discard'.tr,
+      allowedExtensions: const ['pdf', 'doc', 'docx'],
+      onSubmit: (file, title) {
+        setState(() => _documentEn = PolicyDocumentInfo.fromPlatformFile(file));
+      },
+    );
+  }
+
+  void _onUploadDocumentAr() {
+    showUploadDialog(
+      context: context,
+      dialogTitle: 'رفع مستند السياسة (عربي)',
+      titleFieldLabel: 'عنوان المستند',
+      titleFieldHint: 'اكتب هنا',
+      browseLabel: 'تصفح الملفات',
+      submitLabel: 'إرسال',
+      discardLabel: 'إلغاء',
+      textDirection: TextDirection.rtl,
+      allowedExtensions: const ['pdf', 'doc', 'docx'],
+      onSubmit: (file, title) {
+        setState(() => _documentAr = PolicyDocumentInfo.fromPlatformFile(file));
+      },
+    );
   }
 
   /// function name: [_onStartDateChanged]
@@ -266,7 +291,7 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
 
     if (state is PolicyActionSuccess) {
       final isDraft = state.policy.status.value == 'Draft';
-      showSuccessDialog(
+      dialogs.showSuccessDialog(
         context: context,
         title: isDraft ? 'Saved as Draft'.tr : 'Policy Created'.tr,
         subtitle: isDraft
@@ -371,9 +396,12 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
                 endDate: _endDate,
                 onStartDateChanged: _onStartDateChanged,
                 onEndDateChanged: (d) => setState(() => _endDate = d),
-                document: _document,
-                onUploadDocument: _onUploadDocument,
-                onRemoveDocument: () => setState(() => _document = null),
+                documentEn: _documentEn,
+                documentAr: _documentAr,
+                onUploadDocumentEn: _onUploadDocumentEn,
+                onUploadDocumentAr: _onUploadDocumentAr,
+                onRemoveDocumentEn: () => setState(() => _documentEn = null),
+                onRemoveDocumentAr: () => setState(() => _documentAr = null),
               ),
             ],
           ),
@@ -423,9 +451,12 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
                 endDate: _endDate,
                 onStartDateChanged: (_) {},
                 onEndDateChanged: (_) {},
-                document: _document,
-                onUploadDocument: () {},
-                onRemoveDocument: () {},
+                documentEn: _documentEn,
+                documentAr: _documentAr,
+                onUploadDocumentEn: () {},
+                onUploadDocumentAr: () {},
+                onRemoveDocumentEn: () {},
+                onRemoveDocumentAr: () {},
               ),
             ),
             SizedBox(height: 16.h),
@@ -473,7 +504,7 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
       children: [
         customButton(
           title: 'Discard'.tr,
-          function: () => showConfirmDialog(
+          function: () => dialogs.showConfirmDialog(
             context: context,
             title: 'Discard Policy'.tr,
             subtitle:
@@ -520,7 +551,7 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
       children: [
         customButton(
           title: 'Save For Later'.tr,
-          function: () => showConfirmDialog(
+          function: () => dialogs.showConfirmDialog(
             context: context,
             title: 'Save As Draft'.tr,
             subtitle:
@@ -554,7 +585,7 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
       children: [
         customButton(
           title: 'Save For Later'.tr,
-          function: () => showConfirmDialog(
+          function: () => dialogs.showConfirmDialog(
             context: context,
             title: 'Save As Draft'.tr,
             subtitle:
@@ -581,7 +612,7 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
               );
               return;
             }
-            showConfirmDialog(
+            dialogs.showConfirmDialog(
               context: context,
               title: 'Publish Policy'.tr,
               subtitle:
