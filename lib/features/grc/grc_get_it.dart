@@ -10,22 +10,28 @@
 /// Revision History: 2026-06-30 - Initial creation
 library;
 
+import 'package:demo_app/features/grc/data/data_source/control_firebase_data_source.dart';
 import 'package:demo_app/features/grc/data/data_source/grc_module_firebase_data_source.dart';
 import 'package:demo_app/features/grc/data/data_source/grc_module_storage_data_source.dart';
 import 'package:demo_app/features/grc/data/data_source/policy_firebase_data_source.dart';
 import 'package:demo_app/features/grc/data/data_source/policy_storage_data_source.dart';
+import 'package:demo_app/features/grc/data/repository/control_repository_impl.dart';
 import 'package:demo_app/features/grc/data/repository/grc_module_repository_impl.dart';
 import 'package:demo_app/features/grc/data/repository/policy_repository_impl.dart';
+import 'package:demo_app/features/grc/domain/repository/control_repository.dart';
 import 'package:demo_app/features/grc/domain/repository/grc_module_repository.dart';
 import 'package:demo_app/features/grc/domain/repository/policy_repository.dart';
+import 'package:demo_app/features/grc/domain/use_cases/create_control_usecase.dart';
 import 'package:demo_app/features/grc/domain/use_cases/create_grc_module_use_case.dart';
 import 'package:demo_app/features/grc/domain/use_cases/create_policy_usecase.dart';
 import 'package:demo_app/features/grc/domain/use_cases/delete_grc_module_use_case.dart';
 import 'package:demo_app/features/grc/domain/use_cases/get_all_grc_modules_use_case.dart';
+import 'package:demo_app/features/grc/domain/use_cases/get_control_usecases.dart';
 import 'package:demo_app/features/grc/domain/use_cases/get_grc_module_use_case.dart';
 import 'package:demo_app/features/grc/domain/use_cases/get_grc_module_owner_history_use_case.dart';
 import 'package:demo_app/features/grc/domain/use_cases/get_policy_usecases.dart';
 import 'package:demo_app/features/grc/domain/use_cases/restore_grc_module_use_case.dart';
+import 'package:demo_app/features/grc/domain/use_cases/update_control_usecase.dart';
 import 'package:demo_app/features/grc/domain/use_cases/update_grc_module_use_case.dart';
 import 'package:demo_app/features/grc/domain/use_cases/update_policy_usecase.dart';
 import 'package:demo_app/features/grc/presentation/controller/grc_module_cubit.dart';
@@ -83,6 +89,13 @@ void setupGRCDependencies(GetIt sl) {
     () => PolicyStorageDataSource(),
   );
 
+  /// class name: [ControlFirebaseDataSource]
+  /// purpose: Cloud Firestore CRUD operations for Control documents (the
+  /// Controls subcollection nested under each Policy).
+  sl.registerLazySingleton<ControlFirebaseDataSource>(
+    () => ControlFirebaseDataSource(),
+  );
+
   // ─── 2. Repository ──────────────────────────────────────────────────────────
 
   /// class name: [GRCModuleRepositoryImpl] registered as [GRCModuleRepository]
@@ -99,6 +112,16 @@ void setupGRCDependencies(GetIt sl) {
   sl.registerLazySingleton<PolicyRepository>(
     () => PolicyRepositoryImpl(
       firebaseDataSource: sl<PolicyFirebaseDataSource>(),
+      storageDataSource: sl<PolicyStorageDataSource>(),
+    ),
+  );
+
+  /// class name: [ControlRepositoryImpl] registered as [ControlRepository]
+  /// purpose: orchestrates the Controls subcollection data source and Storage
+  /// uploads, and maps models to entities.
+  sl.registerLazySingleton<ControlRepository>(
+    () => ControlRepositoryImpl(
+      firebaseDataSource: sl<ControlFirebaseDataSource>(),
       storageDataSource: sl<PolicyStorageDataSource>(),
     ),
   );
@@ -183,6 +206,36 @@ void setupGRCDependencies(GetIt sl) {
     () => RestorePolicyUseCase(sl<PolicyRepository>()),
   );
 
+  /// class name: [CreateControlUseCase]
+  /// purpose: business logic for creating a new Control.
+  sl.registerLazySingleton<CreateControlUseCase>(
+    () => CreateControlUseCase(sl<ControlRepository>()),
+  );
+
+  /// class name: [GetControlUseCase]
+  /// purpose: business logic for fetching a single Control by id.
+  sl.registerLazySingleton<GetControlUseCase>(
+    () => GetControlUseCase(sl<ControlRepository>()),
+  );
+
+  /// class name: [GetAllControlsUseCase]
+  /// purpose: business logic for fetching all Controls under a Policy.
+  sl.registerLazySingleton<GetAllControlsUseCase>(
+    () => GetAllControlsUseCase(sl<ControlRepository>()),
+  );
+
+  /// class name: [UpdateControlUseCase]
+  /// purpose: business logic for updating an existing Control.
+  sl.registerLazySingleton<UpdateControlUseCase>(
+    () => UpdateControlUseCase(sl<ControlRepository>()),
+  );
+
+  /// class name: [DeleteControlUseCase]
+  /// purpose: business logic for hard-deleting a Control.
+  sl.registerLazySingleton<DeleteControlUseCase>(
+    () => DeleteControlUseCase(sl<ControlRepository>()),
+  );
+
   // ─── 4. Cubit (Presentation) ────────────────────────────────────────────────
 
   /// class name: [GRCModuleCubit]
@@ -210,8 +263,9 @@ void setupGRCDependencies(GetIt sl) {
   );
 
   /// class name: [PolicyCubit]
-  /// purpose: presentation-layer state manager for all Policy operations.
-  /// Registered as a factory so each page gets an independent cubit instance.
+  /// purpose: presentation-layer state manager for all Policy and Control
+  /// operations. Registered as a factory so each page gets an independent
+  /// cubit instance.
   sl.registerFactory<PolicyCubit>(
     () => PolicyCubit(
       createPolicyUseCase: sl<CreatePolicyUseCase>(),
@@ -220,6 +274,10 @@ void setupGRCDependencies(GetIt sl) {
       updatePolicyUseCase: sl<UpdatePolicyUseCase>(),
       deletePolicyUseCase: sl<DeletePolicyUseCase>(),
       restorePolicyUseCase: sl<RestorePolicyUseCase>(),
+      createControlUseCase: sl<CreateControlUseCase>(),
+      updateControlUseCase: sl<UpdateControlUseCase>(),
+      deleteControlUseCase: sl<DeleteControlUseCase>(),
+      getAllControlsUseCase: sl<GetAllControlsUseCase>(),
     ),
   );
 }
