@@ -5,12 +5,15 @@
 /// Dependencies: Flutter SDK, AppColors, AppTheme, CustomTextField, CustomDropdownCalendar
 /// Revision History: 2026-07-01 - Initial creation
 ///                   2026-07-14 - Split Policy Document into English/Arabic
+///                   2026-07-14 - Converted to StatefulWidget; added
+///                                English/Arabic language-mismatch validation
 library;
 
 /// ************************* FILE INFO *************************** ///
 /// File Name: policy_info_form_widget.dart
-/// Purpose: Contains PolicyInfoFormWidget, the stateless form for all
-///          policy fields — names, numbers, description, dates, weight, document.
+/// Purpose: Contains PolicyInfoFormWidget, the form for all policy fields —
+///          names, numbers, description, dates, weight, document. Validates
+///          that EN fields contain no Arabic letters and vice versa.
 /// Author: Mohamed Magdy Abdelkhalek
 /// Created At: 1/7/2026
 
@@ -20,27 +23,16 @@ import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
+import 'package:demo_app/features/grc/presentation/ui/widgets/grc_details_widget/grc_form_fields.dart'
+    show containsEnglishLetters, containsArabicLetters;
 import 'package:demo_app/features/grc/presentation/ui/widgets/grc_policy_widget/policy_document_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'policy_document_preview_widget.dart';
 
-/// class name: [PolicyInfoFormWidget]
-///
-/// purpose: stateless form that renders all policy data fields.
-///          When isArabicEnabled is true, Arabic companion fields appear
-///          alongside each English field. The parent page owns all
-///          controllers and state.
-///
-/// authors: Mohamed Magdy Abdelkhalek
-///
-/// created at: 1/7/2026
-class PolicyInfoFormWidget extends StatelessWidget {
+class PolicyInfoFormWidget extends StatefulWidget {
   final bool isArabicEnabled;
-
-  /// When true, required fields left empty show an inline red error.
-  /// Set by the parent page once the user attempts to submit/advance.
   final bool submitted;
 
   final TextEditingController nameController;
@@ -86,6 +78,38 @@ class PolicyInfoFormWidget extends StatelessWidget {
     this.documentAr,
   });
 
+  @override
+  State<PolicyInfoFormWidget> createState() => _PolicyInfoFormWidgetState();
+}
+
+class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
+  List<TextEditingController> get _bilingualControllers => [
+        widget.nameController,
+        widget.nameArController,
+        widget.numberController,
+        widget.numberArController,
+        widget.descriptionController,
+        widget.descriptionArController,
+      ];
+
+  @override
+  void initState() {
+    super.initState();
+    for (final c in _bilingualControllers) {
+      c.addListener(_onTextChanged);
+    }
+  }
+
+  @override
+  void dispose() {
+    for (final c in _bilingualControllers) {
+      c.removeListener(_onTextChanged);
+    }
+    super.dispose();
+  }
+
+  void _onTextChanged() => setState(() {});
+
   TextStyle get _labelStyle =>
       AppTextStyles.font16BlackRegularCairo.copyWith(fontSize: 14.sp);
   TextStyle get _valueStyle =>
@@ -103,13 +127,20 @@ class PolicyInfoFormWidget extends StatelessWidget {
     int? maxLength,
     bool showCharCount = false,
     bool isMandatory = false,
+    String? englishOnlyError,
+    String? arabicOnlyError,
   }) {
+    final languageError = rtl
+        ? (containsEnglishLetters(controller.text) ? arabicOnlyError : null)
+        : (containsArabicLetters(controller.text) ? englishOnlyError : null);
+
     final field = CustomTextField(
       label: label,
       hint: hint,
       controller: controller,
       required: true,
-      submitted: isMandatory && submitted,
+      submitted: isMandatory && widget.submitted,
+      errorText: languageError,
       maxLines: maxLines,
       minLines: minLines,
       maxLength: maxLength,
@@ -152,9 +183,10 @@ class PolicyInfoFormWidget extends StatelessWidget {
     final today = DateTime.now();
     final startOfToday = DateTime(today.year, today.month, today.day);
     final startBeforeToday =
-        startDate != null && startDate!.isBefore(startOfToday);
-    final endBeforeStart =
-        endDate != null && startDate != null && endDate!.isBefore(startDate!);
+        widget.startDate != null && widget.startDate!.isBefore(startOfToday);
+    final endBeforeStart = widget.endDate != null &&
+        widget.startDate != null &&
+        widget.endDate!.isBefore(widget.startDate!);
 
     Widget twoColumns(Widget left, Widget right) => isTablet
         ? Row(children: [
@@ -172,41 +204,75 @@ class PolicyInfoFormWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         twoColumns(
-          _textField(label: 'Policy Name', hint: 'Text here', controller: nameController, isMandatory: true),
-          isArabicEnabled
-              ? _textField(label: 'اسم السياسة', hint: 'اكتب هنا', controller: nameArController, rtl: true, isMandatory: true)
-              : _textField(label: 'Policy Number', hint: 'Text here', controller: numberController, isMandatory: true),
+          _textField(
+            label: 'Policy Name',
+            hint: 'Text here',
+            controller: widget.nameController,
+            isMandatory: true,
+            englishOnlyError: 'Policy Name must be written in English',
+          ),
+          widget.isArabicEnabled
+              ? _textField(
+                  label: 'اسم السياسة',
+                  hint: 'اكتب هنا',
+                  controller: widget.nameArController,
+                  rtl: true,
+                  isMandatory: true,
+                  arabicOnlyError: 'يجب كتابة اسم السياسة باللغة العربية',
+                )
+              : _textField(
+                  label: 'Policy Number',
+                  hint: 'Text here',
+                  controller: widget.numberController,
+                  isMandatory: true,
+                  englishOnlyError: 'Policy Number must be written in English',
+                ),
         ),
         SizedBox(height: 15.h),
-        if (isArabicEnabled) ...[
+        if (widget.isArabicEnabled) ...[
           twoColumns(
-            _textField(label: 'Policy Number', hint: 'Text here', controller: numberController, isMandatory: true),
-            _textField(label: 'رقم السياسة', hint: 'اكتب هنا', controller: numberArController, rtl: true, isMandatory: true),
+            _textField(
+              label: 'Policy Number',
+              hint: 'Text here',
+              controller: widget.numberController,
+              isMandatory: true,
+              englishOnlyError: 'Policy Number must be written in English',
+            ),
+            _textField(
+              label: 'رقم السياسة',
+              hint: 'اكتب هنا',
+              controller: widget.numberArController,
+              rtl: true,
+              isMandatory: true,
+              arabicOnlyError: 'يجب كتابة رقم السياسة باللغة العربية',
+            ),
           ),
           SizedBox(height: 15.h),
         ],
         _textField(
           label: 'Policy Description',
           hint: 'Text here',
-          controller: descriptionController,
+          controller: widget.descriptionController,
           maxLines: 3,
           minLines: 3,
           maxLength: 500,
           showCharCount: true,
           isMandatory: true,
+          englishOnlyError: 'Policy Description must be written in English',
         ),
         SizedBox(height: 15.h),
-        if (isArabicEnabled) ...[
+        if (widget.isArabicEnabled) ...[
           _textField(
             label: 'وصف السياسة',
             hint: 'اكتب وصف',
-            controller: descriptionArController,
+            controller: widget.descriptionArController,
             rtl: true,
             maxLines: 3,
             minLines: 3,
             maxLength: 500,
             showCharCount: true,
             isMandatory: true,
+            arabicOnlyError: 'يجب كتابة وصف السياسة باللغة العربية',
           ),
           SizedBox(height: 15.h),
         ],
@@ -215,17 +281,17 @@ class PolicyInfoFormWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(4.r),
             label: 'Start Date',
             hint: 'Select Start Date',
-            value: startDate,
-            onChanged: onStartDateChanged,
+            value: widget.startDate,
+            onChanged: widget.onStartDateChanged,
             fillColor: AppColors.background,
             labelStyle: StyleText.fontSize16Weight500.copyWith(color: AppColors.text),
             hintStyle: StyleText.fontSize14Weight500
                 .copyWith(color: AppColors.secondaryText.withOpacity(.7)),
             required: false,
             firstDate: startOfToday,
-            errorText: !submitted
+            errorText: !widget.submitted
                 ? null
-                : startDate == null
+                : widget.startDate == null
                     ? 'This field is required.'
                     : startBeforeToday
                         ? 'Start date cannot be before today.'
@@ -235,17 +301,17 @@ class PolicyInfoFormWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(4.r),
             label: 'End Date',
             hint: 'Select End Date',
-            value: endDate,
-            onChanged: onEndDateChanged,
+            value: widget.endDate,
+            onChanged: widget.onEndDateChanged,
             fillColor: AppColors.background,
             labelStyle: StyleText.fontSize16Weight500.copyWith(color: AppColors.text),
             hintStyle: StyleText.fontSize14Weight500
                 .copyWith(color: AppColors.secondaryText.withOpacity(.7)),
             required: false,
-            firstDate: startDate ?? startOfToday,
-            errorText: !submitted
+            firstDate: widget.startDate ?? startOfToday,
+            errorText: !widget.submitted
                 ? null
-                : endDate == null
+                : widget.endDate == null
                     ? 'This field is required.'
                     : endBeforeStart
                         ? 'End date cannot be before start date.'
@@ -255,11 +321,23 @@ class PolicyInfoFormWidget extends StatelessWidget {
         SizedBox(height: 15.h),
         isTablet
             ? Row(children: [
-                Expanded(child: _textField(label: 'Policy Weight', hint: 'Text here', controller: weightController, isMandatory: true)),
+                Expanded(
+                  child: _textField(
+                    label: 'Policy Weight',
+                    hint: 'Text here',
+                    controller: widget.weightController,
+                    isMandatory: true,
+                  ),
+                ),
                 SizedBox(width: 10.w),
                 const Expanded(child: SizedBox()),
               ])
-            : _textField(label: 'Policy Weight', hint: 'Text here', controller: weightController, isMandatory: true),
+            : _textField(
+                label: 'Policy Weight',
+                hint: 'Text here',
+                controller: widget.weightController,
+                isMandatory: true,
+              ),
         SizedBox(height: 15.h),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -270,14 +348,14 @@ class PolicyInfoFormWidget extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  documentEn != null
-                      ? PolicyDocumentPreviewWidget(document: documentEn!, onRemove: onRemoveDocumentEn)
-                      : _documentButton(onTap: onUploadDocumentEn, title: 'Upload Document (English)'),
-                  if (isArabicEnabled) ...[
+                  widget.documentEn != null
+                      ? PolicyDocumentPreviewWidget(document: widget.documentEn!, onRemove: widget.onRemoveDocumentEn)
+                      : _documentButton(onTap: widget.onUploadDocumentEn, title: 'Upload Document (English)'),
+                  if (widget.isArabicEnabled) ...[
                     SizedBox(height: 10.h),
-                    documentAr != null
-                        ? PolicyDocumentPreviewWidget(document: documentAr!, onRemove: onRemoveDocumentAr)
-                        : _documentButton(onTap: onUploadDocumentAr, title: 'رفع المستند (عربي)'),
+                    widget.documentAr != null
+                        ? PolicyDocumentPreviewWidget(document: widget.documentAr!, onRemove: widget.onRemoveDocumentAr)
+                        : _documentButton(onTap: widget.onUploadDocumentAr, title: 'رفع المستند (عربي)'),
                   ],
                 ],
               ),
