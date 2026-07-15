@@ -34,6 +34,7 @@ import 'package:demo_app/features/grc/domain/entities/policy_status.dart';
 import 'package:demo_app/features/grc/presentation/controller/policy_cubit.dart';
 import 'package:demo_app/features/grc/presentation/ui/pages/create_new_policy.dart';
 import 'package:demo_app/features/grc/presentation/ui/pages/policy_bulk_upload/policy_bulk_upload_page.dart';
+import 'package:demo_app/features/grc/presentation/ui/pages/policy_details_page.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
 import 'package:demo_app/features/roles/widgets/filter_bar_item.dart';
 import 'package:demo_app/features/settings/core_widgets/main_widget/custom_button_widget.dart';
@@ -504,7 +505,8 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
       child: ListView.separated(
         itemCount: policies.length,
         separatorBuilder: (_, __) => SizedBox(height: 10.h),
-        itemBuilder: (_, index) => _PolicyCard(policy: policies[index]),
+        itemBuilder: (_, index) =>
+            _PolicyCard(policy: policies[index], module: widget.module),
       ),
     );
   }
@@ -515,21 +517,30 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
 /// class name: [_PolicyCard]
 ///
 /// purpose: private list-item card that displays a single [PolicyEntity]
-///          with its name, number, status, and last-update date. Tapping is
-///          a no-op for now — there is no Policy view/edit page yet.
+///          with its name, number, status, and last-update date. Tapping
+///          opens [PolicyDetailsPage] for that policy.
 ///
 /// authors: Mohamed Magdy Abdelkhalek
 ///
 /// created at: 6/7/2026
 class _PolicyCard extends StatelessWidget {
   final PolicyEntity policy;
+  final GRCModuleEntity module;
 
-  const _PolicyCard({required this.policy});
+  const _PolicyCard({required this.policy, required this.module});
 
   @override
   Widget build(BuildContext context) {
     return ModuleInfoCard(
       width: double.infinity,
+      onTap: () => navigateTo(
+        context,
+        PolicyDetailsPage(
+          policyId: policy.id,
+          moduleId: module.moduleId,
+          module: module,
+        ),
+      ),
       title: context.isArabic ? policy.policyNameAr : policy.policyNameEn,
       infoRows: [
         CardInfo(

@@ -1,17 +1,22 @@
 /// Module: GRC Module Management
 /// Description: Provides the Edit and Delete action buttons shown at the top
-///              of the GRC Module details page in view mode.
+///              of the GRC Module details page (and, since 2026-07-15, the
+///              Policy Details page) in view mode.
 /// Author: Mohamed Magdy Abdelkhalek
 /// Date: 2026-06-29
 /// Dependencies: AppColors, AppTheme, customButtonWithSvg, showConfirmDialog
 /// Revision History: 2026-06-29 - Initial creation
 ///                    2026-06-30 - Added onDeleteTap callback (Mohamed Magdy Abdelkhalek)
+///                    2026-07-15 - Made the delete confirm dialog's title/
+///                                 subtitle/icon overridable so other GRC
+///                                 pages (e.g. Policy Details) can reuse this
+///                                 widget with their own wording
 library;
 
 /// ************************* FILE INFO *************************** ///
 /// File Name: grc_action_buttons.dart
-/// Purpose: Contains GrcActionButtons, a row of Edit and Delete buttons for
-///          the GRC Module details page view mode.
+/// Purpose: Contains GrcActionButtons, a row of Edit and Delete buttons
+///          reused across GRC detail pages.
 /// Author: Mohamed Magdy Abdelkhalek
 /// Created At: 29/6/2026
 
@@ -27,11 +32,19 @@ import 'package:get/get_utils/src/extensions/internacionalization.dart';
 class GrcActionButtons extends StatelessWidget {
   final VoidCallback onEditTap;
   final VoidCallback onDeleteTap;
+  final String deleteDialogTitle;
+  final String deleteDialogSubtitle;
+  final String deleteDialogIconAsset;
 
   const GrcActionButtons({
     super.key,
     required this.onEditTap,
     required this.onDeleteTap,
+    this.deleteDialogTitle = "Deleting GRC Module",
+    this.deleteDialogSubtitle =
+        "Are You Sure You Want To Delete This GRC Module ?",
+    this.deleteDialogIconAsset =
+        "assets/icons_assets/data_grc_assets/delete-module.svg",
   });
 
   @override
@@ -69,13 +82,11 @@ class GrcActionButtons extends StatelessWidget {
               function: () {
                 showConfirmDialog(
                   context: context,
-                  title: "Deleting GRC Module".tr,
+                  title: deleteDialogTitle.tr,
                   cancelLabel: "No".tr,
                   confirmLabel: "Yes".tr,
-                  iconWidget: SvgPicture.asset(
-                      'assets/icons_assets/data_grc_assets/delete-module.svg'),
-                  subtitle:
-                      "Are You Sure You Want To Delete This GRC Module ?".tr,
+                  iconWidget: SvgPicture.asset(deleteDialogIconAsset),
+                  subtitle: deleteDialogSubtitle.tr,
                   onConfirm: onDeleteTap,
                 );
               },
