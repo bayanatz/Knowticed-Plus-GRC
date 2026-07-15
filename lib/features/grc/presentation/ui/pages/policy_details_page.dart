@@ -17,6 +17,7 @@ library;
 /// Author: Mohamed Magdy Abdelkhalek
 /// Created At: 15/7/2026
 
+import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
 import 'package:demo_app/core/custom/10_custom_upload_document.dart';
 import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart'
     hide showUploadDialog;
@@ -26,17 +27,22 @@ import 'package:demo_app/core/custom/loading.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
+import 'package:demo_app/features/grc/domain/entities/control_entity.dart';
+import 'package:demo_app/features/grc/domain/entities/control_status.dart';
 import 'package:demo_app/features/grc/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/domain/entities/policy_entity.dart';
 import 'package:demo_app/features/grc/presentation/controller/policy_cubit.dart';
+import 'package:demo_app/features/grc/presentation/ui/pages/add_edit_control_page.dart';
 import 'package:demo_app/features/grc/presentation/ui/widgets/grc_details_widget/grc_action_buttons.dart';
 import 'package:demo_app/features/grc/presentation/ui/widgets/grc_details_widget/grc_form_fields.dart'
     show containsEnglishLetters, containsArabicLetters;
 import 'package:demo_app/features/grc/presentation/ui/widgets/grc_details_widget/grc_owner_section.dart';
+import 'package:demo_app/features/grc/presentation/ui/widgets/grc_policy_widget/control_card_widget.dart';
 import 'package:demo_app/features/grc/presentation/ui/widgets/grc_policy_widget/policy_document_info.dart';
 import 'package:demo_app/features/grc/presentation/ui/widgets/grc_policy_widget/policy_document_preview_widget.dart';
 import 'package:demo_app/features/grc/presentation/ui/widgets/grc_policy_widget/policy_info_form_widget.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
+import 'package:demo_app/features/roles/widgets/filter_bar_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -70,18 +76,26 @@ class PolicyDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) =>
-          GetIt.instance<PolicyCubit>()..getPolicy(policyId, moduleId: moduleId),
-      child: _PolicyDetailsBody(moduleId: moduleId, module: module),
+      create: (_) => GetIt.instance<PolicyCubit>(),
+      child: _PolicyDetailsBody(
+        policyId: policyId,
+        moduleId: moduleId,
+        module: module,
+      ),
     );
   }
 }
 
 class _PolicyDetailsBody extends StatefulWidget {
+  final String policyId;
   final String moduleId;
   final GRCModuleEntity module;
 
-  const _PolicyDetailsBody({required this.moduleId, required this.module});
+  const _PolicyDetailsBody({
+    required this.policyId,
+    required this.moduleId,
+    required this.module,
+  });
 
   @override
   State<_PolicyDetailsBody> createState() => _PolicyDetailsBodyState();
@@ -104,6 +118,24 @@ class _PolicyDetailsBodyState extends State<_PolicyDetailsBody> {
   DateTime? _endDate;
   PolicyDocumentInfo? _documentEn;
   PolicyDocumentInfo? _documentAr;
+
+  List<ControlEntity> _controls = [];
+  String _selectedControlStatusFilter = 'all';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAll();
+  }
+
+  Future<void> _loadAll() async {
+    final cubit = context.read<PolicyCubit>();
+    await cubit.getPolicy(widget.policyId, moduleId: widget.moduleId);
+    await cubit.getAllControls(
+      moduleId: widget.moduleId,
+      policyId: widget.policyId,
+    );
+  }
 
   @override
   void dispose() {
@@ -237,6 +269,11 @@ class _PolicyDetailsBodyState extends State<_PolicyDetailsBody> {
       return;
     }
 
+    if (state is PolicyControlsListLoaded) {
+      setState(() => _controls = state.controls);
+      return;
+    }
+
     if (state is PolicyActionSuccess) {
       if (_pendingDelete) {
         showSuccessDialog(
@@ -278,6 +315,83 @@ class _PolicyDetailsBodyState extends State<_PolicyDetailsBody> {
         ),
       ),
     );
+  }
+
+  ControlStatus? _statusForControlKey(String key) {
+    switch (key) {
+      case 'Active':
+        return ControlStatus.active;
+      case 'Inactive':
+        return ControlStatus.inactive;
+      case 'Expired':
+        return ControlStatus.expired;
+      case 'Unassigned':
+        return ControlStatus.unassigned;
+      case 'Draft':
+        return ControlStatus.draft;
+      default:
+        return null;
+    }
+  }
+
+  List<ControlEntity> _applyControlStatusFilter(List<ControlEntity> controls) {
+    final status = _statusForControlKey(_selectedControlStatusFilter);
+    if (status == null) return controls;
+    return controls.where((c) => c.status == status).toList();
+  }
+
+  Map<String, int> _countControlsByStatus(List<ControlEntity> controls) {
+    return {
+      'all': controls.length,
+      'Active': controls.where((c) => c.status == ControlStatus.active).length,
+      'Inactive':
+          controls.where((c) => c.status == ControlStatus.inactive).length,
+      'Expired':
+          controls.where((c) => c.status == ControlStatus.expired).length,
+      'Unassigned':
+          controls.where((c) => c.status == ControlStatus.unassigned).length,
+      'Draft': controls.where((c) => c.status == ControlStatus.draft).length,
+    };
+  }
+
+  List<MapEntry<String, Map<String, dynamic>>> _controlStatusEntries(
+      List<ControlEntity> controls) {
+    final counts = _countControlsByStatus(controls);
+    return [
+      MapEntry('all', {'num': counts['all'] ?? 0, 'color': AppColors.text}),
+      MapEntry(
+          'Active', {'num': counts['Active'] ?? 0, 'color': AppColors.green}),
+      MapEntry('Inactive',
+          {'num': counts['Inactive'] ?? 0, 'color': AppColors.orange}),
+      MapEntry(
+          'Expired', {'num': counts['Expired'] ?? 0, 'color': AppColors.red}),
+      MapEntry('Unassigned',
+          {'num': counts['Unassigned'] ?? 0, 'color': AppColors.blue}),
+      MapEntry(
+          'Draft', {'num': counts['Draft'] ?? 0, 'color': AppColors.colorGrey}),
+    ];
+  }
+
+  Future<void> _openAddEditControl({ControlEntity? existing}) async {
+    final result = await Navigator.push<bool>(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) => AddEditControlPage(
+          moduleId: widget.moduleId,
+          policyId: widget.policyId,
+          existingControl: existing,
+          siblingControls: _controls,
+        ),
+        transitionsBuilder: (_, animation, __, child) =>
+            FadeTransition(opacity: animation, child: child),
+        transitionDuration: const Duration(milliseconds: 300),
+      ),
+    );
+    if (result == true && mounted) {
+      context
+          .read<PolicyCubit>()
+          .getAllControls(moduleId: widget.moduleId, policyId: widget.policyId);
+    }
   }
 
   Widget _buildBottomButtons(PolicyCubit cubit) {
@@ -428,6 +542,95 @@ class _PolicyDetailsBodyState extends State<_PolicyDetailsBody> {
                                       initialOwnerEmails:
                                           widget.module.moduleOwners,
                                     ),
+                                    SizedBox(height: 20.h),
+                                    Text(
+                                      'Controls'.tr,
+                                      style: StyleText.fontSize16Weight600
+                                          .copyWith(color: AppColors.text),
+                                    ),
+                                    SizedBox(height: 12.h),
+                                    ScrollConfiguration(
+                                      behavior: ScrollConfiguration.of(context)
+                                          .copyWith(scrollbars: false),
+                                      child: SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Row(
+                                          spacing: 24.sp,
+                                          children: [
+                                            for (final entry
+                                                in _controlStatusEntries(
+                                                    _controls))
+                                              FilterBarItem(
+                                                title: entry.key,
+                                                numberOfItems:
+                                                    entry.value['num'],
+                                                color: entry.value['color'],
+                                                isSelected: entry.key ==
+                                                    _selectedControlStatusFilter,
+                                                onTap: () => setState(() =>
+                                                    _selectedControlStatusFilter =
+                                                        entry.key),
+                                              ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: 12.h),
+                                    Align(
+                                      alignment: Alignment.centerRight,
+                                      child: customButtonWithSvg(
+                                        colorBorder: AppColors.primary,
+                                        space: 10.w,
+                                        radius: 8.r,
+                                        widthImage: 16.w,
+                                        heightImage: 16.h,
+                                        function: () => _openAddEditControl(),
+                                        title: 'Control'.tr,
+                                        textStyle: StyleText.fontSize14Weight500
+                                            .copyWith(
+                                                color: AppColors.textButton),
+                                        image:
+                                            'assets/icons_assets/database_builder_assets/plus_head.svg',
+                                        color: AppColors.primary,
+                                        svgColor: AppColors.textButton,
+                                      ),
+                                    ),
+                                    SizedBox(height: 12.h),
+                                    if (_applyControlStatusFilter(_controls)
+                                        .isEmpty)
+                                      Padding(
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 16.h),
+                                        child: Center(
+                                          child: Text(
+                                            'No Controls found'.tr,
+                                            style: StyleText.fontSize14Weight500
+                                                .copyWith(
+                                                    color:
+                                                        AppColors.secondaryText),
+                                          ),
+                                        ),
+                                      )
+                                    else
+                                      ListView.separated(
+                                        shrinkWrap: true,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        itemCount:
+                                            _applyControlStatusFilter(_controls)
+                                                .length,
+                                        separatorBuilder: (_, __) =>
+                                            SizedBox(height: 10.h),
+                                        itemBuilder: (_, index) =>
+                                            ControlCardWidget(
+                                          control: _applyControlStatusFilter(
+                                              _controls)[index],
+                                          onTap: () => _openAddEditControl(
+                                            existing: _applyControlStatusFilter(
+                                                _controls)[index],
+                                          ),
+                                        ),
+                                      ),
                                   ] else ...[
                                     PolicyInfoFormWidget(
                                       isArabicEnabled: true,
