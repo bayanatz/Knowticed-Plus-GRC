@@ -25,8 +25,10 @@ import 'dart:io';
 import 'package:demo_app/core/custom/10_custom_upload_document.dart';
 // 11's own showUploadDialog is a near-duplicate of 10's — hidden here to
 // avoid an ambiguous-import error; section 10 already demos the dedicated one.
-import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart' hide showUploadDialog;
+import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart'
+    hide showUploadDialog;
 import 'package:demo_app/core/custom/loading.dart';
+import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/grc/domain/entities/control_status.dart';
@@ -36,6 +38,7 @@ import 'package:demo_app/features/grc/presentation/controller/policy_cubit.dart'
 import 'package:demo_app/features/grc/presentation/ui/pages/add_policy_controls.dart';
 import 'package:demo_app/features/grc/presentation/ui/widgets/grc_details_widget/grc_form_fields.dart'
     show containsEnglishLetters, containsArabicLetters;
+import 'package:demo_app/features/grc/presentation/ui/widgets/grc_policy_widget/policy_control_completeness.dart';
 import 'package:demo_app/features/grc/presentation/ui/widgets/grc_policy_widget/policy_control_model.dart';
 import 'package:demo_app/features/grc/presentation/ui/widgets/grc_policy_widget/policy_controls_table_widget.dart';
 import 'package:demo_app/features/grc/presentation/ui/widgets/grc_policy_widget/policy_document_info.dart';
@@ -68,8 +71,15 @@ import 'package:get_it/get_it.dart';
 /// created at: 1/7/2026
 class CreateNewPolicyPage extends StatefulWidget {
   final String moduleId;
+  final String moduleNameEn;
+  final String moduleNameAr;
 
-  const CreateNewPolicyPage({super.key, required this.moduleId});
+  const CreateNewPolicyPage({
+    super.key,
+    required this.moduleId,
+    required this.moduleNameEn,
+    required this.moduleNameAr,
+  });
 
   @override
   State<CreateNewPolicyPage> createState() => _CreateNewPolicyPageState();
@@ -133,7 +143,32 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
             sum + (double.tryParse(c.weightController.text.trim()) ?? 0),
       );
 
-  bool get _isWeightValid => _totalControlWeight == 100;
+  /// function name: [_touchedControls]
+  ///
+  /// purpose: the subset of [_controls] the user has actually entered data
+  ///          into — see [controlIsTouched]. An untouched default control
+  ///          card is not a "real" control.
+  ///
+  /// parameters: none
+  ///
+  /// return type: [List<PolicyControlModel>]
+  List<PolicyControlModel> get _touchedControls =>
+      _controls.where(controlIsTouched).toList();
+
+  /// function name: [_hasIncompleteTouchedControl]
+  ///
+  /// purpose: true if any touched control is missing a required field —
+  ///          see [controlIsComplete]. Used to block Preview until every
+  ///          control the user started filling in is finished.
+  ///
+  /// parameters: none
+  ///
+  /// return type: [bool]
+  bool get _hasIncompleteTouchedControl => _touchedControls.any(
+      (c) => !controlIsComplete(c, isArabicEnabled: _isArabicEnabled));
+
+  bool get _isWeightValid =>
+      _touchedControls.isEmpty || _totalControlWeight == 100;
 
   void _onUploadDocumentEn() {
     showUploadDialog(
@@ -244,7 +279,8 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
     if (_isArabicEnabled) {
       if (containsEnglishLetters(control.nameArController.text)) return true;
       if (containsEnglishLetters(control.numberArController.text)) return true;
-      if (containsEnglishLetters(control.descriptionArController.text)) return true;
+      if (containsEnglishLetters(control.descriptionArController.text))
+        return true;
     }
     final start = control.startDate;
     final end = control.endDate;
@@ -263,8 +299,8 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
   ///          same filter [_buildPendingControls] uses to decide which
   ///          controls are actually sent to the cubit) currently has a
   ///          language or date-range error.
-  bool get _hasControlErrors => _controls.any((c) =>
-      c.nameController.text.trim().isNotEmpty && _controlHasErrors(c));
+  bool get _hasControlErrors => _controls.any(
+      (c) => c.nameController.text.trim().isNotEmpty && _controlHasErrors(c));
 
   /// function name: [_showBlockingErrorsSnackbar]
   ///
@@ -273,7 +309,8 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
   void _showBlockingErrorsSnackbar() {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Please fix the highlighted errors before continuing.'.tr),
+        content:
+            Text('Please fix the highlighted errors before continuing.'.tr),
         backgroundColor: AppColors.red,
       ),
     );
@@ -295,7 +332,7 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
   /// return type: void
   List<PendingControlInput> _buildPendingControls(ControlStatus status) {
     return _controls
-        .where((c) => c.nameController.text.trim().isNotEmpty)
+        .where(controlIsTouched)
         .map((c) => PendingControlInput(
               controlsNameEn: c.nameController.text.trim(),
               controlsNameAr: c.nameArController.text.trim(),
@@ -303,7 +340,8 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
               controlsNumberAr: c.numberArController.text.trim(),
               controlsDescriptionEn: c.descriptionController.text.trim(),
               controlsDescriptionAr: c.descriptionArController.text.trim(),
-              controlsWeight: double.tryParse(c.weightController.text.trim()) ?? 0,
+              controlsWeight:
+                  double.tryParse(c.weightController.text.trim()) ?? 0,
               frequency: c.frequency ?? '',
               startDate: c.startDate ?? _startDate ?? DateTime.now(),
               endDate: c.endDate ?? _endDate ?? DateTime.now(),
@@ -437,7 +475,13 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     PaginationAppBar(
-                      screensTitles: ['GRC'.tr, 'Create New Policy'.tr],
+                      screensTitles: [
+                        'GRC'.tr,
+                        ctx.isArabic
+                            ? widget.moduleNameAr
+                            : widget.moduleNameEn,
+                        'Create New Policy'.tr,
+                      ],
                     ),
                     Expanded(child: _buildCurrentStep()),
                     SizedBox(height: 16.h),
