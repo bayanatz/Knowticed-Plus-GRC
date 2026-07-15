@@ -733,6 +733,17 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
               _showBlockingErrorsSnackbar();
               return;
             }
+            if (_hasIncompleteTouchedControl) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                      'Please complete all required Control fields before continuing.'
+                          .tr),
+                  backgroundColor: AppColors.red,
+                ),
+              );
+              return;
+            }
             setState(() => _step = 2);
           },
           height: 38.h,
