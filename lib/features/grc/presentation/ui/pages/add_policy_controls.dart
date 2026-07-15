@@ -39,6 +39,7 @@ class AddPolicyControlsPage extends StatefulWidget {
   final List<PolicyControlModel> controls;
   final DateTime? policyStartDate;
   final DateTime? policyEndDate;
+  final bool controlsSubmitted;
 
   const AddPolicyControlsPage({
     super.key,
@@ -46,6 +47,7 @@ class AddPolicyControlsPage extends StatefulWidget {
     required this.controls,
     required this.policyStartDate,
     required this.policyEndDate,
+    required this.controlsSubmitted,
   });
 
   @override
@@ -91,8 +93,8 @@ class _AddPolicyControlsPageState extends State<AddPolicyControlsPage> {
       discardLabel: 'Discard'.tr,
       allowedExtensions: const ['pdf', 'doc', 'docx'],
       onSubmit: (file, title) {
-        setState(() =>
-            _controls[index].documentEn = PolicyDocumentInfo.fromPlatformFile(file));
+        setState(() => _controls[index].documentEn =
+            PolicyDocumentInfo.fromPlatformFile(file));
       },
     );
   }
@@ -109,8 +111,8 @@ class _AddPolicyControlsPageState extends State<AddPolicyControlsPage> {
       textDirection: TextDirection.rtl,
       allowedExtensions: const ['pdf', 'doc', 'docx'],
       onSubmit: (file, title) {
-        setState(() =>
-            _controls[index].documentAr = PolicyDocumentInfo.fromPlatformFile(file));
+        setState(() => _controls[index].documentAr =
+            PolicyDocumentInfo.fromPlatformFile(file));
       },
     );
   }
@@ -141,6 +143,7 @@ class _AddPolicyControlsPageState extends State<AddPolicyControlsPage> {
                       key: ValueKey(_controls[i]),
                       control: _controls[i],
                       isArabicEnabled: widget.isArabicEnabled,
+                      controlsSubmitted: widget.controlsSubmitted,
                       showRemoveButton: _controls.length > 1,
                       onRemove: () => _removeControl(i),
                       onUploadDocumentEn: () => _onUploadDocumentEn(i),
@@ -162,18 +165,15 @@ class _AddPolicyControlsPageState extends State<AddPolicyControlsPage> {
                     alignment: Alignment.centerLeft,
                     child: customButtonWithSvg(
                       colorBorder: AppColors.textButton,
-                      space: 10.w,
-                      radius: 8.r,
                       widthImage: 16.w,
                       heightImage: 16.h,
                       function: _addControl,
                       title: 'Control',
                       textStyle: StyleText.fontSize14Weight500
                           .copyWith(color: AppColors.white),
-                      image: 'assets/icons/add.svg',
+                      image:
+                          'assets/icons_assets/database_builder_assets/plus_head.svg',
                       color: AppColors.textButton,
-                      width: 140.w,
-                      height: 36.h,
                       svgColor: AppColors.white,
                     ),
                   ),

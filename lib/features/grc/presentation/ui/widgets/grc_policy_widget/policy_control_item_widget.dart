@@ -27,6 +27,7 @@ import 'package:demo_app/core/theme/app_text_styles.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/grc/presentation/ui/widgets/grc_details_widget/grc_form_fields.dart'
     show containsEnglishLetters, containsArabicLetters;
+import 'package:demo_app/features/grc/presentation/ui/widgets/grc_policy_widget/policy_control_completeness.dart';
 import 'package:demo_app/features/grc/presentation/ui/widgets/grc_policy_widget/policy_control_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -48,6 +49,7 @@ class PolicyControlItemWidget extends StatefulWidget {
   final DateTime? policyEndDate;
   final ValueChanged<DateTime?> onStartDateChanged;
   final ValueChanged<DateTime?> onEndDateChanged;
+  final bool controlsSubmitted;
 
   const PolicyControlItemWidget({
     super.key,
@@ -60,6 +62,7 @@ class PolicyControlItemWidget extends StatefulWidget {
     required this.onFrequencyChanged,
     required this.onStartDateChanged,
     required this.onEndDateChanged,
+    required this.controlsSubmitted,
     this.policyStartDate,
     this.policyEndDate,
     this.showRemoveButton = false,
@@ -87,6 +90,7 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
     for (final c in _bilingualControllers) {
       c.addListener(_onTextChanged);
     }
+    widget.control.weightController.addListener(_onTextChanged);
   }
 
   @override
@@ -94,10 +98,19 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
     for (final c in _bilingualControllers) {
       c.removeListener(_onTextChanged);
     }
+    widget.control.weightController.removeListener(_onTextChanged);
     super.dispose();
   }
 
   void _onTextChanged() => setState(() {});
+
+  /// Whether "This field is required." should appear under this control's
+  /// empty mandatory fields — only once the user has attempted Preview
+  /// (`controlsSubmitted`) AND has entered data somewhere in this specific
+  /// control (`controlIsTouched`). A control left entirely empty is valid
+  /// and shows no errors even after a Preview attempt.
+  bool get _showRequiredErrors =>
+      widget.controlsSubmitted && controlIsTouched(widget.control);
 
   TextStyle get _labelStyle =>
       AppTextStyles.font16BlackRegularCairo.copyWith(fontSize: 14.sp);
@@ -115,6 +128,7 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
     int? minLines,
     int? maxLength,
     bool showCharCount = false,
+    bool isMandatory = false,
     String? englishOnlyError,
     String? arabicOnlyError,
   }) {
@@ -127,6 +141,7 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
       hint: hint,
       controller: controller,
       required: true,
+      submitted: isMandatory && _showRequiredErrors,
       errorText: languageError,
       maxLines: maxLines,
       minLines: minLines,
@@ -161,17 +176,14 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
   Widget _documentButton({required VoidCallback onTap, required String title}) {
     return customButtonWithSvg(
       colorBorder: AppColors.primary,
-      space: 10.w,
-      radius: 8.r,
       widthImage: 16.w,
       heightImage: 16.h,
       function: onTap,
       title: title,
-      textStyle: StyleText.fontSize14Weight500.copyWith(color: AppColors.textButton),
-      image: 'assets/hrAsset/Upload.svg',
+      textStyle:
+          StyleText.fontSize14Weight500.copyWith(color: AppColors.textButton),
+      image: 'assets/icons_assets/data_grc_assets/upload_minimalistic.svg',
       color: AppColors.primary,
-      width: 220.w,
-      height: 36.h,
       svgColor: AppColors.textButton,
     );
   }
@@ -196,12 +208,10 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
       value: control.frequency,
       onChanged: widget.onFrequencyChanged,
       fillColor: AppColors.background,
-      labelStyle: StyleText.fontSize16Weight500.copyWith(color: AppColors.text),
+      labelStyle: StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
       hintStyle: StyleText.fontSize14Weight500
           .copyWith(color: AppColors.secondaryText.withOpacity(.7)),
       itemStyle: StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
-      triggerPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-      borderRadius: BorderRadius.circular(4.r),
       required: false,
     );
 
@@ -209,6 +219,7 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
       label: 'Control Weight',
       hint: 'Text Here',
       controller: control.weightController,
+      isMandatory: true,
     );
 
     final startDateField = CustomDropdownCalendar(
@@ -274,6 +285,7 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
                   label: 'Control Name',
                   hint: 'Text here',
                   controller: control.nameController,
+                  isMandatory: true,
                   englishOnlyError: 'Control Name must be written in English',
                 ),
               ),
@@ -284,6 +296,7 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
                   hint: 'اكتب هنا',
                   controller: control.nameArController,
                   rtl: true,
+                  isMandatory: true,
                   arabicOnlyError: 'يجب كتابة اسم ضابط باللغة العربية',
                 ),
               ),
@@ -293,6 +306,7 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
               label: 'Control Name',
               hint: 'Text here',
               controller: control.nameController,
+              isMandatory: true,
               englishOnlyError: 'Control Name must be written in English',
             ),
             if (isArabicEnabled) ...[
@@ -302,6 +316,7 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
                 hint: 'اكتب هنا',
                 controller: control.nameArController,
                 rtl: true,
+                isMandatory: true,
                 arabicOnlyError: 'يجب كتابة اسم ضابط باللغة العربية',
               ),
             ],
@@ -314,7 +329,9 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
                   label: 'Control Number'.tr,
                   hint: 'Text here',
                   controller: control.numberController,
-                  englishOnlyError: 'Control Number must be written in English'.tr,
+                  isMandatory: true,
+                  englishOnlyError:
+                      'Control Number must be written in English'.tr,
                 ),
               ),
               SizedBox(width: 10.w),
@@ -324,6 +341,7 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
                   hint: 'اكتب هنا',
                   controller: control.numberArController,
                   rtl: true,
+                  isMandatory: true,
                   arabicOnlyError: 'يجب كتابة رقم ضابط باللغة العربية',
                 ),
               ),
@@ -333,6 +351,7 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
               label: 'Control Number'.tr,
               hint: 'Text here',
               controller: control.numberController,
+              isMandatory: true,
               englishOnlyError: 'Control Number must be written in English'.tr,
             ),
             if (isArabicEnabled) ...[
@@ -342,6 +361,7 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
                 hint: 'اكتب هنا',
                 controller: control.numberArController,
                 rtl: true,
+                isMandatory: true,
                 arabicOnlyError: 'يجب كتابة رقم ضابط باللغة العربية',
               ),
             ],
@@ -355,6 +375,7 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
             minLines: 3,
             maxLength: 500,
             showCharCount: true,
+            isMandatory: true,
             englishOnlyError: 'Control Description must be written in English',
           ),
           SizedBox(height: 15.h),
@@ -368,48 +389,11 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
               minLines: 3,
               maxLength: 500,
               showCharCount: true,
+              isMandatory: true,
               arabicOnlyError: 'يجب كتابة وصف ضابط باللغة العربية',
             ),
             SizedBox(height: 15.h),
           ],
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Control Document',
-                  style: StyleText.fontSize16Weight500
-                      .copyWith(color: AppColors.text)),
-              const Spacer(),
-              Flexible(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    control.documentEn != null
-                        ? PolicyDocumentPreviewWidget(
-                            document: control.documentEn!,
-                            onRemove: widget.onRemoveDocumentEn,
-                          )
-                        : _documentButton(
-                            onTap: widget.onUploadDocumentEn,
-                            title: 'Upload Document (English)',
-                          ),
-                    if (isArabicEnabled) ...[
-                      SizedBox(height: 10.h),
-                      control.documentAr != null
-                          ? PolicyDocumentPreviewWidget(
-                              document: control.documentAr!,
-                              onRemove: widget.onRemoveDocumentAr,
-                            )
-                          : _documentButton(
-                              onTap: widget.onUploadDocumentAr,
-                              title: 'رفع المستند (عربي)',
-                            ),
-                    ],
-                  ],
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 15.h),
           isTablet
               ? Row(children: [
                   Expanded(child: startDateField),
@@ -421,6 +405,59 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
                   SizedBox(height: 15.h),
                   endDateField,
                 ]),
+          SizedBox(height: 15.h),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 10.w,
+            children: [
+              Expanded(
+                child: Column(
+                  spacing: 8.h,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Policy Document ENG',
+                        style: StyleText.fontSize16Weight500
+                            .copyWith(color: AppColors.text)),
+                    control.documentEn != null
+                        ? PolicyDocumentPreviewWidget(
+                            document: control.documentEn!,
+                            onRemove: widget.onRemoveDocumentEn,
+                          )
+                        : SizedBox(
+                            width: double.infinity,
+                            child: _documentButton(
+                              onTap: widget.onUploadDocumentEn,
+                              title: 'Policy Document',
+                            ),
+                          ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Column(
+                  spacing: 8.h,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Policy Document AR',
+                        style: StyleText.fontSize16Weight500
+                            .copyWith(color: AppColors.text)),
+                    control.documentAr != null
+                        ? PolicyDocumentPreviewWidget(
+                            document: control.documentAr!,
+                            onRemove: widget.onRemoveDocumentAr,
+                          )
+                        : SizedBox(
+                            width: double.infinity,
+                            child: _documentButton(
+                              onTap: widget.onUploadDocumentAr,
+                              title: 'Policy Document',
+                            ),
+                          ),
+                  ],
+                ),
+              ),
+            ],
+          ),
           SizedBox(height: 15.h),
           isTablet
               ? Row(children: [

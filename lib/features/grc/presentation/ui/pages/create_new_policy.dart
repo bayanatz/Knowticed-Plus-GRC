@@ -93,6 +93,7 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
   int _step = 0; // 0 = info, 1 = controls, 2 = preview
   bool _isArabicEnabled = true;
   bool _step0Submitted = false;
+  bool _controlsSubmitted = false;
 
   // Step 0 controllers
   final _nameController = TextEditingController();
@@ -572,6 +573,7 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
       controls: _controls,
       policyStartDate: _startDate,
       policyEndDate: _endDate,
+      controlsSubmitted: _controlsSubmitted,
     );
   }
 
@@ -760,19 +762,12 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
         customButton(
           title: 'Preview'.tr,
           function: () {
+            setState(() => _controlsSubmitted = true);
             if (_hasPolicyLanguageErrors || _hasControlErrors) {
               _showBlockingErrorsSnackbar();
               return;
             }
             if (_hasIncompleteTouchedControl) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                      'Please complete all required Control fields before continuing.'
-                          .tr),
-                  backgroundColor: AppColors.red,
-                ),
-              );
               return;
             }
             setState(() => _step = 2);
