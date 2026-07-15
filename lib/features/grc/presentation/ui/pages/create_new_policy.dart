@@ -22,6 +22,7 @@ library;
 
 import 'dart:io';
 
+import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
 import 'package:demo_app/core/custom/10_custom_upload_document.dart';
 // 11's own showUploadDialog is a near-duplicate of 10's — hidden here to
 // avoid an ambiguous-import error; section 10 already demos the dedicated one.
@@ -614,14 +615,44 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
               ),
             ),
             SizedBox(height: 16.h),
-            // -- Controls table --
-            PolicyControlsTableWidget(
-              controls: _controls,
-              onSave: () => setState(() {}),
-            ),
+            // -- Controls table / Add Controller button --
+            _touchedControls.isEmpty
+                ? _buildAddControllerButton()
+                : PolicyControlsTableWidget(
+                    controls: _touchedControls,
+                    onSave: () => setState(() {}),
+                  ),
             SizedBox(height: 20.h),
           ],
         ),
+      ),
+    );
+  }
+
+  /// function name: [_buildAddControllerButton]
+  ///
+  /// purpose: shown on step 2 instead of the controls table when there are
+  ///          no touched controls — sends the user back to step 1
+  ///          (Controls) so they can add one if they want, matching the
+  ///          "+ Control" button styling used there.
+  ///
+  /// parameters: none
+  ///
+  /// return type: [Widget]
+  Widget _buildAddControllerButton() {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: customButtonWithSvg(
+        colorBorder: AppColors.textButton,
+        widthImage: 16.w,
+        heightImage: 16.h,
+        function: () => setState(() => _step = 1),
+        title: 'Add Controller'.tr,
+        textStyle:
+            StyleText.fontSize14Weight500.copyWith(color: AppColors.white),
+        image: 'assets/icons_assets/database_builder_assets/plus_head.svg',
+        color: AppColors.textButton,
+        svgColor: AppColors.white,
       ),
     );
   }
