@@ -31,6 +31,7 @@ import 'package:demo_app/features/grc/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/domain/entities/control_status.dart';
 import 'package:demo_app/features/grc/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/domain/entities/policy_entity.dart';
+import 'package:demo_app/features/grc/domain/entities/policy_status.dart';
 import 'package:demo_app/features/grc/presentation/controller/policy_cubit.dart';
 import 'package:demo_app/features/grc/presentation/ui/pages/add_edit_control_page.dart';
 import 'package:demo_app/features/grc/presentation/ui/widgets/grc_details_widget/grc_action_buttons.dart';
@@ -46,6 +47,7 @@ import 'package:demo_app/features/roles/widgets/filter_bar_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart' hide TextDirection;
@@ -118,6 +120,8 @@ class _PolicyDetailsBodyState extends State<_PolicyDetailsBody> {
   DateTime? _endDate;
   PolicyDocumentInfo? _documentEn;
   PolicyDocumentInfo? _documentAr;
+  bool _statusInactive = false;
+  bool _initialStatusInactive = false;
 
   List<ControlEntity> _controls = [];
   String _selectedControlStatusFilter = 'all';
@@ -165,6 +169,8 @@ class _PolicyDetailsBodyState extends State<_PolicyDetailsBody> {
     _documentAr = policy.policyDocumentAr != null
         ? PolicyDocumentInfo.fromUrl(policy.policyDocumentAr!)
         : null;
+    _statusInactive = policy.status == PolicyStatus.inactive;
+    _initialStatusInactive = _statusInactive;
   }
 
   bool _validate() {
@@ -232,10 +238,27 @@ class _PolicyDetailsBodyState extends State<_PolicyDetailsBody> {
   void _onRemoveDocumentEn() => setState(() => _documentEn = null);
   void _onRemoveDocumentAr() => setState(() => _documentAr = null);
 
+  /// function name: [_statusOverride]
+  ///
+  /// purpose: only the "Inactive" toggle can change a Policy's status from
+  ///          this page, and only when the user actually flips it — a plain
+  ///          field edit must never silently overwrite Draft/Scheduled/
+  ///          Expired/Active with a stale literal status. Returns null
+  ///          (leave status untouched) unless the toggle moved since load.
+  ///
+  /// parameters: none
+  ///
+  /// return type: [PolicyStatus?]
+  PolicyStatus? _statusOverride() {
+    if (_statusInactive == _initialStatusInactive) return null;
+    return _statusInactive ? PolicyStatus.inactive : PolicyStatus.active;
+  }
+
   void _onSave(PolicyCubit cubit) {
     cubit.updatePolicy(
       id: _policy!.id,
       moduleId: widget.moduleId,
+      status: _statusOverride(),
       policyNameEn: _nameController.text.trim(),
       policyNameAr: _nameArController.text.trim(),
       policyNumberEn: _numberController.text.trim(),
@@ -289,11 +312,7 @@ class _PolicyDetailsBodyState extends State<_PolicyDetailsBody> {
         title: 'Policy Updated'.tr,
         subtitle: 'You successfully updated this policy.'.tr,
       );
-      setState(() {
-        _policy = state.policy;
-        _mode = _PolicyPageMode.view;
-        _submitted = false;
-      });
+      Navigator.of(context).pop(true);
       return;
     }
 
@@ -632,6 +651,35 @@ class _PolicyDetailsBodyState extends State<_PolicyDetailsBody> {
                                         ),
                                       ),
                                   ] else ...[
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          _statusInactive
+                                              ? 'Inactive'.tr
+                                              : 'Active'.tr,
+                                          style: StyleText.fontSize14Weight500
+                                              .copyWith(
+                                                  color: AppColors.text),
+                                        ),
+                                        SizedBox(width: 10.w),
+                                        FlutterSwitch(
+                                          width: 38.sp,
+                                          height: 22.sp,
+                                          padding: 3.sp,
+                                          borderRadius: 20.sp,
+                                          toggleSize: 16.sp,
+                                          activeColor:
+                                              AppColors.secondaryPrimary,
+                                          inactiveColor:
+                                              Colors.grey.withOpacity(.16),
+                                          value: !_statusInactive,
+                                          onToggle: (v) => setState(
+                                              () => _statusInactive = !v),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 12.h),
                                     PolicyInfoFormWidget(
                                       isArabicEnabled: true,
                                       submitted: _submitted,

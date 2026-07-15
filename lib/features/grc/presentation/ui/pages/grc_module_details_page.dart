@@ -22,7 +22,6 @@ library;
 import 'package:demo_app/core/custom/10-custom_tabs.dart';
 import 'package:demo_app/core/custom/16-custom_card_styles.dart';
 import 'package:demo_app/core/custom/35-custom_search_widget_custom.dart';
-import 'package:demo_app/core/custom/37-custom_navigate.dart';
 import 'package:demo_app/core/custom/43_custom_module_info_card.dart';
 import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
@@ -63,8 +62,8 @@ class GrcModuleDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) =>
-          GetIt.instance<PolicyCubit>()..getAllPolicies(moduleId: module.moduleId),
+      create: (_) => GetIt.instance<PolicyCubit>()
+        ..getAllPolicies(moduleId: module.moduleId),
       child: _GrcModuleDetailsBody(module: module),
     );
   }
@@ -126,10 +125,37 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
     );
 
     if (!context.mounted) return;
+    bool? result;
     if (choice == 'add') {
-      navigateTo(context, CreateNewPolicyPage(moduleId: widget.module.moduleId));
+      result = await Navigator.push<bool>(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) => CreateNewPolicyPage(
+            moduleId: widget.module.moduleId,
+            moduleNameEn: widget.module.moduleNameEn,
+            moduleNameAr: widget.module.moduleNameAr,
+          ),
+          transitionsBuilder: (_, animation, __, child) =>
+              FadeTransition(opacity: animation, child: child),
+          transitionDuration: const Duration(milliseconds: 300),
+        ),
+      );
     } else if (choice == 'bulk') {
-      navigateTo(context, PolicyBulkUploadPage(moduleId: widget.module.moduleId));
+      result = await Navigator.push<bool>(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) =>
+              PolicyBulkUploadPage(moduleId: widget.module.moduleId),
+          transitionsBuilder: (_, animation, __, child) =>
+              FadeTransition(opacity: animation, child: child),
+          transitionDuration: const Duration(milliseconds: 300),
+        ),
+      );
+    }
+    if (result == true && context.mounted) {
+      context
+          .read<PolicyCubit>()
+          .getAllPolicies(moduleId: widget.module.moduleId);
     }
   }
 
@@ -139,6 +165,8 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
         return PolicyStatus.active;
       case 'Inactive':
         return PolicyStatus.inactive;
+      case 'Scheduled':
+        return PolicyStatus.scheduled;
       case 'Expired':
         return PolicyStatus.expired;
       case 'Draft':
@@ -170,6 +198,8 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
       'Active': policies.where((p) => p.status == PolicyStatus.active).length,
       'Inactive':
           policies.where((p) => p.status == PolicyStatus.inactive).length,
+      'Scheduled':
+          policies.where((p) => p.status == PolicyStatus.scheduled).length,
       'Expired': policies.where((p) => p.status == PolicyStatus.expired).length,
       'Draft': policies.where((p) => p.status == PolicyStatus.draft).length,
     };
@@ -185,6 +215,12 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
             state is PolicyListLoaded ? state.policies : <PolicyEntity>[];
         final counts = _countByStatus(allPolicies);
         final filtered = _applySearch(_applyStatusFilter(allPolicies));
+        final weightIssueTotal = allPolicies
+            .where((p) =>
+                p.status == PolicyStatus.active ||
+                p.status == PolicyStatus.scheduled)
+            .fold<double>(0, (sum, p) => sum + p.policyWeight);
+        final hasPolicyWeightIssue = weightIssueTotal > 100;
 
         final List<MapEntry<String, Map<String, dynamic>>> status = [
           MapEntry('all', {'num': counts['all'] ?? 0, 'color': AppColors.text}),
@@ -192,6 +228,8 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
               {'num': counts['Active'] ?? 0, 'color': AppColors.green}),
           MapEntry('Inactive',
               {'num': counts['Inactive'] ?? 0, 'color': AppColors.orange}),
+          MapEntry('Scheduled',
+              {'num': counts['Scheduled'] ?? 0, 'color': AppColors.primary}),
           MapEntry('Expired',
               {'num': counts['Expired'] ?? 0, 'color': AppColors.red}),
           MapEntry('Draft',
@@ -291,8 +329,8 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
 
                   Expanded(
                     child: _selectedTab == 0
-                        ? _buildPoliciesTab(
-                            context, isTablet, status, state, filtered)
+                        ? _buildPoliciesTab(context, isTablet, status, state,
+                            filtered, hasPolicyWeightIssue)
                         : Center(
                             child: Text(
                               _tabs[_selectedTab].tr,
@@ -316,6 +354,7 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
     List<MapEntry<String, Map<String, dynamic>>> status,
     PolicyState state,
     List<PolicyEntity> filtered,
+    bool hasPolicyWeightIssue,
   ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -411,15 +450,16 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
         // Policy Weight Issue + view-mode icons
         Row(
           children: [
-            customButton(
-              title: "Policy Weight Issue".tr,
-              function: () {},
-              width: isTablet ? 180.w : 160.w,
-              height: 38.h,
-              color: AppColors.primary,
-              textStyle: StyleText.fontSize16Weight500
-                  .copyWith(color: AppColors.textButton),
-            ),
+            if (hasPolicyWeightIssue)
+              customButton(
+                title: "Policy Weight Issue".tr,
+                function: () {},
+                width: isTablet ? 180.w : 160.w,
+                height: 38.h,
+                color: AppColors.primary,
+                textStyle: StyleText.fontSize16Weight500
+                    .copyWith(color: AppColors.textButton),
+              ),
             const Spacer(),
             Container(
               width: 38.sp,
@@ -533,14 +573,24 @@ class _PolicyCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return ModuleInfoCard(
       width: double.infinity,
-      onTap: () => navigateTo(
-        context,
-        PolicyDetailsPage(
-          policyId: policy.id,
-          moduleId: module.moduleId,
-          module: module,
-        ),
-      ),
+      onTap: () async {
+        final result = await Navigator.push<bool>(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (_, __, ___) => PolicyDetailsPage(
+              policyId: policy.id,
+              moduleId: module.moduleId,
+              module: module,
+            ),
+            transitionsBuilder: (_, animation, __, child) =>
+                FadeTransition(opacity: animation, child: child),
+            transitionDuration: const Duration(milliseconds: 300),
+          ),
+        );
+        if (result == true && context.mounted) {
+          context.read<PolicyCubit>().getAllPolicies(moduleId: module.moduleId);
+        }
+      },
       title: context.isArabic ? policy.policyNameAr : policy.policyNameEn,
       infoRows: [
         CardInfo(

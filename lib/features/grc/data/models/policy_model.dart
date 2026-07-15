@@ -33,6 +33,40 @@ import '../../domain/entities/policy_status.dart';
 /// Author: Mohamed Elrashidy
 /// Created At: 15/1/2025
 
+/// function name: [_deriveStatus]
+///
+/// purpose: 'Draft', 'Inactive', and 'Removed' are the only statuses ever
+///          set explicitly, and they're sticky. Any other stored status
+///          ('Active', 'Scheduled', 'Expired' — including a value that was
+///          correct when written but has since gone stale) is recomputed
+///          live from where [startDate]/[endDate] fall relative to today,
+///          so a Policy's displayed status is always current without
+///          requiring an edit to refresh it.
+///
+/// parameters:
+///            [String] rawStatus: the most recently stored status string
+///            [DateTime] startDate: the policy's current Start Date
+///            [DateTime] endDate: the policy's current End Date
+///
+/// return type: [PolicyStatus] - the status to actually display
+PolicyStatus _deriveStatus({
+  required String rawStatus,
+  required DateTime startDate,
+  required DateTime endDate,
+}) {
+  final sticky = PolicyStatus.fromString(rawStatus);
+  if (sticky == PolicyStatus.draft ||
+      sticky == PolicyStatus.inactive ||
+      sticky == PolicyStatus.removed) {
+    return sticky;
+  }
+  final today = DateTime.now();
+  final startOfToday = DateTime(today.year, today.month, today.day);
+  if (endDate.isBefore(startOfToday)) return PolicyStatus.expired;
+  if (startDate.isAfter(startOfToday)) return PolicyStatus.scheduled;
+  return PolicyStatus.active;
+}
+
 final DateFormat _storageDateFormat = DateFormat('d MMM yyyy', 'en');
 
 /// class name: [PolicyModel]
@@ -382,7 +416,11 @@ class PolicyModel {
       policyWeight: policyWeight.last,
       policyDocumentEn: policyDocumentEn.last,
       policyDocumentAr: policyDocumentAr.last,
-      status: PolicyStatus.fromString(status.last),
+      status: _deriveStatus(
+        rawStatus: status.last,
+        startDate: startDate.last,
+        endDate: endDate.last,
+      ),
       lastModifiedDate: lastModifiedDate.last,
       lastEditor: editors.last,
     );
