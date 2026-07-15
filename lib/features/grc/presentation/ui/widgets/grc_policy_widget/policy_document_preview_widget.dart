@@ -4,12 +4,16 @@
 /// Date: 2026-07-01
 /// Dependencies: Flutter SDK, AppColors, AppTheme, PolicyDocumentInfo
 /// Revision History: 2026-07-01 - Initial creation
+///                   2026-07-15 - Added `readOnly` mode (hides the remove
+///                                button) for already-uploaded documents
+///                                shown on the Policy Details page
 library;
 
 /// ************************* FILE INFO *************************** ///
 /// File Name: policy_document_preview_widget.dart
 /// Purpose: Contains PolicyDocumentPreviewWidget, a compact card that
-///          displays document metadata and a remove button.
+///          displays document metadata and, unless read-only, a remove
+///          button.
 /// Author: Mohamed Magdy Abdelkhalek
 /// Created At: 1/7/2026
 
@@ -21,21 +25,24 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// class name: [PolicyDocumentPreviewWidget]
 ///
-/// purpose: stateless card that shows a PDF icon, document name, size,
-///          date, and a red remove button. Used in both the policy info
-///          form and each control card.
+/// purpose: stateless card that shows a PDF icon, document name, size (if
+///          known), date (if known), and — unless [readOnly] — a red remove
+///          button. Used in the policy info form, each control card, and
+///          the read-only Policy Details page.
 ///
 /// authors: Mohamed Magdy Abdelkhalek
 ///
 /// created at: 1/7/2026
 class PolicyDocumentPreviewWidget extends StatelessWidget {
   final PolicyDocumentInfo document;
-  final VoidCallback onRemove;
+  final VoidCallback? onRemove;
+  final bool readOnly;
 
   const PolicyDocumentPreviewWidget({
     super.key,
     required this.document,
-    required this.onRemove,
+    this.onRemove,
+    this.readOnly = false,
   });
 
   @override
@@ -62,29 +69,34 @@ class PolicyDocumentPreviewWidget extends StatelessWidget {
                       .copyWith(color: AppColors.text),
                   overflow: TextOverflow.ellipsis,
                 ),
-                Text(
-                  document.sizeLabel,
-                  style: StyleText.fontSize14Weight500
-                      .copyWith(color: AppColors.secondaryText),
-                ),
+                if (document.sizeLabel.isNotEmpty)
+                  Text(
+                    document.sizeLabel,
+                    style: StyleText.fontSize14Weight500
+                        .copyWith(color: AppColors.secondaryText),
+                  ),
               ],
             ),
           ),
-          SizedBox(width: 8.w),
-          Text(
-            'Date: ${document.dateLabel}',
-            style: StyleText.fontSize14Weight500
-                .copyWith(color: AppColors.secondaryText),
-          ),
-          SizedBox(width: 8.w),
-          GestureDetector(
-            onTap: onRemove,
-            child: CircleAvatar(
-              radius: 10.r,
-              backgroundColor: Colors.red,
-              child: Icon(Icons.remove, color: Colors.white, size: 14.sp),
+          if (document.dateLabel.isNotEmpty) ...[
+            SizedBox(width: 8.w),
+            Text(
+              'Date: ${document.dateLabel}',
+              style: StyleText.fontSize14Weight500
+                  .copyWith(color: AppColors.secondaryText),
             ),
-          ),
+          ],
+          if (!readOnly) ...[
+            SizedBox(width: 8.w),
+            GestureDetector(
+              onTap: onRemove,
+              child: CircleAvatar(
+                radius: 10.r,
+                backgroundColor: Colors.red,
+                child: Icon(Icons.remove, color: Colors.white, size: 14.sp),
+              ),
+            ),
+          ],
         ],
       ),
     );

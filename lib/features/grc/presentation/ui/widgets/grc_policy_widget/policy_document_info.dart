@@ -7,12 +7,16 @@
 ///                   2026-07-14 - Added `file` + fromPlatformFile factory so
 ///                                the picked file can be uploaded, not just
 ///                                displayed.
+///                   2026-07-15 - Added `url` + fromUrl factory for
+///                                already-uploaded, read-only documents
+///                                (Policy Details page)
 library;
 
 /// ************************* FILE INFO *************************** ///
 /// File Name: policy_document_info.dart
 /// Purpose: Contains PolicyDocumentInfo, an immutable model for a picked
-///          document's display metadata plus the actual File to upload.
+///          document's display metadata plus the actual File to upload, or
+///          the remote URL for an already-uploaded, read-only document.
 /// Author: Mohamed Magdy Abdelkhalek
 /// Created At: 1/7/2026
 
@@ -23,8 +27,9 @@ import 'package:file_picker/file_picker.dart';
 /// class name: [PolicyDocumentInfo]
 ///
 /// purpose: immutable value object that carries display metadata (name,
-///          formatted size, formatted date) plus the actual [File] to
-///          upload for a picked document.
+///          formatted size, formatted date) plus either the local [file] to
+///          upload for a freshly picked document, or the remote [url] of an
+///          already-uploaded document shown read-only.
 ///
 /// authors: Mohamed Magdy Abdelkhalek
 ///
@@ -33,13 +38,15 @@ class PolicyDocumentInfo {
   final String name;
   final String sizeLabel;
   final String dateLabel;
-  final File file;
+  final File? file;
+  final String? url;
 
   const PolicyDocumentInfo({
     required this.name,
     required this.sizeLabel,
     required this.dateLabel,
-    required this.file,
+    this.file,
+    this.url,
   });
 
   /// function name: [fromPlatformFile]
@@ -57,6 +64,34 @@ class PolicyDocumentInfo {
       sizeLabel: _formatBytes(platformFile.size),
       dateLabel: _formatToday(),
       file: File(platformFile.path!),
+    );
+  }
+
+  /// function name: [fromUrl]
+  ///
+  /// purpose: build a read-only [PolicyDocumentInfo] for a document that is
+  ///          already uploaded — only its download [url] is known, no local
+  ///          [File] or byte size is available.
+  ///
+  /// parameters:
+  ///            [String] url: the document's download URL
+  ///
+  /// return type: [PolicyDocumentInfo]
+  factory PolicyDocumentInfo.fromUrl(String url) {
+    final withoutQuery = url.split('?').first;
+    final segments = withoutQuery.split('/');
+    final rawName = segments.isNotEmpty ? segments.last : withoutQuery;
+    String name;
+    try {
+      name = Uri.decodeFull(rawName);
+    } catch (_) {
+      name = rawName;
+    }
+    return PolicyDocumentInfo(
+      name: name.isEmpty ? url : name,
+      sizeLabel: '',
+      dateLabel: '',
+      url: url,
     );
   }
 
