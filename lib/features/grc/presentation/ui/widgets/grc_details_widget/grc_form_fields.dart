@@ -157,7 +157,7 @@ class _GrcFormFieldsState extends State<GrcFormFields> {
         hintStyle: StyleText.fontSize14Weight500
             .copyWith(color: AppColors.secondaryText.withOpacity(.5)),
         labelStyle: AppTextStyles.font16BlackRegularCairo
-            .copyWith(fontSize: 12.sp, height: 1.4),
+            .copyWith(fontSize: 12.sp, height: 2.2),
         onChanged: (_) {},
       ),
     );
@@ -176,7 +176,7 @@ class _GrcFormFieldsState extends State<GrcFormFields> {
                       departmentId: id) ??
                   '',
         );
-        return DropdownItem<String>(value: id, label: label);
+        return DropdownItem<String>(value: label, label: label);
       }).toList(),
       value: selectedDepartment,
       onChanged: onDepartmentChanged,

@@ -366,7 +366,7 @@ class _GovernanceRiskAndComplianceDetailsState
                                             GrcPageMode.view ||
                                         _currentMode == GrcPageMode.restore),
                                     initialOwnerEmails: _selectedOwnerEmails,
-                                    selectedDepartmentId: _selectedDepartment,
+                                    selectedDepartmentName: _selectedDepartment,
                                     onOwnersChanged: (selected) {
                                       _selectedOwnerEmails =
                                           selected.map((o) => o.email).toList();

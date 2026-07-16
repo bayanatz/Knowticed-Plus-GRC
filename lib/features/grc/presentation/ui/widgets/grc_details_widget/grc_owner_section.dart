@@ -11,6 +11,7 @@
 library;
 
 import 'package:demo_app/core/custom/19-Custom_Employee_Card.dart';
+
 /// ************************* FILE INFO *************************** ///
 /// File Name: grc_owner_section.dart
 /// Purpose: Contains GrcOwnerSection, which renders the owner-selection grid
@@ -48,7 +49,7 @@ class GrcOwnerSection extends StatefulWidget {
 
   /// The department currently selected on the form. When set, only
   /// employees belonging to this department are shown as owner candidates.
-  final String? selectedDepartmentId;
+  final String? selectedDepartmentName;
 
   final void Function(List<OwnerData> selected)? onOwnersChanged;
 
@@ -56,7 +57,7 @@ class GrcOwnerSection extends StatefulWidget {
     super.key,
     this.isViewMode = false,
     this.initialOwnerEmails = const [],
-    this.selectedDepartmentId,
+    this.selectedDepartmentName,
     this.onOwnersChanged,
   });
 
@@ -75,7 +76,7 @@ class _GrcOwnerSectionState extends State<GrcOwnerSection> {
       (_) => _cubit.loadOwners(
         context,
         initialOwnerEmails: widget.initialOwnerEmails,
-        selectedDepartmentId: widget.selectedDepartmentId,
+        selectedDepartmentName: widget.selectedDepartmentName,
       ),
     );
   }
@@ -83,8 +84,8 @@ class _GrcOwnerSectionState extends State<GrcOwnerSection> {
   @override
   void didUpdateWidget(covariant GrcOwnerSection oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.selectedDepartmentId != widget.selectedDepartmentId) {
-      _cubit.filterByDepartment(widget.selectedDepartmentId);
+    if (oldWidget.selectedDepartmentName != widget.selectedDepartmentName) {
+      _cubit.filterByDepartment(widget.selectedDepartmentName);
     }
   }
 
@@ -198,27 +199,27 @@ class _GrcOwnerSectionState extends State<GrcOwnerSection> {
                     .copyWith(fontSize: 14.sp),
               ),
               SizedBox(height: 8.h),
-
               if (!widget.isViewMode) ...[
                 Row(
                   children: [
                     AppSearchTextField(
                       controller: _cubit.searchController,
                       onChanged: _cubit.search,
-                      hintText: 'Search People'.tr,
+                      hintText: 'Search'.tr,
                       fillColor: AppColors.background,
                     ),
                   ],
                 ),
                 SizedBox(height: 12.h),
               ],
-
               if (owners.isEmpty)
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 16.h),
                   child: Center(
                     child: Text(
-                      widget.isViewMode ? 'No owners assigned'.tr : 'No people found'.tr,
+                      widget.isViewMode
+                          ? 'No owners assigned'.tr
+                          : 'No people found'.tr,
                       style: AppTextStyles.font16BlackRegularCairo.copyWith(
                         fontSize: 13.sp,
                         color: AppColors.secondaryText,

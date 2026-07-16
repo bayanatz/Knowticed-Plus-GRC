@@ -28,6 +28,7 @@ import 'package:demo_app/features/grc/presentation/ui/widgets/grc_details_widget
 import 'package:demo_app/features/grc/presentation/ui/widgets/grc_policy_widget/policy_document_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart' hide TextDirection;
 
 import 'policy_document_preview_widget.dart';
 
@@ -161,17 +162,15 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
   Widget _documentButton({required VoidCallback onTap, required String title}) {
     return customButtonWithSvg(
       colorBorder: AppColors.primary,
-      space: 10.w,
-      radius: 8.r,
       widthImage: 16.w,
       heightImage: 16.h,
       function: onTap,
       title: title,
-      textStyle: StyleText.fontSize14Weight500.copyWith(color: AppColors.textButton),
-      image: 'assets/hrAsset/Upload.svg',
+      textStyle:
+          StyleText.fontSize14Weight500.copyWith(color: AppColors.textButton),
+      image: 'assets/icons_assets/data_grc_assets/upload_minimalistic.svg',
       color: AppColors.primary,
-      width: 220.w,
-      height: 36.h,
+      width: double.infinity,
       svgColor: AppColors.textButton,
     );
   }
@@ -284,11 +283,13 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
             value: widget.startDate,
             onChanged: widget.onStartDateChanged,
             fillColor: AppColors.background,
-            labelStyle: StyleText.fontSize16Weight500.copyWith(color: AppColors.text),
+            labelStyle:
+                StyleText.fontSize16Weight500.copyWith(color: AppColors.text),
             hintStyle: StyleText.fontSize14Weight500
                 .copyWith(color: AppColors.secondaryText.withOpacity(.7)),
             required: false,
             firstDate: startOfToday,
+            dateFormatter: (d) => DateFormat('d MMM yyyy').format(d),
             errorText: !widget.submitted
                 ? null
                 : widget.startDate == null
@@ -304,11 +305,13 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
             value: widget.endDate,
             onChanged: widget.onEndDateChanged,
             fillColor: AppColors.background,
-            labelStyle: StyleText.fontSize16Weight500.copyWith(color: AppColors.text),
+            labelStyle:
+                StyleText.fontSize16Weight500.copyWith(color: AppColors.text),
             hintStyle: StyleText.fontSize14Weight500
                 .copyWith(color: AppColors.secondaryText.withOpacity(.7)),
             required: false,
             firstDate: widget.startDate ?? startOfToday,
+            dateFormatter: (d) => DateFormat('d MMM yyyy').format(d),
             errorText: !widget.submitted
                 ? null
                 : widget.endDate == null
@@ -342,24 +345,51 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Policy Document', style: StyleText.fontSize16Weight500.copyWith(color: AppColors.text)),
-            const Spacer(),
-            Flexible(
+            Expanded(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+                spacing: 8.h,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text('Policy Document ENG',
+                      style: StyleText.fontSize16Weight500
+                          .copyWith(color: AppColors.text)),
                   widget.documentEn != null
-                      ? PolicyDocumentPreviewWidget(document: widget.documentEn!, onRemove: widget.onRemoveDocumentEn)
-                      : _documentButton(onTap: widget.onUploadDocumentEn, title: 'Upload Document (English)'),
-                  if (widget.isArabicEnabled) ...[
-                    SizedBox(height: 10.h),
-                    widget.documentAr != null
-                        ? PolicyDocumentPreviewWidget(document: widget.documentAr!, onRemove: widget.onRemoveDocumentAr)
-                        : _documentButton(onTap: widget.onUploadDocumentAr, title: 'رفع المستند (عربي)'),
-                  ],
+                      ? PolicyDocumentPreviewWidget(
+                          document: widget.documentEn!,
+                          onRemove: widget.onRemoveDocumentEn)
+                      : SizedBox(
+                          width: double.infinity,
+                          child: _documentButton(
+                              onTap: widget.onUploadDocumentEn,
+                              title: 'Policy Document'),
+                        ),
                 ],
               ),
             ),
+            SizedBox(width: 10.w),
+            if (widget.isArabicEnabled) ...[
+              Expanded(
+                child: Column(
+                  spacing: 8.h,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Policy Document AR',
+                        style: StyleText.fontSize16Weight500
+                            .copyWith(color: AppColors.text)),
+                    widget.documentAr != null
+                        ? PolicyDocumentPreviewWidget(
+                            document: widget.documentAr!,
+                            onRemove: widget.onRemoveDocumentAr)
+                        : SizedBox(
+                            width: double.infinity,
+                            child: _documentButton(
+                                onTap: widget.onUploadDocumentAr,
+                                title: 'Policy Document'),
+                          ),
+                  ],
+                ),
+              ),
+            ],
           ],
         ),
         SizedBox(height: 30.h),
