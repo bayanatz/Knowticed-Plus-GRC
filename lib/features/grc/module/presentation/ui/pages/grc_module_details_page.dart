@@ -51,6 +51,11 @@ import 'package:demo_app/features/grc/control_champion/domain/entities/champion_
 import 'package:demo_app/features/grc/control_champion/presentation/controller/champion_cubit.dart';
 import 'package:demo_app/features/grc/control_champion/presentation/ui/pages/add_champion_page.dart';
 import 'package:get/get.dart' hide Trans;
+import 'package:demo_app/core/custom/1-custom_dropdwon.dart';
+import 'package:demo_app/features/department/presentation/controller/add_department_controller.dart';
+import 'package:demo_app/features/grc/control_owner/domain/entities/owner_entity.dart';
+import 'package:demo_app/features/grc/control_owner/presentation/controller/owner_cubit.dart';
+import 'package:demo_app/features/grc/control_owner/presentation/ui/pages/add_owner_page.dart';
 
 /// class name: [GrcModuleDetailsPage]
 ///
@@ -77,6 +82,10 @@ class GrcModuleDetailsPage extends StatelessWidget {
         BlocProvider<ChampionCubit>(
           create: (_) => GetIt.instance<ChampionCubit>()
             ..getAllChampions(moduleId: module.moduleId),
+        ),
+        BlocProvider<OwnerCubit>(
+          create: (_) => GetIt.instance<OwnerCubit>()
+            ..getAllOwners(moduleId: module.moduleId),
         ),
       ],
       child: _GrcModuleDetailsBody(module: module),
@@ -107,6 +116,10 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
   final _championSearchController = TextEditingController();
   final GlobalKey _addChampionButtonKey = GlobalKey();
   String _championSearchQuery = '';
+  final _ownerSearchController = TextEditingController();
+  final GlobalKey _addOwnerButtonKey = GlobalKey();
+  String _ownerSearchQuery = '';
+  String? _ownerDepartmentFilter;
   int _selectedTab = 0;
   String _selectedStatusFilter = 'all';
 
@@ -114,6 +127,7 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
   void dispose() {
     _searchController.dispose();
     _championSearchController.dispose();
+    _ownerSearchController.dispose();
     super.dispose();
   }
 
@@ -352,13 +366,15 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
                             filtered, hasPolicyWeightIssue)
                         : _selectedTab == 1
                             ? _buildControlChampionsTab(context, isTablet)
-                            : Center(
-                                child: Text(
-                                  _tabs[_selectedTab].tr,
-                                  style: StyleText.fontSize16Weight500
-                                      .copyWith(color: AppColors.secondaryText),
-                                ),
-                              ),
+                            : _selectedTab == 2
+                                ? _buildControlOwnersTab(context, isTablet)
+                                : Center(
+                                    child: Text(
+                                      _tabs[_selectedTab].tr,
+                                      style: StyleText.fontSize16Weight500
+                                          .copyWith(color: AppColors.secondaryText),
+                                    ),
+                                  ),
                   ),
                 ],
               ),
@@ -797,6 +813,177 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
         separatorBuilder: (_, __) => SizedBox(height: 10.h),
         itemBuilder: (_, index) =>
             _buildPersonCard(context, champions[index].championEmail),
+      ),
+    );
+  }
+
+  Future<void> _showOwnerCreationMenu(BuildContext context) async {
+    final buttonBox =
+        _addOwnerButtonKey.currentContext?.findRenderObject() as RenderBox?;
+    if (buttonBox == null) return;
+    final overlayBox = Overlay.of(context).context.findRenderObject() as RenderBox;
+
+    final position = RelativeRect.fromRect(
+      Rect.fromPoints(
+        buttonBox.localToGlobal(Offset(0, buttonBox.size.height), ancestor: overlayBox),
+        buttonBox.localToGlobal(buttonBox.size.bottomRight(Offset.zero), ancestor: overlayBox),
+      ),
+      Offset.zero & overlayBox.size,
+    );
+
+    final choice = await showMenu<String>(
+      context: context,
+      position: position,
+      items: [
+        PopupMenuItem(value: 'add', child: Text('Add Owner'.tr)),
+        // Bulk Upload is a visual-only stub for now — see the design spec's
+        // "core only" scope decision.
+        PopupMenuItem(value: 'bulk', child: Text('Bulk Upload'.tr)),
+      ],
+    );
+
+    if (choice != 'add' || !context.mounted) return;
+    final result = await Navigator.push<bool>(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) => AddOwnerPage(
+          moduleId: widget.module.moduleId,
+          moduleNameEn: widget.module.moduleNameEn,
+          moduleNameAr: widget.module.moduleNameAr,
+        ),
+        transitionsBuilder: (_, animation, __, child) =>
+            FadeTransition(opacity: animation, child: child),
+        transitionDuration: const Duration(milliseconds: 300),
+      ),
+    );
+    if (result == true && context.mounted) {
+      context.read<OwnerCubit>().getAllOwners(moduleId: widget.module.moduleId);
+    }
+  }
+
+  List<OwnerEntity> _applyOwnerFilters(BuildContext context, List<OwnerEntity> owners) {
+    var result = owners;
+    if (_ownerDepartmentFilter != null && _ownerDepartmentFilter!.isNotEmpty) {
+      result = result.where((o) {
+        final employee = _findEmployee(o.ownerEmail);
+        if (employee == null) return false;
+        final department =
+            EmployeeHelper.getEmployeeLocalizeDepartment(employee: employee, context: context);
+        return department == _ownerDepartmentFilter;
+      }).toList();
+    }
+    if (_ownerSearchQuery.isNotEmpty) {
+      final q = _ownerSearchQuery.toLowerCase();
+      result = result
+          .where((o) =>
+              _employeeDisplayName(context, o.ownerEmail).toLowerCase().contains(q) ||
+              o.ownerEmail.toLowerCase().contains(q))
+          .toList();
+    }
+    return result;
+  }
+
+  Widget _buildControlOwnersTab(BuildContext context, bool isTablet) {
+    return BlocBuilder<OwnerCubit, OwnerState>(
+      builder: (context, state) {
+        final owners = state is OwnerListLoaded ? state.owners : <OwnerEntity>[];
+        final filtered = _applyOwnerFilters(context, owners);
+        final departmentController = Get.find<MainCoreDepartmentController>();
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              spacing: 10.w,
+              children: [
+                Expanded(
+                  child: AppSearchTextField(
+                    onChanged: (v) => setState(() => _ownerSearchQuery = v),
+                    hintText: "Search".tr,
+                    controller: _ownerSearchController,
+                  ),
+                ),
+                SizedBox(
+                  width: 160.w,
+                  child: CustomDropdown<String>(
+                    hint: 'Department'.tr,
+                    items: [
+                      DropdownItem<String>(value: '', label: 'All'.tr),
+                      ...departmentController.departmentIds.map((id) {
+                        final label = context.isArabic
+                            ? departmentController.getArabicDepartmentNameFromDepartmentId(
+                                    departmentId: id) ??
+                                ''
+                            : departmentController.getEnglishDepartmentNameFromDepartmentId(
+                                    departmentId: id) ??
+                                '';
+                        return DropdownItem<String>(value: label, label: label);
+                      }),
+                    ],
+                    value: _ownerDepartmentFilter ?? '',
+                    onChanged: (v) =>
+                        setState(() => _ownerDepartmentFilter = v.isEmpty ? null : v),
+                    fillColor: AppColors.background,
+                    required: false,
+                  ),
+                ),
+                Container(
+                  key: _addOwnerButtonKey,
+                  child: customButtonWithSvg(
+                    colorBorder: AppColors.primary,
+                    space: 10.w,
+                    widthImage: 16.w,
+                    heightImage: 16.h,
+                    function: () => _showOwnerCreationMenu(context),
+                    title: isTablet ? 'Add Owner' : '',
+                    textStyle: StyleText.fontSize14Weight500
+                        .copyWith(color: AppColors.textButton),
+                    image: 'assets/icons_assets/database_builder_assets/plus_head.svg',
+                    color: AppColors.primary,
+                    svgColor: AppColors.textButton,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 15.h),
+            Expanded(child: _buildOwnerList(context, state, filtered)),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildOwnerList(
+    BuildContext context,
+    OwnerState state,
+    List<OwnerEntity> owners,
+  ) {
+    if (state is OwnerLoading) {
+      return Center(child: CircularProgressIndicator(color: AppColors.primary));
+    }
+    if (state is OwnerFailure) {
+      return Center(
+        child: Text(
+          state.message,
+          style: StyleText.fontSize14Weight500.copyWith(color: AppColors.red),
+          textAlign: TextAlign.center,
+        ),
+      );
+    }
+    if (owners.isEmpty) {
+      return Center(
+        child: Text(
+          'No Control Owners found'.tr,
+          style: StyleText.fontSize14Weight500.copyWith(color: AppColors.secondaryText),
+        ),
+      );
+    }
+    return ScrollConfiguration(
+      behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+      child: ListView.separated(
+        itemCount: owners.length,
+        separatorBuilder: (_, __) => SizedBox(height: 10.h),
+        itemBuilder: (_, index) => _buildPersonCard(context, owners[index].ownerEmail),
       ),
     );
   }
