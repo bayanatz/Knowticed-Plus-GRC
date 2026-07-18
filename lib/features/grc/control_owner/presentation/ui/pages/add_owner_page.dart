@@ -13,6 +13,7 @@ library;
 
 import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/custom/1-custom_dropdwon.dart';
+import 'package:demo_app/core/custom/31-custom_multi_select_dropdown.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/grc/control/domain/entities/assigning_control.dart';
@@ -33,16 +34,17 @@ import 'package:get_it/get_it.dart';
 
 class _AssigningControlRow {
   String? policyId;
-  String? controlId;
+  List<String> controlIds;
   List<ControlEntity> availableControls;
   bool isLoadingControls;
 
   _AssigningControlRow({
     this.policyId,
-    this.controlId,
+    List<String>? controlIds,
     List<ControlEntity>? availableControls,
     this.isLoadingControls = false,
-  }) : availableControls = availableControls ?? [];
+  })  : controlIds = controlIds ?? [],
+        availableControls = availableControls ?? [];
 }
 
 class AddOwnerPage extends StatefulWidget {
@@ -90,7 +92,7 @@ class _AddOwnerPageState extends State<AddOwnerPage> {
   Future<void> _onPolicyChanged(_AssigningControlRow row, String policyId) async {
     setState(() {
       row.policyId = policyId;
-      row.controlId = null;
+      row.controlIds = [];
       row.availableControls = [];
       row.isLoadingControls = true;
     });
@@ -111,7 +113,7 @@ class _AddOwnerPageState extends State<AddOwnerPage> {
   void _removeRow(int index) => setState(() => _rows.removeAt(index));
 
   bool get _rowsValid =>
-      _rows.every((r) => r.policyId != null && r.controlId != null);
+      _rows.every((r) => r.policyId != null && r.controlIds.isNotEmpty);
 
   void _submit(BuildContext context) {
     setState(() => _submitted = true);
@@ -120,11 +122,14 @@ class _AddOwnerPageState extends State<AddOwnerPage> {
     context.read<OwnerCubit>().createOwner(
           moduleId: widget.moduleId,
           ownerEmail: _selectedEmployees.first.email,
+          // One row (one Policy) can carry several Controls — expand each
+          // row into one {Policy, Control} pair per selected Control.
           assigningControls: _rows
-              .map((r) => AssigningControlEntity(
+              .expand((r) => r.controlIds.map((controlId) =>
+                  AssigningControlEntity(
                     policyId: r.policyId!,
-                    controlId: r.controlId!,
-                  ))
+                    controlId: controlId,
+                  )))
               .toList(),
         );
   }
@@ -260,21 +265,21 @@ class _AddOwnerPageState extends State<AddOwnerPage> {
         ),
         SizedBox(width: 10.w),
         Expanded(
-          child: CustomDropdown<String>(
+          child: CustomMultiSelectDropdown<String>(
             label: 'Control'.tr,
             hint: 'Choose Control'.tr,
             enabled: row.policyId != null && !row.isLoadingControls,
             items: row.availableControls
-                .map((c) => DropdownItem<String>(
+                .map((c) => MultiSelectDropdownItem<String>(
                       value: c.id,
                       label: context.isArabic ? c.controlsNameAr : c.controlsNameEn,
                     ))
                 .toList(),
-            value: row.controlId,
-            onChanged: (v) => setState(() => row.controlId = v),
+            values: row.controlIds,
+            onChanged: (v) => setState(() => row.controlIds = v),
             fillColor: AppColors.background,
             required: false,
-            errorText: _submitted && row.controlId == null
+            errorText: _submitted && row.controlIds.isEmpty
                 ? 'Required'.tr
                 : null,
           ),
