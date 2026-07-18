@@ -44,6 +44,13 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
+import 'package:demo_app/features/employee/domain/entities/employee_entity.dart';
+import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
+import 'package:demo_app/core/helper/main_helper/employee_helper.dart';
+import 'package:demo_app/features/grc/control_champion/domain/entities/champion_entity.dart';
+import 'package:demo_app/features/grc/control_champion/presentation/controller/champion_cubit.dart';
+import 'package:demo_app/features/grc/control_champion/presentation/ui/pages/add_champion_page.dart';
+import 'package:get/get.dart' hide Trans;
 
 /// class name: [GrcModuleDetailsPage]
 ///
@@ -61,9 +68,17 @@ class GrcModuleDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => GetIt.instance<PolicyCubit>()
-        ..getAllPolicies(moduleId: module.moduleId),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<PolicyCubit>(
+          create: (_) => GetIt.instance<PolicyCubit>()
+            ..getAllPolicies(moduleId: module.moduleId),
+        ),
+        BlocProvider<ChampionCubit>(
+          create: (_) => GetIt.instance<ChampionCubit>()
+            ..getAllChampions(moduleId: module.moduleId),
+        ),
+      ],
       child: _GrcModuleDetailsBody(module: module),
     );
   }
@@ -89,12 +104,16 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
   final _searchController = TextEditingController();
   final GlobalKey _addPolicyButtonKey = GlobalKey();
   String _searchQuery = '';
+  final _championSearchController = TextEditingController();
+  final GlobalKey _addChampionButtonKey = GlobalKey();
+  String _championSearchQuery = '';
   int _selectedTab = 0;
   String _selectedStatusFilter = 'all';
 
   @override
   void dispose() {
     _searchController.dispose();
+    _championSearchController.dispose();
     super.dispose();
   }
 
@@ -331,13 +350,15 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
                     child: _selectedTab == 0
                         ? _buildPoliciesTab(context, isTablet, status, state,
                             filtered, hasPolicyWeightIssue)
-                        : Center(
-                            child: Text(
-                              _tabs[_selectedTab].tr,
-                              style: StyleText.fontSize16Weight500
-                                  .copyWith(color: AppColors.secondaryText),
-                            ),
-                          ),
+                        : _selectedTab == 1
+                            ? _buildControlChampionsTab(context, isTablet)
+                            : Center(
+                                child: Text(
+                                  _tabs[_selectedTab].tr,
+                                  style: StyleText.fontSize16Weight500
+                                      .copyWith(color: AppColors.secondaryText),
+                                ),
+                              ),
                   ),
                 ],
               ),
@@ -547,6 +568,235 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
         separatorBuilder: (_, __) => SizedBox(height: 10.h),
         itemBuilder: (_, index) =>
             _PolicyCard(policy: policies[index], module: widget.module),
+      ),
+    );
+  }
+
+  EmployeeEntityPro? _findEmployee(String email) {
+    if (!Get.isRegistered<MainCoreEmployeeController>()) return null;
+    final employees = Get.find<MainCoreEmployeeController>().allEmployeesEntities ?? [];
+    for (final e in employees) {
+      if (e.email == email) return e;
+    }
+    return null;
+  }
+
+  String _employeeDisplayName(BuildContext context, String email) {
+    final employee = _findEmployee(email);
+    if (employee == null) return email;
+    return EmployeeHelper.getEmployeeLocalizedName(employee: employee, context: context);
+  }
+
+  Widget _buildPersonCard(BuildContext context, String email) {
+    final employee = _findEmployee(email);
+    final name = _employeeDisplayName(context, email);
+    final department = employee != null
+        ? EmployeeHelper.getEmployeeLocalizeDepartment(employee: employee, context: context)
+        : '';
+    final jobTitle = employee != null
+        ? (EmployeeHelper.getEmployeeLocalizedTitle(employee: employee, context: context)
+                ?.toString() ??
+            '')
+        : '';
+    final photo = employee != null
+        ? EmployeeHelper.getEmployeeImage(employee: employee)
+        : 'assets/icons_assets/main_icons_assets/assets_male.svg';
+
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(10.r),
+      decoration: BoxDecoration(
+        color: AppColors.background,
+        borderRadius: BorderRadius.circular(8.r),
+      ),
+      child: Row(
+        children: [
+          CircleAvatar(
+            radius: 20.r,
+            backgroundColor: AppColors.barrierColor,
+            backgroundImage: photo.startsWith('http') ? NetworkImage(photo) : null,
+          ),
+          SizedBox(width: 10.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(name,
+                    style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis),
+                if (department.isNotEmpty)
+                  Text(department,
+                      style: StyleText.fontSize12Weight500
+                          .copyWith(color: AppColors.secondaryText),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis),
+                if (jobTitle.isNotEmpty)
+                  Text(jobTitle,
+                      style: StyleText.fontSize12Weight500
+                          .copyWith(color: AppColors.secondaryText),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis),
+              ],
+            ),
+          ),
+          SizedBox(width: 8.w),
+          customButtonWithSvg(
+            colorBorder: AppColors.primary,
+            space: 6.w,
+            widthImage: 14.w,
+            heightImage: 14.h,
+            function: () {},
+            title: 'Message'.tr,
+            textStyle: StyleText.fontSize12Weight500.copyWith(color: AppColors.textButton),
+            image: 'assets/icons_assets/data_grc_assets/messages_new.svg',
+            color: AppColors.primary,
+            svgColor: AppColors.textButton,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _openAddChampion(BuildContext context) async {
+    final result = await Navigator.push<bool>(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) => AddChampionPage(
+          moduleId: widget.module.moduleId,
+          moduleNameEn: widget.module.moduleNameEn,
+          moduleNameAr: widget.module.moduleNameAr,
+        ),
+        transitionsBuilder: (_, animation, __, child) =>
+            FadeTransition(opacity: animation, child: child),
+        transitionDuration: const Duration(milliseconds: 300),
+      ),
+    );
+    if (result == true && context.mounted) {
+      context.read<ChampionCubit>().getAllChampions(moduleId: widget.module.moduleId);
+    }
+  }
+
+  List<ChampionEntity> _applyChampionSearch(
+      BuildContext context, List<ChampionEntity> champions) {
+    if (_championSearchQuery.isEmpty) return champions;
+    final q = _championSearchQuery.toLowerCase();
+    return champions
+        .where((c) =>
+            _employeeDisplayName(context, c.championEmail).toLowerCase().contains(q) ||
+            c.championEmail.toLowerCase().contains(q))
+        .toList();
+  }
+
+  Widget _buildControlChampionsTab(BuildContext context, bool isTablet) {
+    return BlocBuilder<ChampionCubit, ChampionState>(
+      builder: (context, state) {
+        final champions =
+            state is ChampionListLoaded ? state.champions : <ChampionEntity>[];
+        final filtered = _applyChampionSearch(context, champions);
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (isTablet)
+              Row(
+                spacing: 10.w,
+                children: [
+                  AppSearchTextField(
+                    onChanged: (v) => setState(() => _championSearchQuery = v),
+                    hintText: "Search".tr,
+                    controller: _championSearchController,
+                  ),
+                  Container(
+                    key: _addChampionButtonKey,
+                    child: customButtonWithSvg(
+                      colorBorder: AppColors.primary,
+                      space: 10.w,
+                      widthImage: 16.w,
+                      heightImage: 16.h,
+                      function: () => _openAddChampion(context),
+                      title: 'Champion',
+                      textStyle: StyleText.fontSize14Weight500
+                          .copyWith(color: AppColors.textButton),
+                      image: 'assets/icons_assets/database_builder_assets/plus_head.svg',
+                      color: AppColors.primary,
+                      svgColor: AppColors.textButton,
+                    ),
+                  ),
+                ],
+              )
+            else
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  AppSearchTextField(
+                    onChanged: (v) => setState(() => _championSearchQuery = v),
+                    hintText: "Search".tr,
+                    controller: _championSearchController,
+                  ),
+                  SizedBox(height: 8.h),
+                  Container(
+                    key: _addChampionButtonKey,
+                    child: customButtonWithSvg(
+                      colorBorder: AppColors.primary,
+                      space: 10.w,
+                      radius: 8.r,
+                      widthImage: 16.w,
+                      heightImage: 16.h,
+                      function: () => _openAddChampion(context),
+                      title: 'Champion',
+                      textStyle: StyleText.fontSize14Weight500
+                          .copyWith(color: AppColors.textButton),
+                      image: 'assets/icons/add.svg',
+                      color: AppColors.primary,
+                      width: double.infinity,
+                      height: 36.h,
+                      svgColor: AppColors.textButton,
+                    ),
+                  ),
+                ],
+              ),
+            SizedBox(height: 15.h),
+            Expanded(child: _buildChampionList(context, state, filtered)),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildChampionList(
+    BuildContext context,
+    ChampionState state,
+    List<ChampionEntity> champions,
+  ) {
+    if (state is ChampionLoading) {
+      return Center(child: CircularProgressIndicator(color: AppColors.primary));
+    }
+    if (state is ChampionFailure) {
+      return Center(
+        child: Text(
+          state.message,
+          style: StyleText.fontSize14Weight500.copyWith(color: AppColors.red),
+          textAlign: TextAlign.center,
+        ),
+      );
+    }
+    if (champions.isEmpty) {
+      return Center(
+        child: Text(
+          'No Control Champions found'.tr,
+          style: StyleText.fontSize14Weight500.copyWith(color: AppColors.secondaryText),
+        ),
+      );
+    }
+    return ScrollConfiguration(
+      behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+      child: ListView.separated(
+        itemCount: champions.length,
+        separatorBuilder: (_, __) => SizedBox(height: 10.h),
+        itemBuilder: (_, index) =>
+            _buildPersonCard(context, champions[index].championEmail),
       ),
     );
   }
