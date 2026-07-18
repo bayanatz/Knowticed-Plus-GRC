@@ -86,8 +86,20 @@ class GrcOwnerCubit extends Cubit<GrcOwnerState> {
     emit(GrcOwnerLoaded());
   }
 
-  void toggleOwner(int index) {
-    filteredOwners[index].isSelected = !filteredOwners[index].isSelected;
+  /// When [singleSelect] is true, selecting one person clears every other
+  /// selection first (so exactly one, or zero, [OwnerData] ends up selected)
+  /// instead of the default multi-select toggle.
+  void toggleOwner(int index, {bool singleSelect = false}) {
+    final tapped = filteredOwners[index];
+    if (singleSelect) {
+      final wasSelected = tapped.isSelected;
+      for (final owner in _allOwners) {
+        owner.isSelected = false;
+      }
+      tapped.isSelected = !wasSelected;
+    } else {
+      tapped.isSelected = !tapped.isSelected;
+    }
     emit(GrcOwnerLoaded());
   }
 

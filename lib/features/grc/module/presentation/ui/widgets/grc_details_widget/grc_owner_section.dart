@@ -53,12 +53,18 @@ class GrcOwnerSection extends StatefulWidget {
 
   final void Function(List<OwnerData> selected)? onOwnersChanged;
 
+  /// When true, selecting one person clears any previous selection so at
+  /// most one [OwnerData] is selected at a time (used by the Add
+  /// Champion/Add Owner pages, where exactly one person is being assigned).
+  final bool singleSelect;
+
   const GrcOwnerSection({
     super.key,
     this.isViewMode = false,
     this.initialOwnerEmails = const [],
     this.selectedDepartmentName,
     this.onOwnersChanged,
+    this.singleSelect = false,
   });
 
   @override
@@ -101,7 +107,7 @@ class _GrcOwnerSectionState extends State<GrcOwnerSection> {
   }
 
   void _onToggle(int index) {
-    _cubit.toggleOwner(index);
+    _cubit.toggleOwner(index, singleSelect: widget.singleSelect);
     widget.onOwnersChanged?.call(_cubit.selectedOwners);
   }
 
