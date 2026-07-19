@@ -47,6 +47,7 @@ import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.d
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
 import 'package:demo_app/features/grc/policy/presentation/controller/policy_cubit.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/add_edit_control_page.dart';
+import 'package:demo_app/features/grc/control/presentation/ui/pages/control_bulk_upload/control_bulk_upload_page.dart';
 import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details_widget/grc_action_buttons.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/pages/policy_edit_page.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/policy_details_widget/policy_view_mode_widget.dart';
@@ -211,14 +212,24 @@ class _PolicyDetailsBodyState extends State<_PolicyDetailsBody> {
     }
   }
 
-  /// Placeholder hook for the "Bulk Upload" menu item. Wire this up to the
-  /// real bulk-import flow (e.g. an Excel/CSV upload dialog) once that
-  /// feature is ready.
-  void _onBulkUploadControls() {
-    // TODO: replace with the actual bulk-upload flow for Controls.
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Bulk upload coming soon'.tr)),
+  Future<void> _onBulkUploadControls() async {
+    final result = await Navigator.push<bool>(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) => ControlBulkUploadPage(
+          moduleId: widget.moduleId,
+          policyId: widget.policyId,
+        ),
+        transitionsBuilder: (_, animation, __, child) =>
+            FadeTransition(opacity: animation, child: child),
+        transitionDuration: const Duration(milliseconds: 300),
+      ),
     );
+    if (result == true && mounted) {
+      context
+          .read<PolicyCubit>()
+          .getAllControls(moduleId: widget.moduleId, policyId: widget.policyId);
+    }
   }
 
   @override
