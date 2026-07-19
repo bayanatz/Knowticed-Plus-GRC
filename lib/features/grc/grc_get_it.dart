@@ -52,6 +52,7 @@ import 'package:demo_app/features/grc/module/presentation/controller/cubit/grc_p
 import 'package:demo_app/features/grc/control_champion/presentation/controller/champion_cubit.dart';
 import 'package:demo_app/features/grc/control_owner/presentation/controller/owner_cubit.dart';
 import 'package:demo_app/features/grc/policy/presentation/controller/policy_cubit.dart';
+import 'package:demo_app/features/grc/policy/presentation/ui/pages/policy_weight_issue/policy_weight_issue_cubit.dart';
 import 'package:get_it/get_it.dart';
 
 /// ************************* FILE INFO *************************** ///
@@ -375,6 +376,18 @@ void setupGRCDependencies(GetIt sl) {
       updateControlUseCase: sl<UpdateControlUseCase>(),
       deleteControlUseCase: sl<DeleteControlUseCase>(),
       getAllControlsUseCase: sl<GetAllControlsUseCase>(),
+    ),
+  );
+
+  /// class name: [PolicyWeightIssueCubit]
+  /// purpose: presentation-layer state manager for the Policy Weight Issue
+  /// page's editable table. Registered as a factory so each page gets an
+  /// independent cubit instance.
+  sl.registerFactory<PolicyWeightIssueCubit>(
+    () => PolicyWeightIssueCubit(
+      getAllPoliciesUseCase: sl<GetAllPoliciesUseCase>(),
+      getAllControlsUseCase: sl<GetAllControlsUseCase>(),
+      updatePolicyUseCase: sl<UpdatePolicyUseCase>(),
     ),
   );
 
