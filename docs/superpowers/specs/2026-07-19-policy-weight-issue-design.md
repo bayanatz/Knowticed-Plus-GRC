@@ -151,11 +151,9 @@ Top-right: "Edit" button (`customButton`, same yellow/primary style already
 used throughout this page) → calls `cubit.enterEditMode()`.
 
 ### Policies Weight — edit mode
-- Top-left: "Equal Weight" button appears (uses the existing
-  `'Equal Policy Weight'` translation key already present in
-  `translation.dart` — no new key needed for the label; if the mockup's
-  shorter "Equal Weight" wording is preferred it can reuse the same key's
-  string content).
+- Top-left: button labeled with the existing `'Equal Policy Weight'`
+  translation key (already present in `translation.dart`, both En/Ar) —
+  no new translation key needed.
 - Policy Weight column becomes editable `TextField` cells — same styling as
   `PolicyBulkUploadPreviewPage._buildCell` (numeric input, error border on
   invalid entry).
