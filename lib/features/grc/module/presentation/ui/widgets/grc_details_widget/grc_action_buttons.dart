@@ -51,53 +51,48 @@ class GrcActionButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
 
-    return Column(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            customButtonWithSvg(
-              colorBorder: AppColors.primary,
-              space: 10.w,
-              radius: 8.r,
-              widthImage: 16.w,
-              heightImage: 16.h,
-              image: "assets/icons_assets/data_grc_assets/edit_pen.svg",
-              title: isTablet ? "Edit".tr : "",
-              function: onEditTap,
-              width: isTablet ? 135.w : 40.w,
-              color: AppColors.primary,
-              textStyle: StyleText.fontSize16Weight500
-                  .copyWith(color: AppColors.textButton),
-            ),
-            SizedBox(width: 10.w),
-            customButtonWithSvg(
-              colorBorder: AppColors.red,
-              space: 10.w,
-              radius: 8.r,
-              widthImage: 16.w,
-              heightImage: 16.h,
-              image: "assets/icons_assets/organization_chart_assets/trashd.svg",
-              title: isTablet ? "Delete".tr : "",
-              function: () {
-                showConfirmDialog(
-                  context: context,
-                  title: deleteDialogTitle.tr,
-                  cancelLabel: "No".tr,
-                  confirmLabel: "Yes".tr,
-                  iconWidget: SvgPicture.asset(deleteDialogIconAsset),
-                  subtitle: deleteDialogSubtitle.tr,
-                  onConfirm: onDeleteTap,
-                );
-              },
-              width: isTablet ? 135.w : 40.w,
-              color: AppColors.red,
-              textStyle: StyleText.fontSize16Weight500
-                  .copyWith(color: AppColors.white),
-            ),
-          ],
+        customButtonWithSvg(
+          colorBorder: AppColors.primary,
+          space: 10.w,
+          radius: 8.r,
+          widthImage: 16.w,
+          heightImage: 16.h,
+          image: "assets/icons_assets/data_grc_assets/edit_pen.svg",
+          title: isTablet ? "Edit".tr : "",
+          function: onEditTap,
+          width: isTablet ? 135.w : 40.w,
+          color: AppColors.primary,
+          textStyle: StyleText.fontSize16Weight500
+              .copyWith(color: AppColors.textButton),
         ),
-        SizedBox(height: 15.h),
+        SizedBox(width: 10.w),
+        customButtonWithSvg(
+          colorBorder: AppColors.red,
+          space: 10.w,
+          radius: 8.r,
+          widthImage: 16.w,
+          heightImage: 16.h,
+          image: "assets/icons_assets/organization_chart_assets/trashd.svg",
+          title: isTablet ? "Delete".tr : "",
+          function: () {
+            showConfirmDialog(
+              context: context,
+              title: deleteDialogTitle.tr,
+              cancelLabel: "No".tr,
+              confirmLabel: "Yes".tr,
+              iconWidget: SvgPicture.asset(deleteDialogIconAsset),
+              subtitle: deleteDialogSubtitle.tr,
+              onConfirm: onDeleteTap,
+            );
+          },
+          width: isTablet ? 135.w : 40.w,
+          color: AppColors.red,
+          textStyle:
+              StyleText.fontSize16Weight500.copyWith(color: AppColors.white),
+        ),
       ],
     );
   }

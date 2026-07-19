@@ -299,6 +299,7 @@ class _GovernanceRiskAndComplianceDetailsState
                             _onDelete(cubit);
                           },
                         ),
+                      SizedBox(height: 15.h),
                       if (_currentMode == GrcPageMode.edit)
                         GrcStatusSwitch(
                           value: _statusValue,

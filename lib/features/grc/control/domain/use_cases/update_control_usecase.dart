@@ -43,6 +43,7 @@ class UpdateControlParams {
   final String? controlsDocumentUrlEn;
   final File? controlsDocumentFileAr;
   final String? controlsDocumentUrlAr;
+  final List<double>? departmentsWeights;
 
   const UpdateControlParams({
     required this.id,
@@ -67,6 +68,7 @@ class UpdateControlParams {
     this.controlsDocumentUrlEn,
     this.controlsDocumentFileAr,
     this.controlsDocumentUrlAr,
+    this.departmentsWeights,
   });
 }
 
@@ -95,6 +97,7 @@ class UpdateControlUseCase {
       startDate: params.startDate,
       endDate: params.endDate,
       departments: params.departments,
+      departmentsWeights: params.departmentsWeights,
       equalWeights: params.equalWeights,
       score: params.score,
       status: params.status,

@@ -50,10 +50,13 @@ class ControlCardWidget extends StatelessWidget {
         return AppColors.green;
       case ControlStatus.inactive:
         return AppColors.orange;
+      case ControlStatus.scheduled:
+        return AppColors.primary;
       case ControlStatus.expired:
         return AppColors.red;
+
       case ControlStatus.unassigned:
-        return AppColors.blue;
+        return AppColors.colorGrey;
       case ControlStatus.draft:
         return AppColors.colorGrey;
     }

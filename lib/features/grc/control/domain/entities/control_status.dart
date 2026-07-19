@@ -7,6 +7,7 @@
 /// Date: 2026-07-14
 /// Dependencies: None
 /// Revision History: 2026-07-14 - Initial creation
+library;
 
 /// ************************* FILE INFO *************************** ///
 /// File Name: control_status.dart
@@ -19,6 +20,7 @@
 ///
 /// purpose: represent the lifecycle state of a Control record.
 ///          - [draft]      → created but not yet published
+///          - [scheduled]  → published but the Start Date hasn't arrived yet
 ///          - [active]     → published and currently in effect
 ///          - [inactive]   → manually deactivated
 ///          - [expired]    → past the End Date
@@ -29,6 +31,7 @@
 /// created at: 14/7/2026
 enum ControlStatus {
   draft,
+  scheduled,
   active,
   inactive,
   expired,
@@ -45,6 +48,8 @@ enum ControlStatus {
     switch (this) {
       case ControlStatus.draft:
         return 'Draft';
+      case ControlStatus.scheduled:
+        return 'Scheduled';
       case ControlStatus.active:
         return 'Active';
       case ControlStatus.inactive:
@@ -69,6 +74,8 @@ enum ControlStatus {
     switch (value.toLowerCase()) {
       case 'draft':
         return ControlStatus.draft;
+      case 'scheduled':
+        return ControlStatus.scheduled;
       case 'active':
         return ControlStatus.active;
       case 'inactive':

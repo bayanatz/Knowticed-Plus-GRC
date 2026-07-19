@@ -5,7 +5,7 @@
 ///              their own Firestore subcollection under a Policy document.
 /// Author: Mohamed Magdy Abdelkhalek
 /// Date: 2026-07-5
-/// Dependencies: ControlStatus
+/// Dependencies: ControlStatus, DepartmentWeight
 /// Revision History: 2026-07-5  - Initial creation
 ///                   2026-07-14 - Migrated to the Controls subcollection
 ///                                schema: added policyId, number fields,
@@ -14,8 +14,17 @@
 ///                                ControlStatus. Removed isDeleted in favor
 ///                                of ControlStatus.unassigned/expired
 ///                                (Mohamed Magdy Abdelkhalek)
+///                   2026-07-18 - departments now holds [DepartmentWeight]
+///                                entries (department + weight) instead of
+///                                plain names, so each selected department
+///                                carries its own weight. When equalWeights
+///                                is true (e.g. "All" departments selected)
+///                                the weights are generated equally and
+///                                always sum to 100 (Mohamed Magdy
+///                                Abdelkhalek)
 
 import 'control_status.dart';
+import 'control_department_weight.dart';
 
 /// ************************* FILE INFO *************************** ///
 /// File Name: control_entity.dart
@@ -53,7 +62,7 @@ class ControlEntity {
   final String frequency;
   final DateTime startDate;
   final DateTime endDate;
-  final List<String> departments;
+  final List<DepartmentWeight> departments;
   final bool equalWeights;
   final int score;
   final ControlStatus status;
@@ -103,7 +112,7 @@ class ControlEntity {
   ///            [String] frequency: new frequency value, if changed
   ///            [DateTime] startDate: new start date, if changed
   ///            [DateTime] endDate: new end date, if changed
-  ///            [List<String>] departments: new departments list, if changed
+  ///            [List<DepartmentWeight>] departments: new departments (with weights) list, if changed
   ///            [bool] equalWeights: new equal-weights flag, if changed
   ///            [int] score: new score value, if changed
   ///            [ControlStatus] status: new status, if changed
@@ -122,7 +131,7 @@ class ControlEntity {
     String? frequency,
     DateTime? startDate,
     DateTime? endDate,
-    List<String>? departments,
+    List<DepartmentWeight>? departments,
     bool? equalWeights,
     int? score,
     ControlStatus? status,

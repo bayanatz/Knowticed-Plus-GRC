@@ -6,7 +6,7 @@
 ///              GRC_Modules/{Module_ID}/Policies/{Policy_ID}/Controls/{Control_ID}
 /// Author: Mohamed Magdy Abdelkhalek
 /// Date: 2026-07-5
-/// Dependencies: ControlEntity, ControlStatus
+/// Dependencies: ControlEntity, ControlStatus, DepartmentWeight
 /// Revision History: 2026-07-5  - Initial creation
 ///                   2026-07-14 - Migrated to the Controls subcollection
 ///                                schema: added policyId, number fields,
@@ -15,11 +15,20 @@
 ///                                Controls_Status history. Removed
 ///                                isDeleted in favor of ControlStatus
 ///                                (Mohamed Magdy Abdelkhalek)
+///                   2026-07-18 - departments is now a history of
+///                                List<DepartmentWeight> (department name +
+///                                weight) instead of plain department
+///                                names. When equalWeights is true, weights
+///                                are auto-generated equally so they sum to
+///                                100 (e.g. when "All" departments are
+///                                picked). Added ControlStatus.scheduled
+///                                (Mohamed Magdy Abdelkhalek)
 library;
 
 import 'package:intl/intl.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_status.dart';
+import 'package:demo_app/features/grc/control/domain/entities/control_department_weight.dart';
 
 /// ************************* FILE INFO *************************** ///
 /// File Name: control_model.dart
@@ -60,7 +69,7 @@ class ControlModel {
   final List<String> frequency;
   final List<DateTime> startDate;
   final List<DateTime> endDate;
-  final List<List<String>> departments;
+  final List<List<DepartmentWeight>> departments;
   final List<bool> equalWeights;
   final List<int> score;
   final List<String> status; // ControlStatus.value strings
@@ -151,8 +160,15 @@ class ControlModel {
   ///            [String] frequency: initial frequency value
   ///            [DateTime] startDate: initial start date
   ///            [DateTime] endDate: initial end date
-  ///            [List<String>] departments: initial departments list
-  ///            [bool] equalWeights: initial equal-weights flag
+  ///            [List<String>] departments: initial department names to assign
+  ///            [List<double>?] departmentWeights: initial weight per department, in the
+  ///                                                same order as [departments]. Ignored when
+  ///                                                [equalWeights] is true. Required (and must
+  ///                                                match [departments] in length) when
+  ///                                                [equalWeights] is false.
+  ///            [bool] equalWeights: when true (e.g. the user picked "All" departments),
+  ///                                 weights are generated automatically so every department
+  ///                                 gets an equal share and the total always sums to 100
   ///            [int] score: initial score value
   ///            [ControlStatus] status: initial lifecycle status
   ///            [String] editorId: id/email of the user creating this control
@@ -174,6 +190,7 @@ class ControlModel {
     required DateTime startDate,
     required DateTime endDate,
     required List<String> departments,
+    List<double>? departmentWeights,
     required bool equalWeights,
     required int score,
     required ControlStatus status,
@@ -195,12 +212,58 @@ class ControlModel {
       frequency: [frequency],
       startDate: [startDate],
       endDate: [endDate],
-      departments: [departments],
+      departments: [
+        _buildDepartmentWeights(
+          departments: departments,
+          departmentWeights: departmentWeights,
+          equalWeights: equalWeights,
+        ),
+      ],
       equalWeights: [equalWeights],
       score: [score],
       status: [status.value],
       lastModifiedDate: [now],
       editors: [editorId],
+    );
+  }
+
+  /// function name: [_buildDepartmentWeights]
+  ///
+  /// purpose: build the list of [DepartmentWeight] entries for one revision.
+  ///          When [equalWeights] is true (the user selected "All"
+  ///          departments, or otherwise wants an even split), the weight is
+  ///          generated automatically via [DepartmentWeight.equalSplit] so
+  ///          the total always sums to 100. Otherwise, the caller-supplied
+  ///          [departmentWeights] are paired with [departments] in order.
+  ///
+  /// parameters:
+  ///            [List<String>] departments: the department names for this revision
+  ///            [List<double>?] departmentWeights: the manual weight per department, if not equal
+  ///            [bool] equalWeights: whether weights should be split equally (summing to 100)
+  ///
+  /// return type: [List<DepartmentWeight>] - the department/weight pairs for this revision
+  static List<DepartmentWeight> _buildDepartmentWeights({
+    required List<String> departments,
+    required List<double>? departmentWeights,
+    required bool equalWeights,
+  }) {
+    if (equalWeights) {
+      return DepartmentWeight.equalSplit(departments);
+    }
+
+    assert(
+      departmentWeights != null &&
+          departmentWeights.length == departments.length,
+      'departmentWeights must be provided with the same length as '
+      'departments when equalWeights is false',
+    );
+
+    return List<DepartmentWeight>.generate(
+      departments.length,
+      (i) => DepartmentWeight(
+        department: departments[i],
+        weight: departmentWeights![i],
+      ),
     );
   }
 
@@ -223,8 +286,15 @@ class ControlModel {
   ///            [String] frequency: new frequency value, if changed
   ///            [DateTime] startDate: new start date, if changed
   ///            [DateTime] endDate: new end date, if changed
-  ///            [List<String>] departments: new departments list, if changed
-  ///            [bool] equalWeights: new equal-weights flag, if changed
+  ///            [List<String>] departments: new department names to assign, if changed
+  ///            [List<double>?] departmentWeights: new weight per department, in the same
+  ///                                                order as [departments]. Ignored when
+  ///                                                [equalWeights] resolves to true. Required
+  ///                                                (matching [departments] in length) when
+  ///                                                [equalWeights] resolves to false.
+  ///            [bool] equalWeights: new equal-weights flag, if changed. When true, department
+  ///                                 weights are regenerated automatically so they always sum
+  ///                                 to 100 (e.g. the user switched to "All" departments)
   ///            [int] score: new score value, if changed
   ///            [ControlStatus] status: new lifecycle status, if changed
   ///            [String] editorId: id/email of the user performing the update (required)
@@ -244,12 +314,25 @@ class ControlModel {
     DateTime? startDate,
     DateTime? endDate,
     List<String>? departments,
+    List<double>? departmentWeights,
     bool? equalWeights,
     int? score,
     ControlStatus? status,
     required String editorId,
   }) {
     final now = DateTime.now();
+    // Only rebuild the department/weight pairs when the department names or
+    // the equalWeights flag actually changed; otherwise keep the previous
+    // revision's weights untouched.
+    final resolvedEqualWeights = equalWeights ?? this.equalWeights.last;
+    final newDepartmentsRevision = (departments == null && equalWeights == null)
+        ? this.departments.last
+        : _buildDepartmentWeights(
+            departments: departments ??
+                this.departments.last.map((d) => d.department).toList(),
+            departmentWeights: departmentWeights,
+            equalWeights: resolvedEqualWeights,
+          );
     return ControlModel(
       id: id,
       policyId: policyId,
@@ -298,7 +381,7 @@ class ControlModel {
         ...this.endDate,
         endDate ?? this.endDate.last,
       ],
-      departments: [...this.departments, departments ?? this.departments.last],
+      departments: [...this.departments, newDepartmentsRevision],
       equalWeights: [
         ...this.equalWeights,
         equalWeights ?? this.equalWeights.last,
@@ -340,10 +423,12 @@ class ControlModel {
           .map((d) => _storageDateFormat.format(d))
           .toList(),
       // Firestore rejects arrays that directly contain other arrays, so each
-      // revision's department list is wrapped in a map (List<List<String>>
+      // revision's department list is wrapped in a map (List<List<...>>
       // would otherwise serialize as a nested array and the write would
-      // throw).
-      'Controls_Departments': departments.map((rev) => {'Items': rev}).toList(),
+      // throw). Each item is itself a {Department, Weight} map.
+      'Controls_Departments': departments
+          .map((rev) => {'Items': rev.map((d) => d.toJson()).toList()})
+          .toList(),
       'Controls_Equal_Weights': equalWeights,
       'Controls_Score': score,
       'Controls_Status': status,
@@ -389,8 +474,10 @@ class ControlModel {
           .map((d) => _storageDateFormat.parse(d as String))
           .toList(),
       departments: (json['Controls_Departments'] as List? ?? [])
-          .map((rev) =>
-              List<String>.from((rev as Map<String, dynamic>)['Items'] ?? []))
+          .map((rev) => ((rev as Map<String, dynamic>)['Items'] as List? ?? [])
+              .map((item) =>
+                  DepartmentWeight.fromJson(item as Map<String, dynamic>))
+              .toList())
           .toList(),
       equalWeights: List<bool>.from(json['Controls_Equal_Weights'] ?? []),
       score: List<int>.from(json['Controls_Score'] ?? []),
