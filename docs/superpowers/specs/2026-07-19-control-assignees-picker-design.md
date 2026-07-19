@@ -58,7 +58,7 @@ selectedDepartmentName, List<String>? selectedDepartmentNames})` resolves
 to whichever is non-null (list wins if both are somehow passed, which
 never happens in practice — each caller uses one or the other).
 
-## Extension 2: `GrcOwnerSection` red-remove-icon mode
+## Extension 2: `GrcOwnerSection` red-remove-icon mode + configurable title
 
 Add `final bool showRemoveIconWhenSelected;` (default `false`) and `final
 List<String>? selectedDepartmentNames;` (alongside the existing
@@ -81,30 +81,18 @@ selection — tapping anywhere on a red-icon card removes that person, no
 separate button needed. Module Owner picker usage doesn't set this flag,
 so its look is unchanged.
 
-## New widget: `ControlAssigneesSection`
+The widget's section label is currently hardcoded to `'Module Owner'.tr`
+(`grc_owner_section.dart`'s `build()`). Add `final String sectionTitle;`
+(default `'Module Owner'`) and use it in place of the literal, so the same
+widget can render as "Control Champions"/"Control Owner" without a
+wrapper.
 
-`lib/features/grc/control/presentation/ui/widgets/control_assignees_section.dart`
-— a thin wrapper, not a new picker:
-
-```dart
-class ControlAssigneesSection extends StatelessWidget {
-  final String title;
-  final List<String> alreadyAssignedEmails;
-  final List<String> selectedDepartmentNames;
-  final void Function(List<String> selectedEmails) onSelectionChanged;
-}
-```
-
-Renders a section label (`title`) followed by one `GrcOwnerSection`:
-`initialOwnerEmails: alreadyAssignedEmails`, `selectedDepartmentNames:
-selectedDepartmentNames`, `showRemoveIconWhenSelected: true`,
-`onOwnersChanged: (selected) =>
-onSelectionChanged(selected.map((o) => o.email).toList())`.
-`alreadyAssignedEmails` is only used to seed the initial selection
-(`GrcOwnerSection`'s existing behavior — it doesn't react to that list
-changing later, same as today), which is fine here since it's computed
-once from an already-loaded Cubit snapshot before this widget is ever
-built (see below) and never changes mid-session.
+**No separate wrapper widget.** The originally-sketched
+`ControlAssigneesSection` would only forward props 1:1 to `GrcOwnerSection`
+(title, initial emails, department filter, a callback) — with
+`sectionTitle` added directly to `GrcOwnerSection`, that wrapper adds
+nothing, so `AddEditControlPage` calls `GrcOwnerSection` directly, twice
+(see below).
 
 ## `AddEditControlPage` integration
 
@@ -124,13 +112,18 @@ built (see below) and never changes mid-session.
 - **Tracking the live selection:** two new state fields,
   `List<String>? _currentChampionEmails` and `List<String>?
   _currentOwnerEmails` (`null` until first computed/toggled). Each
-  `ControlAssigneesSection.onSelectionChanged` callback just assigns the
-  reported list to the matching field via `setState`.
+  `GrcOwnerSection.onOwnersChanged` callback maps `List<OwnerData>` to
+  emails and assigns it to the matching field via `setState`:
+  `(selected) => setState(() => _currentChampionEmails =
+  selected.map((o) => o.email).toList())` (mirrored for owners).
 - **Where it renders:** right after `_buildDepartmentsSection()` in the
-  scrollable form body, only `if (_isEdit)`, passing
-  `selectedDepartmentNames: _realSelectedDepartments` (the same getter
-  `_buildDepartmentsSection` already uses) so both new sections re-filter
-  live as the user edits the Control's departments.
+  scrollable form body, only `if (_isEdit)`, two `GrcOwnerSection`
+  instances (`sectionTitle: 'Control Champions'.tr` /
+  `'Control Owner'.tr`, `showRemoveIconWhenSelected: true`,
+  `initialOwnerEmails:` the already-assigned set,
+  `selectedDepartmentNames: _realSelectedDepartments` — the same getter
+  `_buildDepartmentsSection` already uses, so both re-filter live as the
+  user edits the Control's departments).
 - **Applying on save:** in `_onStateChange`, when `state is
   PolicyControlActionSuccess` and `_isEdit`, before showing the success
   dialog: read `context.read<ChampionCubit>().state`/
