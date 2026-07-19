@@ -24,9 +24,13 @@ import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
 import 'package:demo_app/core/custom/10_custom_upload_document.dart';
 import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart'
     hide showUploadDialog;
+import 'package:demo_app/core/custom/31-custom_multi_select_dropdown.dart';
 import 'package:demo_app/core/custom/loading.dart';
+import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
+import 'package:demo_app/features/department/presentation/controller/add_department_controller.dart';
+import 'package:demo_app/features/grc/control/domain/entities/control_department_weight.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_status.dart';
 import 'package:demo_app/features/grc/policy/presentation/controller/policy_cubit.dart';
@@ -38,8 +42,17 @@ import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_b
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:flutter_switch/flutter_switch.dart';
+import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
+import 'package:intl/intl.dart' as intl;
+import 'package:demo_app/features/grc/control/domain/entities/assigning_control.dart';
+import 'package:demo_app/features/grc/control_champion/domain/entities/champion_entity.dart';
+import 'package:demo_app/features/grc/control_champion/presentation/controller/champion_cubit.dart';
+import 'package:demo_app/features/grc/control_owner/domain/entities/owner_entity.dart';
+import 'package:demo_app/features/grc/control_owner/presentation/controller/owner_cubit.dart';
+import 'package:demo_app/features/grc/module/presentation/controller/cubit/grc_owner_cubit.dart';
+import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details_widget/grc_owner_section.dart';
 
 /// class name: [AddEditControlPage]
 ///
@@ -84,6 +97,24 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
   PolicyDocumentInfo? _documentEn;
   PolicyDocumentInfo? _documentAr;
   bool _submitted = false;
+  List<String>? _currentChampionEmails;
+  List<String>? _currentOwnerEmails;
+
+  static const String _allDepartmentsValue = 'All';
+
+  // Department + weight state.
+  // - [_selectedDepartments] holds every checked value from the Department
+  //   multi-select, including the [_allDepartmentsValue] sentinel when "All"
+  //   is checked. [_realSelectedDepartments] strips that sentinel out.
+  // - Checking "All" (or manually checking every real department) selects
+  //   every department and forces [_equalWeights] on, since an all-department
+  //   split is always equal by definition.
+  // - Otherwise [_equalWeights] is user-controlled: true auto-splits 100
+  //   evenly across the selected departments, false requires a manual weight
+  //   per department (summing to 100) via [_departmentWeightControllers].
+  bool _equalWeights = true;
+  List<String> _selectedDepartments = [];
+  final Map<String, TextEditingController> _departmentWeightControllers = {};
 
   bool get _isEdit => widget.existingControl != null;
 
@@ -109,6 +140,26 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
     _documentAr = existing.controlsDocumentAr != null
         ? PolicyDocumentInfo.fromUrl(existing.controlsDocumentAr!)
         : null;
+    _equalWeights = existing.equalWeights;
+    final existingDepartmentNames =
+        existing.departments.map((d) => d.department).toList();
+    final totalDepartmentsCount =
+        Get.find<MainCoreDepartmentController>().departmentIds.length;
+    final wasAllDepartments = existingDepartmentNames.isNotEmpty &&
+        existingDepartmentNames.length == totalDepartmentsCount;
+    _selectedDepartments = [
+      if (wasAllDepartments) _allDepartmentsValue,
+      ...existingDepartmentNames,
+    ];
+    // Rows (and their weight fields) are hidden entirely once "All" is
+    // selected, so only build controllers otherwise. The persisted weight is
+    // shown as-is — when equalWeights is true that's already an equal split.
+    if (!wasAllDepartments) {
+      for (final d in existing.departments) {
+        _departmentWeightControllers[d.department] =
+            TextEditingController(text: _formatWeight(d.weight));
+      }
+    }
   }
 
   @override
@@ -120,6 +171,9 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
     _descriptionController.dispose();
     _descriptionArController.dispose();
     _weightController.dispose();
+    for (final c in _departmentWeightControllers.values) {
+      c.dispose();
+    }
     super.dispose();
   }
 
@@ -128,6 +182,145 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
       .fold<double>(0, (sum, c) => sum + c.controlsWeight);
 
   double get _thisWeight => double.tryParse(_weightController.text.trim()) ?? 0;
+
+  double get _totalDepartmentsWeight => _departmentWeightControllers.values
+      .fold<double>(0, (sum, c) => sum + (double.tryParse(c.text.trim()) ?? 0));
+
+  /// Every checked department, minus the [_allDepartmentsValue] sentinel.
+  List<String> get _realSelectedDepartments =>
+      _selectedDepartments.where((d) => d != _allDepartmentsValue).toList();
+
+  bool get _isAllDepartmentsSelected =>
+      _selectedDepartments.contains(_allDepartmentsValue);
+
+  bool get _isDepartmentsWeightValid =>
+      _equalWeights ||
+      _realSelectedDepartments.isEmpty ||
+      _totalDepartmentsWeight == 100;
+
+  /// The department names to send to the cubit on save.
+  List<String> get _departmentsForSave => _realSelectedDepartments;
+
+  /// The manual per-department weights to send to the cubit on save. `null`
+  /// when [_equalWeights] is true, since the model generates an equal split
+  /// on its own.
+  List<double>? get _departmentWeightsForSave {
+    if (_equalWeights) return null;
+    return _realSelectedDepartments
+        .map((d) =>
+            double.tryParse(
+                _departmentWeightControllers[d]?.text.trim() ?? '') ??
+            0)
+        .toList();
+  }
+
+  /// Keeps [_departmentWeightControllers] in sync with the currently
+  /// selected (non-"All") departments: adds a controller for newly selected
+  /// departments and disposes/removes controllers for deselected ones.
+  void _syncDepartmentWeightControllers() {
+    final selected = _realSelectedDepartments.toSet();
+    _departmentWeightControllers.removeWhere((department, controller) {
+      final stale = !selected.contains(department);
+      if (stale) controller.dispose();
+      return stale;
+    });
+    for (final department in selected) {
+      _departmentWeightControllers.putIfAbsent(
+          department, () => TextEditingController(text: '0'));
+    }
+  }
+
+  /// function name: [_formatWeight]
+  ///
+  /// purpose: render a weight value without a trailing ".00" for whole
+  ///          numbers, while still showing the decimals an equal split can
+  ///          produce (e.g. 100/3 -> 33.33).
+  String _formatWeight(double value) =>
+      value % 1 == 0 ? value.toStringAsFixed(0) : value.toStringAsFixed(2);
+
+  /// Overwrites every selected department's weight controller with its
+  /// share of an equal 100-way split, matching [DepartmentWeight.equalSplit]
+  /// (the same helper the backend uses on save) so what's shown here is
+  /// exactly what gets persisted.
+  void _applyEqualSplitToControllers() {
+    for (final entry in DepartmentWeight.equalSplit(_realSelectedDepartments)) {
+      _departmentWeightControllers[entry.department]?.text =
+          _formatWeight(entry.weight);
+    }
+  }
+
+  void _onEqualWeightsChanged(bool value) {
+    if (_isAllDepartmentsSelected) return;
+    setState(() {
+      _equalWeights = value;
+      _syncDepartmentWeightControllers();
+      if (value) _applyEqualSplitToControllers();
+    });
+  }
+
+  /// function name: [_onDepartmentsChanged]
+  ///
+  /// purpose: reconcile the raw toggle event from [CustomMultiSelectDropdown]
+  ///          against the business rule that "All" and "every real department
+  ///          individually checked" are the same state, and that state always
+  ///          forces [_equalWeights] on.
+  ///
+  /// parameters:
+  ///            [List<String>] newSelection: the full new selection reported by the dropdown
+  ///            [List<String>] availableDepartmentNames: every real (non-"All") department name
+  void _onDepartmentsChanged(
+      List<String> newSelection, List<String> availableDepartmentNames) {
+    final justChecked =
+        newSelection.where((d) => !_selectedDepartments.contains(d)).toList();
+    final justUnchecked =
+        _selectedDepartments.where((d) => !newSelection.contains(d)).toList();
+    final toggled = justChecked.isNotEmpty
+        ? justChecked.first
+        : (justUnchecked.isNotEmpty ? justUnchecked.first : null);
+
+    setState(() {
+      if (toggled == _allDepartmentsValue) {
+        if (justChecked.contains(_allDepartmentsValue)) {
+          _selectedDepartments = [
+            _allDepartmentsValue,
+            ...availableDepartmentNames,
+          ];
+          _equalWeights = true;
+        } else {
+          _selectedDepartments = [];
+        }
+      } else {
+        final realSelection =
+            newSelection.where((d) => d != _allDepartmentsValue).toList();
+        if (availableDepartmentNames.isNotEmpty &&
+            realSelection.length == availableDepartmentNames.length) {
+          _selectedDepartments = [_allDepartmentsValue, ...realSelection];
+          _equalWeights = true;
+        } else {
+          _selectedDepartments = realSelection;
+        }
+      }
+      if (_isAllDepartmentsSelected) {
+        for (final c in _departmentWeightControllers.values) {
+          c.dispose();
+        }
+        _departmentWeightControllers.clear();
+      } else {
+        _syncDepartmentWeightControllers();
+        if (_equalWeights) _applyEqualSplitToControllers();
+      }
+    });
+  }
+
+  void _onRemoveDepartment(String department) {
+    setState(() {
+      _selectedDepartments = _selectedDepartments
+          .where((d) => d != department && d != _allDepartmentsValue)
+          .toList();
+      _departmentWeightControllers.remove(department)?.dispose();
+      if (_equalWeights) _applyEqualSplitToControllers();
+    });
+  }
 
   bool _validate() {
     setState(() => _submitted = true);
@@ -150,7 +343,9 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
         _startDate != null &&
         _endDate != null &&
         !endBeforeStart &&
-        double.tryParse(_weightController.text.trim()) != null;
+        double.tryParse(_weightController.text.trim()) != null &&
+        _realSelectedDepartments.isNotEmpty &&
+        (_equalWeights || _totalDepartmentsWeight == 100);
   }
 
   void _onUploadDocumentEn() {
@@ -205,6 +400,9 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
         frequency: _frequency,
         startDate: _startDate,
         endDate: _endDate,
+        departments: _departmentsForSave,
+        departmentsWeights: _departmentWeightsForSave,
+        equalWeights: _equalWeights,
         status: _status,
         controlsDocumentFileEn: _documentEn?.file,
         controlsDocumentUrlEn:
@@ -227,8 +425,9 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
         frequency: _frequency!,
         startDate: _startDate!,
         endDate: _endDate!,
-        departments: const [],
-        equalWeights: false,
+        departments: _departmentsForSave,
+        departmentsWeights: _departmentWeightsForSave,
+        equalWeights: _equalWeights,
         score: 0,
         status: _status,
         controlsDocumentFileEn: _documentEn?.file,
@@ -282,12 +481,272 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
     );
   }
 
+  /// function name: [_availableDepartmentNames]
+  ///
+  /// purpose: build the list of real (non-"All") department names from
+  ///          [MainCoreDepartmentController], localized to the current
+  ///          locale, mirroring the pattern used by `GrcFormFields`.
+  List<String> _availableDepartmentNames(BuildContext context) {
+    final departmentController = Get.find<MainCoreDepartmentController>();
+    final isArabic = context.isArabic;
+    return departmentController.departmentIds
+        .map((id) => isArabic
+            ? departmentController.getArabicDepartmentNameFromDepartmentId(
+                departmentId: id)
+            : departmentController.getEnglishDepartmentNameFromDepartmentId(
+                departmentId: id))
+        .whereType<String>()
+        .where((name) => name.isNotEmpty)
+        .toList();
+  }
+
+  /// function name: [_buildDepartmentsSection]
+  ///
+  /// purpose: render the Department multi-select next to the Equal Weights
+  ///          toggle. Checking "All" (or every real department individually)
+  ///          selects every department and locks Equal Weights on, since an
+  ///          all-department split is always equal. Otherwise Equal Weights
+  ///          is user-controlled: on auto-splits 100 across the selection,
+  ///          off shows an editable weight row per selected department with
+  ///          a running total below (highlighted in red until it sums to
+  ///          100).
+  Widget _buildDepartmentsSection() {
+    final availableDepartmentNames = _availableDepartmentNames(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: CustomMultiSelectDropdown<String>(
+                label: 'Department'.tr,
+                hint: 'Select Department'.tr,
+                items: [
+                  MultiSelectDropdownItem<String>(
+                      value: _allDepartmentsValue, label: 'All'.tr),
+                  ...availableDepartmentNames.map(
+                    (d) => MultiSelectDropdownItem<String>(value: d, label: d),
+                  ),
+                ],
+                values: _selectedDepartments,
+                onChanged: (newSelection) => _onDepartmentsChanged(
+                    newSelection, availableDepartmentNames),
+                fillColor: AppColors.background,
+                errorText: _submitted && _realSelectedDepartments.isEmpty
+                    ? 'This field is required.'.tr
+                    : null,
+              ),
+            ),
+            SizedBox(width: 10.w),
+            Expanded(
+              child: Row(
+                children: [
+                  Text(
+                    'Equal Weights'.tr,
+                    style: StyleText.fontSize14Weight500
+                        .copyWith(color: AppColors.text),
+                  ),
+                  Spacer(),
+                  FlutterSwitch(
+                    width: 38.sp,
+                    height: 22.sp,
+                    padding: 3.sp,
+                    borderRadius: 20.sp,
+                    toggleSize: 16.sp,
+                    activeColor: AppColors.secondaryPrimary,
+                    inactiveColor: Colors.grey.withValues(alpha: 0.16),
+                    value: _equalWeights,
+                    onToggle: _onEqualWeightsChanged,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        if (_realSelectedDepartments.isNotEmpty &&
+            !_isAllDepartmentsSelected) ...[
+          SizedBox(height: 15.h),
+          ..._realSelectedDepartments.map(_buildDepartmentWeightRow),
+          Container(
+            width: 160.w,
+            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: _isDepartmentsWeightValid
+                    ? AppColors.border
+                    : AppColors.red,
+              ),
+              borderRadius: BorderRadius.circular(6.r),
+            ),
+            child: Text(
+              '${'Total Weight'.tr} : ${_totalDepartmentsWeight.toStringAsFixed(0)}',
+              style: StyleText.fontSize14Weight500.copyWith(
+                color:
+                    _isDepartmentsWeightValid ? AppColors.text : AppColors.red,
+              ),
+            ),
+          ),
+          if (!_isDepartmentsWeightValid) ...[
+            SizedBox(height: 4.h),
+            Text(
+              'Total Weight should be 100'.tr,
+              style:
+                  StyleText.fontSize14Weight500.copyWith(color: AppColors.red),
+            ),
+          ],
+        ],
+      ],
+    );
+  }
+
+  /// function name: [_buildDepartmentWeightRow]
+  ///
+  /// purpose: render a single selected department's name alongside its
+  ///          weight field and a control to remove it from the selection.
+  ///          The weight field is editable while Equal Weights is off, and
+  ///          read-only (showing the auto-computed equal share) while it's
+  ///          on — hidden entirely only when "All" is selected instead.
+  ///
+  /// parameters:
+  ///            [String] department: the department name this row represents
+  ///
+  /// return type: [Widget] - the row widget for this department
+  Widget _buildDepartmentWeightRow(String department) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 10.h),
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+              height: 40.h,
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.symmetric(horizontal: 12.w),
+              decoration: BoxDecoration(
+                color: AppColors.background,
+                borderRadius: BorderRadius.circular(4.r),
+              ),
+              child: Text(
+                department,
+                style: StyleText.fontSize14Weight500
+                    .copyWith(color: AppColors.text),
+              ),
+            ),
+          ),
+          SizedBox(width: 10.w),
+          Expanded(
+            child: CustomTextField(
+              hint: '0',
+              controller: _departmentWeightControllers[department],
+              fillColor: AppColors.background,
+              readOnly: _equalWeights,
+              onChanged: _equalWeights ? null : (_) => setState(() {}),
+            ),
+          ),
+          SizedBox(width: 4.w),
+          IconButton(
+            icon: Icon(Icons.remove_circle, color: AppColors.red, size: 20.sp),
+            onPressed: () => _onRemoveDepartment(department),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Every Champion email whose Assigning_Controls already includes this
+  /// exact {Policy, Control} pair. Only meaningful in edit mode.
+  List<String> _alreadyAssignedChampionEmails(List<ChampionEntity> champions) {
+    final controlId = widget.existingControl!.id;
+    return champions
+        .where((c) => c.assigningControls.any((a) =>
+            a.policyId == widget.policyId && a.controlId == controlId))
+        .map((c) => c.championEmail)
+        .toList();
+  }
+
+  /// Every Owner email whose Assigning_Controls already includes this
+  /// exact {Policy, Control} pair. Only meaningful in edit mode.
+  List<String> _alreadyAssignedOwnerEmails(List<OwnerEntity> owners) {
+    final controlId = widget.existingControl!.id;
+    return owners
+        .where((o) => o.assigningControls.any((a) =>
+            a.policyId == widget.policyId && a.controlId == controlId))
+        .map((o) => o.ownerEmail)
+        .toList();
+  }
+
+  /// function name: [_buildAssigneesSections]
+  ///
+  /// purpose: render the "Control Champions" and "Control Owner" pickers
+  ///          below the Departments section. Edit mode only — a new
+  ///          Control has no id to assign against yet. Each picker starts
+  ///          pre-selected with whoever is already assigned to this exact
+  ///          {Policy, Control} pair, filtered live by the Control's
+  ///          currently-selected departments, and reports every toggle back
+  ///          via [_currentChampionEmails]/[_currentOwnerEmails] — nothing
+  ///          is persisted here; see [_applyAssigneeChanges] (Task 4) for
+  ///          that, which runs after the Control itself saves.
+  Widget _buildAssigneesSections() {
+    if (!_isEdit) return const SizedBox.shrink();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: 15.h),
+        BlocBuilder<ChampionCubit, ChampionState>(
+          builder: (context, state) {
+            if (state is! ChampionListLoaded) {
+              return Center(
+                child: CircularProgressIndicator(color: AppColors.primary),
+              );
+            }
+            return GrcOwnerSection(
+              sectionTitle: 'Control Champions',
+              initialOwnerEmails: _alreadyAssignedChampionEmails(state.champions),
+              selectedDepartmentNames: _realSelectedDepartments,
+              showRemoveIconWhenSelected: true,
+              onOwnersChanged: (selected) => setState(() =>
+                  _currentChampionEmails = selected.map((o) => o.email).toList()),
+            );
+          },
+        ),
+        SizedBox(height: 15.h),
+        BlocBuilder<OwnerCubit, OwnerState>(
+          builder: (context, state) {
+            if (state is! OwnerListLoaded) {
+              return Center(
+                child: CircularProgressIndicator(color: AppColors.primary),
+              );
+            }
+            return GrcOwnerSection(
+              sectionTitle: 'Control Owner',
+              initialOwnerEmails: _alreadyAssignedOwnerEmails(state.owners),
+              selectedDepartmentNames: _realSelectedDepartments,
+              showRemoveIconWhenSelected: true,
+              onOwnersChanged: (selected) => setState(() =>
+                  _currentOwnerEmails = selected.map((o) => o.email).toList()),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
 
-    return BlocProvider(
-      create: (_) => GetIt.instance<PolicyCubit>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<PolicyCubit>(create: (_) => GetIt.instance<PolicyCubit>()),
+        BlocProvider<ChampionCubit>(
+          create: (_) => GetIt.instance<ChampionCubit>()
+            ..getAllChampions(moduleId: widget.moduleId),
+        ),
+        BlocProvider<OwnerCubit>(
+          create: (_) => GetIt.instance<OwnerCubit>()
+            ..getAllOwners(moduleId: widget.moduleId),
+        ),
+      ],
       child: Builder(
         builder: (ctx) {
           final cubit = ctx.read<PolicyCubit>();
@@ -474,6 +933,9 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                               onChanged: (d) => setState(
                                                   () => _startDate = d),
                                               fillColor: AppColors.background,
+                                              dateFormatter: (d) =>
+                                                  intl.DateFormat('d MMM yyyy')
+                                                      .format(d),
                                               errorText: _submitted &&
                                                       _startDate == null
                                                   ? 'This field is required.'.tr
@@ -492,6 +954,9 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                                   setState(() => _endDate = d),
                                               fillColor: AppColors.background,
                                               firstDate: _startDate,
+                                              dateFormatter: (d) =>
+                                                  intl.DateFormat('d MMM yyyy')
+                                                      .format(d),
                                               errorText: _submitted &&
                                                       _endDate == null
                                                   ? 'This field is required.'.tr
@@ -644,38 +1109,68 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text('Control Document'.tr,
-                                          style: StyleText.fontSize16Weight500
-                                              .copyWith(color: AppColors.text)),
-                                      const Spacer(),
-                                      Flexible(
+                                      Expanded(
                                         child: Column(
+                                          spacing: 8.h,
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.end,
+                                              CrossAxisAlignment.start,
                                           children: [
+                                            Text('Control Document ENG',
+                                                style: StyleText
+                                                    .fontSize16Weight500
+                                                    .copyWith(
+                                                        color: AppColors.text)),
                                             _documentEn != null
                                                 ? PolicyDocumentPreviewWidget(
                                                     document: _documentEn!,
                                                     onRemove:
                                                         _onRemoveDocumentEn)
-                                                : _documentButton(
-                                                    onTap: _onUploadDocumentEn,
-                                                    title:
-                                                        'Upload Document'.tr),
-                                            SizedBox(height: 10.h),
+                                                : SizedBox(
+                                                    width: double.infinity,
+                                                    child: _documentButton(
+                                                        onTap:
+                                                            _onUploadDocumentEn,
+                                                        title:
+                                                            'Control Document'),
+                                                  ),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(width: 10.w),
+                                      // if (widget.isArabicEnabled) ...[
+                                      Expanded(
+                                        child: Column(
+                                          spacing: 8.h,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text('Control Document AR',
+                                                style: StyleText
+                                                    .fontSize16Weight500
+                                                    .copyWith(
+                                                        color: AppColors.text)),
                                             _documentAr != null
                                                 ? PolicyDocumentPreviewWidget(
                                                     document: _documentAr!,
                                                     onRemove:
                                                         _onRemoveDocumentAr)
-                                                : _documentButton(
-                                                    onTap: _onUploadDocumentAr,
-                                                    title: ' Upload Document'),
+                                                : SizedBox(
+                                                    width: double.infinity,
+                                                    child: _documentButton(
+                                                        onTap:
+                                                            _onUploadDocumentAr,
+                                                        title:
+                                                            'Control Document'),
+                                                  ),
                                           ],
                                         ),
                                       ),
+                                      // ],
                                     ],
                                   ),
+                                  SizedBox(height: 15.h),
+                                  _buildDepartmentsSection(),
+                                  _buildAssigneesSections(),
                                 ],
                               ),
                             ),
