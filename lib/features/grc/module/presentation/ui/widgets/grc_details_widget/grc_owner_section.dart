@@ -51,6 +51,11 @@ class GrcOwnerSection extends StatefulWidget {
   /// employees belonging to this department are shown as owner candidates.
   final String? selectedDepartmentName;
 
+  /// Same idea as [selectedDepartmentName] but for callers that can be
+  /// scoped to several departments at once (e.g. a Control). When set,
+  /// takes precedence over [selectedDepartmentName].
+  final List<String>? selectedDepartmentNames;
+
   final void Function(List<OwnerData> selected)? onOwnersChanged;
 
   /// When true, selecting one person clears any previous selection so at
@@ -58,13 +63,26 @@ class GrcOwnerSection extends StatefulWidget {
   /// Champion/Add Owner pages, where exactly one person is being assigned).
   final bool singleSelect;
 
+  /// When true, an already-selected person shows a red remove icon instead
+  /// of a checked checkbox (used by the Control assignee pickers, where
+  /// picking someone reads as "assign" and un-picking reads as "remove").
+  /// Tapping the card still toggles selection either way.
+  final bool showRemoveIconWhenSelected;
+
+  /// The label shown above the picker. Defaults to the Module Owner
+  /// picker's original hardcoded text so existing callers are unaffected.
+  final String sectionTitle;
+
   const GrcOwnerSection({
     super.key,
     this.isViewMode = false,
     this.initialOwnerEmails = const [],
     this.selectedDepartmentName,
+    this.selectedDepartmentNames,
     this.onOwnersChanged,
     this.singleSelect = false,
+    this.showRemoveIconWhenSelected = false,
+    this.sectionTitle = 'Module Owner',
   });
 
   @override
@@ -83,6 +101,7 @@ class _GrcOwnerSectionState extends State<GrcOwnerSection> {
         context,
         initialOwnerEmails: widget.initialOwnerEmails,
         selectedDepartmentName: widget.selectedDepartmentName,
+        selectedDepartmentNames: widget.selectedDepartmentNames,
       ),
     );
   }
@@ -90,9 +109,25 @@ class _GrcOwnerSectionState extends State<GrcOwnerSection> {
   @override
   void didUpdateWidget(covariant GrcOwnerSection oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.selectedDepartmentName != widget.selectedDepartmentName) {
-      _cubit.filterByDepartment(widget.selectedDepartmentName);
+    if (oldWidget.selectedDepartmentName != widget.selectedDepartmentName ||
+        !_listEquals(
+            oldWidget.selectedDepartmentNames, widget.selectedDepartmentNames)) {
+      _cubit.filterByDepartments(
+        widget.selectedDepartmentNames ??
+            (widget.selectedDepartmentName == null
+                ? null
+                : [widget.selectedDepartmentName!]),
+      );
     }
+  }
+
+  bool _listEquals(List<String>? a, List<String>? b) {
+    if (a == null || b == null) return a == b;
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
   }
 
   @override
@@ -132,6 +167,9 @@ class _GrcOwnerSectionState extends State<GrcOwnerSection> {
                     avatar: _buildAvatar(left.photo),
                     isSelected: left.isSelected,
                     showCheckBox: !widget.isViewMode,
+                    trailing: (widget.showRemoveIconWhenSelected && left.isSelected)
+                        ? Icon(Icons.remove_circle, color: AppColors.red, size: 20.sp)
+                        : null,
                     width: double.infinity,
                     backgroundColor: AppColors.background,
                     onTap: widget.isViewMode ? null : () => _onToggle(i * 2),
@@ -147,6 +185,10 @@ class _GrcOwnerSectionState extends State<GrcOwnerSection> {
                       avatar: _buildAvatar(owners[rightIdx].photo),
                       isSelected: owners[rightIdx].isSelected,
                       showCheckBox: !widget.isViewMode,
+                      trailing: (widget.showRemoveIconWhenSelected &&
+                              owners[rightIdx].isSelected)
+                          ? Icon(Icons.remove_circle, color: AppColors.red, size: 20.sp)
+                          : null,
                       width: double.infinity,
                       backgroundColor: AppColors.background,
                       onTap:
@@ -175,6 +217,9 @@ class _GrcOwnerSectionState extends State<GrcOwnerSection> {
             avatar: _buildAvatar(owner.photo),
             isSelected: owner.isSelected,
             showCheckBox: !widget.isViewMode,
+            trailing: (widget.showRemoveIconWhenSelected && owner.isSelected)
+                ? Icon(Icons.remove_circle, color: AppColors.red, size: 20.sp)
+                : null,
             width: double.infinity,
             backgroundColor: AppColors.background,
             onTap: widget.isViewMode ? null : () => _onToggle(i),
@@ -200,7 +245,7 @@ class _GrcOwnerSectionState extends State<GrcOwnerSection> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Module Owner'.tr,
+                widget.sectionTitle.tr,
                 style: AppTextStyles.font16BlackRegularCairo
                     .copyWith(fontSize: 14.sp),
               ),
