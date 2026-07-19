@@ -25,6 +25,7 @@ library;
 import 'package:intl/intl.dart';
 import '../../domain/entities/policy_entity.dart';
 import '../../domain/entities/policy_status.dart';
+import '../../domain/entities/policy_weight_history_entry.dart';
 
 /// ************************* FILE INFO *************************** ///
 /// File Name: policy_model.dart
@@ -424,5 +425,35 @@ class PolicyModel {
       lastModifiedDate: lastModifiedDate.last,
       lastEditor: editors.last,
     );
+  }
+
+  /// function name: [toWeightHistory]
+  ///
+  /// purpose: reconstruct every recorded weight change by diffing
+  ///          [policyWeight] between consecutive revisions. A change at
+  ///          revision N is credited to whoever saved that revision
+  ///          ([editors][N]) on [lastModifiedDate][N]. Revisions that
+  ///          didn't touch the weight (previous == current) emit nothing.
+  ///
+  /// parameters: none
+  ///
+  /// return type: [List<PolicyWeightHistoryEntry>] - one entry per weight change, in revision order
+  List<PolicyWeightHistoryEntry> toWeightHistory() {
+    final entries = <PolicyWeightHistoryEntry>[];
+    for (var i = 1; i < policyWeight.length; i++) {
+      if (policyWeight[i] == policyWeight[i - 1]) continue;
+      entries.add(
+        PolicyWeightHistoryEntry(
+          policyId: id,
+          policyNameEn: policyNameEn[i],
+          policyNameAr: policyNameAr[i],
+          weightPrevious: policyWeight[i - 1],
+          weightCurrent: policyWeight[i],
+          changedByEmail: editors[i],
+          dateOfAction: lastModifiedDate[i],
+        ),
+      );
+    }
+    return entries;
   }
 }
