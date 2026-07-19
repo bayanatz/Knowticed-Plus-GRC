@@ -436,7 +436,7 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
     }
   }
 
-  void _onStateChange(BuildContext context, PolicyState state) {
+  Future<void> _onStateChange(BuildContext context, PolicyState state) async {
     if (state is PolicyLoading) {
       showLoadingIndicator();
       return;
@@ -444,6 +444,10 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
     hideLoadingIndicator();
 
     if (state is PolicyControlActionSuccess) {
+      if (_isEdit) {
+        await _applyAssigneeChanges(context);
+      }
+      if (!context.mounted) return;
       showSuccessDialog(
         context: context,
         title: _isEdit ? 'Control Updated'.tr : 'Control Created'.tr,
@@ -673,6 +677,184 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
             a.policyId == widget.policyId && a.controlId == controlId))
         .map((o) => o.ownerEmail)
         .toList();
+  }
+
+  ChampionEntity? _findChampion(List<ChampionEntity> all, String email) {
+    for (final c in all) {
+      if (c.championEmail == email) return c;
+    }
+    return null;
+  }
+
+  OwnerEntity? _findOwner(List<OwnerEntity> all, String email) {
+    for (final o in all) {
+      if (o.ownerEmail == email) return o;
+    }
+    return null;
+  }
+
+  /// function name: [_applyChampionDiff]
+  ///
+  /// purpose: reconcile [selected] (the picker's current selection) against
+  ///          [alreadyAssigned] (what was true when the page opened) by
+  ///          appending/removing this {Policy, Control} pair on exactly the
+  ///          people whose selection state actually changed. Every call is
+  ///          awaited sequentially — at most a handful of people per save,
+  ///          simplicity over throughput.
+  ///
+  /// return type: [Future<bool>] - false if any individual update/create failed
+  Future<bool> _applyChampionDiff({
+    required ChampionCubit cubit,
+    required List<ChampionEntity> allChampions,
+    required List<String> alreadyAssigned,
+    required List<String> selected,
+    required String controlId,
+  }) async {
+    var success = true;
+    final added = selected.where((e) => !alreadyAssigned.contains(e));
+    final removed = alreadyAssigned.where((e) => !selected.contains(e));
+
+    for (final email in added) {
+      final existing = _findChampion(allChampions, email);
+      if (existing != null) {
+        await cubit.updateChampion(
+          championEmail: email,
+          moduleId: widget.moduleId,
+          assigningControls: [
+            ...existing.assigningControls,
+            AssigningControlEntity(policyId: widget.policyId, controlId: controlId),
+          ],
+        );
+      } else {
+        await cubit.createChampion(
+          moduleId: widget.moduleId,
+          championEmail: email,
+          assigningControls: [
+            AssigningControlEntity(policyId: widget.policyId, controlId: controlId),
+          ],
+        );
+      }
+      if (cubit.state is ChampionFailure) success = false;
+    }
+
+    for (final email in removed) {
+      final existing = _findChampion(allChampions, email);
+      if (existing == null) continue;
+      await cubit.updateChampion(
+        championEmail: email,
+        moduleId: widget.moduleId,
+        assigningControls: existing.assigningControls
+            .where((a) => !(a.policyId == widget.policyId && a.controlId == controlId))
+            .toList(),
+      );
+      if (cubit.state is ChampionFailure) success = false;
+    }
+
+    return success;
+  }
+
+  /// Mirrors [_applyChampionDiff] for Control Owners.
+  Future<bool> _applyOwnerDiff({
+    required OwnerCubit cubit,
+    required List<OwnerEntity> allOwners,
+    required List<String> alreadyAssigned,
+    required List<String> selected,
+    required String controlId,
+  }) async {
+    var success = true;
+    final added = selected.where((e) => !alreadyAssigned.contains(e));
+    final removed = alreadyAssigned.where((e) => !selected.contains(e));
+
+    for (final email in added) {
+      final existing = _findOwner(allOwners, email);
+      if (existing != null) {
+        await cubit.updateOwner(
+          ownerEmail: email,
+          moduleId: widget.moduleId,
+          assigningControls: [
+            ...existing.assigningControls,
+            AssigningControlEntity(policyId: widget.policyId, controlId: controlId),
+          ],
+        );
+      } else {
+        await cubit.createOwner(
+          moduleId: widget.moduleId,
+          ownerEmail: email,
+          assigningControls: [
+            AssigningControlEntity(policyId: widget.policyId, controlId: controlId),
+          ],
+        );
+      }
+      if (cubit.state is OwnerFailure) success = false;
+    }
+
+    for (final email in removed) {
+      final existing = _findOwner(allOwners, email);
+      if (existing == null) continue;
+      await cubit.updateOwner(
+        ownerEmail: email,
+        moduleId: widget.moduleId,
+        assigningControls: existing.assigningControls
+            .where((a) => !(a.policyId == widget.policyId && a.controlId == controlId))
+            .toList(),
+      );
+      if (cubit.state is OwnerFailure) success = false;
+    }
+
+    return success;
+  }
+
+  /// function name: [_applyAssigneeChanges]
+  ///
+  /// purpose: called once the Control itself has already saved
+  ///          successfully. Reads each Cubit's already-loaded state
+  ///          directly (no re-fetch — the page loaded it once on open and
+  ///          never refreshes it), recomputes "already assigned" the same
+  ///          way [_buildAssigneesSections] did, and diffs it against
+  ///          whatever the user last toggled. If a Cubit never finished
+  ///          loading, that side is skipped entirely rather than guessed at.
+  Future<void> _applyAssigneeChanges(BuildContext context) async {
+    final controlId = widget.existingControl!.id;
+    final championCubit = context.read<ChampionCubit>();
+    final ownerCubit = context.read<OwnerCubit>();
+    var hadFailure = false;
+
+    final championState = championCubit.state;
+    if (championState is ChampionListLoaded) {
+      final alreadyAssigned = _alreadyAssignedChampionEmails(championState.champions);
+      final selected = _currentChampionEmails ?? alreadyAssigned;
+      final ok = await _applyChampionDiff(
+        cubit: championCubit,
+        allChampions: championState.champions,
+        alreadyAssigned: alreadyAssigned,
+        selected: selected,
+        controlId: controlId,
+      );
+      if (!ok) hadFailure = true;
+    }
+
+    final ownerState = ownerCubit.state;
+    if (ownerState is OwnerListLoaded) {
+      final alreadyAssigned = _alreadyAssignedOwnerEmails(ownerState.owners);
+      final selected = _currentOwnerEmails ?? alreadyAssigned;
+      final ok = await _applyOwnerDiff(
+        cubit: ownerCubit,
+        allOwners: ownerState.owners,
+        alreadyAssigned: alreadyAssigned,
+        selected: selected,
+        controlId: controlId,
+      );
+      if (!ok) hadFailure = true;
+    }
+
+    if (hadFailure && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Some champion/owner assignments couldn't be saved.".tr),
+          backgroundColor: AppColors.red,
+        ),
+      );
+    }
   }
 
   /// function name: [_buildAssigneesSections]
