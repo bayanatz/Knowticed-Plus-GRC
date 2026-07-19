@@ -26,6 +26,7 @@ import 'package:dartz/dartz.dart';
 import 'package:demo_app/core/network/failure_model.dart';
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
 import 'package:demo_app/features/grc/policy/domain/entities/policy_status.dart';
+import 'package:demo_app/features/grc/policy/domain/entities/policy_weight_history_entry.dart';
 
 /// ************************* FILE INFO *************************** ///
 /// File Name: policy_repository.dart
@@ -132,6 +133,21 @@ abstract class PolicyRepository {
   Future<Either<Failure, List<PolicyEntity>>> getAllPolicies({
     required String moduleId,
     bool includeRemoved = false,
+  });
+
+  /// function name: [getPolicyWeightHistory]
+  ///
+  /// purpose: fetch every recorded weight change across all Policies in a
+  ///          Module, reconstructed from each Policy's own revision
+  ///          history (see [PolicyModel.toWeightHistory]). No dedicated
+  ///          Firestore log exists for this — it's derived on read.
+  ///
+  /// parameters:
+  ///            [String] moduleId: id of the parent GRC Module
+  ///
+  /// return type: [Future<Either<Failure, List<PolicyWeightHistoryEntry>>>] - every weight-change entry across the module's policies, sorted by date descending, or a Failure
+  Future<Either<Failure, List<PolicyWeightHistoryEntry>>> getPolicyWeightHistory({
+    required String moduleId,
   });
 
   /// function name: [updatePolicy]

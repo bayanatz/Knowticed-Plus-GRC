@@ -27,6 +27,7 @@ import 'package:demo_app/features/grc/policy/data/data_source/policy_storage_dat
 import 'package:demo_app/features/grc/policy/data/models/policy_model.dart';
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
 import 'package:demo_app/features/grc/policy/domain/entities/policy_status.dart';
+import 'package:demo_app/features/grc/policy/domain/entities/policy_weight_history_entry.dart';
 import 'package:demo_app/features/grc/policy/domain/repository/policy_repository.dart';
 import 'package:uuid/uuid.dart';
 
@@ -153,6 +154,34 @@ class PolicyRepositoryImpl implements PolicyRepository {
         includeRemoved: includeRemoved,
       );
       return Right(models.map((m) => m.toEntity()).toList());
+    } catch (e) {
+      return Left(FirebaseFailure(e.toString()));
+    }
+  }
+
+  /// function name: [getPolicyWeightHistory]
+  ///
+  /// purpose: fetch every Policy's full revision history for [moduleId] and
+  ///          flat-map [PolicyModel.toWeightHistory] across all of them,
+  ///          sorted by date descending (most recent change first). Uses
+  ///          `includeRemoved: true` so a weight change is still visible in
+  ///          history even if the policy was later removed.
+  ///
+  /// parameters: see [PolicyRepository.getPolicyWeightHistory]
+  ///
+  /// return type: [Future<Either<Failure, List<PolicyWeightHistoryEntry>>>] - see [PolicyRepository.getPolicyWeightHistory]
+  @override
+  Future<Either<Failure, List<PolicyWeightHistoryEntry>>> getPolicyWeightHistory({
+    required String moduleId,
+  }) async {
+    try {
+      final models = await _firebaseDataSource.getAll(
+        moduleId: moduleId,
+        includeRemoved: true,
+      );
+      final entries = models.expand((m) => m.toWeightHistory()).toList()
+        ..sort((a, b) => b.dateOfAction.compareTo(a.dateOfAction));
+      return Right(entries);
     } catch (e) {
       return Left(FirebaseFailure(e.toString()));
     }
