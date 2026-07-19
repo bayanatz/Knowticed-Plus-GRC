@@ -34,12 +34,13 @@ class GrcOwnerCubit extends Cubit<GrcOwnerState> {
   List<OwnerData> _allOwners = [];
   List<OwnerData> filteredOwners = [];
   String _searchQuery = '';
-  String? _selectedDepartmentName;
+  List<String>? _selectedDepartmentNames;
 
   void loadOwners(
     BuildContext context, {
     List<String> initialOwnerEmails = const [],
     String? selectedDepartmentName,
+    List<String>? selectedDepartmentNames,
   }) {
     if (!Get.isRegistered<MainCoreEmployeeController>()) return;
     final ctrl = Get.find<MainCoreEmployeeController>();
@@ -55,7 +56,8 @@ class GrcOwnerCubit extends Cubit<GrcOwnerState> {
         isSelected: initialOwnerEmails.contains(e.email ?? ''),
       );
     }).toList();
-    _selectedDepartmentName = selectedDepartmentName;
+    _selectedDepartmentNames = selectedDepartmentNames ??
+        (selectedDepartmentName == null ? null : [selectedDepartmentName]);
     _applyFilters();
   }
 
@@ -67,16 +69,33 @@ class GrcOwnerCubit extends Cubit<GrcOwnerState> {
   /// Restricts the visible owners to those belonging to [departmentName].
   /// Pass null to clear the department filter and show everyone again.
   void filterByDepartment(String? departmentName) {
-    if (_selectedDepartmentName == departmentName) return;
-    _selectedDepartmentName = departmentName;
+    filterByDepartments(departmentName == null ? null : [departmentName]);
+  }
+
+  /// Restricts the visible owners to those belonging to any department in
+  /// [departmentNames]. Pass null (or empty) to clear the filter and show
+  /// everyone again. A Control can be scoped to several departments at
+  /// once, unlike a Module (single department), hence the list form.
+  void filterByDepartments(List<String>? departmentNames) {
+    if (_listEquals(_selectedDepartmentNames, departmentNames)) return;
+    _selectedDepartmentNames = departmentNames;
     _applyFilters();
+  }
+
+  bool _listEquals(List<String>? a, List<String>? b) {
+    if (a == null || b == null) return a == b;
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
   }
 
   void _applyFilters() {
     filteredOwners = _allOwners.where((o) {
-      final matchesDepartment = _selectedDepartmentName == null ||
-          _selectedDepartmentName!.isEmpty ||
-          o.department == _selectedDepartmentName;
+      final matchesDepartment = _selectedDepartmentNames == null ||
+          _selectedDepartmentNames!.isEmpty ||
+          _selectedDepartmentNames!.contains(o.department);
       final matchesSearch = _searchQuery.isEmpty ||
           o.name.toLowerCase().contains(_searchQuery) ||
           o.department.toLowerCase().contains(_searchQuery) ||
