@@ -40,6 +40,7 @@ import 'package:demo_app/features/grc/control_owner/domain/use_cases/get_owner_u
 import 'package:demo_app/features/grc/module/domain/use_cases/get_grc_module_use_case.dart';
 import 'package:demo_app/features/grc/module/domain/use_cases/get_grc_module_owner_history_use_case.dart';
 import 'package:demo_app/features/grc/policy/domain/use_cases/get_policy_usecases.dart';
+import 'package:demo_app/features/grc/policy/domain/use_cases/get_policy_weight_history_use_case.dart';
 import 'package:demo_app/features/grc/module/domain/use_cases/restore_grc_module_use_case.dart';
 import 'package:demo_app/features/grc/control/domain/use_cases/update_control_usecase.dart';
 import 'package:demo_app/features/grc/control_champion/domain/use_cases/update_champion_usecase.dart';
@@ -210,6 +211,12 @@ void setupGRCDependencies(GetIt sl) {
   /// purpose: business logic for fetching a module's previous owner history.
   sl.registerLazySingleton<GetGRCModuleOwnerHistoryUseCase>(
     () => GetGRCModuleOwnerHistoryUseCase(sl<GRCModuleRepository>()),
+  );
+
+  /// class name: [GetPolicyWeightHistoryUseCase]
+  /// purpose: business logic for fetching a module's Policy weight history.
+  sl.registerLazySingleton<GetPolicyWeightHistoryUseCase>(
+    () => GetPolicyWeightHistoryUseCase(sl<PolicyRepository>()),
   );
 
   /// class name: [CreatePolicyUseCase]
