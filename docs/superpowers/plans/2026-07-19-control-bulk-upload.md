@@ -1311,7 +1311,12 @@ class ControlBulkUploadCubit extends Cubit<ControlBulkUploadState> {
           startDate: start,
           endDate: end,
           departments: row.departmentNames,
-          departmentsWeights: row.departmentNames.isEmpty ? null : row.departmentWeights,
+          // Always a list (never null) — ControlModel asserts
+          // departmentWeights != null whenever equalWeights is false, even
+          // when departments is empty, so an empty-departments row must
+          // pass [] here, not null. row.departmentWeights already defaults
+          // to [] when the row has no departments.
+          departmentsWeights: row.departmentWeights,
           equalWeights: false,
           score: 0,
           status: ControlStatus.active,
