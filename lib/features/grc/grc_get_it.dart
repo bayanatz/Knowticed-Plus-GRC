@@ -35,6 +35,7 @@ import 'package:demo_app/features/grc/policy/domain/use_cases/create_policy_usec
 import 'package:demo_app/features/grc/module/domain/use_cases/delete_grc_module_use_case.dart';
 import 'package:demo_app/features/grc/module/domain/use_cases/get_all_grc_modules_use_case.dart';
 import 'package:demo_app/features/grc/control/domain/use_cases/get_control_usecases.dart';
+import 'package:demo_app/features/grc/control/domain/use_cases/get_control_weight_history_use_case.dart';
 import 'package:demo_app/features/grc/control_champion/domain/use_cases/get_champion_usecases.dart';
 import 'package:demo_app/features/grc/control_owner/domain/use_cases/get_owner_usecases.dart';
 import 'package:demo_app/features/grc/module/domain/use_cases/get_grc_module_use_case.dart';
@@ -285,6 +286,12 @@ void setupGRCDependencies(GetIt sl) {
   /// purpose: business logic for hard-deleting a Control.
   sl.registerLazySingleton<DeleteControlUseCase>(
     () => DeleteControlUseCase(sl<ControlRepository>()),
+  );
+
+  /// class name: [GetControlWeightHistoryUseCase]
+  /// purpose: business logic for fetching a policy's Control weight history.
+  sl.registerLazySingleton<GetControlWeightHistoryUseCase>(
+    () => GetControlWeightHistoryUseCase(sl<ControlRepository>()),
   );
 
   /// class name: [CreateChampionUseCase]
