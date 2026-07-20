@@ -34,6 +34,7 @@ import 'package:demo_app/features/grc/policy/presentation/controller/policy_cubi
 import 'package:demo_app/features/grc/policy/presentation/ui/pages/create_new_policy.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/pages/policy_bulk_upload/policy_bulk_upload_page.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/pages/policy_details_page.dart';
+import 'package:demo_app/features/grc/policy/presentation/ui/pages/policy_weight_issue/policy_weight_issue_page.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
 import 'package:demo_app/features/roles/widgets/filter_bar_item.dart';
 import 'package:demo_app/features/settings/core_widgets/main_widget/custom_button_widget.dart';
@@ -490,7 +491,16 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
             if (hasPolicyWeightIssue)
               customButton(
                 title: "Policy Weight Issue".tr,
-                function: () {},
+                function: () => Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (_, __, ___) =>
+                        PolicyWeightIssuePage(module: widget.module),
+                    transitionsBuilder: (_, animation, __, child) =>
+                        FadeTransition(opacity: animation, child: child),
+                    transitionDuration: const Duration(milliseconds: 300),
+                  ),
+                ),
                 width: isTablet ? 180.w : 160.w,
                 height: 38.h,
                 color: AppColors.primary,
