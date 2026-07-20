@@ -29,6 +29,7 @@ import 'package:intl/intl.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_status.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_department_weight.dart';
+import 'package:demo_app/features/grc/control/domain/entities/control_weight_history_entry.dart';
 
 /// ************************* FILE INFO *************************** ///
 /// File Name: control_model.dart
@@ -524,5 +525,36 @@ class ControlModel {
       lastModifiedDate: lastModifiedDate.last,
       lastEditor: editors.last,
     );
+  }
+
+  /// function name: [toWeightHistory]
+  ///
+  /// purpose: reconstruct every recorded weight change by diffing
+  ///          [controlsWeight] between consecutive revisions. A change at
+  ///          revision N is credited to whoever saved that revision
+  ///          ([editors][N]) on [lastModifiedDate][N]. Revisions that
+  ///          didn't touch the weight (previous == current) emit nothing.
+  ///
+  /// parameters: none
+  ///
+  /// return type: [List<ControlWeightHistoryEntry>] - one entry per weight change, in revision order
+  List<ControlWeightHistoryEntry> toWeightHistory() {
+    final entries = <ControlWeightHistoryEntry>[];
+    for (var i = 1; i < controlsWeight.length; i++) {
+      if (controlsWeight[i] == controlsWeight[i - 1]) continue;
+      entries.add(
+        ControlWeightHistoryEntry(
+          controlId: id,
+          policyId: policyId,
+          controlsNameEn: controlsNameEn[i],
+          controlsNameAr: controlsNameAr[i],
+          weightPrevious: controlsWeight[i - 1],
+          weightCurrent: controlsWeight[i],
+          changedByEmail: editors[i],
+          dateOfAction: lastModifiedDate[i],
+        ),
+      );
+    }
+    return entries;
   }
 }
