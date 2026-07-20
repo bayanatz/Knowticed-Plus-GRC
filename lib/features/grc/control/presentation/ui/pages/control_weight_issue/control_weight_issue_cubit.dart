@@ -1,0 +1,200 @@
+/// Module: Policy Management
+/// Description: BLoC Cubit that manages the Control Weight Issue page's
+///              state: loading the Controls under one Policy, editing
+///              their weights (Equal Weight or by hand), and applying the
+///              changed rows back through UpdateControlUseCase.
+/// Author: Mohamed Magdy Abdelkhalek
+/// Date: 2026-07-20
+/// Dependencies: flutter_bloc, GetAllControlsUseCase, UpdateControlUseCase,
+///               ControlWeightIssueRow/Rows
+/// Revision History: 2026-07-20 - Initial creation
+library;
+
+import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
+import 'package:demo_app/features/grc/control/domain/use_cases/get_control_usecases.dart';
+import 'package:demo_app/features/grc/control/domain/use_cases/update_control_usecase.dart';
+import 'package:demo_app/features/grc/control/presentation/ui/pages/control_weight_issue/control_weight_issue_row.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
+
+part 'control_weight_issue_state.dart';
+
+/// class name: [ControlWeightIssueCubit]
+///
+/// purpose: manage all state for the Control Weight Issue page: fetching
+///          the Controls under one Policy (no status filter — every
+///          Control counts toward this Policy's total, matching the
+///          existing `_hasControlWeightIssue` check this page's entry
+///          button uses), editing their weights in memory, and persisting
+///          the changed rows via [UpdateControlUseCase] on Apply Changes.
+///
+/// authors: Mohamed Magdy Abdelkhalek
+///
+/// created at: 20/7/2026
+class ControlWeightIssueCubit extends Cubit<ControlWeightIssueState> {
+  ControlWeightIssueCubit({
+    required GetAllControlsUseCase getAllControlsUseCase,
+    required UpdateControlUseCase updateControlUseCase,
+  })  : _getAllControlsUseCase = getAllControlsUseCase,
+        _updateControlUseCase = updateControlUseCase,
+        super(ControlWeightIssueInitial());
+
+  final GetAllControlsUseCase _getAllControlsUseCase;
+  final UpdateControlUseCase _updateControlUseCase;
+
+  ControlWeightIssueRows? _rowsData;
+
+  /// The current row/table data. Only valid once a
+  /// [ControlWeightIssueLoaded] state has been emitted at least once.
+  ControlWeightIssueRows get rowsData => _rowsData!;
+
+  /// Whether [load] has ever completed successfully — false only before
+  /// the very first load, or if that first load failed. Lets the page
+  /// tell "failed before there was any data to show" apart from "failed
+  /// midway through an edit session, but the table is still there."
+  bool get hasRows => _rowsData != null;
+
+  /// Resolves the currently logged-in user's email (same pattern as
+  /// PolicyCubit._currentUserEmail / PolicyWeightIssueCubit._currentUserEmail).
+  String get _currentUserEmail {
+    final fromConstant = Constant.emailUser;
+    if (fromConstant != null && fromConstant.isNotEmpty) return fromConstant;
+    if (Get.isRegistered<MainCoreEmployeeController>()) {
+      final email = Get.find<MainCoreEmployeeController>().employeeEntity?.email;
+      if (email != null && email.isNotEmpty) return email;
+    }
+    return '';
+  }
+
+  /// function name: [load]
+  ///
+  /// purpose: fetch every Control under [moduleId]/[policyId] and build
+  ///          fresh row data. Disposes any previously held row data first.
+  ///
+  /// parameters:
+  ///            [String] moduleId: id of the parent GRC Module
+  ///            [String] policyId: id of the parent Policy
+  ///
+  /// return type: [Future<void>]
+  Future<void> load(String moduleId, String policyId) async {
+    emit(ControlWeightIssueLoading());
+
+    final result = await _getAllControlsUseCase.call(
+      moduleId: moduleId,
+      policyId: policyId,
+    );
+    final controls = result.fold((failure) {
+      emit(ControlWeightIssueFailure(failure.message));
+      return null;
+    }, (controls) => controls);
+    if (controls == null) return;
+
+    _rowsData?.dispose();
+    _rowsData = ControlWeightIssueRows(
+      controls.map(ControlWeightIssueRow.fromControl).toList(),
+    );
+    emit(ControlWeightIssueLoaded(isEditing: false));
+  }
+
+  /// function name: [enterEditMode]
+  ///
+  /// purpose: switch the Controls Weight tab into edit mode (the "Edit"
+  ///          button).
+  ///
+  /// parameters: none
+  ///
+  /// return type: [void]
+  void enterEditMode() {
+    emit(ControlWeightIssueLoaded(isEditing: true));
+  }
+
+  /// function name: [discardChanges]
+  ///
+  /// purpose: revert every row and exit edit mode (the "Discard Changes"
+  ///          button).
+  ///
+  /// parameters: none
+  ///
+  /// return type: [void]
+  void discardChanges() {
+    rowsData.discardChanges();
+    emit(ControlWeightIssueLoaded(isEditing: false));
+  }
+
+  /// function name: [applyEqualWeight]
+  ///
+  /// purpose: fill every row with an equal share of 100 (the "Equal
+  ///          Weight" button). Stays in edit mode so the user can still
+  ///          hand-edit afterward.
+  ///
+  /// parameters: none
+  ///
+  /// return type: [void]
+  void applyEqualWeight() {
+    rowsData.applyEqualWeight();
+    emit(ControlWeightIssueLoaded(isEditing: true));
+  }
+
+  /// function name: [revalidate]
+  ///
+  /// purpose: re-emit the current edit-mode state so the page rebuilds
+  ///          (Total Weight box, Apply Changes enabled state) after a
+  ///          hand-edited cell. Called from each cell's `onChanged`.
+  ///
+  /// parameters: none
+  ///
+  /// return type: [void]
+  void revalidate() {
+    emit(ControlWeightIssueLoaded(isEditing: true));
+  }
+
+  /// function name: [applyChanges]
+  ///
+  /// purpose: persist every row whose weight actually changed via
+  ///          [UpdateControlUseCase], one call per changed row. No-op if
+  ///          the live total isn't exactly 100. On full success, reloads
+  ///          fresh data and returns to view mode; on any failure, emits
+  ///          Failure for the listener snackbar then immediately re-emits
+  ///          an editing Loaded state so the table stays visible in edit
+  ///          mode (rows/controllers untouched) instead of falling back to
+  ///          a bare error screen.
+  ///
+  /// parameters:
+  ///            [String] moduleId: id of the parent GRC Module
+  ///            [String] policyId: id of the parent Policy
+  ///
+  /// return type: [Future<void>]
+  Future<void> applyChanges(String moduleId, String policyId) async {
+    if (!rowsData.totalWeightValid) return;
+
+    final changed = rowsData.changedRows;
+    final editorId = _currentUserEmail;
+
+    for (final row in changed) {
+      final result = await _updateControlUseCase.call(
+        UpdateControlParams(
+          id: row.controlId,
+          moduleId: moduleId,
+          policyId: policyId,
+          editorId: editorId,
+          controlsWeight: row.currentWeight,
+        ),
+      );
+      final failureMessage = result.fold((failure) => failure.message, (_) => null);
+      if (failureMessage != null) {
+        emit(ControlWeightIssueFailure(failureMessage));
+        emit(ControlWeightIssueLoaded(isEditing: true));
+        return;
+      }
+    }
+
+    emit(ControlWeightIssueApplySuccess());
+    await load(moduleId, policyId);
+  }
+
+  @override
+  Future<void> close() {
+    _rowsData?.dispose();
+    return super.close();
+  }
+}

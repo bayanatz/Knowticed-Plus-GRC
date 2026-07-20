@@ -50,6 +50,7 @@ import 'package:demo_app/features/grc/module/domain/use_cases/update_grc_module_
 import 'package:demo_app/features/grc/policy/domain/use_cases/update_policy_usecase.dart';
 import 'package:demo_app/features/grc/module/presentation/controller/cubit/grc_module_cubit.dart';
 import 'package:demo_app/features/grc/module/presentation/controller/cubit/grc_previous_owners_cubit.dart';
+import 'package:demo_app/features/grc/control/presentation/ui/pages/control_weight_issue/control_weight_issue_cubit.dart';
 import 'package:demo_app/features/grc/control_champion/presentation/controller/champion_cubit.dart';
 import 'package:demo_app/features/grc/control_owner/presentation/controller/owner_cubit.dart';
 import 'package:demo_app/features/grc/policy/presentation/controller/policy_cubit.dart';
@@ -407,6 +408,17 @@ void setupGRCDependencies(GetIt sl) {
     () => PolicyWeightHistoryCubit(
       getPolicyWeightHistoryUseCase: sl<GetPolicyWeightHistoryUseCase>(),
       getAllControlsUseCase: sl<GetAllControlsUseCase>(),
+    ),
+  );
+
+  /// class name: [ControlWeightIssueCubit]
+  /// purpose: presentation-layer state manager for the Control Weight
+  /// Issue page's editable table. Registered as a factory so each page
+  /// gets an independent cubit instance.
+  sl.registerFactory<ControlWeightIssueCubit>(
+    () => ControlWeightIssueCubit(
+      getAllControlsUseCase: sl<GetAllControlsUseCase>(),
+      updateControlUseCase: sl<UpdateControlUseCase>(),
     ),
   );
 
