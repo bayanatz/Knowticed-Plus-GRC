@@ -50,6 +50,7 @@ import 'package:demo_app/features/grc/module/domain/use_cases/update_grc_module_
 import 'package:demo_app/features/grc/policy/domain/use_cases/update_policy_usecase.dart';
 import 'package:demo_app/features/grc/module/presentation/controller/cubit/grc_module_cubit.dart';
 import 'package:demo_app/features/grc/module/presentation/controller/cubit/grc_previous_owners_cubit.dart';
+import 'package:demo_app/features/grc/control/presentation/ui/pages/control_weight_issue/control_weight_history_cubit.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/control_weight_issue/control_weight_issue_cubit.dart';
 import 'package:demo_app/features/grc/control_champion/presentation/controller/champion_cubit.dart';
 import 'package:demo_app/features/grc/control_owner/presentation/controller/owner_cubit.dart';
@@ -419,6 +420,17 @@ void setupGRCDependencies(GetIt sl) {
     () => ControlWeightIssueCubit(
       getAllControlsUseCase: sl<GetAllControlsUseCase>(),
       updateControlUseCase: sl<UpdateControlUseCase>(),
+    ),
+  );
+
+  /// class name: [ControlWeightHistoryCubit]
+  /// purpose: presentation-layer state manager for the Control Weight
+  /// Issue page's History tab. Registered as a factory so each page gets
+  /// an independent cubit instance.
+  sl.registerFactory<ControlWeightHistoryCubit>(
+    () => ControlWeightHistoryCubit(
+      getControlWeightHistoryUseCase: sl<GetControlWeightHistoryUseCase>(),
+      getAllControlsUseCase: sl<GetAllControlsUseCase>(),
     ),
   );
 
