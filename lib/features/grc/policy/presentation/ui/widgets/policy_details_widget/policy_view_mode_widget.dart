@@ -18,6 +18,7 @@ import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_status.dart';
+import 'package:demo_app/features/grc/control/presentation/ui/pages/control_weight_issue/control_weight_issue_page.dart';
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details_widget/grc_owner_section.dart';
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
@@ -369,7 +370,18 @@ class _PolicyViewModeWidgetState extends State<PolicyViewModeWidget> {
     if (!_hasControlWeightIssue(controls)) return const SizedBox.shrink();
     return customButton(
       title: 'Control Weight Issue'.tr,
-      function: () {},
+      function: () => Navigator.push(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) => ControlWeightIssuePage(
+            module: widget.module,
+            policy: widget.policy,
+          ),
+          transitionsBuilder: (_, animation, __, child) =>
+              FadeTransition(opacity: animation, child: child),
+          transitionDuration: const Duration(milliseconds: 300),
+        ),
+      ),
       height: 38.h,
       color: AppColors.primary,
       textStyle:
