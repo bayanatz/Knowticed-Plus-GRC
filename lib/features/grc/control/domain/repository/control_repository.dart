@@ -17,6 +17,7 @@ import 'package:dartz/dartz.dart';
 import 'package:demo_app/core/network/failure_model.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_status.dart';
+import 'package:demo_app/features/grc/control/domain/entities/control_weight_history_entry.dart';
 
 
 /// class name: [ControlRepository]
@@ -58,6 +59,23 @@ abstract class ControlRepository {
   });
 
   Future<Either<Failure, List<ControlEntity>>> getAllControls({
+    required String moduleId,
+    required String policyId,
+  });
+
+  /// function name: [getControlWeightHistory]
+  ///
+  /// purpose: fetch every recorded weight change across all Controls under
+  ///          one Policy, reconstructed from each Control's own revision
+  ///          history (see [ControlModel.toWeightHistory]). No dedicated
+  ///          Firestore log exists for this — it's derived on read.
+  ///
+  /// parameters:
+  ///            [String] moduleId: id of the parent GRC Module
+  ///            [String] policyId: id of the parent Policy
+  ///
+  /// return type: [Future<Either<Failure, List<ControlWeightHistoryEntry>>>] - every weight-change entry across the policy's controls, sorted by date descending, or a Failure
+  Future<Either<Failure, List<ControlWeightHistoryEntry>>> getControlWeightHistory({
     required String moduleId,
     required String policyId,
   });

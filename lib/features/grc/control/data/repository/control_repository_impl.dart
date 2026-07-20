@@ -20,6 +20,7 @@ import 'package:demo_app/core/network/failure_model.dart';
 import 'package:demo_app/features/grc/control/data/data_source/control_firebase_data_source.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_status.dart';
+import 'package:demo_app/features/grc/control/domain/entities/control_weight_history_entry.dart';
 import 'package:demo_app/features/grc/policy/data/data_source/policy_storage_data_source.dart';
 import 'package:demo_app/features/grc/control/data/models/control_model.dart';
 
@@ -159,6 +160,34 @@ class ControlRepositoryImpl implements ControlRepository {
         policyId: policyId,
       );
       return Right(models.map((m) => m.toEntity()).toList());
+    } catch (e) {
+      return Left(FirebaseFailure(e.toString()));
+    }
+  }
+
+  /// function name: [getControlWeightHistory]
+  ///
+  /// purpose: fetch every Control's full revision history for
+  ///          [moduleId]/[policyId] and flat-map
+  ///          [ControlModel.toWeightHistory] across all of them, sorted by
+  ///          date descending (most recent change first).
+  ///
+  /// parameters: see [ControlRepository.getControlWeightHistory]
+  ///
+  /// return type: [Future<Either<Failure, List<ControlWeightHistoryEntry>>>] - see [ControlRepository.getControlWeightHistory]
+  @override
+  Future<Either<Failure, List<ControlWeightHistoryEntry>>> getControlWeightHistory({
+    required String moduleId,
+    required String policyId,
+  }) async {
+    try {
+      final models = await _firebaseDataSource.getAll(
+        moduleId: moduleId,
+        policyId: policyId,
+      );
+      final entries = models.expand((m) => m.toWeightHistory()).toList()
+        ..sort((a, b) => b.dateOfAction.compareTo(a.dateOfAction));
+      return Right(entries);
     } catch (e) {
       return Left(FirebaseFailure(e.toString()));
     }
