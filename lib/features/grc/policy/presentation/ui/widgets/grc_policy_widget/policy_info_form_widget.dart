@@ -143,6 +143,7 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
     int? maxLength,
     bool showCharCount = false,
     bool isMandatory = false,
+    bool onlyDigits = false,
     String? englishOnlyError,
     String? arabicOnlyError,
     String? customError,
@@ -158,6 +159,7 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
       autoCapitalize: true,
       required: true,
       submitted: isMandatory && widget.submitted,
+      onlyDigits: onlyDigits,
       errorText: customError ?? languageError,
       maxLines: maxLines,
       minLines: minLines,
@@ -196,10 +198,6 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
   Widget build(BuildContext context) {
     final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
 
-    final today = DateTime.now();
-    final startOfToday = DateTime(today.year, today.month, today.day);
-    final startBeforeToday =
-        widget.startDate != null && widget.startDate!.isBefore(startOfToday);
     final endBeforeStart = widget.endDate != null &&
         widget.startDate != null &&
         widget.endDate!.isBefore(widget.startDate!);
@@ -241,6 +239,7 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
                   hint: 'Text here',
                   controller: widget.numberController,
                   isMandatory: true,
+                  onlyDigits: true,
                   englishOnlyError: 'Policy Number must be written in English',
                 ),
         ),
@@ -252,6 +251,7 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
               hint: 'Text here',
               controller: widget.numberController,
               isMandatory: true,
+              onlyDigits: true,
               englishOnlyError: 'Policy Number must be written in English',
             ),
             _textField(
@@ -305,15 +305,12 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
             hintStyle: StyleText.fontSize14Weight500
                 .copyWith(color: AppColors.secondaryText.withOpacity(.7)),
             required: false,
-            firstDate: startOfToday,
             dateFormatter: (d) => DateFormat('d MMM yyyy').format(d),
             errorText: !widget.submitted
                 ? null
                 : widget.startDate == null
                     ? 'This field is required.'
-                    : startBeforeToday
-                        ? 'Start date cannot be before today.'
-                        : null,
+                    : null,
           ),
           CustomDropdownCalendar(
             borderRadius: BorderRadius.circular(4.r),
@@ -327,7 +324,7 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
             hintStyle: StyleText.fontSize14Weight500
                 .copyWith(color: AppColors.secondaryText.withOpacity(.7)),
             required: false,
-            firstDate: widget.startDate ?? startOfToday,
+            firstDate: widget.startDate,
             dateFormatter: (d) => DateFormat('d MMM yyyy').format(d),
             errorText: !widget.submitted
                 ? null
