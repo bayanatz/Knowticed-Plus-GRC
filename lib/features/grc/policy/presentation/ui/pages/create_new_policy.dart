@@ -396,6 +396,7 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
               status: status,
               controlsDocumentFileEn: c.documentEn?.file,
               controlsDocumentFileAr: c.documentAr?.file,
+              existingControlId: c.existingControlId,
             ))
         .toList();
   }
@@ -437,6 +438,10 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
       );
 
   void _onSaveForLater(PolicyCubit cubit) {
+    if (widget.existingPolicy != null) {
+      _updateExisting(cubit, status: PolicyStatus.draft);
+      return;
+    }
     cubit.saveAsDraft(
       policyNameEn: _nameController.text.trim(),
       policyNameAr: _nameArController.text.trim(),
@@ -474,6 +479,10 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
       );
       return;
     }
+    if (widget.existingPolicy != null) {
+      _updateExisting(cubit, status: PolicyStatus.active);
+      return;
+    }
     cubit.createPolicy(
       policyNameEn: _nameController.text.trim(),
       policyNameAr: _nameArController.text.trim(),
@@ -489,6 +498,50 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
       imageFile: _imageFile,
       policyDocumentFileEn: _documentEn?.file,
       policyDocumentFileAr: _documentAr?.file,
+    );
+  }
+
+  /// function name: [_updateExisting]
+  ///
+  /// purpose: Save For Later/Publish path when resuming a Draft — updates
+  ///          [widget.existingPolicy] and its Controls in place via
+  ///          [PolicyCubit.updatePolicyWithControls] instead of creating a
+  ///          new Policy. [status] decides whether the Policy (and every
+  ///          touched control) ends up Draft again or Active.
+  ///
+  /// parameters:
+  ///            [PolicyCubit] cubit: the cubit instance from the BlocProvider
+  ///            [PolicyStatus] status: the status to persist
+  ///
+  /// return type: [void]
+  void _updateExisting(PolicyCubit cubit, {required PolicyStatus status}) {
+    final controlStatus =
+        status == PolicyStatus.active ? ControlStatus.active : ControlStatus.draft;
+    final currentIds = _touchedControls
+        .map((c) => c.existingControlId)
+        .whereType<String>()
+        .toSet();
+    cubit.updatePolicyWithControls(
+      id: widget.existingPolicy!.id,
+      moduleId: widget.moduleId,
+      status: status,
+      policyNameEn: _nameController.text.trim(),
+      policyNameAr: _nameArController.text.trim(),
+      policyNumberEn: _numberController.text.trim(),
+      policyNumberAr: _numberArController.text.trim(),
+      policyDescriptionEn: _descriptionController.text.trim(),
+      policyDescriptionAr: _descriptionArController.text.trim(),
+      startDate: _startDate ?? DateTime.now(),
+      endDate: _endDate ?? DateTime.now(),
+      policyWeight: double.tryParse(_weightController.text.trim()) ?? 0,
+      controls: _buildPendingControls(controlStatus),
+      removedControlIds: _originalControlIds.difference(currentIds).toList(),
+      imageFile: _imageFile,
+      imageUrl: _imageFile == null ? _imageUrl : null,
+      policyDocumentFileEn: _documentEn?.file,
+      policyDocumentUrlEn: _documentEn?.file == null ? _documentEn?.url : null,
+      policyDocumentFileAr: _documentAr?.file,
+      policyDocumentUrlAr: _documentAr?.file == null ? _documentAr?.url : null,
     );
   }
 
