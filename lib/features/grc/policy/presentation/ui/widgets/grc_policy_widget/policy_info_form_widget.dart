@@ -182,6 +182,7 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
       controller: controller,
       autoCapitalize: true,
       required: true,
+      readOnly: widget.readOnly,
       submitted: isMandatory && widget.submitted,
       onlyDigits: onlyDigits,
       errorText: customError ?? languageError,
@@ -391,6 +392,7 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
             hint: 'Select Start Date',
             value: widget.startDate,
             onChanged: widget.onStartDateChanged,
+            enabled: !widget.readOnly,
             fillColor: AppColors.background,
             labelStyle:
                 StyleText.fontSize16Weight500.copyWith(color: AppColors.text),
@@ -410,6 +412,7 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
             hint: 'Select End Date',
             value: widget.endDate,
             onChanged: widget.onEndDateChanged,
+            enabled: !widget.readOnly,
             fillColor: AppColors.background,
             labelStyle:
                 StyleText.fontSize16Weight500.copyWith(color: AppColors.text),
