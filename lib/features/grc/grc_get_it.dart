@@ -38,6 +38,7 @@ import 'package:demo_app/features/grc/control/domain/use_cases/get_control_useca
 import 'package:demo_app/features/grc/control/domain/use_cases/get_control_weight_history_use_case.dart';
 import 'package:demo_app/features/grc/control_champion/domain/use_cases/get_champion_usecases.dart';
 import 'package:demo_app/features/grc/control_owner/domain/use_cases/get_owner_usecases.dart';
+import 'package:demo_app/features/grc/control_owner/domain/use_cases/get_control_owner_history_use_case.dart';
 import 'package:demo_app/features/grc/module/domain/use_cases/get_grc_module_use_case.dart';
 import 'package:demo_app/features/grc/module/domain/use_cases/get_grc_module_owner_history_use_case.dart';
 import 'package:demo_app/features/grc/policy/domain/use_cases/get_policy_usecases.dart';
@@ -54,6 +55,7 @@ import 'package:demo_app/features/grc/control/presentation/ui/pages/control_weig
 import 'package:demo_app/features/grc/control/presentation/ui/pages/control_weight_issue/control_weight_issue_cubit.dart';
 import 'package:demo_app/features/grc/control_champion/presentation/controller/champion_cubit.dart';
 import 'package:demo_app/features/grc/control_owner/presentation/controller/owner_cubit.dart';
+import 'package:demo_app/features/grc/control_owner/presentation/controller/control_previous_owners_cubit.dart';
 import 'package:demo_app/features/grc/policy/presentation/controller/policy_cubit.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/pages/policy_weight_issue/policy_weight_history_cubit.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/pages/policy_weight_issue/policy_weight_issue_cubit.dart';
@@ -344,6 +346,12 @@ void setupGRCDependencies(GetIt sl) {
     () => UpdateOwnerUseCase(sl<OwnerRepository>()),
   );
 
+  /// class name: [GetControlOwnerHistoryUseCase]
+  /// purpose: business logic for fetching a single Control's Owner-assignment history.
+  sl.registerLazySingleton<GetControlOwnerHistoryUseCase>(
+    () => GetControlOwnerHistoryUseCase(sl<OwnerRepository>()),
+  );
+
   // ─── 4. Cubit (Presentation) ────────────────────────────────────────────────
 
   /// class name: [GRCModuleCubit]
@@ -455,6 +463,15 @@ void setupGRCDependencies(GetIt sl) {
       getOwnerUseCase: sl<GetOwnerUseCase>(),
       getAllOwnersUseCase: sl<GetAllOwnersUseCase>(),
       updateOwnerUseCase: sl<UpdateOwnerUseCase>(),
+    ),
+  );
+
+  /// class name: [ControlPreviousOwnersCubit]
+  /// purpose: presentation-layer state manager for the previous control owners page.
+  /// Registered as a factory so each page gets an independent cubit instance.
+  sl.registerFactory<ControlPreviousOwnersCubit>(
+    () => ControlPreviousOwnersCubit(
+      getOwnerHistoryUseCase: sl<GetControlOwnerHistoryUseCase>(),
     ),
   );
 }

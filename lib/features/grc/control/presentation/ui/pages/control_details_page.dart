@@ -30,6 +30,7 @@ import 'package:demo_app/features/grc/control/domain/entities/control_entity.dar
 import 'package:demo_app/features/grc/control/presentation/ui/pages/add_edit_control_page.dart';
 import 'package:demo_app/features/grc/control_owner/domain/entities/owner_entity.dart';
 import 'package:demo_app/features/grc/control_owner/presentation/controller/owner_cubit.dart';
+import 'package:demo_app/features/grc/control_owner/presentation/ui/pages/control_previous_owners_page.dart';
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details_widget/grc_action_buttons.dart';
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
@@ -312,6 +313,22 @@ class _ControlDetailsBodyState extends State<_ControlDetailsBody> {
     );
   }
 
+  void _openPreviousControlOwners() {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) => ControlPreviousOwnersPage(
+          module: widget.module,
+          policy: widget.policy,
+          control: _control,
+        ),
+        transitionsBuilder: (_, animation, __, child) =>
+            FadeTransition(opacity: animation, child: child),
+        transitionDuration: const Duration(milliseconds: 300),
+      ),
+    );
+  }
+
   Widget _buildScoreAndPreviousOwnersRow() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -339,7 +356,7 @@ class _ControlDetailsBodyState extends State<_ControlDetailsBody> {
         ),
         customButton(
           title: 'Previous Control Owners'.tr,
-          function: () {},
+          function: _openPreviousControlOwners,
           height: 38.h,
           color: AppColors.primary,
           textStyle: StyleText.fontSize14Weight500
