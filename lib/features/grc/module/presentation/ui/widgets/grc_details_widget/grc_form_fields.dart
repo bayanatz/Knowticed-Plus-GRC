@@ -121,6 +121,7 @@ class _GrcFormFieldsState extends State<GrcFormFields> {
       label: 'GRC Module Name',
       hint: 'Text here',
       controller: nameEnController,
+      autoCapitalize: true,
       errorText: submitted && nameEnController.text.trim().isEmpty
           ? "GRC Module Name is required"
           : containsArabicLetters(nameEnController.text)
@@ -190,10 +191,10 @@ class _GrcFormFieldsState extends State<GrcFormFields> {
       required: false,
     );
 
-    final today = DateTime.now();
-    final startOfToday = DateTime(today.year, today.month, today.day);
-    final isPastDate =
-        activationDate != null && activationDate.isBefore(startOfToday);
+    // final today = DateTime.now();
+    // final startOfToday = DateTime(today.year, today.month, today.day);
+    // final isPastDate =
+    //     activationDate != null && activationDate.isBefore(startOfToday);
 
     final activationDateField = CustomDropdownCalendar(
       borderRadius: BorderRadius.circular(4.r),
@@ -203,18 +204,14 @@ class _GrcFormFieldsState extends State<GrcFormFields> {
       onChanged: onDateChanged,
       enabled: !readOnly,
       fillColor: AppColors.background,
-      firstDate: startOfToday,
+      // firstDate: startOfToday,
       dateFormatter: (d) =>
           DateFormat('d MMM yyyy', context.isArabic ? 'ar' : 'en').format(d),
       errorText: !submitted
           ? null
           : activationDate == null
               ? requiredError
-              : isPastDate
-                  ? (context.isArabic
-                      ? 'لا يمكن أن يكون تاريخ التفعيل قبل اليوم'
-                      : 'Activation date cannot be before today')
-                  : null,
+              : null,
       labelStyle: StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
       hintStyle: StyleText.fontSize14Weight500
           .copyWith(color: AppColors.secondaryText.withOpacity(.7)),
@@ -256,6 +253,7 @@ class _GrcFormFieldsState extends State<GrcFormFields> {
           child: CustomTextField(
             label: 'Description',
             hint: 'Text here',
+            autoCapitalize: true,
             controller: descEnController,
             errorText: submitted && descEnController.text.trim().isEmpty
                 ? "Description is required"

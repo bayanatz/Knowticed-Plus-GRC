@@ -52,6 +52,7 @@ class PolicyHeaderWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CustomImagePicker(
           radius: 30.r,

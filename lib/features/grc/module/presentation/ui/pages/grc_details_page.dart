@@ -6,6 +6,7 @@
 /// Dependencies: flutter_bloc, GRCModuleCubit, GRCModuleEntity, get_it
 /// Revision History: 2026-06-28 - Initial creation
 ///                    2026-06-30 - Connected to GRCModuleCubit (Mohamed Magdy Abdelkhalek)
+///                    2026-07-21 - Auto-activate status only on activation-date change (Mohamed Magdy Abdelkhalek)
 library;
 
 /// ************************* FILE INFO *************************** ///
@@ -136,8 +137,7 @@ class _GovernanceRiskAndComplianceDetailsState
 
   bool _validate() {
     setState(() => _submitted = true);
-    final today = DateTime.now();
-    final startOfToday = DateTime(today.year, today.month, today.day);
+
     return _nameEnController.text.trim().isNotEmpty &&
         _nameArController.text.trim().isNotEmpty &&
         _descEnController.text.trim().isNotEmpty &&
@@ -147,8 +147,7 @@ class _GovernanceRiskAndComplianceDetailsState
         !containsArabicLetters(_descEnController.text) &&
         !containsEnglishLetters(_descArController.text) &&
         _selectedDepartment != null &&
-        _activationDate != null &&
-        !_activationDate!.isBefore(startOfToday);
+        _activationDate != null;
   }
 
   // ── Cubit action helpers ──────────────────────────────────────────────────
@@ -262,6 +261,33 @@ class _GovernanceRiskAndComplianceDetailsState
 
   _PendingAction _pendingAction = _PendingAction.none;
 
+  /// Called ONLY when the user changes the activation date.
+  /// If the new date is today OR in the future, auto-flip status to Active.
+  /// Does not run on submit / status toggle — keeps the two concerns separate.
+  void _onActivationDateChanged(DateTime? newDate) {
+    setState(() {
+      _activationDate = newDate;
+
+      if (newDate != null && !_isBeforeToday(newDate)) {
+        _statusValue = true;
+      }
+    });
+  }
+
+  /// Called ONLY when the user manually toggles the status switch.
+  /// Never re-checks the activation date — a manual choice always wins,
+  /// even if today happens to be the activation date.
+  void _onStatusChanged(bool newValue) {
+    setState(() => _statusValue = newValue);
+  }
+
+  bool _isBeforeToday(DateTime date) {
+    final today = DateTime.now();
+    final d = DateTime(date.year, date.month, date.day);
+    final t = DateTime(today.year, today.month, today.day);
+    return d.isBefore(t);
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -313,9 +339,7 @@ class _GovernanceRiskAndComplianceDetailsState
                                 subtitle:
                                     "Are You Sure You Want To Change The Status Of This Module ?"
                                         .tr,
-                                onConfirm: () {
-                                  setState(() => _statusValue = v);
-                                });
+                                onConfirm: () => _onStatusChanged(v));
                           },
                         ),
                       Expanded(
@@ -352,14 +376,13 @@ class _GovernanceRiskAndComplianceDetailsState
                                     descArController: _descArController,
                                     selectedDepartment: _selectedDepartment,
                                     activationDate: _activationDate,
+                                    onDateChanged: _onActivationDateChanged,
                                     submitted: _submitted,
                                     readOnly:
                                         _currentMode == GrcPageMode.view ||
                                             _currentMode == GrcPageMode.restore,
                                     onDepartmentChanged: (v) =>
                                         setState(() => _selectedDepartment = v),
-                                    onDateChanged: (v) =>
-                                        setState(() => _activationDate = v),
                                   ),
                                   SizedBox(height: 20.h),
                                   GrcOwnerSection(

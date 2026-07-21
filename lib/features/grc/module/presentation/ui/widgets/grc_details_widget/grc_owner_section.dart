@@ -27,6 +27,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:get/get_utils/src/extensions/string_extensions.dart';
 
 /// class name: [GrcOwnerSection]
 ///
@@ -110,8 +111,8 @@ class _GrcOwnerSectionState extends State<GrcOwnerSection> {
   void didUpdateWidget(covariant GrcOwnerSection oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.selectedDepartmentName != widget.selectedDepartmentName ||
-        !_listEquals(
-            oldWidget.selectedDepartmentNames, widget.selectedDepartmentNames)) {
+        !_listEquals(oldWidget.selectedDepartmentNames,
+            widget.selectedDepartmentNames)) {
       _cubit.filterByDepartments(
         widget.selectedDepartmentNames ??
             (widget.selectedDepartmentName == null
@@ -161,15 +162,17 @@ class _GrcOwnerSectionState extends State<GrcOwnerSection> {
               children: [
                 Expanded(
                   child: PersonChipCard(
-                    name: left.name,
+                    name: left.name.capitalize!,
                     subtitle1: left.department,
                     subtitle2: left.jobTitle,
                     avatar: _buildAvatar(left.photo),
                     isSelected: left.isSelected,
                     showCheckBox: !widget.isViewMode,
-                    trailing: (widget.showRemoveIconWhenSelected && left.isSelected)
-                        ? Icon(Icons.remove_circle, color: AppColors.red, size: 20.sp)
-                        : null,
+                    trailing:
+                        (widget.showRemoveIconWhenSelected && left.isSelected)
+                            ? Icon(Icons.remove_circle,
+                                color: AppColors.red, size: 20.sp)
+                            : null,
                     width: double.infinity,
                     backgroundColor: AppColors.background,
                     onTap: widget.isViewMode ? null : () => _onToggle(i * 2),
@@ -187,7 +190,8 @@ class _GrcOwnerSectionState extends State<GrcOwnerSection> {
                       showCheckBox: !widget.isViewMode,
                       trailing: (widget.showRemoveIconWhenSelected &&
                               owners[rightIdx].isSelected)
-                          ? Icon(Icons.remove_circle, color: AppColors.red, size: 20.sp)
+                          ? Icon(Icons.remove_circle,
+                              color: AppColors.red, size: 20.sp)
                           : null,
                       width: double.infinity,
                       backgroundColor: AppColors.background,

@@ -93,23 +93,38 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
         widget.descriptionArController,
       ];
 
+  List<TextEditingController> get _watchedControllers =>
+      [..._bilingualControllers, widget.weightController];
+
   @override
   void initState() {
     super.initState();
-    for (final c in _bilingualControllers) {
+    for (final c in _watchedControllers) {
       c.addListener(_onTextChanged);
     }
   }
 
   @override
   void dispose() {
-    for (final c in _bilingualControllers) {
+    for (final c in _watchedControllers) {
       c.removeListener(_onTextChanged);
     }
     super.dispose();
   }
 
   void _onTextChanged() => setState(() {});
+
+  /// Live validation for the Policy Weight field: must be a positive number
+  /// no greater than 100.
+  String? get _weightError {
+    final text = widget.weightController.text.trim();
+    if (text.isEmpty) return null;
+    final value = double.tryParse(text);
+    if (value == null) return 'Policy Weight must be a valid number';
+    if (value <= 0) return 'Policy Weight must be a positive number';
+    if (value > 100) return 'Policy Weight cannot be more than 100';
+    return null;
+  }
 
   TextStyle get _labelStyle =>
       AppTextStyles.font16BlackRegularCairo.copyWith(fontSize: 14.sp);
@@ -130,6 +145,7 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
     bool isMandatory = false,
     String? englishOnlyError,
     String? arabicOnlyError,
+    String? customError,
   }) {
     final languageError = rtl
         ? (containsEnglishLetters(controller.text) ? arabicOnlyError : null)
@@ -139,9 +155,10 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
       label: label,
       hint: hint,
       controller: controller,
+      autoCapitalize: true,
       required: true,
       submitted: isMandatory && widget.submitted,
-      errorText: languageError,
+      errorText: customError ?? languageError,
       maxLines: maxLines,
       minLines: minLines,
       maxLength: maxLength,
@@ -330,6 +347,7 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
                     hint: 'Text here',
                     controller: widget.weightController,
                     isMandatory: true,
+                    customError: _weightError,
                   ),
                 ),
                 SizedBox(width: 10.w),
@@ -340,6 +358,7 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
                 hint: 'Text here',
                 controller: widget.weightController,
                 isMandatory: true,
+                customError: _weightError,
               ),
         SizedBox(height: 15.h),
         Row(
@@ -367,7 +386,7 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
               ),
             ),
             SizedBox(width: 10.w),
-            if (widget.isArabicEnabled) ...[
+            if (widget.isArabicEnabled)
               Expanded(
                 child: Column(
                   spacing: 8.h,
@@ -388,11 +407,11 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
                           ),
                   ],
                 ),
-              ),
-            ],
+              )
+            else if (isTablet)
+              const Expanded(child: SizedBox()),
           ],
         ),
-        SizedBox(height: 30.h),
       ],
     );
   }
