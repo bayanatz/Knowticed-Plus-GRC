@@ -199,6 +199,8 @@ class _PolicyDetailsBodyState extends State<_PolicyDetailsBody> {
           policyId: widget.policyId,
           existingControl: existing,
           siblingControls: _controls,
+          policyStartDate: _policy!.startDate,
+          policyEndDate: _policy!.endDate,
         ),
         transitionsBuilder: (_, animation, __, child) =>
             FadeTransition(opacity: animation, child: child),

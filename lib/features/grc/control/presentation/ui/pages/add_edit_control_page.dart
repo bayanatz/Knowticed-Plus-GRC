@@ -68,12 +68,16 @@ class AddEditControlPage extends StatefulWidget {
   final String policyId;
   final List<ControlEntity> siblingControls;
   final ControlEntity? existingControl;
+  final DateTime policyStartDate;
+  final DateTime policyEndDate;
 
   const AddEditControlPage({
     super.key,
     required this.moduleId,
     required this.policyId,
     required this.siblingControls,
+    required this.policyStartDate,
+    required this.policyEndDate,
     this.existingControl,
   });
 
