@@ -37,17 +37,36 @@ bool controlIsTouched(PolicyControlModel control) {
       control.documentAr != null;
 }
 
+/// function name: [controlArabicTouched]
+///
+/// purpose: true if the user has entered something into any of [control]'s
+///          Arabic fields (Name/Number/Description AR). Turning the
+///          policy's Arabic toggle on doesn't by itself make this
+///          control's Arabic fields required — only starting to fill one
+///          of them in does.
+///
+/// parameters:
+///            [PolicyControlModel] control: the control to inspect
+///
+/// return type: [bool]
+bool controlArabicTouched(PolicyControlModel control) {
+  return control.nameArController.text.trim().isNotEmpty ||
+      control.numberArController.text.trim().isNotEmpty ||
+      control.descriptionArController.text.trim().isNotEmpty;
+}
+
 /// function name: [controlIsComplete]
 ///
 /// purpose: true if [control]'s required fields are all filled: Name,
 ///          Number, Description (English always; Arabic too when
-///          [isArabicEnabled]), and Weight. Start Date, End Date, and
-///          Frequency stay optional even for a touched control.
+///          [isArabicEnabled] and [controlArabicTouched]), and Weight.
+///          Start Date, End Date, and Frequency stay optional even for a
+///          touched control.
 ///
 /// parameters:
 ///            [PolicyControlModel] control: the control to inspect
 ///            [bool] isArabicEnabled: whether the policy's Arabic fields
-///            are required for this control too
+///            can be required for this control too
 ///
 /// return type: [bool]
 bool controlIsComplete(PolicyControlModel control,
@@ -57,6 +76,7 @@ bool controlIsComplete(PolicyControlModel control,
       control.descriptionController.text.trim().isNotEmpty &&
       control.weightController.text.trim().isNotEmpty &&
       (!isArabicEnabled ||
+          !controlArabicTouched(control) ||
           (control.nameArController.text.trim().isNotEmpty &&
               control.numberArController.text.trim().isNotEmpty &&
               control.descriptionArController.text.trim().isNotEmpty));

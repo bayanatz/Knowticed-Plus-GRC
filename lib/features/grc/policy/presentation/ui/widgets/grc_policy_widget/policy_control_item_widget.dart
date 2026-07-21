@@ -257,7 +257,7 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
                     hint: 'اكتب هنا',
                     controller: control.nameArController,
                     rtl: true,
-                    isMandatory: true,
+                    isMandatory: controlArabicTouched(control),
                     arabicOnlyError: 'يجب كتابة اسم ضابط باللغة العربية',
                   )
                 : _textField(
@@ -287,7 +287,7 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
                 hint: 'اكتب هنا',
                 controller: control.numberArController,
                 rtl: true,
-                isMandatory: true,
+                isMandatory: controlArabicTouched(control),
                 arabicOnlyError: 'يجب كتابة رقم ضابط باللغة العربية',
               ),
             ),
@@ -315,11 +315,23 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
               minLines: 3,
               maxLength: 500,
               showCharCount: true,
-              isMandatory: true,
+              isMandatory: controlArabicTouched(control),
               arabicOnlyError: 'يجب كتابة وصف ضابط باللغة العربية',
             ),
             SizedBox(height: 15.h),
           ],
+          isTablet
+              ? Row(children: [
+                  Expanded(child: frequencyField),
+                  SizedBox(width: 10.w),
+                  Expanded(child: weightField),
+                ])
+              : Column(children: [
+                  frequencyField,
+                  SizedBox(height: 15.h),
+                  weightField,
+                ]),
+          SizedBox(height: 15.h),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 10.w,
@@ -372,18 +384,6 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
               ),
             ],
           ),
-          SizedBox(height: 15.h),
-          isTablet
-              ? Row(children: [
-                  Expanded(child: frequencyField),
-                  SizedBox(width: 10.w),
-                  Expanded(child: weightField),
-                ])
-              : Column(children: [
-                  frequencyField,
-                  SizedBox(height: 15.h),
-                  weightField,
-                ]),
         ],
       ),
     );
