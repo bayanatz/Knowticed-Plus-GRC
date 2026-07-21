@@ -32,9 +32,12 @@ import 'package:get/get_utils/src/extensions/internacionalization.dart';
 ///
 /// created at: 18/7/2026
 class GrcOwnerBadge extends StatefulWidget {
-  /// Emails of owners already assigned to the module. Only the first
-  /// matched owner is displayed.
+  /// Emails of owners already assigned to the module (or Control — see
+  /// [label]). Only the first matched owner is displayed.
   final List<String> ownerEmails;
+
+  /// Leading label text, e.g. "Module Owner:" or "Control Owner:".
+  final String label;
 
   /// Called with the displayed owner when the "Message" button is tapped.
   final void Function(OwnerData owner)? onMessageTap;
@@ -42,6 +45,7 @@ class GrcOwnerBadge extends StatefulWidget {
   const GrcOwnerBadge({
     super.key,
     this.ownerEmails = const [],
+    this.label = 'Module Owner:',
     this.onMessageTap,
   });
 
@@ -89,7 +93,7 @@ class _GrcOwnerBadgeState extends State<GrcOwnerBadge> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Module Owner:'.tr,
+                widget.label.tr,
                 style: AppTextStyles.font16BlackRegularCairo.copyWith(
                   fontSize: 14.sp,
                   color: AppColors.secondaryText,
