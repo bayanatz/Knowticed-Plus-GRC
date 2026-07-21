@@ -18,6 +18,7 @@ import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_status.dart';
+import 'package:demo_app/features/grc/control/presentation/ui/pages/control_details_page.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/control_weight_issue/control_weight_issue_page.dart';
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details_widget/grc_owner_section.dart';
@@ -51,6 +52,7 @@ class PolicyViewModeWidget extends StatefulWidget {
   final DateFormat dateFormat;
   final ValueChanged<ControlEntity?> onControlTap;
   final VoidCallback onBulkUpload;
+  final VoidCallback onControlsChanged;
 
   const PolicyViewModeWidget({
     super.key,
@@ -61,6 +63,7 @@ class PolicyViewModeWidget extends StatefulWidget {
     required this.dateFormat,
     required this.onControlTap,
     required this.onBulkUpload,
+    required this.onControlsChanged,
   });
 
   @override
@@ -389,6 +392,24 @@ class _PolicyViewModeWidgetState extends State<PolicyViewModeWidget> {
     );
   }
 
+  Future<void> _openControlDetails(ControlEntity control) async {
+    await Navigator.push<bool>(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) => ControlDetailsPage(
+          module: widget.module,
+          policy: widget.policy,
+          control: control,
+          siblingControls: widget.controls,
+        ),
+        transitionsBuilder: (_, animation, __, child) =>
+            FadeTransition(opacity: animation, child: child),
+        transitionDuration: const Duration(milliseconds: 300),
+      ),
+    );
+    widget.onControlsChanged();
+  }
+
   /// Renders the visible controls as a single column on phones, and as a
   /// 2-column grid on tablets/desktop — matching the design mock.
   Widget _buildControlsList(List<ControlEntity> controls) {
@@ -414,7 +435,7 @@ class _PolicyViewModeWidgetState extends State<PolicyViewModeWidget> {
         separatorBuilder: (_, __) => SizedBox(height: 10.h),
         itemBuilder: (_, index) => ControlCardWidget(
           control: controls[index],
-          onTap: () => widget.onControlTap(controls[index]),
+          onTap: () => _openControlDetails(controls[index]),
         ),
       );
     }
@@ -430,7 +451,7 @@ class _PolicyViewModeWidgetState extends State<PolicyViewModeWidget> {
                 Expanded(
                   child: ControlCardWidget(
                     control: controls[i],
-                    onTap: () => widget.onControlTap(controls[i]),
+                    onTap: () => _openControlDetails(controls[i]),
                   ),
                 ),
                 SizedBox(width: 10.w),
@@ -438,7 +459,7 @@ class _PolicyViewModeWidgetState extends State<PolicyViewModeWidget> {
                   child: i + 1 < controls.length
                       ? ControlCardWidget(
                           control: controls[i + 1],
-                          onTap: () => widget.onControlTap(controls[i + 1]),
+                          onTap: () => _openControlDetails(controls[i + 1]),
                         )
                       : const SizedBox.shrink(),
                 ),

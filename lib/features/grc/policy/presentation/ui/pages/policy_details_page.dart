@@ -282,6 +282,12 @@ class _PolicyDetailsBodyState extends State<_PolicyDetailsBody> {
                               onControlTap: (existing) =>
                                   _openAddEditControl(existing: existing),
                               onBulkUpload: _onBulkUploadControls,
+                              onControlsChanged: () => context
+                                  .read<PolicyCubit>()
+                                  .getAllControls(
+                                    moduleId: widget.moduleId,
+                                    policyId: widget.policyId,
+                                  ),
                             ),
                           ),
                         ),
