@@ -390,8 +390,14 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
               frequency: c.frequency ?? '',
               startDate: c.startDate ?? _startDate ?? DateTime.now(),
               endDate: c.endDate ?? _endDate ?? DateTime.now(),
+              // equalWeights: true (not false) — this wizard never lets the
+              // user assign per-department weights, so departments is
+              // always []. ControlModel.create asserts that
+              // departmentWeights is non-null whenever equalWeights is
+              // false; equalWeights: true skips that requirement and
+              // DepartmentWeight.equalSplit([]) safely returns [].
               departments: const [],
-              equalWeights: false,
+              equalWeights: true,
               score: 0,
               status: status,
               controlsDocumentFileEn: c.documentEn?.file,
