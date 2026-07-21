@@ -20,7 +20,6 @@ library;
 
 import 'package:demo_app/core/custom/1-custom_dropdwon.dart';
 import 'package:demo_app/core/custom/2-custom_textfield.dart';
-import 'package:demo_app/core/custom/3-custom_dropdwon_calander.dart';
 import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';
@@ -129,6 +128,7 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
     int? maxLength,
     bool showCharCount = false,
     bool isMandatory = false,
+    bool onlyDigits = false,
     String? englishOnlyError,
     String? arabicOnlyError,
   }) {
@@ -142,6 +142,7 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
       controller: controller,
       required: true,
       submitted: isMandatory && _showRequiredErrors,
+      onlyDigits: onlyDigits,
       errorText: languageError,
       maxLines: maxLines,
       minLines: minLines,
@@ -158,19 +159,6 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
 
     if (!rtl) return field;
     return Directionality(textDirection: TextDirection.rtl, child: field);
-  }
-
-  String? _controlDateError(DateTime? date) {
-    if (date == null) return null;
-    final policyStart = widget.policyStartDate;
-    final policyEnd = widget.policyEndDate;
-    if (policyStart != null && date.isBefore(policyStart)) {
-      return 'Date must be within the policy date range.';
-    }
-    if (policyEnd != null && date.isAfter(policyEnd)) {
-      return 'Date must be within the policy date range.';
-    }
-    return null;
   }
 
   Widget _documentButton({required VoidCallback onTap, required String title}) {
@@ -232,42 +220,7 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
       hint: 'Text Here',
       controller: control.weightController,
       isMandatory: true,
-    );
-
-    final startDateField = CustomDropdownCalendar(
-      borderRadius: BorderRadius.circular(4.r),
-      label: 'Start Date',
-      hint: 'Select Start Date',
-      value: control.startDate,
-      onChanged: widget.onStartDateChanged,
-      fillColor: AppColors.background,
-      labelStyle: StyleText.fontSize16Weight500.copyWith(color: AppColors.text),
-      hintStyle: StyleText.fontSize14Weight500
-          .copyWith(color: AppColors.secondaryText.withOpacity(.7)),
-      required: false,
-      firstDate: widget.policyStartDate,
-      lastDate: widget.policyEndDate,
-      errorText: _controlDateError(control.startDate),
-    );
-
-    final endDateField = CustomDropdownCalendar(
-      borderRadius: BorderRadius.circular(4.r),
-      label: 'End Date',
-      hint: 'Select End Date',
-      value: control.endDate,
-      onChanged: widget.onEndDateChanged,
-      fillColor: AppColors.background,
-      labelStyle: StyleText.fontSize16Weight500.copyWith(color: AppColors.text),
-      hintStyle: StyleText.fontSize14Weight500
-          .copyWith(color: AppColors.secondaryText.withOpacity(.7)),
-      required: false,
-      firstDate: control.startDate ?? widget.policyStartDate,
-      lastDate: widget.policyEndDate,
-      errorText: control.endDate != null &&
-              control.startDate != null &&
-              control.endDate!.isBefore(control.startDate!)
-          ? 'End date cannot be before start date.'
-          : _controlDateError(control.endDate),
+      onlyDigits: true,
     );
 
     return Container(
@@ -312,6 +265,7 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
                     hint: 'Text here',
                     controller: control.numberController,
                     isMandatory: true,
+                    onlyDigits: true,
                     englishOnlyError:
                         'Control Number must be written in English'.tr,
                   ),
@@ -324,6 +278,7 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
                 hint: 'Text here',
                 controller: control.numberController,
                 isMandatory: true,
+                onlyDigits: true,
                 englishOnlyError:
                     'Control Number must be written in English'.tr,
               ),
@@ -365,18 +320,6 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
             ),
             SizedBox(height: 15.h),
           ],
-          isTablet
-              ? Row(children: [
-                  Expanded(child: startDateField),
-                  SizedBox(width: 10.w),
-                  Expanded(child: endDateField),
-                ])
-              : Column(children: [
-                  startDateField,
-                  SizedBox(height: 15.h),
-                  endDateField,
-                ]),
-          SizedBox(height: 15.h),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 10.w,
