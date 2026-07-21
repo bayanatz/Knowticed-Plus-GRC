@@ -159,9 +159,8 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
     );
 
     if (!context.mounted) return;
-    bool? result;
     if (choice == 'add') {
-      result = await Navigator.push<bool>(
+      await Navigator.push<bool>(
         context,
         PageRouteBuilder(
           pageBuilder: (_, __, ___) => CreateNewPolicyPage(
@@ -175,7 +174,7 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
         ),
       );
     } else if (choice == 'bulk') {
-      result = await Navigator.push<bool>(
+      await Navigator.push<bool>(
         context,
         PageRouteBuilder(
           pageBuilder: (_, __, ___) =>
@@ -185,8 +184,10 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
           transitionDuration: const Duration(milliseconds: 300),
         ),
       );
+    } else {
+      return;
     }
-    if (result == true && context.mounted) {
+    if (context.mounted) {
       context
           .read<PolicyCubit>()
           .getAllPolicies(moduleId: widget.module.moduleId);
@@ -1021,20 +1022,37 @@ class _PolicyCard extends StatelessWidget {
     return ModuleInfoCard(
       width: double.infinity,
       onTap: () async {
-        final result = await Navigator.push<bool>(
-          context,
-          PageRouteBuilder(
-            pageBuilder: (_, __, ___) => PolicyDetailsPage(
-              policyId: policy.id,
-              moduleId: module.moduleId,
-              module: module,
+        if (policy.status == PolicyStatus.draft) {
+          await Navigator.push<bool>(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (_, __, ___) => CreateNewPolicyPage(
+                moduleId: module.moduleId,
+                moduleNameEn: module.moduleNameEn,
+                moduleNameAr: module.moduleNameAr,
+                existingPolicy: policy,
+              ),
+              transitionsBuilder: (_, animation, __, child) =>
+                  FadeTransition(opacity: animation, child: child),
+              transitionDuration: const Duration(milliseconds: 300),
             ),
-            transitionsBuilder: (_, animation, __, child) =>
-                FadeTransition(opacity: animation, child: child),
-            transitionDuration: const Duration(milliseconds: 300),
-          ),
-        );
-        if (result == true && context.mounted) {
+          );
+        } else {
+          await Navigator.push<bool>(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (_, __, ___) => PolicyDetailsPage(
+                policyId: policy.id,
+                moduleId: module.moduleId,
+                module: module,
+              ),
+              transitionsBuilder: (_, animation, __, child) =>
+                  FadeTransition(opacity: animation, child: child),
+              transitionDuration: const Duration(milliseconds: 300),
+            ),
+          );
+        }
+        if (context.mounted) {
           context.read<PolicyCubit>().getAllPolicies(moduleId: module.moduleId);
         }
       },
