@@ -17,6 +17,8 @@ library;
 /// Author: Mohamed Magdy Abdelkhalek
 /// Created At: 1/7/2026
 
+import 'dart:io';
+
 import 'package:demo_app/core/custom/2-custom_textfield.dart';
 import 'package:demo_app/core/custom/3-custom_dropdwon_calander.dart';
 import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
@@ -40,6 +42,11 @@ class PolicyInfoFormWidget extends StatefulWidget {
   /// action is a no-op, so an empty document should show nothing instead
   /// of an "Upload" button that looks actionable but isn't.
   final bool readOnly;
+
+  /// The policy's picked image, shown read-only above the form when set.
+  /// [imageFile] takes priority over [imageUrl] (mirrors CustomImagePicker).
+  final File? imageFile;
+  final String? imageUrl;
 
   final TextEditingController nameController;
   final TextEditingController nameArController;
@@ -83,6 +90,8 @@ class PolicyInfoFormWidget extends StatefulWidget {
     required this.onRemoveDocumentAr,
     this.documentEn,
     this.documentAr,
+    this.imageFile,
+    this.imageUrl,
   });
 
   @override
@@ -251,6 +260,27 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
     );
   }
 
+  /// function name: [_readOnlyImage]
+  ///
+  /// purpose: read-only preview of [PolicyInfoFormWidget.imageFile]/
+  ///          [PolicyInfoFormWidget.imageUrl] — the same File/URL priority
+  ///          [CustomImagePicker] uses, minus its edit badge, since this is
+  ///          only ever passed in from the Preview step. Only called when
+  ///          one of the two is present.
+  ///
+  /// parameters: none
+  ///
+  /// return type: [Widget]
+  Widget _readOnlyImage() {
+    return CircleAvatar(
+      radius: 30.r,
+      backgroundColor: AppColors.grey,
+      backgroundImage: widget.imageFile != null
+          ? FileImage(widget.imageFile!.absolute) as ImageProvider
+          : NetworkImage(widget.imageUrl!),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
@@ -274,6 +304,11 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (widget.imageFile != null ||
+            (widget.imageUrl != null && widget.imageUrl!.isNotEmpty)) ...[
+          _readOnlyImage(),
+          SizedBox(height: 16.h),
+        ],
         twoColumns(
           _textField(
             label: 'Policy Name',
