@@ -11,6 +11,7 @@
 library;
 
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
+import 'package:demo_app/features/grc/control/domain/entities/control_status.dart';
 import 'package:demo_app/features/grc/control/domain/use_cases/get_control_usecases.dart';
 import 'package:demo_app/features/grc/control/domain/use_cases/update_control_usecase.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/control_weight_issue/control_weight_issue_row.dart';
@@ -22,11 +23,12 @@ part 'control_weight_issue_state.dart';
 /// class name: [ControlWeightIssueCubit]
 ///
 /// purpose: manage all state for the Control Weight Issue page: fetching
-///          the Controls under one Policy (no status filter — every
-///          Control counts toward this Policy's total, matching the
-///          existing `_hasControlWeightIssue` check this page's entry
-///          button uses), editing their weights in memory, and persisting
-///          the changed rows via [UpdateControlUseCase] on Apply Changes.
+///          the Controls under one Policy (excluding Draft — only Active,
+///          Scheduled, and Unassigned controls count toward this Policy's
+///          total, matching the existing `_hasControlWeightIssue` check
+///          this page's entry button uses), editing their weights in
+///          memory, and persisting the changed rows via
+///          [UpdateControlUseCase] on Apply Changes.
 ///
 /// authors: Mohamed Magdy Abdelkhalek
 ///
@@ -68,8 +70,10 @@ class ControlWeightIssueCubit extends Cubit<ControlWeightIssueState> {
 
   /// function name: [load]
   ///
-  /// purpose: fetch every Control under [moduleId]/[policyId] and build
-  ///          fresh row data. Disposes any previously held row data first.
+  /// purpose: fetch every non-Draft Control under [moduleId]/[policyId]
+  ///          and build fresh row data. Draft controls haven't been
+  ///          published yet, so they don't count toward this Policy's
+  ///          weight total. Disposes any previously held row data first.
   ///
   /// parameters:
   ///            [String] moduleId: id of the parent GRC Module
@@ -89,9 +93,12 @@ class ControlWeightIssueCubit extends Cubit<ControlWeightIssueState> {
     }, (controls) => controls);
     if (controls == null) return;
 
+    final counted =
+        controls.where((c) => c.status != ControlStatus.draft).toList();
+
     _rowsData?.dispose();
     _rowsData = ControlWeightIssueRows(
-      controls.map(ControlWeightIssueRow.fromControl).toList(),
+      counted.map(ControlWeightIssueRow.fromControl).toList(),
     );
     emit(ControlWeightIssueLoaded(isEditing: false));
   }

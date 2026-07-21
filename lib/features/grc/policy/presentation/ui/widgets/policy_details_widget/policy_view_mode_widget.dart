@@ -18,6 +18,7 @@ import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_status.dart';
+import 'package:demo_app/features/grc/control/presentation/ui/pages/add_edit_control_page.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/control_details_page.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/control_weight_issue/control_weight_issue_page.dart';
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
@@ -174,17 +175,21 @@ class _PolicyViewModeWidgetState extends State<PolicyViewModeWidget> {
     ];
   }
 
-  /// Sum of every visible control's weight. Shown next to the "Control
-  /// Weight Issue" banner so an out-of-balance policy (controls that don't
-  /// add up to 100) is obvious at a glance.
+  /// Sum of every non-Draft control's weight — Draft controls haven't been
+  /// published yet, so they don't count toward the total. Shown next to
+  /// the "Control Weight Issue" banner so an out-of-balance policy
+  /// (controls that don't add up to 100) is obvious at a glance.
   ///
   /// NOTE: assumes [ControlEntity.controlWeight] exists, mirroring
   /// [PolicyEntity.policyWeight]. Adjust the field name if different.
-  double _totalControlWeight(List<ControlEntity> controls) =>
-      controls.fold<double>(0, (sum, c) => sum + c.controlsWeight);
+  double _totalControlWeight(List<ControlEntity> controls) => controls
+      .where((c) => c.status != ControlStatus.draft)
+      .fold<double>(0, (sum, c) => sum + c.controlsWeight);
 
-  bool _hasControlWeightIssue(List<ControlEntity> controls) =>
-      controls.isNotEmpty && _totalControlWeight(controls) != 100;
+  bool _hasControlWeightIssue(List<ControlEntity> controls) {
+    final counted = controls.where((c) => c.status != ControlStatus.draft);
+    return counted.isNotEmpty && _totalControlWeight(controls) != 100;
+  }
 
   /// Policy Number on the left, Last Edit date on the right — matches the
   /// top row of the "Policy Details" card in the design.
@@ -399,20 +404,39 @@ class _PolicyViewModeWidgetState extends State<PolicyViewModeWidget> {
   }
 
   Future<void> _openControlDetails(ControlEntity control) async {
-    await Navigator.push<bool>(
-      context,
-      PageRouteBuilder(
-        pageBuilder: (_, __, ___) => ControlDetailsPage(
-          module: widget.module,
-          policy: widget.policy,
-          control: control,
-          siblingControls: widget.controls,
+    if (control.status == ControlStatus.draft) {
+      await Navigator.push<bool>(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) => AddEditControlPage(
+            moduleId: widget.module.moduleId,
+            policyId: widget.policy.id,
+            existingControl: control,
+            siblingControls: widget.controls,
+            policyStartDate: widget.policy.startDate,
+            policyEndDate: widget.policy.endDate,
+          ),
+          transitionsBuilder: (_, animation, __, child) =>
+              FadeTransition(opacity: animation, child: child),
+          transitionDuration: const Duration(milliseconds: 300),
         ),
-        transitionsBuilder: (_, animation, __, child) =>
-            FadeTransition(opacity: animation, child: child),
-        transitionDuration: const Duration(milliseconds: 300),
-      ),
-    );
+      );
+    } else {
+      await Navigator.push<bool>(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) => ControlDetailsPage(
+            module: widget.module,
+            policy: widget.policy,
+            control: control,
+            siblingControls: widget.controls,
+          ),
+          transitionsBuilder: (_, animation, __, child) =>
+              FadeTransition(opacity: animation, child: child),
+          transitionDuration: const Duration(milliseconds: 300),
+        ),
+      );
+    }
     widget.onControlsChanged();
   }
 
