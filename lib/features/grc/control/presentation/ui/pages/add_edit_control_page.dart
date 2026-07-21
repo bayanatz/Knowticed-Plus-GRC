@@ -415,6 +415,60 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
   void _onRemoveDocumentEn() => setState(() => _documentEn = null);
   void _onRemoveDocumentAr() => setState(() => _documentAr = null);
 
+  /// Live validation for the Control Weight field: must be a positive
+  /// number no greater than 100, mirroring Policy Weight's own rule.
+  String? get _weightError {
+    final text = _weightController.text.trim();
+    if (text.isEmpty) return null;
+    final value = double.tryParse(text);
+    if (value == null) return 'Control Weight must be a valid number'.tr;
+    if (value <= 0) return 'Control Weight must be a positive number'.tr;
+    if (value > 100) return 'Control Weight cannot be more than 100'.tr;
+    return null;
+  }
+
+  /// Shared text field builder: shows a live English-only/Arabic-only
+  /// language-mismatch error, matching the same rule used elsewhere in
+  /// this feature (e.g. PolicyControlItemWidget).
+  Widget _textField({
+    required String label,
+    required String hint,
+    required TextEditingController controller,
+    bool rtl = false,
+    int? maxLines,
+    int? minLines,
+    int? maxLength,
+    bool showCharCount = false,
+    bool onlyDigits = false,
+    bool submitted = false,
+    String? englishOnlyError,
+    String? arabicOnlyError,
+    String? customError,
+  }) {
+    final languageError = rtl
+        ? (containsEnglishLetters(controller.text) ? arabicOnlyError : null)
+        : (containsArabicLetters(controller.text) ? englishOnlyError : null);
+
+    final field = CustomTextField(
+      label: label,
+      hint: hint,
+      controller: controller,
+      required: true,
+      submitted: submitted,
+      onlyDigits: onlyDigits,
+      errorText: customError ?? languageError,
+      maxLines: maxLines,
+      minLines: minLines,
+      maxLength: maxLength,
+      showCharCount: showCharCount,
+      fillColor: AppColors.background,
+      onChanged: (_) => setState(() {}),
+    );
+
+    if (!rtl) return field;
+    return Directionality(textDirection: TextDirection.rtl, child: field);
+  }
+
   /// Scheduled if the inherited Policy Start Date hasn't arrived yet
   /// (strictly after today), otherwise Active. Only used by the Create
   /// path's main "Add" action — Save For Later always forces Draft, and
@@ -1035,190 +1089,160 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                     ],
                                   ),
                                   SizedBox(height: 15.h),
-                                  _isArabicEnabled
-                                      ? (isTablet
-                                          ? Row(children: [
-                                              Expanded(
-                                                child: CustomTextField(
-                                                  label: 'Control Name'.tr,
-                                                  hint: 'Text here'.tr,
-                                                  controller: _nameController,
-                                                  required: true,
-                                                  submitted: _submitted,
-                                                  fillColor:
-                                                      AppColors.background,
-                                                  onChanged: (_) =>
-                                                      setState(() {}),
-                                                ),
-                                              ),
-                                              SizedBox(width: 10.w),
-                                              Expanded(
-                                                child: Directionality(
-                                                  textDirection:
-                                                      TextDirection.rtl,
-                                                  child: CustomTextField(
+                                  isTablet
+                                      ? Row(children: [
+                                          Expanded(
+                                            child: _textField(
+                                              label: 'Control Name'.tr,
+                                              hint: 'Text here'.tr,
+                                              controller: _nameController,
+                                              submitted: _submitted,
+                                              englishOnlyError:
+                                                  'Control Name must be written in English'
+                                                      .tr,
+                                            ),
+                                          ),
+                                          SizedBox(width: 10.w),
+                                          Expanded(
+                                            child: _isArabicEnabled
+                                                ? _textField(
                                                     label: 'اسم ضابط',
                                                     hint: 'اكتب هنا',
                                                     controller:
                                                         _nameArController,
-                                                    required: true,
+                                                    rtl: true,
                                                     submitted: _submitted &&
                                                         _arabicTouched,
-                                                    fillColor:
-                                                        AppColors.background,
-                                                    onChanged: (_) =>
-                                                        setState(() {}),
+                                                    arabicOnlyError:
+                                                        'يجب كتابة اسم ضابط باللغة العربية',
+                                                  )
+                                                : _textField(
+                                                    label: 'Control Number'.tr,
+                                                    hint: 'Text here'.tr,
+                                                    controller:
+                                                        _numberController,
+                                                    submitted: _submitted,
+                                                    englishOnlyError:
+                                                        'Control Number must be written in English'
+                                                            .tr,
                                                   ),
-                                                ),
-                                              ),
-                                            ])
-                                          : Column(children: [
-                                              CustomTextField(
-                                                label: 'Control Name'.tr,
-                                                hint: 'Text here'.tr,
-                                                controller: _nameController,
-                                                required: true,
-                                                submitted: _submitted,
-                                                fillColor: AppColors.background,
-                                                onChanged: (_) =>
-                                                    setState(() {}),
-                                              ),
-                                              SizedBox(height: 15.h),
-                                              Directionality(
-                                                textDirection:
-                                                    TextDirection.rtl,
-                                                child: CustomTextField(
+                                          ),
+                                        ])
+                                      : Column(children: [
+                                          _textField(
+                                            label: 'Control Name'.tr,
+                                            hint: 'Text here'.tr,
+                                            controller: _nameController,
+                                            submitted: _submitted,
+                                            englishOnlyError:
+                                                'Control Name must be written in English'
+                                                    .tr,
+                                          ),
+                                          SizedBox(height: 15.h),
+                                          _isArabicEnabled
+                                              ? _textField(
                                                   label: 'اسم ضابط',
                                                   hint: 'اكتب هنا',
                                                   controller:
                                                       _nameArController,
-                                                  required: true,
+                                                  rtl: true,
                                                   submitted: _submitted &&
                                                       _arabicTouched,
-                                                  fillColor:
-                                                      AppColors.background,
-                                                  onChanged: (_) =>
-                                                      setState(() {}),
-                                                ),
-                                              ),
-                                            ]))
-                                      : CustomTextField(
-                                          label: 'Control Name'.tr,
-                                          hint: 'Text here'.tr,
-                                          controller: _nameController,
-                                          required: true,
-                                          submitted: _submitted,
-                                          fillColor: AppColors.background,
-                                          onChanged: (_) => setState(() {}),
-                                        ),
-                                  SizedBox(height: 15.h),
-                                  _isArabicEnabled
-                                      ? (isTablet
-                                          ? Row(children: [
-                                              Expanded(
-                                                child: CustomTextField(
+                                                  arabicOnlyError:
+                                                      'يجب كتابة اسم ضابط باللغة العربية',
+                                                )
+                                              : _textField(
                                                   label: 'Control Number'.tr,
                                                   hint: 'Text here'.tr,
-                                                  controller: _numberController,
-                                                  required: true,
+                                                  controller:
+                                                      _numberController,
                                                   submitted: _submitted,
-                                                  fillColor:
-                                                      AppColors.background,
-                                                  onChanged: (_) =>
-                                                      setState(() {}),
+                                                  englishOnlyError:
+                                                      'Control Number must be written in English'
+                                                          .tr,
                                                 ),
-                                              ),
-                                              SizedBox(width: 10.w),
-                                              Expanded(
-                                                child: Directionality(
-                                                  textDirection:
-                                                      TextDirection.rtl,
-                                                  child: CustomTextField(
-                                                    label: 'رقم ضابط',
-                                                    hint: 'اكتب هنا',
-                                                    controller:
-                                                        _numberArController,
-                                                    required: true,
-                                                    submitted: _submitted &&
-                                                        _arabicTouched,
-                                                    fillColor:
-                                                        AppColors.background,
-                                                    onChanged: (_) =>
-                                                        setState(() {}),
-                                                  ),
-                                                ),
-                                              ),
-                                            ])
-                                          : Column(children: [
-                                              CustomTextField(
+                                        ]),
+                                  SizedBox(height: 15.h),
+                                  if (_isArabicEnabled) ...[
+                                    isTablet
+                                        ? Row(children: [
+                                            Expanded(
+                                              child: _textField(
                                                 label: 'Control Number'.tr,
                                                 hint: 'Text here'.tr,
                                                 controller: _numberController,
-                                                required: true,
                                                 submitted: _submitted,
-                                                fillColor: AppColors.background,
-                                                onChanged: (_) =>
-                                                    setState(() {}),
+                                                englishOnlyError:
+                                                    'Control Number must be written in English'
+                                                        .tr,
                                               ),
-                                              SizedBox(height: 15.h),
-                                              Directionality(
-                                                textDirection:
-                                                    TextDirection.rtl,
-                                                child: CustomTextField(
-                                                  label: 'رقم ضابط',
-                                                  hint: 'اكتب هنا',
-                                                  controller:
-                                                      _numberArController,
-                                                  required: true,
-                                                  submitted: _submitted &&
-                                                      _arabicTouched,
-                                                  fillColor:
-                                                      AppColors.background,
-                                                  onChanged: (_) =>
-                                                      setState(() {}),
-                                                ),
+                                            ),
+                                            SizedBox(width: 10.w),
+                                            Expanded(
+                                              child: _textField(
+                                                label: 'رقم ضابط',
+                                                hint: 'اكتب هنا',
+                                                controller:
+                                                    _numberArController,
+                                                rtl: true,
+                                                submitted: _submitted &&
+                                                    _arabicTouched,
+                                                arabicOnlyError:
+                                                    'يجب كتابة رقم ضابط باللغة العربية',
                                               ),
-                                            ]))
-                                      : CustomTextField(
-                                          label: 'Control Number'.tr,
-                                          hint: 'Text here'.tr,
-                                          controller: _numberController,
-                                          required: true,
-                                          submitted: _submitted,
-                                          fillColor: AppColors.background,
-                                          onChanged: (_) => setState(() {}),
-                                        ),
-                                  SizedBox(height: 15.h),
-                                  CustomTextField(
+                                            ),
+                                          ])
+                                        : Column(children: [
+                                            _textField(
+                                              label: 'Control Number'.tr,
+                                              hint: 'Text here'.tr,
+                                              controller: _numberController,
+                                              submitted: _submitted,
+                                              englishOnlyError:
+                                                  'Control Number must be written in English'
+                                                      .tr,
+                                            ),
+                                            SizedBox(height: 15.h),
+                                            _textField(
+                                              label: 'رقم ضابط',
+                                              hint: 'اكتب هنا',
+                                              controller: _numberArController,
+                                              rtl: true,
+                                              submitted: _submitted &&
+                                                  _arabicTouched,
+                                              arabicOnlyError:
+                                                  'يجب كتابة رقم ضابط باللغة العربية',
+                                            ),
+                                          ]),
+                                    SizedBox(height: 15.h),
+                                  ],
+                                  _textField(
                                     label: 'Control Description'.tr,
                                     hint: 'Text here'.tr,
                                     controller: _descriptionController,
-                                    required: true,
                                     submitted: _submitted,
                                     maxLines: 3,
                                     minLines: 3,
                                     maxLength: 500,
                                     showCharCount: true,
-                                    fillColor: AppColors.background,
-                                    onChanged: (_) => setState(() {}),
+                                    englishOnlyError:
+                                        'Control Description must be written in English'
+                                            .tr,
                                   ),
                                   if (_isArabicEnabled) ...[
                                     SizedBox(height: 15.h),
-                                    Directionality(
-                                      textDirection: TextDirection.rtl,
-                                      child: CustomTextField(
-                                        label: 'وصف ضابط',
-                                        hint: 'اكتب وصف',
-                                        controller: _descriptionArController,
-                                        required: true,
-                                        submitted: _submitted && _arabicTouched,
-                                        maxLines: 3,
-                                        minLines: 3,
-                                        maxLength: 500,
-                                        showCharCount: true,
-                                        fillColor: AppColors.background,
-                                        onChanged: (_) => setState(() {}),
-                                      ),
+                                    _textField(
+                                      label: 'وصف ضابط',
+                                      hint: 'اكتب وصف',
+                                      controller: _descriptionArController,
+                                      rtl: true,
+                                      submitted: _submitted && _arabicTouched,
+                                      maxLines: 3,
+                                      minLines: 3,
+                                      maxLength: 500,
+                                      showCharCount: true,
+                                      arabicOnlyError:
+                                          'يجب كتابة وصف ضابط باللغة العربية',
                                     ),
                                   ],
                                   SizedBox(height: 15.h),
@@ -1347,23 +1371,13 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                           ),
                                           SizedBox(width: 10.w),
                                           Expanded(
-                                            child: CustomTextField(
+                                            child: _textField(
                                               label: 'Control Weight'.tr,
                                               hint: 'Text Here'.tr,
                                               controller: _weightController,
-                                              required: true,
                                               submitted: _submitted,
-                                              fillColor: AppColors.background,
-                                              // errorText: _submitted &&
-                                              //         double.tryParse(
-                                              //                 _weightController
-                                              //                     .text
-                                              //                     .trim()) !=
-                                              //             null &&
-                                              //         !_isWeightValid
-                                              //     ? '${'All controls under this policy must add up to 100 (currently'.tr} ${(_thisWeight + _siblingsWeight).toStringAsFixed(0)}).'
-                                              //     : null,
-                                              onChanged: (_) => setState(() {}),
+                                              onlyDigits: true,
+                                              customError: _weightError,
                                             ),
                                           ),
                                         ])
@@ -1393,23 +1407,13 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                                 : null,
                                           ),
                                           SizedBox(height: 15.h),
-                                          CustomTextField(
+                                          _textField(
                                             label: 'Control Weight'.tr,
                                             hint: 'Text Here'.tr,
                                             controller: _weightController,
-                                            required: true,
                                             submitted: _submitted,
-                                            fillColor: AppColors.background,
-                                            // errorText: _submitted &&
-                                            //         double.tryParse(
-                                            //                 _weightController
-                                            //                     .text
-                                            //                     .trim()) !=
-                                            //             null &&
-                                            //         !_isWeightValid
-                                            //     ? '${'All controls under this policy must add up to 100 (currently'.tr} ${(_thisWeight + _siblingsWeight).toStringAsFixed(0)}).'
-                                            //     : null,
-                                            onChanged: (_) => setState(() {}),
+                                            onlyDigits: true,
+                                            customError: _weightError,
                                           ),
                                         ]),
                                   SizedBox(height: 15.h),
