@@ -34,6 +34,11 @@ class PolicyControlModel {
   PolicyDocumentInfo? documentEn;
   PolicyDocumentInfo? documentAr;
 
+  /// Non-null when this card was prefilled from an already-saved Control
+  /// (resuming a Draft) — a later Save For Later/Publish updates that same
+  /// Control instead of creating a duplicate.
+  final String? existingControlId;
+
   PolicyControlModel({
     TextEditingController? nameController,
     TextEditingController? nameArController,
@@ -47,6 +52,7 @@ class PolicyControlModel {
     this.endDate,
     this.documentEn,
     this.documentAr,
+    this.existingControlId,
   })  : nameController = nameController ?? TextEditingController(),
         nameArController = nameArController ?? TextEditingController(),
         numberController = numberController ?? TextEditingController(),
