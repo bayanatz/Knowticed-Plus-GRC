@@ -32,7 +32,10 @@ import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart'
 import 'package:demo_app/core/custom/loading.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
+import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_status.dart';
+import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
+import 'package:demo_app/features/grc/policy/domain/entities/policy_status.dart';
 import 'package:demo_app/features/grc/policy/presentation/controller/policy_cubit.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/pages/add_policy_controls.dart';
 import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details_widget/grc_form_fields.dart'
@@ -74,11 +77,18 @@ class CreateNewPolicyPage extends StatefulWidget {
   final String moduleNameEn;
   final String moduleNameAr;
 
+  /// When set, the wizard resumes this already-saved Draft instead of
+  /// starting blank: Step 0 is prefilled from it and its saved Controls
+  /// are fetched and prefilled into Step 1. Save For Later/Publish then
+  /// update this same Policy instead of creating a new one.
+  final PolicyEntity? existingPolicy;
+
   const CreateNewPolicyPage({
     super.key,
     required this.moduleId,
     required this.moduleNameEn,
     required this.moduleNameAr,
+    this.existingPolicy,
   });
 
   @override
@@ -103,17 +113,51 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
   final _descriptionArController = TextEditingController();
   final _weightController = TextEditingController();
 
-  final List<PolicyControlModel> _controls = [PolicyControlModel()];
+  List<PolicyControlModel> _controls = [PolicyControlModel()];
 
   DateTime? _startDate;
   DateTime? _endDate;
   File? _imageFile;
+  String? _imageUrl;
   PolicyDocumentInfo? _documentEn;
   PolicyDocumentInfo? _documentAr;
+
+  /// Snapshot of the ids of controls already saved under [widget.existingPolicy]
+  /// at the moment they were loaded — diffed against what's still touched
+  /// in [_controls] at save time to know which ones the user removed.
+  Set<String> _originalControlIds = {};
 
   // ----------------------------------------------------------------
   // Lifecycle
   // ----------------------------------------------------------------
+  @override
+  void initState() {
+    super.initState();
+    final existing = widget.existingPolicy;
+    if (existing == null) return;
+    _nameController.text = existing.policyNameEn;
+    _nameArController.text = existing.policyNameAr;
+    _numberController.text = existing.policyNumberEn;
+    _numberArController.text = existing.policyNumberAr;
+    _descriptionController.text = existing.policyDescriptionEn;
+    _descriptionArController.text = existing.policyDescriptionAr;
+    _weightController.text = existing.policyWeight.toStringAsFixed(0);
+    _startDate = existing.startDate;
+    _endDate = existing.endDate;
+    _imageUrl = existing.policyImage;
+    _documentEn = existing.policyDocumentEn != null
+        ? PolicyDocumentInfo.fromUrl(existing.policyDocumentEn!)
+        : null;
+    _documentAr = existing.policyDocumentAr != null
+        ? PolicyDocumentInfo.fromUrl(existing.policyDocumentAr!)
+        : null;
+    // No stored toggle for this — infer it from whether any Arabic field
+    // was ever filled in, the same way the fields themselves imply it.
+    _isArabicEnabled = existing.policyNameAr.trim().isNotEmpty ||
+        existing.policyNumberAr.trim().isNotEmpty ||
+        existing.policyDescriptionAr.trim().isNotEmpty;
+  }
+
   @override
   void dispose() {
     _nameController.dispose();
@@ -356,6 +400,42 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
         .toList();
   }
 
+  /// function name: [_controlModelFromEntity]
+  ///
+  /// purpose: build an editable [PolicyControlModel] prefilled from an
+  ///          already-saved [ControlEntity], tagging it with
+  ///          [PolicyControlModel.existingControlId] so a later Save For
+  ///          Later/Publish updates this same Control instead of creating
+  ///          a duplicate.
+  ///
+  /// parameters:
+  ///            [ControlEntity] c: the saved control to prefill from
+  ///
+  /// return type: [PolicyControlModel]
+  PolicyControlModel _controlModelFromEntity(ControlEntity c) =>
+      PolicyControlModel(
+        existingControlId: c.id,
+        nameController: TextEditingController(text: c.controlsNameEn),
+        nameArController: TextEditingController(text: c.controlsNameAr),
+        numberController: TextEditingController(text: c.controlsNumberEn),
+        numberArController: TextEditingController(text: c.controlsNumberAr),
+        descriptionController:
+            TextEditingController(text: c.controlsDescriptionEn),
+        descriptionArController:
+            TextEditingController(text: c.controlsDescriptionAr),
+        weightController:
+            TextEditingController(text: c.controlsWeight.toStringAsFixed(0)),
+        frequency: c.frequency,
+        startDate: c.startDate,
+        endDate: c.endDate,
+        documentEn: c.controlsDocumentEn != null
+            ? PolicyDocumentInfo.fromUrl(c.controlsDocumentEn!)
+            : null,
+        documentAr: c.controlsDocumentAr != null
+            ? PolicyDocumentInfo.fromUrl(c.controlsDocumentAr!)
+            : null,
+      );
+
   void _onSaveForLater(PolicyCubit cubit) {
     cubit.saveAsDraft(
       policyNameEn: _nameController.text.trim(),
@@ -518,6 +598,18 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
     }
     hideLoadingIndicator();
 
+    if (state is PolicyControlsListLoaded) {
+      if (widget.existingPolicy == null) return;
+      _originalControlIds = state.controls.map((c) => c.id).toSet();
+      setState(() {
+        for (final c in _controls) c.dispose();
+        _controls = state.controls.isEmpty
+            ? [PolicyControlModel()]
+            : state.controls.map(_controlModelFromEntity).toList();
+      });
+      return;
+    }
+
     if (state is PolicyActionSuccess) {
       final isDraft = state.policy.status.value == 'Draft';
       showSuccessDialog(
@@ -547,7 +639,14 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => GetIt.instance<PolicyCubit>(),
+      create: (_) {
+        final cubit = GetIt.instance<PolicyCubit>();
+        final existing = widget.existingPolicy;
+        if (existing != null) {
+          cubit.getAllControls(moduleId: widget.moduleId, policyId: existing.id);
+        }
+        return cubit;
+      },
       child: Builder(
         builder: (ctx) {
           final cubit = ctx.read<PolicyCubit>();
