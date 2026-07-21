@@ -13,8 +13,16 @@ import 'package:intl/intl.dart';
 import 'package:demo_app/features/grc/control/data/models/assigning_control_model.dart';
 import 'package:demo_app/features/grc/control_owner/domain/entities/owner_entity.dart';
 import 'package:demo_app/features/grc/control_owner/domain/entities/owner_status.dart';
+import 'package:demo_app/features/grc/control_owner/domain/entities/control_owner_history_entry.dart';
 
 final DateFormat _storageDateFormat = DateFormat('d MMM yyyy', 'en');
+
+class _OpenControlStint {
+  final DateTime startDate;
+  final String assignedByEmail;
+
+  _OpenControlStint({required this.startDate, required this.assignedByEmail});
+}
 
 /// class name: [OwnerModel]
 ///
@@ -174,5 +182,63 @@ class OwnerModel {
       modificationDate: modificationDate.last,
       lastModifier: modifiers.last,
     );
+  }
+
+  /// function name: [toControlAssignmentHistory]
+  ///
+  /// purpose: reconstruct every completed assignment stint this owner held
+  ///          on one specific {policyId, controlId} pair, by diffing
+  ///          [assigningControls] between consecutive revisions. The pair
+  ///          appearing in revision N but not N-1 opens a stint (assigned
+  ///          by [modifiers] at N); it disappearing between N-1 and N
+  ///          closes the currently open stint (ends at [modificationDate]
+  ///          at N) and emits one [ControlOwnerHistoryEntry]. A pair that
+  ///          is still currently assigned (never removed) produces no
+  ///          entry for that open stint.
+  ///
+  /// parameters:
+  ///            [String] policyId: the Policy id half of the pair to track
+  ///            [String] controlId: the Control id half of the pair to track
+  ///
+  /// return type: [List<ControlOwnerHistoryEntry>] - this owner's completed stints on this Control
+  List<ControlOwnerHistoryEntry> toControlAssignmentHistory({
+    required String policyId,
+    required String controlId,
+  }) {
+    bool hasControl(List<AssigningControlModel> revision) => revision
+        .any((a) => a.policyId == policyId && a.controlId == controlId);
+
+    _OpenControlStint? open;
+    if (hasControl(assigningControls.first)) {
+      open = _OpenControlStint(
+        startDate: modificationDate.first,
+        assignedByEmail: modifiers.first,
+      );
+    }
+
+    final entries = <ControlOwnerHistoryEntry>[];
+    for (var i = 1; i < assigningControls.length; i++) {
+      final wasAssigned = hasControl(assigningControls[i - 1]);
+      final isAssigned = hasControl(assigningControls[i]);
+
+      if (isAssigned && !wasAssigned) {
+        open = _OpenControlStint(
+          startDate: modificationDate[i],
+          assignedByEmail: modifiers[i],
+        );
+      }
+
+      if (!isAssigned && wasAssigned && open != null) {
+        entries.add(ControlOwnerHistoryEntry(
+          ownerEmail: ownerEmail,
+          assignedByEmail: open.assignedByEmail,
+          startDate: open.startDate,
+          endDate: modificationDate[i],
+        ));
+        open = null;
+      }
+    }
+
+    return entries;
   }
 }
