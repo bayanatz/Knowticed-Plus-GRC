@@ -25,6 +25,7 @@ import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart'
     hide showUploadDialog;
 import 'package:demo_app/core/custom/loading.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
+import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details_widget/grc_form_fields.dart'
     show containsEnglishLetters, containsArabicLetters;
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
@@ -36,6 +37,7 @@ import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_b
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:get_it/get_it.dart';
 
@@ -79,6 +81,7 @@ class _PolicyEditPageState extends State<PolicyEditPage> {
   PolicyDocumentInfo? _documentAr;
   bool _statusInactive = false;
   bool _initialStatusInactive = false;
+  bool _isArabicEnabled = true;
 
   @override
   void initState() {
@@ -101,7 +104,20 @@ class _PolicyEditPageState extends State<PolicyEditPage> {
         : null;
     _statusInactive = policy.status == PolicyStatus.inactive;
     _initialStatusInactive = _statusInactive;
+    // No stored toggle for this policy — infer it the same way the create
+    // wizard does: on if any Arabic field was ever filled in.
+    _isArabicEnabled = policy.policyNameAr.trim().isNotEmpty ||
+        policy.policyNumberAr.trim().isNotEmpty ||
+        policy.policyDescriptionAr.trim().isNotEmpty;
   }
+
+  /// True once the user has entered something into any Arabic field —
+  /// mirrors CreateNewPolicyPage's _arabicTouched so Save's own validation
+  /// stays consistent with what PolicyInfoFormWidget visually requires.
+  bool get _arabicTouched =>
+      _nameArController.text.trim().isNotEmpty ||
+      _numberArController.text.trim().isNotEmpty ||
+      _descriptionArController.text.trim().isNotEmpty;
 
   @override
   void dispose() {
@@ -123,17 +139,20 @@ class _PolicyEditPageState extends State<PolicyEditPage> {
         _startDate != null &&
         _endDate!.isBefore(_startDate!);
     return _nameController.text.trim().isNotEmpty &&
-        _nameArController.text.trim().isNotEmpty &&
         _numberController.text.trim().isNotEmpty &&
-        _numberArController.text.trim().isNotEmpty &&
         _descriptionController.text.trim().isNotEmpty &&
-        _descriptionArController.text.trim().isNotEmpty &&
+        (!_isArabicEnabled ||
+            !_arabicTouched ||
+            (_nameArController.text.trim().isNotEmpty &&
+                _numberArController.text.trim().isNotEmpty &&
+                _descriptionArController.text.trim().isNotEmpty)) &&
         !containsArabicLetters(_nameController.text) &&
-        !containsEnglishLetters(_nameArController.text) &&
         !containsArabicLetters(_numberController.text) &&
-        !containsEnglishLetters(_numberArController.text) &&
         !containsArabicLetters(_descriptionController.text) &&
-        !containsEnglishLetters(_descriptionArController.text) &&
+        (!_isArabicEnabled ||
+            (!containsEnglishLetters(_nameArController.text) &&
+                !containsEnglishLetters(_numberArController.text) &&
+                !containsEnglishLetters(_descriptionArController.text))) &&
         _startDate != null &&
         !_startDate!.isBefore(startOfToday) &&
         _endDate != null &&
@@ -291,6 +310,31 @@ class _PolicyEditPageState extends State<PolicyEditPage> {
                       PaginationAppBar(
                         screensTitles: ['GRC'.tr, 'Edit Policy'.tr],
                       ),
+                      SizedBox(height: 12.h),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            _statusInactive ? 'Inactive'.tr : 'Active'.tr,
+                            style: StyleText.fontSize14Weight500
+                                .copyWith(color: AppColors.text),
+                          ),
+                          SizedBox(width: 10.w),
+                          FlutterSwitch(
+                            width: 38.sp,
+                            height: 22.sp,
+                            padding: 3.sp,
+                            borderRadius: 20.sp,
+                            toggleSize: 16.sp,
+                            activeColor: AppColors.secondaryPrimary,
+                            inactiveColor: Colors.grey.withOpacity(.16),
+                            value: !_statusInactive,
+                            onToggle: (v) =>
+                                setState(() => _statusInactive = !v),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 12.h),
                       Expanded(
                         child: Container(
                           width: double.infinity,
@@ -304,9 +348,9 @@ class _PolicyEditPageState extends State<PolicyEditPage> {
                                 .copyWith(scrollbars: false),
                             child: SingleChildScrollView(
                               child: PolicyEditModeWidget(
-                                statusInactive: _statusInactive,
-                                onStatusToggle: (v) =>
-                                    setState(() => _statusInactive = v),
+                                isArabicEnabled: _isArabicEnabled,
+                                onArabicToggle: (v) =>
+                                    setState(() => _isArabicEnabled = v),
                                 submitted: _submitted,
                                 nameController: _nameController,
                                 nameArController: _nameArController,

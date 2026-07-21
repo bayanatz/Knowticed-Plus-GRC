@@ -1,12 +1,16 @@
 /// Module: GRC Policy Management
-/// Description: Editable "edit mode" body of the Policy Details page —
-///              the Active/Inactive status toggle plus the shared
-///              [PolicyInfoFormWidget] fields. Mirrors [PolicyViewModeWidget]
-///              structurally so the two modes stay in sync going forward.
+/// Description: Editable "edit mode" body of the Policy Details page — the
+///              "Create Arabic Version" toggle plus the shared
+///              [PolicyInfoFormWidget] fields. The Active/Inactive status
+///              toggle lives on [PolicyEditPage] itself, outside this form.
 /// Author: Mohamed Magdy Abdelkhalek
 /// Date: 2026-07-18
 /// Dependencies: Flutter SDK, AppColors, AppTheme, PolicyInfoFormWidget,
 ///               flutter_switch
+/// Revision History: 2026-07-18 - Initial creation
+///                   2026-07-22 - Replaced the hardcoded isArabicEnabled:
+///                                true with a real toggle, and moved the
+///                                status toggle out to PolicyEditPage
 library;
 
 import 'package:demo_app/core/theme/app_colors.dart';
@@ -20,8 +24,8 @@ import 'package:get/get_utils/src/extensions/internacionalization.dart';
 
 /// class name: [PolicyEditModeWidget]
 ///
-/// purpose: renders the editable form for a Policy — the Active/Inactive
-///          status toggle followed by [PolicyInfoFormWidget]. Kept as a
+/// purpose: renders the editable form for a Policy — the "Create Arabic
+///          Version" toggle followed by [PolicyInfoFormWidget]. Kept as a
 ///          thin, stateless composition: all field state lives in the
 ///          parent page, this widget only lays it out.
 ///
@@ -29,8 +33,8 @@ import 'package:get/get_utils/src/extensions/internacionalization.dart';
 ///
 /// created at: 18/7/2026
 class PolicyEditModeWidget extends StatelessWidget {
-  final bool statusInactive;
-  final ValueChanged<bool> onStatusToggle;
+  final bool isArabicEnabled;
+  final ValueChanged<bool> onArabicToggle;
 
   final bool submitted;
   final TextEditingController nameController;
@@ -53,8 +57,8 @@ class PolicyEditModeWidget extends StatelessWidget {
 
   const PolicyEditModeWidget({
     super.key,
-    required this.statusInactive,
-    required this.onStatusToggle,
+    required this.isArabicEnabled,
+    required this.onArabicToggle,
     required this.submitted,
     required this.nameController,
     required this.nameArController,
@@ -84,7 +88,7 @@ class PolicyEditModeWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Text(
-              statusInactive ? 'Inactive'.tr : 'Active'.tr,
+              'Create Arabic Version'.tr,
               style: StyleText.fontSize14Weight500
                   .copyWith(color: AppColors.text),
             ),
@@ -97,14 +101,14 @@ class PolicyEditModeWidget extends StatelessWidget {
               toggleSize: 16.sp,
               activeColor: AppColors.secondaryPrimary,
               inactiveColor: Colors.grey.withOpacity(.16),
-              value: !statusInactive,
-              onToggle: (v) => onStatusToggle(!v),
+              value: isArabicEnabled,
+              onToggle: onArabicToggle,
             ),
           ],
         ),
         SizedBox(height: 12.h),
         PolicyInfoFormWidget(
-          isArabicEnabled: true,
+          isArabicEnabled: isArabicEnabled,
           submitted: submitted,
           nameController: nameController,
           nameArController: nameArController,
