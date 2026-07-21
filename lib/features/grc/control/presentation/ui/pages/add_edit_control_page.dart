@@ -97,7 +97,6 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
   String? _frequency;
   DateTime? _startDate;
   DateTime? _endDate;
-  ControlStatus _status = ControlStatus.draft;
   PolicyDocumentInfo? _documentEn;
   PolicyDocumentInfo? _documentAr;
   bool _submitted = false;
@@ -155,7 +154,6 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
     _frequency = existing.frequency.isEmpty ? null : existing.frequency;
     _startDate = existing.startDate;
     _endDate = existing.endDate;
-    _status = existing.status;
     _documentEn = existing.controlsDocumentEn != null
         ? PolicyDocumentInfo.fromUrl(existing.controlsDocumentEn!)
         : null;
@@ -469,16 +467,47 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
     return Directionality(textDirection: TextDirection.rtl, child: field);
   }
 
-  /// Scheduled if the inherited Policy Start Date hasn't arrived yet
-  /// (strictly after today), otherwise Active. Only used by the Create
-  /// path's main "Add" action — Save For Later always forces Draft, and
-  /// editing an existing control's status is left untouched.
-  ControlStatus get _computedCreateStatus {
+  /// Scheduled if the effective Start Date (the inherited Policy date in
+  /// Create mode, or the control's own edited date in Edit mode) hasn't
+  /// arrived yet (strictly after today), otherwise Active. This is the
+  /// "would-be" status before [_resolvedStatus]'s assignee-based
+  /// Unassigned override is applied — used by both the Add and Save
+  /// actions, recomputed every time either is pressed.
+  ControlStatus get _computedStatus {
     final today = DateTime.now();
     final startOfToday = DateTime(today.year, today.month, today.day);
-    return widget.policyStartDate.isAfter(startOfToday)
+    return _effectiveStartDate.isAfter(startOfToday)
         ? ControlStatus.scheduled
         : ControlStatus.active;
+  }
+
+  /// True if at least one Champion or Owner is currently assigned to this
+  /// control: the live picker selection if the user touched it, otherwise
+  /// whoever was already assigned when the page opened. A brand-new
+  /// Control has no assignees section at all (Create mode hides it), so
+  /// this is always false there.
+  bool _hasAnyAssignee(BuildContext context) {
+    final championState = context.read<ChampionCubit>().state;
+    final championEmails = _currentChampionEmails ??
+        (_isEdit && championState is ChampionListLoaded
+            ? _alreadyAssignedChampionEmails(championState.champions)
+            : const <String>[]);
+    final ownerState = context.read<OwnerCubit>().state;
+    final ownerEmails = _currentOwnerEmails ??
+        (_isEdit && ownerState is OwnerListLoaded
+            ? _alreadyAssignedOwnerEmails(ownerState.owners)
+            : const <String>[]);
+    return championEmails.isNotEmpty || ownerEmails.isNotEmpty;
+  }
+
+  /// Applies the assignee-based override on top of [requested]: Draft
+  /// (Save For Later) always wins as-is; any other status becomes
+  /// Unassigned unless at least one Champion or Owner is currently
+  /// assigned, in which case [requested] (the date-computed
+  /// Scheduled/Active) stands.
+  ControlStatus _resolvedStatus(BuildContext context, ControlStatus requested) {
+    if (requested == ControlStatus.draft) return requested;
+    return _hasAnyAssignee(context) ? requested : ControlStatus.unassigned;
   }
 
   void _onSave(PolicyCubit cubit, {required ControlStatus status}) {
@@ -1545,9 +1574,8 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                         : 'Are You Sure You Want To Create This Control ?'
                                             .tr,
                                     onConfirm: () => _onSave(cubit,
-                                        status: _isEdit
-                                            ? _status
-                                            : _computedCreateStatus),
+                                        status: _resolvedStatus(
+                                            ctx, _computedStatus)),
                                   );
                                 },
                                 height: 38.h,
