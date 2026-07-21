@@ -31,13 +31,74 @@ import 'package:demo_app/features/grc/policy/presentation/ui/pages/policy_bulk_u
 class PolicyBulkUploadRows {
   PolicyBulkUploadRows(List<PolicyBulkRow> parsedRows)
       : rows = parsedRows.map(PolicyBulkRowForm.fromParsedRow).toList() {
-    for (final row in rows) {
-      row.validate();
-    }
+    revalidateAll();
   }
 
   final List<PolicyBulkRowForm> rows;
   final Set<int> selectedRows = {};
+
+  /// Field keys checked for duplicate values across the whole batch, paired
+  /// with a shared error message. Policy Number/Name are each other's own
+  /// identifier — En and Ar are checked independently of one another.
+  static const Map<String, String> _duplicateCheckedFields = {
+    'policyNumberEn': 'Duplicate Policy Number',
+    'policyNumberAr': 'Duplicate Policy Number',
+    'policyNameEn': 'Duplicate Policy Name',
+    'policyNameAr': 'Duplicate Policy Name',
+  };
+
+  /// function name: [revalidateAll]
+  ///
+  /// purpose: re-run every row's own field validation, then flag duplicate
+  ///          Policy Name/Number values across the batch (En/Ar checked
+  ///          independently) by adding to each affected row's [errors] map.
+  ///          Must be re-run after anything that adds, removes, or edits a
+  ///          row's Name/Number text, since a duplicate is a property of the
+  ///          whole batch, not of one row in isolation.
+  ///
+  /// parameters: none
+  ///
+  /// return type: [void]
+  void revalidateAll() {
+    for (final row in rows) {
+      row.validate();
+    }
+    _flagDuplicates();
+  }
+
+  void _flagDuplicates() {
+    for (final entry in _duplicateCheckedFields.entries) {
+      final fieldKey = entry.key;
+      final message = entry.value;
+      final groups = <String, List<PolicyBulkRowForm>>{};
+      for (final row in rows) {
+        final value = _fieldValue(row, fieldKey).trim().toLowerCase();
+        if (value.isEmpty) continue;
+        groups.putIfAbsent(value, () => []).add(row);
+      }
+      for (final group in groups.values) {
+        if (group.length < 2) continue;
+        for (final row in group) {
+          row.errors[fieldKey] = message;
+        }
+      }
+    }
+  }
+
+  String _fieldValue(PolicyBulkRowForm row, String fieldKey) {
+    switch (fieldKey) {
+      case 'policyNumberEn':
+        return row.policyNumberEnController.text;
+      case 'policyNumberAr':
+        return row.policyNumberArController.text;
+      case 'policyNameEn':
+        return row.policyNameEnController.text;
+      case 'policyNameAr':
+        return row.policyNameArController.text;
+      default:
+        return '';
+    }
+  }
 
   /// function name: [toggleSelected]
   ///
@@ -61,9 +122,8 @@ class PolicyBulkUploadRows {
   ///
   /// return type: [void]
   void addBlankRow() {
-    final row = PolicyBulkRowForm();
-    row.validate();
-    rows.add(row);
+    rows.add(PolicyBulkRowForm());
+    revalidateAll();
   }
 
   /// function name: [removeSelected]
@@ -82,6 +142,7 @@ class PolicyBulkUploadRows {
       rows.removeAt(index);
     }
     selectedRows.clear();
+    revalidateAll();
     return true;
   }
 
@@ -109,9 +170,9 @@ class PolicyBulkUploadRows {
       policyWeight: source.policyWeightController.text,
       policyDocument: source.policyDocumentController.text,
     );
-    copy.validate();
     rows.add(copy);
     selectedRows.clear();
+    revalidateAll();
     return true;
   }
 
@@ -128,6 +189,7 @@ class PolicyBulkUploadRows {
     rows[index].dispose();
     rows.removeAt(index);
     selectedRows.remove(index);
+    revalidateAll();
   }
 
   /// Sum of every row's Policy Weight.

@@ -10,6 +10,7 @@
 /// Date: 2026-07-11
 /// Dependencies: flutter_bloc, PolicyBulkUploadCubit, PolicyBulkRowForm
 
+import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/pages/policy_bulk_upload/policy_bulk_upload_cubit.dart';
@@ -106,7 +107,14 @@ class _PolicyBulkUploadPreviewPageState
       }
       return;
     }
-    await cubit.submit(moduleId: widget.moduleId);
+    await showConfirmDialog(
+      context: context,
+      title: 'Activate Policies'.tr,
+      subtitle: 'Are you sure you want to activate these policies?'.tr,
+      confirmLabel: 'Activate'.tr,
+      cancelLabel: 'Cancel'.tr,
+      onConfirm: () => cubit.submit(moduleId: widget.moduleId),
+    );
   }
 
   @override
@@ -126,7 +134,7 @@ class _PolicyBulkUploadPreviewPageState
             );
           }
           if (state.failed.isEmpty) {
-            Navigator.pop(context);
+            Navigator.pop(context, true);
           }
         }
       },

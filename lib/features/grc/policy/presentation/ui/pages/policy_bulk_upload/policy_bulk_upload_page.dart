@@ -10,7 +10,6 @@
 
 import 'dart:io';
 
-import 'package:demo_app/core/custom/37-custom_navigate.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/grc/policy/domain/use_cases/create_policy_usecase.dart';
@@ -103,16 +102,28 @@ class _PolicyBulkUploadPageState extends State<PolicyBulkUploadPage> {
 
     switch (result) {
       case PolicyExcelParseSuccess(:final rows):
-        navigateTo(
+        final activated = await Navigator.push<bool>(
           context,
-          BlocProvider<PolicyBulkUploadCubit>(
-            create: (_) => PolicyBulkUploadCubit(
-              createPolicyUseCase: GetIt.instance<CreatePolicyUseCase>(),
-              parsedRows: rows,
+          PageRouteBuilder(
+            pageBuilder: (_, __, ___) => BlocProvider<PolicyBulkUploadCubit>(
+              create: (_) => PolicyBulkUploadCubit(
+                createPolicyUseCase: GetIt.instance<CreatePolicyUseCase>(),
+                parsedRows: rows,
+              ),
+              child: PolicyBulkUploadPreviewPage(moduleId: widget.moduleId),
             ),
-            child: PolicyBulkUploadPreviewPage(moduleId: widget.moduleId),
+            transitionsBuilder: (_, animation, __, child) =>
+                FadeTransition(opacity: animation, child: child),
+            transitionDuration: const Duration(milliseconds: 300),
           ),
         );
+        // The preview page only pops with `true` once every row activated
+        // successfully — chain that pop through this page too, so the
+        // module list (which reloads unconditionally on return) is reached
+        // directly instead of leaving the user on this now-stale picker.
+        if (activated == true && mounted) {
+          Navigator.pop(context, true);
+        }
       case PolicyExcelParseHeaderMismatch(:final message):
         setState(() => _errorMessage = message);
       case PolicyExcelParseEmpty():

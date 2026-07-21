@@ -80,11 +80,14 @@ class PolicyBulkUploadCubit extends Cubit<PolicyBulkUploadState> {
     emit(PolicyBulkUploadEditing());
   }
 
-  /// Re-runs validation for one row (called on every cell edit) and
-  /// triggers a rebuild so the Error counter / Total Weight footer / row
-  /// border stay in sync as the user types.
+  /// Re-runs validation across the whole batch (called on every cell edit)
+  /// and triggers a rebuild so the Error counter / Total Weight footer / row
+  /// border stay in sync as the user types. A full re-scan (not just row
+  /// [index]) is required because duplicate Policy Name/Number is a
+  /// property of the batch, not of one row in isolation — editing one row
+  /// can create or resolve a duplicate flag on a different row.
   void revalidateRow(int index) {
-    _rows.rows[index].validate();
+    _rows.revalidateAll();
     emit(PolicyBulkUploadEditing());
   }
 
