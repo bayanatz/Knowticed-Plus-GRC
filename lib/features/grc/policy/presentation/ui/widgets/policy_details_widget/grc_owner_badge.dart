@@ -68,6 +68,33 @@ class _GrcOwnerBadgeState extends State<GrcOwnerBadge> {
     );
   }
 
+  /// Re-resolves owners whenever [widget.ownerEmails] changes after the
+  /// first build. Needed because Flutter reuses this State across rebuilds
+  /// (no key), so a caller whose email list starts empty and arrives later
+  /// (e.g. built inside a BlocBuilder before its cubit has loaded) would
+  /// otherwise be stuck showing nothing forever, since `initState` only
+  /// runs once.
+  @override
+  void didUpdateWidget(covariant GrcOwnerBadge oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!_sameEmails(oldWidget.ownerEmails, widget.ownerEmails)) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => _cubit.loadOwners(
+          context,
+          initialOwnerEmails: widget.ownerEmails,
+        ),
+      );
+    }
+  }
+
+  bool _sameEmails(List<String> a, List<String> b) {
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
+  }
+
   @override
   void dispose() {
     _cubit.close();
