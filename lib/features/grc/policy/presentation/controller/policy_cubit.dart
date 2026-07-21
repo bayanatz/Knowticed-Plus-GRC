@@ -67,6 +67,11 @@ class PendingControlInput {
   final File? controlsDocumentFileAr;
   final String? controlsDocumentUrlAr;
 
+  /// Non-null when this input represents a Control that already exists in
+  /// Firestore — [PolicyCubit.updatePolicyWithControls] updates it in place
+  /// via this id instead of creating a duplicate.
+  final String? existingControlId;
+
   const PendingControlInput({
     required this.controlsNameEn,
     required this.controlsNameAr,
@@ -86,6 +91,7 @@ class PendingControlInput {
     this.controlsDocumentUrlEn,
     this.controlsDocumentFileAr,
     this.controlsDocumentUrlAr,
+    this.existingControlId,
   });
 }
 
@@ -423,6 +429,149 @@ class PolicyCubit extends Cubit<PolicyState> {
     result.fold(
       (failure) => emit(PolicyFailure(failure.message)),
       (policy) => emit(PolicyActionSuccess(policy)),
+    );
+  }
+
+  /// function name: [updatePolicyWithControls]
+  ///
+  /// purpose: update an existing Policy (used when resuming a Draft from
+  ///          the Create New Policy wizard) and reconcile its Controls in
+  ///          the same call: [removedControlIds] are deleted, each
+  ///          [controls] entry with an [PendingControlInput.existingControlId]
+  ///          is updated in place, and each without one is created fresh.
+  ///          Mirrors [_createPolicyWithControls]'s one-Loading/one-final-
+  ///          state contract.
+  ///
+  /// parameters:
+  ///            [String] id: the existing Policy's id
+  ///            [String] moduleId: the parent GRC Module's id
+  ///            [PolicyStatus] status: [PolicyStatus.draft] for Save For
+  ///            Later, [PolicyStatus.active] for Publish
+  ///            [List<PendingControlInput>] controls: every touched control
+  ///            card from the wizard (existing or new)
+  ///            [List<String>] removedControlIds: ids of previously-saved
+  ///            controls no longer present/touched in the wizard
+  ///
+  /// return type: [Future<void>]
+  Future<void> updatePolicyWithControls({
+    required String id,
+    required String moduleId,
+    required PolicyStatus status,
+    required String policyNameEn,
+    required String policyNameAr,
+    required String policyNumberEn,
+    required String policyNumberAr,
+    required String policyDescriptionEn,
+    required String policyDescriptionAr,
+    required DateTime startDate,
+    required DateTime endDate,
+    required double policyWeight,
+    required List<PendingControlInput> controls,
+    required List<String> removedControlIds,
+    File? imageFile,
+    String? imageUrl,
+    File? policyDocumentFileEn,
+    String? policyDocumentUrlEn,
+    File? policyDocumentFileAr,
+    String? policyDocumentUrlAr,
+  }) async {
+    emit(PolicyLoading());
+    final editorId = _currentUserEmail;
+
+    final result = await _updateUseCase.call(UpdatePolicyParams(
+      id: id,
+      editorId: editorId,
+      moduleId: moduleId,
+      status: status,
+      policyNameEn: policyNameEn,
+      policyNameAr: policyNameAr,
+      policyNumberEn: policyNumberEn,
+      policyNumberAr: policyNumberAr,
+      policyDescriptionEn: policyDescriptionEn,
+      policyDescriptionAr: policyDescriptionAr,
+      startDate: startDate,
+      endDate: endDate,
+      policyWeight: policyWeight,
+      imageFile: imageFile,
+      imageUrl: imageUrl,
+      policyDocumentFileEn: policyDocumentFileEn,
+      policyDocumentUrlEn: policyDocumentUrlEn,
+      policyDocumentFileAr: policyDocumentFileAr,
+      policyDocumentUrlAr: policyDocumentUrlAr,
+    ));
+
+    await result.fold(
+      (failure) async => emit(PolicyFailure(failure.message)),
+      (policy) async {
+        for (final controlId in removedControlIds) {
+          final deleteResult = await _deleteControlUseCase.call(
+            DeleteControlParams(id: controlId, moduleId: moduleId, policyId: id),
+          );
+          if (deleteResult.isLeft()) {
+            emit(PolicyFailure(
+              deleteResult.fold((failure) => failure.message, (_) => ''),
+            ));
+            return;
+          }
+        }
+
+        final failedControls =
+            <({PendingControlInput input, String message})>[];
+        for (final input in controls) {
+          final controlResult = input.existingControlId != null
+              ? await _updateControlUseCase.call(UpdateControlParams(
+                  id: input.existingControlId!,
+                  moduleId: moduleId,
+                  policyId: id,
+                  editorId: editorId,
+                  controlsNameEn: input.controlsNameEn,
+                  controlsNameAr: input.controlsNameAr,
+                  controlsNumberEn: input.controlsNumberEn,
+                  controlsNumberAr: input.controlsNumberAr,
+                  controlsDescriptionEn: input.controlsDescriptionEn,
+                  controlsDescriptionAr: input.controlsDescriptionAr,
+                  controlsWeight: input.controlsWeight,
+                  frequency: input.frequency,
+                  startDate: input.startDate,
+                  endDate: input.endDate,
+                  status: input.status,
+                  controlsDocumentFileEn: input.controlsDocumentFileEn,
+                  controlsDocumentFileAr: input.controlsDocumentFileAr,
+                ))
+              : await _createControlUseCase.call(CreateControlParams(
+                  moduleId: moduleId,
+                  policyId: id,
+                  editorId: editorId,
+                  controlsNameEn: input.controlsNameEn,
+                  controlsNameAr: input.controlsNameAr,
+                  controlsNumberEn: input.controlsNumberEn,
+                  controlsNumberAr: input.controlsNumberAr,
+                  controlsDescriptionEn: input.controlsDescriptionEn,
+                  controlsDescriptionAr: input.controlsDescriptionAr,
+                  controlsWeight: input.controlsWeight,
+                  frequency: input.frequency,
+                  startDate: input.startDate,
+                  endDate: input.endDate,
+                  departments: input.departments,
+                  equalWeights: input.equalWeights,
+                  score: input.score,
+                  status: input.status,
+                  controlsDocumentFileEn: input.controlsDocumentFileEn,
+                  controlsDocumentFileAr: input.controlsDocumentFileAr,
+                ));
+          controlResult.fold(
+            (failure) =>
+                failedControls.add((input: input, message: failure.message)),
+            (_) {},
+          );
+        }
+
+        if (failedControls.isEmpty) {
+          emit(PolicyActionSuccess(policy));
+        } else {
+          emit(PolicyActionPartialSuccess(policy, failedControls));
+        }
+      },
     );
   }
 
