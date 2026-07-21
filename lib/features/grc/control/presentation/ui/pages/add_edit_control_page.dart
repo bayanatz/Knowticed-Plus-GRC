@@ -415,7 +415,19 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
   void _onRemoveDocumentEn() => setState(() => _documentEn = null);
   void _onRemoveDocumentAr() => setState(() => _documentAr = null);
 
-  void _onSave(PolicyCubit cubit) {
+  /// Scheduled if the inherited Policy Start Date hasn't arrived yet
+  /// (strictly after today), otherwise Active. Only used by the Create
+  /// path's main "Add" action — Save For Later always forces Draft, and
+  /// editing an existing control's status is left untouched.
+  ControlStatus get _computedCreateStatus {
+    final today = DateTime.now();
+    final startOfToday = DateTime(today.year, today.month, today.day);
+    return widget.policyStartDate.isAfter(startOfToday)
+        ? ControlStatus.scheduled
+        : ControlStatus.active;
+  }
+
+  void _onSave(PolicyCubit cubit, {required ControlStatus status}) {
     if (_isEdit) {
       cubit.updateControl(
         id: widget.existingControl!.id,
@@ -434,7 +446,7 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
         departments: _departmentsForSave,
         departmentsWeights: _departmentWeightsForSave,
         equalWeights: _equalWeights,
-        status: _status,
+        status: status,
         controlsDocumentFileEn: _documentEn?.file,
         controlsDocumentUrlEn:
             _documentEn?.file == null ? _documentEn?.url : null,
@@ -454,13 +466,13 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
         controlsDescriptionAr: _descriptionArController.text.trim(),
         controlsWeight: _thisWeight,
         frequency: _frequency!,
-        startDate: _startDate!,
-        endDate: _endDate!,
-        departments: _departmentsForSave,
-        departmentsWeights: _departmentWeightsForSave,
-        equalWeights: _equalWeights,
+        startDate: _effectiveStartDate,
+        endDate: _effectiveEndDate,
+        departments: const [],
+        departmentsWeights: null,
+        equalWeights: true,
         score: 0,
-        status: _status,
+        status: status,
         controlsDocumentFileEn: _documentEn?.file,
         controlsDocumentFileAr: _documentAr?.file,
       );
@@ -479,12 +491,17 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
         await _applyAssigneeChanges(context);
       }
       if (!context.mounted) return;
+      final isDraft = state.control.status == ControlStatus.draft;
       showSuccessDialog(
         context: context,
-        title: _isEdit ? 'Control Updated'.tr : 'Control Created'.tr,
-        subtitle: _isEdit
-            ? 'You successfully updated this control.'.tr
-            : 'You successfully created this control.'.tr,
+        title: isDraft
+            ? 'Saved as Draft'.tr
+            : (_isEdit ? 'Control Updated'.tr : 'Control Created'.tr),
+        subtitle: isDraft
+            ? 'Control saved as draft successfully'.tr
+            : (_isEdit
+                ? 'You successfully updated this control.'.tr
+                : 'You successfully created this control.'.tr),
       );
       Navigator.of(context).pop(true);
       return;
@@ -1481,29 +1498,60 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                             textColor: AppColors.text,
                             borderColor: AppColors.border,
                           ),
-                          customButton(
-                            title: _isEdit ? 'Save'.tr : 'Add'.tr,
-                            function: () {
-                              // if (!_validate()) return;
-                              showConfirmDialog(
-                                context: context,
-                                title: _isEdit
-                                    ? 'Editing Control'.tr
-                                    : 'Creating Control'.tr,
-                                cancelLabel: 'No'.tr,
-                                confirmLabel: 'Yes'.tr,
-                                subtitle: _isEdit
-                                    ? 'Are You Sure You Want To Edit This Control ?'
-                                        .tr
-                                    : 'Are You Sure You Want To Create This Control ?'
-                                        .tr,
-                                onConfirm: () => _onSave(cubit),
-                              );
-                            },
-                            height: 38.h,
-                            width: 150.w,
-                            color: AppColors.primary,
-                            textColor: AppColors.textButton,
+                          Row(
+                            children: [
+                              if (!_isEdit) ...[
+                                customButton(
+                                  title: 'Save For Later'.tr,
+                                  function: () {
+                                    showConfirmDialog(
+                                      context: context,
+                                      title: 'Save As Draft'.tr,
+                                      cancelLabel: 'Cancel'.tr,
+                                      confirmLabel: 'Save'.tr,
+                                      subtitle:
+                                          'Are you sure you want to save this control as a draft?'
+                                              .tr,
+                                      onConfirm: () => _onSave(cubit,
+                                          status: ControlStatus.draft),
+                                    );
+                                  },
+                                  height: 38.h,
+                                  width: 150.w,
+                                  color: AppColors.grey,
+                                  textColor: AppColors.text,
+                                  borderColor: AppColors.border,
+                                ),
+                                SizedBox(width: 10.w),
+                              ],
+                              customButton(
+                                title: _isEdit ? 'Save'.tr : 'Add'.tr,
+                                function: () {
+                                  // if (!_validate()) return;
+                                  showConfirmDialog(
+                                    context: context,
+                                    title: _isEdit
+                                        ? 'Editing Control'.tr
+                                        : 'Creating Control'.tr,
+                                    cancelLabel: 'No'.tr,
+                                    confirmLabel: 'Yes'.tr,
+                                    subtitle: _isEdit
+                                        ? 'Are You Sure You Want To Edit This Control ?'
+                                            .tr
+                                        : 'Are You Sure You Want To Create This Control ?'
+                                            .tr,
+                                    onConfirm: () => _onSave(cubit,
+                                        status: _isEdit
+                                            ? _status
+                                            : _computedCreateStatus),
+                                  );
+                                },
+                                height: 38.h,
+                                width: 150.w,
+                                color: AppColors.primary,
+                                textColor: AppColors.textButton,
+                              ),
+                            ],
                           ),
                         ],
                       ),
