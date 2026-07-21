@@ -100,6 +100,8 @@ class _PolicyViewModeWidgetState extends State<PolicyViewModeWidget> {
         return ControlStatus.active;
       case 'Inactive':
         return ControlStatus.inactive;
+      case 'Scheduled':
+        return ControlStatus.scheduled;
       case 'Expired':
         return ControlStatus.expired;
       case 'Unassigned':
@@ -142,6 +144,8 @@ class _PolicyViewModeWidgetState extends State<PolicyViewModeWidget> {
       'Active': controls.where((c) => c.status == ControlStatus.active).length,
       'Inactive':
           controls.where((c) => c.status == ControlStatus.inactive).length,
+      'Scheduled':
+          controls.where((c) => c.status == ControlStatus.scheduled).length,
       'Expired':
           controls.where((c) => c.status == ControlStatus.expired).length,
       'Unassigned':
@@ -159,6 +163,8 @@ class _PolicyViewModeWidgetState extends State<PolicyViewModeWidget> {
           'Active', {'num': counts['Active'] ?? 0, 'color': AppColors.green}),
       MapEntry('Inactive',
           {'num': counts['Inactive'] ?? 0, 'color': AppColors.orange}),
+      MapEntry('Scheduled',
+          {'num': counts['Scheduled'] ?? 0, 'color': AppColors.primary}),
       MapEntry(
           'Expired', {'num': counts['Expired'] ?? 0, 'color': AppColors.red}),
       MapEntry('Unassigned',
