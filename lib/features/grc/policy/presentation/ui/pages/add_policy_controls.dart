@@ -40,6 +40,7 @@ class AddPolicyControlsPage extends StatefulWidget {
   final DateTime? policyStartDate;
   final DateTime? policyEndDate;
   final bool controlsSubmitted;
+  final VoidCallback editPolicy;
 
   const AddPolicyControlsPage({
     super.key,
@@ -48,6 +49,7 @@ class AddPolicyControlsPage extends StatefulWidget {
     required this.policyStartDate,
     required this.policyEndDate,
     required this.controlsSubmitted,
+    required this.editPolicy,
   });
 
   @override
@@ -122,13 +124,26 @@ class _AddPolicyControlsPageState extends State<AddPolicyControlsPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Add Policy Controls'.tr,
-          style: AppTextStyles.font16BlackRegularCairo.copyWith(
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w600,
-            color: AppColors.text,
-          ),
+        Row(
+          children: [
+            IconButton(
+              onPressed: widget.editPolicy,
+              icon: Icon(
+                Icons.arrow_back_ios,
+                size: 20.sp,
+                color: AppColors.text,
+              ),
+            ),
+            SizedBox(width: 8.w),
+            Text(
+              'Add Policy Controls'.tr,
+              style: AppTextStyles.font16BlackRegularCairo.copyWith(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w600,
+                color: AppColors.text,
+              ),
+            ),
+          ],
         ),
         SizedBox(height: 12.h),
         Expanded(
@@ -173,7 +188,7 @@ class _AddPolicyControlsPageState extends State<AddPolicyControlsPage> {
                           .copyWith(color: AppColors.white),
                       image:
                           'assets/icons_assets/database_builder_assets/plus_head.svg',
-                      color: AppColors.textButton,
+                      color: AppColors.black,
                       svgColor: AppColors.white,
                     ),
                   ),

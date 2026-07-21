@@ -341,8 +341,8 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
                   spacing: 8.h,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Policy Document ENG',
-                        style: StyleText.fontSize16Weight500
+                    Text('Control Document ENG',
+                        style: StyleText.fontSize14Weight500
                             .copyWith(color: AppColors.text)),
                     control.documentEn != null
                         ? PolicyDocumentPreviewWidget(
@@ -353,7 +353,7 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
                             width: double.infinity,
                             child: _documentButton(
                               onTap: widget.onUploadDocumentEn,
-                              title: 'Policy Document',
+                              title: 'Control Document',
                             ),
                           ),
                   ],
@@ -364,8 +364,8 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
                   spacing: 8.h,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Policy Document AR',
-                        style: StyleText.fontSize16Weight500
+                    Text('Control Document AR',
+                        style: StyleText.fontSize14Weight500
                             .copyWith(color: AppColors.text)),
                     control.documentAr != null
                         ? PolicyDocumentPreviewWidget(
@@ -376,7 +376,7 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
                             width: double.infinity,
                             child: _documentButton(
                               onTap: widget.onUploadDocumentAr,
-                              title: 'Policy Document',
+                              title: 'Control Document',
                             ),
                           ),
                   ],

@@ -821,6 +821,7 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
       policyStartDate: _startDate,
       policyEndDate: _endDate,
       controlsSubmitted: _controlsSubmitted,
+      editPolicy: () => setState(() => _step = 0),
     );
   }
 

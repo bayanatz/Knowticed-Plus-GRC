@@ -18,6 +18,7 @@ library;
 import 'dart:io';
 
 import 'package:demo_app/core/theme/app_colors.dart';
+import 'package:demo_app/core/theme/app_text_styles.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/create_new_policy_widget/add_controller_button.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_control_model.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_controls_table_widget.dart';
@@ -25,6 +26,7 @@ import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_info_form_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 
 /// class name: [CreatePolicyStep2Preview]
 ///
@@ -84,7 +86,28 @@ class CreatePolicyStep2Preview extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // -- Policy info summary (read-only) --
+            Row(
+              children: [
+                IconButton(
+                  onPressed: onAddController,
+                  icon: Icon(
+                    Icons.arrow_back_ios,
+                    size: 20.sp,
+                    color: AppColors.text,
+                  ),
+                ),
+                SizedBox(width: 8.w),
+                Text(
+                  'Preview'.tr,
+                  style: AppTextStyles.font16BlackRegularCairo.copyWith(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.text,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 12.h),
             Container(
               width: double.infinity,
               padding: EdgeInsets.all(15.sp),
@@ -116,10 +139,11 @@ class CreatePolicyStep2Preview extends StatelessWidget {
                 onRemoveDocumentAr: () {},
               ),
             ),
-            SizedBox(height: 16.h),
+            SizedBox(height: 15.h),
             // -- Controls table / Add Controller button --
+
             touchedControls.isEmpty
-                ? AddControllerButton(onPressed: onAddController)
+                ? SizedBox.shrink()
                 : PolicyControlsTableWidget(
                     controls: touchedControls,
                     onSave: onControlsChanged,

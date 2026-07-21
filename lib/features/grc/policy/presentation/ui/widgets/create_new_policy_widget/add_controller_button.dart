@@ -47,7 +47,7 @@ class AddControllerButton extends StatelessWidget {
         textStyle:
             StyleText.fontSize14Weight500.copyWith(color: AppColors.white),
         image: 'assets/icons_assets/database_builder_assets/plus_head.svg',
-        color: AppColors.textButton,
+        color: AppColors.black,
         svgColor: AppColors.white,
       ),
     );
