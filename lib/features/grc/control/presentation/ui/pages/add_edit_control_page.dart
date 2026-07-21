@@ -132,6 +132,14 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
       _numberArController.text.trim().isNotEmpty ||
       _descriptionArController.text.trim().isNotEmpty;
 
+  /// In Create mode there's no per-control Start/End Date UI — the Control
+  /// inherits the parent Policy's dates. In Edit mode the existing
+  /// per-control fields are used unchanged.
+  DateTime get _effectiveStartDate =>
+      _isEdit ? _startDate! : widget.policyStartDate;
+  DateTime get _effectiveEndDate =>
+      _isEdit ? _endDate! : widget.policyEndDate;
+
   @override
   void initState() {
     super.initState();
@@ -348,24 +356,27 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
         _startDate != null &&
         _endDate!.isBefore(_startDate!);
     return _nameController.text.trim().isNotEmpty &&
-        _nameArController.text.trim().isNotEmpty &&
         _numberController.text.trim().isNotEmpty &&
-        _numberArController.text.trim().isNotEmpty &&
         _descriptionController.text.trim().isNotEmpty &&
-        _descriptionArController.text.trim().isNotEmpty &&
+        (!_isArabicEnabled ||
+            !_arabicTouched ||
+            (_nameArController.text.trim().isNotEmpty &&
+                _numberArController.text.trim().isNotEmpty &&
+                _descriptionArController.text.trim().isNotEmpty)) &&
         !containsArabicLetters(_nameController.text) &&
-        !containsEnglishLetters(_nameArController.text) &&
         !containsArabicLetters(_numberController.text) &&
-        !containsEnglishLetters(_numberArController.text) &&
         !containsArabicLetters(_descriptionController.text) &&
-        !containsEnglishLetters(_descriptionArController.text) &&
+        (!_isArabicEnabled ||
+            (!containsEnglishLetters(_nameArController.text) &&
+                !containsEnglishLetters(_numberArController.text) &&
+                !containsEnglishLetters(_descriptionArController.text))) &&
         _frequency != null &&
-        _startDate != null &&
-        _endDate != null &&
-        !endBeforeStart &&
+        (!_isEdit ||
+            (_startDate != null && _endDate != null && !endBeforeStart)) &&
         double.tryParse(_weightController.text.trim()) != null &&
-        _realSelectedDepartments.isNotEmpty &&
-        (_equalWeights || _totalDepartmentsWeight == 100);
+        (!_isEdit ||
+            (_realSelectedDepartments.isNotEmpty &&
+                (_equalWeights || _totalDepartmentsWeight == 100)));
   }
 
   void _onUploadDocumentEn() {
@@ -1194,10 +1205,63 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                     ),
                                   ],
                                   SizedBox(height: 15.h),
-                                  isTablet
-                                      ? Row(children: [
-                                          Expanded(
-                                            child: CustomDropdownCalendar(
+                                  if (_isEdit) ...[
+                                    isTablet
+                                        ? Row(children: [
+                                            Expanded(
+                                              child: CustomDropdownCalendar(
+                                                borderRadius:
+                                                    BorderRadius.circular(4.r),
+                                                label: 'Start Date'.tr,
+                                                hint: 'Select Start Date'.tr,
+                                                value: _startDate,
+                                                onChanged: (d) => setState(
+                                                    () => _startDate = d),
+                                                fillColor:
+                                                    AppColors.background,
+                                                dateFormatter: (d) => intl
+                                                    .DateFormat('d MMM yyyy')
+                                                    .format(d),
+                                                errorText: _submitted &&
+                                                        _startDate == null
+                                                    ? 'This field is required.'
+                                                        .tr
+                                                    : null,
+                                              ),
+                                            ),
+                                            SizedBox(width: 10.w),
+                                            Expanded(
+                                              child: CustomDropdownCalendar(
+                                                borderRadius:
+                                                    BorderRadius.circular(4.r),
+                                                label: 'End Date'.tr,
+                                                hint: 'Select End Date'.tr,
+                                                value: _endDate,
+                                                onChanged: (d) => setState(
+                                                    () => _endDate = d),
+                                                fillColor:
+                                                    AppColors.background,
+                                                firstDate: _startDate,
+                                                dateFormatter: (d) => intl
+                                                    .DateFormat('d MMM yyyy')
+                                                    .format(d),
+                                                errorText: _submitted &&
+                                                        _endDate == null
+                                                    ? 'This field is required.'
+                                                        .tr
+                                                    : (_endDate != null &&
+                                                            _startDate !=
+                                                                null &&
+                                                            _endDate!.isBefore(
+                                                                _startDate!)
+                                                        ? 'End date cannot be before start date.'
+                                                            .tr
+                                                        : null),
+                                              ),
+                                            ),
+                                          ])
+                                        : Column(children: [
+                                            CustomDropdownCalendar(
                                               borderRadius:
                                                   BorderRadius.circular(4.r),
                                               label: 'Start Date'.tr,
@@ -1206,18 +1270,13 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                               onChanged: (d) => setState(
                                                   () => _startDate = d),
                                               fillColor: AppColors.background,
-                                              dateFormatter: (d) =>
-                                                  intl.DateFormat('d MMM yyyy')
-                                                      .format(d),
                                               errorText: _submitted &&
                                                       _startDate == null
                                                   ? 'This field is required.'.tr
                                                   : null,
                                             ),
-                                          ),
-                                          SizedBox(width: 10.w),
-                                          Expanded(
-                                            child: CustomDropdownCalendar(
+                                            SizedBox(height: 15.h),
+                                            CustomDropdownCalendar(
                                               borderRadius:
                                                   BorderRadius.circular(4.r),
                                               label: 'End Date'.tr,
@@ -1227,9 +1286,6 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                                   setState(() => _endDate = d),
                                               fillColor: AppColors.background,
                                               firstDate: _startDate,
-                                              dateFormatter: (d) =>
-                                                  intl.DateFormat('d MMM yyyy')
-                                                      .format(d),
                                               errorText: _submitted &&
                                                       _endDate == null
                                                   ? 'This field is required.'.tr
@@ -1241,47 +1297,9 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                                           .tr
                                                       : null),
                                             ),
-                                          ),
-                                        ])
-                                      : Column(children: [
-                                          CustomDropdownCalendar(
-                                            borderRadius:
-                                                BorderRadius.circular(4.r),
-                                            label: 'Start Date'.tr,
-                                            hint: 'Select Start Date'.tr,
-                                            value: _startDate,
-                                            onChanged: (d) =>
-                                                setState(() => _startDate = d),
-                                            fillColor: AppColors.background,
-                                            errorText: _submitted &&
-                                                    _startDate == null
-                                                ? 'This field is required.'.tr
-                                                : null,
-                                          ),
-                                          SizedBox(height: 15.h),
-                                          CustomDropdownCalendar(
-                                            borderRadius:
-                                                BorderRadius.circular(4.r),
-                                            label: 'End Date'.tr,
-                                            hint: 'Select End Date'.tr,
-                                            value: _endDate,
-                                            onChanged: (d) =>
-                                                setState(() => _endDate = d),
-                                            fillColor: AppColors.background,
-                                            firstDate: _startDate,
-                                            errorText: _submitted &&
-                                                    _endDate == null
-                                                ? 'This field is required.'.tr
-                                                : (_endDate != null &&
-                                                        _startDate != null &&
-                                                        _endDate!.isBefore(
-                                                            _startDate!)
-                                                    ? 'End date cannot be before start date.'
-                                                        .tr
-                                                    : null),
-                                          ),
-                                        ]),
-                                  SizedBox(height: 15.h),
+                                          ]),
+                                    SizedBox(height: 15.h),
+                                  ],
                                   isTablet
                                       ? Row(children: [
                                           Expanded(
@@ -1442,7 +1460,7 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                     ],
                                   ),
                                   SizedBox(height: 15.h),
-                                  _buildDepartmentsSection(),
+                                  if (_isEdit) _buildDepartmentsSection(),
                                   _buildAssigneesSections(),
                                 ],
                               ),
