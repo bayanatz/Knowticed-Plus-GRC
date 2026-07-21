@@ -586,7 +586,7 @@ git commit -m "feat(grc): add read-only ControlDetailsPage"
 ### Task 3: Wire the Controls list to open `ControlDetailsPage`
 
 **Files:**
-- Modify: `lib/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_view_mode_widget.dart`
+- Modify: `lib/features/grc/policy/presentation/ui/widgets/policy_details_widget/policy_view_mode_widget.dart`
 - Modify: `lib/features/grc/policy/presentation/ui/pages/policy_details_page.dart`
 
 **Interfaces:**
