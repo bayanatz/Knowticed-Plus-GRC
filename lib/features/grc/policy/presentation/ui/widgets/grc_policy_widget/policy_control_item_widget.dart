@@ -194,6 +194,18 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
     final isArabicEnabled = widget.isArabicEnabled;
     final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
 
+    Widget twoColumns(Widget left, Widget right) => isTablet
+        ? Row(children: [
+            Expanded(child: left),
+            SizedBox(width: 10.w),
+            Expanded(child: right),
+          ])
+        : Column(children: [
+            left,
+            SizedBox(height: 15.h),
+            right,
+          ]);
+
     final frequencyField = CustomDropdown<String>(
       label: 'Frequency',
       hint: 'Choose Here',
@@ -278,30 +290,7 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
                     color: AppColors.secondaryText, size: 18.sp),
               ),
             ),
-          if (isArabicEnabled && isTablet)
-            Row(children: [
-              Expanded(
-                child: _textField(
-                  label: 'Control Name',
-                  hint: 'Text here',
-                  controller: control.nameController,
-                  isMandatory: true,
-                  englishOnlyError: 'Control Name must be written in English',
-                ),
-              ),
-              SizedBox(width: 10.w),
-              Expanded(
-                child: _textField(
-                  label: 'اسم ضابط',
-                  hint: 'اكتب هنا',
-                  controller: control.nameArController,
-                  rtl: true,
-                  isMandatory: true,
-                  arabicOnlyError: 'يجب كتابة اسم ضابط باللغة العربية',
-                ),
-              ),
-            ])
-          else ...[
+          twoColumns(
             _textField(
               label: 'Control Name',
               hint: 'Text here',
@@ -309,53 +298,35 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
               isMandatory: true,
               englishOnlyError: 'Control Name must be written in English',
             ),
-            if (isArabicEnabled) ...[
-              SizedBox(height: 15.h),
-              _textField(
-                label: 'اسم ضابط',
-                hint: 'اكتب هنا',
-                controller: control.nameArController,
-                rtl: true,
-                isMandatory: true,
-                arabicOnlyError: 'يجب كتابة اسم ضابط باللغة العربية',
-              ),
-            ],
-          ],
+            isArabicEnabled
+                ? _textField(
+                    label: 'اسم ضابط',
+                    hint: 'اكتب هنا',
+                    controller: control.nameArController,
+                    rtl: true,
+                    isMandatory: true,
+                    arabicOnlyError: 'يجب كتابة اسم ضابط باللغة العربية',
+                  )
+                : _textField(
+                    label: 'Control Number'.tr,
+                    hint: 'Text here',
+                    controller: control.numberController,
+                    isMandatory: true,
+                    englishOnlyError:
+                        'Control Number must be written in English'.tr,
+                  ),
+          ),
           SizedBox(height: 15.h),
-          if (isArabicEnabled && isTablet)
-            Row(children: [
-              Expanded(
-                child: _textField(
-                  label: 'Control Number'.tr,
-                  hint: 'Text here',
-                  controller: control.numberController,
-                  isMandatory: true,
-                  englishOnlyError:
-                      'Control Number must be written in English'.tr,
-                ),
+          if (isArabicEnabled) ...[
+            twoColumns(
+              _textField(
+                label: 'Control Number'.tr,
+                hint: 'Text here',
+                controller: control.numberController,
+                isMandatory: true,
+                englishOnlyError:
+                    'Control Number must be written in English'.tr,
               ),
-              SizedBox(width: 10.w),
-              Expanded(
-                child: _textField(
-                  label: 'رقم ضابط',
-                  hint: 'اكتب هنا',
-                  controller: control.numberArController,
-                  rtl: true,
-                  isMandatory: true,
-                  arabicOnlyError: 'يجب كتابة رقم ضابط باللغة العربية',
-                ),
-              ),
-            ])
-          else ...[
-            _textField(
-              label: 'Control Number'.tr,
-              hint: 'Text here',
-              controller: control.numberController,
-              isMandatory: true,
-              englishOnlyError: 'Control Number must be written in English'.tr,
-            ),
-            if (isArabicEnabled) ...[
-              SizedBox(height: 15.h),
               _textField(
                 label: 'رقم ضابط',
                 hint: 'اكتب هنا',
@@ -364,9 +335,9 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
                 isMandatory: true,
                 arabicOnlyError: 'يجب كتابة رقم ضابط باللغة العربية',
               ),
-            ],
+            ),
+            SizedBox(height: 15.h),
           ],
-          SizedBox(height: 15.h),
           _textField(
             label: 'Control Description',
             hint: 'Text here',
