@@ -23,7 +23,6 @@ import 'dart:io';
 
 import 'package:demo_app/core/custom/5-custom_button.dart';
 import 'package:demo_app/core/custom/10_custom_upload_document.dart';
-import 'package:demo_app/core/custom/46_custom_image_picker.dart';
 import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart'
     hide showUploadDialog;
 import 'package:demo_app/core/custom/loading.dart';
@@ -320,38 +319,25 @@ class _PolicyEditPageState extends State<PolicyEditPage> {
                       ),
                       SizedBox(height: 12.h),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          CustomImagePicker(
-                            radius: 30.r,
-                            badgeRadius: 11.r,
-                            imageFile: _imageFile,
-                            imageUrl: _imageUrl,
-                            onImagePicked: (file) =>
-                                setState(() => _imageFile = file),
+                          Text(
+                            _statusInactive ? 'Inactive'.tr : 'Active'.tr,
+                            style: StyleText.fontSize14Weight500
+                                .copyWith(color: AppColors.text),
                           ),
-                          Row(
-                            children: [
-                              Text(
-                                _statusInactive ? 'Inactive'.tr : 'Active'.tr,
-                                style: StyleText.fontSize14Weight500
-                                    .copyWith(color: AppColors.text),
-                              ),
-                              SizedBox(width: 10.w),
-                              FlutterSwitch(
-                                width: 38.sp,
-                                height: 22.sp,
-                                padding: 3.sp,
-                                borderRadius: 20.sp,
-                                toggleSize: 16.sp,
-                                activeColor: AppColors.secondaryPrimary,
-                                inactiveColor: Colors.grey.withOpacity(.16),
-                                value: !_statusInactive,
-                                onToggle: (v) =>
-                                    setState(() => _statusInactive = !v),
-                              ),
-                            ],
+                          SizedBox(width: 10.w),
+                          FlutterSwitch(
+                            width: 38.sp,
+                            height: 22.sp,
+                            padding: 3.sp,
+                            borderRadius: 20.sp,
+                            toggleSize: 16.sp,
+                            activeColor: AppColors.secondaryPrimary,
+                            inactiveColor: Colors.grey.withOpacity(.16),
+                            value: !_statusInactive,
+                            onToggle: (v) =>
+                                setState(() => _statusInactive = !v),
                           ),
                         ],
                       ),
@@ -372,6 +358,10 @@ class _PolicyEditPageState extends State<PolicyEditPage> {
                                 isArabicEnabled: _isArabicEnabled,
                                 onArabicToggle: (v) =>
                                     setState(() => _isArabicEnabled = v),
+                                imageFile: _imageFile,
+                                imageUrl: _imageUrl,
+                                onImagePicked: (file) =>
+                                    setState(() => _imageFile = file),
                                 submitted: _submitted,
                                 nameController: _nameController,
                                 nameArController: _nameArController,

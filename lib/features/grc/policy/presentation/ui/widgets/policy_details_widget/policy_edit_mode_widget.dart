@@ -13,6 +13,9 @@
 ///                                status toggle out to PolicyEditPage
 library;
 
+import 'dart:io';
+
+import 'package:demo_app/core/custom/46_custom_image_picker.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_document_info.dart';
@@ -35,6 +38,9 @@ import 'package:get/get_utils/src/extensions/internacionalization.dart';
 class PolicyEditModeWidget extends StatelessWidget {
   final bool isArabicEnabled;
   final ValueChanged<bool> onArabicToggle;
+  final File? imageFile;
+  final String? imageUrl;
+  final ValueChanged<File> onImagePicked;
 
   final bool submitted;
   final TextEditingController nameController;
@@ -59,6 +65,9 @@ class PolicyEditModeWidget extends StatelessWidget {
     super.key,
     required this.isArabicEnabled,
     required this.onArabicToggle,
+    required this.onImagePicked,
+    this.imageFile,
+    this.imageUrl,
     required this.submitted,
     required this.nameController,
     required this.nameArController,
@@ -85,24 +94,36 @@ class PolicyEditModeWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Create Arabic Version'.tr,
-              style: StyleText.fontSize14Weight500
-                  .copyWith(color: AppColors.text),
+            CustomImagePicker(
+              radius: 30.r,
+              badgeRadius: 11.r,
+              imageFile: imageFile,
+              imageUrl: imageUrl,
+              onImagePicked: onImagePicked,
             ),
-            SizedBox(width: 10.w),
-            FlutterSwitch(
-              width: 38.sp,
-              height: 22.sp,
-              padding: 3.sp,
-              borderRadius: 20.sp,
-              toggleSize: 16.sp,
-              activeColor: AppColors.secondaryPrimary,
-              inactiveColor: Colors.grey.withOpacity(.16),
-              value: isArabicEnabled,
-              onToggle: onArabicToggle,
+            Row(
+              children: [
+                Text(
+                  'Create Arabic Version'.tr,
+                  style: StyleText.fontSize14Weight500
+                      .copyWith(color: AppColors.text),
+                ),
+                SizedBox(width: 10.w),
+                FlutterSwitch(
+                  width: 38.sp,
+                  height: 22.sp,
+                  padding: 3.sp,
+                  borderRadius: 20.sp,
+                  toggleSize: 16.sp,
+                  activeColor: AppColors.secondaryPrimary,
+                  inactiveColor: Colors.grey.withOpacity(.16),
+                  value: isArabicEnabled,
+                  onToggle: onArabicToggle,
+                ),
+              ],
             ),
           ],
         ),
