@@ -286,12 +286,21 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
         !_startDate!.isBefore(startOfToday) &&
         !_endDate!.isBefore(_startDate!) &&
         _weightController.text.trim().isNotEmpty &&
-        (!_isArabicEnabled ||
+        (!_isArabicEnabled || !_arabicTouched ||
             (_nameArController.text.trim().isNotEmpty &&
                 _numberArController.text.trim().isNotEmpty &&
                 _descriptionArController.text.trim().isNotEmpty)) &&
         !_hasPolicyLanguageErrors;
   }
+
+  /// True once the user has entered something into any Arabic policy-info
+  /// field. Turning the Arabic toggle on by itself doesn't make Name/
+  /// Number/Description AR required — only starting to fill one of them
+  /// in does, at which point all three become required together.
+  bool get _arabicTouched =>
+      _nameArController.text.trim().isNotEmpty ||
+      _numberArController.text.trim().isNotEmpty ||
+      _descriptionArController.text.trim().isNotEmpty;
 
   /// function name: [_hasPolicyLanguageErrors]
   ///

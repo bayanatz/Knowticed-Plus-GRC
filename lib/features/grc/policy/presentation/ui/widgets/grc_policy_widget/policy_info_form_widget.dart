@@ -114,6 +114,15 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
 
   void _onTextChanged() => setState(() {});
 
+  /// True once the user has entered something into any Arabic field.
+  /// Turning the Arabic toggle on by itself doesn't make Name/Number/
+  /// Description AR required — only starting to fill one of them in does,
+  /// at which point all three become required together.
+  bool get _arabicTouched =>
+      widget.nameArController.text.trim().isNotEmpty ||
+      widget.numberArController.text.trim().isNotEmpty ||
+      widget.descriptionArController.text.trim().isNotEmpty;
+
   /// Live validation for the Policy Weight field: must be a positive number
   /// no greater than 100.
   String? get _weightError {
@@ -231,7 +240,7 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
                   hint: 'اكتب هنا',
                   controller: widget.nameArController,
                   rtl: true,
-                  isMandatory: true,
+                  isMandatory: _arabicTouched,
                   arabicOnlyError: 'يجب كتابة اسم السياسة باللغة العربية',
                 )
               : _textField(
@@ -259,7 +268,7 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
               hint: 'اكتب هنا',
               controller: widget.numberArController,
               rtl: true,
-              isMandatory: true,
+              isMandatory: _arabicTouched,
               arabicOnlyError: 'يجب كتابة رقم السياسة باللغة العربية',
             ),
           ),
@@ -287,7 +296,7 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
             minLines: 3,
             maxLength: 500,
             showCharCount: true,
-            isMandatory: true,
+            isMandatory: _arabicTouched,
             arabicOnlyError: 'يجب كتابة وصف السياسة باللغة العربية',
           ),
           SizedBox(height: 15.h),
