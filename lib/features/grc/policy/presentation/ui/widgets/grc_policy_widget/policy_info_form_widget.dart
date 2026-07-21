@@ -36,6 +36,11 @@ class PolicyInfoFormWidget extends StatefulWidget {
   final bool isArabicEnabled;
   final bool submitted;
 
+  /// When true (the Create New Policy wizard's Preview step), every upload
+  /// action is a no-op, so an empty document should show nothing instead
+  /// of an "Upload" button that looks actionable but isn't.
+  final bool readOnly;
+
   final TextEditingController nameController;
   final TextEditingController nameArController;
   final TextEditingController numberController;
@@ -60,6 +65,7 @@ class PolicyInfoFormWidget extends StatefulWidget {
     super.key,
     required this.isArabicEnabled,
     this.submitted = false,
+    this.readOnly = false,
     required this.nameController,
     required this.nameArController,
     required this.numberController,
@@ -185,6 +191,48 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
 
     if (!rtl) return field;
     return Directionality(textDirection: TextDirection.rtl, child: field);
+  }
+
+  /// function name: [_documentSection]
+  ///
+  /// purpose: one Policy Document column (label + content). When there's
+  ///          no document and [PolicyInfoFormWidget.readOnly] is true (the
+  ///          Preview step, where uploading is a no-op), renders nothing at
+  ///          all instead of a dead-looking "Upload" button.
+  ///
+  /// parameters:
+  ///            [String] title: the column's label text
+  ///            [PolicyDocumentInfo?] document: the uploaded document, if any
+  ///            [VoidCallback] onUpload: invoked when "Upload" is tapped
+  ///            [VoidCallback] onRemove: invoked when the uploaded document is removed
+  ///
+  /// return type: [Widget]
+  Widget _documentSection({
+    required String title,
+    required PolicyDocumentInfo? document,
+    required VoidCallback onUpload,
+    required VoidCallback onRemove,
+  }) {
+    if (document == null && widget.readOnly) return const SizedBox.shrink();
+    return Expanded(
+      child: Column(
+        spacing: 8.h,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title,
+              style:
+                  StyleText.fontSize16Weight500.copyWith(color: AppColors.text)),
+          document != null
+              ? PolicyDocumentPreviewWidget(
+                  document: document, onRemove: onRemove)
+              : SizedBox(
+                  width: double.infinity,
+                  child:
+                      _documentButton(onTap: onUpload, title: 'Policy Document'),
+                ),
+        ],
+      ),
+    );
   }
 
   Widget _documentButton({required VoidCallback onTap, required String title}) {
@@ -370,49 +418,19 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              child: Column(
-                spacing: 8.h,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Policy Document ENG',
-                      style: StyleText.fontSize16Weight500
-                          .copyWith(color: AppColors.text)),
-                  widget.documentEn != null
-                      ? PolicyDocumentPreviewWidget(
-                          document: widget.documentEn!,
-                          onRemove: widget.onRemoveDocumentEn)
-                      : SizedBox(
-                          width: double.infinity,
-                          child: _documentButton(
-                              onTap: widget.onUploadDocumentEn,
-                              title: 'Policy Document'),
-                        ),
-                ],
-              ),
+            _documentSection(
+              title: 'Policy Document ENG',
+              document: widget.documentEn,
+              onUpload: widget.onUploadDocumentEn,
+              onRemove: widget.onRemoveDocumentEn,
             ),
             SizedBox(width: 10.w),
             if (widget.isArabicEnabled)
-              Expanded(
-                child: Column(
-                  spacing: 8.h,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Policy Document AR',
-                        style: StyleText.fontSize16Weight500
-                            .copyWith(color: AppColors.text)),
-                    widget.documentAr != null
-                        ? PolicyDocumentPreviewWidget(
-                            document: widget.documentAr!,
-                            onRemove: widget.onRemoveDocumentAr)
-                        : SizedBox(
-                            width: double.infinity,
-                            child: _documentButton(
-                                onTap: widget.onUploadDocumentAr,
-                                title: 'Policy Document'),
-                          ),
-                  ],
-                ),
+              _documentSection(
+                title: 'Policy Document AR',
+                document: widget.documentAr,
+                onUpload: widget.onUploadDocumentAr,
+                onRemove: widget.onRemoveDocumentAr,
               )
             else if (isTablet)
               const Expanded(child: SizedBox()),

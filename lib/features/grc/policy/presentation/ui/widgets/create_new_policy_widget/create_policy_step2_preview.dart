@@ -15,6 +15,8 @@ library;
 /// Author: Mohamed Magdy Abdelkhalek
 /// Created At: 16/7/2026
 
+import 'dart:io';
+
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/create_new_policy_widget/add_controller_button.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_control_model.dart';
@@ -45,6 +47,8 @@ class CreatePolicyStep2Preview extends StatelessWidget {
   final TextEditingController weightController;
   final DateTime? startDate;
   final DateTime? endDate;
+  final File? imageFile;
+  final String? imageUrl;
   final PolicyDocumentInfo? documentEn;
   final PolicyDocumentInfo? documentAr;
   final List<PolicyControlModel> touchedControls;
@@ -68,7 +72,29 @@ class CreatePolicyStep2Preview extends StatelessWidget {
     required this.touchedControls,
     required this.onAddController,
     required this.onControlsChanged,
+    this.imageFile,
+    this.imageUrl,
   });
+
+  /// function name: [_buildReadOnlyImage]
+  ///
+  /// purpose: read-only preview of the policy's picked image — the same
+  ///          File/URL priority [CustomImagePicker] uses, minus its edit
+  ///          badge, since Preview never lets the user change anything.
+  ///          Only called when [imageFile] or [imageUrl] is present.
+  ///
+  /// parameters: none
+  ///
+  /// return type: [Widget]
+  Widget _buildReadOnlyImage() {
+    return CircleAvatar(
+      radius: 30.r,
+      backgroundColor: AppColors.grey,
+      backgroundImage: imageFile != null
+          ? FileImage(imageFile!.absolute) as ImageProvider
+          : NetworkImage(imageUrl!),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,6 +104,10 @@ class CreatePolicyStep2Preview extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if (imageFile != null || (imageUrl != null && imageUrl!.isNotEmpty)) ...[
+              _buildReadOnlyImage(),
+              SizedBox(height: 16.h),
+            ],
             // -- Policy info summary (read-only) --
             Container(
               width: double.infinity,
@@ -88,6 +118,7 @@ class CreatePolicyStep2Preview extends StatelessWidget {
               ),
               child: PolicyInfoFormWidget(
                 isArabicEnabled: isArabicEnabled,
+                readOnly: true,
                 nameController: nameController,
                 nameArController: nameArController,
                 numberController: numberController,

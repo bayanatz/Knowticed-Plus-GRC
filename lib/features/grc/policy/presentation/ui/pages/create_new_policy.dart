@@ -839,6 +839,8 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
       weightController: _weightController,
       startDate: _startDate,
       endDate: _endDate,
+      imageFile: _imageFile,
+      imageUrl: _imageUrl,
       documentEn: _documentEn,
       documentAr: _documentAr,
       touchedControls: _touchedControls,
