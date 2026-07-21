@@ -676,6 +676,25 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
       return;
     }
 
+    if (state is PolicyActionPartialSuccess) {
+      // The Policy itself was saved/updated successfully at this point —
+      // only one or more of its Controls failed. Surface that instead of
+      // staying silent, and still leave: the list needs to reflect the
+      // Policy's new state either way.
+      final reasons =
+          state.failedControls.map((f) => f.message).toSet().join('; ');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            '${'Policy saved, but one or more Controls failed to save:'.tr} $reasons',
+          ),
+          backgroundColor: AppColors.red,
+        ),
+      );
+      Navigator.of(context).pop(true);
+      return;
+    }
+
     if (state is PolicyFailure) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
