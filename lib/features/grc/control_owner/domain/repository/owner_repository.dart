@@ -9,6 +9,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:demo_app/core/network/failure_model.dart';
 import 'package:demo_app/features/grc/control/domain/entities/assigning_control.dart';
+import 'package:demo_app/features/grc/control_owner/domain/entities/control_owner_history_entry.dart';
 import 'package:demo_app/features/grc/control_owner/domain/entities/owner_entity.dart';
 import 'package:demo_app/features/grc/control_owner/domain/entities/owner_status.dart';
 
@@ -37,5 +38,11 @@ abstract class OwnerRepository {
     List<AssigningControlEntity>? assigningControls,
     List<List<String>>? controlOwnerPermissions,
     OwnerStatus? status,
+  });
+
+  Future<Either<Failure, List<ControlOwnerHistoryEntry>>> getControlOwnerHistory({
+    required String moduleId,
+    required String policyId,
+    required String controlId,
   });
 }

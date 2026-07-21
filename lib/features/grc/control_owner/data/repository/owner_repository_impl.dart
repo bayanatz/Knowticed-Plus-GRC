@@ -13,6 +13,7 @@ import 'package:demo_app/features/grc/control/data/models/assigning_control_mode
 import 'package:demo_app/features/grc/control/domain/entities/assigning_control.dart';
 import 'package:demo_app/features/grc/control_owner/data/data_source/owner_firebase_data_source.dart';
 import 'package:demo_app/features/grc/control_owner/data/models/owner_model.dart';
+import 'package:demo_app/features/grc/control_owner/domain/entities/control_owner_history_entry.dart';
 import 'package:demo_app/features/grc/control_owner/domain/entities/owner_entity.dart';
 import 'package:demo_app/features/grc/control_owner/domain/entities/owner_status.dart';
 import 'package:demo_app/features/grc/control_owner/domain/repository/owner_repository.dart';
@@ -104,6 +105,42 @@ class OwnerRepositoryImpl implements OwnerRepository {
       );
       final saved = await _firebaseDataSource.update(updated, moduleId: moduleId);
       return Right(saved.toEntity());
+    } catch (e) {
+      return Left(FirebaseFailure(e.toString()));
+    }
+  }
+
+  /// function name: [getControlOwnerHistory]
+  ///
+  /// purpose: fetch every Control Owner ever recorded for [moduleId]
+  ///          (including removed ones — their past stints on this Control
+  ///          are still real history), and flat-map each one's completed
+  ///          assignment stints on the {policyId, controlId} pair via
+  ///          [OwnerModel.toControlAssignmentHistory], sorted by endDate
+  ///          descending.
+  ///
+  /// parameters: see [OwnerRepository.getControlOwnerHistory]
+  ///
+  /// return type: [Future<Either<Failure, List<ControlOwnerHistoryEntry>>>] - completed stints, or a Failure
+  @override
+  Future<Either<Failure, List<ControlOwnerHistoryEntry>>> getControlOwnerHistory({
+    required String moduleId,
+    required String policyId,
+    required String controlId,
+  }) async {
+    try {
+      final models = await _firebaseDataSource.getAll(
+        moduleId: moduleId,
+        includeRemoved: true,
+      );
+      final entries = models
+          .expand((m) => m.toControlAssignmentHistory(
+                policyId: policyId,
+                controlId: controlId,
+              ))
+          .toList();
+      entries.sort((a, b) => b.endDate.compareTo(a.endDate));
+      return Right(entries);
     } catch (e) {
       return Left(FirebaseFailure(e.toString()));
     }
