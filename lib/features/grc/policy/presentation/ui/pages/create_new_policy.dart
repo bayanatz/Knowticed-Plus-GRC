@@ -215,6 +215,22 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
   bool get _isWeightValid =>
       _touchedControls.isEmpty || _totalControlWeight == 100;
 
+  /// function name: [_canPreview]
+  ///
+  /// purpose: same conditions [_handlePreviewPressed] already checks before
+  ///          allowing the step transition — reused here so the Preview
+  ///          button itself is disabled/greyed while any of them fail,
+  ///          instead of the button always being clickable and only then
+  ///          surfacing per-field required errors (which fired the moment
+  ///          any field anywhere was touched, not just the one being
+  ///          edited).
+  ///
+  /// parameters: none
+  ///
+  /// return type: [bool]
+  bool get _canPreview =>
+      !_hasPolicyLanguageErrors && !_hasControlErrors && !_hasIncompleteTouchedControl;
+
   void _onUploadDocumentEn() {
     showUploadDialog(
       context: context,
@@ -880,6 +896,7 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
         return CreatePolicyStep1Buttons(
           onSaveForLater: () => _handleSaveForLaterPressed(cubit),
           onPreview: _handlePreviewPressed,
+          previewEnabled: _canPreview,
         );
       case 2:
         return CreatePolicyStep2Buttons(

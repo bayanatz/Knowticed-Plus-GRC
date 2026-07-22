@@ -33,11 +33,13 @@ import 'package:get/get_utils/src/extensions/internacionalization.dart';
 class CreatePolicyStep1Buttons extends StatelessWidget {
   final VoidCallback onSaveForLater;
   final VoidCallback onPreview;
+  final bool previewEnabled;
 
   const CreatePolicyStep1Buttons({
     super.key,
     required this.onSaveForLater,
     required this.onPreview,
+    required this.previewEnabled,
   });
 
   @override
@@ -56,10 +58,13 @@ class CreatePolicyStep1Buttons extends StatelessWidget {
         ),
         customButton(
           title: 'Preview'.tr,
-          function: onPreview,
+          // Greyed and inert until the form actually validates — replaces
+          // the old always-clickable button whose only feedback was
+          // per-field required errors triggered by touching any field.
+          function: previewEnabled ? onPreview : () {},
           height: 38.h,
           width: 150.w,
-          color: AppColors.primary,
+          color: previewEnabled ? AppColors.primary : AppColors.colorGrey,
           textStyle: StyleText.fontSize14Weight500
               .copyWith(color: AppColors.textButton),
         ),
