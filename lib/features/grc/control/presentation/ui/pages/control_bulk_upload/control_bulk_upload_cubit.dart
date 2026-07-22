@@ -19,7 +19,7 @@ library;
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
 import 'package:demo_app/features/department/presentation/controller/add_department_controller.dart';
 import 'package:demo_app/features/grc/control/domain/entities/assigning_control.dart';
-import 'package:demo_app/features/grc/control/domain/entities/control_status.dart';
+import 'package:demo_app/features/grc/control/domain/entities/control_status_resolver.dart';
 import 'package:demo_app/features/grc/control/domain/use_cases/create_control_usecase.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/control_bulk_upload/control_bulk_row_form.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/control_bulk_upload/control_bulk_upload_rows.dart';
@@ -200,7 +200,13 @@ class ControlBulkUploadCubit extends Cubit<ControlBulkUploadState> {
           departmentsWeights: row.departmentWeights,
           equalWeights: _equalWeights,
           score: 0,
-          status: ControlStatus.active,
+          // A row with no Control Champion/Owner emails must start
+          // Unassigned, never Active — matching the same "no assignee = no
+          // Active" rule the single Add/Edit Control page enforces.
+          status: computeAssigneeBasedControlStatus(
+            effectiveStartDate: start,
+            hasAnyAssignee: row.championEmails.isNotEmpty || row.ownerEmails.isNotEmpty,
+          ),
         ),
       );
 

@@ -509,7 +509,12 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
       endDate: _endDate ?? DateTime.now(),
       policyWeight: double.tryParse(_weightController.text.trim()) ?? 0,
       moduleId: widget.moduleId,
-      controls: _buildPendingControls(ControlStatus.active),
+      // Controls added inline here have no Champion/Owner assignment UI at
+      // all in this wizard, so a freshly published one must start
+      // Unassigned — never Active — matching the same "no assignee = can't
+      // be Active" rule the single Add/Edit Control page enforces (see
+      // ControlStatus doc and add_edit_control_page.dart's _resolvedStatus).
+      controls: _buildPendingControls(ControlStatus.unassigned),
       imageFile: _imageFile,
       policyDocumentFileEn: _documentEn?.file,
       policyDocumentFileAr: _documentAr?.file,
@@ -522,7 +527,8 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
   ///          [widget.existingPolicy] and its Controls in place via
   ///          [PolicyCubit.updatePolicyWithControls] instead of creating a
   ///          new Policy. [status] decides whether the Policy (and every
-  ///          touched control) ends up Draft again or Active.
+  ///          touched control) ends up Draft again or Unassigned — never
+  ///          Active, since this wizard has no Champion/Owner assignment UI.
   ///
   /// parameters:
   ///            [PolicyCubit] cubit: the cubit instance from the BlocProvider
@@ -531,7 +537,7 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
   /// return type: [void]
   void _updateExisting(PolicyCubit cubit, {required PolicyStatus status}) {
     final controlStatus =
-        status == PolicyStatus.active ? ControlStatus.active : ControlStatus.draft;
+        status == PolicyStatus.active ? ControlStatus.unassigned : ControlStatus.draft;
     final currentIds = _touchedControls
         .map((c) => c.existingControlId)
         .whereType<String>()

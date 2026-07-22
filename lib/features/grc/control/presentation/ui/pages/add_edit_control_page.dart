@@ -103,6 +103,11 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
   PolicyDocumentInfo? _documentEn;
   PolicyDocumentInfo? _documentAr;
   bool _submitted = false;
+  /// The "Status" switch: true once the user manually flips an Active
+  /// control to Inactive. Initialized from the existing control's status in
+  /// Edit mode (see initState) so re-opening an already-Inactive control
+  /// shows the switch correctly; always false in Create mode.
+  bool _manualInactive = false;
   List<String>? _currentChampionEmails;
   List<String>? _currentOwnerEmails;
 
@@ -162,6 +167,7 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
     _frequency = existing.frequency.isEmpty ? null : existing.frequency;
     _startDate = existing.startDate;
     _endDate = existing.endDate;
+    _manualInactive = existing.status == ControlStatus.inactive;
     _documentEn = existing.controlsDocumentEn != null
         ? PolicyDocumentInfo.fromUrl(existing.controlsDocumentEn!)
         : null;
@@ -541,13 +547,15 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
     return championEmails.isNotEmpty || ownerEmails.isNotEmpty;
   }
 
-  /// Applies the assignee-based override on top of [requested]: Draft
-  /// (Save For Later) always wins as-is; any other status becomes
-  /// Unassigned unless at least one Champion or Owner is currently
-  /// assigned, in which case [requested] (the date-computed
-  /// Scheduled/Active) stands.
+  /// Applies the manual-Inactive and assignee-based overrides on top of
+  /// [requested]: Draft (Save For Later) always wins as-is. Otherwise, if
+  /// the user flipped the "Status" switch to Inactive, that wins next.
+  /// Failing both, any other status becomes Unassigned unless at least one
+  /// Champion or Owner is currently assigned, in which case [requested]
+  /// (the date-computed Scheduled/Active) stands.
   ControlStatus _resolvedStatus(BuildContext context, ControlStatus requested) {
     if (requested == ControlStatus.draft) return requested;
+    if (_manualInactive) return ControlStatus.inactive;
     return _hasAnyAssignee(context) ? requested : ControlStatus.unassigned;
   }
 
@@ -1129,28 +1137,32 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                           _isEdit ? 'Edit Control'.tr : 'Add Control'.tr,
                         ],
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          SvgPicture.asset(
-                              'assets/icons_assets/data_grc_assets/icons_status.svg'),
-                          SizedBox(width: 10.w),
-                          Text('Status'.tr),
-                          SizedBox(width: 10.w),
-                          // FlutterSwitch(
-                          //   width: 38.sp,
-                          //   height: 22.sp,
-                          //   padding: 3.sp,
-                          //   borderRadius: 20.sp,
-                          //   toggleSize: 16.sp,
-                          //   activeColor: AppColors.secondaryPrimary,
-                          //   inactiveColor: Colors.grey.withOpacity(.16),
-                          //   value: !_statusInactive,
-                          //   onToggle: (v) =>
-                          //       setState(() => _statusInactive = !v),
-                          // ),
-                        ],
-                      ),
+                      // Only an already-saved Control has a real status to
+                      // manually deactivate — Create mode's status isn't
+                      // decided until Add/Save For Later is pressed.
+                      if (_isEdit)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            SvgPicture.asset(
+                                'assets/icons_assets/data_grc_assets/icons_status.svg'),
+                            SizedBox(width: 10.w),
+                            Text('Status'.tr),
+                            SizedBox(width: 10.w),
+                            FlutterSwitch(
+                              width: 38.sp,
+                              height: 22.sp,
+                              padding: 3.sp,
+                              borderRadius: 20.sp,
+                              toggleSize: 16.sp,
+                              activeColor: AppColors.secondaryPrimary,
+                              inactiveColor: Colors.grey.withValues(alpha: 0.16),
+                              value: !_manualInactive,
+                              onToggle: (v) =>
+                                  setState(() => _manualInactive = !v),
+                            ),
+                          ],
+                        ),
                       SizedBox(height: 12.h),
                       Expanded(
                         child: Container(

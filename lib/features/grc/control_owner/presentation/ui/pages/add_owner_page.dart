@@ -16,9 +16,12 @@ import 'package:demo_app/core/custom/1-custom_dropdwon.dart';
 import 'package:demo_app/core/custom/31-custom_multi_select_dropdown.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
+import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
 import 'package:demo_app/features/grc/control/domain/entities/assigning_control.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
+import 'package:demo_app/features/grc/control/domain/entities/control_status_resolver.dart';
 import 'package:demo_app/features/grc/control/domain/use_cases/get_control_usecases.dart';
+import 'package:demo_app/features/grc/control/domain/use_cases/update_control_usecase.dart';
 import 'package:demo_app/features/grc/control_owner/presentation/controller/owner_cubit.dart';
 import 'package:demo_app/features/grc/module/presentation/controller/cubit/grc_owner_cubit.dart';
 import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details_widget/grc_owner_section.dart';
@@ -29,7 +32,7 @@ import 'package:demo_app/features/settings/core_widgets/main_widget/custom_butto
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 
 class _AssigningControlRow {
@@ -119,6 +122,9 @@ class _AddOwnerPageState extends State<AddOwnerPage> {
     setState(() => _submitted = true);
     if (_selectedEmployees.length != 1 || !_rowsValid) return;
 
+    // Fire-and-forget: touches each affected Control document directly, not
+    // the Owner doc this page's own submit/loading state tracks.
+    _recomputeControlStatuses();
     context.read<OwnerCubit>().createOwner(
           moduleId: widget.moduleId,
           ownerEmail: _selectedEmployees.first.email,
@@ -132,6 +138,56 @@ class _AddOwnerPageState extends State<AddOwnerPage> {
                   )))
               .toList(),
         );
+  }
+
+  String get _currentUserEmail {
+    final fromConstant = Constant.emailUser;
+    if (fromConstant != null && fromConstant.isNotEmpty) return fromConstant;
+    if (Get.isRegistered<MainCoreEmployeeController>()) {
+      final email = Get.find<MainCoreEmployeeController>().employeeEntity?.email;
+      if (email != null && email.isNotEmpty) return email;
+    }
+    return '';
+  }
+
+  ControlEntity? _findControl(_AssigningControlRow row, String controlId) {
+    for (final c in row.availableControls) {
+      if (c.id == controlId) return c;
+    }
+    return null;
+  }
+
+  /// function name: [_recomputeControlStatuses]
+  ///
+  /// purpose: every control just selected here has gained this brand-new
+  ///          Owner as an assignee — flip any of them still sitting on
+  ///          Unassigned to Scheduled/Active. Controls that are Draft/
+  ///          Inactive/Expired, or already Scheduled/Active, are left
+  ///          untouched (see [shouldRecomputeAssigneeBasedStatus]).
+  Future<void> _recomputeControlStatuses() async {
+    final editor = _currentUserEmail;
+    final updateUseCase = GetIt.instance<UpdateControlUseCase>();
+    for (final row in _rows) {
+      for (final controlId in row.controlIds) {
+        final control = _findControl(row, controlId);
+        if (control == null) continue;
+        if (!shouldRecomputeAssigneeBasedStatus(control.status)) continue;
+        final newStatus = computeAssigneeBasedControlStatus(
+          effectiveStartDate: control.startDate,
+          hasAnyAssignee: true,
+        );
+        if (newStatus == control.status) continue;
+        await updateUseCase.call(
+          UpdateControlParams(
+            id: control.id,
+            moduleId: widget.moduleId,
+            policyId: row.policyId!,
+            editorId: editor,
+            status: newStatus,
+          ),
+        );
+      }
+    }
   }
 
   @override
