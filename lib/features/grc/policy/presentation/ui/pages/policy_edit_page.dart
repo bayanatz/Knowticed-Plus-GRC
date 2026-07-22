@@ -39,6 +39,7 @@ import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_b
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:get_it/get_it.dart';
@@ -321,11 +322,10 @@ class _PolicyEditPageState extends State<PolicyEditPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Text(
-                            _statusInactive ? 'Inactive'.tr : 'Active'.tr,
-                            style: StyleText.fontSize14Weight500
-                                .copyWith(color: AppColors.text),
-                          ),
+                          SvgPicture.asset(
+                              'assets/icons_assets/data_grc_assets/icons_status.svg'),
+                          SizedBox(width: 10.w),
+                          Text('Status'.tr),
                           SizedBox(width: 10.w),
                           FlutterSwitch(
                             width: 38.sp,

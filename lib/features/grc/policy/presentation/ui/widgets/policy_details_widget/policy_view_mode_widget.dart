@@ -506,11 +506,7 @@ class _PolicyViewModeWidgetState extends State<PolicyViewModeWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Policy Details'.tr,
-          style: StyleText.fontSize16Weight600.copyWith(color: AppColors.text),
-        ),
-        SizedBox(height: 5.h),
+     
         Container(
           width: double.infinity,
           padding: EdgeInsets.all(15.sp),

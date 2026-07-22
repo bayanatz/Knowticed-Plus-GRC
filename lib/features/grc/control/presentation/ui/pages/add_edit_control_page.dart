@@ -42,6 +42,7 @@ import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_b
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
@@ -1126,6 +1127,29 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                           _isEdit ? 'Edit Control'.tr : 'Add Control'.tr,
                         ],
                       ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          SvgPicture.asset(
+                              'assets/icons_assets/data_grc_assets/icons_status.svg'),
+                          SizedBox(width: 10.w),
+                          Text('Status'.tr),
+                          SizedBox(width: 10.w),
+                          // FlutterSwitch(
+                          //   width: 38.sp,
+                          //   height: 22.sp,
+                          //   padding: 3.sp,
+                          //   borderRadius: 20.sp,
+                          //   toggleSize: 16.sp,
+                          //   activeColor: AppColors.secondaryPrimary,
+                          //   inactiveColor: Colors.grey.withOpacity(.16),
+                          //   value: !_statusInactive,
+                          //   onToggle: (v) =>
+                          //       setState(() => _statusInactive = !v),
+                          // ),
+                        ],
+                      ),
+                      SizedBox(height: 12.h),
                       Expanded(
                         child: Container(
                           width: double.infinity,

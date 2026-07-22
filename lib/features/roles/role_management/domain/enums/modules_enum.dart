@@ -1,4 +1,4 @@
-import 'package:demo_app/features/grc/presentation/ui/pages/grc_page.dart';
+import 'package:demo_app/features/grc/module/presentation/ui/pages/grc_page.dart';
 import 'package:demo_app/features/roles/role_management/domain/enums/grc/grc_permissions_sections.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

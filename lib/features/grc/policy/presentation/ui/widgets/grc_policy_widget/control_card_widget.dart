@@ -126,15 +126,33 @@ class ControlCardWidget extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  '${'Start Date'.tr}: ${dateFormat.format(control.startDate)}',
-                  style: StyleText.fontSize12Weight400
-                      .copyWith(color: AppColors.secondaryText),
+                RichText(
+                  text: TextSpan(
+                    text: '${'Start Date'.tr}: ',
+                    style: StyleText.fontSize12Weight400
+                        .copyWith(color: AppColors.secondaryText),
+                    children: [
+                      TextSpan(
+                        text: dateFormat.format(control.startDate),
+                        style: StyleText.fontSize12Weight500
+                            .copyWith(color: AppColors.text),
+                      ),
+                    ],
+                  ),
                 ),
-                Text(
-                  '${'End Date'.tr}: ${dateFormat.format(control.endDate)}',
-                  style: StyleText.fontSize12Weight400
-                      .copyWith(color: AppColors.secondaryText),
+                RichText(
+                  text: TextSpan(
+                    text: '${'End Date'.tr}: ',
+                    style: StyleText.fontSize12Weight400
+                        .copyWith(color: AppColors.secondaryText),
+                    children: [
+                      TextSpan(
+                        text: dateFormat.format(control.endDate),
+                        style: StyleText.fontSize12Weight500
+                            .copyWith(color: AppColors.text),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -142,15 +160,33 @@ class ControlCardWidget extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  '${'Control Weight'.tr}: ${control.controlsWeight.toStringAsFixed(0)}',
-                  style: StyleText.fontSize12Weight400
-                      .copyWith(color: AppColors.secondaryText),
+                RichText(
+                  text: TextSpan(
+                    text: '${'Control Weight'.tr}: ',
+                    style: StyleText.fontSize12Weight400
+                        .copyWith(color: AppColors.secondaryText),
+                    children: [
+                      TextSpan(
+                        text: control.controlsWeight.toStringAsFixed(0),
+                        style: StyleText.fontSize12Weight500
+                            .copyWith(color: AppColors.text),
+                      ),
+                    ],
+                  ),
                 ),
-                Text(
-                  '${'Last Edit'.tr}: ${dateFormat.format(control.lastModifiedDate)}',
-                  style: StyleText.fontSize12Weight400
-                      .copyWith(color: AppColors.secondaryText),
+                RichText(
+                  text: TextSpan(
+                    text: '${'Last Edit'.tr}: ',
+                    style: StyleText.fontSize12Weight400
+                        .copyWith(color: AppColors.secondaryText),
+                    children: [
+                      TextSpan(
+                        text: dateFormat.format(control.lastModifiedDate),
+                        style: StyleText.fontSize12Weight500
+                            .copyWith(color: AppColors.text),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

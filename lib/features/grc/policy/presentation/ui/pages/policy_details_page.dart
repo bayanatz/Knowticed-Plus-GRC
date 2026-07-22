@@ -55,6 +55,7 @@ import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_b
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get_utils/src/extensions/context_extensions.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart' hide TextDirection;
@@ -263,13 +264,27 @@ class _PolicyDetailsBodyState extends State<_PolicyDetailsBody> {
                               : _policy!.policyNameEn,
                         ],
                       ),
-                      GrcActionButtons(
-                        onEditTap: _openEditPolicy,
-                        onDeleteTap: () => _onDelete(cubit),
-                        deleteDialogTitle: 'Deleting Policy',
-                        deleteDialogSubtitle:
-                            'Are You Sure You Want To Delete This Policy ?',
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            'Policy Details'.tr,
+                            style: context.textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.text,
+                            ),
+                          ),
+                          Spacer(),
+                          GrcActionButtons(
+                            onEditTap: _openEditPolicy,
+                            onDeleteTap: () => _onDelete(cubit),
+                            deleteDialogTitle: 'Deleting Policy',
+                            deleteDialogSubtitle:
+                                'Are You Sure You Want To Delete This Policy ?',
+                          ),
+                        ],
                       ),
+                      SizedBox(height: 10.h),
                       Expanded(
                         child: ScrollConfiguration(
                           behavior: ScrollConfiguration.of(context)
@@ -284,12 +299,11 @@ class _PolicyDetailsBodyState extends State<_PolicyDetailsBody> {
                               onControlTap: (existing) =>
                                   _openAddEditControl(existing: existing),
                               onBulkUpload: _onBulkUploadControls,
-                              onControlsChanged: () => context
-                                  .read<PolicyCubit>()
-                                  .getAllControls(
-                                    moduleId: widget.moduleId,
-                                    policyId: widget.policyId,
-                                  ),
+                              onControlsChanged: () =>
+                                  context.read<PolicyCubit>().getAllControls(
+                                        moduleId: widget.moduleId,
+                                        policyId: widget.policyId,
+                                      ),
                             ),
                           ),
                         ),
