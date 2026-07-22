@@ -1,9 +1,10 @@
 // lib/features/grc/control/presentation/ui/pages/control_bulk_upload/control_bulk_weight_dialog.dart
 /// Module: GRC Control Bulk Upload
-/// Description: Blocking Yes/No dialog shown the moment
-///              ControlBulkUploadPage opens, before any file-picking
-///              interaction, asking whether every department gets an equal
-///              weight share for this whole uploaded batch. Yes (true)
+/// Description: Blocking Yes/No dialog shown the first time the user
+///              initiates a file upload on ControlBulkUploadPage (Browse
+///              Files tap or a file drop), before the file picker/parser
+///              runs, asking whether every department gets an equal weight
+///              share for this whole uploaded batch. Yes (true)
 ///              means equal split — 100 / department count per row,
 ///              Department Weight column ignored entirely. No (false) means
 ///              the existing distinct/manual per-row Department Weight
@@ -36,7 +37,7 @@ Future<bool> showControlBulkWeightDialog(BuildContext context) async {
     context: context,
     barrierDismissible: false,
     barrierColor: AppColors.totalBlack.withOpacity(0.4),
-    builder: (_) => PopScope(
+    builder: (dialogContext) => PopScope(
       canPop: false,
       child: Dialog(
         backgroundColor: AppColors.transparent,
@@ -62,7 +63,7 @@ Future<bool> showControlBulkWeightDialog(BuildContext context) async {
                   Expanded(
                     child: customButton(
                       title: 'No'.tr,
-                      function: () => Navigator.of(context).pop(false),
+                      function: () => Navigator.of(dialogContext).pop(false),
                       height: 38.h,
                       color: AppColors.secondaryText,
                       textStyle:
@@ -73,7 +74,7 @@ Future<bool> showControlBulkWeightDialog(BuildContext context) async {
                   Expanded(
                     child: customButton(
                       title: 'Yes'.tr,
-                      function: () => Navigator.of(context).pop(true),
+                      function: () => Navigator.of(dialogContext).pop(true),
                       height: 38.h,
                       color: AppColors.primary,
                       textStyle: StyleText.fontSize16Weight600

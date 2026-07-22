@@ -59,20 +59,24 @@ class _ControlBulkUploadPageState extends State<ControlBulkUploadPage> {
   String? _errorMessage;
   bool? _equalWeights;
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _askEqualWeights());
-  }
-
-  Future<void> _askEqualWeights() async {
+  /// function name: [_ensureEqualWeightsAnswered]
+  ///
+  /// purpose: show the Equal/Distinct weight dialog the first time the user
+  ///          initiates an upload (Browse Files tap or a file drop), and
+  ///          only then — subsequent uploads in this same page instance
+  ///          reuse the already-answered value.
+  ///
+  /// return type: [Future<bool>] - true once `_equalWeights` is set and safe to use; false if the widget was unmounted while the dialog was open
+  Future<bool> _ensureEqualWeightsAnswered() async {
+    if (_equalWeights != null) return true;
     final answer = await showControlBulkWeightDialog(context);
-    if (!mounted) return;
+    if (!mounted) return false;
     setState(() => _equalWeights = answer);
+    return true;
   }
 
   Future<void> _pickAndParseExcel() async {
-    if (_equalWeights == null) return;
+    if (!await _ensureEqualWeightsAnswered()) return;
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['xlsx', 'xls'],
@@ -93,8 +97,8 @@ class _ControlBulkUploadPageState extends State<ControlBulkUploadPage> {
   }
 
   Future<void> _onDragDone(DropDoneDetails details) async {
-    if (_equalWeights == null) return;
     setState(() => _isDragging = false);
+    if (!await _ensureEqualWeightsAnswered()) return;
     if (details.files.isEmpty) return;
 
     final file = details.files.first;
