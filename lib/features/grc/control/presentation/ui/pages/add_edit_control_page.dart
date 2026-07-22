@@ -33,6 +33,7 @@ import 'package:demo_app/features/department/presentation/controller/add_departm
 import 'package:demo_app/features/grc/control/domain/entities/control_department_weight.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_status.dart';
+import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
 import 'package:demo_app/features/grc/policy/presentation/controller/policy_cubit.dart';
 import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details_widget/grc_form_fields.dart'
     show containsEnglishLetters, containsArabicLetters;
@@ -72,6 +73,7 @@ class AddEditControlPage extends StatefulWidget {
   final DateTime policyStartDate;
   final DateTime policyEndDate;
   final bool policyHasArabic;
+  final PolicyEntity policy;
 
   const AddEditControlPage({
     super.key,
@@ -82,6 +84,7 @@ class AddEditControlPage extends StatefulWidget {
     required this.policyEndDate,
     required this.policyHasArabic,
     this.existingControl,
+    required this.policy,
   });
 
   @override
@@ -1165,7 +1168,12 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                       PaginationAppBar(
                         screensTitles: [
                           'GRC'.tr,
-                          _isEdit ? 'Edit Control'.tr : 'Add Control'.tr,
+                          context.isArabic
+                              ? widget.policy.policyNameAr
+                              : widget.policy.policyNameEn,
+                          context.isArabic
+                              ? "Edit ${widget.existingControl?.controlsNameAr}"
+                              : "Edit ${widget.existingControl?.controlsNameEn}",
                         ],
                       ),
                       // Only an already-saved Control has a real status to

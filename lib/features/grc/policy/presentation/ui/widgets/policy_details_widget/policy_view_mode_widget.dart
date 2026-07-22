@@ -409,6 +409,7 @@ class _PolicyViewModeWidgetState extends State<PolicyViewModeWidget> {
         context,
         PageRouteBuilder(
           pageBuilder: (_, __, ___) => AddEditControlPage(
+            policy: widget.policy,
             moduleId: widget.module.moduleId,
             policyId: widget.policy.id,
             existingControl: control,
@@ -509,7 +510,6 @@ class _PolicyViewModeWidgetState extends State<PolicyViewModeWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-     
         Container(
           width: double.infinity,
           padding: EdgeInsets.all(15.sp),

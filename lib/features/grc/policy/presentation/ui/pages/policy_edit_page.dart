@@ -26,8 +26,10 @@ import 'package:demo_app/core/custom/10_custom_upload_document.dart';
 import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart'
     hide showUploadDialog;
 import 'package:demo_app/core/custom/loading.dart';
+import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
+import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details_widget/grc_form_fields.dart'
     show containsEnglishLetters, containsArabicLetters;
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
@@ -58,10 +60,12 @@ class PolicyEditPage extends StatefulWidget {
   final String moduleId;
   final PolicyEntity policy;
 
+  final GRCModuleEntity module;
   const PolicyEditPage({
     super.key,
     required this.moduleId,
     required this.policy,
+    required this.module,
   });
 
   @override
@@ -316,7 +320,15 @@ class _PolicyEditPageState extends State<PolicyEditPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       PaginationAppBar(
-                        screensTitles: ['GRC'.tr, 'Edit Policy'.tr],
+                        screensTitles: [
+                          'GRC'.tr,
+                          context.isArabic
+                              ? widget.module.moduleNameAr
+                              : widget.module.moduleNameEn,
+                          context.isArabic
+                              ? "Edit ${widget.policy.policyNameAr}"
+                              : "Edit ${widget.policy.policyNameEn}",
+                        ],
                       ),
                       SizedBox(height: 12.h),
                       Row(

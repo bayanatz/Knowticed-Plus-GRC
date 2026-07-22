@@ -52,24 +52,30 @@ class CreatePolicyStep1Buttons extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        customButton(
-          title: 'Back'.tr,
-          function: onBack,
-          height: 38.h,
-          width: 150.w,
-          color: AppColors.grey,
-          textStyle:
-              StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
-        ),
-        customButton(
-          title: 'Save For Later'.tr,
-          function: onSaveForLater,
-          height: 38.h,
-          width: 150.w,
-          color: AppColors.grey,
-          textStyle:
-              StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
+        Column(
+          children: [
+            customButton(
+              title: 'Back'.tr,
+              function: onBack,
+              height: 38.h,
+              width: 150.w,
+              color: AppColors.grey,
+              textStyle:
+                  StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
+            ),
+            SizedBox(height: 10.h),
+            customButton(
+              title: 'Save For Later'.tr,
+              function: onSaveForLater,
+              height: 38.h,
+              width: 150.w,
+              color: AppColors.grey,
+              textStyle:
+                  StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
+            ),
+          ],
         ),
         customButton(
           title: 'Preview'.tr,

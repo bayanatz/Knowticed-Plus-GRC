@@ -177,6 +177,7 @@ class _PolicyDetailsBodyState extends State<_PolicyDetailsBody> {
         pageBuilder: (_, __, ___) => PolicyEditPage(
           moduleId: widget.moduleId,
           policy: _policy!,
+          module: widget.module,
         ),
         transitionsBuilder: (_, animation, __, child) =>
             FadeTransition(opacity: animation, child: child),
@@ -196,6 +197,7 @@ class _PolicyDetailsBodyState extends State<_PolicyDetailsBody> {
       context,
       PageRouteBuilder(
         pageBuilder: (_, __, ___) => AddEditControlPage(
+          policy: _policy!,
           moduleId: widget.moduleId,
           policyId: widget.policyId,
           existingControl: existing,

@@ -120,6 +120,7 @@ class _ControlDetailsBodyState extends State<_ControlDetailsBody> {
       context,
       PageRouteBuilder(
         pageBuilder: (_, __, ___) => AddEditControlPage(
+          policy: widget.policy,
           moduleId: widget.module.moduleId,
           policyId: widget.policy.id,
           existingControl: _control,
@@ -395,7 +396,9 @@ class _ControlDetailsBodyState extends State<_ControlDetailsBody> {
                     isArabic
                         ? widget.policy.policyNameAr
                         : widget.policy.policyNameEn,
-                    isArabic ? _control.controlsNameAr : _control.controlsNameEn,
+                    isArabic
+                        ? _control.controlsNameAr
+                        : _control.controlsNameEn,
                   ],
                 ),
                 GrcActionButtons(
