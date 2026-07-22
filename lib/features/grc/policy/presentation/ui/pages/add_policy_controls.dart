@@ -40,7 +40,6 @@ class AddPolicyControlsPage extends StatefulWidget {
   final DateTime? policyStartDate;
   final DateTime? policyEndDate;
   final bool controlsSubmitted;
-  final VoidCallback editPolicy;
   final VoidCallback? onChanged;
 
   const AddPolicyControlsPage({
@@ -50,7 +49,6 @@ class AddPolicyControlsPage extends StatefulWidget {
     required this.policyStartDate,
     required this.policyEndDate,
     required this.controlsSubmitted,
-    required this.editPolicy,
     this.onChanged,
   });
 
@@ -126,26 +124,13 @@ class _AddPolicyControlsPageState extends State<AddPolicyControlsPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            IconButton(
-              onPressed: widget.editPolicy,
-              icon: Icon(
-                Icons.arrow_back_ios,
-                size: 20.sp,
-                color: AppColors.text,
-              ),
-            ),
-            SizedBox(width: 8.w),
-            Text(
-              'Add Policy Controls'.tr,
-              style: AppTextStyles.font16BlackRegularCairo.copyWith(
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w600,
-                color: AppColors.text,
-              ),
-            ),
-          ],
+        Text(
+          'Add Policy Controls'.tr,
+          style: AppTextStyles.font16BlackRegularCairo.copyWith(
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w600,
+            color: AppColors.text,
+          ),
         ),
         SizedBox(height: 12.h),
         Expanded(
