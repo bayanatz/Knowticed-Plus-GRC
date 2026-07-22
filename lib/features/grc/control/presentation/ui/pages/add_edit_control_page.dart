@@ -665,6 +665,35 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
     );
   }
 
+  /// function name: [_documentColumn]
+  ///
+  /// purpose: one document upload/preview column — shared by the ENG and AR
+  ///          Control Document sections so their layout stays identical
+  ///          whether they're shown side by side or (Arabic disabled) alone.
+  Widget _documentColumn({
+    required String label,
+    required PolicyDocumentInfo? document,
+    required VoidCallback onRemove,
+    required VoidCallback onUpload,
+  }) {
+    return Column(
+      spacing: 8.h,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label,
+            style:
+                StyleText.fontSize14Weight500.copyWith(color: AppColors.text)),
+        document != null
+            ? PolicyDocumentPreviewWidget(document: document, onRemove: onRemove)
+            : SizedBox(
+                width: double.infinity,
+                child:
+                    _documentButton(onTap: onUpload, title: 'Control Document'),
+              ),
+      ],
+    );
+  }
+
   /// function name: [_availableDepartmentNames]
   ///
   /// purpose: build the list of real (non-"All") department names from
@@ -1486,70 +1515,45 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                           ),
                                         ]),
                                   SizedBox(height: 15.h),
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        child: Column(
-                                          spacing: 8.h,
+                                  // Two Expanded columns split the row 50/50
+                                  // when Arabic is on; with only the ENG
+                                  // column left, an Expanded there would
+                                  // stretch it across the whole row instead
+                                  // of keeping that same half-width look.
+                                  _isArabicEnabled
+                                      ? Row(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Text('Control Document ENG',
-                                                style: StyleText
-                                                    .fontSize14Weight500
-                                                    .copyWith(
-                                                        color: AppColors.text)),
-                                            _documentEn != null
-                                                ? PolicyDocumentPreviewWidget(
-                                                    document: _documentEn!,
-                                                    onRemove:
-                                                        _onRemoveDocumentEn)
-                                                : SizedBox(
-                                                    width: double.infinity,
-                                                    child: _documentButton(
-                                                        onTap:
-                                                            _onUploadDocumentEn,
-                                                        title:
-                                                            'Control Document'),
-                                                  ),
+                                            Expanded(
+                                              child: _documentColumn(
+                                                label: 'Control Document ENG',
+                                                document: _documentEn,
+                                                onRemove: _onRemoveDocumentEn,
+                                                onUpload: _onUploadDocumentEn,
+                                              ),
+                                            ),
+                                            SizedBox(width: 10.w),
+                                            Expanded(
+                                              child: _documentColumn(
+                                                label: 'Control Document AR',
+                                                document: _documentAr,
+                                                onRemove: _onRemoveDocumentAr,
+                                                onUpload: _onUploadDocumentAr,
+                                              ),
+                                            ),
                                           ],
-                                        ),
-                                      ),
-                                      SizedBox(width: 10.w),
-                                      if (_isArabicEnabled) ...[
-                                        Expanded(
-                                          child: Column(
-                                            spacing: 8.h,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text('Control Document AR',
-                                                  style: StyleText
-                                                      .fontSize14Weight500
-                                                      .copyWith(
-                                                          color:
-                                                              AppColors.text)),
-                                              _documentAr != null
-                                                  ? PolicyDocumentPreviewWidget(
-                                                      document: _documentAr!,
-                                                      onRemove:
-                                                          _onRemoveDocumentAr)
-                                                  : SizedBox(
-                                                      width: double.infinity,
-                                                      child: _documentButton(
-                                                          onTap:
-                                                              _onUploadDocumentAr,
-                                                          title:
-                                                              'Control Document'),
-                                                    ),
-                                            ],
+                                        )
+                                      : FractionallySizedBox(
+                                          widthFactor: 0.5,
+                                          alignment: Alignment.centerLeft,
+                                          child: _documentColumn(
+                                            label: 'Control Document ENG',
+                                            document: _documentEn,
+                                            onRemove: _onRemoveDocumentEn,
+                                            onUpload: _onUploadDocumentEn,
                                           ),
                                         ),
-                                      ],
-                                    ],
-                                  ),
                                   SizedBox(height: 15.h),
                                   if (_isEdit) _buildDepartmentsSection(),
                                   _buildAssigneesSections(),
