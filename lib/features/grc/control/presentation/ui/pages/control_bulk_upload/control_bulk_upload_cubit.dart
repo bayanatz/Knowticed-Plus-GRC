@@ -40,19 +40,27 @@ class ControlBulkUploadCubit extends Cubit<ControlBulkUploadState> {
     required ChampionCubit championCubit,
     required OwnerCubit ownerCubit,
     required List<ControlBulkRow> parsedRows,
+    required bool equalWeights,
+    required DateTime policyStartDate,
+    required DateTime policyEndDate,
   })  : _createUseCase = createControlUseCase,
         _championCubit = championCubit,
         _ownerCubit = ownerCubit,
+        _equalWeights = equalWeights,
         _rows = ControlBulkUploadRows(
           parsedRows,
           knownEmployeeEmails: _resolveKnownEmployeeEmails(),
           knownDepartmentNames: _resolveKnownDepartmentNames(),
+          equalWeights: equalWeights,
+          policyStartDate: policyStartDate,
+          policyEndDate: policyEndDate,
         ),
         super(ControlBulkUploadEditing());
 
   final CreateControlUseCase _createUseCase;
   final ChampionCubit _championCubit;
   final OwnerCubit _ownerCubit;
+  final bool _equalWeights;
   final ControlBulkUploadRows _rows;
 
   /// The editable row collection backing the preview table.
@@ -111,12 +119,10 @@ class ControlBulkUploadCubit extends Cubit<ControlBulkUploadState> {
     emit(ControlBulkUploadEditing());
   }
 
-  /// Re-runs validation for one row (called on every cell edit).
+  /// Re-runs validation for one row (called on every cell edit) and
+  /// recomputes cross-row duplicate flags.
   void revalidateRow(int index) {
-    _rows.rows[index].validate(
-      knownEmployeeEmails: _rows.knownEmployeeEmails,
-      knownDepartmentNames: _rows.knownDepartmentNames,
-    );
+    _rows.revalidateRow(index);
     emit(ControlBulkUploadEditing());
   }
 
@@ -187,7 +193,7 @@ class ControlBulkUploadCubit extends Cubit<ControlBulkUploadState> {
           // pass [] here, not null. row.departmentWeights already defaults
           // to [] when the row has no departments.
           departmentsWeights: row.departmentWeights,
-          equalWeights: false,
+          equalWeights: _equalWeights,
           score: 0,
           status: ControlStatus.active,
         ),
