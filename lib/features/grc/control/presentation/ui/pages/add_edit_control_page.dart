@@ -103,6 +103,7 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
   PolicyDocumentInfo? _documentEn;
   PolicyDocumentInfo? _documentAr;
   bool _submitted = false;
+
   /// The "Status" switch: true once the user manually flips an Active
   /// control to Inactive. Initialized from the existing control's status in
   /// Edit mode (see initState) so re-opening an already-Inactive control
@@ -684,7 +685,8 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
             style:
                 StyleText.fontSize14Weight500.copyWith(color: AppColors.text)),
         document != null
-            ? PolicyDocumentPreviewWidget(document: document, onRemove: onRemove)
+            ? PolicyDocumentPreviewWidget(
+                document: document, onRemove: onRemove)
             : SizedBox(
                 width: double.infinity,
                 child:
@@ -1185,7 +1187,8 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                               borderRadius: 20.sp,
                               toggleSize: 16.sp,
                               activeColor: AppColors.secondaryPrimary,
-                              inactiveColor: Colors.grey.withValues(alpha: 0.16),
+                              inactiveColor:
+                                  Colors.grey.withValues(alpha: 0.16),
                               value: !_manualInactive,
                               onToggle: (v) =>
                                   setState(() => _manualInactive = !v),

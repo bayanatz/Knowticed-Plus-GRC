@@ -57,6 +57,8 @@ import 'package:demo_app/features/department/presentation/controller/add_departm
 import 'package:demo_app/features/grc/control_owner/domain/entities/owner_entity.dart';
 import 'package:demo_app/features/grc/control_owner/presentation/controller/owner_cubit.dart';
 import 'package:demo_app/features/grc/control_owner/presentation/ui/pages/add_owner_page.dart';
+import 'package:demo_app/features/grc/control_champion/presentation/ui/pages/control_champion_details_page.dart';
+
 
 /// class name: [GrcModuleDetailsPage]
 ///
@@ -614,7 +616,7 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
     return EmployeeHelper.getEmployeeLocalizedName(employee: employee, context: context);
   }
 
-  Widget _buildPersonCard(BuildContext context, String email) {
+  Widget _buildPersonCard(BuildContext context, String email, {VoidCallback? onTap}) {
     final employee = _findEmployee(email);
     final name = _employeeDisplayName(context, email);
     final department = employee != null
@@ -629,62 +631,70 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
         ? EmployeeHelper.getEmployeeImage(employee: employee)
         : 'assets/icons_assets/main_icons_assets/assets_male.svg';
 
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(10.r),
-      decoration: BoxDecoration(
-        color: AppColors.background,
+    return Material(
+      color: AppColors.background,
+      borderRadius: BorderRadius.circular(8.r),
+      child: InkWell(
+        onTap: onTap,
         borderRadius: BorderRadius.circular(8.r),
-      ),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 20.r,
-            backgroundColor: AppColors.barrierColor,
-            backgroundImage: photo.startsWith('http') ? NetworkImage(photo) : null,
+        child: Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(10.r),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8.r),
           ),
-          SizedBox(width: 10.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(name,
-                    style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis),
-                if (department.isNotEmpty)
-                  Text(department,
-                      style: StyleText.fontSize12Weight500
-                          .copyWith(color: AppColors.secondaryText),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis),
-                if (jobTitle.isNotEmpty)
-                  Text(jobTitle,
-                      style: StyleText.fontSize12Weight500
-                          .copyWith(color: AppColors.secondaryText),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis),
-              ],
-            ),
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: 20.r,
+                backgroundColor: AppColors.barrierColor,
+                backgroundImage: photo.startsWith('http') ? NetworkImage(photo) : null,
+              ),
+              SizedBox(width: 10.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(name,
+                        style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis),
+                    if (department.isNotEmpty)
+                      Text(department,
+                          style: StyleText.fontSize12Weight500
+                              .copyWith(color: AppColors.secondaryText),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis),
+                    if (jobTitle.isNotEmpty)
+                      Text(jobTitle,
+                          style: StyleText.fontSize12Weight500
+                              .copyWith(color: AppColors.secondaryText),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis),
+                  ],
+                ),
+              ),
+              SizedBox(width: 8.w),
+              customButtonWithSvg(
+                colorBorder: AppColors.primary,
+                space: 6.w,
+                widthImage: 14.w,
+                heightImage: 14.h,
+                function: () {},
+                title: 'Message'.tr,
+                textStyle: StyleText.fontSize12Weight500.copyWith(color: AppColors.textButton),
+                image: 'assets/icons_assets/data_grc_assets/messages_new.svg',
+                color: AppColors.primary,
+                svgColor: AppColors.textButton,
+              ),
+            ],
           ),
-          SizedBox(width: 8.w),
-          customButtonWithSvg(
-            colorBorder: AppColors.primary,
-            space: 6.w,
-            widthImage: 14.w,
-            heightImage: 14.h,
-            function: () {},
-            title: 'Message'.tr,
-            textStyle: StyleText.fontSize12Weight500.copyWith(color: AppColors.textButton),
-            image: 'assets/icons_assets/data_grc_assets/messages_new.svg',
-            color: AppColors.primary,
-            svgColor: AppColors.textButton,
-          ),
-        ],
+        ),
       ),
     );
   }
+
 
   Future<void> _openAddChampion(BuildContext context) async {
     final result = await Navigator.push<bool>(
@@ -822,10 +832,33 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
       child: ListView.separated(
         itemCount: champions.length,
         separatorBuilder: (_, __) => SizedBox(height: 10.h),
-        itemBuilder: (_, index) =>
-            _buildPersonCard(context, champions[index].championEmail),
+        itemBuilder: (_, index) {
+          final champion = champions[index];
+          return _buildPersonCard(
+            context,
+            champion.championEmail,
+            onTap: () async {
+              await Navigator.push(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (_, __, ___) => ControlChampionDetailsPage(
+                    champion: champion,
+                    module: widget.module,
+                  ),
+                  transitionsBuilder: (_, animation, __, child) =>
+                      FadeTransition(opacity: animation, child: child),
+                  transitionDuration: const Duration(milliseconds: 300),
+                ),
+              );
+              if (context.mounted) {
+                context.read<ChampionCubit>().getAllChampions(moduleId: widget.module.moduleId);
+              }
+            },
+          );
+        },
       ),
     );
+
   }
 
   Future<void> _showOwnerCreationMenu(BuildContext context) async {
@@ -994,7 +1027,7 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
       child: ListView.separated(
         itemCount: owners.length,
         separatorBuilder: (_, __) => SizedBox(height: 10.h),
-        itemBuilder: (_, index) => _buildPersonCard(context, owners[index].ownerEmail),
+        itemBuilder: (_, index) => _buildPersonCard(context, owners[index].ownerEmail, onTap: null),
       ),
     );
   }
