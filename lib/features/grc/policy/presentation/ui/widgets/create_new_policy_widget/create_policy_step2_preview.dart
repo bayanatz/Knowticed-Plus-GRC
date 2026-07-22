@@ -54,7 +54,6 @@ class CreatePolicyStep2Preview extends StatelessWidget {
   final PolicyDocumentInfo? documentEn;
   final PolicyDocumentInfo? documentAr;
   final List<PolicyControlModel> touchedControls;
-  final VoidCallback onAddController;
   final VoidCallback onControlsChanged;
 
   const CreatePolicyStep2Preview({
@@ -72,7 +71,6 @@ class CreatePolicyStep2Preview extends StatelessWidget {
     required this.documentEn,
     required this.documentAr,
     required this.touchedControls,
-    required this.onAddController,
     required this.onControlsChanged,
     this.imageFile,
     this.imageUrl,
@@ -86,26 +84,13 @@ class CreatePolicyStep2Preview extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                IconButton(
-                  onPressed: onAddController,
-                  icon: Icon(
-                    Icons.arrow_back_ios,
-                    size: 20.sp,
-                    color: AppColors.text,
-                  ),
-                ),
-                SizedBox(width: 8.w),
-                Text(
-                  'Preview'.tr,
-                  style: AppTextStyles.font16BlackRegularCairo.copyWith(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.text,
-                  ),
-                ),
-              ],
+            Text(
+              'Preview'.tr,
+              style: AppTextStyles.font16BlackRegularCairo.copyWith(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w600,
+                color: AppColors.text,
+              ),
             ),
             SizedBox(height: 12.h),
             Container(

@@ -1,16 +1,21 @@
 /// Module: GRC Policy Management
 /// Description: Bottom action buttons for step 2 (Preview) of the Create
-///              Policy page — Save For Later and Publish.
+///              Policy page — Back, Save For Later, and Publish.
 /// Author: Mohamed Magdy Abdelkhalek
 /// Date: 2026-07-16
 /// Dependencies: Flutter SDK, AppColors, StyleText, customButton
 /// Revision History: 2026-07-16 - Extracted from create_new_policy.dart
+///                   2026-07-22 - Replaced CreatePolicyStep2Preview's small
+///                                back-arrow icon with a proper Back
+///                                button here, matching step 1's layout
+///                                (Back stacked above Save For Later on the
+///                                left, the primary action on the right)
 library;
 
 /// ************************* FILE INFO *************************** ///
 /// File Name: create_policy_step2_buttons.dart
-/// Purpose: Contains CreatePolicyStep2Buttons, the Save For Later/Publish
-///          button row shown on step 2 of CreateNewPolicyPage.
+/// Purpose: Contains CreatePolicyStep2Buttons, the Back/Save For
+///          Later/Publish button row shown on step 2 of CreateNewPolicyPage.
 /// Author: Mohamed Magdy Abdelkhalek
 /// Created At: 16/7/2026
 
@@ -23,19 +28,22 @@ import 'package:get/get_utils/src/extensions/internacionalization.dart';
 
 /// class name: [CreatePolicyStep2Buttons]
 ///
-/// purpose: Save For Later/Publish button row for step 2. All validation,
-///          dialogs, and the actual cubit call are handled by the parent
-///          page via the callbacks; this widget only renders the row.
+/// purpose: Back/Save For Later/Publish button row for step 2. All
+///          validation, dialogs, and the actual cubit call are handled by
+///          the parent page via the callbacks; this widget only renders
+///          the row.
 ///
 /// authors: Mohamed Magdy Abdelkhalek
 ///
 /// created at: 16/7/2026
 class CreatePolicyStep2Buttons extends StatelessWidget {
+  final VoidCallback onBack;
   final VoidCallback onSaveForLater;
   final VoidCallback onPublish;
 
   const CreatePolicyStep2Buttons({
     super.key,
+    required this.onBack,
     required this.onSaveForLater,
     required this.onPublish,
   });
@@ -44,15 +52,30 @@ class CreatePolicyStep2Buttons extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        customButton(
-          title: 'Save For Later'.tr,
-          function: onSaveForLater,
-          height: 38.h,
-          width: 150.w,
-          color: AppColors.grey,
-          textStyle:
-              StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
+        Column(
+          children: [
+            customButton(
+              title: 'Back'.tr,
+              function: onBack,
+              height: 38.h,
+              width: 150.w,
+              color: AppColors.grey,
+              textStyle:
+                  StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
+            ),
+            SizedBox(height: 10.h),
+            customButton(
+              title: 'Save For Later'.tr,
+              function: onSaveForLater,
+              height: 38.h,
+              width: 150.w,
+              color: AppColors.grey,
+              textStyle:
+                  StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
+            ),
+          ],
         ),
         customButton(
           title: 'Publish'.tr,

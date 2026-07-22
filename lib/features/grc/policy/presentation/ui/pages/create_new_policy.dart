@@ -870,7 +870,6 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
       documentEn: _documentEn,
       documentAr: _documentAr,
       touchedControls: _touchedControls,
-      onAddController: () => setState(() => _step = 1),
       onControlsChanged: () => setState(() {}),
     );
   }
@@ -904,6 +903,7 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
         );
       case 2:
         return CreatePolicyStep2Buttons(
+          onBack: () => setState(() => _step = 1),
           onSaveForLater: () => _handleSaveForLaterPressed(cubit),
           onPublish: () => _handlePublishPressed(cubit),
         );
