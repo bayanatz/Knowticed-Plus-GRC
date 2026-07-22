@@ -245,6 +245,14 @@ class ControlBulkRowForm {
     return errors;
   }
 
+  /// Formats an equal-split share (100 / department count) for display in
+  /// the read-only Department Weight cell: whole numbers show with no
+  /// decimals (e.g. '25'), everything else to 2 decimal places (e.g.
+  /// '33.33'). [departmentWeights] itself keeps the exact, unrounded value
+  /// — this only affects what the user sees.
+  String _formatEqualShare(double share) =>
+      share == share.roundToDouble() ? share.toStringAsFixed(0) : share.toStringAsFixed(2);
+
   List<String> _splitList(String text) => text
       .split(',')
       .map((e) => e.trim())
@@ -271,15 +279,19 @@ class ControlBulkRowForm {
   /// function name: [_validateDepartments]
   ///
   /// purpose: validate the Applied Departments/Department Weight pair.
-  ///          When [equalWeights] is true, Department Weight is not read at
-  ///          all — each department in Applied Departments gets an equal
-  ///          share (100 / count). When false, behaves exactly as before:
-  ///          structural problems (missing one side, count mismatch,
-  ///          unknown department name) error 'appliedDepartments' (and, for
-  ///          the first two, 'departmentWeight' too, since neither cell is
-  ///          trustworthy in those cases). Once the names/count are known
-  ///          good, a non-numeric or non-100-summing weight list errors
-  ///          only 'departmentWeight'.
+  ///          When [equalWeights] is true, Department Weight is not read as
+  ///          input — each department in Applied Departments gets an equal
+  ///          share (100 / count), and that computed share is written back
+  ///          into [departmentWeightController] so the (read-only, in the
+  ///          preview table) cell displays it, recomputed on every call —
+  ///          i.e. every time Applied Departments changes. When false,
+  ///          behaves exactly as before: structural problems (missing one
+  ///          side, count mismatch, unknown department name) error
+  ///          'appliedDepartments' (and, for the first two,
+  ///          'departmentWeight' too, since neither cell is trustworthy in
+  ///          those cases). Once the names/count are known good, a
+  ///          non-numeric or non-100-summing weight list errors only
+  ///          'departmentWeight'.
   void _validateDepartments(
     Map<String, String> errors,
     Set<String> knownDepartmentNames, {
@@ -290,20 +302,29 @@ class ControlBulkRowForm {
     departmentWeights = [];
 
     if (equalWeights) {
-      if (namesText.isEmpty) return;
+      if (namesText.isEmpty) {
+        departmentWeightController.text = '';
+        return;
+      }
 
       final names = _splitList(namesText);
-      if (names.isEmpty) return;
+      if (names.isEmpty) {
+        departmentWeightController.text = '';
+        return;
+      }
 
       final unknown = names.where((n) => !knownDepartmentNames.contains(n)).toList();
       if (unknown.isNotEmpty) {
         errors['appliedDepartments'] = 'Unknown department(s): ${unknown.join(', ')}';
+        departmentWeightController.text = '';
         return;
       }
 
       departmentNames = names;
       final share = 100 / names.length;
       departmentWeights = List.filled(names.length, share);
+      departmentWeightController.text =
+          List.filled(names.length, _formatEqualShare(share)).join(', ');
       return;
     }
 

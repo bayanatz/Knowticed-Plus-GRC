@@ -341,6 +341,10 @@ class _ControlBulkUploadPreviewPageState
               focusNode: row.focusNodes[column.fieldKey]!,
               error: row.errors[column.fieldKey],
               onChanged: () => cubit.revalidateRow(index),
+              // Equal-weights mode auto-computes this column (100 / department
+              // count, recomputed on every Applied Departments edit — see
+              // ControlBulkRowForm._validateDepartments) — it isn't user input.
+              readOnly: column.fieldKey == 'departmentWeight' && cubit.equalWeights,
             ),
           _buildRowTotalWeight(row),
         ],
@@ -354,6 +358,7 @@ class _ControlBulkUploadPreviewPageState
     required FocusNode focusNode,
     required String? error,
     required VoidCallback onChanged,
+    bool readOnly = false,
   }) {
     final borderColor = error != null ? AppColors.red : Colors.transparent;
     return SizedBox(
@@ -363,12 +368,13 @@ class _ControlBulkUploadPreviewPageState
         child: TextField(
           controller: controller,
           focusNode: focusNode,
+          readOnly: readOnly,
           onChanged: (_) => onChanged(),
           style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
           decoration: InputDecoration(
             isDense: true,
             filled: true,
-            fillColor: AppColors.card,
+            fillColor: readOnly ? AppColors.background : AppColors.card,
             contentPadding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
             suffixIcon: error != null
                 ? Tooltip(

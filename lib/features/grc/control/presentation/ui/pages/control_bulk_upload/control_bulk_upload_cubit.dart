@@ -66,6 +66,11 @@ class ControlBulkUploadCubit extends Cubit<ControlBulkUploadState> {
   /// The editable row collection backing the preview table.
   ControlBulkUploadRows get rowsData => _rows;
 
+  /// Whether this batch uses equal department-weight splitting — the
+  /// preview table uses this to render the Department Weight column
+  /// read-only (its value is auto-computed, not user-entered) when true.
+  bool get equalWeights => _equalWeights;
+
   static Set<String> _resolveKnownEmployeeEmails() {
     if (!Get.isRegistered<MainCoreEmployeeController>()) return {};
     final employees = Get.find<MainCoreEmployeeController>().allEmployeesEntities ?? [];
