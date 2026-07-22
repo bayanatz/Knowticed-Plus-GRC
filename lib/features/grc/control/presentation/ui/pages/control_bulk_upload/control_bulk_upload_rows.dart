@@ -4,7 +4,9 @@
 ///              table's rows — mirrors
 ///              lib/features/grc/policy/presentation/ui/pages/policy_bulk_upload/policy_bulk_upload_rows.dart,
 ///              minus the batch-level Total Weight getters (Control has no
-///              cross-row weight requirement).
+///              cross-row weight requirement). Also owns cross-row duplicate
+///              Name/Number detection, which [ControlBulkRowForm.validate]
+///              can't do on its own since it only ever sees its own row.
 /// Author: Mohamed Magdy Abdelkhalek
 /// Date: 2026-07-19
 /// Dependencies: control_bulk_row_form.dart, control_excel_parser.dart
@@ -18,22 +20,99 @@ class ControlBulkUploadRows {
     List<ControlBulkRow> parsedRows, {
     required this.knownEmployeeEmails,
     required this.knownDepartmentNames,
+    required this.equalWeights,
+    required this.policyStartDate,
+    required this.policyEndDate,
   }) : rows = parsedRows.map(ControlBulkRowForm.fromParsedRow).toList() {
     for (final row in rows) {
       _validateRow(row);
     }
+    _recomputeDuplicates();
   }
 
   final List<ControlBulkRowForm> rows;
   final Set<int> selectedRows = {};
   final Set<String> knownEmployeeEmails;
   final Set<String> knownDepartmentNames;
+  final bool equalWeights;
+  final DateTime policyStartDate;
+  final DateTime policyEndDate;
+
+  /// The 4 fields checked for within-batch duplicates, independently of
+  /// each other.
+  static const List<String> _duplicateCheckedFields = [
+    'controlNameEn',
+    'controlNameAr',
+    'controlNumberEn',
+    'controlNumberAr',
+  ];
 
   void _validateRow(ControlBulkRowForm row) {
     row.validate(
       knownEmployeeEmails: knownEmployeeEmails,
       knownDepartmentNames: knownDepartmentNames,
+      equalWeights: equalWeights,
+      policyStartDate: policyStartDate,
+      policyEndDate: policyEndDate,
     );
+  }
+
+  /// function name: [revalidateRow]
+  ///
+  /// purpose: re-run one row's own validation (called on every cell edit),
+  ///          then recompute duplicate flags across the whole batch, since
+  ///          a single field edit can change which rows collide with which.
+  void revalidateRow(int index) {
+    _validateRow(rows[index]);
+    _recomputeDuplicates();
+  }
+
+  String _fieldText(ControlBulkRowForm row, String fieldKey) {
+    switch (fieldKey) {
+      case 'controlNameEn':
+        return row.controlNameEnController.text;
+      case 'controlNameAr':
+        return row.controlNameArController.text;
+      case 'controlNumberEn':
+        return row.controlNumberEnController.text;
+      case 'controlNumberAr':
+        return row.controlNumberArController.text;
+      default:
+        throw ArgumentError('Unknown duplicate-checked field: $fieldKey');
+    }
+  }
+
+  /// function name: [_recomputeDuplicates]
+  ///
+  /// purpose: flag every row that shares a (trimmed, case-insensitive)
+  ///          Name/Number value with another row in the batch. Clears any
+  ///          stale 'Duplicate value' flags first, on every row, before
+  ///          rebuilding groups — this is always safe because 'Required'
+  ///          and 'Duplicate value' never coexist on the same field
+  ///          (duplicate-checking skips empty values, which is exactly
+  ///          when 'Required' fires instead).
+  void _recomputeDuplicates() {
+    for (final fieldKey in _duplicateCheckedFields) {
+      for (final row in rows) {
+        if (row.errors[fieldKey] == 'Duplicate value') {
+          row.errors.remove(fieldKey);
+        }
+      }
+
+      final groups = <String, List<int>>{};
+      for (var i = 0; i < rows.length; i++) {
+        final value = _fieldText(rows[i], fieldKey).trim();
+        if (value.isEmpty) continue;
+        groups.putIfAbsent(value.toLowerCase(), () => []).add(i);
+      }
+
+      for (final indexes in groups.values) {
+        if (indexes.length < 2) continue;
+        for (final i in indexes) {
+          rows[i].errors[fieldKey] = 'Duplicate value';
+        }
+      }
+    }
   }
 
   void toggleSelected(int index) {
@@ -46,6 +125,7 @@ class ControlBulkUploadRows {
     final row = ControlBulkRowForm();
     _validateRow(row);
     rows.add(row);
+    _recomputeDuplicates();
   }
 
   bool removeSelected() {
@@ -56,6 +136,7 @@ class ControlBulkUploadRows {
       rows.removeAt(index);
     }
     selectedRows.clear();
+    _recomputeDuplicates();
     return true;
   }
 
@@ -81,6 +162,7 @@ class ControlBulkUploadRows {
     _validateRow(copy);
     rows.add(copy);
     selectedRows.clear();
+    _recomputeDuplicates();
     return true;
   }
 
@@ -88,6 +170,7 @@ class ControlBulkUploadRows {
     rows[index].dispose();
     rows.removeAt(index);
     selectedRows.remove(index);
+    _recomputeDuplicates();
   }
 
   /// Total number of per-cell errors across every row.
