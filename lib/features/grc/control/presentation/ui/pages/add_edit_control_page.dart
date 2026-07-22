@@ -136,8 +136,7 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
   /// per-control fields are used unchanged.
   DateTime get _effectiveStartDate =>
       _isEdit ? _startDate! : widget.policyStartDate;
-  DateTime get _effectiveEndDate =>
-      _isEdit ? _endDate! : widget.policyEndDate;
+  DateTime get _effectiveEndDate => _isEdit ? _endDate! : widget.policyEndDate;
 
   @override
   void initState() {
@@ -793,8 +792,8 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
   List<String> _alreadyAssignedChampionEmails(List<ChampionEntity> champions) {
     final controlId = widget.existingControl!.id;
     return champions
-        .where((c) => c.assigningControls.any((a) =>
-            a.policyId == widget.policyId && a.controlId == controlId))
+        .where((c) => c.assigningControls.any(
+            (a) => a.policyId == widget.policyId && a.controlId == controlId))
         .map((c) => c.championEmail)
         .toList();
   }
@@ -804,8 +803,8 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
   List<String> _alreadyAssignedOwnerEmails(List<OwnerEntity> owners) {
     final controlId = widget.existingControl!.id;
     return owners
-        .where((o) => o.assigningControls.any((a) =>
-            a.policyId == widget.policyId && a.controlId == controlId))
+        .where((o) => o.assigningControls.any(
+            (a) => a.policyId == widget.policyId && a.controlId == controlId))
         .map((o) => o.ownerEmail)
         .toList();
   }
@@ -853,7 +852,8 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
           moduleId: widget.moduleId,
           assigningControls: [
             ...existing.assigningControls,
-            AssigningControlEntity(policyId: widget.policyId, controlId: controlId),
+            AssigningControlEntity(
+                policyId: widget.policyId, controlId: controlId),
           ],
         );
       } else {
@@ -861,7 +861,8 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
           moduleId: widget.moduleId,
           championEmail: email,
           assigningControls: [
-            AssigningControlEntity(policyId: widget.policyId, controlId: controlId),
+            AssigningControlEntity(
+                policyId: widget.policyId, controlId: controlId),
           ],
         );
       }
@@ -875,7 +876,8 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
         championEmail: email,
         moduleId: widget.moduleId,
         assigningControls: existing.assigningControls
-            .where((a) => !(a.policyId == widget.policyId && a.controlId == controlId))
+            .where((a) =>
+                !(a.policyId == widget.policyId && a.controlId == controlId))
             .toList(),
       );
       if (cubit.state is ChampionFailure) success = false;
@@ -904,7 +906,8 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
           moduleId: widget.moduleId,
           assigningControls: [
             ...existing.assigningControls,
-            AssigningControlEntity(policyId: widget.policyId, controlId: controlId),
+            AssigningControlEntity(
+                policyId: widget.policyId, controlId: controlId),
           ],
         );
       } else {
@@ -912,7 +915,8 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
           moduleId: widget.moduleId,
           ownerEmail: email,
           assigningControls: [
-            AssigningControlEntity(policyId: widget.policyId, controlId: controlId),
+            AssigningControlEntity(
+                policyId: widget.policyId, controlId: controlId),
           ],
         );
       }
@@ -926,7 +930,8 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
         ownerEmail: email,
         moduleId: widget.moduleId,
         assigningControls: existing.assigningControls
-            .where((a) => !(a.policyId == widget.policyId && a.controlId == controlId))
+            .where((a) =>
+                !(a.policyId == widget.policyId && a.controlId == controlId))
             .toList(),
       );
       if (cubit.state is OwnerFailure) success = false;
@@ -952,7 +957,8 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
 
     final championState = championCubit.state;
     if (championState is ChampionListLoaded) {
-      final alreadyAssigned = _alreadyAssignedChampionEmails(championState.champions);
+      final alreadyAssigned =
+          _alreadyAssignedChampionEmails(championState.champions);
       final selected = _currentChampionEmails ?? alreadyAssigned;
       final ok = await _applyChampionDiff(
         cubit: championCubit,
@@ -981,7 +987,8 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
     if (hadFailure && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Some champion/owner assignments couldn't be saved.".tr),
+          content:
+              Text("Some champion/owner assignments couldn't be saved.".tr),
           backgroundColor: AppColors.red,
         ),
       );
@@ -1014,11 +1021,13 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
             }
             return GrcOwnerSection(
               sectionTitle: 'Control Champions',
-              initialOwnerEmails: _alreadyAssignedChampionEmails(state.champions),
+              initialOwnerEmails:
+                  _alreadyAssignedChampionEmails(state.champions),
               selectedDepartmentNames: _realSelectedDepartments,
               showRemoveIconWhenSelected: true,
               onOwnersChanged: (selected) => setState(() =>
-                  _currentChampionEmails = selected.map((o) => o.email).toList()),
+                  _currentChampionEmails =
+                      selected.map((o) => o.email).toList()),
             );
           },
         ),
@@ -1112,8 +1121,8 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                         inactiveColor:
                                             Colors.grey.withValues(alpha: 0.16),
                                         value: _isArabicEnabled,
-                                        onToggle: (v) =>
-                                            setState(() => _isArabicEnabled = v),
+                                        onToggle: (v) => setState(
+                                            () => _isArabicEnabled = v),
                                       ),
                                     ],
                                   ),
@@ -1172,8 +1181,7 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                               ? _textField(
                                                   label: 'اسم ضابط',
                                                   hint: 'اكتب هنا',
-                                                  controller:
-                                                      _nameArController,
+                                                  controller: _nameArController,
                                                   rtl: true,
                                                   submitted: _submitted &&
                                                       _arabicTouched,
@@ -1183,8 +1191,7 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                               : _textField(
                                                   label: 'Control Number'.tr,
                                                   hint: 'Text here'.tr,
-                                                  controller:
-                                                      _numberController,
+                                                  controller: _numberController,
                                                   submitted: _submitted,
                                                   englishOnlyError:
                                                       'Control Number must be written in English'
@@ -1211,8 +1218,7 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                               child: _textField(
                                                 label: 'رقم ضابط',
                                                 hint: 'اكتب هنا',
-                                                controller:
-                                                    _numberArController,
+                                                controller: _numberArController,
                                                 rtl: true,
                                                 submitted: _submitted &&
                                                     _arabicTouched,
@@ -1237,8 +1243,8 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                               hint: 'اكتب هنا',
                                               controller: _numberArController,
                                               rtl: true,
-                                              submitted: _submitted &&
-                                                  _arabicTouched,
+                                              submitted:
+                                                  _submitted && _arabicTouched,
                                               arabicOnlyError:
                                                   'يجب كتابة رقم ضابط باللغة العربية',
                                             ),
@@ -1287,11 +1293,11 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                                 value: _startDate,
                                                 onChanged: (d) => setState(
                                                     () => _startDate = d),
-                                                fillColor:
-                                                    AppColors.background,
-                                                dateFormatter: (d) => intl
-                                                    .DateFormat('d MMM yyyy')
-                                                    .format(d),
+                                                fillColor: AppColors.background,
+                                                dateFormatter: (d) =>
+                                                    intl.DateFormat(
+                                                            'd MMM yyyy')
+                                                        .format(d),
                                                 errorText: _submitted &&
                                                         _startDate == null
                                                     ? 'This field is required.'
@@ -1309,12 +1315,12 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                                 value: _endDate,
                                                 onChanged: (d) => setState(
                                                     () => _endDate = d),
-                                                fillColor:
-                                                    AppColors.background,
+                                                fillColor: AppColors.background,
                                                 firstDate: _startDate,
-                                                dateFormatter: (d) => intl
-                                                    .DateFormat('d MMM yyyy')
-                                                    .format(d),
+                                                dateFormatter: (d) =>
+                                                    intl.DateFormat(
+                                                            'd MMM yyyy')
+                                                        .format(d),
                                                 errorText: _submitted &&
                                                         _endDate == null
                                                     ? 'This field is required.'
@@ -1458,7 +1464,7 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                           children: [
                                             Text('Control Document ENG',
                                                 style: StyleText
-                                                    .fontSize16Weight500
+                                                    .fontSize14Weight500
                                                     .copyWith(
                                                         color: AppColors.text)),
                                             _documentEn != null
@@ -1487,7 +1493,7 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                           children: [
                                             Text('Control Document AR',
                                                 style: StyleText
-                                                    .fontSize16Weight500
+                                                    .fontSize14Weight500
                                                     .copyWith(
                                                         color: AppColors.text)),
                                             _documentAr != null
@@ -1560,7 +1566,10 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                               customButton(
                                 title: _isEdit ? 'Save'.tr : 'Add'.tr,
                                 function: () {
-                                  // if (!_validate()) return;
+                                  if (_isEdit && !_isDepartmentsWeightValid) {
+                                    setState(() {});
+                                    return;
+                                  }
                                   showConfirmDialog(
                                     context: context,
                                     title: _isEdit
