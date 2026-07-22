@@ -28,6 +28,7 @@ import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details
     show containsEnglishLetters, containsArabicLetters;
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_control_completeness.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_control_model.dart';
+import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_document_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
@@ -173,6 +174,35 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
       image: 'assets/icons_assets/data_grc_assets/upload_minimalistic.svg',
       color: AppColors.primary,
       svgColor: AppColors.textButton,
+    );
+  }
+
+  /// function name: [_documentColumn]
+  ///
+  /// purpose: one document upload/preview column — shared by the ENG and AR
+  ///          Control Document sections so their layout stays identical
+  ///          whether they're shown side by side or (Arabic disabled) alone.
+  Widget _documentColumn({
+    required String label,
+    required PolicyDocumentInfo? document,
+    required VoidCallback onRemove,
+    required VoidCallback onUpload,
+  }) {
+    return Column(
+      spacing: 8.h,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label,
+            style:
+                StyleText.fontSize14Weight500.copyWith(color: AppColors.text)),
+        document != null
+            ? PolicyDocumentPreviewWidget(document: document, onRemove: onRemove)
+            : SizedBox(
+                width: double.infinity,
+                child:
+                    _documentButton(onTap: onUpload, title: 'Control Document'),
+              ),
+      ],
     );
   }
 
@@ -332,58 +362,43 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
                   weightField,
                 ]),
           SizedBox(height: 15.h),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 10.w,
-            children: [
-              Expanded(
-                child: Column(
-                  spacing: 8.h,
+          // Two Expanded columns split the row 50/50 when Arabic is on;
+          // with only the ENG column left, an Expanded there would stretch
+          // it across the whole row instead of keeping that same
+          // half-width look.
+          isArabicEnabled
+              ? Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 10.w,
                   children: [
-                    Text('Control Document ENG',
-                        style: StyleText.fontSize14Weight500
-                            .copyWith(color: AppColors.text)),
-                    control.documentEn != null
-                        ? PolicyDocumentPreviewWidget(
-                            document: control.documentEn!,
-                            onRemove: widget.onRemoveDocumentEn,
-                          )
-                        : SizedBox(
-                            width: double.infinity,
-                            child: _documentButton(
-                              onTap: widget.onUploadDocumentEn,
-                              title: 'Control Document',
-                            ),
-                          ),
+                    Expanded(
+                      child: _documentColumn(
+                        label: 'Control Document ENG',
+                        document: control.documentEn,
+                        onRemove: widget.onRemoveDocumentEn,
+                        onUpload: widget.onUploadDocumentEn,
+                      ),
+                    ),
+                    Expanded(
+                      child: _documentColumn(
+                        label: 'Control Document AR',
+                        document: control.documentAr,
+                        onRemove: widget.onRemoveDocumentAr,
+                        onUpload: widget.onUploadDocumentAr,
+                      ),
+                    ),
                   ],
+                )
+              : FractionallySizedBox(
+                  widthFactor: 0.5,
+                  alignment: Alignment.centerLeft,
+                  child: _documentColumn(
+                    label: 'Control Document ENG',
+                    document: control.documentEn,
+                    onRemove: widget.onRemoveDocumentEn,
+                    onUpload: widget.onUploadDocumentEn,
+                  ),
                 ),
-              ),
-              Expanded(
-                child: Column(
-                  spacing: 8.h,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Control Document AR',
-                        style: StyleText.fontSize14Weight500
-                            .copyWith(color: AppColors.text)),
-                    control.documentAr != null
-                        ? PolicyDocumentPreviewWidget(
-                            document: control.documentAr!,
-                            onRemove: widget.onRemoveDocumentAr,
-                          )
-                        : SizedBox(
-                            width: double.infinity,
-                            child: _documentButton(
-                              onTap: widget.onUploadDocumentAr,
-                              title: 'Control Document',
-                            ),
-                          ),
-                  ],
-                ),
-              ),
-            ],
-          ),
         ],
       ),
     );
