@@ -155,6 +155,9 @@ class ControlBulkRowForm {
   Map<String, String> validate({
     required Set<String> knownEmployeeEmails,
     required Set<String> knownDepartmentNames,
+    required bool equalWeights,
+    required DateTime policyStartDate,
+    required DateTime policyEndDate,
   }) {
     final next = <String, String>{};
 
@@ -185,6 +188,22 @@ class ControlBulkRowForm {
     if (start != null && end != null && !start.isBefore(end)) {
       next['startDate'] = 'Start Date must be before End Date';
       next['endDate'] = 'Start Date must be before End Date';
+    }
+
+    if (start != null && !next.containsKey('startDate')) {
+      if (start.isBefore(policyStartDate)) {
+        next['startDate'] = 'Start date cannot be before the Policy start date.';
+      } else if (start.isAfter(policyEndDate)) {
+        next['startDate'] = 'Start date cannot be after the Policy end date.';
+      }
+    }
+
+    if (end != null && !next.containsKey('endDate')) {
+      if (end.isBefore(policyStartDate)) {
+        next['endDate'] = 'End date cannot be before the Policy start date.';
+      } else if (end.isAfter(policyEndDate)) {
+        next['endDate'] = 'End date cannot be after the Policy end date.';
+      }
     }
 
     final weight = double.tryParse(controlWeightController.text.trim());
@@ -220,7 +239,7 @@ class ControlBulkRowForm {
       errors: next,
     );
 
-    _validateDepartments(next, knownDepartmentNames);
+    _validateDepartments(next, knownDepartmentNames, equalWeights: equalWeights);
 
     errors = next;
     return errors;
@@ -252,23 +271,43 @@ class ControlBulkRowForm {
   /// function name: [_validateDepartments]
   ///
   /// purpose: validate the Applied Departments/Department Weight pair.
-  ///          Structural problems (missing one side, count mismatch,
+  ///          When [equalWeights] is true, Department Weight is not read at
+  ///          all — each department in Applied Departments gets an equal
+  ///          share (100 / count). When false, behaves exactly as before:
+  ///          structural problems (missing one side, count mismatch,
   ///          unknown department name) error 'appliedDepartments' (and, for
   ///          the first two, 'departmentWeight' too, since neither cell is
   ///          trustworthy in those cases). Once the names/count are known
   ///          good, a non-numeric or non-100-summing weight list errors
-  ///          only 'departmentWeight' — the Applied Departments cell stays
-  ///          clean, matching the reference mockup (bad sum = red Total
-  ///          Weight box, not a red Applied Departments cell).
+  ///          only 'departmentWeight'.
   void _validateDepartments(
     Map<String, String> errors,
-    Set<String> knownDepartmentNames,
-  ) {
+    Set<String> knownDepartmentNames, {
+    required bool equalWeights,
+  }) {
     final namesText = appliedDepartmentsController.text.trim();
-    final weightsText = departmentWeightController.text.trim();
     departmentNames = [];
     departmentWeights = [];
 
+    if (equalWeights) {
+      if (namesText.isEmpty) return;
+
+      final names = _splitList(namesText);
+      if (names.isEmpty) return;
+
+      final unknown = names.where((n) => !knownDepartmentNames.contains(n)).toList();
+      if (unknown.isNotEmpty) {
+        errors['appliedDepartments'] = 'Unknown department(s): ${unknown.join(', ')}';
+        return;
+      }
+
+      departmentNames = names;
+      final share = 100 / names.length;
+      departmentWeights = List.filled(names.length, share);
+      return;
+    }
+
+    final weightsText = departmentWeightController.text.trim();
     if (namesText.isEmpty && weightsText.isEmpty) return;
 
     final names = _splitList(namesText);
