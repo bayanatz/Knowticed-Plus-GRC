@@ -223,6 +223,45 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
       _realSelectedDepartments.isEmpty ||
       _totalDepartmentsWeight == 100;
 
+  /// True unless the currently entered Start/End Date fall outside the
+  /// parent Policy's own Start/End Date range, or End Date is before Start
+  /// Date. A Control's schedule must always sit inside its Policy's.
+  bool get _isControlDateRangeValid {
+    if (_startDate == null || _endDate == null) return true;
+    return !_startDate!.isBefore(widget.policyStartDate) &&
+        !_startDate!.isAfter(widget.policyEndDate) &&
+        !_endDate!.isBefore(widget.policyStartDate) &&
+        !_endDate!.isAfter(widget.policyEndDate) &&
+        !_endDate!.isBefore(_startDate!);
+  }
+
+  String? get _startDateError {
+    if (_submitted && _startDate == null) return 'This field is required.'.tr;
+    if (_startDate == null) return null;
+    if (_startDate!.isBefore(widget.policyStartDate)) {
+      return 'Start date cannot be before the Policy start date.'.tr;
+    }
+    if (_startDate!.isAfter(widget.policyEndDate)) {
+      return 'Start date cannot be after the Policy end date.'.tr;
+    }
+    return null;
+  }
+
+  String? get _endDateError {
+    if (_submitted && _endDate == null) return 'This field is required.'.tr;
+    if (_endDate == null) return null;
+    if (_startDate != null && _endDate!.isBefore(_startDate!)) {
+      return 'End date cannot be before start date.'.tr;
+    }
+    if (_endDate!.isBefore(widget.policyStartDate)) {
+      return 'End date cannot be before the Policy start date.'.tr;
+    }
+    if (_endDate!.isAfter(widget.policyEndDate)) {
+      return 'End date cannot be after the Policy end date.'.tr;
+    }
+    return null;
+  }
+
   /// The department names to send to the cubit on save.
   List<String> get _departmentsForSave => _realSelectedDepartments;
 
@@ -1294,15 +1333,14 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                                 onChanged: (d) => setState(
                                                     () => _startDate = d),
                                                 fillColor: AppColors.background,
+                                                firstDate:
+                                                    widget.policyStartDate,
+                                                lastDate: widget.policyEndDate,
                                                 dateFormatter: (d) =>
                                                     intl.DateFormat(
                                                             'd MMM yyyy')
                                                         .format(d),
-                                                errorText: _submitted &&
-                                                        _startDate == null
-                                                    ? 'This field is required.'
-                                                        .tr
-                                                    : null,
+                                                errorText: _startDateError,
                                               ),
                                             ),
                                             SizedBox(width: 10.w),
@@ -1316,23 +1354,14 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                                 onChanged: (d) => setState(
                                                     () => _endDate = d),
                                                 fillColor: AppColors.background,
-                                                firstDate: _startDate,
+                                                firstDate: _startDate ??
+                                                    widget.policyStartDate,
+                                                lastDate: widget.policyEndDate,
                                                 dateFormatter: (d) =>
                                                     intl.DateFormat(
                                                             'd MMM yyyy')
                                                         .format(d),
-                                                errorText: _submitted &&
-                                                        _endDate == null
-                                                    ? 'This field is required.'
-                                                        .tr
-                                                    : (_endDate != null &&
-                                                            _startDate !=
-                                                                null &&
-                                                            _endDate!.isBefore(
-                                                                _startDate!)
-                                                        ? 'End date cannot be before start date.'
-                                                            .tr
-                                                        : null),
+                                                errorText: _endDateError,
                                               ),
                                             ),
                                           ])
@@ -1346,10 +1375,9 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                               onChanged: (d) => setState(
                                                   () => _startDate = d),
                                               fillColor: AppColors.background,
-                                              errorText: _submitted &&
-                                                      _startDate == null
-                                                  ? 'This field is required.'.tr
-                                                  : null,
+                                              firstDate: widget.policyStartDate,
+                                              lastDate: widget.policyEndDate,
+                                              errorText: _startDateError,
                                             ),
                                             SizedBox(height: 15.h),
                                             CustomDropdownCalendar(
@@ -1361,17 +1389,10 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                               onChanged: (d) =>
                                                   setState(() => _endDate = d),
                                               fillColor: AppColors.background,
-                                              firstDate: _startDate,
-                                              errorText: _submitted &&
-                                                      _endDate == null
-                                                  ? 'This field is required.'.tr
-                                                  : (_endDate != null &&
-                                                          _startDate != null &&
-                                                          _endDate!.isBefore(
-                                                              _startDate!)
-                                                      ? 'End date cannot be before start date.'
-                                                          .tr
-                                                      : null),
+                                              firstDate: _startDate ??
+                                                  widget.policyStartDate,
+                                              lastDate: widget.policyEndDate,
+                                              errorText: _endDateError,
                                             ),
                                           ]),
                                     SizedBox(height: 15.h),
@@ -1566,7 +1587,9 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                               customButton(
                                 title: _isEdit ? 'Save'.tr : 'Add'.tr,
                                 function: () {
-                                  if (_isEdit && !_isDepartmentsWeightValid) {
+                                  if (_isEdit &&
+                                      (!_isDepartmentsWeightValid ||
+                                          !_isControlDateRangeValid)) {
                                     setState(() {});
                                     return;
                                   }
