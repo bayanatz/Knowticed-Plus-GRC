@@ -24,6 +24,8 @@ import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
+import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details_widget/grc_form_fields.dart'
+    show containsEnglishLetters, containsArabicLetters;
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_control_completeness.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_control_model.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_document_info.dart';
@@ -109,13 +111,14 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
   TextStyle get _hintStyle => StyleText.fontSize14Weight500
       .copyWith(color: AppColors.secondaryText.withOpacity(.5));
 
-  /// No per-field error styling (red border/"required"/language-mismatch
-  /// message) is shown on this card at all anymore, in any state — the
-  /// parent page's Preview button being greyed/disabled while anything here
-  /// is incomplete or invalid (see create_new_policy.dart's _canPreview) is
-  /// now the only feedback. [isMandatory]/[englishOnlyError]/
-  /// [arabicOnlyError] are still accepted so call sites don't need
-  /// reworking, but no longer feed into anything rendered.
+  /// "Required" error styling stays suppressed on this card in every state
+  /// — the parent page's Preview button being greyed/disabled while
+  /// anything here is incomplete (see create_new_policy.dart's
+  /// _canPreview) is the only feedback for that. Language-mismatch errors
+  /// (Arabic typed into an English field or vice versa) still show inline,
+  /// live, as the user types. [isMandatory] is still accepted so call
+  /// sites don't need reworking, but no longer feeds into anything
+  /// rendered.
   Widget _textField({
     required String label,
     required String hint,
@@ -130,12 +133,17 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
     String? englishOnlyError,
     String? arabicOnlyError,
   }) {
+    final languageError = rtl
+        ? (containsEnglishLetters(controller.text) ? arabicOnlyError : null)
+        : (containsArabicLetters(controller.text) ? englishOnlyError : null);
+
     final field = CustomTextField(
       label: label,
       hint: hint,
       controller: controller,
       required: true,
       onlyDigits: onlyDigits,
+      errorText: languageError,
       maxLines: maxLines,
       minLines: minLines,
       maxLength: maxLength,
