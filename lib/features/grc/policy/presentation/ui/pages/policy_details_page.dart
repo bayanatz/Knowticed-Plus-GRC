@@ -202,6 +202,9 @@ class _PolicyDetailsBodyState extends State<_PolicyDetailsBody> {
           siblingControls: _controls,
           policyStartDate: _policy!.startDate,
           policyEndDate: _policy!.endDate,
+          policyHasArabic: _policy!.policyNameAr.trim().isNotEmpty ||
+              _policy!.policyNumberAr.trim().isNotEmpty ||
+              _policy!.policyDescriptionAr.trim().isNotEmpty,
         ),
         transitionsBuilder: (_, animation, __, child) =>
             FadeTransition(opacity: animation, child: child),

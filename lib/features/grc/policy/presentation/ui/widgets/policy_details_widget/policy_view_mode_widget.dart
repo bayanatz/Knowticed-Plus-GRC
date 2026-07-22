@@ -415,6 +415,9 @@ class _PolicyViewModeWidgetState extends State<PolicyViewModeWidget> {
             siblingControls: widget.controls,
             policyStartDate: widget.policy.startDate,
             policyEndDate: widget.policy.endDate,
+            policyHasArabic: widget.policy.policyNameAr.trim().isNotEmpty ||
+                widget.policy.policyNumberAr.trim().isNotEmpty ||
+                widget.policy.policyDescriptionAr.trim().isNotEmpty,
           ),
           transitionsBuilder: (_, animation, __, child) =>
               FadeTransition(opacity: animation, child: child),

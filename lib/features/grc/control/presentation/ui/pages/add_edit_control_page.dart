@@ -71,6 +71,7 @@ class AddEditControlPage extends StatefulWidget {
   final ControlEntity? existingControl;
   final DateTime policyStartDate;
   final DateTime policyEndDate;
+  final bool policyHasArabic;
 
   const AddEditControlPage({
     super.key,
@@ -79,6 +80,7 @@ class AddEditControlPage extends StatefulWidget {
     required this.siblingControls,
     required this.policyStartDate,
     required this.policyEndDate,
+    required this.policyHasArabic,
     this.existingControl,
   });
 
@@ -101,7 +103,6 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
   PolicyDocumentInfo? _documentEn;
   PolicyDocumentInfo? _documentAr;
   bool _submitted = false;
-  bool _isArabicEnabled = true;
   List<String>? _currentChampionEmails;
   List<String>? _currentOwnerEmails;
 
@@ -122,6 +123,13 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
   final Map<String, TextEditingController> _departmentWeightControllers = {};
 
   bool get _isEdit => widget.existingControl != null;
+
+  /// Whether Arabic fields show at all — no longer a per-Control toggle,
+  /// this now always mirrors the parent Policy's own Arabic-enabled state
+  /// (same "any Arabic field non-empty" inference PolicyEditPage uses),
+  /// so a Policy without Arabic content never shows Arabic fields on any
+  /// of its Controls, and vice versa.
+  bool get _isArabicEnabled => widget.policyHasArabic;
 
   /// True once the user has entered something into any Arabic field —
   /// mirrors PolicyEditPage/CreateNewPolicyPage's _arabicTouched. Turning
@@ -180,12 +188,6 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
             TextEditingController(text: _formatWeight(d.weight));
       }
     }
-    // Every control created before this feature already required Arabic
-    // fields, so this reliably infers true for all of them; only a
-    // control saved after Arabic became optional could ever be empty here.
-    _isArabicEnabled = existing.controlsNameAr.trim().isNotEmpty ||
-        existing.controlsNumberAr.trim().isNotEmpty ||
-        existing.controlsDescriptionAr.trim().isNotEmpty;
   }
 
   @override
@@ -1165,31 +1167,6 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Text(
-                                        'Create Arabic Version'.tr,
-                                        style: StyleText.fontSize14Weight500
-                                            .copyWith(color: AppColors.text),
-                                      ),
-                                      SizedBox(width: 10.w),
-                                      FlutterSwitch(
-                                        width: 38.sp,
-                                        height: 22.sp,
-                                        padding: 3.sp,
-                                        borderRadius: 20.sp,
-                                        toggleSize: 16.sp,
-                                        activeColor: AppColors.secondaryPrimary,
-                                        inactiveColor:
-                                            Colors.grey.withValues(alpha: 0.16),
-                                        value: _isArabicEnabled,
-                                        onToggle: (v) => setState(
-                                            () => _isArabicEnabled = v),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 15.h),
                                   isTablet
                                       ? Row(children: [
                                           Expanded(
@@ -1529,35 +1506,36 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                         ),
                                       ),
                                       SizedBox(width: 10.w),
-                                      // if (widget.isArabicEnabled) ...[
-                                      Expanded(
-                                        child: Column(
-                                          spacing: 8.h,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text('Control Document AR',
-                                                style: StyleText
-                                                    .fontSize14Weight500
-                                                    .copyWith(
-                                                        color: AppColors.text)),
-                                            _documentAr != null
-                                                ? PolicyDocumentPreviewWidget(
-                                                    document: _documentAr!,
-                                                    onRemove:
-                                                        _onRemoveDocumentAr)
-                                                : SizedBox(
-                                                    width: double.infinity,
-                                                    child: _documentButton(
-                                                        onTap:
-                                                            _onUploadDocumentAr,
-                                                        title:
-                                                            'Control Document'),
-                                                  ),
-                                          ],
+                                      if (_isArabicEnabled) ...[
+                                        Expanded(
+                                          child: Column(
+                                            spacing: 8.h,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text('Control Document AR',
+                                                  style: StyleText
+                                                      .fontSize14Weight500
+                                                      .copyWith(
+                                                          color:
+                                                              AppColors.text)),
+                                              _documentAr != null
+                                                  ? PolicyDocumentPreviewWidget(
+                                                      document: _documentAr!,
+                                                      onRemove:
+                                                          _onRemoveDocumentAr)
+                                                  : SizedBox(
+                                                      width: double.infinity,
+                                                      child: _documentButton(
+                                                          onTap:
+                                                              _onUploadDocumentAr,
+                                                          title:
+                                                              'Control Document'),
+                                                    ),
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                      // ],
+                                      ],
                                     ],
                                   ),
                                   SizedBox(height: 15.h),
