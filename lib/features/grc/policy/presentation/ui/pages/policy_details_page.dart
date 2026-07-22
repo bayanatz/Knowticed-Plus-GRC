@@ -222,6 +222,8 @@ class _PolicyDetailsBodyState extends State<_PolicyDetailsBody> {
         pageBuilder: (_, __, ___) => ControlBulkUploadPage(
           moduleId: widget.moduleId,
           policyId: widget.policyId,
+          policyStartDate: _policy!.startDate,
+          policyEndDate: _policy!.endDate,
         ),
         transitionsBuilder: (_, animation, __, child) =>
             FadeTransition(opacity: animation, child: child),

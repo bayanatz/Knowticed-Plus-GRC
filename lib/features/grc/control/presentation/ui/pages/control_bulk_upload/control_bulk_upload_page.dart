@@ -20,6 +20,7 @@ import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/grc/control/domain/use_cases/create_control_usecase.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/control_bulk_upload/control_bulk_upload_cubit.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/control_bulk_upload/control_bulk_upload_preview_page.dart';
+import 'package:demo_app/features/grc/control/presentation/ui/pages/control_bulk_upload/control_bulk_weight_dialog.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/control_bulk_upload/control_excel_parser.dart';
 import 'package:demo_app/features/grc/control_champion/presentation/controller/champion_cubit.dart';
 import 'package:demo_app/features/grc/control_owner/presentation/controller/owner_cubit.dart';
@@ -37,11 +38,15 @@ import 'package:get_it/get_it.dart';
 class ControlBulkUploadPage extends StatefulWidget {
   final String moduleId;
   final String policyId;
+  final DateTime policyStartDate;
+  final DateTime policyEndDate;
 
   const ControlBulkUploadPage({
     super.key,
     required this.moduleId,
     required this.policyId,
+    required this.policyStartDate,
+    required this.policyEndDate,
   });
 
   @override
@@ -52,8 +57,22 @@ class _ControlBulkUploadPageState extends State<ControlBulkUploadPage> {
   bool _isDragging = false;
   bool _isProcessing = false;
   String? _errorMessage;
+  bool? _equalWeights;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _askEqualWeights());
+  }
+
+  Future<void> _askEqualWeights() async {
+    final answer = await showControlBulkWeightDialog(context);
+    if (!mounted) return;
+    setState(() => _equalWeights = answer);
+  }
 
   Future<void> _pickAndParseExcel() async {
+    if (_equalWeights == null) return;
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['xlsx', 'xls'],
@@ -74,6 +93,7 @@ class _ControlBulkUploadPageState extends State<ControlBulkUploadPage> {
   }
 
   Future<void> _onDragDone(DropDoneDetails details) async {
+    if (_equalWeights == null) return;
     setState(() => _isDragging = false);
     if (details.files.isEmpty) return;
 
@@ -119,6 +139,9 @@ class _ControlBulkUploadPageState extends State<ControlBulkUploadPage> {
                   championCubit: innerContext.read<ChampionCubit>(),
                   ownerCubit: innerContext.read<OwnerCubit>(),
                   parsedRows: rows,
+                  equalWeights: _equalWeights!,
+                  policyStartDate: widget.policyStartDate,
+                  policyEndDate: widget.policyEndDate,
                 ),
                 child: ControlBulkUploadPreviewPage(
                   moduleId: widget.moduleId,
