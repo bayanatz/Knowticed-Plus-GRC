@@ -844,6 +844,10 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
       policyEndDate: _endDate,
       controlsSubmitted: _controlsSubmitted,
       editPolicy: () => setState(() => _step = 0),
+      // Rebuilds on every keystroke in any control card so the Preview
+      // button's grey/enabled state (_canPreview) updates live instead of
+      // only refreshing on the next unrelated setState.
+      onChanged: () => setState(() {}),
     );
   }
 

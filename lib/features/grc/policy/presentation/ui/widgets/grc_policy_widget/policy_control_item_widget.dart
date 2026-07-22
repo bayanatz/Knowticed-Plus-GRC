@@ -50,6 +50,12 @@ class PolicyControlItemWidget extends StatefulWidget {
   final ValueChanged<DateTime?> onStartDateChanged;
   final ValueChanged<DateTime?> onEndDateChanged;
   final bool controlsSubmitted;
+  /// Fires on every keystroke in any of this control's text fields — the
+  /// parent page's own completeness/error checks (e.g. the Preview button's
+  /// enabled state) read straight from these same TextEditingControllers,
+  /// so it needs to rebuild on every change, not just on the
+  /// dropdown/date/document callbacks below.
+  final VoidCallback? onChanged;
 
   const PolicyControlItemWidget({
     super.key,
@@ -67,6 +73,7 @@ class PolicyControlItemWidget extends StatefulWidget {
     this.policyEndDate,
     this.showRemoveButton = false,
     this.onRemove,
+    this.onChanged,
   });
 
   @override
@@ -102,7 +109,10 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
     super.dispose();
   }
 
-  void _onTextChanged() => setState(() {});
+  void _onTextChanged() {
+    setState(() {});
+    widget.onChanged?.call();
+  }
 
   TextStyle get _labelStyle =>
       AppTextStyles.font16BlackRegularCairo.copyWith(fontSize: 14.sp);

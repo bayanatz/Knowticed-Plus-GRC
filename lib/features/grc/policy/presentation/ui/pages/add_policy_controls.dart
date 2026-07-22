@@ -41,6 +41,7 @@ class AddPolicyControlsPage extends StatefulWidget {
   final DateTime? policyEndDate;
   final bool controlsSubmitted;
   final VoidCallback editPolicy;
+  final VoidCallback? onChanged;
 
   const AddPolicyControlsPage({
     super.key,
@@ -50,6 +51,7 @@ class AddPolicyControlsPage extends StatefulWidget {
     required this.policyEndDate,
     required this.controlsSubmitted,
     required this.editPolicy,
+    this.onChanged,
   });
 
   @override
@@ -175,6 +177,7 @@ class _AddPolicyControlsPageState extends State<AddPolicyControlsPage> {
                           _onControlStartDateChanged(i, date),
                       onEndDateChanged: (date) =>
                           _onControlEndDateChanged(i, date),
+                      onChanged: widget.onChanged,
                     ),
                   Align(
                     alignment: Alignment.centerLeft,
