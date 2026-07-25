@@ -9,10 +9,8 @@ import 'package:demo_app/core/helper/main_helper/employee_helper.dart';
 import 'package:demo_app/features/grc/control/domain/entities/assigning_control.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/control_champion/domain/entities/champion_entity.dart';
-import 'package:demo_app/features/grc/control_champion/domain/entities/champion_status.dart';
-import 'package:demo_app/features/grc/control_champion/domain/use_cases/create_champion_usecase.dart';
-import 'package:demo_app/features/grc/control_champion/domain/use_cases/get_champion_usecases.dart';
-import 'package:demo_app/features/grc/control_champion/domain/use_cases/update_champion_usecase.dart';
+import 'package:demo_app/features/grc/grc_request/domain/use_cases/create_grc_request_usecase.dart';
+import 'package:demo_app/features/grc/grc_request/presentation/controller/grc_request_cubit.dart';
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details_widget/grc_owner_section.dart';
 import 'package:demo_app/features/grc/module/presentation/controller/cubit/grc_owner_cubit.dart';
@@ -20,6 +18,7 @@ import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart'
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
 import 'package:demo_app/features/settings/core_widgets/main_widget/custom_button_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -160,6 +159,12 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
       );
       return;
     }
+    if (_startDate == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please choose a start date'.tr)),
+      );
+      return;
+    }
 
     final newChampionEmail = _newSelectedEmployees.first.email;
     if (newChampionEmail == widget.champion.championEmail) {
@@ -172,99 +177,32 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
     setState(() => _submitting = true);
 
     try {
-      final editor = _currentUserEmail;
-
-      // 1. Update Current Champion: remove reassigned controls
-      final remainingControls = widget.champion.assigningControls.where((ac) {
-        return !_reassignedControls.any((rc) => rc.policyId == ac.policyId && rc.controlId == ac.controlId);
-      }).toList();
-
-      final updateCurrentResult = await GetIt.instance<UpdateChampionUseCase>().call(
-        UpdateChampionParams(
-          championEmail: widget.champion.championEmail,
+      final requestCubit = context.read<GrcRequestCubit>();
+      await requestCubit.createRequest(
+        CreateGrcRequestParams(
           moduleId: widget.module.moduleId,
-          editorId: editor,
-          assigningControls: remainingControls,
-          status: remainingControls.isEmpty ? ChampionStatus.removed : null,
+          requestedBy: _currentUserEmail,
+          note: _noteController.text,
+          currentChampionEmail: widget.champion.championEmail,
+          newChampionEmail: newChampionEmail,
+          controls: _reassignedControls,
+          startDate: _startDate!,
+          endDate: _endDate,
         ),
       );
 
-      bool updateCurrentSuccess = false;
-      updateCurrentResult.fold(
-        (failure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to update current champion: ${failure.message}')),
-          );
-        },
-        (_) => updateCurrentSuccess = true,
-      );
-
-      if (!updateCurrentSuccess) {
-        setState(() => _submitting = false);
-        return;
-      }
-
-      // 2. Fetch or Create/Update New Champion
-      final newChampionGetResult = await GetIt.instance<GetChampionUseCase>().call(
-        newChampionEmail,
-        moduleId: widget.module.moduleId,
-      );
-
-      bool success = false;
-      await newChampionGetResult.fold(
-        (failure) async {
-          // If not found, create new
-          final createResult = await GetIt.instance<CreateChampionUseCase>().call(
-            CreateChampionParams(
-              moduleId: widget.module.moduleId,
-              championEmail: newChampionEmail,
-              assigningControls: _reassignedControls,
-              editorId: editor,
-            ),
-          );
-          createResult.fold(
-            (fail) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Failed to create new champion: ${fail.message}')),
-              );
-            },
-            (_) => success = true,
-          );
-        },
-        (existingChampion) async {
-          // If exists, update by merging controls
-          final mergedControls = List<AssigningControlEntity>.from(existingChampion.assigningControls);
-          for (final rc in _reassignedControls) {
-            final exists = mergedControls.any((ac) => ac.policyId == rc.policyId && ac.controlId == rc.controlId);
-            if (!exists) {
-              mergedControls.add(rc);
-            }
-          }
-          final updateResult = await GetIt.instance<UpdateChampionUseCase>().call(
-            UpdateChampionParams(
-              championEmail: newChampionEmail,
-              moduleId: widget.module.moduleId,
-              editorId: editor,
-              assigningControls: mergedControls,
-              status: ChampionStatus.active, // Restore if it was removed
-            ),
-          );
-          updateResult.fold(
-            (fail) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Failed to update new champion: ${fail.message}')),
-              );
-            },
-            (_) => success = true,
-          );
-        },
-      );
-
-      if (success) {
+      final state = requestCubit.state;
+      if (state is GrcRequestActionSuccess) {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Champion reassigned successfully'.tr)),
+          SnackBar(content: Text('Request submitted'.tr)),
         );
         Navigator.pop(context, true);
+      } else if (state is GrcRequestFailure) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to submit request: ${state.message}')),
+        );
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -279,6 +217,13 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
 
   @override
   Widget build(BuildContext context) {
+    return BlocProvider<GrcRequestCubit>(
+      create: (_) => GetIt.instance<GrcRequestCubit>(),
+      child: Builder(builder: (context) => _buildPage(context)),
+    );
+  }
+
+  Widget _buildPage(BuildContext context) {
     final currentEmp = _findEmployee(widget.champion.championEmail);
     final currentPhoto = currentEmp != null
         ? EmployeeHelper.getEmployeeImage(employee: currentEmp)
@@ -513,7 +458,8 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
                             ),
                       SizedBox(height: 20.h),
 
-                      // Assigning Controls Form Section
+                      // Assigning 
+                      //Controls Form Section
                       Text('Assigning Controls'.tr, style: StyleText.fontSize16Weight600.copyWith(color: AppColors.text)),
                       SizedBox(height: 12.h),
                       Row(
