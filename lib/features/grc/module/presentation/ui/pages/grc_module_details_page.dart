@@ -35,6 +35,8 @@ import 'package:demo_app/features/grc/policy/presentation/ui/pages/create_new_po
 import 'package:demo_app/features/grc/policy/presentation/ui/pages/policy_bulk_upload/policy_bulk_upload_page.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/pages/policy_details_page.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/pages/policy_weight_issue/policy_weight_issue_page.dart';
+import 'package:demo_app/features/grc/grc_request/presentation/ui/pages/grc_requests_list_page.dart';
+import 'package:demo_app/features/home/core_widgets/main_widget/custom_button.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
 import 'package:demo_app/features/roles/widgets/filter_bar_item.dart';
 import 'package:demo_app/features/settings/core_widgets/main_widget/custom_button_widget.dart';
@@ -58,7 +60,6 @@ import 'package:demo_app/features/grc/control_owner/domain/entities/owner_entity
 import 'package:demo_app/features/grc/control_owner/presentation/controller/owner_cubit.dart';
 import 'package:demo_app/features/grc/control_owner/presentation/ui/pages/add_owner_page.dart';
 import 'package:demo_app/features/grc/control_champion/presentation/ui/pages/control_champion_details_page.dart';
-
 
 /// class name: [GrcModuleDetailsPage]
 ///
@@ -376,7 +377,8 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
                                     child: Text(
                                       _tabs[_selectedTab].tr,
                                       style: StyleText.fontSize16Weight500
-                                          .copyWith(color: AppColors.secondaryText),
+                                          .copyWith(
+                                              color: AppColors.secondaryText),
                                     ),
                                   ),
                   ),
@@ -603,7 +605,8 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
 
   EmployeeEntityPro? _findEmployee(String email) {
     if (!Get.isRegistered<MainCoreEmployeeController>()) return null;
-    final employees = Get.find<MainCoreEmployeeController>().allEmployeesEntities ?? [];
+    final employees =
+        Get.find<MainCoreEmployeeController>().allEmployeesEntities ?? [];
     for (final e in employees) {
       if (e.email == email) return e;
     }
@@ -613,17 +616,21 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
   String _employeeDisplayName(BuildContext context, String email) {
     final employee = _findEmployee(email);
     if (employee == null) return email;
-    return EmployeeHelper.getEmployeeLocalizedName(employee: employee, context: context);
+    return EmployeeHelper.getEmployeeLocalizedName(
+        employee: employee, context: context);
   }
 
-  Widget _buildPersonCard(BuildContext context, String email, {VoidCallback? onTap}) {
+  Widget _buildPersonCard(BuildContext context, String email,
+      {VoidCallback? onTap}) {
     final employee = _findEmployee(email);
     final name = _employeeDisplayName(context, email);
     final department = employee != null
-        ? EmployeeHelper.getEmployeeLocalizeDepartment(employee: employee, context: context)
+        ? EmployeeHelper.getEmployeeLocalizeDepartment(
+            employee: employee, context: context)
         : '';
     final jobTitle = employee != null
-        ? (EmployeeHelper.getEmployeeLocalizedTitle(employee: employee, context: context)
+        ? (EmployeeHelper.getEmployeeLocalizedTitle(
+                    employee: employee, context: context)
                 ?.toString() ??
             '')
         : '';
@@ -648,7 +655,8 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
               CircleAvatar(
                 radius: 20.r,
                 backgroundColor: AppColors.barrierColor,
-                backgroundImage: photo.startsWith('http') ? NetworkImage(photo) : null,
+                backgroundImage:
+                    photo.startsWith('http') ? NetworkImage(photo) : null,
               ),
               SizedBox(width: 10.w),
               Expanded(
@@ -657,7 +665,8 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(name,
-                        style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
+                        style: StyleText.fontSize14Weight500
+                            .copyWith(color: AppColors.text),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis),
                     if (department.isNotEmpty)
@@ -683,7 +692,8 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
                 heightImage: 14.h,
                 function: () {},
                 title: 'Message'.tr,
-                textStyle: StyleText.fontSize12Weight500.copyWith(color: AppColors.textButton),
+                textStyle: StyleText.fontSize12Weight500
+                    .copyWith(color: AppColors.textButton),
                 image: 'assets/icons_assets/data_grc_assets/messages_new.svg',
                 color: AppColors.primary,
                 svgColor: AppColors.textButton,
@@ -694,7 +704,6 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
       ),
     );
   }
-
 
   Future<void> _openAddChampion(BuildContext context) async {
     final result = await Navigator.push<bool>(
@@ -711,7 +720,9 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
       ),
     );
     if (result == true && context.mounted) {
-      context.read<ChampionCubit>().getAllChampions(moduleId: widget.module.moduleId);
+      context
+          .read<ChampionCubit>()
+          .getAllChampions(moduleId: widget.module.moduleId);
     }
   }
 
@@ -721,7 +732,9 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
     final q = _championSearchQuery.toLowerCase();
     return champions
         .where((c) =>
-            _employeeDisplayName(context, c.championEmail).toLowerCase().contains(q) ||
+            _employeeDisplayName(context, c.championEmail)
+                .toLowerCase()
+                .contains(q) ||
             c.championEmail.toLowerCase().contains(q))
         .toList();
   }
@@ -736,6 +749,23 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                CustomButton(
+                  buttonText: 'Requests',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => GrcRequestsListPage(module: widget.module),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+            SizedBox(height: 15.h),
             if (isTablet)
               Row(
                 spacing: 10.w,
@@ -756,7 +786,8 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
                       title: 'Champion',
                       textStyle: StyleText.fontSize14Weight500
                           .copyWith(color: AppColors.textButton),
-                      image: 'assets/icons_assets/database_builder_assets/plus_head.svg',
+                      image:
+                          'assets/icons_assets/database_builder_assets/plus_head.svg',
                       color: AppColors.primary,
                       svgColor: AppColors.textButton,
                     ),
@@ -823,7 +854,8 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
       return Center(
         child: Text(
           'No Control Champions found'.tr,
-          style: StyleText.fontSize14Weight500.copyWith(color: AppColors.secondaryText),
+          style: StyleText.fontSize14Weight500
+              .copyWith(color: AppColors.secondaryText),
         ),
       );
     }
@@ -851,26 +883,30 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
                 ),
               );
               if (context.mounted) {
-                context.read<ChampionCubit>().getAllChampions(moduleId: widget.module.moduleId);
+                context
+                    .read<ChampionCubit>()
+                    .getAllChampions(moduleId: widget.module.moduleId);
               }
             },
           );
         },
       ),
     );
-
   }
 
   Future<void> _showOwnerCreationMenu(BuildContext context) async {
     final buttonBox =
         _addOwnerButtonKey.currentContext?.findRenderObject() as RenderBox?;
     if (buttonBox == null) return;
-    final overlayBox = Overlay.of(context).context.findRenderObject() as RenderBox;
+    final overlayBox =
+        Overlay.of(context).context.findRenderObject() as RenderBox;
 
     final position = RelativeRect.fromRect(
       Rect.fromPoints(
-        buttonBox.localToGlobal(Offset(0, buttonBox.size.height), ancestor: overlayBox),
-        buttonBox.localToGlobal(buttonBox.size.bottomRight(Offset.zero), ancestor: overlayBox),
+        buttonBox.localToGlobal(Offset(0, buttonBox.size.height),
+            ancestor: overlayBox),
+        buttonBox.localToGlobal(buttonBox.size.bottomRight(Offset.zero),
+            ancestor: overlayBox),
       ),
       Offset.zero & overlayBox.size,
     );
@@ -905,14 +941,15 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
     }
   }
 
-  List<OwnerEntity> _applyOwnerFilters(BuildContext context, List<OwnerEntity> owners) {
+  List<OwnerEntity> _applyOwnerFilters(
+      BuildContext context, List<OwnerEntity> owners) {
     var result = owners;
     if (_ownerDepartmentFilter != null && _ownerDepartmentFilter!.isNotEmpty) {
       result = result.where((o) {
         final employee = _findEmployee(o.ownerEmail);
         if (employee == null) return false;
-        final department =
-            EmployeeHelper.getEmployeeLocalizeDepartment(employee: employee, context: context);
+        final department = EmployeeHelper.getEmployeeLocalizeDepartment(
+            employee: employee, context: context);
         return department == _ownerDepartmentFilter;
       }).toList();
     }
@@ -920,7 +957,9 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
       final q = _ownerSearchQuery.toLowerCase();
       result = result
           .where((o) =>
-              _employeeDisplayName(context, o.ownerEmail).toLowerCase().contains(q) ||
+              _employeeDisplayName(context, o.ownerEmail)
+                  .toLowerCase()
+                  .contains(q) ||
               o.ownerEmail.toLowerCase().contains(q))
           .toList();
     }
@@ -930,7 +969,8 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
   Widget _buildControlOwnersTab(BuildContext context, bool isTablet) {
     return BlocBuilder<OwnerCubit, OwnerState>(
       builder: (context, state) {
-        final owners = state is OwnerListLoaded ? state.owners : <OwnerEntity>[];
+        final owners =
+            state is OwnerListLoaded ? state.owners : <OwnerEntity>[];
         final filtered = _applyOwnerFilters(context, owners);
         final departmentController = Get.find<MainCoreDepartmentController>();
 
@@ -955,18 +995,20 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
                       DropdownItem<String>(value: '', label: 'All'.tr),
                       ...departmentController.departmentIds.map((id) {
                         final label = context.isArabic
-                            ? departmentController.getArabicDepartmentNameFromDepartmentId(
-                                    departmentId: id) ??
+                            ? departmentController
+                                    .getArabicDepartmentNameFromDepartmentId(
+                                        departmentId: id) ??
                                 ''
-                            : departmentController.getEnglishDepartmentNameFromDepartmentId(
-                                    departmentId: id) ??
+                            : departmentController
+                                    .getEnglishDepartmentNameFromDepartmentId(
+                                        departmentId: id) ??
                                 '';
                         return DropdownItem<String>(value: label, label: label);
                       }),
                     ],
                     value: _ownerDepartmentFilter ?? '',
-                    onChanged: (v) =>
-                        setState(() => _ownerDepartmentFilter = v.isEmpty ? null : v),
+                    onChanged: (v) => setState(
+                        () => _ownerDepartmentFilter = v.isEmpty ? null : v),
                     fillColor: AppColors.background,
                     required: false,
                   ),
@@ -982,7 +1024,8 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
                     title: isTablet ? 'Add Owner' : '',
                     textStyle: StyleText.fontSize14Weight500
                         .copyWith(color: AppColors.textButton),
-                    image: 'assets/icons_assets/database_builder_assets/plus_head.svg',
+                    image:
+                        'assets/icons_assets/database_builder_assets/plus_head.svg',
                     color: AppColors.primary,
                     svgColor: AppColors.textButton,
                   ),
@@ -1018,7 +1061,8 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
       return Center(
         child: Text(
           'No Control Owners found'.tr,
-          style: StyleText.fontSize14Weight500.copyWith(color: AppColors.secondaryText),
+          style: StyleText.fontSize14Weight500
+              .copyWith(color: AppColors.secondaryText),
         ),
       );
     }
@@ -1027,7 +1071,8 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
       child: ListView.separated(
         itemCount: owners.length,
         separatorBuilder: (_, __) => SizedBox(height: 10.h),
-        itemBuilder: (_, index) => _buildPersonCard(context, owners[index].ownerEmail, onTap: null),
+        itemBuilder: (_, index) =>
+            _buildPersonCard(context, owners[index].ownerEmail, onTap: null),
       ),
     );
   }
