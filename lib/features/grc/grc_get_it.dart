@@ -17,6 +17,16 @@ import 'package:demo_app/features/grc/module/data/data_source/grc_module_firebas
 import 'package:demo_app/features/grc/module/data/data_source/grc_module_storage_data_source.dart';
 import 'package:demo_app/features/grc/policy/data/data_source/policy_firebase_data_source.dart';
 import 'package:demo_app/features/grc/policy/data/data_source/policy_storage_data_source.dart';
+import 'package:demo_app/features/grc/control_champion/domain/entities/champion_request_resolver.dart';
+import 'package:demo_app/features/grc/control_champion/domain/use_cases/apply_champion_reassignment_usecase.dart';
+import 'package:demo_app/features/grc/grc_request/data/data_source/grc_request_firebase_data_source.dart';
+import 'package:demo_app/features/grc/grc_request/data/repository/grc_request_repository_impl.dart';
+import 'package:demo_app/features/grc/grc_request/domain/repository/grc_request_repository.dart';
+import 'package:demo_app/features/grc/grc_request/domain/use_cases/approve_grc_request_usecase.dart';
+import 'package:demo_app/features/grc/grc_request/domain/use_cases/create_grc_request_usecase.dart';
+import 'package:demo_app/features/grc/grc_request/domain/use_cases/get_grc_requests_usecase.dart';
+import 'package:demo_app/features/grc/grc_request/domain/use_cases/reject_grc_request_usecase.dart';
+import 'package:demo_app/features/grc/grc_request/presentation/controller/grc_request_cubit.dart';
 import 'package:demo_app/features/grc/control/data/repository/control_repository_impl.dart';
 import 'package:demo_app/features/grc/control_champion/data/repository/champion_repository_impl.dart';
 import 'package:demo_app/features/grc/control_owner/data/repository/owner_repository_impl.dart';
@@ -130,6 +140,12 @@ void setupGRCDependencies(GetIt sl) {
     () => OwnerFirebaseDataSource(),
   );
 
+  /// class name: [GrcRequestFirebaseDataSource]
+  /// purpose: Cloud Firestore CRUD operations for GRC Request documents.
+  sl.registerLazySingleton<GrcRequestFirebaseDataSource>(
+    () => GrcRequestFirebaseDataSource(),
+  );
+
   // ─── 2. Repository ──────────────────────────────────────────────────────────
 
   /// class name: [GRCModuleRepositoryImpl] registered as [GRCModuleRepository]
@@ -173,6 +189,14 @@ void setupGRCDependencies(GetIt sl) {
   sl.registerLazySingleton<OwnerRepository>(
     () => OwnerRepositoryImpl(
       firebaseDataSource: sl<OwnerFirebaseDataSource>(),
+    ),
+  );
+
+  /// class name: [GrcRequestRepositoryImpl] registered as [GrcRequestRepository]
+  /// purpose: orchestrates the GRC Request data source and maps models to entities.
+  sl.registerLazySingleton<GrcRequestRepository>(
+    () => GrcRequestRepositoryImpl(
+      firebaseDataSource: sl<GrcRequestFirebaseDataSource>(),
     ),
   );
 
@@ -352,6 +376,40 @@ void setupGRCDependencies(GetIt sl) {
     () => GetControlOwnerHistoryUseCase(sl<OwnerRepository>()),
   );
 
+  /// class name: [CreateGrcRequestUseCase]
+  /// purpose: business logic for creating a new GRC Request.
+  sl.registerLazySingleton<CreateGrcRequestUseCase>(
+    () => CreateGrcRequestUseCase(sl<GrcRequestRepository>()),
+  );
+
+  /// class name: [GetGrcRequestsUseCase]
+  /// purpose: business logic for fetching all GRC Request records for a module.
+  sl.registerLazySingleton<GetGrcRequestsUseCase>(
+    () => GetGrcRequestsUseCase(sl<GrcRequestRepository>()),
+  );
+
+  /// class name: [ApproveGrcRequestUseCase]
+  /// purpose: business logic for approving a GRC Request.
+  sl.registerLazySingleton<ApproveGrcRequestUseCase>(
+    () => ApproveGrcRequestUseCase(sl<GrcRequestRepository>()),
+  );
+
+  /// class name: [RejectGrcRequestUseCase]
+  /// purpose: business logic for rejecting a GRC Request.
+  sl.registerLazySingleton<RejectGrcRequestUseCase>(
+    () => RejectGrcRequestUseCase(sl<GrcRequestRepository>()),
+  );
+
+  /// class name: [ApplyChampionReassignmentUseCase]
+  /// purpose: business logic for applying an approved champion reassignment
+  /// request whose Start Date has arrived.
+  sl.registerLazySingleton<ApplyChampionReassignmentUseCase>(
+    () => ApplyChampionReassignmentUseCase(
+      championRepository: sl<ChampionRepository>(),
+      requestRepository: sl<GrcRequestRepository>(),
+    ),
+  );
+
   // ─── 4. Cubit (Presentation) ────────────────────────────────────────────────
 
   /// class name: [GRCModuleCubit]
@@ -451,6 +509,21 @@ void setupGRCDependencies(GetIt sl) {
       getChampionUseCase: sl<GetChampionUseCase>(),
       getAllChampionsUseCase: sl<GetAllChampionsUseCase>(),
       updateChampionUseCase: sl<UpdateChampionUseCase>(),
+      getGrcRequestsUseCase: sl<GetGrcRequestsUseCase>(),
+      applyChampionReassignmentUseCase: sl<ApplyChampionReassignmentUseCase>(),
+    ),
+  );
+
+  /// class name: [GrcRequestCubit]
+  /// purpose: presentation-layer state manager for GRC Request (champion
+  /// reassignment approval) operations. Registered as a factory so each page
+  /// gets an independent cubit instance.
+  sl.registerFactory<GrcRequestCubit>(
+    () => GrcRequestCubit(
+      createGrcRequestUseCase: sl<CreateGrcRequestUseCase>(),
+      getGrcRequestsUseCase: sl<GetGrcRequestsUseCase>(),
+      approveGrcRequestUseCase: sl<ApproveGrcRequestUseCase>(),
+      rejectGrcRequestUseCase: sl<RejectGrcRequestUseCase>(),
     ),
   );
 
