@@ -1,21 +1,23 @@
-/// Module: Policy Management
-/// Description: A single {Policy, Control} pairing used by both the Control
-///              Champion and Control Owner features to record which
-///              Policy/Control combination a person is responsible for.
-/// Author: Mohamed Magdy Abdelkhalek
-/// Date: 2026-07-19
-/// Dependencies: None
-
-/// class name: [AssigningControlEntity]
-///
-/// purpose: pairs a Policy id with a Control id — one row of the
-///          "Assigning Control" section on the Add Champion/Add Owner pages.
 class AssigningControlEntity {
   final String policyId;
   final String controlId;
+  final DateTime? expiresOn;
 
   const AssigningControlEntity({
     required this.policyId,
     required this.controlId,
+    this.expiresOn,
   });
+
+  AssigningControlEntity copyWith({
+    String? policyId,
+    String? controlId,
+    DateTime? expiresOn,
+  }) {
+    return AssigningControlEntity(
+      policyId: policyId ?? this.policyId,
+      controlId: controlId ?? this.controlId,
+      expiresOn: expiresOn ?? this.expiresOn,
+    );
+  }
 }
