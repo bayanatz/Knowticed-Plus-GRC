@@ -146,7 +146,7 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
     });
   }
 
-  Future<void> _submit() async {
+  Future<void> _submit(BuildContext context) async {
     if (_newSelectedEmployees.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Please select a new Control Champion'.tr)),
@@ -193,18 +193,19 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
 
       final state = requestCubit.state;
       if (state is GrcRequestActionSuccess) {
-        if (!mounted) return;
+        if (!context.mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Request submitted'.tr)),
         );
         Navigator.pop(context, true);
       } else if (state is GrcRequestFailure) {
-        if (!mounted) return;
+        if (!context.mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to submit request: ${state.message}')),
         );
       }
     } catch (e) {
+      if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('An error occurred: $e')),
       );
@@ -536,7 +537,7 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
                           Expanded(
                             child: customButton(
                               title: _submitting ? 'Submitting...'.tr : 'Submit'.tr,
-                              function: _submitting ? () {} : _submit,
+                              function: _submitting ? () {} : () => _submit(context),
                               color: AppColors.primary,
                               textStyle: StyleText.fontSize16Weight500.copyWith(color: Colors.black),
                             ),
