@@ -16,6 +16,7 @@ import 'package:demo_app/features/grc/shared/widgets/grc_assignment_chip.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
 import 'package:demo_app/features/settings/core_widgets/main_widget/custom_button_widget.dart';
 import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
+import 'package:demo_app/core/custom/41_custom_button_sizing.dart';
 import 'package:demo_app/core/custom/21-custom_contact_card.dart';
 import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart';
 import 'package:flutter/material.dart';
@@ -216,137 +217,159 @@ class _ControlChampionDetailsBodyState
                         Row(
                           spacing: 8.w,
                           children: [
-                            Expanded(
-                              child: customButtonWithSvg(
-                                colorBorder: AppColors.primary,
-                                space: 8.w,
-                                widthImage: 16.w,
-                                heightImage: 16.h,
-                                image:
-                                    "assets/icons_assets/data_grc_assets/messages_new.svg",
-                                title: "Contact Manager".tr,
-                                function: () {},
-                                color: AppColors.primary,
-                                textStyle: StyleText.fontSize14Weight500,
-                              ),
+                            customButtonWithSvg(
+                              colorBorder: AppColors.primary,
+                              space: 8.w,
+                              widthImage: 16.w,
+                              heightImage: 16.h,
+                              image:
+                                  "assets/icons_assets/data_grc_assets/messages_new.svg",
+                              title: "Contact Manager".tr,
+                              function: () {},
+                              color: AppColors.primary,
+                              textStyle: StyleText.fontSize14Weight500,
                             ),
-                            Expanded(
-                              child: customButton(
-                                title: _isReassignLoading
-                                    ? "Loading...".tr
-                                    : "Reassign".tr,
-                                height: 34.h,
-                                function: _isReassignLoading
-                                    ? () {}
-                                    : () async {
+                            _isReassignLoading
+                                ? Container(
+                                    height: 34.h,
+                                    width: 135.w,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.primary,
+                                      borderRadius: BorderRadius.circular(8.r),
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: SizedBox(
+                                      height: 18.h,
+                                      width: 18.h,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  )
+                                : customButton(
+                                    title: "Reassign".tr,
+                                    height: 34.h,
+                                    width: 135.w,
+                                    function: () async {
+                                      setState(() => _isReassignLoading = true);
+                                      await _loadAllData();
+                                      if (mounted) {
                                         setState(
-                                            () => _isReassignLoading = true);
-                                        await _loadAllData();
-                                        if (mounted) {
-                                          setState(
-                                              () => _isReassignLoading = false);
-                                        }
-                                        if (!context.mounted) return;
-                                        final result =
-                                            await Navigator.push<bool>(
-                                          context,
-                                          PageRouteBuilder(
-                                            pageBuilder: (_, __, ___) =>
-                                                BlocProvider.value(
-                                              value:
-                                                  context.read<ChampionCubit>(),
-                                              child: ReassignChampionPage(
-                                                champion: _currentChampion,
-                                                module: widget.module,
-                                                allPolicies: _allPolicies,
-                                                policyControls: _policyControls,
-                                              ),
-                                            ),
-                                            transitionsBuilder:
-                                                (_, animation, __, child) =>
-                                                    FadeTransition(
-                                                        opacity: animation,
-                                                        child: child),
-                                            transitionDuration: const Duration(
-                                                milliseconds: 300),
-                                          ),
-                                        );
-                                        if (result == true && mounted) {
-                                          context
-                                              .read<ChampionCubit>()
-                                              .getAllChampions(
-                                                  moduleId:
-                                                      widget.module.moduleId);
-                                          Navigator.pop(context, true);
-                                        }
-                                      },
-                                color: AppColors.primary,
-                                textStyle: StyleText.fontSize14Weight500,
-                              ),
-                            ),
-                            Spacer(),
-                            Expanded(
-                              child: customButtonWithSvg(
-                                colorBorder: AppColors.primary,
-                                space: 8.w,
-                                widthImage: 16.w,
-                                heightImage: 16.h,
-                                image:
-                                    "assets/icons_assets/data_grc_assets/editButton.svg",
-                                title: _isEditLoading
-                                    ? "Loading...".tr
-                                    : "Edit".tr,
-                                function: _isEditLoading
-                                    ? () {}
-                                    : () async {
-                                        setState(() => _isEditLoading = true);
-                                        await _loadAllData();
-                                        if (mounted) {
-                                          setState(
-                                              () => _isEditLoading = false);
-                                        }
-                                        if (!context.mounted) return;
-                                        final result =
-                                            await showDialog<ChampionEntity>(
-                                          context: context,
-                                          builder: (dialogCtx) =>
+                                            () => _isReassignLoading = false);
+                                      }
+                                      if (!context.mounted) return;
+                                      final result = await Navigator.push<bool>(
+                                        context,
+                                        PageRouteBuilder(
+                                          pageBuilder: (_, __, ___) =>
                                               BlocProvider.value(
                                             value:
                                                 context.read<ChampionCubit>(),
-                                            child: EditChampionControlsPage(
+                                            child: ReassignChampionPage(
                                               champion: _currentChampion,
                                               module: widget.module,
                                               allPolicies: _allPolicies,
                                               policyControls: _policyControls,
                                             ),
                                           ),
-                                        );
-                                        if (result != null && mounted) {
-                                          setState(() {
-                                            _currentChampion = result;
-                                          });
-                                        }
-                                      },
-                                color: AppColors.primary,
-                                textStyle: StyleText.fontSize14Weight500,
-                              ),
-                            ),
-                            Expanded(
-                              child: customButtonWithSvg(
-                                colorBorder: AppColors.red,
-                                space: 8.w,
-                                widthImage: 16.w,
-                                heightImage: 16.h,
-                                image:
-                                    "assets/icons_assets/data_grc_assets/icons_icon _trash.svg",
-                                title: "Remove".tr,
-                                function: () =>
-                                    _showDeleteConfirmation(context),
-                                color: AppColors.red,
-                                textStyle: StyleText.fontSize14Weight500
-                                    .copyWith(color: Colors.white),
-                                svgColor: Colors.white,
-                              ),
+                                          transitionsBuilder:
+                                              (_, animation, __, child) =>
+                                                  FadeTransition(
+                                                      opacity: animation,
+                                                      child: child),
+                                          transitionDuration:
+                                              const Duration(milliseconds: 300),
+                                        ),
+                                      );
+                                      if (result == true && mounted) {
+                                        context
+                                            .read<ChampionCubit>()
+                                            .getAllChampions(
+                                                moduleId:
+                                                    widget.module.moduleId);
+                                        Navigator.pop(context, true);
+                                      }
+                                    },
+                                    color: AppColors.primary,
+                                    textStyle: StyleText.fontSize14Weight500,
+                                  ),
+                            Spacer(),
+                            _isEditLoading
+                                ? Container(
+                                    width: 135.w,
+                                    height: 34.h,
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal:
+                                            ButtonSizing.horizontalPadding),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.primary,
+                                      border:
+                                          Border.all(color: AppColors.primary),
+                                      borderRadius: BorderRadius.circular(
+                                          ButtonSizing.radius),
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: SizedBox(
+                                      height: 18.h,
+                                      width: 18.h,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  )
+                                : customButtonWithSvg(
+                                    colorBorder: AppColors.primary,
+                                    space: 8.w,
+                                    widthImage: 16.w,
+                                    heightImage: 16.h,
+                                    image:
+                                        "assets/icons_assets/data_grc_assets/editButton.svg",
+                                    title: "Edit".tr,
+                                    function: () async {
+                                      setState(() => _isEditLoading = true);
+                                      await _loadAllData();
+                                      if (mounted) {
+                                        setState(() => _isEditLoading = false);
+                                      }
+                                      if (!context.mounted) return;
+                                      final result =
+                                          await showDialog<ChampionEntity>(
+                                        context: context,
+                                        builder: (dialogCtx) =>
+                                            BlocProvider.value(
+                                          value: context.read<ChampionCubit>(),
+                                          child: EditChampionControlsPage(
+                                            champion: _currentChampion,
+                                            module: widget.module,
+                                            allPolicies: _allPolicies,
+                                            policyControls: _policyControls,
+                                          ),
+                                        ),
+                                      );
+                                      if (result != null && mounted) {
+                                        setState(() {
+                                          _currentChampion = result;
+                                        });
+                                      }
+                                    },
+                                    color: AppColors.primary,
+                                    textStyle: StyleText.fontSize14Weight500,
+                                  ),
+                            customButtonWithSvg(
+                              colorBorder: AppColors.red,
+                              space: 8.w,
+                              widthImage: 16.w,
+                              heightImage: 16.h,
+                              image:
+                                  "assets/icons_assets/data_grc_assets/icons_icon _trash.svg",
+                              title: "Remove".tr,
+                              function: () => _showDeleteConfirmation(context),
+                              color: AppColors.red,
+                              textStyle: StyleText.fontSize14Weight500
+                                  .copyWith(color: Colors.white),
+                              svgColor: Colors.white,
                             ),
                           ],
                         ),
@@ -395,7 +418,9 @@ class _ControlChampionDetailsBodyState
                                 children: _currentChampion.assigningControls
                                     .map((ac) {
                                   final ctrl = findControlInPolicy(
-                                      _policyControls, ac.policyId, ac.controlId);
+                                      _policyControls,
+                                      ac.policyId,
+                                      ac.controlId);
                                   final cName = ctrl != null
                                       ? (context.isArabic
                                           ? ctrl.controlsNameAr

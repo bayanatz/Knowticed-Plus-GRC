@@ -198,7 +198,7 @@ class _GrcRequestDetailsBodyState extends State<_GrcRequestDetailsBody> {
           padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
           decoration: BoxDecoration(
             color: AppColors.background,
-            borderRadius: BorderRadius.circular(24.r),
+            borderRadius: BorderRadius.circular(8.r),
           ),
           child: Text(cName,
               style: StyleText.fontSize14Weight500
@@ -431,37 +431,34 @@ class _GrcRequestDetailsBodyState extends State<_GrcRequestDetailsBody> {
 
                       if (_request.status == ApprovalStatus.pending)
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Expanded(
-                              child: customButtonWithSvg(
-                                colorBorder: AppColors.red,
-                                space: 8.w,
-                                widthImage: 18.w,
-                                heightImage: 18.h,
-                                image: CardSvg.reject,
-                                title: 'Reject'.tr,
-                                function: _onReject,
-                                color: AppColors.red,
-                                textStyle: StyleText.fontSize16Weight500
-                                    .copyWith(color: Colors.white),
-                                svgColor: Colors.white,
-                              ),
+                            customButtonWithSvg(
+                              colorBorder: AppColors.red,
+                              space: 8.w,
+                              widthImage: 18.w,
+                              heightImage: 18.h,
+                              image: CardSvg.reject,
+                              title: 'Reject'.tr,
+                              function: _onReject,
+                              color: AppColors.red,
+                              textStyle: StyleText.fontSize16Weight500
+                                  .copyWith(color: Colors.white),
+                              svgColor: Colors.white,
                             ),
                             SizedBox(width: 16.w),
-                            Expanded(
-                              child: customButtonWithSvg(
-                                colorBorder: AppColors.green,
-                                space: 8.w,
-                                widthImage: 18.w,
-                                heightImage: 18.h,
-                                image: CardSvg.approve,
-                                title: 'Approve'.tr,
-                                function: _onApprove,
-                                color: AppColors.green,
-                                textStyle: StyleText.fontSize16Weight500
-                                    .copyWith(color: Colors.white),
-                                svgColor: Colors.white,
-                              ),
+                            customButtonWithSvg(
+                              colorBorder: AppColors.green,
+                              space: 8.w,
+                              widthImage: 18.w,
+                              heightImage: 18.h,
+                              image: CardSvg.approve,
+                              title: 'Approve'.tr,
+                              function: _onApprove,
+                              color: AppColors.green,
+                              textStyle: StyleText.fontSize16Weight500
+                                  .copyWith(color: Colors.white),
+                              svgColor: Colors.white,
                             ),
                           ],
                         )

@@ -284,20 +284,13 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
                               ),
                               child: GrcOwnerSection(
                                 singleSelect: true,
+                                errorText: _championError,
                                 onOwnersChanged: (selected) => setState(() {
                                   _newSelectedEmployees = selected;
                                   _championError = null;
                                 }),
                               ),
                             ),
-                            if (_championError != null) ...[
-                              SizedBox(height: 6.h),
-                              Text(
-                                _championError!,
-                                style: StyleText.fontSize12Weight400
-                                    .copyWith(color: AppColors.red),
-                              ),
-                            ],
                             SizedBox(height: 20.h),
 
                             // Dates Pickers Section
@@ -443,29 +436,42 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
 
                       // Action Buttons
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(
-                            child: customButton(
-                              title: 'Discard'.tr,
-                              function: () => Navigator.pop(context, false),
-                              color: AppColors.colorGrey,
-                              textStyle: StyleText.fontSize16Weight500
-                                  .copyWith(color: AppColors.text),
-                            ),
+                          customButton(
+                            title: 'Discard'.tr,
+                            width: 120.w,
+                            function: () => Navigator.pop(context, false),
+                            color: AppColors.colorGrey,
+                            textStyle: StyleText.fontSize16Weight500
+                                .copyWith(color: AppColors.text),
                           ),
-                          SizedBox(width: 16.w),
-                          Expanded(
-                            child: customButton(
-                              title: _submitting
-                                  ? 'Submitting...'.tr
-                                  : 'Submit'.tr,
-                              function:
-                                  _submitting ? () {} : () => _submit(context),
-                              color: AppColors.primary,
-                              textStyle: StyleText.fontSize16Weight500
-                                  .copyWith(color: Colors.black),
-                            ),
-                          ),
+                          _submitting
+                              ? Container(
+                                  width: 120.w,
+                                  height: 38.h,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.primary,
+                                    borderRadius: BorderRadius.circular(8.r),
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: SizedBox(
+                                    height: 18.h,
+                                    width: 18.h,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                )
+                              : customButton(
+                                  width: 120.w,
+                                  title: 'Submit'.tr,
+                                  function: () => _submit(context),
+                                  color: AppColors.primary,
+                                  textStyle: StyleText.fontSize16Weight500
+                                      .copyWith(color: Colors.black),
+                                ),
                         ],
                       ),
                       SizedBox(height: 24.h),

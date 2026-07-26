@@ -202,8 +202,7 @@ class _ReassignOwnerPageState extends State<ReassignOwnerPage> {
     final currentPhoto = currentEmp != null
         ? EmployeeHelper.getEmployeeImage(employee: currentEmp)
         : AppAssets.defaultEmployeeAvatar;
-    final currentName =
-        employeeDisplayName(context, widget.owner.ownerEmail);
+    final currentName = employeeDisplayName(context, widget.owner.ownerEmail);
     final currentDept = currentEmp != null
         ? EmployeeHelper.getEmployeeLocalizeDepartment(
             employee: currentEmp, context: context)
@@ -284,20 +283,13 @@ class _ReassignOwnerPageState extends State<ReassignOwnerPage> {
                               ),
                               child: GrcOwnerSection(
                                 singleSelect: true,
+                                errorText: _ownerError,
                                 onOwnersChanged: (selected) => setState(() {
                                   _newSelectedEmployees = selected;
                                   _ownerError = null;
                                 }),
                               ),
                             ),
-                            if (_ownerError != null) ...[
-                              SizedBox(height: 6.h),
-                              Text(
-                                _ownerError!,
-                                style: StyleText.fontSize12Weight400
-                                    .copyWith(color: AppColors.red),
-                              ),
-                            ],
                             SizedBox(height: 20.h),
 
                             // Dates Pickers Section
@@ -443,29 +435,43 @@ class _ReassignOwnerPageState extends State<ReassignOwnerPage> {
 
                       // Action Buttons
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(
-                            child: customButton(
-                              title: 'Discard'.tr,
-                              function: () => Navigator.pop(context, false),
-                              color: AppColors.colorGrey,
-                              textStyle: StyleText.fontSize16Weight500
-                                  .copyWith(color: AppColors.text),
-                            ),
+                          customButton(
+                            width: 120.w,
+                            title: 'Discard'.tr,
+                            function: () => Navigator.pop(context, false),
+                            color: AppColors.colorGrey,
+                            textStyle: StyleText.fontSize16Weight500
+                                .copyWith(color: AppColors.text),
                           ),
-                          SizedBox(width: 16.w),
-                          Expanded(
-                            child: customButton(
-                              title: _submitting
-                                  ? 'Submitting...'.tr
-                                  : 'Submit'.tr,
-                              function:
-                                  _submitting ? () {} : () => _submit(context),
-                              color: AppColors.primary,
-                              textStyle: StyleText.fontSize16Weight500
-                                  .copyWith(color: Colors.black),
-                            ),
-                          ),
+                          _submitting
+                              ? Container(
+                                  height: 34.h,
+                                  width: 120.w,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.primary,
+                                    borderRadius: BorderRadius.circular(8.r),
+                                  ),
+                                  child: Text(
+                                    'Submitting...'.tr,
+                                    style: StyleText.fontSize16Weight500
+                                        .copyWith(color: Colors.black),
+                                  ),
+                                )
+                              : customButton(
+                                  width: 120.w,
+                                  title: _submitting
+                                      ? 'Submitting...'.tr
+                                      : 'Submit'.tr,
+                                  function: _submitting
+                                      ? () {}
+                                      : () => _submit(context),
+                                  color: AppColors.primary,
+                                  textStyle: StyleText.fontSize16Weight500
+                                      .copyWith(color: Colors.black),
+                                ),
                         ],
                       ),
                       SizedBox(height: 24.h),

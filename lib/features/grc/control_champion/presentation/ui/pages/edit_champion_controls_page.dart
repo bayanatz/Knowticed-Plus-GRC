@@ -1,3 +1,4 @@
+import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
@@ -142,7 +143,8 @@ class _EditChampionControlsPageState extends State<EditChampionControlsPage> {
       (String, String) pair, {
       required bool hasAnyAssignee,
     }) async {
-      final control = findControlInPolicy(widget.policyControls, pair.$1, pair.$2);
+      final control =
+          findControlInPolicy(widget.policyControls, pair.$1, pair.$2);
       if (control == null) return;
       if (!shouldRecomputeAssigneeBasedStatus(control.status)) return;
       final newStatus = computeAssigneeBasedControlStatus(
@@ -250,9 +252,10 @@ class _EditChampionControlsPageState extends State<EditChampionControlsPage> {
                             children:
                                 List.generate(_tempControls.length, (index) {
                               final ac = _tempControls[index];
-                              final ctrl =
-                                  findControlInPolicy(widget.policyControls,
-                                      ac.policyId, ac.controlId);
+                              final ctrl = findControlInPolicy(
+                                  widget.policyControls,
+                                  ac.policyId,
+                                  ac.controlId);
                               final cName = ctrl != null
                                   ? (context.isArabic
                                       ? ctrl.controlsNameAr
@@ -301,30 +304,53 @@ class _EditChampionControlsPageState extends State<EditChampionControlsPage> {
                     SizedBox(height: 8.h),
 
                     // Add Policy Button
-                    customButton(
-                      title: '+ Add Policy'.tr,
+                    customButtonWithSvg(
+                      title: 'Add Policy'.tr,
                       function: _addPolicyRow,
                       width: 140.w,
-                      radius: 12,
+                      radius: 8,
+                      svgColor: AppColors.card,
                       color: AppColors.blackButton,
                       textStyle: StyleText.fontSize14Weight500
                           .copyWith(color: Colors.white),
+                      image:
+                          'assets/icons_assets/database_builder_assets/plus_head.svg',
+                      widthImage: 16.w,
+                      heightImage: 16.h,
+                      colorBorder: AppColors.blackButton,
                     ),
                     SizedBox(height: 16.h),
 
                     // Save Button
                     Align(
                       alignment: Alignment.centerRight,
-                      child: customButton(
-                        title: isSaving ? 'Saving...'.tr : 'Save'.tr,
-                        function:
-                            isSaving ? () {} : () => _confirmAndSave(context),
-                        width: 120.w,
-                        radius: 12,
-                        color: AppColors.primary,
-                        textStyle: StyleText.fontSize14Weight500
-                            .copyWith(color: Colors.black),
-                      ),
+                      child: isSaving
+                          ? Container(
+                              width: 120.w,
+                              height: 38.h,
+                              decoration: BoxDecoration(
+                                color: AppColors.primary,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              alignment: Alignment.center,
+                              child: SizedBox(
+                                height: 18.h,
+                                width: 18.h,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            )
+                          : customButton(
+                              title: 'Save'.tr,
+                              function: () => _confirmAndSave(context),
+                              width: 120.w,
+                              radius: 12,
+                              color: AppColors.primary,
+                              textStyle: StyleText.fontSize14Weight500
+                                  .copyWith(color: Colors.black),
+                            ),
                     ),
                   ],
                 ),

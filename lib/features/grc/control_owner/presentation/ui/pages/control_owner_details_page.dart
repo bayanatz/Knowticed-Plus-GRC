@@ -215,135 +215,165 @@ class _ControlOwnerDetailsBodyState extends State<_ControlOwnerDetailsBody> {
                         Row(
                           spacing: 8.w,
                           children: [
-                            Expanded(
-                              child: customButtonWithSvg(
-                                colorBorder: AppColors.primary,
-                                space: 8.w,
-                                widthImage: 16.w,
-                                heightImage: 16.h,
-                                image:
-                                    "assets/icons_assets/data_grc_assets/messages_new.svg",
-                                title: "Contact Manager".tr,
-                                function: () {},
-                                color: AppColors.primary,
-                                textStyle: StyleText.fontSize14Weight500,
-                              ),
+                            customButtonWithSvg(
+                              colorBorder: AppColors.primary,
+                              space: 8.w,
+                              widthImage: 16.w,
+                              heightImage: 16.h,
+                              image:
+                                  "assets/icons_assets/data_grc_assets/messages_new.svg",
+                              title: "Contact Manager".tr,
+                              function: () {},
+                              color: AppColors.primary,
+                              textStyle: StyleText.fontSize14Weight500,
                             ),
-                            Expanded(
-                              child: customButton(
-                                title: _isReassignLoading
-                                    ? "Loading...".tr
-                                    : "Reassign".tr,
-                                height: 34.h,
-                                function: _isReassignLoading
-                                    ? () {}
-                                    : () async {
-                                        setState(
-                                            () => _isReassignLoading = true);
-                                        await _loadAllData();
-                                        if (mounted) {
-                                          setState(
-                                              () => _isReassignLoading = false);
-                                        }
-                                        if (!context.mounted) return;
-                                        final result =
-                                            await Navigator.push<bool>(
-                                          context,
-                                          PageRouteBuilder(
-                                            pageBuilder: (_, __, ___) =>
-                                                BlocProvider.value(
-                                              value: context.read<OwnerCubit>(),
-                                              child: ReassignOwnerPage(
-                                                owner: _currentOwner,
-                                                module: widget.module,
-                                                allPolicies: _allPolicies,
-                                                policyControls: _policyControls,
+                            _isReassignLoading
+                                ? Container(
+                                    height: 34.h,
+                                    width: 135.w,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.primary,
+                                      borderRadius: BorderRadius.circular(8.r),
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: SizedBox(
+                                      height: 18.h,
+                                      width: 18.h,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  )
+                                : customButton(
+                                    width: 135.w,
+                                    title: "Reassign".tr,
+                                    height: 34.h,
+                                    function: _isReassignLoading
+                                        ? () {}
+                                        : () async {
+                                            setState(() =>
+                                                _isReassignLoading = true);
+                                            await _loadAllData();
+                                            if (mounted) {
+                                              setState(() =>
+                                                  _isReassignLoading = false);
+                                            }
+                                            if (!context.mounted) return;
+                                            final result =
+                                                await Navigator.push<bool>(
+                                              context,
+                                              PageRouteBuilder(
+                                                pageBuilder: (_, __, ___) =>
+                                                    BlocProvider.value(
+                                                  value: context
+                                                      .read<OwnerCubit>(),
+                                                  child: ReassignOwnerPage(
+                                                    owner: _currentOwner,
+                                                    module: widget.module,
+                                                    allPolicies: _allPolicies,
+                                                    policyControls:
+                                                        _policyControls,
+                                                  ),
+                                                ),
+                                                transitionsBuilder:
+                                                    (_, animation, __, child) =>
+                                                        FadeTransition(
+                                                            opacity: animation,
+                                                            child: child),
+                                                transitionDuration:
+                                                    const Duration(
+                                                        milliseconds: 300),
                                               ),
-                                            ),
-                                            transitionsBuilder:
-                                                (_, animation, __, child) =>
-                                                    FadeTransition(
-                                                        opacity: animation,
-                                                        child: child),
-                                            transitionDuration: const Duration(
-                                                milliseconds: 300),
-                                          ),
-                                        );
-                                        if (result == true && mounted) {
-                                          context
-                                              .read<OwnerCubit>()
-                                              .getAllOwners(
-                                                  moduleId:
-                                                      widget.module.moduleId);
-                                          Navigator.pop(context, true);
-                                        }
-                                      },
-                                color: AppColors.primary,
-                                textStyle: StyleText.fontSize14Weight500,
-                              ),
-                            ),
+                                            );
+                                            if (result == true && mounted) {
+                                              context
+                                                  .read<OwnerCubit>()
+                                                  .getAllOwners(
+                                                      moduleId: widget
+                                                          .module.moduleId);
+                                              Navigator.pop(context, true);
+                                            }
+                                          },
+                                    color: AppColors.primary,
+                                    textStyle: StyleText.fontSize14Weight500,
+                                  ),
                             Spacer(),
-                            Expanded(
-                              child: customButtonWithSvg(
-                                colorBorder: AppColors.primary,
-                                space: 8.w,
-                                widthImage: 16.w,
-                                heightImage: 16.h,
-                                image:
-                                    "assets/icons_assets/data_grc_assets/editButton.svg",
-                                title: _isEditLoading
-                                    ? "Loading...".tr
-                                    : "Edit".tr,
-                                function: _isEditLoading
-                                    ? () {}
-                                    : () async {
-                                        setState(() => _isEditLoading = true);
-                                        await _loadAllData();
-                                        if (mounted) {
-                                          setState(
-                                              () => _isEditLoading = false);
-                                        }
-                                        if (!context.mounted) return;
-                                        final result =
-                                            await showDialog<OwnerEntity>(
-                                          context: context,
-                                          builder: (dialogCtx) =>
-                                              BlocProvider.value(
-                                            value: context.read<OwnerCubit>(),
-                                            child: EditOwnerControlsPage(
-                                              owner: _currentOwner,
-                                              module: widget.module,
-                                              allPolicies: _allPolicies,
-                                              policyControls: _policyControls,
-                                            ),
-                                          ),
-                                        );
-                                        if (result != null && mounted) {
-                                          setState(() {
-                                            _currentOwner = result;
-                                          });
-                                        }
-                                      },
-                                color: AppColors.primary,
-                                textStyle: StyleText.fontSize14Weight500,
-                              ),
-                            ),
-                            Expanded(
-                              child: customButtonWithSvg(
-                                colorBorder: AppColors.red,
-                                space: 8.w,
-                                widthImage: 16.w,
-                                heightImage: 16.h,
-                                image:
-                                    "assets/icons_assets/data_grc_assets/icons_icon _trash.svg",
-                                title: "Remove".tr,
-                                function: () =>
-                                    _showDeleteConfirmation(context),
-                                color: AppColors.red,
-                                textStyle: StyleText.fontSize14Weight500
-                                    .copyWith(color: Colors.white),
-                                svgColor: Colors.white,
-                              ),
+                            _isEditLoading
+                                ? Container(
+                                    height: 34.h,
+                                    width: 135.w,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.primary,
+                                      borderRadius: BorderRadius.circular(8.r),
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: SizedBox(
+                                      height: 18.h,
+                                      width: 18.h,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  )
+                                : customButtonWithSvg(
+                                    colorBorder: AppColors.primary,
+                                    space: 8.w,
+                                    widthImage: 16.w,
+                                    heightImage: 16.h,
+                                    image:
+                                        "assets/icons_assets/data_grc_assets/editButton.svg",
+                                    title: "Edit".tr,
+                                    function: _isEditLoading
+                                        ? () {}
+                                        : () async {
+                                            setState(
+                                                () => _isEditLoading = true);
+                                            await _loadAllData();
+                                            if (mounted) {
+                                              setState(
+                                                  () => _isEditLoading = false);
+                                            }
+                                            if (!context.mounted) return;
+                                            final result =
+                                                await showDialog<OwnerEntity>(
+                                              context: context,
+                                              builder: (dialogCtx) =>
+                                                  BlocProvider.value(
+                                                value:
+                                                    context.read<OwnerCubit>(),
+                                                child: EditOwnerControlsPage(
+                                                  owner: _currentOwner,
+                                                  module: widget.module,
+                                                  allPolicies: _allPolicies,
+                                                  policyControls:
+                                                      _policyControls,
+                                                ),
+                                              ),
+                                            );
+                                            if (result != null && mounted) {
+                                              setState(() {
+                                                _currentOwner = result;
+                                              });
+                                            }
+                                          },
+                                    color: AppColors.primary,
+                                    textStyle: StyleText.fontSize14Weight500,
+                                  ),
+                            customButtonWithSvg(
+                              colorBorder: AppColors.red,
+                              space: 8.w,
+                              widthImage: 16.w,
+                              heightImage: 16.h,
+                              image:
+                                  "assets/icons_assets/data_grc_assets/icons_icon _trash.svg",
+                              title: "Remove".tr,
+                              function: () => _showDeleteConfirmation(context),
+                              color: AppColors.red,
+                              textStyle: StyleText.fontSize14Weight500
+                                  .copyWith(color: Colors.white),
+                              svgColor: Colors.white,
                             ),
                           ],
                         ),
@@ -389,10 +419,12 @@ class _ControlOwnerDetailsBodyState extends State<_ControlOwnerDetailsBody> {
                             : Wrap(
                                 spacing: 10.w,
                                 runSpacing: 10.h,
-                                children: _currentOwner.assigningControls
-                                    .map((ac) {
+                                children:
+                                    _currentOwner.assigningControls.map((ac) {
                                   final ctrl = findControlInPolicy(
-                                      _policyControls, ac.policyId, ac.controlId);
+                                      _policyControls,
+                                      ac.policyId,
+                                      ac.controlId);
                                   final cName = ctrl != null
                                       ? (context.isArabic
                                           ? ctrl.controlsNameAr
