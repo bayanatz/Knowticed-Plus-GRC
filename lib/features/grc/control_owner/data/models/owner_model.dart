@@ -14,6 +14,7 @@ import 'package:demo_app/features/grc/control/data/models/assigning_control_mode
 import 'package:demo_app/features/grc/control_owner/domain/entities/owner_entity.dart';
 import 'package:demo_app/features/grc/control_owner/domain/entities/owner_status.dart';
 import 'package:demo_app/features/grc/control_owner/domain/entities/control_owner_history_entry.dart';
+import 'package:demo_app/features/grc/shared/constants/grc_firestore_keys.dart';
 
 final DateFormat _storageDateFormat = DateFormat('d MMM yyyy', 'en');
 
@@ -35,6 +36,10 @@ class _OpenControlStint {
 ///          same order (controlOwnerPermissions[i] belongs to
 ///          assigningControls.last[i]).
 class OwnerModel {
+  static const String _keyOwnerEmail = 'Owner_Email';
+  static const String _keyOwnersStatus = 'Owners_Status';
+  static const String _keyControlOwnersPermissions = 'Control_Owners_Permissions';
+
   final String ownerEmail;
   final List<List<AssigningControlModel>> assigningControls;
   final List<String> status; // 'Active' | 'Removed'
@@ -136,38 +141,40 @@ class OwnerModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'Owner_Email': ownerEmail,
-      'Assigning_Controls': assigningControls
+      _keyOwnerEmail: ownerEmail,
+      GrcFirestoreKeys.assigningControls: assigningControls
           .map((rev) => {'Items': rev.map((a) => a.toJson()).toList()})
           .toList(),
-      'Owners_Status': status,
-      'Control_Owners_Permissions':
+      _keyOwnersStatus: status,
+      _keyControlOwnersPermissions:
           controlOwnerPermissions.map((perms) => {'Items': perms}).toList(),
-      'Modification_Date':
+      GrcFirestoreKeys.modificationDate:
           modificationDate.map((d) => _storageDateFormat.format(d)).toList(),
-      'Modifiers': modifiers,
+      GrcFirestoreKeys.modifiers: modifiers,
     };
   }
 
   factory OwnerModel.fromJson(Map<String, dynamic> json) {
     return OwnerModel(
-      ownerEmail: json['Owner_Email'] as String,
-      assigningControls: (json['Assigning_Controls'] as List? ?? [])
-          .map((rev) =>
-              ((rev as Map<String, dynamic>)['Items'] as List? ?? [])
-                  .map((item) => AssigningControlModel.fromJson(
-                      item as Map<String, dynamic>))
-                  .toList())
-          .toList(),
-      status: List<String>.from(json['Owners_Status'] ?? []),
-      controlOwnerPermissions: (json['Control_Owners_Permissions'] as List? ?? [])
-          .map((entry) =>
-              List<String>.from((entry as Map<String, dynamic>)['Items'] ?? []))
-          .toList(),
-      modificationDate: (json['Modification_Date'] as List? ?? [])
+      ownerEmail: json[_keyOwnerEmail] as String,
+      assigningControls:
+          (json[GrcFirestoreKeys.assigningControls] as List? ?? [])
+              .map((rev) =>
+                  ((rev as Map<String, dynamic>)['Items'] as List? ?? [])
+                      .map((item) => AssigningControlModel.fromJson(
+                          item as Map<String, dynamic>))
+                      .toList())
+              .toList(),
+      status: List<String>.from(json[_keyOwnersStatus] ?? []),
+      controlOwnerPermissions:
+          (json[_keyControlOwnersPermissions] as List? ?? [])
+              .map((entry) => List<String>.from(
+                  (entry as Map<String, dynamic>)['Items'] ?? []))
+              .toList(),
+      modificationDate: (json[GrcFirestoreKeys.modificationDate] as List? ?? [])
           .map((d) => _storageDateFormat.parse(d as String))
           .toList(),
-      modifiers: List<String>.from(json['Modifiers'] ?? []),
+      modifiers: List<String>.from(json[GrcFirestoreKeys.modifiers] ?? []),
     );
   }
 
