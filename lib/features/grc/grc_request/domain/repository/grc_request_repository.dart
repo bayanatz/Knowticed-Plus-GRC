@@ -23,6 +23,17 @@ abstract class GrcRequestRepository {
     DateTime? endDate,
   });
 
+  Future<Either<Failure, GrcRequestEntity>> createReassignOwnerRequest({
+    required String moduleId,
+    required String requestedBy,
+    required String note,
+    required String currentOwnerEmail,
+    required String newOwnerEmail,
+    required List<AssigningControlEntity> controls,
+    required DateTime startDate,
+    DateTime? endDate,
+  });
+
   Future<Either<Failure, List<GrcRequestEntity>>> getRequestsForModule(
     String moduleId,
   );
@@ -38,6 +49,12 @@ abstract class GrcRequestRepository {
     required String requestId,
     required String decidedBy,
     required String reason,
+  });
+
+  Future<Either<Failure, GrcRequestEntity>> cancelRequest({
+    required String moduleId,
+    required String requestId,
+    required String canceledBy,
   });
 
   Future<Either<Failure, GrcRequestEntity>> markApplied({

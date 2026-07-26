@@ -8,11 +8,15 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
 import 'package:demo_app/features/grc/control/domain/entities/assigning_control.dart';
+import 'package:demo_app/features/grc/control_champion/domain/entities/champion_request_resolver.dart';
 import 'package:demo_app/features/grc/control_owner/domain/entities/owner_entity.dart';
 import 'package:demo_app/features/grc/control_owner/domain/entities/owner_status.dart';
+import 'package:demo_app/features/grc/control_owner/domain/use_cases/apply_owner_reassignment_usecase.dart';
 import 'package:demo_app/features/grc/control_owner/domain/use_cases/create_owner_usecase.dart';
 import 'package:demo_app/features/grc/control_owner/domain/use_cases/get_owner_usecases.dart';
 import 'package:demo_app/features/grc/control_owner/domain/use_cases/update_owner_usecase.dart';
+import 'package:demo_app/features/grc/grc_request/domain/entities/grc_request_type.dart';
+import 'package:demo_app/features/grc/grc_request/domain/use_cases/get_grc_requests_usecase.dart';
 import 'package:get/get.dart';
 
 part 'owner_state.dart';
@@ -23,16 +27,22 @@ class OwnerCubit extends Cubit<OwnerState> {
     required GetOwnerUseCase getOwnerUseCase,
     required GetAllOwnersUseCase getAllOwnersUseCase,
     required UpdateOwnerUseCase updateOwnerUseCase,
+    required GetGrcRequestsUseCase getGrcRequestsUseCase,
+    required ApplyOwnerReassignmentUseCase applyOwnerReassignmentUseCase,
   })  : _createUseCase = createOwnerUseCase,
         _getUseCase = getOwnerUseCase,
         _getAllUseCase = getAllOwnersUseCase,
         _updateUseCase = updateOwnerUseCase,
+        _getGrcRequestsUseCase = getGrcRequestsUseCase,
+        _applyReassignmentUseCase = applyOwnerReassignmentUseCase,
         super(OwnerInitial());
 
   final CreateOwnerUseCase _createUseCase;
   final GetOwnerUseCase _getUseCase;
   final GetAllOwnersUseCase _getAllUseCase;
   final UpdateOwnerUseCase _updateUseCase;
+  final GetGrcRequestsUseCase _getGrcRequestsUseCase;
+  final ApplyOwnerReassignmentUseCase _applyReassignmentUseCase;
 
   String get _currentUserEmail {
     final fromConstant = Constant.emailUser;
@@ -49,6 +59,8 @@ class OwnerCubit extends Cubit<OwnerState> {
     bool includeRemoved = false,
   }) async {
     emit(OwnerLoading());
+    await _applyDueReassignments(moduleId);
+    await _stripExpiredControls(moduleId, includeRemoved: includeRemoved);
     final result = await _getAllUseCase.call(
       moduleId: moduleId,
       includeRemoved: includeRemoved,
@@ -56,6 +68,55 @@ class OwnerCubit extends Cubit<OwnerState> {
     result.fold(
       (failure) => emit(OwnerFailure(failure.message)),
       (owners) => emit(OwnerListLoaded(owners)),
+    );
+  }
+
+  Future<void> _applyDueReassignments(String moduleId) async {
+    final requestsResult = await _getGrcRequestsUseCase.call(moduleId);
+    await requestsResult.fold(
+      (_) async {}, // no requests fetched — nothing to apply, owner list still loads
+      (requests) async {
+        final due = findDueReassignmentRequests(
+          requests,
+          type: GrcRequestType.reassignOwner,
+        );
+        for (final request in due) {
+          await _applyReassignmentUseCase.call(request);
+        }
+      },
+    );
+  }
+
+  Future<void> _stripExpiredControls(
+    String moduleId, {
+    required bool includeRemoved,
+  }) async {
+    final currentResult = await _getAllUseCase.call(
+      moduleId: moduleId,
+      includeRemoved: includeRemoved,
+    );
+    await currentResult.fold(
+      (_) async {},
+      (owners) async {
+        for (final owner in owners) {
+          final expired = findExpiredControls(owner.assigningControls);
+          if (expired.isEmpty) continue;
+          final remaining = owner.assigningControls.where((ac) {
+            return !expired.any(
+              (ex) => ex.policyId == ac.policyId && ex.controlId == ac.controlId,
+            );
+          }).toList();
+          await _updateUseCase.call(
+            UpdateOwnerParams(
+              ownerEmail: owner.ownerEmail,
+              moduleId: moduleId,
+              editorId: _currentUserEmail,
+              assigningControls: remaining,
+              status: remaining.isEmpty ? OwnerStatus.removed : null,
+            ),
+          );
+        }
+      },
     );
   }
 

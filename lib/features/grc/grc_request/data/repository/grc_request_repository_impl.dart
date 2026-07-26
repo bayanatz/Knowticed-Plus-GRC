@@ -67,6 +67,39 @@ class GrcRequestRepositoryImpl implements GrcRequestRepository {
   }
 
   @override
+  Future<Either<Failure, GrcRequestEntity>> createReassignOwnerRequest({
+    required String moduleId,
+    required String requestedBy,
+    required String note,
+    required String currentOwnerEmail,
+    required String newOwnerEmail,
+    required List<AssigningControlEntity> controls,
+    required DateTime startDate,
+    DateTime? endDate,
+  }) async {
+    try {
+      final model = GrcRequestModel(
+        id: '', // overwritten by the data source on create
+        moduleId: moduleId,
+        type: GrcRequestType.reassignOwner.value,
+        status: ApprovalStatus.pending.name,
+        requestedBy: requestedBy,
+        requestDate: DateTime.now(),
+        note: note,
+        currentOwnerEmail: currentOwnerEmail,
+        newOwnerEmail: newOwnerEmail,
+        controls: _toModels(controls),
+        startDate: startDate,
+        endDate: endDate,
+      );
+      final created = await _firebaseDataSource.create(model, moduleId: moduleId);
+      return Right(created.toEntity());
+    } catch (e) {
+      return Left(FirebaseFailure(e.toString()));
+    }
+  }
+
+  @override
   Future<Either<Failure, List<GrcRequestEntity>>> getRequestsForModule(
     String moduleId,
   ) async {
@@ -114,6 +147,8 @@ class GrcRequestRepositoryImpl implements GrcRequestRepository {
             decisionDate: DateTime.now(),
             currentChampionEmail: current.currentChampionEmail,
             newChampionEmail: current.newChampionEmail,
+            currentOwnerEmail: current.currentOwnerEmail,
+            newOwnerEmail: current.newOwnerEmail,
             controls: current.controls,
             startDate: current.startDate,
             endDate: current.endDate,
@@ -153,6 +188,48 @@ class GrcRequestRepositoryImpl implements GrcRequestRepository {
             decisionDate: DateTime.now(),
             currentChampionEmail: current.currentChampionEmail,
             newChampionEmail: current.newChampionEmail,
+            currentOwnerEmail: current.currentOwnerEmail,
+            newOwnerEmail: current.newOwnerEmail,
+            controls: current.controls,
+            startDate: current.startDate,
+            endDate: current.endDate,
+            appliedAt: current.appliedAt,
+          );
+          final saved = await _firebaseDataSource.update(updated, moduleId: moduleId);
+          return Right(saved.toEntity());
+        },
+      );
+    } catch (e) {
+      return Left(FirebaseFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, GrcRequestEntity>> cancelRequest({
+    required String moduleId,
+    required String requestId,
+    required String canceledBy,
+  }) async {
+    try {
+      final currentResult = await _getById(moduleId: moduleId, requestId: requestId);
+      return await currentResult.fold(
+        (failure) async => Left(failure),
+        (current) async {
+          final updated = GrcRequestModel(
+            id: current.id,
+            moduleId: current.moduleId,
+            type: current.type,
+            status: ApprovalStatus.canceled.name,
+            requestedBy: current.requestedBy,
+            requestDate: current.requestDate,
+            note: current.note,
+            rejectionReason: current.rejectionReason,
+            decidedBy: canceledBy,
+            decisionDate: DateTime.now(),
+            currentChampionEmail: current.currentChampionEmail,
+            newChampionEmail: current.newChampionEmail,
+            currentOwnerEmail: current.currentOwnerEmail,
+            newOwnerEmail: current.newOwnerEmail,
             controls: current.controls,
             startDate: current.startDate,
             endDate: current.endDate,
@@ -190,6 +267,8 @@ class GrcRequestRepositoryImpl implements GrcRequestRepository {
             decisionDate: current.decisionDate,
             currentChampionEmail: current.currentChampionEmail,
             newChampionEmail: current.newChampionEmail,
+            currentOwnerEmail: current.currentOwnerEmail,
+            newOwnerEmail: current.newOwnerEmail,
             controls: current.controls,
             startDate: current.startDate,
             endDate: current.endDate,

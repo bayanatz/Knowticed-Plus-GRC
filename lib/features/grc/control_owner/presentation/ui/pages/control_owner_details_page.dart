@@ -6,9 +6,9 @@ import 'package:demo_app/features/employee/presentation/controller/main_core_emp
 import 'package:demo_app/core/helper/main_helper/employee_helper.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/control/domain/use_cases/get_control_usecases.dart';
-import 'package:demo_app/features/grc/control_champion/domain/entities/champion_entity.dart';
-import 'package:demo_app/features/grc/control_champion/domain/entities/champion_status.dart';
-import 'package:demo_app/features/grc/control_champion/presentation/controller/champion_cubit.dart';
+import 'package:demo_app/features/grc/control_owner/domain/entities/owner_entity.dart';
+import 'package:demo_app/features/grc/control_owner/domain/entities/owner_status.dart';
+import 'package:demo_app/features/grc/control_owner/presentation/controller/owner_cubit.dart';
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
 import 'package:demo_app/features/grc/policy/domain/use_cases/get_policy_usecases.dart';
@@ -23,48 +23,47 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 
-import 'edit_champion_controls_page.dart';
-import 'reassign_champion_page.dart';
+import 'edit_owner_controls_page.dart';
+import 'reassign_owner_page.dart';
 
-class ControlChampionDetailsPage extends StatelessWidget {
-  final ChampionEntity champion;
+class ControlOwnerDetailsPage extends StatelessWidget {
+  final OwnerEntity owner;
   final GRCModuleEntity module;
 
-  const ControlChampionDetailsPage({
+  const ControlOwnerDetailsPage({
     super.key,
-    required this.champion,
+    required this.owner,
     required this.module,
   });
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<ChampionCubit>(
-      create: (_) => GetIt.instance<ChampionCubit>(),
-      child: _ControlChampionDetailsBody(
-        champion: champion,
+    return BlocProvider<OwnerCubit>(
+      create: (_) => GetIt.instance<OwnerCubit>(),
+      child: _ControlOwnerDetailsBody(
+        owner: owner,
         module: module,
       ),
     );
   }
 }
 
-class _ControlChampionDetailsBody extends StatefulWidget {
-  final ChampionEntity champion;
+class _ControlOwnerDetailsBody extends StatefulWidget {
+  final OwnerEntity owner;
   final GRCModuleEntity module;
 
-  const _ControlChampionDetailsBody({
-    required this.champion,
+  const _ControlOwnerDetailsBody({
+    required this.owner,
     required this.module,
   });
 
   @override
-  State<_ControlChampionDetailsBody> createState() =>
-      _ControlChampionDetailsBodyState();
+  State<_ControlOwnerDetailsBody> createState() =>
+      _ControlOwnerDetailsBodyState();
 }
 
-class _ControlChampionDetailsBodyState
-    extends State<_ControlChampionDetailsBody> {
-  late ChampionEntity _currentChampion;
+class _ControlOwnerDetailsBodyState extends State<_ControlOwnerDetailsBody> {
+  late OwnerEntity _currentOwner;
   bool _isLoadingData = true;
   bool _isReassignLoading = false;
   bool _isEditLoading = false;
@@ -74,7 +73,7 @@ class _ControlChampionDetailsBodyState
   @override
   void initState() {
     super.initState();
-    _currentChampion = widget.champion;
+    _currentOwner = widget.owner;
     _loadAllData();
   }
 
@@ -139,17 +138,17 @@ class _ControlChampionDetailsBodyState
   void _showDeleteConfirmation(BuildContext context) {
     showConfirmDialog(
       context: context,
-      title: 'Remove Control Champion'.tr,
+      title: 'Remove Control Owner'.tr,
       subtitle:
-          'Are you sure you want to remove this Control Champion? This action is reversible.'
+          'Are you sure you want to remove this Control Owner? This action is reversible.'
               .tr,
       cancelLabel: 'Cancel'.tr,
       confirmLabel: 'Remove'.tr,
       onConfirm: () {
-        context.read<ChampionCubit>().updateChampion(
-              championEmail: _currentChampion.championEmail,
+        context.read<OwnerCubit>().updateOwner(
+              ownerEmail: _currentOwner.ownerEmail,
               moduleId: widget.module.moduleId,
-              status: ChampionStatus.removed,
+              status: OwnerStatus.removed,
             );
       },
     );
@@ -157,8 +156,8 @@ class _ControlChampionDetailsBodyState
 
   @override
   Widget build(BuildContext context) {
-    final employee = _findEmployee(_currentChampion.championEmail);
-    final name = _employeeDisplayName(context, _currentChampion.championEmail);
+    final employee = _findEmployee(_currentOwner.ownerEmail);
+    final name = _employeeDisplayName(context, _currentOwner.ownerEmail);
     final department = employee != null
         ? EmployeeHelper.getEmployeeLocalizeDepartment(
             employee: employee, context: context)
@@ -174,29 +173,29 @@ class _ControlChampionDetailsBodyState
         : 'assets/icons_assets/main_icons_assets/assets_male.svg';
     final phone = employee?.mobilePhone?.phone ??
         '2010258963'; // Mock placeholder if empty
-    final email = _currentChampion.championEmail;
+    final email = _currentOwner.ownerEmail;
 
     // Get unique assigned policies
-    final assignedPolicyIds = _currentChampion.assigningControls
+    final assignedPolicyIds = _currentOwner.assigningControls
         .map((ac) => ac.policyId)
         .toSet()
         .toList();
 
-    return BlocListener<ChampionCubit, ChampionState>(
+    return BlocListener<OwnerCubit, OwnerState>(
       listener: (context, state) {
-        if (state is ChampionActionSuccess) {
-          if (state.champion.status == ChampionStatus.removed) {
+        if (state is OwnerActionSuccess) {
+          if (state.owner.status == OwnerStatus.removed) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                  content: Text('Control Champion removed successfully'.tr)),
+                  content: Text('Control Owner removed successfully'.tr)),
             );
             Navigator.pop(context, true);
           } else {
             setState(() {
-              _currentChampion = state.champion;
+              _currentOwner = state.owner;
             });
           }
-        } else if (state is ChampionFailure) {
+        } else if (state is OwnerFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.message)),
           );
@@ -215,7 +214,7 @@ class _ControlChampionDetailsBodyState
                     context.isArabic
                         ? widget.module.moduleNameAr
                         : widget.module.moduleNameEn,
-                    'Control Champion'.tr,
+                    'Control Owner'.tr,
                   ],
                 ),
                 SizedBox(height: 16.h),
@@ -281,10 +280,9 @@ class _ControlChampionDetailsBodyState
                                           PageRouteBuilder(
                                             pageBuilder: (_, __, ___) =>
                                                 BlocProvider.value(
-                                              value:
-                                                  context.read<ChampionCubit>(),
-                                              child: ReassignChampionPage(
-                                                champion: _currentChampion,
+                                              value: context.read<OwnerCubit>(),
+                                              child: ReassignOwnerPage(
+                                                owner: _currentOwner,
                                                 module: widget.module,
                                                 allPolicies: _allPolicies,
                                                 policyControls: _policyControls,
@@ -301,8 +299,8 @@ class _ControlChampionDetailsBodyState
                                         );
                                         if (result == true && mounted) {
                                           context
-                                              .read<ChampionCubit>()
-                                              .getAllChampions(
+                                              .read<OwnerCubit>()
+                                              .getAllOwners(
                                                   moduleId:
                                                       widget.module.moduleId);
                                           Navigator.pop(context, true);
@@ -335,14 +333,13 @@ class _ControlChampionDetailsBodyState
                                         }
                                         if (!context.mounted) return;
                                         final result =
-                                            await showDialog<ChampionEntity>(
+                                            await showDialog<OwnerEntity>(
                                           context: context,
                                           builder: (dialogCtx) =>
                                               BlocProvider.value(
-                                            value:
-                                                context.read<ChampionCubit>(),
-                                            child: EditChampionControlsPage(
-                                              champion: _currentChampion,
+                                            value: context.read<OwnerCubit>(),
+                                            child: EditOwnerControlsPage(
+                                              owner: _currentOwner,
                                               module: widget.module,
                                               allPolicies: _allPolicies,
                                               policyControls: _policyControls,
@@ -351,7 +348,7 @@ class _ControlChampionDetailsBodyState
                                         );
                                         if (result != null && mounted) {
                                           setState(() {
-                                            _currentChampion = result;
+                                            _currentOwner = result;
                                           });
                                         }
                                       },
@@ -434,7 +431,7 @@ class _ControlChampionDetailsBodyState
                             : Wrap(
                                 spacing: 10.w,
                                 runSpacing: 10.h,
-                                children: _currentChampion.assigningControls
+                                children: _currentOwner.assigningControls
                                     .map((ac) {
                                   final ctrl = _getControlEntity(
                                       ac.policyId, ac.controlId);

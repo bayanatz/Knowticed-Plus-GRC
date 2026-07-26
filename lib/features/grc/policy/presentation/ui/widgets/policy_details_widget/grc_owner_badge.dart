@@ -119,27 +119,31 @@ class _GrcOwnerBadgeState extends State<GrcOwnerBadge> {
           return Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                widget.label.tr,
-                style: AppTextStyles.font16BlackRegularCairo.copyWith(
-                  fontSize: 14.sp,
-                  color: AppColors.secondaryText,
+              Flexible(
+                child: Text(
+                  widget.label.tr,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.font14BlackRegularCairo.copyWith(
+                    color: AppColors.secondaryText,
+                  ),
                 ),
               ),
               SizedBox(width: 8.w),
               CircleAvatar(
-                radius: 16.r,
+                radius: 14.r,
                 child: Image.network(owner.photo,
                     errorBuilder: (context, error, stackTrace) {
                   return Icon(Icons.person, size: 16.sp);
                 }),
               ),
               SizedBox(width: 8.w),
-              Text(
-                owner.name,
-                style: AppTextStyles.font16BlackRegularCairo.copyWith(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
+              Flexible(
+                child: Text(
+                  owner.name,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.font14BlackRegularCairo.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
               SizedBox(width: 16.w),
@@ -175,7 +179,6 @@ class _MessageButton extends StatelessWidget {
       image: "assets/icons_assets/data_grc_assets/messages_new.svg",
       title: "Message".tr,
       function: onTap!,
-      width: 40.w,
       color: AppColors.primary,
       textStyle:
           StyleText.fontSize16Weight500.copyWith(color: AppColors.textButton),

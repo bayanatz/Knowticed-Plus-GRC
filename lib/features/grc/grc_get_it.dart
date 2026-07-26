@@ -19,10 +19,12 @@ import 'package:demo_app/features/grc/policy/data/data_source/policy_firebase_da
 import 'package:demo_app/features/grc/policy/data/data_source/policy_storage_data_source.dart';
 import 'package:demo_app/features/grc/control_champion/domain/entities/champion_request_resolver.dart';
 import 'package:demo_app/features/grc/control_champion/domain/use_cases/apply_champion_reassignment_usecase.dart';
+import 'package:demo_app/features/grc/control_owner/domain/use_cases/apply_owner_reassignment_usecase.dart';
 import 'package:demo_app/features/grc/grc_request/data/data_source/grc_request_firebase_data_source.dart';
 import 'package:demo_app/features/grc/grc_request/data/repository/grc_request_repository_impl.dart';
 import 'package:demo_app/features/grc/grc_request/domain/repository/grc_request_repository.dart';
 import 'package:demo_app/features/grc/grc_request/domain/use_cases/approve_grc_request_usecase.dart';
+import 'package:demo_app/features/grc/grc_request/domain/use_cases/cancel_grc_request_usecase.dart';
 import 'package:demo_app/features/grc/grc_request/domain/use_cases/create_grc_request_usecase.dart';
 import 'package:demo_app/features/grc/grc_request/domain/use_cases/get_grc_requests_usecase.dart';
 import 'package:demo_app/features/grc/grc_request/domain/use_cases/reject_grc_request_usecase.dart';
@@ -400,12 +402,29 @@ void setupGRCDependencies(GetIt sl) {
     () => RejectGrcRequestUseCase(sl<GrcRequestRepository>()),
   );
 
+  /// class name: [CancelGrcRequestUseCase]
+  /// purpose: business logic for canceling a pending GRC Request before its
+  /// start date arrives.
+  sl.registerLazySingleton<CancelGrcRequestUseCase>(
+    () => CancelGrcRequestUseCase(sl<GrcRequestRepository>()),
+  );
+
   /// class name: [ApplyChampionReassignmentUseCase]
   /// purpose: business logic for applying an approved champion reassignment
   /// request whose Start Date has arrived.
   sl.registerLazySingleton<ApplyChampionReassignmentUseCase>(
     () => ApplyChampionReassignmentUseCase(
       championRepository: sl<ChampionRepository>(),
+      requestRepository: sl<GrcRequestRepository>(),
+    ),
+  );
+
+  /// class name: [ApplyOwnerReassignmentUseCase]
+  /// purpose: business logic for applying an approved owner reassignment
+  /// request whose Start Date has arrived.
+  sl.registerLazySingleton<ApplyOwnerReassignmentUseCase>(
+    () => ApplyOwnerReassignmentUseCase(
+      ownerRepository: sl<OwnerRepository>(),
       requestRepository: sl<GrcRequestRepository>(),
     ),
   );
@@ -524,6 +543,7 @@ void setupGRCDependencies(GetIt sl) {
       getGrcRequestsUseCase: sl<GetGrcRequestsUseCase>(),
       approveGrcRequestUseCase: sl<ApproveGrcRequestUseCase>(),
       rejectGrcRequestUseCase: sl<RejectGrcRequestUseCase>(),
+      cancelGrcRequestUseCase: sl<CancelGrcRequestUseCase>(),
     ),
   );
 
@@ -536,6 +556,8 @@ void setupGRCDependencies(GetIt sl) {
       getOwnerUseCase: sl<GetOwnerUseCase>(),
       getAllOwnersUseCase: sl<GetAllOwnersUseCase>(),
       updateOwnerUseCase: sl<UpdateOwnerUseCase>(),
+      getGrcRequestsUseCase: sl<GetGrcRequestsUseCase>(),
+      applyOwnerReassignmentUseCase: sl<ApplyOwnerReassignmentUseCase>(),
     ),
   );
 

@@ -1,14 +1,19 @@
 /// Module: GRC Request Management
 /// Description: Details view for a single GRC Request. For
-///              GrcRequestType.reassignChampion, shows Current vs New
-///              Control Champion, dates, note, and assigned controls, with
-///              Approve/Reject actions while pending. Any other request
-///              type renders a "not supported" placeholder.
+///              GrcRequestType.reassignChampion / reassignOwner, shows
+///              Current vs New Champion/Owner, dates, note, and assigned
+///              controls, with Approve/Reject actions while pending. Any
+///              other request type renders a "not supported" placeholder.
 /// Author: Mohamed Magdy Abdelkhalek
 /// Date: 2026-07-25
 /// Dependencies: flutter_bloc, get_it, GrcRequestCubit, custom_confirm_dialog
+library;
 
+import 'package:demo_app/core/custom/3-custom_dropdwon_calander.dart';
+import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
 import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart';
+import 'package:demo_app/core/custom/16-custom_card_styles.dart';
+import 'package:demo_app/core/custom/21-custom_contact_card.dart';
 import 'package:demo_app/core/enums/approval_status.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
@@ -16,11 +21,13 @@ import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/helper/main_helper/employee_helper.dart';
 import 'package:demo_app/features/employee/domain/entities/employee_entity.dart';
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
+import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
+import 'package:demo_app/features/grc/control/domain/use_cases/get_control_usecases.dart';
 import 'package:demo_app/features/grc/grc_request/domain/entities/grc_request_entity.dart';
 import 'package:demo_app/features/grc/grc_request/domain/entities/grc_request_type.dart';
 import 'package:demo_app/features/grc/grc_request/presentation/controller/grc_request_cubit.dart';
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
-import 'package:demo_app/features/home/core_widgets/main_widget/custom_button_widget.dart';
+import 'package:demo_app/features/grc/policy/domain/use_cases/get_policy_usecases.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -60,16 +67,51 @@ class _GrcRequestDetailsBody extends StatefulWidget {
 
 class _GrcRequestDetailsBodyState extends State<_GrcRequestDetailsBody> {
   late GrcRequestEntity _request;
+  final Map<String, List<ControlEntity>> _policyControls = {};
+  bool _isLoadingControls = true;
 
   @override
   void initState() {
     super.initState();
     _request = widget.request;
+    _loadPolicyData();
+  }
+
+  Future<void> _loadPolicyData() async {
+    final polResult = await GetIt.instance<GetAllPoliciesUseCase>()
+        .call(moduleId: widget.module.moduleId);
+    await polResult.fold(
+      (failure) async {},
+      (policies) async {
+        for (final policy in policies) {
+          final ctrlResult = await GetIt.instance<GetAllControlsUseCase>()
+              .call(moduleId: widget.module.moduleId, policyId: policy.id);
+          ctrlResult.fold(
+            (failure) {},
+            (controls) {
+              _policyControls[policy.id] = controls;
+            },
+          );
+        }
+      },
+    );
+    if (mounted) setState(() => _isLoadingControls = false);
+  }
+
+  ControlEntity? _getControlEntity(String policyId, String controlId) {
+    final list = _policyControls[policyId];
+    if (list != null) {
+      for (final c in list) {
+        if (c.id == controlId) return c;
+      }
+    }
+    return null;
   }
 
   EmployeeEntityPro? _findEmployee(String email) {
     if (!Get.isRegistered<MainCoreEmployeeController>()) return null;
-    final employees = Get.find<MainCoreEmployeeController>().allEmployeesEntities ?? [];
+    final employees =
+        Get.find<MainCoreEmployeeController>().allEmployeesEntities ?? [];
     for (final e in employees) {
       if (e.email == email) return e;
     }
@@ -79,51 +121,88 @@ class _GrcRequestDetailsBodyState extends State<_GrcRequestDetailsBody> {
   String _employeeDisplayName(BuildContext context, String email) {
     final employee = _findEmployee(email);
     if (employee == null) return email;
-    return EmployeeHelper.getEmployeeLocalizedName(employee: employee, context: context);
+    return EmployeeHelper.getEmployeeLocalizedName(
+        employee: employee, context: context);
   }
 
-  Widget _championCard(BuildContext context, String title, String email) {
+  bool get _isOwnerRequest => _request.type == GrcRequestType.reassignOwner;
+
+  String get _currentAssigneeEmail => _isOwnerRequest
+      ? (_request.currentOwnerEmail ?? '')
+      : (_request.currentChampionEmail ?? '');
+
+  String get _newAssigneeEmail => _isOwnerRequest
+      ? (_request.newOwnerEmail ?? '')
+      : (_request.newChampionEmail ?? '');
+
+  String get _currentAssigneeLabel => _isOwnerRequest
+      ? 'Current Control Owner'.tr
+      : 'Current Control Champion'.tr;
+
+  String get _newAssigneeLabel =>
+      _isOwnerRequest ? 'New Control Owner'.tr : 'New Control Champion'.tr;
+
+  Widget _assigneeCard(BuildContext context, String email) {
     final employee = _findEmployee(email);
     final photo = employee != null
         ? EmployeeHelper.getEmployeeImage(employee: employee)
         : 'assets/icons_assets/main_icons_assets/assets_male.svg';
     final name = _employeeDisplayName(context, email);
     final dept = employee != null
-        ? EmployeeHelper.getEmployeeLocalizeDepartment(employee: employee, context: context)
+        ? EmployeeHelper.getEmployeeLocalizeDepartment(
+            employee: employee, context: context)
         : '';
-    return Container(
-      padding: EdgeInsets.all(12.r),
-      decoration: BoxDecoration(
-        color: AppColors.card,
-        borderRadius: BorderRadius.circular(8.r),
-        boxShadow: [BoxShadow(color: AppColors.dropShadow, blurRadius: 4, offset: const Offset(0, 2))],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: StyleText.fontSize16Weight600.copyWith(color: AppColors.text)),
-          SizedBox(height: 8.h),
-          Row(
-            children: [
-              CircleAvatar(
-                radius: 20.r,
-                backgroundImage: photo.startsWith('http') ? NetworkImage(photo) : null,
-              ),
-              SizedBox(width: 12.w),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(name, style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text)),
-                    if (dept.isNotEmpty)
-                      Text(dept, style: StyleText.fontSize12Weight500.copyWith(color: AppColors.secondaryText)),
-                  ],
-                ),
-              ),
-            ],
+    final jobTitle = employee != null
+        ? (EmployeeHelper.getEmployeeLocalizedTitle(
+                    employee: employee, context: context)
+                ?.toString() ??
+            '')
+        : '';
+    final phone = employee?.mobilePhone?.phone ?? '2010258963';
+    return ContactCard(
+      name: name,
+      jobTitle: jobTitle.isNotEmpty ? jobTitle : 'Technician'.tr,
+      department: dept.isNotEmpty ? dept : 'IT'.tr,
+      email: email,
+      phone: phone,
+      avatar: photo.startsWith('http') ? NetworkImage(photo) : null,
+      onMessage: () {},
+    );
+  }
+
+  Widget _assignedControlsChips(BuildContext context) {
+    if (_isLoadingControls) {
+      return Center(
+        child: CircularProgressIndicator(color: AppColors.primary),
+      );
+    }
+    final controls = _request.controls ?? [];
+    if (controls.isEmpty) {
+      return Text(
+        'No Controls assigned.'.tr,
+        style: StyleText.fontSize12Weight400
+            .copyWith(color: AppColors.secondaryText),
+      );
+    }
+    return Wrap(
+      spacing: 8.w,
+      runSpacing: 8.h,
+      children: controls.map((c) {
+        final ctrl = _getControlEntity(c.policyId, c.controlId);
+        final cName = ctrl != null
+            ? (context.isArabic ? ctrl.controlsNameAr : ctrl.controlsNameEn)
+            : c.controlId;
+        return Container(
+          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
+          decoration: BoxDecoration(
+            color: AppColors.background,
+            borderRadius: BorderRadius.circular(24.r),
           ),
-        ],
-      ),
+          child: Text(cName,
+              style: StyleText.fontSize14Weight500
+                  .copyWith(color: AppColors.text)),
+        );
+      }).toList(),
     );
   }
 
@@ -160,7 +239,8 @@ class _GrcRequestDetailsBodyState extends State<_GrcRequestDetailsBody> {
   Widget build(BuildContext context) {
     return BlocConsumer<GrcRequestCubit, GrcRequestState>(
       listener: (context, state) {
-        if (state is GrcRequestActionSuccess && state.request.id == _request.id) {
+        if (state is GrcRequestActionSuccess &&
+            state.request.id == _request.id) {
           setState(() => _request = state.request);
         } else if (state is GrcRequestFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -173,7 +253,8 @@ class _GrcRequestDetailsBodyState extends State<_GrcRequestDetailsBody> {
   }
 
   Widget _buildBody(BuildContext context) {
-    if (_request.type != GrcRequestType.reassignChampion) {
+    if (_request.type != GrcRequestType.reassignChampion &&
+        _request.type != GrcRequestType.reassignOwner) {
       return Scaffold(
         body: SafeArea(
           child: Padding(
@@ -182,10 +263,15 @@ class _GrcRequestDetailsBodyState extends State<_GrcRequestDetailsBody> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 PaginationAppBar(
-                  screensTitles: [widget.module.moduleNameEn, 'Requests'.tr, 'Request Details'.tr],
+                  screensTitles: [
+                    widget.module.moduleNameEn,
+                    'Requests'.tr,
+                    'Request Details'.tr
+                  ],
                 ),
                 SizedBox(height: 40.h),
-                Center(child: Text('This request type is not supported yet.'.tr)),
+                Center(
+                    child: Text('This request type is not supported yet.'.tr)),
               ],
             ),
           ),
@@ -203,7 +289,13 @@ class _GrcRequestDetailsBodyState extends State<_GrcRequestDetailsBody> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               PaginationAppBar(
-                screensTitles: [widget.module.moduleNameEn, 'Requests'.tr, 'Request Details'.tr],
+                screensTitles: [
+                  'GRC'.tr,
+                  context.isArabic
+                      ? widget.module.moduleNameAr
+                      : widget.module.moduleNameEn,
+                  'Requests Details'.tr,
+                ],
               ),
               Expanded(
                 child: SingleChildScrollView(
@@ -211,69 +303,162 @@ class _GrcRequestDetailsBodyState extends State<_GrcRequestDetailsBody> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(height: 16.h),
-                      _championCard(context, 'Current Control Champion'.tr,
-                          _request.currentChampionEmail ?? ''),
+
+                      // Current assignee (Champion or Owner) box
+                      Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.all(20.r),
+                        decoration: BoxDecoration(
+                          color: AppColors.card,
+                          borderRadius: BorderRadius.circular(16.r),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(_currentAssigneeLabel,
+                                style: StyleText.fontSize16Weight600
+                                    .copyWith(color: AppColors.text)),
+                            SizedBox(height: 8.h),
+                            _assigneeCard(context, _currentAssigneeEmail),
+                            SizedBox(height: 20.h),
+                            Text('Assigned Controls'.tr,
+                                style: StyleText.fontSize14Weight500
+                                    .copyWith(color: AppColors.text)),
+                            SizedBox(height: 8.h),
+                            _assignedControlsChips(context),
+                          ],
+                        ),
+                      ),
                       SizedBox(height: 16.h),
-                      _championCard(context, 'New Control Champion'.tr,
-                          _request.newChampionEmail ?? ''),
-                      SizedBox(height: 20.h),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              '${'Start Date'.tr}: ${_request.startDate != null ? dateFormat.format(_request.startDate!) : '-'}',
-                              style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
+
+                      // New assignee (Champion or Owner) box
+                      Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.all(20.r),
+                        decoration: BoxDecoration(
+                          color: AppColors.card,
+                          borderRadius: BorderRadius.circular(16.r),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(_newAssigneeLabel,
+                                style: StyleText.fontSize16Weight600
+                                    .copyWith(color: AppColors.text)),
+                            SizedBox(height: 8.h),
+                            _assigneeCard(context, _newAssigneeEmail),
+                            SizedBox(height: 20.h),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: IgnorePointer(
+                                    child: CustomDropdownCalendar(
+                                      label: 'Start Date'.tr,
+                                      hint: 'Choose The Date'.tr,
+                                      value: _request.startDate,
+                                      fillColor: AppColors.background,
+                                      dateFormatter: dateFormat.format,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 16.w),
+                                Expanded(
+                                  child: IgnorePointer(
+                                    child: CustomDropdownCalendar(
+                                      label: 'End Date'.tr,
+                                      hint: 'Choose The Date'.tr,
+                                      value: _request.endDate,
+                                      fillColor: AppColors.background,
+                                      dateFormatter: dateFormat.format,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                          Expanded(
-                            child: Text(
-                              '${'End Date'.tr}: ${_request.endDate != null ? dateFormat.format(_request.endDate!) : '-'}',
-                              style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
+                            SizedBox(height: 20.h),
+                            Text('Request Note'.tr,
+                                style: StyleText.fontSize14Weight500
+                                    .copyWith(color: AppColors.text)),
+                            SizedBox(height: 6.h),
+                            Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 12.w, vertical: 12.h),
+                              decoration: BoxDecoration(
+                                color: AppColors.background,
+                                borderRadius: BorderRadius.circular(8.r),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    _request.note.isNotEmpty
+                                        ? _request.note
+                                        : 'Text here'.tr,
+                                    style:
+                                        StyleText.fontSize14Weight400.copyWith(
+                                      color: _request.note.isNotEmpty
+                                          ? AppColors.text
+                                          : AppColors.secondaryText,
+                                    ),
+                                  ),
+                                  SizedBox(height: 8.h),
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Text(
+                                      '${_request.note.length}/500',
+                                      style: StyleText.fontSize12Weight400
+                                          .copyWith(
+                                              color: AppColors.secondaryText),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                            SizedBox(height: 20.h),
+                            Text('Assigned Controls'.tr,
+                                style: StyleText.fontSize14Weight500
+                                    .copyWith(color: AppColors.text)),
+                            SizedBox(height: 8.h),
+                            _assignedControlsChips(context),
+                          ],
+                        ),
                       ),
-                      SizedBox(height: 20.h),
-                      Text('Request Note'.tr, style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text)),
-                      SizedBox(height: 6.h),
-                      Text(_request.note, style: StyleText.fontSize14Weight400.copyWith(color: AppColors.secondaryText)),
-                      SizedBox(height: 20.h),
-                      Text('Assigned Controls'.tr, style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text)),
-                      SizedBox(height: 8.h),
-                      Wrap(
-                        spacing: 8.w,
-                        runSpacing: 8.h,
-                        children: (_request.controls ?? []).map((c) {
-                          return Container(
-                            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
-                            decoration: BoxDecoration(
-                              color: AppColors.background,
-                              borderRadius: BorderRadius.circular(8.r),
-                              border: Border.all(color: AppColors.border),
-                            ),
-                            child: Text(c.controlId, style: StyleText.fontSize12Weight500.copyWith(color: AppColors.text)),
-                          );
-                        }).toList(),
-                      ),
-                      SizedBox(height: 40.h),
+                      SizedBox(height: 24.h),
+
                       if (_request.status == ApprovalStatus.pending)
                         Row(
                           children: [
                             Expanded(
-                              child: customButton(
+                              child: customButtonWithSvg(
+                                colorBorder: AppColors.red,
+                                space: 8.w,
+                                widthImage: 18.w,
+                                heightImage: 18.h,
+                                image: CardSvg.reject,
                                 title: 'Reject'.tr,
                                 function: _onReject,
-                                color: Colors.red,
-                                textStyle: StyleText.fontSize16Weight500.copyWith(color: Colors.white),
+                                color: AppColors.red,
+                                textStyle: StyleText.fontSize16Weight500
+                                    .copyWith(color: Colors.white),
+                                svgColor: Colors.white,
                               ),
                             ),
                             SizedBox(width: 16.w),
                             Expanded(
-                              child: customButton(
+                              child: customButtonWithSvg(
+                                colorBorder: AppColors.green,
+                                space: 8.w,
+                                widthImage: 18.w,
+                                heightImage: 18.h,
+                                image: CardSvg.approve,
                                 title: 'Approve'.tr,
                                 function: _onApprove,
-                                color: Colors.green,
-                                textStyle: StyleText.fontSize16Weight500.copyWith(color: Colors.white),
+                                color: AppColors.green,
+                                textStyle: StyleText.fontSize16Weight500
+                                    .copyWith(color: Colors.white),
+                                svgColor: Colors.white,
                               ),
                             ),
                           ],
@@ -283,8 +468,8 @@ class _GrcRequestDetailsBodyState extends State<_GrcRequestDetailsBody> {
                           padding: EdgeInsets.all(12.r),
                           decoration: BoxDecoration(
                             color: _request.status == ApprovalStatus.approved
-                                ? Colors.green.withOpacity(0.1)
-                                : Colors.red.withOpacity(0.1),
+                                ? AppColors.green.withOpacity(0.1)
+                                : AppColors.red.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(8.r),
                           ),
                           child: Text(
@@ -292,7 +477,9 @@ class _GrcRequestDetailsBodyState extends State<_GrcRequestDetailsBody> {
                                 ? 'Approved'.tr
                                 : '${'Rejected'.tr}: ${_request.rejectionReason ?? ''}',
                             style: StyleText.fontSize14Weight500.copyWith(
-                              color: _request.status == ApprovalStatus.approved ? Colors.green : Colors.red,
+                              color: _request.status == ApprovalStatus.approved
+                                  ? AppColors.green
+                                  : AppColors.red,
                             ),
                           ),
                         ),

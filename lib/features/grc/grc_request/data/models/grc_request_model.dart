@@ -32,6 +32,8 @@ class GrcRequestModel {
 
   final String? currentChampionEmail;
   final String? newChampionEmail;
+  final String? currentOwnerEmail;
+  final String? newOwnerEmail;
   final List<AssigningControlModel>? controls;
   final DateTime? startDate;
   final DateTime? endDate;
@@ -51,6 +53,8 @@ class GrcRequestModel {
     this.decisionDate,
     this.currentChampionEmail,
     this.newChampionEmail,
+    this.currentOwnerEmail,
+    this.newOwnerEmail,
     this.controls,
     this.startDate,
     this.endDate,
@@ -72,6 +76,8 @@ class GrcRequestModel {
           decisionDate != null ? _requestDateFormat.format(decisionDate!) : null,
       'Current_Champion_Email': currentChampionEmail,
       'New_Champion_Email': newChampionEmail,
+      'Current_Owner_Email': currentOwnerEmail,
+      'New_Owner_Email': newOwnerEmail,
       'Controls': controls?.map((c) => c.toJson()).toList(),
       'Start_Date': startDate != null ? _requestDateFormat.format(startDate!) : null,
       'End_Date': endDate != null ? _requestDateFormat.format(endDate!) : null,
@@ -98,6 +104,8 @@ class GrcRequestModel {
           decisionDateRaw != null ? _requestDateFormat.parse(decisionDateRaw) : null,
       currentChampionEmail: json['Current_Champion_Email'] as String?,
       newChampionEmail: json['New_Champion_Email'] as String?,
+      currentOwnerEmail: json['Current_Owner_Email'] as String?,
+      newOwnerEmail: json['New_Owner_Email'] as String?,
       controls: (json['Controls'] as List?)
           ?.map((c) => AssigningControlModel.fromJson(c as Map<String, dynamic>))
           .toList(),
@@ -124,6 +132,8 @@ class GrcRequestModel {
       decisionDate: decisionDate,
       currentChampionEmail: currentChampionEmail,
       newChampionEmail: newChampionEmail,
+      currentOwnerEmail: currentOwnerEmail,
+      newOwnerEmail: newOwnerEmail,
       controls: controls?.map((c) => c.toEntity()).toList(),
       startDate: startDate,
       endDate: endDate,

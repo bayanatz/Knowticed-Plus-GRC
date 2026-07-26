@@ -35,6 +35,7 @@ import 'package:demo_app/features/grc/policy/presentation/ui/pages/create_new_po
 import 'package:demo_app/features/grc/policy/presentation/ui/pages/policy_bulk_upload/policy_bulk_upload_page.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/pages/policy_details_page.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/pages/policy_weight_issue/policy_weight_issue_page.dart';
+import 'package:demo_app/features/grc/grc_request/domain/entities/grc_request_type.dart';
 import 'package:demo_app/features/grc/grc_request/presentation/ui/pages/grc_requests_list_page.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/custom_button.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
@@ -59,6 +60,7 @@ import 'package:demo_app/features/department/presentation/controller/add_departm
 import 'package:demo_app/features/grc/control_owner/domain/entities/owner_entity.dart';
 import 'package:demo_app/features/grc/control_owner/presentation/controller/owner_cubit.dart';
 import 'package:demo_app/features/grc/control_owner/presentation/ui/pages/add_owner_page.dart';
+import 'package:demo_app/features/grc/control_owner/presentation/ui/pages/control_owner_details_page.dart';
 import 'package:demo_app/features/grc/control_champion/presentation/ui/pages/control_champion_details_page.dart';
 
 /// class name: [GrcModuleDetailsPage]
@@ -613,6 +615,17 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
     return null;
   }
 
+  String get _currentUserEmail {
+    final fromConstant = Constant.emailUser;
+    if (fromConstant != null && fromConstant.isNotEmpty) return fromConstant;
+    if (Get.isRegistered<MainCoreEmployeeController>()) {
+      final email =
+          Get.find<MainCoreEmployeeController>().employeeEntity?.email;
+      if (email != null && email.isNotEmpty) return email;
+    }
+    return '';
+  }
+
   String _employeeDisplayName(BuildContext context, String email) {
     final employee = _findEmployee(email);
     if (employee == null) return email;
@@ -750,15 +763,33 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                CustomButton(
+                  buttonText: 'My Requests',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => GrcRequestsListPage(
+                          module: widget.module,
+                          onlyRequestedBy: _currentUserEmail,
+                          typeFilter: GrcRequestType.reassignChampion,
+                        ),
+                      ),
+                    );
+                  },
+                ),
                 CustomButton(
                   buttonText: 'Requests',
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => GrcRequestsListPage(module: widget.module),
+                        builder: (_) => GrcRequestsListPage(
+                          module: widget.module,
+                          typeFilter: GrcRequestType.reassignChampion,
+                        ),
                       ),
                     );
                   },
@@ -978,6 +1009,41 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomButton(
+                  buttonText: 'My Requests',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => GrcRequestsListPage(
+                          module: widget.module,
+                          onlyRequestedBy: _currentUserEmail,
+                          typeFilter: GrcRequestType.reassignOwner,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                CustomButton(
+                  buttonText: 'Requests',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => GrcRequestsListPage(
+                          module: widget.module,
+                          typeFilter: GrcRequestType.reassignOwner,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+            SizedBox(height: 15.h),
+            Row(
               spacing: 10.w,
               children: [
                 Expanded(
@@ -1071,8 +1137,32 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
       child: ListView.separated(
         itemCount: owners.length,
         separatorBuilder: (_, __) => SizedBox(height: 10.h),
-        itemBuilder: (_, index) =>
-            _buildPersonCard(context, owners[index].ownerEmail, onTap: null),
+        itemBuilder: (_, index) {
+          final owner = owners[index];
+          return _buildPersonCard(
+            context,
+            owner.ownerEmail,
+            onTap: () async {
+              await Navigator.push(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (_, __, ___) => ControlOwnerDetailsPage(
+                    owner: owner,
+                    module: widget.module,
+                  ),
+                  transitionsBuilder: (_, animation, __, child) =>
+                      FadeTransition(opacity: animation, child: child),
+                  transitionDuration: const Duration(milliseconds: 300),
+                ),
+              );
+              if (context.mounted) {
+                context
+                    .read<OwnerCubit>()
+                    .getAllOwners(moduleId: widget.module.moduleId);
+              }
+            },
+          );
+        },
       ),
     );
   }

@@ -11,7 +11,8 @@ import 'package:demo_app/features/employee/presentation/controller/main_core_emp
 import 'package:demo_app/core/helper/main_helper/employee_helper.dart';
 import 'package:demo_app/features/grc/control/domain/entities/assigning_control.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
-import 'package:demo_app/features/grc/control_champion/domain/entities/champion_entity.dart';
+import 'package:demo_app/features/grc/control_owner/domain/entities/owner_entity.dart';
+import 'package:demo_app/features/grc/grc_request/domain/entities/grc_request_type.dart';
 import 'package:demo_app/features/grc/grc_request/domain/use_cases/create_grc_request_usecase.dart';
 import 'package:demo_app/features/grc/grc_request/presentation/controller/grc_request_cubit.dart';
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
@@ -27,31 +28,31 @@ import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 
-class ReassignChampionPage extends StatefulWidget {
-  final ChampionEntity champion;
+class ReassignOwnerPage extends StatefulWidget {
+  final OwnerEntity owner;
   final GRCModuleEntity module;
   final List<PolicyEntity> allPolicies;
   final Map<String, List<ControlEntity>> policyControls;
 
-  const ReassignChampionPage({
+  const ReassignOwnerPage({
     super.key,
-    required this.champion,
+    required this.owner,
     required this.module,
     required this.allPolicies,
     required this.policyControls,
   });
 
   @override
-  State<ReassignChampionPage> createState() => _ReassignChampionPageState();
+  State<ReassignOwnerPage> createState() => _ReassignOwnerPageState();
 }
 
-class _ReassignChampionPageState extends State<ReassignChampionPage> {
+class _ReassignOwnerPageState extends State<ReassignOwnerPage> {
   List<OwnerData> _newSelectedEmployees = [];
   DateTime? _startDate;
   DateTime? _endDate;
   final TextEditingController _noteController = TextEditingController();
 
-  // Controls being reassigned (transferred to the new champion)
+  // Controls being reassigned (transferred to the new owner)
   List<AssigningControlEntity> _reassignedControls = [];
 
   // Each row is its own independent Policy + Controls picker. Selections
@@ -63,7 +64,7 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
   @override
   void initState() {
     super.initState();
-    _reassignedControls = List.from(widget.champion.assigningControls);
+    _reassignedControls = List.from(widget.owner.assigningControls);
   }
 
   @override
@@ -148,7 +149,7 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
 
     if (_newSelectedEmployees.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please select a new Control Champion'.tr)),
+        SnackBar(content: Text('Please select a new Control Owner'.tr)),
       );
       return;
     }
@@ -165,11 +166,10 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
       return;
     }
 
-    final newChampionEmail = _newSelectedEmployees.first.email;
-    if (newChampionEmail == widget.champion.championEmail) {
+    final newOwnerEmail = _newSelectedEmployees.first.email;
+    if (newOwnerEmail == widget.owner.ownerEmail) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text('New champion cannot be the current champion'.tr)),
+        SnackBar(content: Text('New owner cannot be the current owner'.tr)),
       );
       return;
     }
@@ -180,11 +180,12 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
       final requestCubit = context.read<GrcRequestCubit>();
       await requestCubit.createRequest(
         CreateGrcRequestParams(
+          type: GrcRequestType.reassignOwner,
           moduleId: widget.module.moduleId,
           requestedBy: _currentUserEmail,
           note: _noteController.text,
-          currentChampionEmail: widget.champion.championEmail,
-          newChampionEmail: newChampionEmail,
+          currentOwnerEmail: widget.owner.ownerEmail,
+          newOwnerEmail: newOwnerEmail,
           controls: _reassignedControls,
           startDate: _startDate!,
           endDate: _endDate,
@@ -225,12 +226,12 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
   }
 
   Widget _buildPage(BuildContext context) {
-    final currentEmp = _findEmployee(widget.champion.championEmail);
+    final currentEmp = _findEmployee(widget.owner.ownerEmail);
     final currentPhoto = currentEmp != null
         ? EmployeeHelper.getEmployeeImage(employee: currentEmp)
         : 'assets/icons_assets/main_icons_assets/assets_male.svg';
     final currentName =
-        _employeeDisplayName(context, widget.champion.championEmail);
+        _employeeDisplayName(context, widget.owner.ownerEmail);
     final currentDept = currentEmp != null
         ? EmployeeHelper.getEmployeeLocalizeDepartment(
             employee: currentEmp, context: context)
@@ -257,7 +258,7 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
                   context.isArabic
                       ? widget.module.moduleNameAr
                       : widget.module.moduleNameEn,
-                  'Reassign Control Champion Request'.tr,
+                  'Reassign Control Owner Request'.tr,
                 ],
               ),
               Expanded(
@@ -276,8 +277,8 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Current Control Champion Section
-                            Text('Current Control Champion'.tr,
+                            // Current Control Owner Section
+                            Text('Current Control Owner'.tr,
                                 style: StyleText.fontSize16Weight600
                                     .copyWith(color: AppColors.text)),
                             SizedBox(height: 8.h),
@@ -289,7 +290,7 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
                               department: currentDept.isNotEmpty
                                   ? currentDept
                                   : 'IT'.tr,
-                              email: widget.champion.championEmail,
+                              email: widget.owner.ownerEmail,
                               phone: currentPhone,
                               avatar: currentPhoto.startsWith('http')
                                   ? NetworkImage(currentPhoto)
@@ -298,8 +299,8 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
                             ),
                             SizedBox(height: 20.h),
 
-                            // New Control Champion Section
-                            Text('New Control Champion'.tr,
+                            // New Control Owner Section
+                            Text('New Control Owner'.tr,
                                 style: StyleText.fontSize16Weight600
                                     .copyWith(color: AppColors.text)),
                             SizedBox(height: 8.h),
@@ -543,9 +544,9 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
   }
 }
 
-/// One staged Policy + Controls picker row on [ReassignChampionPage].
+/// One staged Policy + Controls picker row on [ReassignOwnerPage].
 /// Selections here are local UI state only — see
-/// [_ReassignChampionPageState._commitPendingRows].
+/// [_ReassignOwnerPageState._commitPendingRows].
 class _PendingAssignmentRow {
   String? policyId;
   List<String> controlIds = [];

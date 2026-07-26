@@ -11,9 +11,9 @@ import 'package:demo_app/features/grc/control/domain/entities/control_status_res
 import 'package:demo_app/features/grc/control/domain/use_cases/update_control_usecase.dart';
 import 'package:demo_app/features/grc/control_champion/domain/entities/champion_entity.dart';
 import 'package:demo_app/features/grc/control_champion/domain/use_cases/get_champion_usecases.dart';
-import 'package:demo_app/features/grc/control_champion/presentation/controller/champion_cubit.dart';
 import 'package:demo_app/features/grc/control_owner/domain/entities/owner_entity.dart';
 import 'package:demo_app/features/grc/control_owner/domain/use_cases/get_owner_usecases.dart';
+import 'package:demo_app/features/grc/control_owner/presentation/controller/owner_cubit.dart';
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
 import 'package:demo_app/features/settings/core_widgets/main_widget/custom_button_widget.dart';
@@ -24,26 +24,25 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 
-class EditChampionControlsPage extends StatefulWidget {
-  final ChampionEntity champion;
+class EditOwnerControlsPage extends StatefulWidget {
+  final OwnerEntity owner;
   final GRCModuleEntity module;
   final List<PolicyEntity> allPolicies;
   final Map<String, List<ControlEntity>> policyControls;
 
-  const EditChampionControlsPage({
+  const EditOwnerControlsPage({
     super.key,
-    required this.champion,
+    required this.owner,
     required this.module,
     required this.allPolicies,
     required this.policyControls,
   });
 
   @override
-  State<EditChampionControlsPage> createState() =>
-      _EditChampionControlsPageState();
+  State<EditOwnerControlsPage> createState() => _EditOwnerControlsPageState();
 }
 
-class _EditChampionControlsPageState extends State<EditChampionControlsPage> {
+class _EditOwnerControlsPageState extends State<EditOwnerControlsPage> {
   late List<AssigningControlEntity> _tempControls;
 
   // Each row is its own independent Policy + Controls picker. Selections
@@ -54,7 +53,7 @@ class _EditChampionControlsPageState extends State<EditChampionControlsPage> {
   @override
   void initState() {
     super.initState();
-    _tempControls = List.from(widget.champion.assigningControls);
+    _tempControls = List.from(widget.owner.assigningControls);
   }
 
   ControlEntity? _getControlEntity(String policyId, String controlId) {
@@ -114,11 +113,11 @@ class _EditChampionControlsPageState extends State<EditChampionControlsPage> {
         ..add(_PendingAssignmentRow());
     });
     // Fire-and-forget: these touch each affected Control document directly
-    // (not the Champion doc this page's own loading/success state tracks),
+    // (not the Owner doc this page's own loading/success state tracks),
     // so they don't need to block the Save button.
     _recomputeControlStatuses();
-    context.read<ChampionCubit>().updateChampion(
-          championEmail: widget.champion.championEmail,
+    context.read<OwnerCubit>().updateOwner(
+          ownerEmail: widget.owner.ownerEmail,
           moduleId: widget.module.moduleId,
           assigningControls: _tempControls,
         );
@@ -138,14 +137,14 @@ class _EditChampionControlsPageState extends State<EditChampionControlsPage> {
   /// function name: [_recomputeControlStatuses]
   ///
   /// purpose: before [_tempControls] is persisted, recompute the status of
-  ///          every control whose assignment to this Champion just changed
+  ///          every control whose assignment to this Owner just changed
   ///          — a newly-added control flips Unassigned -> Scheduled/Active;
   ///          a newly-removed one flips back to Unassigned, but only if no
-  ///          other Champion or Owner in the module still covers it.
+  ///          other Owner or Champion in the module still covers it.
   ///          Controls currently Draft/Inactive/Expired are left untouched
   ///          either way (see [shouldRecomputeAssigneeBasedStatus]).
   Future<void> _recomputeControlStatuses() async {
-    final originalPairs = widget.champion.assigningControls
+    final originalPairs = widget.owner.assigningControls
         .map((ac) => (ac.policyId, ac.controlId))
         .toSet();
     final newPairs =
@@ -154,20 +153,21 @@ class _EditChampionControlsPageState extends State<EditChampionControlsPage> {
     final removed = originalPairs.difference(newPairs);
     if (added.isEmpty && removed.isEmpty) return;
 
-    var otherChampions = const <ChampionEntity>[];
-    var owners = const <OwnerEntity>[];
+    var champions = const <ChampionEntity>[];
+    var otherOwners = const <OwnerEntity>[];
     if (removed.isNotEmpty) {
       final championsResult = await GetIt.instance<GetAllChampionsUseCase>()
           .call(moduleId: widget.module.moduleId);
-      otherChampions = championsResult.fold(
-        (failure) => const <ChampionEntity>[],
-        (champions) => champions
-            .where((c) => c.championEmail != widget.champion.championEmail)
-            .toList(),
-      );
+      champions =
+          championsResult.fold((failure) => const <ChampionEntity>[], (c) => c);
       final ownersResult = await GetIt.instance<GetAllOwnersUseCase>()
           .call(moduleId: widget.module.moduleId);
-      owners = ownersResult.fold((failure) => const <OwnerEntity>[], (o) => o);
+      otherOwners = ownersResult.fold(
+        (failure) => const <OwnerEntity>[],
+        (owners) => owners
+            .where((o) => o.ownerEmail != widget.owner.ownerEmail)
+            .toList(),
+      );
     }
 
     final editor = _currentUserEmail;
@@ -200,9 +200,9 @@ class _EditChampionControlsPageState extends State<EditChampionControlsPage> {
       await applyStatus(pair, hasAnyAssignee: true);
     }
     for (final pair in removed) {
-      final stillCovered = otherChampions.any((c) => c.assigningControls.any(
-              (ac) => ac.policyId == pair.$1 && ac.controlId == pair.$2)) ||
-          owners.any((o) => o.assigningControls
+      final stillCovered = champions.any((c) => c.assigningControls
+              .any((ac) => ac.policyId == pair.$1 && ac.controlId == pair.$2)) ||
+          otherOwners.any((o) => o.assigningControls
               .any((ac) => ac.policyId == pair.$1 && ac.controlId == pair.$2));
       await applyStatus(pair, hasAnyAssignee: stillCovered);
     }
@@ -210,21 +210,21 @@ class _EditChampionControlsPageState extends State<EditChampionControlsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ChampionCubit, ChampionState>(
+    return BlocConsumer<OwnerCubit, OwnerState>(
       listener: (context, state) {
-        if (state is ChampionActionSuccess) {
+        if (state is OwnerActionSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Controls updated successfully'.tr)),
           );
-          Navigator.pop(context, state.champion);
-        } else if (state is ChampionFailure) {
+          Navigator.pop(context, state.owner);
+        } else if (state is OwnerFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.message)),
           );
         }
       },
       builder: (context, state) {
-        final isSaving = state is ChampionLoading;
+        final isSaving = state is OwnerLoading;
 
         return Dialog(
           backgroundColor: AppColors.card,
@@ -428,8 +428,8 @@ class _EditChampionControlsPageState extends State<EditChampionControlsPage> {
   }
 }
 
-/// One staged Policy + Controls picker row on [EditChampionControlsPage].
-/// Selections here are local UI state only — see [_EditChampionControlsPageState._commitPendingRows].
+/// One staged Policy + Controls picker row on [EditOwnerControlsPage].
+/// Selections here are local UI state only — see [_EditOwnerControlsPageState._commitPendingRows].
 class _PendingAssignmentRow {
   String? policyId;
   List<String> controlIds = [];

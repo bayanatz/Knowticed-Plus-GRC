@@ -95,7 +95,7 @@ class ChampionCubit extends Cubit<ChampionState> {
       (_) async {},
       (champions) async {
         for (final champion in champions) {
-          final expired = findExpiredControls(champion);
+          final expired = findExpiredControls(champion.assigningControls);
           if (expired.isEmpty) continue;
           final remaining = champion.assigningControls.where((ac) {
             return !expired.any(

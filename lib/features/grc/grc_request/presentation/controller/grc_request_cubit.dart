@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
 import 'package:demo_app/features/grc/grc_request/domain/entities/grc_request_entity.dart';
 import 'package:demo_app/features/grc/grc_request/domain/use_cases/approve_grc_request_usecase.dart';
+import 'package:demo_app/features/grc/grc_request/domain/use_cases/cancel_grc_request_usecase.dart';
 import 'package:demo_app/features/grc/grc_request/domain/use_cases/create_grc_request_usecase.dart';
 import 'package:demo_app/features/grc/grc_request/domain/use_cases/get_grc_requests_usecase.dart';
 import 'package:demo_app/features/grc/grc_request/domain/use_cases/reject_grc_request_usecase.dart';
@@ -22,16 +23,19 @@ class GrcRequestCubit extends Cubit<GrcRequestState> {
     required GetGrcRequestsUseCase getGrcRequestsUseCase,
     required ApproveGrcRequestUseCase approveGrcRequestUseCase,
     required RejectGrcRequestUseCase rejectGrcRequestUseCase,
+    required CancelGrcRequestUseCase cancelGrcRequestUseCase,
   })  : _createUseCase = createGrcRequestUseCase,
         _getAllUseCase = getGrcRequestsUseCase,
         _approveUseCase = approveGrcRequestUseCase,
         _rejectUseCase = rejectGrcRequestUseCase,
+        _cancelUseCase = cancelGrcRequestUseCase,
         super(GrcRequestInitial());
 
   final CreateGrcRequestUseCase _createUseCase;
   final GetGrcRequestsUseCase _getAllUseCase;
   final ApproveGrcRequestUseCase _approveUseCase;
   final RejectGrcRequestUseCase _rejectUseCase;
+  final CancelGrcRequestUseCase _cancelUseCase;
 
   String get _currentUserEmail {
     final fromConstant = Constant.emailUser;
@@ -91,6 +95,24 @@ class GrcRequestCubit extends Cubit<GrcRequestState> {
         requestId: requestId,
         decidedBy: _currentUserEmail,
         reason: reason,
+      ),
+    );
+    result.fold(
+      (failure) => emit(GrcRequestFailure(failure.message)),
+      (request) => emit(GrcRequestActionSuccess(request)),
+    );
+  }
+
+  Future<void> cancelRequest({
+    required String moduleId,
+    required String requestId,
+  }) async {
+    emit(GrcRequestLoading());
+    final result = await _cancelUseCase.call(
+      CancelGrcRequestParams(
+        moduleId: moduleId,
+        requestId: requestId,
+        canceledBy: _currentUserEmail,
       ),
     );
     result.fold(
