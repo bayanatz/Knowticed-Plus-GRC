@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/constants/app_assets.dart';
 import 'package:demo_app/core/custom/2-custom_textfield.dart';
 import 'package:demo_app/core/custom/3-custom_dropdwon_calander.dart';
+import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart';
 import 'package:demo_app/core/custom/21-custom_contact_card.dart';
 import 'package:demo_app/core/helper/main_helper/employee_helper.dart';
 import 'package:demo_app/features/grc/control/domain/entities/assigning_control.dart';
@@ -62,6 +65,10 @@ class _ReassignOwnerPageState extends State<ReassignOwnerPage> {
   final List<PendingAssignmentRow> _pendingRows = [PendingAssignmentRow()];
   bool _submitting = false;
 
+  String? _ownerError;
+  String? _controlsError;
+  String? _startDateError;
+
   @override
   void initState() {
     super.initState();
@@ -95,32 +102,34 @@ class _ReassignOwnerPageState extends State<ReassignOwnerPage> {
         ..add(PendingAssignmentRow());
     });
 
-    if (_newSelectedEmployees.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please select a new Control Owner'.tr)),
-      );
-      return;
-    }
-    if (_reassignedControls.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please assign at least one Control'.tr)),
-      );
-      return;
-    }
-    if (_startDate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please choose a start date'.tr)),
-      );
+    final newOwnerEmail = _newSelectedEmployees.isNotEmpty
+        ? _newSelectedEmployees.first.email
+        : null;
+
+    final ownerError = _newSelectedEmployees.isEmpty
+        ? 'Please select a new Control Owner'.tr
+        : newOwnerEmail == widget.owner.ownerEmail
+            ? 'New owner cannot be the current owner'.tr
+            : null;
+    final controlsError = _reassignedControls.isEmpty
+        ? 'Please assign at least one Control'.tr
+        : null;
+    final startDateError =
+        _startDate == null ? 'Please choose a start date'.tr : null;
+
+    setState(() {
+      _ownerError = ownerError;
+      _controlsError = controlsError;
+      _startDateError = startDateError;
+    });
+
+    if (ownerError != null || controlsError != null || startDateError != null) {
       return;
     }
 
-    final newOwnerEmail = _newSelectedEmployees.first.email;
-    if (newOwnerEmail == widget.owner.ownerEmail) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('New owner cannot be the current owner'.tr)),
-      );
-      return;
-    }
+    final confirmed = await _confirmReassign(context);
+    if (!confirmed) return;
+    if (!context.mounted) return;
 
     setState(() => _submitting = true);
 
@@ -133,7 +142,7 @@ class _ReassignOwnerPageState extends State<ReassignOwnerPage> {
           requestedBy: currentGrcUserEmail(),
           note: _noteController.text,
           currentOwnerEmail: widget.owner.ownerEmail,
-          newOwnerEmail: newOwnerEmail,
+          newOwnerEmail: newOwnerEmail!,
           controls: _reassignedControls,
           startDate: _startDate!,
           endDate: _endDate,
@@ -143,26 +152,41 @@ class _ReassignOwnerPageState extends State<ReassignOwnerPage> {
       final state = requestCubit.state;
       if (state is GrcRequestActionSuccess) {
         if (!context.mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Request submitted'.tr)),
+        showSuccessDialog(
+          context: context,
+          title: 'Request Submitted'.tr,
+          subtitle: 'Your reassign owner request has been submitted.'.tr,
         );
         Navigator.pop(context, true);
       } else if (state is GrcRequestFailure) {
         if (!context.mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to submit request: ${state.message}')),
+        showErrorDialog(
+          context: context,
+          subtitle: 'Failed to submit request: ${state.message}',
         );
       }
     } catch (e) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('An error occurred: $e')),
-      );
+      showErrorDialog(context: context, subtitle: 'An error occurred: $e');
     } finally {
       if (mounted) {
         setState(() => _submitting = false);
       }
     }
+  }
+
+  Future<bool> _confirmReassign(BuildContext context) async {
+    final completer = Completer<bool>();
+    await showConfirmDialog(
+      context: context,
+      title: 'Reassign Owner'.tr,
+      subtitle: 'Are you sure you want to submit this reassignment request?'.tr,
+      confirmLabel: 'Submit'.tr,
+      cancelLabel: 'Cancel'.tr,
+      onConfirm: () => completer.complete(true),
+      onCancel: () => completer.complete(false),
+    );
+    return completer.future;
   }
 
   @override
@@ -260,10 +284,20 @@ class _ReassignOwnerPageState extends State<ReassignOwnerPage> {
                               ),
                               child: GrcOwnerSection(
                                 singleSelect: true,
-                                onOwnersChanged: (selected) => setState(
-                                    () => _newSelectedEmployees = selected),
+                                onOwnersChanged: (selected) => setState(() {
+                                  _newSelectedEmployees = selected;
+                                  _ownerError = null;
+                                }),
                               ),
                             ),
+                            if (_ownerError != null) ...[
+                              SizedBox(height: 6.h),
+                              Text(
+                                _ownerError!,
+                                style: StyleText.fontSize12Weight400
+                                    .copyWith(color: AppColors.red),
+                              ),
+                            ],
                             SizedBox(height: 20.h),
 
                             // Dates Pickers Section
@@ -275,8 +309,11 @@ class _ReassignOwnerPageState extends State<ReassignOwnerPage> {
                                     label: 'Start Date'.tr,
                                     hint: 'Choose The Date'.tr,
                                     value: _startDate,
-                                    onChanged: (d) =>
-                                        setState(() => _startDate = d),
+                                    errorText: _startDateError,
+                                    onChanged: (d) => setState(() {
+                                      _startDate = d;
+                                      _startDateError = null;
+                                    }),
                                     fillColor: AppColors.background,
                                     firstDate: DateTime(2000),
                                     lastDate: DateTime(2100),
@@ -346,6 +383,14 @@ class _ReassignOwnerPageState extends State<ReassignOwnerPage> {
                                       );
                                     }),
                                   ),
+                            if (_controlsError != null) ...[
+                              SizedBox(height: 6.h),
+                              Text(
+                                _controlsError!,
+                                style: StyleText.fontSize12Weight400
+                                    .copyWith(color: AppColors.red),
+                              ),
+                            ],
                             SizedBox(height: 20.h),
 
                             // Assigning Controls Form Section — one Policy +
