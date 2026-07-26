@@ -178,14 +178,14 @@ class _EditOwnerControlsPageState extends State<EditOwnerControlsPage> {
     return BlocConsumer<OwnerCubit, OwnerState>(
       listener: (context, state) {
         if (state is OwnerActionSuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Controls updated successfully'.tr)),
+          showSuccessDialog(
+            context: context,
+            title: 'Controls Updated'.tr,
+            subtitle: 'Controls updated successfully'.tr,
           );
           Navigator.pop(context, state.owner);
         } else if (state is OwnerFailure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message)),
-          );
+          showErrorDialog(context: context, subtitle: state.message);
         }
       },
       builder: (context, state) {
