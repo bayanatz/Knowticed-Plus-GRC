@@ -17,6 +17,8 @@ import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details
 import 'package:demo_app/features/grc/module/presentation/controller/cubit/grc_owner_cubit.dart';
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
 import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
+import 'package:demo_app/features/grc/shared/models/pending_assignment_row.dart';
+import 'package:demo_app/features/grc/shared/widgets/grc_assignment_chip.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
 import 'package:demo_app/features/settings/core_widgets/main_widget/custom_button_widget.dart';
 import 'package:flutter/material.dart';
@@ -56,7 +58,7 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
   // Each row is its own independent Policy + Controls picker. Selections
   // made here are staging only — they aren't added to _reassignedControls
   // (and so don't appear as chips under "Assigned Controls") until Submit.
-  final List<_PendingAssignmentRow> _pendingRows = [_PendingAssignmentRow()];
+  final List<PendingAssignmentRow> _pendingRows = [PendingAssignmentRow()];
   bool _submitting = false;
 
   @override
@@ -73,24 +75,8 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
 
   void _addPolicyRow() {
     setState(() {
-      _pendingRows.add(_PendingAssignmentRow());
+      _pendingRows.add(PendingAssignmentRow());
     });
-  }
-
-  void _commitPendingRows() {
-    for (final row in _pendingRows) {
-      if (row.policyId == null || row.controlIds.isEmpty) continue;
-      for (final cid in row.controlIds) {
-        final exists = _reassignedControls
-            .any((ac) => ac.policyId == row.policyId && ac.controlId == cid);
-        if (!exists) {
-          _reassignedControls.add(AssigningControlEntity(
-            policyId: row.policyId!,
-            controlId: cid,
-          ));
-        }
-      }
-    }
   }
 
   void _removeControl(int index) {
@@ -101,10 +87,11 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
 
   Future<void> _submit(BuildContext context) async {
     setState(() {
-      _commitPendingRows();
+      commitPendingAssignmentRows(
+          pendingRows: _pendingRows, target: _reassignedControls);
       _pendingRows
         ..clear()
-        ..add(_PendingAssignmentRow());
+        ..add(PendingAssignmentRow());
     });
 
     if (_newSelectedEmployees.isEmpty) {
@@ -352,33 +339,9 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
                                               ? ctrl.controlsNameAr
                                               : ctrl.controlsNameEn)
                                           : ac.controlId;
-                                      return Container(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 14.w, vertical: 8.h),
-                                        decoration: BoxDecoration(
-                                          color: AppColors.background,
-                                          borderRadius:
-                                              BorderRadius.circular(24.r),
-                                        ),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text(cName,
-                                                style: StyleText
-                                                    .fontSize14Weight500
-                                                    .copyWith(
-                                                        color: AppColors.text)),
-                                            SizedBox(width: 8.w),
-                                            GestureDetector(
-                                              onTap: () =>
-                                                  _removeControl(index),
-                                              child: const Icon(
-                                                  Icons.remove_circle,
-                                                  color: Colors.red,
-                                                  size: 18),
-                                            ),
-                                          ],
-                                        ),
+                                      return GrcAssignmentChip(
+                                        label: cName,
+                                        onRemove: () => _removeControl(index),
                                       );
                                     }),
                                   ),
@@ -504,12 +467,4 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
       ),
     );
   }
-}
-
-/// One staged Policy + Controls picker row on [ReassignChampionPage].
-/// Selections here are local UI state only — see
-/// [_ReassignChampionPageState._commitPendingRows].
-class _PendingAssignmentRow {
-  String? policyId;
-  List<String> controlIds = [];
 }

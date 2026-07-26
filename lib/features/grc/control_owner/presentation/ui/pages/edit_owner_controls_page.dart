@@ -16,6 +16,8 @@ import 'package:demo_app/features/grc/control_owner/presentation/controller/owne
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
 import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
+import 'package:demo_app/features/grc/shared/models/pending_assignment_row.dart';
+import 'package:demo_app/features/grc/shared/widgets/grc_assignment_chip.dart';
 import 'package:demo_app/features/settings/core_widgets/main_widget/custom_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -48,7 +50,7 @@ class _EditOwnerControlsPageState extends State<EditOwnerControlsPage> {
   // Each row is its own independent Policy + Controls picker. Selections
   // made here are staging only — they aren't added to _tempControls (and
   // so don't appear as chips under "Assigned Controls") until Save.
-  final List<_PendingAssignmentRow> _pendingRows = [_PendingAssignmentRow()];
+  final List<PendingAssignmentRow> _pendingRows = [PendingAssignmentRow()];
 
   @override
   void initState() {
@@ -64,24 +66,8 @@ class _EditOwnerControlsPageState extends State<EditOwnerControlsPage> {
 
   void _addPolicyRow() {
     setState(() {
-      _pendingRows.add(_PendingAssignmentRow());
+      _pendingRows.add(PendingAssignmentRow());
     });
-  }
-
-  void _commitPendingRows() {
-    for (final row in _pendingRows) {
-      if (row.policyId == null || row.controlIds.isEmpty) continue;
-      for (final cid in row.controlIds) {
-        final exists = _tempControls
-            .any((ac) => ac.policyId == row.policyId && ac.controlId == cid);
-        if (!exists) {
-          _tempControls.add(AssigningControlEntity(
-            policyId: row.policyId!,
-            controlId: cid,
-          ));
-        }
-      }
-    }
   }
 
   void _confirmAndSave(BuildContext context) {
@@ -97,10 +83,11 @@ class _EditOwnerControlsPageState extends State<EditOwnerControlsPage> {
 
   void _save(BuildContext context) {
     setState(() {
-      _commitPendingRows();
+      commitPendingAssignmentRows(
+          pendingRows: _pendingRows, target: _tempControls);
       _pendingRows
         ..clear()
-        ..add(_PendingAssignmentRow());
+        ..add(PendingAssignmentRow());
     });
     // Fire-and-forget: these touch each affected Control document directly
     // (not the Owner doc this page's own loading/success state tracks),
@@ -272,32 +259,9 @@ class _EditOwnerControlsPageState extends State<EditOwnerControlsPage> {
                                       ? ctrl.controlsNameAr
                                       : ctrl.controlsNameEn)
                                   : ac.controlId;
-                              return Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 14.w, vertical: 8.h),
-                                decoration: BoxDecoration(
-                                  color: AppColors.background,
-                                  borderRadius: BorderRadius.circular(24.r),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      cName,
-                                      style: StyleText.fontSize14Weight500
-                                          .copyWith(color: AppColors.text),
-                                    ),
-                                    SizedBox(width: 8.w),
-                                    GestureDetector(
-                                      onTap: () => _removeControl(index),
-                                      child: const Icon(
-                                        Icons.remove_circle,
-                                        color: Colors.red,
-                                        size: 18,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                              return GrcAssignmentChip(
+                                label: cName,
+                                onRemove: () => _removeControl(index),
                               );
                             }),
                           ),
@@ -406,11 +370,4 @@ class _EditOwnerControlsPageState extends State<EditOwnerControlsPage> {
       },
     );
   }
-}
-
-/// One staged Policy + Controls picker row on [EditOwnerControlsPage].
-/// Selections here are local UI state only — see [_EditOwnerControlsPageState._commitPendingRows].
-class _PendingAssignmentRow {
-  String? policyId;
-  List<String> controlIds = [];
 }

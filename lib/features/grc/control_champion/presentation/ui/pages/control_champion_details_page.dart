@@ -11,6 +11,7 @@ import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.d
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
 import 'package:demo_app/features/grc/policy/domain/use_cases/get_policy_usecases.dart';
 import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
+import 'package:demo_app/features/grc/shared/widgets/grc_assignment_chip.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
 import 'package:demo_app/features/settings/core_widgets/main_widget/custom_button_widget.dart';
 import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
@@ -373,21 +374,7 @@ class _ControlChampionDetailsBodyState
                                           ? policy.policyNameAr
                                           : policy.policyNameEn)
                                       : policyId;
-                                  return Container(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 16.w, vertical: 10.h),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.background,
-                                      border:
-                                          Border.all(color: AppColors.border),
-                                      borderRadius: BorderRadius.circular(8.r),
-                                    ),
-                                    child: Text(
-                                      pName,
-                                      style: StyleText.fontSize14Weight500
-                                          .copyWith(color: AppColors.text),
-                                    ),
-                                  );
+                                  return GrcAssignmentChip(label: pName);
                                 }).toList(),
                               ),
                         SizedBox(height: 24.h),
@@ -415,21 +402,7 @@ class _ControlChampionDetailsBodyState
                                           ? ctrl.controlsNameAr
                                           : ctrl.controlsNameEn)
                                       : ac.controlId;
-                                  return Container(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 16.w, vertical: 10.h),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.background,
-                                      border:
-                                          Border.all(color: AppColors.border),
-                                      borderRadius: BorderRadius.circular(8.r),
-                                    ),
-                                    child: Text(
-                                      cName,
-                                      style: StyleText.fontSize14Weight500
-                                          .copyWith(color: AppColors.text),
-                                    ),
-                                  );
+                                  return GrcAssignmentChip(label: cName);
                                 }).toList(),
                               ),
                         SizedBox(height: 24.h),
