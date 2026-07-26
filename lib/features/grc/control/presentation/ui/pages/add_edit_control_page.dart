@@ -32,6 +32,7 @@ import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/department/presentation/controller/add_department_controller.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_department_weight.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
+import 'package:demo_app/features/grc/control/domain/entities/control_frequency.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_status.dart';
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
 import 'package:demo_app/features/grc/policy/presentation/controller/policy_cubit.dart';
@@ -1448,14 +1449,7 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                             child: CustomDropdown<String>(
                                               label: 'Frequency'.tr,
                                               hint: 'Choose Here'.tr,
-                                              items: const [
-                                                'Weekly',
-                                                'Bi weekly',
-                                                'Monthly',
-                                                'Quarterly',
-                                                'Semi Annual',
-                                                'Annually',
-                                              ]
+                                              items: ControlFrequency.allValues
                                                   .map((d) =>
                                                       DropdownItem<String>(
                                                           value: d, label: d))
@@ -1486,14 +1480,7 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                           CustomDropdown<String>(
                                             label: 'Frequency'.tr,
                                             hint: 'Choose Here'.tr,
-                                            items: const [
-                                              'Weekly',
-                                              'Bi weekly',
-                                              'Monthly',
-                                              'Quarterly',
-                                              'Semi Annual',
-                                              'Annually',
-                                            ]
+                                            items: ControlFrequency.allValues
                                                 .map((d) =>
                                                     DropdownItem<String>(
                                                         value: d, label: d))

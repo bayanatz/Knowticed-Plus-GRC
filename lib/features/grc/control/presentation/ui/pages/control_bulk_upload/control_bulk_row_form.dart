@@ -14,20 +14,14 @@
 /// Dependencies: policy_bulk_date_format.dart, control_excel_parser.dart
 
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
+import 'package:demo_app/features/grc/control/domain/entities/control_frequency.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/control_bulk_upload/control_excel_parser.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/pages/policy_bulk_upload/policy_bulk_date_format.dart';
 import 'package:flutter/material.dart';
 
 /// The Frequency sheet cell must case-insensitively match one of these;
 /// the matching entry (canonical casing) is what gets persisted.
-const List<String> controlBulkUploadFrequencyOptions = [
-  'Weekly',
-  'Bi weekly',
-  'Monthly',
-  'Quarterly',
-  'Semi Annual',
-  'Annually',
-];
+final List<String> controlBulkUploadFrequencyOptions = ControlFrequency.allValues;
 
 /// class name: [ControlBulkRowForm]
 ///
@@ -215,13 +209,10 @@ class ControlBulkRowForm {
     resolvedFrequency = null;
     if (!next.containsKey('frequency')) {
       final typed = frequencyController.text.trim();
-      for (final option in controlBulkUploadFrequencyOptions) {
-        if (option.toLowerCase() == typed.toLowerCase()) {
-          resolvedFrequency = option;
-          break;
-        }
-      }
-      if (resolvedFrequency == null) {
+      final matched = ControlFrequency.fromString(typed);
+      if (matched != null) {
+        resolvedFrequency = matched.value;
+      } else {
         next['frequency'] =
             'Must be one of: ${controlBulkUploadFrequencyOptions.join(', ')}';
       }
