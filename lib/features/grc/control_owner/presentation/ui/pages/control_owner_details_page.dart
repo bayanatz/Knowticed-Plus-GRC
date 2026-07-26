@@ -13,6 +13,7 @@ import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart'
 import 'package:demo_app/features/grc/policy/domain/use_cases/get_policy_usecases.dart';
 import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
 import 'package:demo_app/features/grc/shared/widgets/grc_assignment_chip.dart';
+import 'package:demo_app/features/grc/shared/widgets/grc_button_loading_placeholder.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
 import 'package:demo_app/features/settings/core_widgets/main_widget/custom_button_widget.dart';
 import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
@@ -228,22 +229,9 @@ class _ControlOwnerDetailsBodyState extends State<_ControlOwnerDetailsBody> {
                               textStyle: StyleText.fontSize14Weight500,
                             ),
                             _isReassignLoading
-                                ? Container(
-                                    height: 34.h,
+                                ? GrcButtonLoadingPlaceholder(
                                     width: 135.w,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.primary,
-                                      borderRadius: BorderRadius.circular(8.r),
-                                    ),
-                                    alignment: Alignment.center,
-                                    child: SizedBox(
-                                      height: 18.h,
-                                      width: 18.h,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        color: Colors.white,
-                                      ),
-                                    ),
+                                    height: 34.h,
                                   )
                                 : customButton(
                                     width: 135.w,
@@ -300,22 +288,9 @@ class _ControlOwnerDetailsBodyState extends State<_ControlOwnerDetailsBody> {
                                   ),
                             Spacer(),
                             _isEditLoading
-                                ? Container(
-                                    height: 34.h,
+                                ? GrcButtonLoadingPlaceholder(
                                     width: 135.w,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.primary,
-                                      borderRadius: BorderRadius.circular(8.r),
-                                    ),
-                                    alignment: Alignment.center,
-                                    child: SizedBox(
-                                      height: 18.h,
-                                      width: 18.h,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        color: Colors.white,
-                                      ),
-                                    ),
+                                    height: 34.h,
                                   )
                                 : customButtonWithSvg(
                                     colorBorder: AppColors.primary,
