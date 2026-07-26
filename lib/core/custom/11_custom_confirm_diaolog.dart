@@ -351,6 +351,90 @@ class _SuccessDialog extends StatelessWidget {
   }
 }
 
+/// Error feedback for a failed backend/Cubit action, matching
+/// showSuccessDialog's visual family. Added because GRC previously showed
+/// every failure via a SnackBar; this closes that gap without inventing a
+/// new dialog shape.
+Future<void> showErrorDialog({
+  required BuildContext context,
+  String title = 'Error',
+  String subtitle = 'Something went wrong. Please try again.',
+  String closeLabel = 'Close',
+  VoidCallback? onClose,
+  String? lottieAsset,
+  bool repeat = false,
+}) {
+  return showDialog(
+    context: context,
+    barrierColor: AppColors.totalBlack.withOpacity(0.4),
+    builder: (_) => _ErrorDialog(
+      title: title,
+      subtitle: subtitle,
+      closeLabel: closeLabel,
+      onClose: onClose,
+      lottieAsset: lottieAsset,
+      repeat: repeat,
+    ),
+  );
+}
+
+class _ErrorDialog extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final String closeLabel;
+  final VoidCallback? onClose;
+  final String? lottieAsset;
+  final bool repeat;
+
+  const _ErrorDialog({
+    required this.title,
+    required this.subtitle,
+    required this.closeLabel,
+    this.onClose,
+    this.lottieAsset,
+    this.repeat = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return _DialogShell(
+      width: 410.w,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(height: 16.h),
+          _buildIcon(),
+          SizedBox(height: 16.h),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style:
+                StyleText.fontSize16Weight600.copyWith(color: AppColors.text),
+          ),
+          SizedBox(height: 8.h),
+          Text(
+            subtitle,
+            textAlign: TextAlign.center,
+            style: StyleText.fontSize12Weight400.copyWith(
+              color: AppColors.text.withOpacity(0.6),
+            ),
+          ),
+          SizedBox(height: 10.h),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildIcon() {
+    return Lottie.asset(
+      lottieAsset ?? 'assets/lottie_assets/main_lottie_assets/lottie_rejected.json',
+      width: 90.r,
+      height: 90.r,
+      repeat: repeat,
+    );
+  }
+}
+
 // ─────────────────────────────────────────────
 //  3.  COMMENT / JUSTIFICATION DIALOG
 // ─────────────────────────────────────────────
