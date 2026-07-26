@@ -80,6 +80,39 @@ class GrcRequestModel {
     this.appliedAt,
   });
 
+  /// Only the fields the request-decision flow ever changes are
+  /// parameterized — every other field always passes through unchanged.
+  /// Extracted because the repository previously re-typed all 17 fields
+  /// by hand in 4 near-identical methods to change just 1-2 of them.
+  GrcRequestModel copyWith({
+    String? status,
+    String? rejectionReason,
+    String? decidedBy,
+    DateTime? decisionDate,
+    DateTime? appliedAt,
+  }) {
+    return GrcRequestModel(
+      id: id,
+      moduleId: moduleId,
+      type: type,
+      status: status ?? this.status,
+      requestedBy: requestedBy,
+      requestDate: requestDate,
+      note: note,
+      rejectionReason: rejectionReason ?? this.rejectionReason,
+      decidedBy: decidedBy ?? this.decidedBy,
+      decisionDate: decisionDate ?? this.decisionDate,
+      currentChampionEmail: currentChampionEmail,
+      newChampionEmail: newChampionEmail,
+      currentOwnerEmail: currentOwnerEmail,
+      newOwnerEmail: newOwnerEmail,
+      controls: controls,
+      startDate: startDate,
+      endDate: endDate,
+      appliedAt: appliedAt ?? this.appliedAt,
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
       _keyRequestId: id,
