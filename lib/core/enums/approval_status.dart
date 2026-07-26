@@ -1,5 +1,6 @@
 import 'dart:ui';
-
+import 'package:flutter/material.dart';
+import 'package:demo_app/core/theme/app_colors.dart';
 
 /// by : mohamed ashraf
 enum ApprovalStatus {
@@ -38,6 +39,22 @@ extension GetApprovalStatusName on ApprovalStatus {
         return 'Cancel';
       case ApprovalStatus.all:
         return 'All';
+    }
+  }
+
+  /// Single source of truth for status->color across every GRC request
+  /// screen — was previously re-derived independently in 3 places.
+  Color get color {
+    switch (this) {
+      case ApprovalStatus.approved:
+        return AppColors.green;
+      case ApprovalStatus.rejected:
+        return AppColors.red;
+      case ApprovalStatus.canceled:
+        return AppColors.colorGrey;
+      case ApprovalStatus.pending:
+      case ApprovalStatus.all:
+        return AppColors.orange;
     }
   }
 }
