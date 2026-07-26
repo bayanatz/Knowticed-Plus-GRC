@@ -290,9 +290,7 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
                   PaginationAppBar(
                     screensTitles: [
                       'GRC'.tr,
-                      context.isArabic
-                          ? widget.module.moduleNameAr
-                          : widget.module.moduleNameEn,
+                      widget.module.localizedName(isArabic: context.isArabic),
                     ],
                   ),
 

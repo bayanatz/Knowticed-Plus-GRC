@@ -538,7 +538,7 @@ class _GrcModuleCard extends StatelessWidget {
       width: double.infinity,
       onTap: onTap,
       title: _capitalizeFirst(
-        context.isArabic ? module.moduleNameAr : module.moduleNameEn,
+        module.localizedName(isArabic: context.isArabic),
       ),
       infoRows: [
         if (module.moduleOwners.isNotEmpty)

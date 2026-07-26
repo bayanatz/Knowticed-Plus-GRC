@@ -120,9 +120,7 @@ class _GovernanceRiskAndComplianceDetailsState
   /// display formatting, doesn't touch how the name is stored.
   String _moduleDisplayName(BuildContext context) {
     if (widget.entity == null) return '';
-    final name = context.isArabic
-        ? widget.entity!.moduleNameAr
-        : widget.entity!.moduleNameEn;
+    final name = widget.entity!.localizedName(isArabic: context.isArabic);
     if (name.isEmpty) return name;
     return name[0].toUpperCase() + name.substring(1);
   }
