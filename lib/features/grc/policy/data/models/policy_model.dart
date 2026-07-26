@@ -23,6 +23,7 @@
 library;
 
 import 'package:intl/intl.dart';
+import 'package:demo_app/features/grc/shared/constants/grc_firestore_keys.dart';
 import '../../domain/entities/policy_entity.dart';
 import '../../domain/entities/policy_status.dart';
 import '../../domain/entities/policy_weight_history_entry.dart';
@@ -84,6 +85,21 @@ final DateFormat _storageDateFormat = DateFormat('d MMM yyyy', 'en');
 ///
 /// created at: 15/1/2025
 class PolicyModel {
+  static const String _keyPolicyId = 'Policy_ID';
+  static const String _keyPolicyImage = 'Policy_Image';
+  static const String _keyPolicyNameEn = 'Policy_Name_En';
+  static const String _keyPolicyNameAr = 'Policy_Name_Ar';
+  static const String _keyPolicyNumberEn = 'Policy_Number_En';
+  static const String _keyPolicyNumberAr = 'Policy_Number_Ar';
+  static const String _keyPolicyDescriptionEn = 'Policy_Description_En';
+  static const String _keyPolicyDescriptionAr = 'Policy_Description_Ar';
+  static const String _keyPolicyStartDate = 'Policy_Start_Date';
+  static const String _keyPolicyEndDate = 'Policy_End_Date';
+  static const String _keyPolicyWeight = 'Policy_Weight';
+  static const String _keyPolicyDocumentEn = 'Policy_Document_En';
+  static const String _keyPolicyDocumentAr = 'Policy_Document_Ar';
+  static const String _keyPolicyStatus = 'Policy_Status';
+
   final String id;
   final String moduleId;
   final List<String?> policyImage;
@@ -322,29 +338,26 @@ class PolicyModel {
   /// return type: [Map<String, dynamic>] - the Firestore representation
   Map<String, dynamic> toJson() {
     return {
-      'Module_ID': moduleId,
-      'Policy_ID': id,
-      'Policy_Image': policyImage,
-      'Policy_Name_En': policyNameEn,
-      'Policy_Name_Ar': policyNameAr,
-      'Policy_Number_En': policyNumberEn,
-      'Policy_Number_Ar': policyNumberAr,
-      'Policy_Description_En': policyDescriptionEn,
-      'Policy_Description_Ar': policyDescriptionAr,
-      'Policy_Start_Date': startDate
-          .map((d) => _storageDateFormat.format(d))
-          .toList(),
-      'Policy_End_Date': endDate
-          .map((d) => _storageDateFormat.format(d))
-          .toList(),
-      'Policy_Weight': policyWeight,
-      'Policy_Document_En': policyDocumentEn,
-      'Policy_Document_Ar': policyDocumentAr,
-      'Policy_Status': status,
-      'Modification_Date': lastModifiedDate
-          .map((d) => _storageDateFormat.format(d))
-          .toList(),
-      'Modifiers': editors,
+      GrcFirestoreKeys.moduleId: moduleId,
+      _keyPolicyId: id,
+      _keyPolicyImage: policyImage,
+      _keyPolicyNameEn: policyNameEn,
+      _keyPolicyNameAr: policyNameAr,
+      _keyPolicyNumberEn: policyNumberEn,
+      _keyPolicyNumberAr: policyNumberAr,
+      _keyPolicyDescriptionEn: policyDescriptionEn,
+      _keyPolicyDescriptionAr: policyDescriptionAr,
+      _keyPolicyStartDate:
+          startDate.map((d) => _storageDateFormat.format(d)).toList(),
+      _keyPolicyEndDate:
+          endDate.map((d) => _storageDateFormat.format(d)).toList(),
+      _keyPolicyWeight: policyWeight,
+      _keyPolicyDocumentEn: policyDocumentEn,
+      _keyPolicyDocumentAr: policyDocumentAr,
+      _keyPolicyStatus: status,
+      GrcFirestoreKeys.modificationDate:
+          lastModifiedDate.map((d) => _storageDateFormat.format(d)).toList(),
+      GrcFirestoreKeys.modifiers: editors,
     };
   }
 
@@ -357,36 +370,38 @@ class PolicyModel {
   ///
   /// return type: [PolicyModel] - the reconstructed model instance
   factory PolicyModel.fromJson(Map<String, dynamic> json) {
-    final editorsRaw = List<String>.from(json['Modifiers'] ?? []);
+    final editorsRaw =
+        List<String>.from(json[GrcFirestoreKeys.modifiers] ?? []);
     return PolicyModel(
-      id: json['Policy_ID'] as String,
-      moduleId: json['Module_ID'] as String,
-      policyImage: List<String?>.from(json['Policy_Image'] ?? []),
-      policyNameEn: List<String>.from(json['Policy_Name_En'] ?? []),
-      policyNameAr: List<String>.from(json['Policy_Name_Ar'] ?? []),
-      policyNumberEn: List<String>.from(json['Policy_Number_En'] ?? []),
-      policyNumberAr: List<String>.from(json['Policy_Number_Ar'] ?? []),
+      id: json[_keyPolicyId] as String,
+      moduleId: json[GrcFirestoreKeys.moduleId] as String,
+      policyImage: List<String?>.from(json[_keyPolicyImage] ?? []),
+      policyNameEn: List<String>.from(json[_keyPolicyNameEn] ?? []),
+      policyNameAr: List<String>.from(json[_keyPolicyNameAr] ?? []),
+      policyNumberEn: List<String>.from(json[_keyPolicyNumberEn] ?? []),
+      policyNumberAr: List<String>.from(json[_keyPolicyNumberAr] ?? []),
       policyDescriptionEn:
-          List<String>.from(json['Policy_Description_En'] ?? []),
+          List<String>.from(json[_keyPolicyDescriptionEn] ?? []),
       policyDescriptionAr:
-          List<String>.from(json['Policy_Description_Ar'] ?? []),
-      startDate: (json['Policy_Start_Date'] as List? ?? [])
+          List<String>.from(json[_keyPolicyDescriptionAr] ?? []),
+      startDate: (json[_keyPolicyStartDate] as List? ?? [])
           .map((d) => _storageDateFormat.parse(d as String))
           .toList(),
-      endDate: (json['Policy_End_Date'] as List? ?? [])
+      endDate: (json[_keyPolicyEndDate] as List? ?? [])
           .map((d) => _storageDateFormat.parse(d as String))
           .toList(),
-      policyWeight: (json['Policy_Weight'] as List? ?? [])
+      policyWeight: (json[_keyPolicyWeight] as List? ?? [])
           .map((e) => (e as num).toDouble())
           .toList(),
-      policyDocumentEn: List<String?>.from(json['Policy_Document_En'] ?? []),
-      policyDocumentAr: List<String?>.from(json['Policy_Document_Ar'] ?? []),
-      status: json['Policy_Status'] != null
-          ? List<String>.from(json['Policy_Status'])
+      policyDocumentEn: List<String?>.from(json[_keyPolicyDocumentEn] ?? []),
+      policyDocumentAr: List<String?>.from(json[_keyPolicyDocumentAr] ?? []),
+      status: json[_keyPolicyStatus] != null
+          ? List<String>.from(json[_keyPolicyStatus])
           : List<String>.filled(editorsRaw.length, PolicyStatus.draft.value),
-      lastModifiedDate: (json['Modification_Date'] as List? ?? [])
-          .map((d) => _storageDateFormat.parse(d as String))
-          .toList(),
+      lastModifiedDate:
+          (json[GrcFirestoreKeys.modificationDate] as List? ?? [])
+              .map((d) => _storageDateFormat.parse(d as String))
+              .toList(),
       editors: editorsRaw,
     );
   }
