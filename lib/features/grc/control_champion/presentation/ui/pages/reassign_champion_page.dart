@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/constants/app_assets.dart';
 import 'package:demo_app/core/custom/2-custom_textfield.dart';
 import 'package:demo_app/core/custom/3-custom_dropdwon_calander.dart';
+import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart';
 import 'package:demo_app/core/custom/21-custom_contact_card.dart';
 import 'package:demo_app/core/helper/main_helper/employee_helper.dart';
 import 'package:demo_app/features/grc/control/domain/entities/assigning_control.dart';
@@ -85,6 +88,20 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
     });
   }
 
+  Future<bool> _confirmReassign(BuildContext context) async {
+    final completer = Completer<bool>();
+    await showConfirmDialog(
+      context: context,
+      title: 'Reassign Champion'.tr,
+      subtitle: 'Are you sure you want to submit this reassignment request?'.tr,
+      confirmLabel: 'Submit'.tr,
+      cancelLabel: 'Cancel'.tr,
+      onConfirm: () => completer.complete(true),
+      onCancel: () => completer.complete(false),
+    );
+    return completer.future;
+  }
+
   Future<void> _submit(BuildContext context) async {
     setState(() {
       commitPendingAssignmentRows(
@@ -122,6 +139,10 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
       return;
     }
 
+    final confirmed = await _confirmReassign(context);
+    if (!confirmed) return;
+    if (!context.mounted) return;
+
     setState(() => _submitting = true);
 
     try {
@@ -148,15 +169,14 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
         Navigator.pop(context, true);
       } else if (state is GrcRequestFailure) {
         if (!context.mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to submit request: ${state.message}')),
+        showErrorDialog(
+          context: context,
+          subtitle: 'Failed to submit request: ${state.message}',
         );
       }
     } catch (e) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('An error occurred: $e')),
-      );
+      showErrorDialog(context: context, subtitle: 'An error occurred: $e');
     } finally {
       if (mounted) {
         setState(() => _submitting = false);
