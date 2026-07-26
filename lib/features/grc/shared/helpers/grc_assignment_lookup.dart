@@ -12,6 +12,12 @@ import 'package:demo_app/features/grc/control/domain/entities/control_entity.dar
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+/// Placeholder phone number shown when an employee record has none set.
+/// TODO(product): replace with a real empty-state (e.g. "No phone on file")
+/// instead of fake digits — kept as a literal constant for now so there is
+/// exactly one place to fix instead of four.
+const String grcMockPhoneFallback = '2010258963';
+
 /// Resolves the signed-in user's email for GRC assignment flows, falling
 /// back from [Constant.emailUser] to the cached employee controller when
 /// the constant hasn't been populated yet. Returns '' if neither is set.

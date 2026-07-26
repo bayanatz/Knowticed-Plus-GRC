@@ -103,6 +103,11 @@ abstract class AppAssets {
       'assets/formbuilder/vectors/attachment_pdf.svg';
   static const String female = "assets/formbuilder/vectors/female_avatar.png";
   static const String male = "assets/formbuilder/vectors/male_avatar.png";
+  /// Placeholder shown for an employee with no profile photo across GRC
+  /// champion/owner/request detail pages. Was duplicated as a raw string
+  /// literal in 5 files before this constant existed.
+  static const String defaultEmployeeAvatar =
+      'assets/icons_assets/main_icons_assets/assets_male.svg';
   static const String minusCircle =
       'assets/formbuilder/vectors/minus_circle.svg';
 
