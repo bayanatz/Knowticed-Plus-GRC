@@ -1,9 +1,13 @@
 import 'package:demo_app/features/grc/control/domain/entities/assigning_control.dart';
+import 'package:demo_app/features/grc/shared/constants/grc_firestore_keys.dart';
 import 'package:intl/intl.dart';
 
 final DateFormat _assigningControlDateFormat = DateFormat('d MMM yyyy', 'en');
 
 class AssigningControlModel {
+  static const String _keyControlId = 'Control_ID';
+  static const String _keyExpiresOn = 'Expires_On';
+
   final String policyId;
   final String controlId;
   final DateTime? expiresOn;
@@ -16,18 +20,18 @@ class AssigningControlModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'Policy_ID': policyId,
-      'Control_ID': controlId,
-      'Expires_On':
+      GrcFirestoreKeys.policyId: policyId,
+      _keyControlId: controlId,
+      _keyExpiresOn:
           expiresOn != null ? _assigningControlDateFormat.format(expiresOn!) : null,
     };
   }
 
   factory AssigningControlModel.fromJson(Map<String, dynamic> json) {
-    final expiresOnRaw = json['Expires_On'] as String?;
+    final expiresOnRaw = json[_keyExpiresOn] as String?;
     return AssigningControlModel(
-      policyId: json['Policy_ID'] as String,
-      controlId: json['Control_ID'] as String,
+      policyId: json[GrcFirestoreKeys.policyId] as String,
+      controlId: json[_keyControlId] as String,
       expiresOn:
           expiresOnRaw != null ? _assigningControlDateFormat.parse(expiresOnRaw) : null,
     );
