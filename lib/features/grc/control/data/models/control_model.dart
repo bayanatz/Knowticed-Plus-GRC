@@ -30,6 +30,7 @@ import 'package:demo_app/features/grc/control/domain/entities/control_entity.dar
 import 'package:demo_app/features/grc/control/domain/entities/control_status.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_department_weight.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_weight_history_entry.dart';
+import 'package:demo_app/features/grc/shared/constants/grc_firestore_keys.dart';
 
 /// ************************* FILE INFO *************************** ///
 /// File Name: control_model.dart
@@ -56,6 +57,24 @@ final DateFormat _storageDateFormat = DateFormat('d MMM yyyy', 'en');
 ///
 /// created at: 5/7/2026
 class ControlModel {
+  static const String _keyControlsId = 'Controls_ID';
+  static const String _keyControlsNameEn = 'Controls_Name_En';
+  static const String _keyControlsNameAr = 'Controls_Name_Ar';
+  static const String _keyControlsNumberEn = 'Controls_Number_En';
+  static const String _keyControlsNumberAr = 'Controls_Number_Ar';
+  static const String _keyControlsDescriptionEn = 'Controls_Description_En';
+  static const String _keyControlsDescriptionAr = 'Controls_Description_Ar';
+  static const String _keyControlsDocumentEn = 'Controls_Document_En';
+  static const String _keyControlsDocumentAr = 'Controls_Document_Ar';
+  static const String _keyControlsWeight = 'Controls_Weight';
+  static const String _keyControlsFrequency = 'Controls_Frequency';
+  static const String _keyControlsStartDate = 'Controls_Start_Date';
+  static const String _keyControlsEndDate = 'Controls_End_Date';
+  static const String _keyControlsDepartments = 'Controls_Departments';
+  static const String _keyControlsEqualWeights = 'Controls_Equal_Weights';
+  static const String _keyControlsScore = 'Controls_Score';
+  static const String _keyControlsStatus = 'Controls_Status';
+
   final String id;
   final String policyId;
   final List<String> controlsNameEn;
@@ -405,38 +424,35 @@ class ControlModel {
   /// return type: [Map<String, dynamic>] - the Firestore-ready representation of this control
   Map<String, dynamic> toJson() {
     return {
-      'Policy_ID': policyId,
-      'Controls_ID': id,
-      'Controls_Name_En': controlsNameEn,
-      'Controls_Name_Ar': controlsNameAr,
-      'Controls_Number_En': controlsNumberEn,
-      'Controls_Number_Ar': controlsNumberAr,
-      'Controls_Description_En': controlsDescriptionEn,
-      'Controls_Description_Ar': controlsDescriptionAr,
-      'Controls_Document_En': controlsDocumentEn,
-      'Controls_Document_Ar': controlsDocumentAr,
-      'Controls_Weight': controlsWeight,
-      'Controls_Frequency': frequency,
-      'Controls_Start_Date': startDate
-          .map((d) => _storageDateFormat.format(d))
-          .toList(),
-      'Controls_End_Date': endDate
-          .map((d) => _storageDateFormat.format(d))
-          .toList(),
+      GrcFirestoreKeys.policyId: policyId,
+      _keyControlsId: id,
+      _keyControlsNameEn: controlsNameEn,
+      _keyControlsNameAr: controlsNameAr,
+      _keyControlsNumberEn: controlsNumberEn,
+      _keyControlsNumberAr: controlsNumberAr,
+      _keyControlsDescriptionEn: controlsDescriptionEn,
+      _keyControlsDescriptionAr: controlsDescriptionAr,
+      _keyControlsDocumentEn: controlsDocumentEn,
+      _keyControlsDocumentAr: controlsDocumentAr,
+      _keyControlsWeight: controlsWeight,
+      _keyControlsFrequency: frequency,
+      _keyControlsStartDate:
+          startDate.map((d) => _storageDateFormat.format(d)).toList(),
+      _keyControlsEndDate:
+          endDate.map((d) => _storageDateFormat.format(d)).toList(),
       // Firestore rejects arrays that directly contain other arrays, so each
       // revision's department list is wrapped in a map (List<List<...>>
       // would otherwise serialize as a nested array and the write would
       // throw). Each item is itself a {Department, Weight} map.
-      'Controls_Departments': departments
+      _keyControlsDepartments: departments
           .map((rev) => {'Items': rev.map((d) => d.toJson()).toList()})
           .toList(),
-      'Controls_Equal_Weights': equalWeights,
-      'Controls_Score': score,
-      'Controls_Status': status,
-      'Modification_Date': lastModifiedDate
-          .map((d) => _storageDateFormat.format(d))
-          .toList(),
-      'Modifiers': editors,
+      _keyControlsEqualWeights: equalWeights,
+      _keyControlsScore: score,
+      _keyControlsStatus: status,
+      GrcFirestoreKeys.modificationDate:
+          lastModifiedDate.map((d) => _storageDateFormat.format(d)).toList(),
+      GrcFirestoreKeys.modifiers: editors,
     };
   }
 
@@ -450,43 +466,46 @@ class ControlModel {
   ///
   /// return type: [ControlModel] - the reconstructed model instance
   factory ControlModel.fromJson(Map<String, dynamic> json) {
-    final editorsRaw = List<String>.from(json['Modifiers'] ?? []);
+    final editorsRaw =
+        List<String>.from(json[GrcFirestoreKeys.modifiers] ?? []);
     return ControlModel(
-      id: json['Controls_ID'] as String,
-      policyId: json['Policy_ID'] as String,
-      controlsNameEn: List<String>.from(json['Controls_Name_En'] ?? []),
-      controlsNameAr: List<String>.from(json['Controls_Name_Ar'] ?? []),
-      controlsNumberEn: List<String>.from(json['Controls_Number_En'] ?? []),
-      controlsNumberAr: List<String>.from(json['Controls_Number_Ar'] ?? []),
+      id: json[_keyControlsId] as String,
+      policyId: json[GrcFirestoreKeys.policyId] as String,
+      controlsNameEn: List<String>.from(json[_keyControlsNameEn] ?? []),
+      controlsNameAr: List<String>.from(json[_keyControlsNameAr] ?? []),
+      controlsNumberEn: List<String>.from(json[_keyControlsNumberEn] ?? []),
+      controlsNumberAr: List<String>.from(json[_keyControlsNumberAr] ?? []),
       controlsDescriptionEn:
-          List<String>.from(json['Controls_Description_En'] ?? []),
+          List<String>.from(json[_keyControlsDescriptionEn] ?? []),
       controlsDescriptionAr:
-          List<String>.from(json['Controls_Description_Ar'] ?? []),
-      controlsDocumentEn: List<String?>.from(json['Controls_Document_En'] ?? []),
-      controlsDocumentAr: List<String?>.from(json['Controls_Document_Ar'] ?? []),
-      controlsWeight: (json['Controls_Weight'] as List? ?? [])
+          List<String>.from(json[_keyControlsDescriptionAr] ?? []),
+      controlsDocumentEn:
+          List<String?>.from(json[_keyControlsDocumentEn] ?? []),
+      controlsDocumentAr:
+          List<String?>.from(json[_keyControlsDocumentAr] ?? []),
+      controlsWeight: (json[_keyControlsWeight] as List? ?? [])
           .map((e) => (e as num).toDouble())
           .toList(),
-      frequency: List<String>.from(json['Controls_Frequency'] ?? []),
-      startDate: (json['Controls_Start_Date'] as List? ?? [])
+      frequency: List<String>.from(json[_keyControlsFrequency] ?? []),
+      startDate: (json[_keyControlsStartDate] as List? ?? [])
           .map((d) => _storageDateFormat.parse(d as String))
           .toList(),
-      endDate: (json['Controls_End_Date'] as List? ?? [])
+      endDate: (json[_keyControlsEndDate] as List? ?? [])
           .map((d) => _storageDateFormat.parse(d as String))
           .toList(),
-      departments: (json['Controls_Departments'] as List? ?? [])
+      departments: (json[_keyControlsDepartments] as List? ?? [])
           .map((rev) => ((rev as Map<String, dynamic>)['Items'] as List? ?? [])
               .map((item) =>
                   DepartmentWeight.fromJson(item as Map<String, dynamic>))
               .toList())
           .toList(),
-      equalWeights: List<bool>.from(json['Controls_Equal_Weights'] ?? []),
-      score: List<int>.from(json['Controls_Score'] ?? []),
-      status: json['Controls_Status'] != null
-          ? List<String>.from(json['Controls_Status'])
+      equalWeights: List<bool>.from(json[_keyControlsEqualWeights] ?? []),
+      score: List<int>.from(json[_keyControlsScore] ?? []),
+      status: json[_keyControlsStatus] != null
+          ? List<String>.from(json[_keyControlsStatus])
           : List<String>.filled(
               editorsRaw.length, ControlStatus.unassigned.value),
-      lastModifiedDate: (json['Modification_Date'] as List? ?? [])
+      lastModifiedDate: (json[GrcFirestoreKeys.modificationDate] as List? ?? [])
           .map((d) => _storageDateFormat.parse(d as String))
           .toList(),
       editors: editorsRaw,
