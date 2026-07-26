@@ -74,6 +74,12 @@ class GRCModuleEntity {
   /// Convenience getter — true when this module has been soft-deleted.
   bool get isRemoved => status == GrcModuleStatus.removed.value;
 
+  /// The module name in the caller's language. Extracted because
+  /// `context.isArabic ? moduleNameAr : moduleNameEn` was repeated in 3
+  /// presentation files instead of living once on the entity.
+  String localizedName({required bool isArabic}) =>
+      isArabic ? moduleNameAr : moduleNameEn;
+
   /// function name: [copyWith]
   ///
   /// purpose: create a new [GRCModuleEntity] instance with selected fields
