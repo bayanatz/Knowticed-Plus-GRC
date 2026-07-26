@@ -38,7 +38,7 @@ library;
 /// Created At: 15/7/2026
 
 import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart'
-    show showSuccessDialog;
+    show showSuccessDialog, showErrorDialog;
 import 'package:demo_app/core/custom/loading.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
@@ -164,9 +164,7 @@ class _PolicyDetailsBodyState extends State<_PolicyDetailsBody> {
     }
 
     if (state is PolicyFailure) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(state.message), backgroundColor: AppColors.red),
-      );
+      showErrorDialog(context: context, subtitle: state.message);
     }
   }
 
