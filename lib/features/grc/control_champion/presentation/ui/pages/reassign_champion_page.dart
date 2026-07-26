@@ -166,8 +166,10 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
       final state = requestCubit.state;
       if (state is GrcRequestActionSuccess) {
         if (!context.mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Request submitted'.tr)),
+        showSuccessDialog(
+          context: context,
+          title: 'Request Submitted'.tr,
+          subtitle: 'Your reassign champion request has been submitted.'.tr,
         );
         Navigator.pop(context, true);
       } else if (state is GrcRequestFailure) {
