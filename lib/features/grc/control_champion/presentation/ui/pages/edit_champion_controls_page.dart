@@ -178,14 +178,14 @@ class _EditChampionControlsPageState extends State<EditChampionControlsPage> {
     return BlocConsumer<ChampionCubit, ChampionState>(
       listener: (context, state) {
         if (state is ChampionActionSuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Controls updated successfully'.tr)),
+          showSuccessDialog(
+            context: context,
+            title: 'Controls Updated'.tr,
+            subtitle: 'Controls updated successfully'.tr,
           );
           Navigator.pop(context, state.champion);
         } else if (state is ChampionFailure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message)),
-          );
+          showErrorDialog(context: context, subtitle: state.message);
         }
       },
       builder: (context, state) {
