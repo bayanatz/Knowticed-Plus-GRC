@@ -9,6 +9,7 @@
 ///               GetAllControlsUseCase, PolicyEntity, ControlEntity
 library;
 
+import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
@@ -128,22 +129,32 @@ class _AddChampionPageState extends State<AddChampionPage> {
     setState(() => _submitted = true);
     if (_selectedEmployees.length != 1 || !_rowsValid) return;
 
-    // Fire-and-forget: touches each affected Control document directly, not
-    // the Champion doc this page's own submit/loading state tracks.
-    _recomputeControlStatuses();
-    context.read<ChampionCubit>().createChampion(
-          moduleId: widget.moduleId,
-          championEmail: _selectedEmployees.first.email,
-          // One row (one Policy) can carry several Controls — expand each
-          // row into one {Policy, Control} pair per selected Control.
-          assigningControls: _rows
-              .expand((r) => r.controlIds.map((controlId) =>
-                  AssigningControlEntity(
-                    policyId: r.policyId!,
-                    controlId: controlId,
-                  )))
-              .toList(),
-        );
+    showConfirmDialog(
+      context: context,
+      title: 'Add Control Champion'.tr,
+      subtitle: 'Are you sure you want to add this Control Champion?'.tr,
+      confirmLabel: 'Add'.tr,
+      cancelLabel: 'Cancel'.tr,
+      onConfirm: () {
+        // Fire-and-forget: touches each affected Control document directly,
+        // not the Champion doc this page's own submit/loading state tracks.
+        _recomputeControlStatuses();
+        context.read<ChampionCubit>().createChampion(
+              moduleId: widget.moduleId,
+              championEmail: _selectedEmployees.first.email,
+              // One row (one Policy) can carry several Controls — expand
+              // each row into one {Policy, Control} pair per selected
+              // Control.
+              assigningControls: _rows
+                  .expand((r) => r.controlIds.map((controlId) =>
+                      AssigningControlEntity(
+                        policyId: r.policyId!,
+                        controlId: controlId,
+                      )))
+                  .toList(),
+            );
+      },
+    );
   }
 
   ControlEntity? _findControl(_AssigningControlRow row, String controlId) {
@@ -193,10 +204,14 @@ class _AddChampionPageState extends State<AddChampionPage> {
       child: BlocConsumer<ChampionCubit, ChampionState>(
         listener: (context, state) {
           if (state is ChampionActionSuccess) {
+            showSuccessDialog(
+              context: context,
+              title: 'Control Champion Added'.tr,
+              subtitle: 'You successfully added this Control Champion.'.tr,
+            );
             Navigator.pop(context, true);
           } else if (state is ChampionFailure) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(state.message)));
+            showErrorDialog(context: context, subtitle: state.message);
           }
         },
         builder: (context, state) {
