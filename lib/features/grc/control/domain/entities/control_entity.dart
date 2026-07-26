@@ -26,6 +26,16 @@
 import 'control_status.dart';
 import 'control_department_weight.dart';
 
+/// Renders a control weight without a trailing ".00" for whole numbers,
+/// while still showing the decimals an equal split can produce (e.g.
+/// 100/3 -> "33.33"). Extracted because 5 files in this feature each
+/// reimplemented this exact formatting rule under 4 different names.
+String formatControlWeight(double value) {
+  return value == value.roundToDouble()
+      ? value.toInt().toString()
+      : value.toStringAsFixed(2);
+}
+
 /// ************************* FILE INFO *************************** ///
 /// File Name: control_entity.dart
 /// Purpose: Contains the ControlEntity class, a flat (non-list)

@@ -53,7 +53,7 @@ class ControlWeightIssueRow {
     required this.endDate,
     required this.noOfDepartments,
     required this.initialWeight,
-  }) : weightController = TextEditingController(text: _format(initialWeight));
+  }) : weightController = TextEditingController(text: formatControlWeight(initialWeight));
 
   /// function name: [ControlWeightIssueRow.fromControl]
   ///
@@ -79,12 +79,6 @@ class ControlWeightIssueRow {
     );
   }
 
-  static String _format(double value) {
-    return value == value.roundToDouble()
-        ? value.toInt().toString()
-        : value.toStringAsFixed(2);
-  }
-
   /// The live value typed into [weightController], or 0 if unparsable.
   double get currentWeight =>
       double.tryParse(weightController.text.trim()) ?? 0;
@@ -102,7 +96,7 @@ class ControlWeightIssueRow {
   ///
   /// return type: [void]
   void setWeight(double value) {
-    weightController.text = _format(value);
+    weightController.text = formatControlWeight(value);
   }
 
   /// function name: [resetToInitial]
@@ -114,7 +108,7 @@ class ControlWeightIssueRow {
   ///
   /// return type: [void]
   void resetToInitial() {
-    weightController.text = _format(initialWeight);
+    weightController.text = formatControlWeight(initialWeight);
   }
 
   /// function name: [dispose]

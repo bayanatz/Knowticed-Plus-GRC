@@ -195,7 +195,7 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
     if (!wasAllDepartments) {
       for (final d in existing.departments) {
         _departmentWeightControllers[d.department] =
-            TextEditingController(text: _formatWeight(d.weight));
+            TextEditingController(text: formatControlWeight(d.weight));
       }
     }
   }
@@ -307,14 +307,6 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
     }
   }
 
-  /// function name: [_formatWeight]
-  ///
-  /// purpose: render a weight value without a trailing ".00" for whole
-  ///          numbers, while still showing the decimals an equal split can
-  ///          produce (e.g. 100/3 -> 33.33).
-  String _formatWeight(double value) =>
-      value % 1 == 0 ? value.toStringAsFixed(0) : value.toStringAsFixed(2);
-
   /// Overwrites every selected department's weight controller with its
   /// share of an equal 100-way split, matching [DepartmentWeight.equalSplit]
   /// (the same helper the backend uses on save) so what's shown here is
@@ -322,7 +314,7 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
   void _applyEqualSplitToControllers() {
     for (final entry in DepartmentWeight.equalSplit(_realSelectedDepartments)) {
       _departmentWeightControllers[entry.department]?.text =
-          _formatWeight(entry.weight);
+          formatControlWeight(entry.weight);
     }
   }
 

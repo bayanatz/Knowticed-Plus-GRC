@@ -11,6 +11,7 @@ import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/helper/main_helper/employee_helper.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
+import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_weight_history_entry.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/control_weight_issue/control_weight_history_cubit.dart';
 import 'package:flutter/material.dart';
@@ -37,12 +38,6 @@ class ControlWeightHistoryTab extends StatelessWidget {
     } catch (_) {
       return email;
     }
-  }
-
-  String _formatWeight(double value) {
-    return value == value.roundToDouble()
-        ? value.toInt().toString()
-        : value.toStringAsFixed(2);
   }
 
   @override
@@ -168,8 +163,8 @@ class ControlWeightHistoryTab extends StatelessWidget {
         _cell(Text(context.isArabic ? entry.controlsNameAr : entry.controlsNameEn,
             style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text), overflow: TextOverflow.ellipsis)),
         _cell(Text('$noOfDepartments', style: StyleText.fontSize14Weight500.copyWith(color: AppColors.secondaryText))),
-        _cell(Text(_formatWeight(entry.weightCurrent), style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text))),
-        _cell(Text(_formatWeight(entry.weightPrevious), style: StyleText.fontSize14Weight500.copyWith(color: AppColors.secondaryText))),
+        _cell(Text(formatControlWeight(entry.weightCurrent), style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text))),
+        _cell(Text(formatControlWeight(entry.weightPrevious), style: StyleText.fontSize14Weight500.copyWith(color: AppColors.secondaryText))),
         _cell(Text(dateFormat.format(entry.dateOfAction), style: StyleText.fontSize14Weight500.copyWith(color: AppColors.secondaryText))),
       ],
     );

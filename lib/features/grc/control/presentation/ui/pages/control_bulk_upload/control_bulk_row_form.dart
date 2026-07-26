@@ -13,6 +13,7 @@
 /// Date: 2026-07-19
 /// Dependencies: policy_bulk_date_format.dart, control_excel_parser.dart
 
+import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/control_bulk_upload/control_excel_parser.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/pages/policy_bulk_upload/policy_bulk_date_format.dart';
 import 'package:flutter/material.dart';
@@ -245,14 +246,6 @@ class ControlBulkRowForm {
     return errors;
   }
 
-  /// Formats an equal-split share (100 / department count) for display in
-  /// the read-only Department Weight cell: whole numbers show with no
-  /// decimals (e.g. '25'), everything else to 2 decimal places (e.g.
-  /// '33.33'). [departmentWeights] itself keeps the exact, unrounded value
-  /// — this only affects what the user sees.
-  String _formatEqualShare(double share) =>
-      share == share.roundToDouble() ? share.toStringAsFixed(0) : share.toStringAsFixed(2);
-
   List<String> _splitList(String text) => text
       .split(',')
       .map((e) => e.trim())
@@ -324,7 +317,7 @@ class ControlBulkRowForm {
       final share = 100 / names.length;
       departmentWeights = List.filled(names.length, share);
       departmentWeightController.text =
-          List.filled(names.length, _formatEqualShare(share)).join(', ');
+          List.filled(names.length, formatControlWeight(share)).join(', ');
       return;
     }
 

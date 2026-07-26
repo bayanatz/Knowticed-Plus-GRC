@@ -14,6 +14,7 @@ library;
 import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
+import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/control_weight_issue/control_weight_history_cubit.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/control_weight_issue/control_weight_history_tab.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/control_weight_issue/control_weight_issue_cubit.dart';
@@ -79,12 +80,6 @@ class _ControlWeightIssueBody extends StatefulWidget {
 
 class _ControlWeightIssueBodyState extends State<_ControlWeightIssueBody> {
   int _selectedTab = 0;
-
-  String _formatWeight(double value) {
-    return value == value.roundToDouble()
-        ? value.toInt().toString()
-        : value.toStringAsFixed(2);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -326,7 +321,7 @@ class _ControlWeightIssueBodyState extends State<_ControlWeightIssueBody> {
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(4.r)),
                     ),
                   )
-                : Text(_formatWeight(row.currentWeight), style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text)),
+                : Text(formatControlWeight(row.currentWeight), style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text)),
           ),
           _cell(5, Text('${row.noOfDepartments}', style: StyleText.fontSize14Weight500.copyWith(color: AppColors.secondaryText))),
           _cell(6, Text(dateFormat.format(row.startDate), style: StyleText.fontSize14Weight500.copyWith(color: AppColors.secondaryText))),
@@ -355,7 +350,7 @@ class _ControlWeightIssueBodyState extends State<_ControlWeightIssueBody> {
             borderRadius: BorderRadius.circular(4.r),
           ),
           child: Text(
-            '${'Total Weight'.tr} : ${_formatWeight(rowsData.totalWeight)}',
+            '${'Total Weight'.tr} : ${formatControlWeight(rowsData.totalWeight)}',
             style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
           ),
         ),
