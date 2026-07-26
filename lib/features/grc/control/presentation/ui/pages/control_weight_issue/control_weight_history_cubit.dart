@@ -11,7 +11,7 @@ library;
 
 import 'package:demo_app/features/grc/control/domain/entities/control_weight_history_entry.dart';
 import 'package:demo_app/features/grc/control/domain/use_cases/get_control_usecases.dart';
-import 'package:demo_app/features/grc/control/domain/use_cases/get_control_weight_history_use_case.dart';
+import 'package:demo_app/features/grc/control/domain/use_cases/get_control_weight_history_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'control_weight_history_state.dart';
