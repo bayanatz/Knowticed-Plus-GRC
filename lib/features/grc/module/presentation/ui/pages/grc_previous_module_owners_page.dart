@@ -13,12 +13,12 @@
 library;
 
 import 'package:demo_app/core/extension/context_extensions.dart';
-import 'package:demo_app/core/helper/main_helper/employee_helper.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_owner_history_entry.dart';
 import 'package:demo_app/features/grc/module/presentation/controller/cubit/grc_previous_owners_cubit.dart';
+import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -46,16 +46,6 @@ class _GrcPreviousModuleOwnersBody extends StatelessWidget {
   final GRCModuleEntity module;
 
   const _GrcPreviousModuleOwnersBody({required this.module});
-
-  String _displayName(BuildContext context, String email) {
-    try {
-      return EmployeeHelper.getEmployeeLocalizedNameWithEmail(
-        employeeEmail: email,
-      );
-    } catch (_) {
-      return email;
-    }
-  }
 
   String _displayEmail(String email) => email;
 
@@ -228,7 +218,7 @@ class _GrcPreviousModuleOwnersBody extends StatelessWidget {
         ),
         _cell(
           Text(
-            _displayName(context, entry.ownerEmail),
+            employeeDisplayName(context, entry.ownerEmail),
             style:
                 StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
             overflow: TextOverflow.ellipsis,
@@ -236,7 +226,7 @@ class _GrcPreviousModuleOwnersBody extends StatelessWidget {
         ),
         _cell(
           Text(
-            _displayName(context, entry.assignedByEmail),
+            employeeDisplayName(context, entry.assignedByEmail),
             style:
                 StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
             overflow: TextOverflow.ellipsis,

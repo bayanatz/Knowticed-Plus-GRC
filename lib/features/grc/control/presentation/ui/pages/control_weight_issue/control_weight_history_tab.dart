@@ -8,12 +8,12 @@
 library;
 
 import 'package:demo_app/core/extension/context_extensions.dart';
-import 'package:demo_app/core/helper/main_helper/employee_helper.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_weight_history_entry.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/control_weight_issue/control_weight_history_cubit.dart';
+import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -31,14 +31,6 @@ import 'package:intl/intl.dart';
 /// created at: 20/7/2026
 class ControlWeightHistoryTab extends StatelessWidget {
   const ControlWeightHistoryTab({super.key});
-
-  String _displayName(String email) {
-    try {
-      return EmployeeHelper.getEmployeeLocalizedNameWithEmail(employeeEmail: email);
-    } catch (_) {
-      return email;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -158,7 +150,7 @@ class ControlWeightHistoryTab extends StatelessWidget {
       decoration: BoxDecoration(color: isEven ? AppColors.background : AppColors.field),
       children: [
         _cell(Text('${index + 1}', style: StyleText.fontSize14Weight500.copyWith(color: AppColors.secondaryText))),
-        _cell(Text(_displayName(entry.changedByEmail),
+        _cell(Text(employeeDisplayName(context, entry.changedByEmail),
             style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text), overflow: TextOverflow.ellipsis)),
         _cell(Text(context.isArabic ? entry.controlsNameAr : entry.controlsNameEn,
             style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text), overflow: TextOverflow.ellipsis)),

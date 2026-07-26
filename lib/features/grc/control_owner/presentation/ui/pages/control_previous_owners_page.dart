@@ -10,7 +10,6 @@
 library;
 
 import 'package:demo_app/core/extension/context_extensions.dart';
-import 'package:demo_app/core/helper/main_helper/employee_helper.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
@@ -18,6 +17,7 @@ import 'package:demo_app/features/grc/control_owner/domain/entities/control_owne
 import 'package:demo_app/features/grc/control_owner/presentation/controller/control_previous_owners_cubit.dart';
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
+import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -75,16 +75,6 @@ class _ControlPreviousOwnersBody extends StatelessWidget {
     required this.policy,
     required this.control,
   });
-
-  String _displayName(BuildContext context, String email) {
-    try {
-      return EmployeeHelper.getEmployeeLocalizedNameWithEmail(
-        employeeEmail: email,
-      );
-    } catch (_) {
-      return email;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -261,7 +251,7 @@ class _ControlPreviousOwnersBody extends StatelessWidget {
         ),
         _cell(
           Text(
-            _displayName(context, entry.ownerEmail),
+            employeeDisplayName(context, entry.ownerEmail),
             style:
                 StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
             overflow: TextOverflow.ellipsis,
@@ -269,7 +259,7 @@ class _ControlPreviousOwnersBody extends StatelessWidget {
         ),
         _cell(
           Text(
-            _displayName(context, entry.assignedByEmail),
+            employeeDisplayName(context, entry.assignedByEmail),
             style:
                 StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
             overflow: TextOverflow.ellipsis,

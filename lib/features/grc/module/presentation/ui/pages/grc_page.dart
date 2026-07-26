@@ -21,7 +21,6 @@ import 'package:demo_app/core/custom/43_custom_module_info_card.dart';
 import 'package:demo_app/core/custom/47_custom_sort_button.dart';
 import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
-import 'package:demo_app/core/helper/main_helper/employee_helper.dart';
 import 'package:demo_app/core/local_widgets/services_management/W2_Navigator.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
@@ -31,6 +30,7 @@ import 'package:demo_app/features/grc/module/presentation/controller/cubit/grc_m
 import 'package:demo_app/features/grc/module/presentation/ui/pages/grc_details_page.dart';
 import 'package:demo_app/features/grc/module/presentation/ui/pages/grc_module_details_page.dart';
 import 'package:demo_app/features/grc/module/presentation/ui/pages/grc_previous_module_owners_page.dart';
+import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
 import 'package:demo_app/features/roles/core_widgets/main_widget/responsive_helper.dart';
 import 'package:demo_app/features/roles/widgets/filter_bar_item.dart';
@@ -515,16 +515,6 @@ class _GrcModuleCard extends StatelessWidget {
     this.onMenuTap,
   });
 
-  String _resolveOwnerName(BuildContext context, String ownerEmail) {
-    try {
-      return EmployeeHelper.getEmployeeLocalizedNameWithEmail(
-        employeeEmail: ownerEmail,
-      );
-    } catch (_) {
-      return ownerEmail;
-    }
-  }
-
   /// Capitalizes only the first character — display formatting, doesn't
   /// touch how the value is stored.
   String _capitalizeFirst(String value) {
@@ -545,7 +535,7 @@ class _GrcModuleCard extends StatelessWidget {
           CardInfo(
             label: '${'Owner'.tr}:',
             value: _capitalizeFirst(
-              _resolveOwnerName(context, module.moduleOwners.first),
+              employeeDisplayName(context, module.moduleOwners.first),
             ),
           ),
         CardInfo(

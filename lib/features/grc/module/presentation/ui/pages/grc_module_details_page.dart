@@ -48,9 +48,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
-import 'package:demo_app/features/employee/domain/entities/employee_entity.dart';
-import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
 import 'package:demo_app/core/helper/main_helper/employee_helper.dart';
+import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/assignee_bulk_upload/assignee_bulk_upload_page.dart';
 import 'package:demo_app/features/grc/control_champion/domain/entities/champion_entity.dart';
 import 'package:demo_app/features/grc/control_champion/domain/use_cases/create_champion_usecase.dart';
@@ -279,6 +278,8 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
               {'num': counts['Draft'] ?? 0, 'color': AppColors.colorGrey}),
         ];
 
+        final isChampionOrOwnerTab = _selectedTab == 1 || _selectedTab == 2;
+
         return Scaffold(
           body: SafeArea(
             child: Padding(
@@ -297,23 +298,26 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
                   // Approved Evidence + Dashboard
                   Row(
                     spacing: 8.w,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: isChampionOrOwnerTab
+                        ? MainAxisAlignment.end
+                        : MainAxisAlignment.spaceBetween,
                     children: [
-                      customButtonWithSvg(
-                        colorBorder: AppColors.primary,
-                        space: 10.w,
-                        radius: 8.r,
-                        widthImage: 16.w,
-                        heightImage: 16.h,
-                        image:
-                            "assets/icons_assets/data_grc_assets/approved-evidence-icon.svg",
-                        title: "Approved Evidence".tr,
-                        function: () {},
-                        width: isTablet ? 200.w : 180.w,
-                        color: AppColors.primary,
-                        textStyle: StyleText.fontSize16Weight500
-                            .copyWith(color: AppColors.textButton),
-                      ),
+                      if (!isChampionOrOwnerTab)
+                        customButtonWithSvg(
+                          colorBorder: AppColors.primary,
+                          space: 10.w,
+                          radius: 8.r,
+                          widthImage: 16.w,
+                          heightImage: 16.h,
+                          image:
+                              "assets/icons_assets/data_grc_assets/approved-evidence-icon.svg",
+                          title: "Approved Evidence".tr,
+                          function: () {},
+                          width: isTablet ? 200.w : 180.w,
+                          color: AppColors.primary,
+                          textStyle: StyleText.fontSize16Weight500
+                              .copyWith(color: AppColors.textButton),
+                        ),
                       customButton(
                         title: "Dashboard".tr,
                         function: () {},
@@ -326,40 +330,42 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
                   ),
                   SizedBox(height: 15.h),
 
-                  // Approvals + Assignment Controls + My Audits
-                  Row(
-                    spacing: 8.w,
-                    children: [
-                      customButton(
-                        title: "Approvals".tr,
-                        function: () {},
-                        width: 120.w,
-                        height: 38.h,
-                        color: AppColors.primary,
-                        textStyle: StyleText.fontSize16Weight500
-                            .copyWith(color: AppColors.textButton),
-                      ),
-                      customButton(
-                        title: "Assignment Controls".tr,
-                        function: () {},
-                        width: isTablet ? 180.w : 170.w,
-                        height: 38.h,
-                        color: AppColors.primary,
-                        textStyle: StyleText.fontSize16Weight500
-                            .copyWith(color: AppColors.textButton),
-                      ),
-                      Spacer(),
-                      customButton(
-                        title: "My Audits".tr,
-                        function: () {},
-                        width: 135.w,
-                        color: AppColors.primary,
-                        textStyle: StyleText.fontSize16Weight500
-                            .copyWith(color: AppColors.textButton),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 15.h),
+                  if (!isChampionOrOwnerTab) ...[
+                    // Approvals + Assignment Controls + My Audits
+                    Row(
+                      spacing: 8.w,
+                      children: [
+                        customButton(
+                          title: "Approvals".tr,
+                          function: () {},
+                          width: 120.w,
+                          height: 38.h,
+                          color: AppColors.primary,
+                          textStyle: StyleText.fontSize16Weight500
+                              .copyWith(color: AppColors.textButton),
+                        ),
+                        customButton(
+                          title: "Assignment Controls".tr,
+                          function: () {},
+                          width: isTablet ? 180.w : 170.w,
+                          height: 38.h,
+                          color: AppColors.primary,
+                          textStyle: StyleText.fontSize16Weight500
+                              .copyWith(color: AppColors.textButton),
+                        ),
+                        Spacer(),
+                        customButton(
+                          title: "My Audits".tr,
+                          function: () {},
+                          width: 135.w,
+                          color: AppColors.primary,
+                          textStyle: StyleText.fontSize16Weight500
+                              .copyWith(color: AppColors.textButton),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 15.h),
+                  ],
 
                   CustomTabs(
                     tabs: _tabs,
@@ -606,38 +612,10 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
     );
   }
 
-  EmployeeEntityPro? _findEmployee(String email) {
-    if (!Get.isRegistered<MainCoreEmployeeController>()) return null;
-    final employees =
-        Get.find<MainCoreEmployeeController>().allEmployeesEntities ?? [];
-    for (final e in employees) {
-      if (e.email == email) return e;
-    }
-    return null;
-  }
-
-  String get _currentUserEmail {
-    final fromConstant = Constant.emailUser;
-    if (fromConstant != null && fromConstant.isNotEmpty) return fromConstant;
-    if (Get.isRegistered<MainCoreEmployeeController>()) {
-      final email =
-          Get.find<MainCoreEmployeeController>().employeeEntity?.email;
-      if (email != null && email.isNotEmpty) return email;
-    }
-    return '';
-  }
-
-  String _employeeDisplayName(BuildContext context, String email) {
-    final employee = _findEmployee(email);
-    if (employee == null) return email;
-    return EmployeeHelper.getEmployeeLocalizedName(
-        employee: employee, context: context);
-  }
-
   Widget _buildPersonCard(BuildContext context, String email,
       {VoidCallback? onTap}) {
-    final employee = _findEmployee(email);
-    final name = _employeeDisplayName(context, email);
+    final employee = findEmployeeByEmail(email);
+    final name = employeeDisplayName(context, email);
     final department = employee != null
         ? EmployeeHelper.getEmployeeLocalizeDepartment(
             employee: employee, context: context)
@@ -815,7 +793,7 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
     final q = _championSearchQuery.toLowerCase();
     return champions
         .where((c) =>
-            _employeeDisplayName(context, c.championEmail)
+            employeeDisplayName(context, c.championEmail)
                 .toLowerCase()
                 .contains(q) ||
             c.championEmail.toLowerCase().contains(q))
@@ -837,13 +815,14 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
               children: [
                 CustomButton(
                   buttonText: 'My Requests',
+                  width: 110.w,
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (_) => GrcRequestsListPage(
                           module: widget.module,
-                          onlyRequestedBy: _currentUserEmail,
+                          onlyRequestedBy: currentGrcUserEmail(),
                           typeFilter: GrcRequestType.reassignChampion,
                         ),
                       ),
@@ -852,6 +831,7 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
                 ),
                 CustomButton(
                   buttonText: 'Requests',
+                  width: 110.w,
                   onTap: () {
                     Navigator.push(
                       context,
@@ -1082,7 +1062,7 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
     var result = owners;
     if (_ownerDepartmentFilter != null && _ownerDepartmentFilter!.isNotEmpty) {
       result = result.where((o) {
-        final employee = _findEmployee(o.ownerEmail);
+        final employee = findEmployeeByEmail(o.ownerEmail);
         if (employee == null) return false;
         final department = EmployeeHelper.getEmployeeLocalizeDepartment(
             employee: employee, context: context);
@@ -1093,7 +1073,7 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
       final q = _ownerSearchQuery.toLowerCase();
       result = result
           .where((o) =>
-              _employeeDisplayName(context, o.ownerEmail)
+              employeeDisplayName(context, o.ownerEmail)
                   .toLowerCase()
                   .contains(q) ||
               o.ownerEmail.toLowerCase().contains(q))
@@ -1118,13 +1098,14 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
               children: [
                 CustomButton(
                   buttonText: 'My Requests',
+                  width: 110.w,
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (_) => GrcRequestsListPage(
                           module: widget.module,
-                          onlyRequestedBy: _currentUserEmail,
+                          onlyRequestedBy: currentGrcUserEmail(),
                           typeFilter: GrcRequestType.reassignOwner,
                         ),
                       ),
@@ -1133,6 +1114,7 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
                 ),
                 CustomButton(
                   buttonText: 'Requests',
+                  width: 110.w,
                   onTap: () {
                     Navigator.push(
                       context,
