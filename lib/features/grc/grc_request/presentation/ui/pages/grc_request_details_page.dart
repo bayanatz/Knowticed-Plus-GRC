@@ -469,7 +469,10 @@ class _GrcRequestDetailsBodyState extends State<_GrcRequestDetailsBody> {
                         Container(
                           padding: EdgeInsets.all(12.r),
                           decoration: BoxDecoration(
-                            color: _request.status.color.withOpacity(0.1),
+                            color: (_request.status == ApprovalStatus.approved
+                                    ? AppColors.green
+                                    : AppColors.red)
+                                .withOpacity(0.1),
                             borderRadius: BorderRadius.circular(8.r),
                           ),
                           child: Text(
@@ -477,7 +480,9 @@ class _GrcRequestDetailsBodyState extends State<_GrcRequestDetailsBody> {
                                 ? 'Approved'.tr
                                 : '${'Rejected'.tr}: ${_request.rejectionReason ?? ''}',
                             style: StyleText.fontSize14Weight500.copyWith(
-                              color: _request.status.color,
+                              color: _request.status == ApprovalStatus.approved
+                                  ? AppColors.green
+                                  : AppColors.red,
                             ),
                           ),
                         ),
