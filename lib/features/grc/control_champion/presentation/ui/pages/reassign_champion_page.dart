@@ -64,6 +64,10 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
   final List<PendingAssignmentRow> _pendingRows = [PendingAssignmentRow()];
   bool _submitting = false;
 
+  String? _championError;
+  String? _controlsError;
+  String? _startDateError;
+
   @override
   void initState() {
     super.initState();
@@ -111,31 +115,30 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
         ..add(PendingAssignmentRow());
     });
 
-    if (_newSelectedEmployees.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please select a new Control Champion'.tr)),
-      );
-      return;
-    }
-    if (_reassignedControls.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please assign at least one Control'.tr)),
-      );
-      return;
-    }
-    if (_startDate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please choose a start date'.tr)),
-      );
-      return;
-    }
+    final newChampionEmail = _newSelectedEmployees.isNotEmpty
+        ? _newSelectedEmployees.first.email
+        : null;
 
-    final newChampionEmail = _newSelectedEmployees.first.email;
-    if (newChampionEmail == widget.champion.championEmail) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text('New champion cannot be the current champion'.tr)),
-      );
+    final championError = _newSelectedEmployees.isEmpty
+        ? 'Please select a new Control Champion'.tr
+        : newChampionEmail == widget.champion.championEmail
+            ? 'New champion cannot be the current champion'.tr
+            : null;
+    final controlsError = _reassignedControls.isEmpty
+        ? 'Please assign at least one Control'.tr
+        : null;
+    final startDateError =
+        _startDate == null ? 'Please choose a start date'.tr : null;
+
+    setState(() {
+      _championError = championError;
+      _controlsError = controlsError;
+      _startDateError = startDateError;
+    });
+
+    if (championError != null ||
+        controlsError != null ||
+        startDateError != null) {
       return;
     }
 
@@ -153,7 +156,7 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
           requestedBy: currentGrcUserEmail(),
           note: _noteController.text,
           currentChampionEmail: widget.champion.championEmail,
-          newChampionEmail: newChampionEmail,
+          newChampionEmail: newChampionEmail!,
           controls: _reassignedControls,
           startDate: _startDate!,
           endDate: _endDate,
@@ -279,10 +282,20 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
                               ),
                               child: GrcOwnerSection(
                                 singleSelect: true,
-                                onOwnersChanged: (selected) => setState(
-                                    () => _newSelectedEmployees = selected),
+                                onOwnersChanged: (selected) => setState(() {
+                                  _newSelectedEmployees = selected;
+                                  _championError = null;
+                                }),
                               ),
                             ),
+                            if (_championError != null) ...[
+                              SizedBox(height: 6.h),
+                              Text(
+                                _championError!,
+                                style: StyleText.fontSize12Weight400
+                                    .copyWith(color: AppColors.red),
+                              ),
+                            ],
                             SizedBox(height: 20.h),
 
                             // Dates Pickers Section
@@ -294,8 +307,11 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
                                     label: 'Start Date'.tr,
                                     hint: 'Choose The Date'.tr,
                                     value: _startDate,
-                                    onChanged: (d) =>
-                                        setState(() => _startDate = d),
+                                    errorText: _startDateError,
+                                    onChanged: (d) => setState(() {
+                                      _startDate = d;
+                                      _startDateError = null;
+                                    }),
                                     fillColor: AppColors.background,
                                     firstDate: DateTime(2000),
                                     lastDate: DateTime(2100),
@@ -365,6 +381,14 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
                                       );
                                     }),
                                   ),
+                            if (_controlsError != null) ...[
+                              SizedBox(height: 6.h),
+                              Text(
+                                _controlsError!,
+                                style: StyleText.fontSize12Weight400
+                                    .copyWith(color: AppColors.red),
+                              ),
+                            ],
                             SizedBox(height: 20.h),
 
                             // Assigning Controls Form Section — one Policy +
