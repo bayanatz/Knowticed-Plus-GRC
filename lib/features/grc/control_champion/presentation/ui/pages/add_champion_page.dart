@@ -10,8 +10,6 @@
 library;
 
 import 'package:demo_app/core/extension/context_extensions.dart';
-import 'package:demo_app/core/custom/1-custom_dropdwon.dart';
-import 'package:demo_app/core/custom/31-custom_multi_select_dropdown.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/grc/control/domain/entities/assigning_control.dart';
@@ -21,6 +19,7 @@ import 'package:demo_app/features/grc/control/domain/use_cases/get_control_useca
 import 'package:demo_app/features/grc/control/domain/use_cases/update_control_usecase.dart';
 import 'package:demo_app/features/grc/control_champion/presentation/controller/champion_cubit.dart';
 import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
+import 'package:demo_app/features/grc/shared/widgets/grc_policy_control_picker_row.dart';
 import 'package:demo_app/features/grc/module/presentation/controller/cubit/grc_owner_cubit.dart';
 import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details_widget/grc_owner_section.dart';
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
@@ -271,7 +270,26 @@ class _AddChampionPageState extends State<AddChampionPage> {
           Text('Assigning Control'.tr, style: StyleText.fontSize16Weight500),
           SizedBox(height: 12.h),
           for (var i = 0; i < _rows.length; i++) ...[
-            _buildRow(context, _rows[i], i),
+            GrcPolicyControlPickerRow(
+              policies: _policies,
+              policiesEnabled: !_loadingPolicies,
+              policyId: _rows[i].policyId,
+              onPolicyChanged: (v) => _onPolicyChanged(_rows[i], v!),
+              policyErrorText: _submitted && _rows[i].policyId == null
+                  ? 'Required'.tr
+                  : null,
+              availableControls: _rows[i].availableControls,
+              controlsEnabled:
+                  _rows[i].policyId != null && !_rows[i].isLoadingControls,
+              controlIds: _rows[i].controlIds,
+              onControlsChanged: (v) =>
+                  setState(() => _rows[i].controlIds = v),
+              controlsErrorText: _submitted && _rows[i].controlIds.isEmpty
+                  ? 'Required'.tr
+                  : null,
+              spacing: 10.w,
+              onRemoveRow: _rows.length > 1 ? () => _removeRow(i) : null,
+            ),
             SizedBox(height: 12.h),
           ],
           TextButton(
@@ -280,66 +298,6 @@ class _AddChampionPageState extends State<AddChampionPage> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildRow(BuildContext context, _AssigningControlRow row, int index) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: CustomDropdown<String>(
-            label: 'Add Policy'.tr,
-            hint: 'Choose Policy'.tr,
-            enabled: !_loadingPolicies,
-            items: _policies
-                .map((p) => DropdownItem<String>(
-                      value: p.id,
-                      label: context.isArabic ? p.policyNameAr : p.policyNameEn,
-                    ))
-                .toList(),
-            value: row.policyId,
-            onChanged: (v) => _onPolicyChanged(row, v),
-            fillColor: AppColors.background,
-            required: false,
-            errorText: _submitted && row.policyId == null
-                ? 'Required'.tr
-                : null,
-          ),
-        ),
-        SizedBox(width: 10.w),
-        Expanded(
-          child: CustomMultiSelectDropdown<String>(
-            label: 'Control'.tr,
-            hint: 'Choose Control'.tr,
-            enabled: row.policyId != null && !row.isLoadingControls,
-            items: row.availableControls
-                .map((c) => MultiSelectDropdownItem<String>(
-                      value: c.id,
-                      label: context.isArabic ? c.controlsNameAr : c.controlsNameEn,
-                    ))
-                .toList(),
-            values: row.controlIds,
-            onChanged: (v) => setState(() => row.controlIds = v),
-            fillColor: AppColors.background,
-            required: false,
-            errorText: _submitted && row.controlIds.isEmpty
-                ? 'Required'.tr
-                : null,
-          ),
-        ),
-        if (_rows.length > 1) ...[
-          SizedBox(width: 8.w),
-          Padding(
-            padding: EdgeInsets.only(top: 24.h),
-            child: IconButton(
-              icon: const Icon(Icons.close),
-              color: AppColors.red,
-              onPressed: () => _removeRow(index),
-            ),
-          ),
-        ],
-      ],
     );
   }
 

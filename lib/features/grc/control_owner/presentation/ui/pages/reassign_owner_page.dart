@@ -1,11 +1,9 @@
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
-import 'package:demo_app/core/custom/1-custom_dropdwon.dart';
 import 'package:demo_app/core/custom/2-custom_textfield.dart';
 import 'package:demo_app/core/custom/3-custom_dropdwon_calander.dart';
 import 'package:demo_app/core/custom/21-custom_contact_card.dart';
-import 'package:demo_app/core/custom/31-custom_multi_select_dropdown.dart';
 import 'package:demo_app/core/helper/main_helper/employee_helper.dart';
 import 'package:demo_app/features/grc/control/domain/entities/assigning_control.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
@@ -20,6 +18,7 @@ import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart'
 import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
 import 'package:demo_app/features/grc/shared/models/pending_assignment_row.dart';
 import 'package:demo_app/features/grc/shared/widgets/grc_assignment_chip.dart';
+import 'package:demo_app/features/grc/shared/widgets/grc_policy_control_picker_row.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
 import 'package:demo_app/features/settings/core_widgets/main_widget/custom_button_widget.dart';
 import 'package:flutter/material.dart';
@@ -365,55 +364,21 @@ class _ReassignOwnerPageState extends State<ReassignOwnerPage> {
 
                               return Padding(
                                 padding: EdgeInsets.only(bottom: 16.h),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Expanded(
-                                      child: CustomDropdown<String>(
-                                        label: 'Add Policy'.tr,
-                                        hint: 'Choose Policy'.tr,
-                                        items: widget.allPolicies
-                                            .map((p) => DropdownItem<String>(
-                                                  value: p.id,
-                                                  label: context.isArabic
-                                                      ? p.policyNameAr
-                                                      : p.policyNameEn,
-                                                ))
-                                            .toList(),
-                                        value: row.policyId,
-                                        onChanged: (v) {
-                                          setState(() {
-                                            row.policyId = v;
-                                            row.controlIds = [];
-                                          });
-                                        },
-                                        fillColor: AppColors.background,
-                                        required: false,
-                                      ),
-                                    ),
-                                    SizedBox(width: 16.w),
-                                    Expanded(
-                                      child: CustomMultiSelectDropdown<String>(
-                                        label: 'Control'.tr,
-                                        hint: 'Choose Control'.tr,
-                                        enabled: row.policyId != null,
-                                        items: availableControlsForPolicy
-                                            .map((c) =>
-                                                MultiSelectDropdownItem<String>(
-                                                  value: c.id,
-                                                  label: context.isArabic
-                                                      ? c.controlsNameAr
-                                                      : c.controlsNameEn,
-                                                ))
-                                            .toList(),
-                                        values: row.controlIds,
-                                        onChanged: (v) =>
-                                            setState(() => row.controlIds = v),
-                                        fillColor: AppColors.background,
-                                        required: false,
-                                      ),
-                                    ),
-                                  ],
+                                child: GrcPolicyControlPickerRow(
+                                  policies: widget.allPolicies,
+                                  policyId: row.policyId,
+                                  onPolicyChanged: (v) {
+                                    setState(() {
+                                      row.policyId = v;
+                                      row.controlIds = [];
+                                    });
+                                  },
+                                  availableControls: availableControlsForPolicy,
+                                  controlsEnabled: row.policyId != null,
+                                  controlIds: row.controlIds,
+                                  onControlsChanged: (v) =>
+                                      setState(() => row.controlIds = v),
+                                  spacing: 16.w,
                                 ),
                               );
                             }),
