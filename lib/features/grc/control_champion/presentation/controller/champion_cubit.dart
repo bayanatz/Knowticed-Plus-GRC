@@ -6,7 +6,6 @@
 /// Dependencies: flutter_bloc, use cases, ChampionEntity, AssigningControlEntity
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
 import 'package:demo_app/features/grc/control/domain/entities/assigning_control.dart';
 import 'package:demo_app/features/grc/control_champion/domain/entities/champion_entity.dart';
 import 'package:demo_app/features/grc/control_champion/domain/entities/champion_status.dart';
@@ -16,7 +15,7 @@ import 'package:demo_app/features/grc/control_champion/domain/use_cases/update_c
 import 'package:demo_app/features/grc/control_champion/domain/entities/champion_request_resolver.dart';
 import 'package:demo_app/features/grc/control_champion/domain/use_cases/apply_champion_reassignment_usecase.dart';
 import 'package:demo_app/features/grc/grc_request/domain/use_cases/get_grc_requests_usecase.dart';
-import 'package:get/get.dart';
+import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
 
 part 'champion_state.dart';
 
@@ -42,16 +41,6 @@ class ChampionCubit extends Cubit<ChampionState> {
   final UpdateChampionUseCase _updateUseCase;
   final GetGrcRequestsUseCase _getGrcRequestsUseCase;
   final ApplyChampionReassignmentUseCase _applyReassignmentUseCase;
-
-  String get _currentUserEmail {
-    final fromConstant = Constant.emailUser;
-    if (fromConstant != null && fromConstant.isNotEmpty) return fromConstant;
-    if (Get.isRegistered<MainCoreEmployeeController>()) {
-      final email = Get.find<MainCoreEmployeeController>().employeeEntity?.email;
-      if (email != null && email.isNotEmpty) return email;
-    }
-    return '';
-  }
 
   Future<void> getAllChampions({
     required String moduleId,
@@ -106,7 +95,7 @@ class ChampionCubit extends Cubit<ChampionState> {
             UpdateChampionParams(
               championEmail: champion.championEmail,
               moduleId: moduleId,
-              editorId: _currentUserEmail,
+              editorId: currentGrcUserEmail(),
               assigningControls: remaining,
               status: remaining.isEmpty ? ChampionStatus.removed : null,
             ),
@@ -136,7 +125,7 @@ class ChampionCubit extends Cubit<ChampionState> {
         moduleId: moduleId,
         championEmail: championEmail,
         assigningControls: assigningControls,
-        editorId: _currentUserEmail,
+        editorId: currentGrcUserEmail(),
       ),
     );
     result.fold(
@@ -156,7 +145,7 @@ class ChampionCubit extends Cubit<ChampionState> {
       UpdateChampionParams(
         championEmail: championEmail,
         moduleId: moduleId,
-        editorId: _currentUserEmail,
+        editorId: currentGrcUserEmail(),
         assigningControls: assigningControls,
         status: status,
       ),

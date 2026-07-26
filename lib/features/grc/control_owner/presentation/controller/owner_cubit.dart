@@ -6,7 +6,6 @@
 /// Dependencies: flutter_bloc, use cases, OwnerEntity, AssigningControlEntity
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
 import 'package:demo_app/features/grc/control/domain/entities/assigning_control.dart';
 import 'package:demo_app/features/grc/control_champion/domain/entities/champion_request_resolver.dart';
 import 'package:demo_app/features/grc/control_owner/domain/entities/owner_entity.dart';
@@ -17,7 +16,7 @@ import 'package:demo_app/features/grc/control_owner/domain/use_cases/get_owner_u
 import 'package:demo_app/features/grc/control_owner/domain/use_cases/update_owner_usecase.dart';
 import 'package:demo_app/features/grc/grc_request/domain/entities/grc_request_type.dart';
 import 'package:demo_app/features/grc/grc_request/domain/use_cases/get_grc_requests_usecase.dart';
-import 'package:get/get.dart';
+import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
 
 part 'owner_state.dart';
 
@@ -43,16 +42,6 @@ class OwnerCubit extends Cubit<OwnerState> {
   final UpdateOwnerUseCase _updateUseCase;
   final GetGrcRequestsUseCase _getGrcRequestsUseCase;
   final ApplyOwnerReassignmentUseCase _applyReassignmentUseCase;
-
-  String get _currentUserEmail {
-    final fromConstant = Constant.emailUser;
-    if (fromConstant != null && fromConstant.isNotEmpty) return fromConstant;
-    if (Get.isRegistered<MainCoreEmployeeController>()) {
-      final email = Get.find<MainCoreEmployeeController>().employeeEntity?.email;
-      if (email != null && email.isNotEmpty) return email;
-    }
-    return '';
-  }
 
   Future<void> getAllOwners({
     required String moduleId,
@@ -110,7 +99,7 @@ class OwnerCubit extends Cubit<OwnerState> {
             UpdateOwnerParams(
               ownerEmail: owner.ownerEmail,
               moduleId: moduleId,
-              editorId: _currentUserEmail,
+              editorId: currentGrcUserEmail(),
               assigningControls: remaining,
               status: remaining.isEmpty ? OwnerStatus.removed : null,
             ),
@@ -140,7 +129,7 @@ class OwnerCubit extends Cubit<OwnerState> {
         moduleId: moduleId,
         ownerEmail: ownerEmail,
         assigningControls: assigningControls,
-        editorId: _currentUserEmail,
+        editorId: currentGrcUserEmail(),
       ),
     );
     result.fold(
@@ -161,7 +150,7 @@ class OwnerCubit extends Cubit<OwnerState> {
       UpdateOwnerParams(
         ownerEmail: ownerEmail,
         moduleId: moduleId,
-        editorId: _currentUserEmail,
+        editorId: currentGrcUserEmail(),
         assigningControls: assigningControls,
         controlOwnerPermissions: controlOwnerPermissions,
         status: status,

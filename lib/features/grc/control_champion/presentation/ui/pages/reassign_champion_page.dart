@@ -6,8 +6,6 @@ import 'package:demo_app/core/custom/2-custom_textfield.dart';
 import 'package:demo_app/core/custom/3-custom_dropdwon_calander.dart';
 import 'package:demo_app/core/custom/21-custom_contact_card.dart';
 import 'package:demo_app/core/custom/31-custom_multi_select_dropdown.dart';
-import 'package:demo_app/features/employee/domain/entities/employee_entity.dart';
-import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
 import 'package:demo_app/core/helper/main_helper/employee_helper.dart';
 import 'package:demo_app/features/grc/control/domain/entities/assigning_control.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
@@ -18,6 +16,7 @@ import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.d
 import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details_widget/grc_owner_section.dart';
 import 'package:demo_app/features/grc/module/presentation/controller/cubit/grc_owner_cubit.dart';
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
+import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
 import 'package:demo_app/features/settings/core_widgets/main_widget/custom_button_widget.dart';
 import 'package:flutter/material.dart';
@@ -70,44 +69,6 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
   void dispose() {
     _noteController.dispose();
     super.dispose();
-  }
-
-  EmployeeEntityPro? _findEmployee(String email) {
-    if (!Get.isRegistered<MainCoreEmployeeController>()) return null;
-    final employees =
-        Get.find<MainCoreEmployeeController>().allEmployeesEntities ?? [];
-    for (final e in employees) {
-      if (e.email == email) return e;
-    }
-    return null;
-  }
-
-  String _employeeDisplayName(BuildContext context, String email) {
-    final employee = _findEmployee(email);
-    if (employee == null) return email;
-    return EmployeeHelper.getEmployeeLocalizedName(
-        employee: employee, context: context);
-  }
-
-  ControlEntity? _getControlEntity(String policyId, String controlId) {
-    final list = widget.policyControls[policyId];
-    if (list != null) {
-      for (final c in list) {
-        if (c.id == controlId) return c;
-      }
-    }
-    return null;
-  }
-
-  String get _currentUserEmail {
-    final fromConstant = Constant.emailUser;
-    if (fromConstant != null && fromConstant.isNotEmpty) return fromConstant;
-    if (Get.isRegistered<MainCoreEmployeeController>()) {
-      final email =
-          Get.find<MainCoreEmployeeController>().employeeEntity?.email;
-      if (email != null && email.isNotEmpty) return email;
-    }
-    return '';
   }
 
   void _addPolicyRow() {
@@ -181,7 +142,7 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
       await requestCubit.createRequest(
         CreateGrcRequestParams(
           moduleId: widget.module.moduleId,
-          requestedBy: _currentUserEmail,
+          requestedBy: currentGrcUserEmail(),
           note: _noteController.text,
           currentChampionEmail: widget.champion.championEmail,
           newChampionEmail: newChampionEmail,
@@ -225,12 +186,12 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
   }
 
   Widget _buildPage(BuildContext context) {
-    final currentEmp = _findEmployee(widget.champion.championEmail);
+    final currentEmp = findEmployeeByEmail(widget.champion.championEmail);
     final currentPhoto = currentEmp != null
         ? EmployeeHelper.getEmployeeImage(employee: currentEmp)
         : 'assets/icons_assets/main_icons_assets/assets_male.svg';
     final currentName =
-        _employeeDisplayName(context, widget.champion.championEmail);
+        employeeDisplayName(context, widget.champion.championEmail);
     final currentDept = currentEmp != null
         ? EmployeeHelper.getEmployeeLocalizeDepartment(
             employee: currentEmp, context: context)
@@ -382,8 +343,10 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
                                     children: List.generate(
                                         _reassignedControls.length, (index) {
                                       final ac = _reassignedControls[index];
-                                      final ctrl = _getControlEntity(
-                                          ac.policyId, ac.controlId);
+                                      final ctrl = findControlInPolicy(
+                                          widget.policyControls,
+                                          ac.policyId,
+                                          ac.controlId);
                                       final cName = ctrl != null
                                           ? (context.isArabic
                                               ? ctrl.controlsNameAr

@@ -4,7 +4,6 @@ import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/custom/1-custom_dropdwon.dart';
 import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart';
 import 'package:demo_app/core/custom/31-custom_multi_select_dropdown.dart';
-import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
 import 'package:demo_app/features/grc/control/domain/entities/assigning_control.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_status_resolver.dart';
@@ -16,6 +15,7 @@ import 'package:demo_app/features/grc/control_owner/domain/entities/owner_entity
 import 'package:demo_app/features/grc/control_owner/domain/use_cases/get_owner_usecases.dart';
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
+import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
 import 'package:demo_app/features/settings/core_widgets/main_widget/custom_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -55,16 +55,6 @@ class _EditChampionControlsPageState extends State<EditChampionControlsPage> {
   void initState() {
     super.initState();
     _tempControls = List.from(widget.champion.assigningControls);
-  }
-
-  ControlEntity? _getControlEntity(String policyId, String controlId) {
-    final list = widget.policyControls[policyId];
-    if (list != null) {
-      for (final c in list) {
-        if (c.id == controlId) return c;
-      }
-    }
-    return null;
   }
 
   void _removeControl(int index) {
@@ -124,17 +114,6 @@ class _EditChampionControlsPageState extends State<EditChampionControlsPage> {
         );
   }
 
-  String get _currentUserEmail {
-    final fromConstant = Constant.emailUser;
-    if (fromConstant != null && fromConstant.isNotEmpty) return fromConstant;
-    if (Get.isRegistered<MainCoreEmployeeController>()) {
-      final email =
-          Get.find<MainCoreEmployeeController>().employeeEntity?.email;
-      if (email != null && email.isNotEmpty) return email;
-    }
-    return '';
-  }
-
   /// function name: [_recomputeControlStatuses]
   ///
   /// purpose: before [_tempControls] is persisted, recompute the status of
@@ -170,14 +149,14 @@ class _EditChampionControlsPageState extends State<EditChampionControlsPage> {
       owners = ownersResult.fold((failure) => const <OwnerEntity>[], (o) => o);
     }
 
-    final editor = _currentUserEmail;
+    final editor = currentGrcUserEmail();
     final updateUseCase = GetIt.instance<UpdateControlUseCase>();
 
     Future<void> applyStatus(
       (String, String) pair, {
       required bool hasAnyAssignee,
     }) async {
-      final control = _getControlEntity(pair.$1, pair.$2);
+      final control = findControlInPolicy(widget.policyControls, pair.$1, pair.$2);
       if (control == null) return;
       if (!shouldRecomputeAssigneeBasedStatus(control.status)) return;
       final newStatus = computeAssigneeBasedControlStatus(
@@ -286,7 +265,8 @@ class _EditChampionControlsPageState extends State<EditChampionControlsPage> {
                                 List.generate(_tempControls.length, (index) {
                               final ac = _tempControls[index];
                               final ctrl =
-                                  _getControlEntity(ac.policyId, ac.controlId);
+                                  findControlInPolicy(widget.policyControls,
+                                      ac.policyId, ac.controlId);
                               final cName = ctrl != null
                                   ? (context.isArabic
                                       ? ctrl.controlsNameAr

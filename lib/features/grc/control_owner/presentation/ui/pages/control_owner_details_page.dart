@@ -1,8 +1,6 @@
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
-import 'package:demo_app/features/employee/domain/entities/employee_entity.dart';
-import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
 import 'package:demo_app/core/helper/main_helper/employee_helper.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/control/domain/use_cases/get_control_usecases.dart';
@@ -12,6 +10,7 @@ import 'package:demo_app/features/grc/control_owner/presentation/controller/owne
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
 import 'package:demo_app/features/grc/policy/domain/use_cases/get_policy_usecases.dart';
+import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
 import 'package:demo_app/features/settings/core_widgets/main_widget/custom_button_widget.dart';
 import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
@@ -101,36 +100,9 @@ class _ControlOwnerDetailsBodyState extends State<_ControlOwnerDetailsBody> {
     }
   }
 
-  EmployeeEntityPro? _findEmployee(String email) {
-    if (!Get.isRegistered<MainCoreEmployeeController>()) return null;
-    final employees =
-        Get.find<MainCoreEmployeeController>().allEmployeesEntities ?? [];
-    for (final e in employees) {
-      if (e.email == email) return e;
-    }
-    return null;
-  }
-
-  String _employeeDisplayName(BuildContext context, String email) {
-    final employee = _findEmployee(email);
-    if (employee == null) return email;
-    return EmployeeHelper.getEmployeeLocalizedName(
-        employee: employee, context: context);
-  }
-
   PolicyEntity? _getPolicyEntity(String policyId) {
     for (final p in _allPolicies) {
       if (p.id == policyId) return p;
-    }
-    return null;
-  }
-
-  ControlEntity? _getControlEntity(String policyId, String controlId) {
-    final list = _policyControls[policyId];
-    if (list != null) {
-      for (final c in list) {
-        if (c.id == controlId) return c;
-      }
     }
     return null;
   }
@@ -156,8 +128,8 @@ class _ControlOwnerDetailsBodyState extends State<_ControlOwnerDetailsBody> {
 
   @override
   Widget build(BuildContext context) {
-    final employee = _findEmployee(_currentOwner.ownerEmail);
-    final name = _employeeDisplayName(context, _currentOwner.ownerEmail);
+    final employee = findEmployeeByEmail(_currentOwner.ownerEmail);
+    final name = employeeDisplayName(context, _currentOwner.ownerEmail);
     final department = employee != null
         ? EmployeeHelper.getEmployeeLocalizeDepartment(
             employee: employee, context: context)
@@ -433,8 +405,8 @@ class _ControlOwnerDetailsBodyState extends State<_ControlOwnerDetailsBody> {
                                 runSpacing: 10.h,
                                 children: _currentOwner.assigningControls
                                     .map((ac) {
-                                  final ctrl = _getControlEntity(
-                                      ac.policyId, ac.controlId);
+                                  final ctrl = findControlInPolicy(
+                                      _policyControls, ac.policyId, ac.controlId);
                                   final cName = ctrl != null
                                       ? (context.isArabic
                                           ? ctrl.controlsNameAr

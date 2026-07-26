@@ -16,13 +16,13 @@ import 'package:demo_app/core/custom/1-custom_dropdwon.dart';
 import 'package:demo_app/core/custom/31-custom_multi_select_dropdown.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
-import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
 import 'package:demo_app/features/grc/control/domain/entities/assigning_control.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_status_resolver.dart';
 import 'package:demo_app/features/grc/control/domain/use_cases/get_control_usecases.dart';
 import 'package:demo_app/features/grc/control/domain/use_cases/update_control_usecase.dart';
 import 'package:demo_app/features/grc/control_owner/presentation/controller/owner_cubit.dart';
+import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
 import 'package:demo_app/features/grc/module/presentation/controller/cubit/grc_owner_cubit.dart';
 import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details_widget/grc_owner_section.dart';
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
@@ -140,16 +140,6 @@ class _AddOwnerPageState extends State<AddOwnerPage> {
         );
   }
 
-  String get _currentUserEmail {
-    final fromConstant = Constant.emailUser;
-    if (fromConstant != null && fromConstant.isNotEmpty) return fromConstant;
-    if (Get.isRegistered<MainCoreEmployeeController>()) {
-      final email = Get.find<MainCoreEmployeeController>().employeeEntity?.email;
-      if (email != null && email.isNotEmpty) return email;
-    }
-    return '';
-  }
-
   ControlEntity? _findControl(_AssigningControlRow row, String controlId) {
     for (final c in row.availableControls) {
       if (c.id == controlId) return c;
@@ -165,7 +155,7 @@ class _AddOwnerPageState extends State<AddOwnerPage> {
   ///          Inactive/Expired, or already Scheduled/Active, are left
   ///          untouched (see [shouldRecomputeAssigneeBasedStatus]).
   Future<void> _recomputeControlStatuses() async {
-    final editor = _currentUserEmail;
+    final editor = currentGrcUserEmail();
     final updateUseCase = GetIt.instance<UpdateControlUseCase>();
     for (final row in _rows) {
       for (final controlId in row.controlIds) {
