@@ -134,25 +134,10 @@ class GrcRequestRepositoryImpl implements GrcRequestRepository {
       return await currentResult.fold(
         (failure) async => Left(failure),
         (current) async {
-          final updated = GrcRequestModel(
-            id: current.id,
-            moduleId: current.moduleId,
-            type: current.type,
+          final updated = current.copyWith(
             status: ApprovalStatus.approved.name,
-            requestedBy: current.requestedBy,
-            requestDate: current.requestDate,
-            note: current.note,
-            rejectionReason: current.rejectionReason,
             decidedBy: decidedBy,
             decisionDate: DateTime.now(),
-            currentChampionEmail: current.currentChampionEmail,
-            newChampionEmail: current.newChampionEmail,
-            currentOwnerEmail: current.currentOwnerEmail,
-            newOwnerEmail: current.newOwnerEmail,
-            controls: current.controls,
-            startDate: current.startDate,
-            endDate: current.endDate,
-            appliedAt: current.appliedAt,
           );
           final saved = await _firebaseDataSource.update(updated, moduleId: moduleId);
           return Right(saved.toEntity());
@@ -175,25 +160,11 @@ class GrcRequestRepositoryImpl implements GrcRequestRepository {
       return await currentResult.fold(
         (failure) async => Left(failure),
         (current) async {
-          final updated = GrcRequestModel(
-            id: current.id,
-            moduleId: current.moduleId,
-            type: current.type,
+          final updated = current.copyWith(
             status: ApprovalStatus.rejected.name,
-            requestedBy: current.requestedBy,
-            requestDate: current.requestDate,
-            note: current.note,
             rejectionReason: reason,
             decidedBy: decidedBy,
             decisionDate: DateTime.now(),
-            currentChampionEmail: current.currentChampionEmail,
-            newChampionEmail: current.newChampionEmail,
-            currentOwnerEmail: current.currentOwnerEmail,
-            newOwnerEmail: current.newOwnerEmail,
-            controls: current.controls,
-            startDate: current.startDate,
-            endDate: current.endDate,
-            appliedAt: current.appliedAt,
           );
           final saved = await _firebaseDataSource.update(updated, moduleId: moduleId);
           return Right(saved.toEntity());
@@ -215,25 +186,10 @@ class GrcRequestRepositoryImpl implements GrcRequestRepository {
       return await currentResult.fold(
         (failure) async => Left(failure),
         (current) async {
-          final updated = GrcRequestModel(
-            id: current.id,
-            moduleId: current.moduleId,
-            type: current.type,
+          final updated = current.copyWith(
             status: ApprovalStatus.canceled.name,
-            requestedBy: current.requestedBy,
-            requestDate: current.requestDate,
-            note: current.note,
-            rejectionReason: current.rejectionReason,
             decidedBy: canceledBy,
             decisionDate: DateTime.now(),
-            currentChampionEmail: current.currentChampionEmail,
-            newChampionEmail: current.newChampionEmail,
-            currentOwnerEmail: current.currentOwnerEmail,
-            newOwnerEmail: current.newOwnerEmail,
-            controls: current.controls,
-            startDate: current.startDate,
-            endDate: current.endDate,
-            appliedAt: current.appliedAt,
           );
           final saved = await _firebaseDataSource.update(updated, moduleId: moduleId);
           return Right(saved.toEntity());
@@ -254,26 +210,7 @@ class GrcRequestRepositoryImpl implements GrcRequestRepository {
       return await currentResult.fold(
         (failure) async => Left(failure),
         (current) async {
-          final updated = GrcRequestModel(
-            id: current.id,
-            moduleId: current.moduleId,
-            type: current.type,
-            status: current.status,
-            requestedBy: current.requestedBy,
-            requestDate: current.requestDate,
-            note: current.note,
-            rejectionReason: current.rejectionReason,
-            decidedBy: current.decidedBy,
-            decisionDate: current.decisionDate,
-            currentChampionEmail: current.currentChampionEmail,
-            newChampionEmail: current.newChampionEmail,
-            currentOwnerEmail: current.currentOwnerEmail,
-            newOwnerEmail: current.newOwnerEmail,
-            controls: current.controls,
-            startDate: current.startDate,
-            endDate: current.endDate,
-            appliedAt: DateTime.now(),
-          );
+          final updated = current.copyWith(appliedAt: DateTime.now());
           final saved = await _firebaseDataSource.update(updated, moduleId: moduleId);
           return Right(saved.toEntity());
         },
