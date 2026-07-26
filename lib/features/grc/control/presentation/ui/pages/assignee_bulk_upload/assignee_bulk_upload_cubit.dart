@@ -14,14 +14,13 @@
 import 'package:dartz/dartz.dart';
 import 'package:demo_app/core/network/failure_model.dart';
 import 'package:demo_app/features/employee/domain/entities/employee_entity.dart';
-import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
 import 'package:demo_app/features/grc/control/domain/entities/assigning_control.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/assignee_bulk_upload/assignee_bulk_upload_rows.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/assignee_bulk_upload/assignee_excel_parser.dart';
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
+import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get.dart';
 
 part 'assignee_bulk_upload_state.dart';
 
@@ -55,18 +54,6 @@ class AssigneeBulkUploadCubit extends Cubit<AssigneeBulkUploadState> {
 
   /// The editable row collection backing the preview table.
   AssigneeBulkUploadRows get rowsData => _rows;
-
-  /// Resolves the currently logged-in user's email (same lookup used
-  /// throughout GRC — OwnerCubit, ChampionCubit, GrcRequestCubit).
-  String get _currentUserEmail {
-    final fromConstant = Constant.emailUser;
-    if (fromConstant != null && fromConstant.isNotEmpty) return fromConstant;
-    if (Get.isRegistered<MainCoreEmployeeController>()) {
-      final email = Get.find<MainCoreEmployeeController>().employeeEntity?.email;
-      if (email != null && email.isNotEmpty) return email;
-    }
-    return '';
-  }
 
   void toggleRowSelected(int index) {
     _rows.toggleSelected(index);
@@ -110,7 +97,7 @@ class AssigneeBulkUploadCubit extends Cubit<AssigneeBulkUploadState> {
     var succeededCount = 0;
     final failed = <AssigneeBulkRowFailure>[];
     final indexesToRemove = <int>[];
-    final editorId = _currentUserEmail;
+    final editorId = currentGrcUserEmail();
 
     for (var i = 0; i < _rows.rows.length; i++) {
       final row = _rows.rows[i];

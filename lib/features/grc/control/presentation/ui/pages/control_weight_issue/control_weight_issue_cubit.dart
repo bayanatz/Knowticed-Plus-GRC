@@ -10,13 +10,12 @@
 /// Revision History: 2026-07-20 - Initial creation
 library;
 
-import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_status.dart';
 import 'package:demo_app/features/grc/control/domain/use_cases/get_control_usecases.dart';
 import 'package:demo_app/features/grc/control/domain/use_cases/update_control_usecase.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/control_weight_issue/control_weight_issue_row.dart';
+import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get.dart';
 
 part 'control_weight_issue_state.dart';
 
@@ -55,18 +54,6 @@ class ControlWeightIssueCubit extends Cubit<ControlWeightIssueState> {
   /// tell "failed before there was any data to show" apart from "failed
   /// midway through an edit session, but the table is still there."
   bool get hasRows => _rowsData != null;
-
-  /// Resolves the currently logged-in user's email (same pattern as
-  /// PolicyCubit._currentUserEmail / PolicyWeightIssueCubit._currentUserEmail).
-  String get _currentUserEmail {
-    final fromConstant = Constant.emailUser;
-    if (fromConstant != null && fromConstant.isNotEmpty) return fromConstant;
-    if (Get.isRegistered<MainCoreEmployeeController>()) {
-      final email = Get.find<MainCoreEmployeeController>().employeeEntity?.email;
-      if (email != null && email.isNotEmpty) return email;
-    }
-    return '';
-  }
 
   /// function name: [load]
   ///
@@ -175,7 +162,7 @@ class ControlWeightIssueCubit extends Cubit<ControlWeightIssueState> {
     if (!rowsData.totalWeightValid) return;
 
     final changed = rowsData.changedRows;
-    final editorId = _currentUserEmail;
+    final editorId = currentGrcUserEmail();
 
     for (final row in changed) {
       final result = await _updateControlUseCase.call(

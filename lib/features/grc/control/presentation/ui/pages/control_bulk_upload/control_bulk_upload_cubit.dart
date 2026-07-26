@@ -29,6 +29,7 @@ import 'package:demo_app/features/grc/control_champion/presentation/controller/c
 import 'package:demo_app/features/grc/control_owner/domain/entities/owner_entity.dart';
 import 'package:demo_app/features/grc/control_owner/presentation/controller/owner_cubit.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/pages/policy_bulk_upload/policy_bulk_date_format.dart';
+import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 
@@ -92,18 +93,6 @@ class ControlBulkUploadCubit extends Cubit<ControlBulkUploadState> {
     return names;
   }
 
-  /// Resolves the currently logged-in user's email (same lookup as
-  /// PolicyCubit/ChampionCubit/OwnerCubit).
-  String get _currentUserEmail {
-    final fromConstant = Constant.emailUser;
-    if (fromConstant != null && fromConstant.isNotEmpty) return fromConstant;
-    if (Get.isRegistered<MainCoreEmployeeController>()) {
-      final email = Get.find<MainCoreEmployeeController>().employeeEntity?.email;
-      if (email != null && email.isNotEmpty) return email;
-    }
-    return '';
-  }
-
   void toggleRowSelected(int index) {
     _rows.toggleSelected(index);
     emit(ControlBulkUploadEditing());
@@ -144,7 +133,7 @@ class ControlBulkUploadCubit extends Cubit<ControlBulkUploadState> {
     var succeededCount = 0;
     final failed = <ControlBulkRowFailure>[];
     final indexesToRemove = <int>[];
-    final editorId = _currentUserEmail;
+    final editorId = currentGrcUserEmail();
 
     // Snapshot the current Champion/Owner assignments once, before any
     // row's create/assign runs, into a local mutable map this loop keeps
