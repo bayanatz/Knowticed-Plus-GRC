@@ -158,9 +158,10 @@ class _ControlOwnerDetailsBodyState extends State<_ControlOwnerDetailsBody> {
       listener: (context, state) {
         if (state is OwnerActionSuccess) {
           if (state.owner.status == OwnerStatus.removed) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                  content: Text('Control Owner removed successfully'.tr)),
+            showSuccessDialog(
+              context: context,
+              title: 'Control Owner Removed'.tr,
+              subtitle: 'Control Owner removed successfully'.tr,
             );
             Navigator.pop(context, true);
           } else {
@@ -169,9 +170,7 @@ class _ControlOwnerDetailsBodyState extends State<_ControlOwnerDetailsBody> {
             });
           }
         } else if (state is OwnerFailure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message)),
-          );
+          showErrorDialog(context: context, subtitle: state.message);
         }
       },
       child: Scaffold(
