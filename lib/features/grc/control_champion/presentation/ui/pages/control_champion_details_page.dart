@@ -159,9 +159,10 @@ class _ControlChampionDetailsBodyState
       listener: (context, state) {
         if (state is ChampionActionSuccess) {
           if (state.champion.status == ChampionStatus.removed) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                  content: Text('Control Champion removed successfully'.tr)),
+            showSuccessDialog(
+              context: context,
+              title: 'Control Champion Removed'.tr,
+              subtitle: 'Control Champion removed successfully'.tr,
             );
             Navigator.pop(context, true);
           } else {
@@ -170,9 +171,7 @@ class _ControlChampionDetailsBodyState
             });
           }
         } else if (state is ChampionFailure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message)),
-          );
+          showErrorDialog(context: context, subtitle: state.message);
         }
       },
       child: Scaffold(
