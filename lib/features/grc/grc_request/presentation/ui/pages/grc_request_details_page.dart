@@ -19,6 +19,8 @@ import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/helper/main_helper/employee_helper.dart';
+import 'package:demo_app/core/constants/app_assets.dart';
+import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
 import 'package:demo_app/features/employee/domain/entities/employee_entity.dart';
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
@@ -146,7 +148,7 @@ class _GrcRequestDetailsBodyState extends State<_GrcRequestDetailsBody> {
     final employee = _findEmployee(email);
     final photo = employee != null
         ? EmployeeHelper.getEmployeeImage(employee: employee)
-        : 'assets/icons_assets/main_icons_assets/assets_male.svg';
+        : AppAssets.defaultEmployeeAvatar;
     final name = _employeeDisplayName(context, email);
     final dept = employee != null
         ? EmployeeHelper.getEmployeeLocalizeDepartment(
@@ -158,7 +160,7 @@ class _GrcRequestDetailsBodyState extends State<_GrcRequestDetailsBody> {
                 ?.toString() ??
             '')
         : '';
-    final phone = employee?.mobilePhone?.phone ?? '2010258963';
+    final phone = employee?.mobilePhone?.phone ?? grcMockPhoneFallback;
     return ContactCard(
       name: name,
       jobTitle: jobTitle.isNotEmpty ? jobTitle : 'Technician'.tr,

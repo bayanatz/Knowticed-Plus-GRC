@@ -1,6 +1,7 @@
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
+import 'package:demo_app/core/constants/app_assets.dart';
 import 'package:demo_app/core/custom/2-custom_textfield.dart';
 import 'package:demo_app/core/custom/3-custom_dropdwon_calander.dart';
 import 'package:demo_app/core/custom/21-custom_contact_card.dart';
@@ -175,7 +176,7 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
     final currentEmp = findEmployeeByEmail(widget.champion.championEmail);
     final currentPhoto = currentEmp != null
         ? EmployeeHelper.getEmployeeImage(employee: currentEmp)
-        : 'assets/icons_assets/main_icons_assets/assets_male.svg';
+        : AppAssets.defaultEmployeeAvatar;
     final currentName =
         employeeDisplayName(context, widget.champion.championEmail);
     final currentDept = currentEmp != null
@@ -188,7 +189,7 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
                 ?.toString() ??
             '')
         : '';
-    final currentPhone = currentEmp?.mobilePhone?.phone ?? '2010258963';
+    final currentPhone = currentEmp?.mobilePhone?.phone ?? grcMockPhoneFallback;
 
     final dateFormat = DateFormat('yyyy-MM-dd');
 

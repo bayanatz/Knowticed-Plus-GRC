@@ -2,6 +2,7 @@ import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/helper/main_helper/employee_helper.dart';
+import 'package:demo_app/core/constants/app_assets.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/control/domain/use_cases/get_control_usecases.dart';
 import 'package:demo_app/features/grc/control_champion/domain/entities/champion_entity.dart';
@@ -144,9 +145,8 @@ class _ControlChampionDetailsBodyState
         : '';
     final photo = employee != null
         ? EmployeeHelper.getEmployeeImage(employee: employee)
-        : 'assets/icons_assets/main_icons_assets/assets_male.svg';
-    final phone = employee?.mobilePhone?.phone ??
-        '2010258963'; // Mock placeholder if empty
+        : AppAssets.defaultEmployeeAvatar;
+    final phone = employee?.mobilePhone?.phone ?? grcMockPhoneFallback;
     final email = _currentChampion.championEmail;
 
     // Get unique assigned policies
