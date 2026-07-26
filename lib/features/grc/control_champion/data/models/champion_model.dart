@@ -13,6 +13,7 @@ import 'package:intl/intl.dart';
 import 'package:demo_app/features/grc/control/data/models/assigning_control_model.dart';
 import 'package:demo_app/features/grc/control_champion/domain/entities/champion_entity.dart';
 import 'package:demo_app/features/grc/control_champion/domain/entities/champion_status.dart';
+import 'package:demo_app/features/grc/shared/constants/grc_firestore_keys.dart';
 
 final DateFormat _storageDateFormat = DateFormat('d MMM yyyy', 'en');
 
@@ -25,6 +26,9 @@ final DateFormat _storageDateFormat = DateFormat('d MMM yyyy', 'en');
 ///          (see [toJson]) because Firestore rejects arrays that directly
 ///          contain other arrays.
 class ChampionModel {
+  static const String _keyChampionEmail = 'Champion_Email';
+  static const String _keyChampionStatus = 'Champion_Status';
+
   final String championEmail;
   final List<List<AssigningControlModel>> assigningControls;
   final List<String> status; // 'Active' | 'Removed'
@@ -92,32 +96,34 @@ class ChampionModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'Champion_Email': championEmail,
-      'Assigning_Controls': assigningControls
+      _keyChampionEmail: championEmail,
+      GrcFirestoreKeys.assigningControls: assigningControls
           .map((rev) => {'Items': rev.map((a) => a.toJson()).toList()})
           .toList(),
-      'Champion_Status': status,
-      'Modification_Date':
+      _keyChampionStatus: status,
+      GrcFirestoreKeys.modificationDate:
           modificationDate.map((d) => _storageDateFormat.format(d)).toList(),
-      'Modifiers': modifiers,
+      GrcFirestoreKeys.modifiers: modifiers,
     };
   }
 
   factory ChampionModel.fromJson(Map<String, dynamic> json) {
     return ChampionModel(
-      championEmail: json['Champion_Email'] as String,
-      assigningControls: (json['Assigning_Controls'] as List? ?? [])
-          .map((rev) =>
-              ((rev as Map<String, dynamic>)['Items'] as List? ?? [])
-                  .map((item) => AssigningControlModel.fromJson(
-                      item as Map<String, dynamic>))
-                  .toList())
-          .toList(),
-      status: List<String>.from(json['Champion_Status'] ?? []),
-      modificationDate: (json['Modification_Date'] as List? ?? [])
-          .map((d) => _storageDateFormat.parse(d as String))
-          .toList(),
-      modifiers: List<String>.from(json['Modifiers'] ?? []),
+      championEmail: json[_keyChampionEmail] as String,
+      assigningControls:
+          (json[GrcFirestoreKeys.assigningControls] as List? ?? [])
+              .map((rev) =>
+                  ((rev as Map<String, dynamic>)['Items'] as List? ?? [])
+                      .map((item) => AssigningControlModel.fromJson(
+                          item as Map<String, dynamic>))
+                      .toList())
+              .toList(),
+      status: List<String>.from(json[_keyChampionStatus] ?? []),
+      modificationDate:
+          (json[GrcFirestoreKeys.modificationDate] as List? ?? [])
+              .map((d) => _storageDateFormat.parse(d as String))
+              .toList(),
+      modifiers: List<String>.from(json[GrcFirestoreKeys.modifiers] ?? []),
     );
   }
 
