@@ -143,20 +143,7 @@ class _GrcRequestsListBodyState extends State<_GrcRequestsListBody> {
   }
 
   Widget _statusPill(ApprovalStatus status) {
-    final Color color;
-    switch (status) {
-      case ApprovalStatus.approved:
-        color = AppColors.green;
-        break;
-      case ApprovalStatus.rejected:
-        color = AppColors.red;
-        break;
-      case ApprovalStatus.canceled:
-        color = AppColors.colorGrey;
-        break;
-      default:
-        color = AppColors.orange;
-    }
+    final color = status.color;
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
       decoration: BoxDecoration(
@@ -228,19 +215,19 @@ class _GrcRequestsListBodyState extends State<_GrcRequestsListBody> {
                               key: ApprovalStatus.approved.name,
                               label: 'Approved'.tr,
                               count: counts[ApprovalStatus.approved]!,
-                              labelColor: AppColors.green,
+                              labelColor: ApprovalStatus.approved.color,
                             ),
                             StatusChipItem(
                               key: ApprovalStatus.pending.name,
                               label: 'Pending'.tr,
                               count: counts[ApprovalStatus.pending]!,
-                              labelColor: AppColors.orange,
+                              labelColor: ApprovalStatus.pending.color,
                             ),
                             StatusChipItem(
                               key: ApprovalStatus.rejected.name,
                               label: 'Rejected'.tr,
                               count: counts[ApprovalStatus.rejected]!,
-                              labelColor: AppColors.red,
+                              labelColor: ApprovalStatus.rejected.color,
                             ),
                           ],
                         ),
