@@ -46,3 +46,6 @@ app.*.map.json
 lib/firebase/prod/firebase_options.dart
 lib/firebase/dev/firebase_options.dart
 google-services.json
+
+# Local git worktrees used for isolated plan execution
+/.worktrees/
