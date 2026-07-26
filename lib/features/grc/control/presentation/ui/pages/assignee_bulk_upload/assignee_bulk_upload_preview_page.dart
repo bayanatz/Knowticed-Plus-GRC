@@ -16,6 +16,7 @@ import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/assignee_bulk_upload/assignee_bulk_upload_cubit.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/assignee_bulk_upload/assignee_bulk_upload_rows.dart';
+import 'package:demo_app/features/grc/control/presentation/ui/pages/assignee_bulk_upload/assignee_excel_parser.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
 import 'package:demo_app/features/settings/core_widgets/main_widget/custom_button_widget.dart';
 import 'package:flutter/material.dart';
@@ -30,10 +31,18 @@ class _ColumnSpec {
   const _ColumnSpec(this.fieldKey, this.label, this.width);
 }
 
-const List<_ColumnSpec> _columns = [
-  _ColumnSpec('email', 'Email', 220),
-  _ColumnSpec('policyName', 'Policy Name', 220),
-  _ColumnSpec('controlNames', 'Control Name (comma-separated)', 320),
+/// `email`/`policyName` labels reuse [assigneeBulkUploadExpectedHeaders]
+/// (declared once in assignee_excel_parser.dart) by index instead of
+/// restating those header strings here; `controlNames` appends a UI hint
+/// to that same shared header rather than duplicating it outright.
+final List<_ColumnSpec> _columns = [
+  _ColumnSpec('email', assigneeBulkUploadExpectedHeaders[0], 220),
+  _ColumnSpec('policyName', assigneeBulkUploadExpectedHeaders[1], 220),
+  _ColumnSpec(
+    'controlNames',
+    '${assigneeBulkUploadExpectedHeaders[2]} (comma-separated)',
+    320,
+  ),
 ];
 
 /// class name: [AssigneeBulkUploadPreviewPage]

@@ -16,6 +16,7 @@ import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/control_bulk_upload/control_bulk_row_form.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/control_bulk_upload/control_bulk_upload_cubit.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/control_bulk_upload/control_bulk_upload_rows.dart';
+import 'package:demo_app/features/grc/control/presentation/ui/pages/control_bulk_upload/control_excel_parser.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
 import 'package:demo_app/features/settings/core_widgets/main_widget/custom_button_widget.dart';
 import 'package:flutter/material.dart';
@@ -23,21 +24,24 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 
-const List<_ColumnSpec> _columns = [
-  _ColumnSpec('controlNameEn', 'Control Name', 150),
-  _ColumnSpec('controlNameAr', 'اسم ضابط', 150),
-  _ColumnSpec('controlNumberEn', 'Control Number', 110),
-  _ColumnSpec('controlNumberAr', 'رقم ضابط', 110),
-  _ColumnSpec('controlDescriptionEn', 'Control Description', 180),
-  _ColumnSpec('controlDescriptionAr', 'وصف ضابط', 180),
-  _ColumnSpec('startDate', 'Start Date', 110),
-  _ColumnSpec('endDate', 'End Date', 110),
-  _ColumnSpec('controlWeight', 'Control Weight', 100),
-  _ColumnSpec('frequency', 'Frequency', 110),
-  _ColumnSpec('controlChampion', 'Control Champion', 180),
-  _ColumnSpec('controlOwner', 'Control Owner', 180),
-  _ColumnSpec('appliedDepartments', 'Applied Departments', 200),
-  _ColumnSpec('departmentWeight', 'Department Weight', 150),
+/// Column labels reuse [controlBulkUploadExpectedHeaders] (declared once in
+/// control_excel_parser.dart) by index — same order as that list — instead
+/// of restating the 14 bilingual header strings here.
+final List<_ColumnSpec> _columns = [
+  _ColumnSpec('controlNameEn', controlBulkUploadExpectedHeaders[0], 150),
+  _ColumnSpec('controlNameAr', controlBulkUploadExpectedHeaders[1], 150),
+  _ColumnSpec('controlNumberEn', controlBulkUploadExpectedHeaders[2], 110),
+  _ColumnSpec('controlNumberAr', controlBulkUploadExpectedHeaders[3], 110),
+  _ColumnSpec('controlDescriptionEn', controlBulkUploadExpectedHeaders[4], 180),
+  _ColumnSpec('controlDescriptionAr', controlBulkUploadExpectedHeaders[5], 180),
+  _ColumnSpec('startDate', controlBulkUploadExpectedHeaders[6], 110),
+  _ColumnSpec('endDate', controlBulkUploadExpectedHeaders[7], 110),
+  _ColumnSpec('controlWeight', controlBulkUploadExpectedHeaders[8], 100),
+  _ColumnSpec('frequency', controlBulkUploadExpectedHeaders[9], 110),
+  _ColumnSpec('controlChampion', controlBulkUploadExpectedHeaders[10], 180),
+  _ColumnSpec('controlOwner', controlBulkUploadExpectedHeaders[11], 180),
+  _ColumnSpec('appliedDepartments', controlBulkUploadExpectedHeaders[12], 200),
+  _ColumnSpec('departmentWeight', controlBulkUploadExpectedHeaders[13], 150),
 ];
 
 class _ColumnSpec {
