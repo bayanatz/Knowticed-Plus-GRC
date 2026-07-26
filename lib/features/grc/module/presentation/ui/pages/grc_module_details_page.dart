@@ -51,7 +51,9 @@ import 'package:intl/intl.dart';
 import 'package:demo_app/features/employee/domain/entities/employee_entity.dart';
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
 import 'package:demo_app/core/helper/main_helper/employee_helper.dart';
+import 'package:demo_app/features/grc/control/presentation/ui/pages/assignee_bulk_upload/assignee_bulk_upload_page.dart';
 import 'package:demo_app/features/grc/control_champion/domain/entities/champion_entity.dart';
+import 'package:demo_app/features/grc/control_champion/domain/use_cases/create_champion_usecase.dart';
 import 'package:demo_app/features/grc/control_champion/presentation/controller/champion_cubit.dart';
 import 'package:demo_app/features/grc/control_champion/presentation/ui/pages/add_champion_page.dart';
 import 'package:get/get.dart' hide Trans;
@@ -59,6 +61,7 @@ import 'package:demo_app/core/custom/1-custom_dropdwon.dart';
 import 'package:demo_app/features/department/presentation/controller/add_department_controller.dart';
 import 'package:demo_app/features/grc/control_owner/domain/entities/owner_entity.dart';
 import 'package:demo_app/features/grc/control_owner/presentation/controller/owner_cubit.dart';
+import 'package:demo_app/features/grc/control_owner/domain/use_cases/create_owner_usecase.dart';
 import 'package:demo_app/features/grc/control_owner/presentation/ui/pages/add_owner_page.dart';
 import 'package:demo_app/features/grc/control_owner/presentation/ui/pages/control_owner_details_page.dart';
 import 'package:demo_app/features/grc/control_champion/presentation/ui/pages/control_champion_details_page.dart';
@@ -718,6 +721,40 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
     );
   }
 
+  Future<void> _showChampionCreationMenu(BuildContext context) async {
+    final buttonBox =
+        _addChampionButtonKey.currentContext?.findRenderObject() as RenderBox?;
+    if (buttonBox == null) return;
+    final overlayBox =
+        Overlay.of(context).context.findRenderObject() as RenderBox;
+
+    final position = RelativeRect.fromRect(
+      Rect.fromPoints(
+        buttonBox.localToGlobal(Offset(0, buttonBox.size.height),
+            ancestor: overlayBox),
+        buttonBox.localToGlobal(buttonBox.size.bottomRight(Offset.zero),
+            ancestor: overlayBox),
+      ),
+      Offset.zero & overlayBox.size,
+    );
+
+    final choice = await showMenu<String>(
+      context: context,
+      position: position,
+      items: [
+        PopupMenuItem(value: 'add', child: Text('Add Champion'.tr)),
+        PopupMenuItem(value: 'bulk', child: Text('Bulk Upload'.tr)),
+      ],
+    );
+
+    if (!context.mounted) return;
+    if (choice == 'add') {
+      await _openAddChampion(context);
+    } else if (choice == 'bulk') {
+      await _openChampionBulkUpload(context);
+    }
+  }
+
   Future<void> _openAddChampion(BuildContext context) async {
     final result = await Navigator.push<bool>(
       context,
@@ -726,6 +763,41 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
           moduleId: widget.module.moduleId,
           moduleNameEn: widget.module.moduleNameEn,
           moduleNameAr: widget.module.moduleNameAr,
+        ),
+        transitionsBuilder: (_, animation, __, child) =>
+            FadeTransition(opacity: animation, child: child),
+        transitionDuration: const Duration(milliseconds: 300),
+      ),
+    );
+    if (result == true && context.mounted) {
+      context
+          .read<ChampionCubit>()
+          .getAllChampions(moduleId: widget.module.moduleId);
+    }
+  }
+
+  Future<void> _openChampionBulkUpload(BuildContext context) async {
+    final result = await Navigator.push<bool>(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) => AssigneeBulkUploadPage(
+          moduleId: widget.module.moduleId,
+          assigneeLabel: 'Control Champion'.tr,
+          createAssignee: ({
+            required moduleId,
+            required email,
+            required assigningControls,
+            required editorId,
+          }) {
+            return GetIt.instance<CreateChampionUseCase>().call(
+              CreateChampionParams(
+                moduleId: moduleId,
+                championEmail: email,
+                assigningControls: assigningControls,
+                editorId: editorId,
+              ),
+            );
+          },
         ),
         transitionsBuilder: (_, animation, __, child) =>
             FadeTransition(opacity: animation, child: child),
@@ -813,7 +885,7 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
                       space: 10.w,
                       widthImage: 16.w,
                       heightImage: 16.h,
-                      function: () => _openAddChampion(context),
+                      function: () => _showChampionCreationMenu(context),
                       title: 'Champion',
                       textStyle: StyleText.fontSize14Weight500
                           .copyWith(color: AppColors.textButton),
@@ -843,7 +915,7 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
                       radius: 8.r,
                       widthImage: 16.w,
                       heightImage: 16.h,
-                      function: () => _openAddChampion(context),
+                      function: () => _showChampionCreationMenu(context),
                       title: 'Champion',
                       textStyle: StyleText.fontSize14Weight500
                           .copyWith(color: AppColors.textButton),
@@ -947,28 +1019,63 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
       position: position,
       items: [
         PopupMenuItem(value: 'add', child: Text('Add Owner'.tr)),
-        // Bulk Upload is a visual-only stub for now — see the design spec's
-        // "core only" scope decision.
         PopupMenuItem(value: 'bulk', child: Text('Bulk Upload'.tr)),
       ],
     );
 
-    if (choice != 'add' || !context.mounted) return;
-    final result = await Navigator.push<bool>(
-      context,
-      PageRouteBuilder(
-        pageBuilder: (_, __, ___) => AddOwnerPage(
-          moduleId: widget.module.moduleId,
-          moduleNameEn: widget.module.moduleNameEn,
-          moduleNameAr: widget.module.moduleNameAr,
+    if (!context.mounted) return;
+    if (choice == 'add') {
+      final result = await Navigator.push<bool>(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) => AddOwnerPage(
+            moduleId: widget.module.moduleId,
+            moduleNameEn: widget.module.moduleNameEn,
+            moduleNameAr: widget.module.moduleNameAr,
+          ),
+          transitionsBuilder: (_, animation, __, child) =>
+              FadeTransition(opacity: animation, child: child),
+          transitionDuration: const Duration(milliseconds: 300),
         ),
-        transitionsBuilder: (_, animation, __, child) =>
-            FadeTransition(opacity: animation, child: child),
-        transitionDuration: const Duration(milliseconds: 300),
-      ),
-    );
-    if (result == true && context.mounted) {
-      context.read<OwnerCubit>().getAllOwners(moduleId: widget.module.moduleId);
+      );
+      if (result == true && context.mounted) {
+        context
+            .read<OwnerCubit>()
+            .getAllOwners(moduleId: widget.module.moduleId);
+      }
+    } else if (choice == 'bulk') {
+      final result = await Navigator.push<bool>(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) => AssigneeBulkUploadPage(
+            moduleId: widget.module.moduleId,
+            assigneeLabel: 'Control Owner'.tr,
+            createAssignee: ({
+              required moduleId,
+              required email,
+              required assigningControls,
+              required editorId,
+            }) {
+              return GetIt.instance<CreateOwnerUseCase>().call(
+                CreateOwnerParams(
+                  moduleId: moduleId,
+                  ownerEmail: email,
+                  assigningControls: assigningControls,
+                  editorId: editorId,
+                ),
+              );
+            },
+          ),
+          transitionsBuilder: (_, animation, __, child) =>
+              FadeTransition(opacity: animation, child: child),
+          transitionDuration: const Duration(milliseconds: 300),
+        ),
+      );
+      if (result == true && context.mounted) {
+        context
+            .read<OwnerCubit>()
+            .getAllOwners(moduleId: widget.module.moduleId);
+      }
     }
   }
 
