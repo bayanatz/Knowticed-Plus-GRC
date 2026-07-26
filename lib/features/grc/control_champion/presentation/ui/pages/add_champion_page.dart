@@ -89,7 +89,16 @@ class _AddChampionPageState extends State<AddChampionPage> {
     );
   }
 
-  Future<void> _onPolicyChanged(_AssigningControlRow row, String policyId) async {
+  Future<void> _onPolicyChanged(
+      _AssigningControlRow row, String? policyId) async {
+    if (policyId == null) {
+      setState(() {
+        row.policyId = null;
+        row.controlIds = [];
+        row.availableControls = [];
+      });
+      return;
+    }
     setState(() {
       row.policyId = policyId;
       row.controlIds = [];
@@ -274,7 +283,7 @@ class _AddChampionPageState extends State<AddChampionPage> {
               policies: _policies,
               policiesEnabled: !_loadingPolicies,
               policyId: _rows[i].policyId,
-              onPolicyChanged: (v) => _onPolicyChanged(_rows[i], v!),
+              onPolicyChanged: (v) => _onPolicyChanged(_rows[i], v),
               policyErrorText: _submitted && _rows[i].policyId == null
                   ? 'Required'.tr
                   : null,
