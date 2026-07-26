@@ -32,6 +32,7 @@ import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart'
 import 'package:demo_app/core/custom/loading.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
+import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_status.dart';
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
@@ -42,13 +43,13 @@ import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details
     show containsEnglishLetters, containsArabicLetters;
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/create_new_policy_widget/create_policy_step0.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/create_new_policy_widget/create_policy_step0_buttons.dart';
-import 'package:demo_app/features/grc/policy/presentation/ui/widgets/create_new_policy_widget/create_policy_step1_buttons.dart';
-import 'package:demo_app/features/grc/policy/presentation/ui/widgets/create_new_policy_widget/create_policy_step2_buttons.dart';
+import 'package:demo_app/features/grc/policy/presentation/ui/widgets/create_new_policy_widget/create_policy_buttons.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/create_new_policy_widget/create_policy_step2_preview.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_control_completeness.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_control_model.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_document_info.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
+import 'package:demo_app/features/settings/core_widgets/main_widget/custom_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -895,17 +896,32 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
           onNext: _handleNextPressed,
         );
       case 1:
-        return CreatePolicyStep1Buttons(
+        return CreatePolicyBackSaveButtons(
           onBack: () => setState(() => _step = 0),
           onSaveForLater: () => _handleSaveForLaterPressed(cubit),
-          onPreview: _handlePreviewPressed,
-          previewEnabled: _canPreview,
+          trailingButton: customButton(
+            title: 'Preview'.tr,
+            function: _canPreview ? _handlePreviewPressed : () {},
+            height: 38.h,
+            width: 150.w,
+            color: _canPreview ? AppColors.primary : AppColors.colorGrey,
+            textStyle: StyleText.fontSize14Weight500
+                .copyWith(color: AppColors.textButton),
+          ),
         );
       case 2:
-        return CreatePolicyStep2Buttons(
+        return CreatePolicyBackSaveButtons(
           onBack: () => setState(() => _step = 1),
           onSaveForLater: () => _handleSaveForLaterPressed(cubit),
-          onPublish: () => _handlePublishPressed(cubit),
+          trailingButton: customButton(
+            title: 'Publish'.tr,
+            function: () => _handlePublishPressed(cubit),
+            height: 38.h,
+            width: 150.w,
+            color: AppColors.primary,
+            textStyle: StyleText.fontSize14Weight500
+                .copyWith(color: AppColors.textButton),
+          ),
         );
       default:
         return const SizedBox.shrink();
