@@ -18,6 +18,7 @@ import 'dart:convert';
 
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_owner_history_entry.dart';
+import 'package:demo_app/features/grc/shared/constants/grc_firestore_keys.dart';
 import 'package:intl/intl.dart';
 
 /// ************************* FILE INFO *************************** ///
@@ -80,6 +81,16 @@ class _OpenOwnerStint {
 ///
 /// created at: 30/6/2026
 class GRCModuleModel {
+  static const String _keyModuleImage = 'Module_Image';
+  static const String _keyModuleNameEn = 'Module_Name_En';
+  static const String _keyModuleNameAr = 'Module_Name_Ar';
+  static const String _keyModuleDescriptionEn = 'Module_Description_En';
+  static const String _keyModuleDescriptionAr = 'Module_Description_Ar';
+  static const String _keyModuleOwningDepartment = 'Module_Owning_Department';
+  static const String _keyModuleActivationDate = 'Module_Activation_Date';
+  static const String _keyModuleOwners = 'Module_Owners';
+  static const String _keyStatus = 'Status';
+
   final String moduleId;
 
   final List<String?> moduleImage;
@@ -303,22 +314,22 @@ class GRCModuleModel {
   /// return type: [Map<String, dynamic>] - the Firestore-ready representation
   Map<String, dynamic> toJson() {
     return {
-      'Module_ID': moduleId,
-      'Module_Image': moduleImage,
-      'Module_Name_En': moduleNameEn,
-      'Module_Name_Ar': moduleNameAr,
-      'Module_Description_En': moduleDescriptionEn,
-      'Module_Description_Ar': moduleDescriptionAr,
-      'Module_Owning_Department': moduleOwningDepartment,
-      'Module_Activation_Date': moduleActivationDate
+      GrcFirestoreKeys.moduleId: moduleId,
+      _keyModuleImage: moduleImage,
+      _keyModuleNameEn: moduleNameEn,
+      _keyModuleNameAr: moduleNameAr,
+      _keyModuleDescriptionEn: moduleDescriptionEn,
+      _keyModuleDescriptionAr: moduleDescriptionAr,
+      _keyModuleOwningDepartment: moduleOwningDepartment,
+      _keyModuleActivationDate: moduleActivationDate
           .map((d) => _storageDateFormat.format(d))
           .toList(),
       // Already JSON-encoded strings — stored as List<String> in Firestore.
-      'Module_Owners': moduleOwners,
-      'Status': status,
-      'Modification_Date':
+      _keyModuleOwners: moduleOwners,
+      _keyStatus: status,
+      GrcFirestoreKeys.modificationDate:
           modificationDate.map((d) => _storageDateFormat.format(d)).toList(),
-      'Modifiers': modifiers,
+      GrcFirestoreKeys.modifiers: modifiers,
     };
   }
 
@@ -332,32 +343,34 @@ class GRCModuleModel {
   ///
   /// return type: [GRCModuleModel] - the reconstructed model instance
   factory GRCModuleModel.fromJson(Map<String, dynamic> json) {
-    final modifiersRaw = List<String>.from(json['Modifiers'] ?? []);
+    final modifiersRaw =
+        List<String>.from(json[GrcFirestoreKeys.modifiers] ?? []);
     return GRCModuleModel(
-      moduleId: json['Module_ID'] as String,
-      moduleImage: List<String?>.from(json['Module_Image'] ?? []),
-      moduleNameEn: List<String>.from(json['Module_Name_En'] ?? []),
-      moduleNameAr: List<String>.from(json['Module_Name_Ar'] ?? []),
+      moduleId: json[GrcFirestoreKeys.moduleId] as String,
+      moduleImage: List<String?>.from(json[_keyModuleImage] ?? []),
+      moduleNameEn: List<String>.from(json[_keyModuleNameEn] ?? []),
+      moduleNameAr: List<String>.from(json[_keyModuleNameAr] ?? []),
       moduleDescriptionEn:
-          List<String>.from(json['Module_Description_En'] ?? []),
+          List<String>.from(json[_keyModuleDescriptionEn] ?? []),
       moduleDescriptionAr:
-          List<String>.from(json['Module_Description_Ar'] ?? []),
+          List<String>.from(json[_keyModuleDescriptionAr] ?? []),
       moduleOwningDepartment:
-          List<String>.from(json['Module_Owning_Department'] ?? []),
-      moduleActivationDate: (json['Module_Activation_Date'] as List? ?? [])
+          List<String>.from(json[_keyModuleOwningDepartment] ?? []),
+      moduleActivationDate: (json[_keyModuleActivationDate] as List? ?? [])
           .map((d) => _storageDateFormat.parse(d as String))
           .toList(),
       // Stored as List<String> of JSON-encoded owner lists — keep as-is;
       // decoding happens in toEntity() when the latest value is needed.
-      moduleOwners: List<String>.from(json['Module_Owners'] ?? []),
-      status: json['Status'] != null
-          ? List<String>.from(json['Status'])
+      moduleOwners: List<String>.from(json[_keyModuleOwners] ?? []),
+      status: json[_keyStatus] != null
+          ? List<String>.from(json[_keyStatus])
           // Backwards-compat: documents written before the Status field was
           // added default to "Active".
           : List<String>.filled(modifiersRaw.length, 'Active'),
-      modificationDate: (json['Modification_Date'] as List? ?? [])
-          .map((d) => _storageDateFormat.parse(d as String))
-          .toList(),
+      modificationDate:
+          (json[GrcFirestoreKeys.modificationDate] as List? ?? [])
+              .map((d) => _storageDateFormat.parse(d as String))
+              .toList(),
       modifiers: modifiersRaw,
     );
   }
