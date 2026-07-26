@@ -398,6 +398,7 @@ class _GovernanceRiskAndComplianceDetailsState
                                       _selectedOwnerEmails =
                                           selected.map((o) => o.email).toList();
                                     },
+                                    sectionTitle: 'Module Owner'.tr,
                                   ),
                                 ],
                               ),
