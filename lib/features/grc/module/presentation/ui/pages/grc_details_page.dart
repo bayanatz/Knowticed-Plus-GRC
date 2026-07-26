@@ -24,6 +24,7 @@ import 'package:demo_app/core/custom/loading.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
+import 'package:demo_app/features/grc/module/domain/entities/grc_module_status.dart';
 import 'package:demo_app/features/grc/module/presentation/controller/cubit/grc_module_cubit.dart';
 import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details_widget/grc_action_buttons.dart';
 import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details_widget/grc_bottom_buttons.dart';
@@ -110,7 +111,7 @@ class _GovernanceRiskAndComplianceDetailsState
     _descArController.text = entity.moduleDescriptionAr;
     _selectedDepartment = entity.moduleOwningDepartment;
     _activationDate = entity.moduleActivationDate;
-    _statusValue = entity.status == 'Active';
+    _statusValue = entity.status == GrcModuleStatus.active.value;
     _selectedOwnerEmails = List.from(entity.moduleOwners);
   }
 
@@ -161,7 +162,9 @@ class _GovernanceRiskAndComplianceDetailsState
       owningDepartment: _selectedDepartment ?? '',
       activationDate: _activationDate ?? DateTime.now(),
       owners: _selectedOwnerEmails,
-      status: _statusValue ? 'Active' : 'Inactive',
+      status: _statusValue
+          ? GrcModuleStatus.active.value
+          : GrcModuleStatus.inactive.value,
       imageFile: _imageFile,
     );
   }
@@ -176,7 +179,9 @@ class _GovernanceRiskAndComplianceDetailsState
       owningDepartment: _selectedDepartment,
       activationDate: _activationDate,
       owners: _selectedOwnerEmails,
-      status: _statusValue ? 'Active' : 'Inactive',
+      status: _statusValue
+          ? GrcModuleStatus.active.value
+          : GrcModuleStatus.inactive.value,
       imageFile: _imageFile,
     );
   }

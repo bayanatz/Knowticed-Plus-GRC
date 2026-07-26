@@ -17,6 +17,8 @@
 /// Author: Mohamed Magdy Abdelkhalek
 /// Created At: 30/6/2026
 
+import 'package:demo_app/features/grc/module/domain/entities/grc_module_status.dart';
+
 /// class name: [GRCModuleEntity]
 ///
 /// purpose: holds the current (latest) values of a GRC Module record as plain
@@ -70,7 +72,7 @@ class GRCModuleEntity {
   });
 
   /// Convenience getter — true when this module has been soft-deleted.
-  bool get isRemoved => status == 'Removed';
+  bool get isRemoved => status == GrcModuleStatus.removed.value;
 
   /// function name: [copyWith]
   ///

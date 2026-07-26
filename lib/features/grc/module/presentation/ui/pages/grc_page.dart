@@ -26,6 +26,7 @@ import 'package:demo_app/core/local_widgets/services_management/W2_Navigator.dar
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
+import 'package:demo_app/features/grc/module/domain/entities/grc_module_status.dart';
 import 'package:demo_app/features/grc/module/presentation/controller/cubit/grc_module_cubit.dart';
 import 'package:demo_app/features/grc/module/presentation/ui/pages/grc_details_page.dart';
 import 'package:demo_app/features/grc/module/presentation/ui/pages/grc_module_details_page.dart';
@@ -112,16 +113,19 @@ class _GovernanceRiskAndCompliancePageState
 
     // Status filter — Removed is treated as a status alongside Active/Inactive.
     // "all" shows everything; each other tab filters by its own condition.
-    if (_selectedStatus == 'Active') {
-      result =
-          result.where((m) => !m.isRemoved && m.status == 'Active').toList();
-    } else if (_selectedStatus == 'Inactive') {
-      result =
-          result.where((m) => !m.isRemoved && m.status == 'Inactive').toList();
-    } else if (_selectedStatus == 'Scheduled') {
-      result =
-          result.where((m) => !m.isRemoved && m.status == 'Scheduled').toList();
-    } else if (_selectedStatus == 'Removed') {
+    if (_selectedStatus == GrcModuleStatus.active.value) {
+      result = result
+          .where((m) => !m.isRemoved && m.status == GrcModuleStatus.active.value)
+          .toList();
+    } else if (_selectedStatus == GrcModuleStatus.inactive.value) {
+      result = result
+          .where((m) => !m.isRemoved && m.status == GrcModuleStatus.inactive.value)
+          .toList();
+    } else if (_selectedStatus == GrcModuleStatus.scheduled.value) {
+      result = result
+          .where((m) => !m.isRemoved && m.status == GrcModuleStatus.scheduled.value)
+          .toList();
+    } else if (_selectedStatus == GrcModuleStatus.removed.value) {
       result = result.where((m) => m.isRemoved).toList();
     }
     // 'all' → no filter, show everything
@@ -153,13 +157,19 @@ class _GovernanceRiskAndCompliancePageState
   Map<String, int> _countByStatus(List<GRCModuleEntity> modules) {
     return {
       'all': modules.length,
-      'Active':
-          modules.where((m) => !m.isRemoved && m.status == 'Active').length,
-      'Inactive':
-          modules.where((m) => !m.isRemoved && m.status == 'Inactive').length,
-      'Scheduled':
-          modules.where((m) => !m.isRemoved && m.status == 'Scheduled').length,
-      'Removed': modules.where((m) => m.isRemoved).length,
+      GrcModuleStatus.active.value: modules
+          .where((m) => !m.isRemoved && m.status == GrcModuleStatus.active.value)
+          .length,
+      GrcModuleStatus.inactive.value: modules
+          .where(
+              (m) => !m.isRemoved && m.status == GrcModuleStatus.inactive.value)
+          .length,
+      GrcModuleStatus.scheduled.value: modules
+          .where(
+              (m) => !m.isRemoved && m.status == GrcModuleStatus.scheduled.value)
+          .length,
+      GrcModuleStatus.removed.value:
+          modules.where((m) => m.isRemoved).length,
     };
   }
 

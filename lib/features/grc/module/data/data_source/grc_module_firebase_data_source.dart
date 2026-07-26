@@ -11,6 +11,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:demo_app/core/network/get_base_url.dart';
 import 'package:demo_app/features/grc/module/data/models/grc_module_model.dart';
+import 'package:demo_app/features/grc/module/domain/entities/grc_module_status.dart';
 
 import 'grc_module_data_source.dart';
 
@@ -94,7 +95,9 @@ class GRCModuleFirebaseDataSource implements GRCModuleDataSource {
       final models =
           snapshot.docs.map((doc) => GRCModuleModel.fromJson(doc.data()));
       if (includeDeleted) return models.toList();
-      return models.where((m) => m.status.last != 'Removed').toList();
+      return models
+          .where((m) => m.status.last != GrcModuleStatus.removed.value)
+          .toList();
     } catch (e) {
       throw Exception('Failed to fetch the GRC Modules: $e');
     }
@@ -147,7 +150,7 @@ class GRCModuleFirebaseDataSource implements GRCModuleDataSource {
         throw Exception('Cannot delete a Module that does not exist (id: $id)');
       }
       final deletedModel = current.copyWithUpdate(
-        status: 'Removed',
+        status: GrcModuleStatus.removed.value,
         modifierEmail: editorId,
       );
       await _collection.doc(id).set(deletedModel.toJson());

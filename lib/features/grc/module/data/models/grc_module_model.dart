@@ -18,6 +18,7 @@ import 'dart:convert';
 
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_owner_history_entry.dart';
+import 'package:demo_app/features/grc/module/domain/entities/grc_module_status.dart';
 import 'package:demo_app/features/grc/shared/constants/grc_firestore_keys.dart';
 import 'package:intl/intl.dart';
 
@@ -46,12 +47,16 @@ String _deriveStatus({
   required String requestedStatus,
   required DateTime activationDate,
 }) {
-  if (requestedStatus == 'Inactive' || requestedStatus == 'Removed') {
-    return requestedStatus;
+  final requested = GrcModuleStatus.fromString(requestedStatus);
+  if (requested == GrcModuleStatus.inactive ||
+      requested == GrcModuleStatus.removed) {
+    return requested.value;
   }
   final today = DateTime.now();
   final startOfToday = DateTime(today.year, today.month, today.day);
-  return activationDate.isAfter(startOfToday) ? 'Scheduled' : 'Active';
+  return activationDate.isAfter(startOfToday)
+      ? GrcModuleStatus.scheduled.value
+      : GrcModuleStatus.active.value;
 }
 
 /// Tracks an owner stint that has been opened (added) but not yet closed
@@ -366,7 +371,8 @@ class GRCModuleModel {
           ? List<String>.from(json[_keyStatus])
           // Backwards-compat: documents written before the Status field was
           // added default to "Active".
-          : List<String>.filled(modifiersRaw.length, 'Active'),
+          : List<String>.filled(
+              modifiersRaw.length, GrcModuleStatus.active.value),
       modificationDate:
           (json[GrcFirestoreKeys.modificationDate] as List? ?? [])
               .map((d) => _storageDateFormat.parse(d as String))
