@@ -32,6 +32,9 @@
 ///
 /// created at: 18/7/2026
 class DepartmentWeight {
+  static const String _keyDepartment = 'Department';
+  static const String _keyWeight = 'Weight';
+
   final String department;
   final double weight;
 
@@ -104,8 +107,8 @@ class DepartmentWeight {
   /// return type: [Map<String, dynamic>] - the Firestore-ready representation
   Map<String, dynamic> toJson() {
     return {
-      'Department': department,
-      'Weight': weight,
+      _keyDepartment: department,
+      _keyWeight: weight,
     };
   }
 
@@ -119,8 +122,8 @@ class DepartmentWeight {
   /// return type: [DepartmentWeight] - the reconstructed instance
   factory DepartmentWeight.fromJson(Map<String, dynamic> json) {
     return DepartmentWeight(
-      department: json['Department'] as String,
-      weight: (json['Weight'] as num).toDouble(),
+      department: json[_keyDepartment] as String,
+      weight: (json[_keyWeight] as num).toDouble(),
     );
   }
 }
