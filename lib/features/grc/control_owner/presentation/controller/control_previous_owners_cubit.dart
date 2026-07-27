@@ -9,7 +9,7 @@
 library;
 
 import 'package:demo_app/features/grc/control_owner/domain/entities/control_owner_history_entry.dart';
-import 'package:demo_app/features/grc/control_owner/domain/use_cases/get_control_owner_history_use_case.dart';
+import 'package:demo_app/features/grc/control_owner/domain/use_cases/get_control_owner_history_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'control_previous_owners_state.dart';

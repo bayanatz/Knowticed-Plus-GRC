@@ -50,7 +50,7 @@ import 'package:demo_app/features/grc/control/domain/use_cases/get_control_useca
 import 'package:demo_app/features/grc/control/domain/use_cases/get_control_weight_history_usecase.dart';
 import 'package:demo_app/features/grc/control_champion/domain/use_cases/get_champion_usecases.dart';
 import 'package:demo_app/features/grc/control_owner/domain/use_cases/get_owner_usecases.dart';
-import 'package:demo_app/features/grc/control_owner/domain/use_cases/get_control_owner_history_use_case.dart';
+import 'package:demo_app/features/grc/control_owner/domain/use_cases/get_control_owner_history_usecase.dart';
 import 'package:demo_app/features/grc/module/domain/use_cases/get_grc_module_use_case.dart';
 import 'package:demo_app/features/grc/module/domain/use_cases/get_grc_module_owner_history_use_case.dart';
 import 'package:demo_app/features/grc/policy/domain/use_cases/get_policy_usecases.dart';
