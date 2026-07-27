@@ -18,7 +18,6 @@ import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/grc/control/domain/entities/assigning_control.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_status_resolver.dart';
-import 'package:demo_app/features/grc/control/domain/use_cases/get_control_usecases.dart';
 import 'package:demo_app/features/grc/control/domain/use_cases/update_control_usecase.dart';
 import 'package:demo_app/features/grc/control_owner/presentation/controller/owner_cubit.dart';
 import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
@@ -26,7 +25,6 @@ import 'package:demo_app/features/grc/shared/widgets/grc_policy_control_picker_r
 import 'package:demo_app/features/grc/module/presentation/controller/cubit/grc_owner_cubit.dart';
 import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details_widget/grc_owner_section.dart';
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
-import 'package:demo_app/features/grc/policy/domain/use_cases/get_policy_usecases.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
 import 'package:demo_app/features/settings/core_widgets/main_widget/custom_button_widget.dart';
 import 'package:flutter/material.dart';
@@ -73,15 +71,27 @@ class _AddOwnerPageState extends State<AddOwnerPage> {
   bool _loadingPolicies = true;
   bool _submitted = false;
 
+  // Resolved once up-front (instead of via BlocProvider's `create:`) so it's
+  // available to _loadPolicies() from initState(), before this State's own
+  // build() has run and created the BlocProvider below it in the tree.
+  late final OwnerCubit _ownerCubit;
+
   @override
   void initState() {
     super.initState();
+    _ownerCubit = GetIt.instance<OwnerCubit>();
     _loadPolicies();
   }
 
+  @override
+  void dispose() {
+    _ownerCubit.close();
+    super.dispose();
+  }
+
   Future<void> _loadPolicies() async {
-    final result = await GetIt.instance<GetAllPoliciesUseCase>()
-        .call(moduleId: widget.moduleId);
+    final result =
+        await _ownerCubit.getAllPolicies(moduleId: widget.moduleId);
     if (!mounted) return;
     result.fold(
       (failure) => setState(() => _loadingPolicies = false),
@@ -108,8 +118,8 @@ class _AddOwnerPageState extends State<AddOwnerPage> {
       row.availableControls = [];
       row.isLoadingControls = true;
     });
-    final result = await GetIt.instance<GetAllControlsUseCase>()
-        .call(moduleId: widget.moduleId, policyId: policyId);
+    final result = await _ownerCubit.getAllControlsForPolicy(
+        moduleId: widget.moduleId, policyId: policyId);
     if (!mounted) return;
     result.fold(
       (failure) => setState(() => row.isLoadingControls = false),
@@ -175,7 +185,6 @@ class _AddOwnerPageState extends State<AddOwnerPage> {
   ///          untouched (see [shouldRecomputeAssigneeBasedStatus]).
   Future<void> _recomputeControlStatuses() async {
     final editor = currentGrcUserEmail();
-    final updateUseCase = GetIt.instance<UpdateControlUseCase>();
     for (final row in _rows) {
       for (final controlId in row.controlIds) {
         final control = _findControl(row, controlId);
@@ -186,7 +195,7 @@ class _AddOwnerPageState extends State<AddOwnerPage> {
           hasAnyAssignee: true,
         );
         if (newStatus == control.status) continue;
-        await updateUseCase.call(
+        await _ownerCubit.updateControl(
           UpdateControlParams(
             id: control.id,
             moduleId: widget.moduleId,
@@ -201,8 +210,8 @@ class _AddOwnerPageState extends State<AddOwnerPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => GetIt.instance<OwnerCubit>(),
+    return BlocProvider.value(
+      value: _ownerCubit,
       child: BlocConsumer<OwnerCubit, OwnerState>(
         listener: (context, state) {
           if (state is OwnerActionSuccess) {

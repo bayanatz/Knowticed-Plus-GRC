@@ -5,11 +5,14 @@
 /// Date: 2026-07-19
 /// Dependencies: flutter_bloc, use cases, OwnerEntity, AssigningControlEntity
 
+import 'package:dartz/dartz.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:demo_app/core/network/failure_model.dart';
 import 'package:demo_app/features/grc/control/domain/entities/assigning_control.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_status_resolver.dart';
+import 'package:demo_app/features/grc/control/domain/use_cases/get_control_usecases.dart';
 import 'package:demo_app/features/grc/control/domain/use_cases/update_control_usecase.dart';
 import 'package:demo_app/features/grc/control_champion/domain/entities/champion_entity.dart';
 import 'package:demo_app/features/grc/control_champion/domain/entities/champion_request_resolver.dart';
@@ -22,6 +25,8 @@ import 'package:demo_app/features/grc/control_owner/domain/use_cases/get_owner_u
 import 'package:demo_app/features/grc/control_owner/domain/use_cases/update_owner_usecase.dart';
 import 'package:demo_app/features/grc/grc_request/domain/entities/grc_request_type.dart';
 import 'package:demo_app/features/grc/grc_request/domain/use_cases/get_grc_requests_usecase.dart';
+import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
+import 'package:demo_app/features/grc/policy/domain/use_cases/get_policy_usecases.dart';
 import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
 
 part 'owner_state.dart';
@@ -34,12 +39,18 @@ class OwnerCubit extends Cubit<OwnerState> {
     required UpdateOwnerUseCase updateOwnerUseCase,
     required GetGrcRequestsUseCase getGrcRequestsUseCase,
     required ApplyOwnerReassignmentUseCase applyOwnerReassignmentUseCase,
+    required GetAllPoliciesUseCase getAllPoliciesUseCase,
+    required GetAllControlsUseCase getAllControlsUseCase,
+    required UpdateControlUseCase updateControlUseCase,
   })  : _createUseCase = createOwnerUseCase,
         _getUseCase = getOwnerUseCase,
         _getAllUseCase = getAllOwnersUseCase,
         _updateUseCase = updateOwnerUseCase,
         _getGrcRequestsUseCase = getGrcRequestsUseCase,
         _applyReassignmentUseCase = applyOwnerReassignmentUseCase,
+        _getAllPoliciesUseCase = getAllPoliciesUseCase,
+        _getAllControlsUseCase = getAllControlsUseCase,
+        _updateControlUseCase = updateControlUseCase,
         super(OwnerInitial());
 
   final CreateOwnerUseCase _createUseCase;
@@ -48,6 +59,9 @@ class OwnerCubit extends Cubit<OwnerState> {
   final UpdateOwnerUseCase _updateUseCase;
   final GetGrcRequestsUseCase _getGrcRequestsUseCase;
   final ApplyOwnerReassignmentUseCase _applyReassignmentUseCase;
+  final GetAllPoliciesUseCase _getAllPoliciesUseCase;
+  final GetAllControlsUseCase _getAllControlsUseCase;
+  final UpdateControlUseCase _updateControlUseCase;
 
   Future<void> getAllOwners({
     required String moduleId,
@@ -113,6 +127,31 @@ class OwnerCubit extends Cubit<OwnerState> {
         }
       },
     );
+  }
+
+  /// Thin pass-throughs for the Policy/Control use cases the Add Control
+  /// Owner and Control Owner Details pages used to resolve straight out of
+  /// `GetIt` inside their own `State`. Routing them through the Cubit
+  /// (instead of adding new emitted states) keeps each page's existing
+  /// `result.fold(...)` call-site logic byte-for-byte the same — only where
+  /// the use case instance comes from changes.
+  Future<Either<Failure, List<PolicyEntity>>> getAllPolicies({
+    required String moduleId,
+  }) {
+    return _getAllPoliciesUseCase.call(moduleId: moduleId);
+  }
+
+  Future<Either<Failure, List<ControlEntity>>> getAllControlsForPolicy({
+    required String moduleId,
+    required String policyId,
+  }) {
+    return _getAllControlsUseCase.call(moduleId: moduleId, policyId: policyId);
+  }
+
+  Future<Either<Failure, ControlEntity>> updateControl(
+    UpdateControlParams params,
+  ) {
+    return _updateControlUseCase.call(params);
   }
 
   Future<void> getOwner(String ownerEmail, {required String moduleId}) async {
