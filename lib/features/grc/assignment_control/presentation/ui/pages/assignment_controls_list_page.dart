@@ -77,8 +77,10 @@ class _AssignmentControlsListBodyState
     final query = _searchQuery.trim().toLowerCase();
     if (query.isEmpty) return byTab.toList();
     return byTab.where((i) {
-      final name = isArabic ? i.control.controlsNameAr : i.control.controlsNameEn;
-      final policyName = isArabic ? i.policy.policyNameAr : i.policy.policyNameEn;
+      final name =
+          isArabic ? i.control.controlsNameAr : i.control.controlsNameEn;
+      final policyName =
+          isArabic ? i.policy.policyNameAr : i.policy.policyNameEn;
       return name.toLowerCase().contains(query) ||
           policyName.toLowerCase().contains(query);
     }).toList();
@@ -99,7 +101,8 @@ class _AssignmentControlsListBodyState
               ),
               SizedBox(height: 15.h),
               Expanded(
-                child: BlocBuilder<AssignmentControlCubit, AssignmentControlState>(
+                child:
+                    BlocBuilder<AssignmentControlCubit, AssignmentControlState>(
                   builder: (context, state) {
                     if (state is AssignmentControlFailure) {
                       return Center(child: Text(state.message));
@@ -132,25 +135,32 @@ class _AssignmentControlsListBodyState
                                             .length,
                                     color: _tabOrder[i] == null
                                         ? null
-                                        : AssignmentControlTabStyle.of(_tabOrder[i]!)
+                                        : AssignmentControlTabStyle.of(
+                                                _tabOrder[i]!)
                                             .color,
                                     isSelected: _selectedTabIndex == i,
-                                    onTap: () => setState(() => _selectedTabIndex = i),
+                                    onTap: () =>
+                                        setState(() => _selectedTabIndex = i),
                                   ),
                               ],
                             ),
                           ),
                         ),
                         SizedBox(height: 15.h),
-                        AppSearchTextField(
-                          controller: _searchController,
-                          onChanged: (v) => setState(() => _searchQuery = v),
-                          hintText: 'Search'.tr,
+                        Row(
+                          children: [
+                            AppSearchTextField(
+                              controller: _searchController,
+                              onChanged: (v) => setState(() => _searchQuery = v),
+                              hintText: 'Search'.tr,
+                            ),
+                          ],
                         ),
                         SizedBox(height: 15.h),
                         Expanded(
                           child: filtered.isEmpty
-                              ? Center(child: Text('No controls in this status'.tr))
+                              ? Center(
+                                  child: Text('No controls in this status'.tr))
                               : GridView.builder(
                                   gridDelegate:
                                       SliverGridDelegateWithFixedCrossAxisCount(
@@ -170,8 +180,8 @@ class _AssignmentControlsListBodyState
                                         PageRouteBuilder(
                                           pageBuilder: (_, __, ___) =>
                                               BlocProvider.value(
-                                            value:
-                                                context.read<AssignmentControlCubit>(),
+                                            value: context
+                                                .read<AssignmentControlCubit>(),
                                             child: AssignmentControlDetailsPage(
                                               item: item,
                                               module: widget.module,
