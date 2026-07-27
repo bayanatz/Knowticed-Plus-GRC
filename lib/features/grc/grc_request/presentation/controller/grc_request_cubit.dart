@@ -7,6 +7,7 @@
 
 import 'package:dartz/dartz.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:demo_app/core/enums/approval_status.dart';
 import 'package:demo_app/core/network/failure_model.dart';
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
@@ -152,4 +153,13 @@ class GrcRequestCubit extends Cubit<GrcRequestState> {
   }) {
     return _getAllControlsUseCase.call(moduleId: moduleId, policyId: policyId);
   }
+}
+
+/// Business rule: canceled requests are only relevant to the requester, so
+/// they're kept out of the module-wide "Requests" view — they still show up
+/// in the "My Requests" view (which scopes by `requestedBy` instead, upstream
+/// of this filter).
+extension GrcRequestListScopeX on List<GrcRequestEntity> {
+  List<GrcRequestEntity> get visibleForModuleScope =>
+      where((r) => r.status != ApprovalStatus.canceled).toList();
 }

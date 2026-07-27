@@ -97,11 +97,9 @@ class _GrcRequestsListBodyState extends State<_GrcRequestsListBody> {
       scoped =
           scoped.where((r) => r.requestedBy == widget.onlyRequestedBy).toList();
     } else {
-      // Canceled requests are only relevant to the requester, so keep them
-      // out of the module-wide "Requests" view — they still show up in
-      // "My Requests".
-      scoped =
-          scoped.where((r) => r.status != ApprovalStatus.canceled).toList();
+      // Business rule (hide canceled requests from the module-wide view)
+      // lives on GrcRequestCubit's GrcRequestListScopeX extension.
+      scoped = scoped.visibleForModuleScope;
     }
     return scoped;
   }
