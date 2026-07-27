@@ -1,8 +1,6 @@
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
-import 'package:demo_app/core/helper/main_helper/employee_helper.dart';
-import 'package:demo_app/core/constants/app_assets.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/control_champion/domain/entities/champion_entity.dart';
 import 'package:demo_app/features/grc/control_champion/domain/entities/champion_status.dart';
@@ -133,20 +131,10 @@ class _ControlChampionDetailsBodyState
   Widget build(BuildContext context) {
     final employee = findEmployeeByEmail(_currentChampion.championEmail);
     final name = employeeDisplayName(context, _currentChampion.championEmail);
-    final department = employee != null
-        ? EmployeeHelper.getEmployeeLocalizeDepartment(
-            employee: employee, context: context)
-        : '';
-    final jobTitle = employee != null
-        ? (EmployeeHelper.getEmployeeLocalizedTitle(
-                    employee: employee, context: context)
-                ?.toString() ??
-            '')
-        : '';
-    final photo = employee != null
-        ? EmployeeHelper.getEmployeeImage(employee: employee)
-        : AppAssets.defaultEmployeeAvatar;
-    final phone = employee?.mobilePhone?.phone ?? grcMockPhoneFallback;
+    final department = employee.localizedDepartment(context);
+    final jobTitle = employee.localizedJobTitle(context);
+    final photo = employee.displayPhoto;
+    final phone = employee.displayPhone;
     final email = _currentChampion.championEmail;
 
     // Get unique assigned policies

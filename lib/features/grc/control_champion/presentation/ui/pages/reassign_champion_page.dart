@@ -3,12 +3,10 @@ import 'dart:async';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
-import 'package:demo_app/core/constants/app_assets.dart';
 import 'package:demo_app/core/custom/2-custom_textfield.dart';
 import 'package:demo_app/core/custom/3-custom_dropdwon_calander.dart';
 import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart';
 import 'package:demo_app/core/custom/21-custom_contact_card.dart';
-import 'package:demo_app/core/helper/main_helper/employee_helper.dart';
 import 'package:demo_app/features/grc/control/domain/entities/assigning_control.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/control_champion/domain/entities/champion_entity.dart';
@@ -193,22 +191,12 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
 
   Widget _buildPage(BuildContext context) {
     final currentEmp = findEmployeeByEmail(widget.champion.championEmail);
-    final currentPhoto = currentEmp != null
-        ? EmployeeHelper.getEmployeeImage(employee: currentEmp)
-        : AppAssets.defaultEmployeeAvatar;
+    final currentPhoto = currentEmp.displayPhoto;
     final currentName =
         employeeDisplayName(context, widget.champion.championEmail);
-    final currentDept = currentEmp != null
-        ? EmployeeHelper.getEmployeeLocalizeDepartment(
-            employee: currentEmp, context: context)
-        : '';
-    final currentTitle = currentEmp != null
-        ? (EmployeeHelper.getEmployeeLocalizedTitle(
-                    employee: currentEmp, context: context)
-                ?.toString() ??
-            '')
-        : '';
-    final currentPhone = currentEmp?.mobilePhone?.phone ?? grcMockPhoneFallback;
+    final currentDept = currentEmp.localizedDepartment(context);
+    final currentTitle = currentEmp.localizedJobTitle(context);
+    final currentPhone = currentEmp.displayPhone;
 
     final dateFormat = DateFormat('yyyy-MM-dd');
 

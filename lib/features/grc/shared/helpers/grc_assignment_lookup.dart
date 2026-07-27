@@ -5,6 +5,7 @@
 /// these four functions verbatim across their cubit + 3 page files.
 library;
 
+import 'package:demo_app/core/constants/app_assets.dart';
 import 'package:demo_app/core/helper/main_helper/employee_helper.dart';
 import 'package:demo_app/features/employee/domain/entities/employee_entity.dart';
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
@@ -50,6 +51,46 @@ String employeeDisplayName(BuildContext context, String email) {
   if (employee == null) return email;
   return EmployeeHelper.getEmployeeLocalizedName(
       employee: employee, context: context);
+}
+
+/// Display-field fallbacks for a possibly-missing employee — extracted
+/// because control_champion_details_page and reassign_champion_page each
+/// computed department/job title/photo/phone via the same chained ternary
+/// fallbacks directly in build() (`employee != null ? EmployeeHelper... : ''`
+/// etc.), duplicated verbatim across both files.
+extension EmployeeDisplayFields on EmployeeEntityPro? {
+  /// Localized department for this employee, or '' when null.
+  String localizedDepartment(BuildContext context) {
+    final employee = this;
+    return employee != null
+        ? EmployeeHelper.getEmployeeLocalizeDepartment(
+            employee: employee, context: context)
+        : '';
+  }
+
+  /// Localized job title for this employee, or '' when null.
+  String localizedJobTitle(BuildContext context) {
+    final employee = this;
+    return employee != null
+        ? (EmployeeHelper.getEmployeeLocalizedTitle(
+                    employee: employee, context: context)
+                ?.toString() ??
+            '')
+        : '';
+  }
+
+  /// Photo URL/asset path for this employee, or the default avatar asset
+  /// when null.
+  String get displayPhoto {
+    final employee = this;
+    return employee != null
+        ? EmployeeHelper.getEmployeeImage(employee: employee)
+        : AppAssets.defaultEmployeeAvatar;
+  }
+
+  /// Mobile phone number for this employee, falling back to
+  /// [grcMockPhoneFallback] when null or unset.
+  String get displayPhone => this?.mobilePhone?.phone ?? grcMockPhoneFallback;
 }
 
 /// Finds the [ControlEntity] for [controlId] under [policyId] inside
