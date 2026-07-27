@@ -24,12 +24,10 @@ import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart'
 import 'package:demo_app/features/employee/domain/entities/employee_entity.dart';
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
-import 'package:demo_app/features/grc/control/domain/use_cases/get_control_usecases.dart';
 import 'package:demo_app/features/grc/grc_request/domain/entities/grc_request_entity.dart';
 import 'package:demo_app/features/grc/grc_request/domain/entities/grc_request_type.dart';
 import 'package:demo_app/features/grc/grc_request/presentation/controller/grc_request_cubit.dart';
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
-import 'package:demo_app/features/grc/policy/domain/use_cases/get_policy_usecases.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -80,14 +78,15 @@ class _GrcRequestDetailsBodyState extends State<_GrcRequestDetailsBody> {
   }
 
   Future<void> _loadPolicyData() async {
-    final polResult = await GetIt.instance<GetAllPoliciesUseCase>()
-        .call(moduleId: widget.module.moduleId);
+    final grcRequestCubit = context.read<GrcRequestCubit>();
+    final polResult =
+        await grcRequestCubit.getAllPolicies(moduleId: widget.module.moduleId);
     await polResult.fold(
       (failure) async {},
       (policies) async {
         for (final policy in policies) {
-          final ctrlResult = await GetIt.instance<GetAllControlsUseCase>()
-              .call(moduleId: widget.module.moduleId, policyId: policy.id);
+          final ctrlResult = await grcRequestCubit.getAllControlsForPolicy(
+              moduleId: widget.module.moduleId, policyId: policy.id);
           ctrlResult.fold(
             (failure) {},
             (controls) {
@@ -255,32 +254,46 @@ class _GrcRequestDetailsBodyState extends State<_GrcRequestDetailsBody> {
   }
 
   Widget _buildBody(BuildContext context) {
-    if (_request.type != GrcRequestType.reassignChampion &&
-        _request.type != GrcRequestType.reassignOwner) {
-      return Scaffold(
-        body: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.all(16.r),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                PaginationAppBar(
-                  screensTitles: [
-                    widget.module.moduleNameEn,
-                    'Requests'.tr,
-                    'Request Details'.tr
-                  ],
-                ),
-                SizedBox(height: 40.h),
-                Center(
-                    child: Text('This request type is not supported yet.'.tr)),
-              ],
-            ),
+    final isSupportedRequestType =
+        _request.type == GrcRequestType.reassignChampion ||
+            _request.type == GrcRequestType.reassignOwner;
+    if (!isSupportedRequestType) {
+      return _buildUnsupportedRequestTypeScaffold(context);
+    }
+    return _buildReassignmentScaffold(context);
+  }
+
+  /// Placeholder shown for any [GrcRequestType] other than the two
+  /// reassignment types this page renders full details for.
+  Widget _buildUnsupportedRequestTypeScaffold(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.all(16.r),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              PaginationAppBar(
+                screensTitles: [
+                  widget.module.moduleNameEn,
+                  'Requests'.tr,
+                  'Request Details'.tr
+                ],
+              ),
+              SizedBox(height: 40.h),
+              Center(
+                  child: Text('This request type is not supported yet.'.tr)),
+            ],
           ),
         ),
-      );
-    }
+      ),
+    );
+  }
 
+  /// Main scaffold for reassignChampion / reassignOwner requests: app bar,
+  /// current/new assignee sections, and the approve/reject or decided-status
+  /// footer.
+  Widget _buildReassignmentScaffold(BuildContext context) {
     final dateFormat = DateFormat('d MMM yyyy');
 
     return Scaffold(
@@ -305,184 +318,11 @@ class _GrcRequestDetailsBodyState extends State<_GrcRequestDetailsBody> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(height: 16.h),
-
-                      // Current assignee (Champion or Owner) box
-                      Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.all(20.r),
-                        decoration: BoxDecoration(
-                          color: AppColors.card,
-                          borderRadius: BorderRadius.circular(16.r),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(_currentAssigneeLabel,
-                                style: StyleText.fontSize16Weight600
-                                    .copyWith(color: AppColors.text)),
-                            SizedBox(height: 8.h),
-                            _assigneeCard(context, _currentAssigneeEmail),
-                            SizedBox(height: 20.h),
-                            Text('Assigned Controls'.tr,
-                                style: StyleText.fontSize14Weight500
-                                    .copyWith(color: AppColors.text)),
-                            SizedBox(height: 8.h),
-                            _assignedControlsChips(context),
-                          ],
-                        ),
-                      ),
+                      _buildCurrentAssigneeSection(context),
                       SizedBox(height: 16.h),
-
-                      // New assignee (Champion or Owner) box
-                      Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.all(20.r),
-                        decoration: BoxDecoration(
-                          color: AppColors.card,
-                          borderRadius: BorderRadius.circular(16.r),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(_newAssigneeLabel,
-                                style: StyleText.fontSize16Weight600
-                                    .copyWith(color: AppColors.text)),
-                            SizedBox(height: 8.h),
-                            _assigneeCard(context, _newAssigneeEmail),
-                            SizedBox(height: 20.h),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: IgnorePointer(
-                                    child: CustomDropdownCalendar(
-                                      label: 'Start Date'.tr,
-                                      hint: 'Choose The Date'.tr,
-                                      value: _request.startDate,
-                                      fillColor: AppColors.background,
-                                      dateFormatter: dateFormat.format,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 16.w),
-                                Expanded(
-                                  child: IgnorePointer(
-                                    child: CustomDropdownCalendar(
-                                      label: 'End Date'.tr,
-                                      hint: 'Choose The Date'.tr,
-                                      value: _request.endDate,
-                                      fillColor: AppColors.background,
-                                      dateFormatter: dateFormat.format,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 20.h),
-                            Text('Request Note'.tr,
-                                style: StyleText.fontSize14Weight500
-                                    .copyWith(color: AppColors.text)),
-                            SizedBox(height: 6.h),
-                            Container(
-                              width: double.infinity,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 12.w, vertical: 12.h),
-                              decoration: BoxDecoration(
-                                color: AppColors.background,
-                                borderRadius: BorderRadius.circular(8.r),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    _request.note.isNotEmpty
-                                        ? _request.note
-                                        : 'Text here'.tr,
-                                    style:
-                                        StyleText.fontSize14Weight400.copyWith(
-                                      color: _request.note.isNotEmpty
-                                          ? AppColors.text
-                                          : AppColors.secondaryText,
-                                    ),
-                                  ),
-                                  SizedBox(height: 8.h),
-                                  Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Text(
-                                      '${_request.note.length}/500',
-                                      style: StyleText.fontSize12Weight400
-                                          .copyWith(
-                                              color: AppColors.secondaryText),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(height: 20.h),
-                            Text('Assigned Controls'.tr,
-                                style: StyleText.fontSize14Weight500
-                                    .copyWith(color: AppColors.text)),
-                            SizedBox(height: 8.h),
-                            _assignedControlsChips(context),
-                          ],
-                        ),
-                      ),
+                      _buildNewAssigneeSection(context, dateFormat),
                       SizedBox(height: 24.h),
-
-                      if (_request.status == ApprovalStatus.pending)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            customButtonWithSvg(
-                              colorBorder: AppColors.red,
-                              space: 8.w,
-                              widthImage: 18.w,
-                              heightImage: 18.h,
-                              image: CardSvg.reject,
-                              title: 'Reject'.tr,
-                              function: _onReject,
-                              color: AppColors.red,
-                              textStyle: StyleText.fontSize16Weight500
-                                  .copyWith(color: Colors.white),
-                              svgColor: Colors.white,
-                            ),
-                            SizedBox(width: 16.w),
-                            customButtonWithSvg(
-                              colorBorder: AppColors.green,
-                              space: 8.w,
-                              widthImage: 18.w,
-                              heightImage: 18.h,
-                              image: CardSvg.approve,
-                              title: 'Approve'.tr,
-                              function: _onApprove,
-                              color: AppColors.green,
-                              textStyle: StyleText.fontSize16Weight500
-                                  .copyWith(color: Colors.white),
-                              svgColor: Colors.white,
-                            ),
-                          ],
-                        )
-                      else
-                        Container(
-                          padding: EdgeInsets.all(12.r),
-                          decoration: BoxDecoration(
-                            color: (_request.status == ApprovalStatus.approved
-                                    ? AppColors.green
-                                    : AppColors.red)
-                                .withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(8.r),
-                          ),
-                          child: Text(
-                            _request.status == ApprovalStatus.approved
-                                ? 'Approved'.tr
-                                : '${'Rejected'.tr}: ${_request.rejectionReason ?? ''}',
-                            style: StyleText.fontSize14Weight500.copyWith(
-                              color: _request.status == ApprovalStatus.approved
-                                  ? AppColors.green
-                                  : AppColors.red,
-                            ),
-                          ),
-                        ),
+                      _buildActionOrStatusSection(context),
                       SizedBox(height: 24.h),
                     ],
                   ),
@@ -490,6 +330,188 @@ class _GrcRequestDetailsBodyState extends State<_GrcRequestDetailsBody> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  /// "Current Control Champion/Owner" card: assignee contact info plus the
+  /// controls presently assigned to them.
+  Widget _buildCurrentAssigneeSection(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(20.r),
+      decoration: BoxDecoration(
+        color: AppColors.card,
+        borderRadius: BorderRadius.circular(16.r),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(_currentAssigneeLabel,
+              style: StyleText.fontSize16Weight600
+                  .copyWith(color: AppColors.text)),
+          SizedBox(height: 8.h),
+          _assigneeCard(context, _currentAssigneeEmail),
+          SizedBox(height: 20.h),
+          Text('Assigned Controls'.tr,
+              style: StyleText.fontSize14Weight500
+                  .copyWith(color: AppColors.text)),
+          SizedBox(height: 8.h),
+          _assignedControlsChips(context),
+        ],
+      ),
+    );
+  }
+
+  /// "New Control Champion/Owner" card: assignee contact info, the requested
+  /// start/end dates, the request note, and the (same) assigned controls.
+  Widget _buildNewAssigneeSection(
+      BuildContext context, DateFormat dateFormat) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(20.r),
+      decoration: BoxDecoration(
+        color: AppColors.card,
+        borderRadius: BorderRadius.circular(16.r),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(_newAssigneeLabel,
+              style: StyleText.fontSize16Weight600
+                  .copyWith(color: AppColors.text)),
+          SizedBox(height: 8.h),
+          _assigneeCard(context, _newAssigneeEmail),
+          SizedBox(height: 20.h),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: IgnorePointer(
+                  child: CustomDropdownCalendar(
+                    label: 'Start Date'.tr,
+                    hint: 'Choose The Date'.tr,
+                    value: _request.startDate,
+                    fillColor: AppColors.background,
+                    dateFormatter: dateFormat.format,
+                  ),
+                ),
+              ),
+              SizedBox(width: 16.w),
+              Expanded(
+                child: IgnorePointer(
+                  child: CustomDropdownCalendar(
+                    label: 'End Date'.tr,
+                    hint: 'Choose The Date'.tr,
+                    value: _request.endDate,
+                    fillColor: AppColors.background,
+                    dateFormatter: dateFormat.format,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 20.h),
+          Text('Request Note'.tr,
+              style: StyleText.fontSize14Weight500
+                  .copyWith(color: AppColors.text)),
+          SizedBox(height: 6.h),
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+            decoration: BoxDecoration(
+              color: AppColors.background,
+              borderRadius: BorderRadius.circular(8.r),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _request.note.isNotEmpty ? _request.note : 'Text here'.tr,
+                  style: StyleText.fontSize14Weight400.copyWith(
+                    color: _request.note.isNotEmpty
+                        ? AppColors.text
+                        : AppColors.secondaryText,
+                  ),
+                ),
+                SizedBox(height: 8.h),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    '${_request.note.length}/500',
+                    style: StyleText.fontSize12Weight400
+                        .copyWith(color: AppColors.secondaryText),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 20.h),
+          Text('Assigned Controls'.tr,
+              style: StyleText.fontSize14Weight500
+                  .copyWith(color: AppColors.text)),
+          SizedBox(height: 8.h),
+          _assignedControlsChips(context),
+        ],
+      ),
+    );
+  }
+
+  /// Approve/Reject buttons while the request is pending, otherwise a
+  /// read-only banner showing the decided (approved/rejected) status.
+  Widget _buildActionOrStatusSection(BuildContext context) {
+    if (_request.status == ApprovalStatus.pending) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          customButtonWithSvg(
+            colorBorder: AppColors.red,
+            space: 8.w,
+            widthImage: 18.w,
+            heightImage: 18.h,
+            image: CardSvg.reject,
+            title: 'Reject'.tr,
+            function: _onReject,
+            color: AppColors.red,
+            textStyle:
+                StyleText.fontSize16Weight500.copyWith(color: Colors.white),
+            svgColor: Colors.white,
+          ),
+          SizedBox(width: 16.w),
+          customButtonWithSvg(
+            colorBorder: AppColors.green,
+            space: 8.w,
+            widthImage: 18.w,
+            heightImage: 18.h,
+            image: CardSvg.approve,
+            title: 'Approve'.tr,
+            function: _onApprove,
+            color: AppColors.green,
+            textStyle:
+                StyleText.fontSize16Weight500.copyWith(color: Colors.white),
+            svgColor: Colors.white,
+          ),
+        ],
+      );
+    }
+    return Container(
+      padding: EdgeInsets.all(12.r),
+      decoration: BoxDecoration(
+        color: (_request.status == ApprovalStatus.approved
+                ? AppColors.green
+                : AppColors.red)
+            .withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8.r),
+      ),
+      child: Text(
+        _request.status == ApprovalStatus.approved
+            ? 'Approved'.tr
+            : '${'Rejected'.tr}: ${_request.rejectionReason ?? ''}',
+        style: StyleText.fontSize14Weight500.copyWith(
+          color: _request.status == ApprovalStatus.approved
+              ? AppColors.green
+              : AppColors.red,
         ),
       ),
     );

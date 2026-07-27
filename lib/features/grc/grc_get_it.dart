@@ -548,6 +548,8 @@ void setupGRCDependencies(GetIt sl) {
       approveGrcRequestUseCase: sl<ApproveGrcRequestUseCase>(),
       rejectGrcRequestUseCase: sl<RejectGrcRequestUseCase>(),
       cancelGrcRequestUseCase: sl<CancelGrcRequestUseCase>(),
+      getAllPoliciesUseCase: sl<GetAllPoliciesUseCase>(),
+      getAllControlsUseCase: sl<GetAllControlsUseCase>(),
     ),
   );
 
