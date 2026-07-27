@@ -26,6 +26,10 @@ enum GrcRequestType {
     }
   }
 
+  bool get isReassignment =>
+      this == GrcRequestType.reassignChampion ||
+      this == GrcRequestType.reassignOwner;
+
   static GrcRequestType fromString(String value) {
     switch (value) {
       case 'Control Changes':

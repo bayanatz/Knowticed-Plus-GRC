@@ -186,8 +186,7 @@ class _GrcRequestsListBodyState extends State<_GrcRequestsListBody> {
   ) {
     return GestureDetector(
       onTap: () {
-        if (request.type != GrcRequestType.reassignChampion &&
-            request.type != GrcRequestType.reassignOwner) {
+        if (!request.type.isReassignment) {
           return;
         }
         final requestCubit = context.read<GrcRequestCubit>();

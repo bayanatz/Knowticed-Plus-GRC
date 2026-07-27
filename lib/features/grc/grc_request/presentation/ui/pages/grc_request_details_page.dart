@@ -255,9 +255,7 @@ class _GrcRequestDetailsBodyState extends State<_GrcRequestDetailsBody> {
   }
 
   Widget _buildBody(BuildContext context) {
-    final isSupportedRequestType =
-        _request.type == GrcRequestType.reassignChampion ||
-            _request.type == GrcRequestType.reassignOwner;
+    final isSupportedRequestType = _request.type.isReassignment;
     if (!isSupportedRequestType) {
       return _buildUnsupportedRequestTypeScaffold(context);
     }
