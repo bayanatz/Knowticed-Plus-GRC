@@ -10,6 +10,7 @@ library;
 import 'package:demo_app/features/grc/control/domain/entities/assigning_control.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/control_owner/domain/entities/owner_entity.dart';
+import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
 import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
 import 'assignment_control_entity.dart';
 import 'assignment_control_item.dart';
@@ -50,24 +51,38 @@ AssignmentControlTab computeAssignmentControlTab({
 }
 
 /// Joins a champion's [assigningControls] with the already-loaded
-/// [policyControls] (policyId -> its Controls) and [existingAssignments]
-/// (controlId -> that control's Assignment_Controls doc, if any) into the
-/// list of rows the Assignment Controls page renders. A pair whose Control
-/// can't be found (e.g. deleted) is silently skipped.
+/// [policyControls] (policyId -> its Controls), [policies] (policyId -> its
+/// Policy), [existingAssignments] (controlId -> that control's
+/// Assignment_Controls doc, if any), and [owners] (every Control Owner in
+/// the module, used to resolve the current owner even before any evidence
+/// has been submitted) into the list of rows the Assignment Controls page
+/// renders. A pair whose Control or Policy can't be found (e.g. deleted) is
+/// silently skipped.
 List<AssignmentControlItem> buildAssignmentControlItems({
   required List<AssigningControlEntity> assigningControls,
   required Map<String, List<ControlEntity>> policyControls,
+  required Map<String, PolicyEntity> policies,
   required Map<String, AssignmentControlEntity> existingAssignments,
+  required List<OwnerEntity> owners,
 }) {
   final items = <AssignmentControlItem>[];
   for (final ac in assigningControls) {
     final control = findControlInPolicy(policyControls, ac.policyId, ac.controlId);
     if (control == null) continue;
+    final policy = policies[ac.policyId];
+    if (policy == null) continue;
     final assignment = existingAssignments[ac.controlId];
     items.add(AssignmentControlItem(
       control: control,
+      policy: policy,
       assignment: assignment,
       tab: computeAssignmentControlTab(control: control, assignment: assignment),
+      ownerEmail: assignment?.controlOwner ??
+          findOwnerEmailForControl(
+            owners,
+            policyId: ac.policyId,
+            controlId: ac.controlId,
+          ),
     ));
   }
   return items;

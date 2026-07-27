@@ -17,7 +17,10 @@ import 'package:demo_app/features/grc/assignment_control/domain/use_cases/submit
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/control/domain/use_cases/get_control_usecases.dart';
 import 'package:demo_app/features/grc/control_champion/domain/use_cases/get_champion_usecases.dart';
+import 'package:demo_app/features/grc/control_owner/domain/entities/owner_entity.dart';
 import 'package:demo_app/features/grc/control_owner/domain/use_cases/get_owner_usecases.dart';
+import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
+import 'package:demo_app/features/grc/policy/domain/use_cases/get_policy_usecases.dart';
 
 part 'assignment_control_state.dart';
 
@@ -26,11 +29,13 @@ class AssignmentControlCubit extends Cubit<AssignmentControlState> {
     required GetChampionUseCase getChampionUseCase,
     required GetAllControlsUseCase getAllControlsUseCase,
     required GetAllOwnersUseCase getAllOwnersUseCase,
+    required GetAllPoliciesUseCase getAllPoliciesUseCase,
     required GetAssignmentControlUseCase getAssignmentControlUseCase,
     required SubmitEvidenceUseCase submitEvidenceUseCase,
   })  : _getChampionUseCase = getChampionUseCase,
         _getAllControlsUseCase = getAllControlsUseCase,
         _getAllOwnersUseCase = getAllOwnersUseCase,
+        _getAllPoliciesUseCase = getAllPoliciesUseCase,
         _getAssignmentControlUseCase = getAssignmentControlUseCase,
         _submitEvidenceUseCase = submitEvidenceUseCase,
         super(AssignmentControlInitial());
@@ -38,6 +43,7 @@ class AssignmentControlCubit extends Cubit<AssignmentControlState> {
   final GetChampionUseCase _getChampionUseCase;
   final GetAllControlsUseCase _getAllControlsUseCase;
   final GetAllOwnersUseCase _getAllOwnersUseCase;
+  final GetAllPoliciesUseCase _getAllPoliciesUseCase;
   final GetAssignmentControlUseCase _getAssignmentControlUseCase;
   final SubmitEvidenceUseCase _submitEvidenceUseCase;
 
@@ -76,6 +82,17 @@ class AssignmentControlCubit extends Cubit<AssignmentControlState> {
           );
         }
 
+        final policiesResult =
+            await _getAllPoliciesUseCase.call(moduleId: moduleId);
+        final policies = <String, PolicyEntity>{
+          for (final p in policiesResult.fold((_) => <PolicyEntity>[], (p) => p))
+            p.id: p,
+        };
+
+        final ownersResult = await _getAllOwnersUseCase.call(moduleId: moduleId);
+        final owners =
+            ownersResult.fold((_) => const <OwnerEntity>[], (o) => o);
+
         final existingAssignments = <String, AssignmentControlEntity>{};
         for (final ac in champion.assigningControls) {
           final assignmentResult = await _getAssignmentControlUseCase.call(
@@ -97,7 +114,9 @@ class AssignmentControlCubit extends Cubit<AssignmentControlState> {
           buildAssignmentControlItems(
             assigningControls: champion.assigningControls,
             policyControls: policyControls,
+            policies: policies,
             existingAssignments: existingAssignments,
+            owners: owners,
           ),
         ));
       },

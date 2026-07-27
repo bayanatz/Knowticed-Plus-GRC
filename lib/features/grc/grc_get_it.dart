@@ -624,6 +624,7 @@ void setupGRCDependencies(GetIt sl) {
       getChampionUseCase: sl<GetChampionUseCase>(),
       getAllControlsUseCase: sl<GetAllControlsUseCase>(),
       getAllOwnersUseCase: sl<GetAllOwnersUseCase>(),
+      getAllPoliciesUseCase: sl<GetAllPoliciesUseCase>(),
       getAssignmentControlUseCase: sl<GetAssignmentControlUseCase>(),
       submitEvidenceUseCase: sl<SubmitEvidenceUseCase>(),
     ),
