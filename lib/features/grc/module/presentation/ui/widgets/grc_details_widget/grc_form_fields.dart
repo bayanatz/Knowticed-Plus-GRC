@@ -99,34 +99,56 @@ class _GrcFormFieldsState extends State<GrcFormFields> {
 
   void _onTextChanged() => setState(() {});
 
-  @override
-  Widget build(BuildContext context) {
+  /// Computes error text for an English-language bilingual field: a required
+  /// check first, then a wrong-script (Arabic letters present) check.
+  String? _englishFieldErrorText({
+    required bool submitted,
+    required String text,
+    required String requiredMessage,
+    required String wrongScriptMessage,
+  }) {
+    if (submitted && text.trim().isEmpty) return requiredMessage;
+    if (containsArabicLetters(text)) return wrongScriptMessage;
+    return null;
+  }
+
+  /// Computes error text for an Arabic-language bilingual field: a required
+  /// check first, then a wrong-script (English letters present) check.
+  String? _arabicFieldErrorText({
+    required bool submitted,
+    required String text,
+    required String requiredMessage,
+    required String wrongScriptMessage,
+  }) {
+    if (submitted && text.trim().isEmpty) return requiredMessage;
+    if (containsEnglishLetters(text)) return wrongScriptMessage;
+    return null;
+  }
+
+  /// Computes error text for a non-text field (dropdown/date picker): only a
+  /// required-field check, and only once the form has been submitted.
+  String? _requiredFieldErrorText({
+    required bool submitted,
+    required bool isEmpty,
+    required String requiredMessage,
+  }) {
+    if (!submitted) return null;
+    return isEmpty ? requiredMessage : null;
+  }
+
+  Widget _buildNameEnField(bool submitted, bool readOnly) {
     final nameEnController = widget.nameEnController;
-    final nameArController = widget.nameArController;
-    final descEnController = widget.descEnController;
-    final descArController = widget.descArController;
-    final selectedDepartment = widget.selectedDepartment;
-    final activationDate = widget.activationDate;
-    final onDepartmentChanged = widget.onDepartmentChanged;
-    final onDateChanged = widget.onDateChanged;
-    final submitted = widget.submitted;
-    final readOnly = widget.readOnly;
-
-    final requiredError =
-        context.isArabic ? 'هذا الحقل مطلوب' : 'This field is required.';
-
-    final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
-
-    final nameEnField = CustomTextField(
+    return CustomTextField(
       label: 'GRC Module Name',
       hint: 'Text here',
       controller: nameEnController,
       autoCapitalize: true,
-      errorText: submitted && nameEnController.text.trim().isEmpty
-          ? "GRC Module Name is required"
-          : containsArabicLetters(nameEnController.text)
-              ? "GRC Module Name must be written in English"
-              : null,
+      errorText: _englishFieldErrorText(
+        submitted: submitted,
+        text: nameEnController.text,
+        requiredMessage: "GRC Module Name is required",
+        wrongScriptMessage: "GRC Module Name must be written in English",
+      ),
       submitted: submitted,
       readOnly: readOnly,
       fillColor: AppColors.background,
@@ -138,18 +160,22 @@ class _GrcFormFieldsState extends State<GrcFormFields> {
           AppTextStyles.font16BlackRegularCairo.copyWith(fontSize: 14.sp),
       onChanged: (_) {},
     );
+  }
 
-    final nameArField = Directionality(
+  Widget _buildNameArField(bool submitted, bool readOnly) {
+    final nameArController = widget.nameArController;
+    return Directionality(
       textDirection: TextDirection.rtl,
       child: CustomTextField(
         label: 'عنوان اطار الحوكمه',
         hint: 'اكتب هنا',
         controller: nameArController,
-        errorText: submitted && nameArController.text.trim().isEmpty
-            ? "عنوان اطار الحوكمه مطلوب"
-            : containsEnglishLetters(nameArController.text)
-                ? "يجب كتابة عنوان اطار الحوكمه باللغة العربية"
-                : null,
+        errorText: _arabicFieldErrorText(
+          submitted: submitted,
+          text: nameArController.text,
+          requiredMessage: "عنوان اطار الحوكمه مطلوب",
+          wrongScriptMessage: "يجب كتابة عنوان اطار الحوكمه باللغة العربية",
+        ),
         submitted: submitted,
         readOnly: readOnly,
         fillColor: AppColors.background,
@@ -162,8 +188,17 @@ class _GrcFormFieldsState extends State<GrcFormFields> {
         onChanged: (_) {},
       ),
     );
+  }
 
-    final departmentField = CustomDropdown<String>(
+  Widget _buildDepartmentField(
+    BuildContext context,
+    String? selectedDepartment,
+    ValueChanged<String?> onDepartmentChanged,
+    bool submitted,
+    bool readOnly,
+    String requiredError,
+  ) {
+    return CustomDropdown<String>(
       label: 'Owning Department'.tr,
       hint: 'Choose Department'.tr,
       items: Get.find<MainCoreDepartmentController>().departmentIds.map((id) {
@@ -183,20 +218,33 @@ class _GrcFormFieldsState extends State<GrcFormFields> {
       onChanged: onDepartmentChanged,
       enabled: !readOnly,
       fillColor: AppColors.background,
-      errorText: submitted && selectedDepartment == null ? requiredError : null,
+      errorText: _requiredFieldErrorText(
+        submitted: submitted,
+        isEmpty: selectedDepartment == null,
+        requiredMessage: requiredError,
+      ),
       labelStyle: StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
       hintStyle: StyleText.fontSize14Weight500
           .copyWith(color: AppColors.secondaryText.withOpacity(.7)),
       borderRadius: BorderRadius.circular(4.r),
       required: false,
     );
+  }
 
+  Widget _buildActivationDateField(
+    BuildContext context,
+    DateTime? activationDate,
+    ValueChanged<DateTime?> onDateChanged,
+    bool submitted,
+    bool readOnly,
+    String requiredError,
+  ) {
     // final today = DateTime.now();
     // final startOfToday = DateTime(today.year, today.month, today.day);
     // final isPastDate =
     //     activationDate != null && activationDate.isBefore(startOfToday);
 
-    final activationDateField = CustomDropdownCalendar(
+    return CustomDropdownCalendar(
       borderRadius: BorderRadius.circular(4.r),
       label: 'Activation Date'.tr,
       hint: 'Select Activation Date'.tr,
@@ -207,15 +255,114 @@ class _GrcFormFieldsState extends State<GrcFormFields> {
       // firstDate: startOfToday,
       dateFormatter: (d) =>
           DateFormat('d MMM yyyy', context.isArabic ? 'ar' : 'en').format(d),
-      errorText: !submitted
-          ? null
-          : activationDate == null
-              ? requiredError
-              : null,
+      errorText: _requiredFieldErrorText(
+        submitted: submitted,
+        isEmpty: activationDate == null,
+        requiredMessage: requiredError,
+      ),
       labelStyle: StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
       hintStyle: StyleText.fontSize14Weight500
           .copyWith(color: AppColors.secondaryText.withOpacity(.7)),
       required: false,
+    );
+  }
+
+  Widget _buildDescEnField(bool submitted, bool readOnly) {
+    final descEnController = widget.descEnController;
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: CustomTextField(
+        label: 'Description',
+        hint: 'Text here',
+        autoCapitalize: true,
+        controller: descEnController,
+        errorText: _englishFieldErrorText(
+          submitted: submitted,
+          text: descEnController.text,
+          requiredMessage: "Description is required",
+          wrongScriptMessage: "Description must be written in English",
+        ),
+        submitted: submitted,
+        readOnly: readOnly,
+        maxLines: 3,
+        minLines: 3,
+        maxLength: 1000,
+        showCharCount: true,
+        fillColor: AppColors.background,
+        borderRadius: BorderRadius.circular(8),
+        valueStyle: StyleText.fontSize14Weight500
+            .copyWith(color: AppColors.secondaryText),
+        hintStyle: StyleText.fontSize14Weight500
+            .copyWith(color: AppColors.secondaryText.withOpacity(.5)),
+        labelStyle:
+            AppTextStyles.font16BlackRegularCairo.copyWith(fontSize: 14.sp),
+      ),
+    );
+  }
+
+  Widget _buildDescArField(bool submitted, bool readOnly) {
+    final descArController = widget.descArController;
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: CustomTextField(
+        label: 'الوصف',
+        hint: 'اكتب وصف',
+        controller: descArController,
+        errorText: _arabicFieldErrorText(
+          submitted: submitted,
+          text: descArController.text,
+          requiredMessage: "الوصف مطلوب",
+          wrongScriptMessage: "يجب كتابة الوصف باللغة العربية",
+        ),
+        submitted: submitted,
+        readOnly: readOnly,
+        maxLines: 3,
+        minLines: 3,
+        maxLength: 1000,
+        showCharCount: true,
+        fillColor: AppColors.background,
+        borderRadius: BorderRadius.circular(8),
+        valueStyle: StyleText.fontSize14Weight500
+            .copyWith(color: AppColors.secondaryText),
+        hintStyle: StyleText.fontSize14Weight500
+            .copyWith(color: AppColors.secondaryText.withOpacity(.5)),
+        labelStyle:
+            AppTextStyles.font16BlackRegularCairo.copyWith(fontSize: 14.sp),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final selectedDepartment = widget.selectedDepartment;
+    final activationDate = widget.activationDate;
+    final onDepartmentChanged = widget.onDepartmentChanged;
+    final onDateChanged = widget.onDateChanged;
+    final submitted = widget.submitted;
+    final readOnly = widget.readOnly;
+
+    final requiredError =
+        context.isArabic ? 'هذا الحقل مطلوب' : 'This field is required.';
+
+    final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
+
+    final nameEnField = _buildNameEnField(submitted, readOnly);
+    final nameArField = _buildNameArField(submitted, readOnly);
+    final departmentField = _buildDepartmentField(
+      context,
+      selectedDepartment,
+      onDepartmentChanged,
+      submitted,
+      readOnly,
+      requiredError,
+    );
+    final activationDateField = _buildActivationDateField(
+      context,
+      activationDate,
+      onDateChanged,
+      submitted,
+      readOnly,
+      requiredError,
     );
 
     return Column(
@@ -248,64 +395,11 @@ class _GrcFormFieldsState extends State<GrcFormFields> {
         SizedBox(height: 15.h),
 
         // ── Description EN ────────────────────────────────────────────────────
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: CustomTextField(
-            label: 'Description',
-            hint: 'Text here',
-            autoCapitalize: true,
-            controller: descEnController,
-            errorText: submitted && descEnController.text.trim().isEmpty
-                ? "Description is required"
-                : containsArabicLetters(descEnController.text)
-                    ? "Description must be written in English"
-                    : null,
-            submitted: submitted,
-            readOnly: readOnly,
-            maxLines: 3,
-            minLines: 3,
-            maxLength: 1000,
-            showCharCount: true,
-            fillColor: AppColors.background,
-            borderRadius: BorderRadius.circular(8),
-            valueStyle: StyleText.fontSize14Weight500
-                .copyWith(color: AppColors.secondaryText),
-            hintStyle: StyleText.fontSize14Weight500
-                .copyWith(color: AppColors.secondaryText.withOpacity(.5)),
-            labelStyle:
-                AppTextStyles.font16BlackRegularCairo.copyWith(fontSize: 14.sp),
-          ),
-        ),
+        _buildDescEnField(submitted, readOnly),
         SizedBox(height: 15.h),
 
         // ── Description AR ────────────────────────────────────────────────────
-        Directionality(
-          textDirection: TextDirection.rtl,
-          child: CustomTextField(
-            label: 'الوصف',
-            hint: 'اكتب وصف',
-            controller: descArController,
-            errorText: submitted && descArController.text.trim().isEmpty
-                ? "الوصف مطلوب"
-                : containsEnglishLetters(descArController.text)
-                    ? "يجب كتابة الوصف باللغة العربية"
-                    : null,
-            submitted: submitted,
-            readOnly: readOnly,
-            maxLines: 3,
-            minLines: 3,
-            maxLength: 1000,
-            showCharCount: true,
-            fillColor: AppColors.background,
-            borderRadius: BorderRadius.circular(8),
-            valueStyle: StyleText.fontSize14Weight500
-                .copyWith(color: AppColors.secondaryText),
-            hintStyle: StyleText.fontSize14Weight500
-                .copyWith(color: AppColors.secondaryText.withOpacity(.5)),
-            labelStyle:
-                AppTextStyles.font16BlackRegularCairo.copyWith(fontSize: 14.sp),
-          ),
-        ),
+        _buildDescArField(submitted, readOnly),
         SizedBox(height: 15.h),
 
         // ── Owning Department + Activation Date ───────────────────────────────
