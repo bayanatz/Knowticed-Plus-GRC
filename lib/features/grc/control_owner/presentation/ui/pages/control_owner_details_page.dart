@@ -282,8 +282,8 @@ class _ControlOwnerDetailsBodyState extends State<_ControlOwnerDetailsBody> {
 
     return ContactCard(
       name: name,
-      jobTitle: jobTitle.isNotEmpty ? jobTitle : 'Technician'.tr,
-      department: department.isNotEmpty ? department : 'IT'.tr,
+      jobTitle: jobTitle.isNotEmpty ? jobTitle : grcMockJobTitleFallback.tr,
+      department: department.isNotEmpty ? department : grcMockDepartmentFallback.tr,
       email: email,
       phone: phone,
       avatar: photo.startsWith('http') ? NetworkImage(photo) : null,

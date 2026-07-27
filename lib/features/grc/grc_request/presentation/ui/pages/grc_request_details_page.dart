@@ -162,8 +162,8 @@ class _GrcRequestDetailsBodyState extends State<_GrcRequestDetailsBody> {
     final phone = employee?.mobilePhone?.phone ?? grcMockPhoneFallback;
     return ContactCard(
       name: name,
-      jobTitle: jobTitle.isNotEmpty ? jobTitle : 'Technician'.tr,
-      department: dept.isNotEmpty ? dept : 'IT'.tr,
+      jobTitle: jobTitle.isNotEmpty ? jobTitle : grcMockJobTitleFallback.tr,
+      department: dept.isNotEmpty ? dept : grcMockDepartmentFallback.tr,
       email: email,
       phone: phone,
       avatar: photo.startsWith('http') ? NetworkImage(photo) : null,

@@ -314,8 +314,8 @@ class _ReassignChampionPageState extends State<ReassignChampionPage> {
       SizedBox(height: 8.h),
       ContactCard(
         name: currentName,
-        jobTitle: currentTitle.isNotEmpty ? currentTitle : 'Technician'.tr,
-        department: currentDept.isNotEmpty ? currentDept : 'IT'.tr,
+        jobTitle: currentTitle.isNotEmpty ? currentTitle : grcMockJobTitleFallback.tr,
+        department: currentDept.isNotEmpty ? currentDept : grcMockDepartmentFallback.tr,
         email: widget.champion.championEmail,
         phone: currentPhone,
         avatar:

@@ -289,8 +289,8 @@ class _ReassignOwnerPageState extends State<ReassignOwnerPage> {
       SizedBox(height: 8.h),
       ContactCard(
         name: currentName,
-        jobTitle: currentTitle.isNotEmpty ? currentTitle : 'Technician'.tr,
-        department: currentDept.isNotEmpty ? currentDept : 'IT'.tr,
+        jobTitle: currentTitle.isNotEmpty ? currentTitle : grcMockJobTitleFallback.tr,
+        department: currentDept.isNotEmpty ? currentDept : grcMockDepartmentFallback.tr,
         email: widget.owner.ownerEmail,
         phone: currentPhone,
         avatar:

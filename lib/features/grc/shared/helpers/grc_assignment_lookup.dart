@@ -19,6 +19,14 @@ import 'package:get/get.dart';
 /// exactly one place to fix instead of four.
 const String grcMockPhoneFallback = '2010258963';
 
+/// Placeholder job title shown when an employee record has none set.
+/// Used as a business-default fallback in assignment flows.
+const String grcMockJobTitleFallback = 'Technician';
+
+/// Placeholder department shown when an employee record has none set.
+/// Used as a business-default fallback in assignment flows.
+const String grcMockDepartmentFallback = 'IT';
+
 /// Resolves the signed-in user's email for GRC assignment flows, falling
 /// back from [Constant.emailUser] to the cached employee controller when
 /// the constant hasn't been populated yet. Returns '' if neither is set.
