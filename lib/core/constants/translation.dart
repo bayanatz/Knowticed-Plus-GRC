@@ -3653,6 +3653,37 @@ No class actions, class arbitrations, or representative actions for users locate
               'Control Number must be written in Arabic',
           'Control Description must be written in Arabic':
               'Control Description must be written in Arabic',
+          'Control Name must be written in English':
+              'Control Name must be written in English',
+          'Control Description must be written in English':
+              'Control Description must be written in English',
+          'Frequency': 'Frequency',
+          'Bi weekly': 'Bi weekly',
+          'Control Document ENG': 'Control Document ENG',
+          'Control Document AR': 'Control Document AR',
+          'Policy Weight must be a valid number':
+              'Policy Weight must be a valid number',
+          'Policy Weight must be a positive number':
+              'Policy Weight must be a positive number',
+          'Policy Weight cannot be more than 100':
+              'Policy Weight cannot be more than 100',
+          'Policy Name must be written in English':
+              'Policy Name must be written in English',
+          'Policy Name must be written in Arabic':
+              'Policy Name must be written in Arabic',
+          'GRC Policy Number': 'Policy Number',
+          'Policy Number must be written in English':
+              'Policy Number must be written in English',
+          'Policy Number must be written in Arabic':
+              'Policy Number must be written in Arabic',
+          'Policy Description must be written in English':
+              'Policy Description must be written in English',
+          'Policy Description must be written in Arabic':
+              'Policy Description must be written in Arabic',
+          'End date cannot be before start date.':
+              'End date cannot be before start date.',
+          'Policy Document ENG': 'Policy Document ENG',
+          'Policy Document AR': 'Policy Document AR',
           'Edit Controls': 'Edit Controls',
           'Add Controls': 'Add Controls',
           'Choose Controls': 'Choose Controls',
@@ -4266,6 +4297,37 @@ No class actions, class arbitrations, or representative actions for users locate
               'يجب كتابة رقم الضابط باللغة العربية',
           'Control Description must be written in Arabic':
               'يجب كتابة وصف الضابط باللغة العربية',
+          'Control Name must be written in English':
+              'يجب كتابة اسم الضابط باللغة الإنجليزية',
+          'Control Description must be written in English':
+              'يجب كتابة وصف الضابط باللغة الإنجليزية',
+          'Frequency': 'التكرار',
+          'Bi weekly': 'نصف أسبوعي',
+          'Control Document ENG': 'وثيقة الضابط (إنجليزي)',
+          'Control Document AR': 'وثيقة الضابط (عربي)',
+          'Policy Weight must be a valid number':
+              'يجب أن يكون وزن السياسة رقمًا صالحًا',
+          'Policy Weight must be a positive number':
+              'يجب أن يكون وزن السياسة رقمًا موجبًا',
+          'Policy Weight cannot be more than 100':
+              'لا يمكن أن يتجاوز وزن السياسة 100',
+          'Policy Name must be written in English':
+              'يجب كتابة اسم السياسة باللغة الإنجليزية',
+          'Policy Name must be written in Arabic':
+              'يجب كتابة اسم السياسة باللغة العربية',
+          'GRC Policy Number': 'رقم السياسة',
+          'Policy Number must be written in English':
+              'يجب كتابة رقم السياسة باللغة الإنجليزية',
+          'Policy Number must be written in Arabic':
+              'يجب كتابة رقم السياسة باللغة العربية',
+          'Policy Description must be written in English':
+              'يجب كتابة وصف السياسة باللغة الإنجليزية',
+          'Policy Description must be written in Arabic':
+              'يجب كتابة وصف السياسة باللغة العربية',
+          'End date cannot be before start date.':
+              'لا يمكن أن يكون تاريخ الانتهاء قبل تاريخ البداية.',
+          'Policy Document ENG': 'وثيقة السياسة (إنجليزي)',
+          'Policy Document AR': 'وثيقة السياسة (عربي)',
           'Edit Controls': 'تحرير الضوابط',
           'Add Controls': 'إضافة ضوابط',
           'Choose Controls': 'اختر الضوابط',

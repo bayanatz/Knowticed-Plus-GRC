@@ -211,8 +211,8 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
                 document: document, onRemove: onRemove)
             : SizedBox(
                 width: double.infinity,
-                child:
-                    _documentButton(onTap: onUpload, title: 'Control Document'),
+                child: _documentButton(
+                    onTap: onUpload, title: 'Control Document'.tr),
               ),
       ],
     );
@@ -225,24 +225,24 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
       isTablet: isTablet,
       children: [
         _textField(
-          label: 'Control Name',
-          hint: 'Text here',
+          label: 'Control Name'.tr,
+          hint: 'Text here'.tr,
           controller: control.nameController,
           isMandatory: true,
-          englishOnlyError: 'Control Name must be written in English',
+          englishOnlyError: 'Control Name must be written in English'.tr,
         ),
         widget.isArabicEnabled
             ? _textField(
-                label: 'اسم ضابط',
-                hint: 'اكتب هنا',
+                label: 'Control Name'.tr,
+                hint: 'Type here'.tr,
                 controller: control.nameArController,
                 rtl: true,
                 isMandatory: controlArabicTouched(control),
-                arabicOnlyError: 'يجب كتابة اسم ضابط باللغة العربية',
+                arabicOnlyError: 'Control Name must be written in Arabic'.tr,
               )
             : _textField(
                 label: 'Control Number'.tr,
-                hint: 'Text here',
+                hint: 'Text here'.tr,
                 controller: control.numberController,
                 isMandatory: true,
                 onlyDigits: true,
@@ -261,19 +261,19 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
       children: [
         _textField(
           label: 'Control Number'.tr,
-          hint: 'Text here',
+          hint: 'Text here'.tr,
           controller: control.numberController,
           isMandatory: true,
           onlyDigits: true,
           englishOnlyError: 'Control Number must be written in English'.tr,
         ),
         _textField(
-          label: 'رقم ضابط',
-          hint: 'اكتب هنا',
+          label: 'Control Number'.tr,
+          hint: 'Type here'.tr,
           controller: control.numberArController,
           rtl: true,
           isMandatory: controlArabicTouched(control),
-          arabicOnlyError: 'يجب كتابة رقم ضابط باللغة العربية',
+          arabicOnlyError: 'Control Number must be written in Arabic'.tr,
         ),
       ],
     );
@@ -286,21 +286,22 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _textField(
-          label: 'Control Description',
-          hint: 'Text here',
+          label: 'Control Description'.tr,
+          hint: 'Text here'.tr,
           controller: control.descriptionController,
           maxLines: 3,
           minLines: 3,
           maxLength: 500,
           showCharCount: true,
           isMandatory: true,
-          englishOnlyError: 'Control Description must be written in English',
+          englishOnlyError:
+              'Control Description must be written in English'.tr,
         ),
         if (widget.isArabicEnabled) ...[
           SizedBox(height: 15.h),
           _textField(
-            label: 'وصف ضابط',
-            hint: 'اكتب وصف',
+            label: 'Control Description'.tr,
+            hint: 'Write a Description'.tr,
             controller: control.descriptionArController,
             rtl: true,
             maxLines: 3,
@@ -308,7 +309,7 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
             maxLength: 500,
             showCharCount: true,
             isMandatory: controlArabicTouched(control),
-            arabicOnlyError: 'يجب كتابة وصف ضابط باللغة العربية',
+            arabicOnlyError: 'Control Description must be written in Arabic'.tr,
           ),
         ],
       ],
@@ -319,8 +320,8 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
   Widget _buildFrequencyWeightRow(bool isTablet) {
     final control = widget.control;
     final frequencyField = CustomDropdown<String>(
-      label: 'Frequency',
-      hint: 'Choose Here',
+      label: 'Frequency'.tr,
+      hint: 'Choose Here'.tr,
       items: const [
         'Weekly',
         'Bi weekly',
@@ -328,7 +329,7 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
         'Quarterly',
         'Semi Annual',
         'Annually',
-      ].map((d) => DropdownItem<String>(value: d, label: d)).toList(),
+      ].map((d) => DropdownItem<String>(value: d, label: d.tr)).toList(),
       value: control.frequency,
       onChanged: widget.onFrequencyChanged,
       fillColor: AppColors.background,
@@ -340,8 +341,8 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
     );
 
     final weightField = _textField(
-      label: 'Control Weight',
-      hint: 'Text Here',
+      label: 'Control Weight'.tr,
+      hint: 'Text Here'.tr,
       controller: control.weightController,
       isMandatory: true,
       onlyDigits: true,
@@ -366,7 +367,7 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
             children: [
               Expanded(
                 child: _documentColumn(
-                  label: 'Control Document ENG',
+                  label: 'Control Document ENG'.tr,
                   document: control.documentEn,
                   onRemove: widget.onRemoveDocumentEn,
                   onUpload: widget.onUploadDocumentEn,
@@ -374,7 +375,7 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
               ),
               Expanded(
                 child: _documentColumn(
-                  label: 'Control Document AR',
+                  label: 'Control Document AR'.tr,
                   document: control.documentAr,
                   onRemove: widget.onRemoveDocumentAr,
                   onUpload: widget.onUploadDocumentAr,
@@ -386,7 +387,7 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
             widthFactor: 0.5,
             alignment: Alignment.centerLeft,
             child: _documentColumn(
-              label: 'Control Document ENG',
+              label: 'Control Document ENG'.tr,
               document: control.documentEn,
               onRemove: widget.onRemoveDocumentEn,
               onUpload: widget.onUploadDocumentEn,
