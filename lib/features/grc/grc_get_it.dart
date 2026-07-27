@@ -17,12 +17,17 @@ import 'package:demo_app/features/grc/module/data/data_source/grc_module_firebas
 import 'package:demo_app/features/grc/module/data/data_source/grc_module_storage_data_source.dart';
 import 'package:demo_app/features/grc/policy/data/data_source/policy_firebase_data_source.dart';
 import 'package:demo_app/features/grc/policy/data/data_source/policy_storage_data_source.dart';
+import 'package:demo_app/features/grc/assignment_control/data/data_source/assignment_control_firebase_data_source.dart';
 import 'package:demo_app/features/grc/control_champion/domain/entities/champion_request_resolver.dart';
 import 'package:demo_app/features/grc/control_champion/domain/use_cases/apply_champion_reassignment_usecase.dart';
 import 'package:demo_app/features/grc/control_owner/domain/use_cases/apply_owner_reassignment_usecase.dart';
 import 'package:demo_app/features/grc/grc_request/data/data_source/grc_request_firebase_data_source.dart';
 import 'package:demo_app/features/grc/grc_request/data/repository/grc_request_repository_impl.dart';
 import 'package:demo_app/features/grc/grc_request/domain/repository/grc_request_repository.dart';
+import 'package:demo_app/features/grc/assignment_control/data/repository/assignment_control_repository_impl.dart';
+import 'package:demo_app/features/grc/assignment_control/domain/repository/assignment_control_repository.dart';
+import 'package:demo_app/features/grc/assignment_control/domain/use_cases/get_assignment_control_usecase.dart';
+import 'package:demo_app/features/grc/assignment_control/domain/use_cases/submit_evidence_usecase.dart';
 import 'package:demo_app/features/grc/grc_request/domain/use_cases/approve_grc_request_usecase.dart';
 import 'package:demo_app/features/grc/grc_request/domain/use_cases/cancel_grc_request_usecase.dart';
 import 'package:demo_app/features/grc/grc_request/domain/use_cases/create_grc_request_usecase.dart';
@@ -68,6 +73,7 @@ import 'package:demo_app/features/grc/control/presentation/ui/pages/control_weig
 import 'package:demo_app/features/grc/control_champion/presentation/controller/champion_cubit.dart';
 import 'package:demo_app/features/grc/control_owner/presentation/controller/owner_cubit.dart';
 import 'package:demo_app/features/grc/control_owner/presentation/controller/control_previous_owners_cubit.dart';
+import 'package:demo_app/features/grc/assignment_control/presentation/controller/assignment_control_cubit.dart';
 import 'package:demo_app/features/grc/policy/presentation/controller/policy_cubit.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/pages/policy_weight_issue/policy_weight_history_cubit.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/pages/policy_weight_issue/policy_weight_issue_cubit.dart';
@@ -148,6 +154,12 @@ void setupGRCDependencies(GetIt sl) {
     () => GrcRequestFirebaseDataSource(),
   );
 
+  /// class name: [AssignmentControlFirebaseDataSource]
+  /// purpose: Cloud Firestore CRUD operations for Assignment Control documents.
+  sl.registerLazySingleton<AssignmentControlFirebaseDataSource>(
+    () => AssignmentControlFirebaseDataSource(),
+  );
+
   // ─── 2. Repository ──────────────────────────────────────────────────────────
 
   /// class name: [GRCModuleRepositoryImpl] registered as [GRCModuleRepository]
@@ -199,6 +211,16 @@ void setupGRCDependencies(GetIt sl) {
   sl.registerLazySingleton<GrcRequestRepository>(
     () => GrcRequestRepositoryImpl(
       firebaseDataSource: sl<GrcRequestFirebaseDataSource>(),
+    ),
+  );
+
+  /// class name: [AssignmentControlRepositoryImpl] registered as [AssignmentControlRepository]
+  /// purpose: orchestrates the Assignment Control data source and Storage
+  /// uploads, and maps models to entities.
+  sl.registerLazySingleton<AssignmentControlRepository>(
+    () => AssignmentControlRepositoryImpl(
+      dataSource: sl<AssignmentControlFirebaseDataSource>(),
+      storageDataSource: sl<PolicyStorageDataSource>(),
     ),
   );
 
@@ -429,6 +451,20 @@ void setupGRCDependencies(GetIt sl) {
     ),
   );
 
+  /// class name: [GetAssignmentControlUseCase]
+  /// purpose: business logic for fetching a single Assignment Control by
+  /// control+champion, or null if none has been submitted yet.
+  sl.registerLazySingleton<GetAssignmentControlUseCase>(
+    () => GetAssignmentControlUseCase(sl<AssignmentControlRepository>()),
+  );
+
+  /// class name: [SubmitEvidenceUseCase]
+  /// purpose: business logic for a Champion submitting (or resubmitting)
+  /// evidence for one Control.
+  sl.registerLazySingleton<SubmitEvidenceUseCase>(
+    () => SubmitEvidenceUseCase(sl<AssignmentControlRepository>()),
+  );
+
   // ─── 4. Cubit (Presentation) ────────────────────────────────────────────────
 
   /// class name: [GRCModuleCubit]
@@ -576,6 +612,20 @@ void setupGRCDependencies(GetIt sl) {
   sl.registerFactory<ControlPreviousOwnersCubit>(
     () => ControlPreviousOwnersCubit(
       getOwnerHistoryUseCase: sl<GetControlOwnerHistoryUseCase>(),
+    ),
+  );
+
+  /// class name: [AssignmentControlCubit]
+  /// purpose: presentation-layer state manager for the Champion's
+  /// Assignment Controls list and Submit-evidence action. Registered as a
+  /// factory so each page gets an independent cubit instance.
+  sl.registerFactory<AssignmentControlCubit>(
+    () => AssignmentControlCubit(
+      getChampionUseCase: sl<GetChampionUseCase>(),
+      getAllControlsUseCase: sl<GetAllControlsUseCase>(),
+      getAllOwnersUseCase: sl<GetAllOwnersUseCase>(),
+      getAssignmentControlUseCase: sl<GetAssignmentControlUseCase>(),
+      submitEvidenceUseCase: sl<SubmitEvidenceUseCase>(),
     ),
   );
 }

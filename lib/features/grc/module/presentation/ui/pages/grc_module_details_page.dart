@@ -64,6 +64,7 @@ import 'package:demo_app/features/grc/control_owner/domain/use_cases/create_owne
 import 'package:demo_app/features/grc/control_owner/presentation/ui/pages/add_owner_page.dart';
 import 'package:demo_app/features/grc/control_owner/presentation/ui/pages/control_owner_details_page.dart';
 import 'package:demo_app/features/grc/control_champion/presentation/ui/pages/control_champion_details_page.dart';
+import 'package:demo_app/features/grc/assignment_control/presentation/ui/pages/assignment_controls_list_page.dart';
 
 /// class name: [GrcModuleDetailsPage]
 ///
@@ -346,7 +347,16 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
                         ),
                         customButton(
                           title: "Assignment Controls".tr,
-                          function: () {},
+                          function: () => Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                              pageBuilder: (_, __, ___) =>
+                                  AssignmentControlsListPage(module: widget.module),
+                              transitionsBuilder: (_, animation, __, child) =>
+                                  FadeTransition(opacity: animation, child: child),
+                              transitionDuration: const Duration(milliseconds: 300),
+                            ),
+                          ),
                           width: isTablet ? 180.w : 170.w,
                           height: 38.h,
                           color: AppColors.primary,
