@@ -48,6 +48,7 @@ import 'package:demo_app/features/grc/control_owner/presentation/controller/owne
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
 import 'package:demo_app/features/grc/policy/presentation/controller/policy_cubit.dart';
+import 'package:demo_app/features/grc/control/presentation/controller/control_cubit.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/add_edit_control_page.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/control_bulk_upload/control_bulk_upload_page.dart';
 import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details_widget/grc_action_buttons.dart';
@@ -85,8 +86,15 @@ class PolicyDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => GetIt.instance<PolicyCubit>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<PolicyCubit>(
+          create: (_) => GetIt.instance<PolicyCubit>(),
+        ),
+        BlocProvider<ControlCubit>(
+          create: (_) => GetIt.instance<ControlCubit>(),
+        ),
+      ],
       child: _PolicyDetailsBody(
         policyId: policyId,
         moduleId: moduleId,
@@ -124,8 +132,9 @@ class _PolicyDetailsBodyState extends State<_PolicyDetailsBody> {
 
   Future<void> _loadAll() async {
     final cubit = context.read<PolicyCubit>();
+    final controlCubit = context.read<ControlCubit>();
     await cubit.getPolicy(widget.policyId, moduleId: widget.moduleId);
-    await cubit.getAllControls(
+    await controlCubit.getAllControls(
       moduleId: widget.moduleId,
       policyId: widget.policyId,
     );
@@ -148,11 +157,6 @@ class _PolicyDetailsBodyState extends State<_PolicyDetailsBody> {
       return;
     }
 
-    if (state is PolicyControlsListLoaded) {
-      setState(() => _controls = state.controls);
-      return;
-    }
-
     if (state is PolicyActionSuccess) {
       if (_pendingDelete) {
         showSuccessDialog(
@@ -167,6 +171,18 @@ class _PolicyDetailsBodyState extends State<_PolicyDetailsBody> {
 
     if (state is PolicyFailure) {
       showErrorDialog(context: context, subtitle: state.message);
+    }
+  }
+
+  void _onControlStateChange(BuildContext context, ControlState state) {
+    if (state is ControlLoading) {
+      showLoadingIndicator();
+      return;
+    }
+    hideLoadingIndicator();
+
+    if (state is ControlsListLoaded) {
+      setState(() => _controls = state.controls);
     }
   }
 
@@ -202,19 +218,20 @@ class _PolicyDetailsBodyState extends State<_PolicyDetailsBody> {
     }
   }
 
-  // Flow-start entry point (Add Control / edit-from-list) — there is no
-  // ancestor page already holding these cubits, so a fresh set is created
-  // here and handed to AddEditControlPage, matching the set ControlDetailsPage
+  // Flow-start entry point (Add Control / edit-from-list). This page already
+  // holds its own ControlCubit at the root (see build()), so it's shared via
+  // BlocProvider.value rather than resolved fresh — matching the pattern
+  // _openEditPolicy above uses for PolicyCubit. ChampionCubit/OwnerCubit have
+  // no ancestor here, so those stay fresh, matching the set ControlDetailsPage
   // provides when its own edit flow pushes the same page.
   Future<void> _openAddEditControl({ControlEntity? existing}) async {
+    final controlCubit = context.read<ControlCubit>();
     final result = await Navigator.push<bool>(
       context,
       PageRouteBuilder(
         pageBuilder: (_, __, ___) => MultiBlocProvider(
           providers: [
-            BlocProvider<PolicyCubit>(
-              create: (_) => GetIt.instance<PolicyCubit>(),
-            ),
+            BlocProvider<ControlCubit>.value(value: controlCubit),
             BlocProvider<ChampionCubit>(
               create: (_) => GetIt.instance<ChampionCubit>()
                 ..getAllChampions(moduleId: widget.moduleId),
@@ -243,9 +260,10 @@ class _PolicyDetailsBodyState extends State<_PolicyDetailsBody> {
       ),
     );
     if (result == true && mounted) {
-      context
-          .read<PolicyCubit>()
-          .getAllControls(moduleId: widget.moduleId, policyId: widget.policyId);
+      controlCubit.getAllControls(
+        moduleId: widget.moduleId,
+        policyId: widget.policyId,
+      );
     }
   }
 
@@ -265,9 +283,10 @@ class _PolicyDetailsBodyState extends State<_PolicyDetailsBody> {
       ),
     );
     if (result == true && mounted) {
-      context
-          .read<PolicyCubit>()
-          .getAllControls(moduleId: widget.moduleId, policyId: widget.policyId);
+      context.read<ControlCubit>().getAllControls(
+            moduleId: widget.moduleId,
+            policyId: widget.policyId,
+          );
     }
   }
 
@@ -277,8 +296,13 @@ class _PolicyDetailsBodyState extends State<_PolicyDetailsBody> {
     final isArabic = context.isArabic;
     final dateFormat = DateFormat('d MMM yyyy', isArabic ? 'ar' : 'en');
 
-    return BlocListener<PolicyCubit, PolicyState>(
-      listener: _onStateChange,
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<PolicyCubit, PolicyState>(listener: _onStateChange),
+        BlocListener<ControlCubit, ControlState>(
+          listener: _onControlStateChange,
+        ),
+      ],
       child: Scaffold(
         body: SafeArea(
           child: Padding(
@@ -336,7 +360,7 @@ class _PolicyDetailsBodyState extends State<_PolicyDetailsBody> {
                                   _openAddEditControl(existing: existing),
                               onBulkUpload: _onBulkUploadControls,
                               onControlsChanged: () =>
-                                  context.read<PolicyCubit>().getAllControls(
+                                  context.read<ControlCubit>().getAllControls(
                                         moduleId: widget.moduleId,
                                         policyId: widget.policyId,
                                       ),
