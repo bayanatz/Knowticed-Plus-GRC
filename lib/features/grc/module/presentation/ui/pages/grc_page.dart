@@ -293,24 +293,32 @@ class _GovernanceRiskAndCompliancePageState
         final counts = _countByStatus(allModules);
         final filtered = _applyFilters(allModules);
 
-        const statusLabels = {
+        final statusLabels = {
           'all': 'All',
-          'Active': 'Active',
-          'Inactive': 'Inactive',
-          'Scheduled': 'Scheduled',
-          'Removed': 'Removed',
+          GrcModuleStatus.active.value: 'Active',
+          GrcModuleStatus.inactive.value: 'Inactive',
+          GrcModuleStatus.scheduled.value: 'Scheduled',
+          GrcModuleStatus.removed.value: 'Removed',
         };
 
         final List<MapEntry<String, Map<String, dynamic>>> statusEntries = [
           MapEntry('all', {'num': counts['all'] ?? 0, 'color': AppColors.text}),
-          MapEntry('Active',
-              {'num': counts['Active'] ?? 0, 'color': AppColors.green}),
-          MapEntry('Inactive',
-              {'num': counts['Inactive'] ?? 0, 'color': AppColors.red}),
-          MapEntry('Scheduled',
-              {'num': counts['Scheduled'] ?? 0, 'color': AppColors.primary}),
-          MapEntry('Removed',
-              {'num': counts['Removed'] ?? 0, 'color': AppColors.colorGrey}),
+          MapEntry(GrcModuleStatus.active.value, {
+            'num': counts[GrcModuleStatus.active.value] ?? 0,
+            'color': AppColors.green
+          }),
+          MapEntry(GrcModuleStatus.inactive.value, {
+            'num': counts[GrcModuleStatus.inactive.value] ?? 0,
+            'color': AppColors.red
+          }),
+          MapEntry(GrcModuleStatus.scheduled.value, {
+            'num': counts[GrcModuleStatus.scheduled.value] ?? 0,
+            'color': AppColors.primary
+          }),
+          MapEntry(GrcModuleStatus.removed.value, {
+            'num': counts[GrcModuleStatus.removed.value] ?? 0,
+            'color': AppColors.colorGrey
+          }),
         ];
 
         return Scaffold(
