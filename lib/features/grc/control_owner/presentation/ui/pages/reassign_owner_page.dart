@@ -198,25 +198,6 @@ class _ReassignOwnerPageState extends State<ReassignOwnerPage> {
   }
 
   Widget _buildPage(BuildContext context) {
-    final currentEmp = findEmployeeByEmail(widget.owner.ownerEmail);
-    final currentPhoto = currentEmp != null
-        ? EmployeeHelper.getEmployeeImage(employee: currentEmp)
-        : AppAssets.defaultEmployeeAvatar;
-    final currentName = employeeDisplayName(context, widget.owner.ownerEmail);
-    final currentDept = currentEmp != null
-        ? EmployeeHelper.getEmployeeLocalizeDepartment(
-            employee: currentEmp, context: context)
-        : '';
-    final currentTitle = currentEmp != null
-        ? (EmployeeHelper.getEmployeeLocalizedTitle(
-                    employee: currentEmp, context: context)
-                ?.toString() ??
-            '')
-        : '';
-    final currentPhone = currentEmp?.mobilePhone?.phone ?? grcMockPhoneFallback;
-
-    final dateFormat = DateFormat('yyyy-MM-dd');
-
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -249,231 +230,33 @@ class _ReassignOwnerPageState extends State<ReassignOwnerPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             // Current Control Owner Section
-                            Text('Current Control Owner'.tr,
-                                style: StyleText.fontSize16Weight600
-                                    .copyWith(color: AppColors.text)),
-                            SizedBox(height: 8.h),
-                            ContactCard(
-                              name: currentName,
-                              jobTitle: currentTitle.isNotEmpty
-                                  ? currentTitle
-                                  : 'Technician'.tr,
-                              department: currentDept.isNotEmpty
-                                  ? currentDept
-                                  : 'IT'.tr,
-                              email: widget.owner.ownerEmail,
-                              phone: currentPhone,
-                              avatar: currentPhoto.startsWith('http')
-                                  ? NetworkImage(currentPhoto)
-                                  : null,
-                              onMessage: () {},
-                            ),
+                            ..._buildCurrentOwnerSection(context),
                             SizedBox(height: 20.h),
 
                             // New Control Owner Section
-                            Text('New Control Owner'.tr,
-                                style: StyleText.fontSize16Weight600
-                                    .copyWith(color: AppColors.text)),
-                            SizedBox(height: 8.h),
-                            Container(
-                              padding: EdgeInsets.all(16.r),
-                              decoration: BoxDecoration(
-                                color: AppColors.card,
-                                borderRadius: BorderRadius.circular(8.r),
-                              ),
-                              child: GrcOwnerSection(
-                                singleSelect: true,
-                                errorText: _ownerError,
-                                onOwnersChanged: (selected) => setState(() {
-                                  _newSelectedEmployees = selected;
-                                  _ownerError = null;
-                                }),
-                              ),
-                            ),
+                            ..._buildNewOwnerSection(),
                             SizedBox(height: 20.h),
 
-                            // Dates Pickers Section
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: CustomDropdownCalendar(
-                                    label: 'Start Date'.tr,
-                                    hint: 'Choose The Date'.tr,
-                                    value: _startDate,
-                                    errorText: _startDateError,
-                                    onChanged: (d) => setState(() {
-                                      _startDate = d;
-                                      _startDateError = null;
-                                    }),
-                                    fillColor: AppColors.background,
-                                    firstDate: DateTime(2000),
-                                    lastDate: DateTime(2100),
-                                    dateFormatter: dateFormat.format,
-                                  ),
-                                ),
-                                SizedBox(width: 16.w),
-                                Expanded(
-                                  child: CustomDropdownCalendar(
-                                    label: 'End Date'.tr,
-                                    hint: 'Choose The Date'.tr,
-                                    value: _endDate,
-                                    onChanged: (d) =>
-                                        setState(() => _endDate = d),
-                                    fillColor: AppColors.background,
-                                    firstDate: DateTime(2000),
-                                    lastDate: DateTime(2100),
-                                    dateFormatter: dateFormat.format,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 20.h),
-
-                            // Request Note Section
-                            CustomTextField(
-                              label: 'Request Note'.tr,
-                              hint: 'Text here'.tr,
-                              controller: _noteController,
-                              maxLines: 4,
-                              maxLength: 500,
-                              fillColor: AppColors.background,
-                              onChanged: (v) => setState(() {}),
-                            ),
+                            // Dates Pickers + Request Note Sections
+                            ..._buildDatesAndNoteSection(),
                             SizedBox(height: 20.h),
 
                             // Assigned Controls List Section
-                            Text('Assigned Controls'.tr,
-                                style: StyleText.fontSize14Weight500
-                                    .copyWith(color: AppColors.text)),
-                            SizedBox(height: 8.h),
-                            _reassignedControls.isEmpty
-                                ? Text(
-                                    'No Controls assigned.'.tr,
-                                    style: StyleText.fontSize12Weight400
-                                        .copyWith(
-                                            color: AppColors.secondaryText),
-                                  )
-                                : Wrap(
-                                    spacing: 8.w,
-                                    runSpacing: 8.h,
-                                    children: List.generate(
-                                        _reassignedControls.length, (index) {
-                                      final ac = _reassignedControls[index];
-                                      final ctrl = findControlInPolicy(
-                                          widget.policyControls,
-                                          ac.policyId,
-                                          ac.controlId);
-                                      final cName = ctrl != null
-                                          ? (context.isArabic
-                                              ? ctrl.controlsNameAr
-                                              : ctrl.controlsNameEn)
-                                          : ac.controlId;
-                                      return GrcAssignmentChip(
-                                        label: cName,
-                                        onRemove: () => _removeControl(index),
-                                      );
-                                    }),
-                                  ),
-                            if (_controlsError != null) ...[
-                              SizedBox(height: 6.h),
-                              Text(
-                                _controlsError!,
-                                style: StyleText.fontSize12Weight400
-                                    .copyWith(color: AppColors.red),
-                              ),
-                            ],
+                            ..._buildAssignedControlsSection(context),
                             SizedBox(height: 20.h),
 
                             // Assigning Controls Form Section — one Policy +
                             // Controls picker row per pending assignment. Tapping
                             // "+ Policy" appends another independent row; nothing
                             // here touches "Assigned Controls" until Submit.
-                            Text('Assigning Controls'.tr,
-                                style: StyleText.fontSize16Weight600
-                                    .copyWith(color: AppColors.text)),
-                            SizedBox(height: 12.h),
-                            ...List.generate(_pendingRows.length, (i) {
-                              final row = _pendingRows[i];
-                              final availableControlsForPolicy = row.policyId !=
-                                      null
-                                  ? (widget.policyControls[row.policyId] ?? [])
-                                  : <ControlEntity>[];
-
-                              return Padding(
-                                padding: EdgeInsets.only(bottom: 16.h),
-                                child: GrcPolicyControlPickerRow(
-                                  policies: widget.allPolicies,
-                                  policyId: row.policyId,
-                                  onPolicyChanged: (v) {
-                                    setState(() {
-                                      row.policyId = v;
-                                      row.controlIds = [];
-                                    });
-                                  },
-                                  availableControls: availableControlsForPolicy,
-                                  controlsEnabled: row.policyId != null,
-                                  controlIds: row.controlIds,
-                                  onControlsChanged: (v) =>
-                                      setState(() => row.controlIds = v),
-                                  spacing: 16.w,
-                                ),
-                              );
-                            }),
-                            customButton(
-                              title: '+ Policy'.tr,
-                              function: _addPolicyRow,
-                              width: 120.w,
-                              color: AppColors.blackButton,
-                              textStyle: StyleText.fontSize14Weight500
-                                  .copyWith(color: Colors.white),
-                            ),
+                            ..._buildAssigningControlsFormSection(),
                           ],
                         ),
                       ),
                       SizedBox(height: 24.h),
 
                       // Action Buttons
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          customButton(
-                            width: 120.w,
-                            title: 'Discard'.tr,
-                            function: () => Navigator.pop(context, false),
-                            color: AppColors.colorGrey,
-                            textStyle: StyleText.fontSize16Weight500
-                                .copyWith(color: AppColors.text),
-                          ),
-                          _submitting
-                              ? Container(
-                                  height: 34.h,
-                                  width: 120.w,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    color: AppColors.primary,
-                                    borderRadius: BorderRadius.circular(8.r),
-                                  ),
-                                  child: Text(
-                                    'Submitting...'.tr,
-                                    style: StyleText.fontSize16Weight500
-                                        .copyWith(color: Colors.black),
-                                  ),
-                                )
-                              : customButton(
-                                  width: 120.w,
-                                  title: _submitting
-                                      ? 'Submitting...'.tr
-                                      : 'Submit'.tr,
-                                  function: _submitting
-                                      ? () {}
-                                      : () => _submit(context),
-                                  color: AppColors.primary,
-                                  textStyle: StyleText.fontSize16Weight500
-                                      .copyWith(color: Colors.black),
-                                ),
-                        ],
-                      ),
+                      _buildActionButtonsRow(context),
                       SizedBox(height: 24.h),
                     ],
                   ),
@@ -483,6 +266,244 @@ class _ReassignOwnerPageState extends State<ReassignOwnerPage> {
           ),
         ),
       ),
+    );
+  }
+
+  /// "Current Control Owner" heading + read-only profile card.
+  List<Widget> _buildCurrentOwnerSection(BuildContext context) {
+    final currentEmp = findEmployeeByEmail(widget.owner.ownerEmail);
+    final currentPhoto = currentEmp != null
+        ? EmployeeHelper.getEmployeeImage(employee: currentEmp)
+        : AppAssets.defaultEmployeeAvatar;
+    final currentName = employeeDisplayName(context, widget.owner.ownerEmail);
+    final currentDept = currentEmp != null
+        ? EmployeeHelper.getEmployeeLocalizeDepartment(
+            employee: currentEmp, context: context)
+        : '';
+    final currentTitle = currentEmp != null
+        ? (EmployeeHelper.getEmployeeLocalizedTitle(
+                    employee: currentEmp, context: context)
+                ?.toString() ??
+            '')
+        : '';
+    final currentPhone = currentEmp?.mobilePhone?.phone ?? grcMockPhoneFallback;
+
+    return [
+      Text('Current Control Owner'.tr,
+          style:
+              StyleText.fontSize16Weight600.copyWith(color: AppColors.text)),
+      SizedBox(height: 8.h),
+      ContactCard(
+        name: currentName,
+        jobTitle: currentTitle.isNotEmpty ? currentTitle : 'Technician'.tr,
+        department: currentDept.isNotEmpty ? currentDept : 'IT'.tr,
+        email: widget.owner.ownerEmail,
+        phone: currentPhone,
+        avatar:
+            currentPhoto.startsWith('http') ? NetworkImage(currentPhoto) : null,
+        onMessage: () {},
+      ),
+    ];
+  }
+
+  /// "New Control Owner" heading + owner picker.
+  List<Widget> _buildNewOwnerSection() {
+    return [
+      Text('New Control Owner'.tr,
+          style:
+              StyleText.fontSize16Weight600.copyWith(color: AppColors.text)),
+      SizedBox(height: 8.h),
+      Container(
+        padding: EdgeInsets.all(16.r),
+        decoration: BoxDecoration(
+          color: AppColors.card,
+          borderRadius: BorderRadius.circular(8.r),
+        ),
+        child: GrcOwnerSection(
+          singleSelect: true,
+          errorText: _ownerError,
+          onOwnersChanged: (selected) => setState(() {
+            _newSelectedEmployees = selected;
+            _ownerError = null;
+          }),
+        ),
+      ),
+    ];
+  }
+
+  /// Start/End date pickers row + the request note text field.
+  List<Widget> _buildDatesAndNoteSection() {
+    final dateFormat = DateFormat('yyyy-MM-dd');
+
+    return [
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: CustomDropdownCalendar(
+              label: 'Start Date'.tr,
+              hint: 'Choose The Date'.tr,
+              value: _startDate,
+              errorText: _startDateError,
+              onChanged: (d) => setState(() {
+                _startDate = d;
+                _startDateError = null;
+              }),
+              fillColor: AppColors.background,
+              firstDate: DateTime(2000),
+              lastDate: DateTime(2100),
+              dateFormatter: dateFormat.format,
+            ),
+          ),
+          SizedBox(width: 16.w),
+          Expanded(
+            child: CustomDropdownCalendar(
+              label: 'End Date'.tr,
+              hint: 'Choose The Date'.tr,
+              value: _endDate,
+              onChanged: (d) => setState(() => _endDate = d),
+              fillColor: AppColors.background,
+              firstDate: DateTime(2000),
+              lastDate: DateTime(2100),
+              dateFormatter: dateFormat.format,
+            ),
+          ),
+        ],
+      ),
+      SizedBox(height: 20.h),
+      CustomTextField(
+        label: 'Request Note'.tr,
+        hint: 'Text here'.tr,
+        controller: _noteController,
+        maxLines: 4,
+        maxLength: 500,
+        fillColor: AppColors.background,
+        onChanged: (v) => setState(() {}),
+      ),
+    ];
+  }
+
+  /// "Assigned Controls" heading + chip list (or empty-state text) + error.
+  List<Widget> _buildAssignedControlsSection(BuildContext context) {
+    return [
+      Text('Assigned Controls'.tr,
+          style:
+              StyleText.fontSize14Weight500.copyWith(color: AppColors.text)),
+      SizedBox(height: 8.h),
+      _reassignedControls.isEmpty
+          ? Text(
+              'No Controls assigned.'.tr,
+              style: StyleText.fontSize12Weight400
+                  .copyWith(color: AppColors.secondaryText),
+            )
+          : Wrap(
+              spacing: 8.w,
+              runSpacing: 8.h,
+              children: List.generate(_reassignedControls.length, (index) {
+                final ac = _reassignedControls[index];
+                final ctrl = findControlInPolicy(
+                    widget.policyControls, ac.policyId, ac.controlId);
+                final cName = ctrl != null
+                    ? (context.isArabic
+                        ? ctrl.controlsNameAr
+                        : ctrl.controlsNameEn)
+                    : ac.controlId;
+                return GrcAssignmentChip(
+                  label: cName,
+                  onRemove: () => _removeControl(index),
+                );
+              }),
+            ),
+      if (_controlsError != null) ...[
+        SizedBox(height: 6.h),
+        Text(
+          _controlsError!,
+          style: StyleText.fontSize12Weight400.copyWith(color: AppColors.red),
+        ),
+      ],
+    ];
+  }
+
+  /// "Assigning Controls" heading + one picker row per pending assignment
+  /// + the "+ Policy" button that appends another row.
+  List<Widget> _buildAssigningControlsFormSection() {
+    return [
+      Text('Assigning Controls'.tr,
+          style:
+              StyleText.fontSize16Weight600.copyWith(color: AppColors.text)),
+      SizedBox(height: 12.h),
+      ...List.generate(_pendingRows.length, (i) {
+        final row = _pendingRows[i];
+        final availableControlsForPolicy = row.policyId != null
+            ? (widget.policyControls[row.policyId] ?? [])
+            : <ControlEntity>[];
+
+        return Padding(
+          padding: EdgeInsets.only(bottom: 16.h),
+          child: GrcPolicyControlPickerRow(
+            policies: widget.allPolicies,
+            policyId: row.policyId,
+            onPolicyChanged: (v) {
+              setState(() {
+                row.policyId = v;
+                row.controlIds = [];
+              });
+            },
+            availableControls: availableControlsForPolicy,
+            controlsEnabled: row.policyId != null,
+            controlIds: row.controlIds,
+            onControlsChanged: (v) => setState(() => row.controlIds = v),
+            spacing: 16.w,
+          ),
+        );
+      }),
+      customButton(
+        title: '+ Policy'.tr,
+        function: _addPolicyRow,
+        width: 120.w,
+        color: AppColors.blackButton,
+        textStyle: StyleText.fontSize14Weight500.copyWith(color: Colors.white),
+      ),
+    ];
+  }
+
+  /// Discard / Submit action row at the bottom of the page.
+  Widget _buildActionButtonsRow(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        customButton(
+          width: 120.w,
+          title: 'Discard'.tr,
+          function: () => Navigator.pop(context, false),
+          color: AppColors.colorGrey,
+          textStyle:
+              StyleText.fontSize16Weight500.copyWith(color: AppColors.text),
+        ),
+        _submitting
+            ? Container(
+                height: 34.h,
+                width: 120.w,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                child: Text(
+                  'Submitting...'.tr,
+                  style: StyleText.fontSize16Weight500
+                      .copyWith(color: Colors.black),
+                ),
+              )
+            : customButton(
+                width: 120.w,
+                title: _submitting ? 'Submitting...'.tr : 'Submit'.tr,
+                function: _submitting ? () {} : () => _submit(context),
+                color: AppColors.primary,
+                textStyle: StyleText.fontSize16Weight500
+                    .copyWith(color: Colors.black),
+              ),
+      ],
     );
   }
 }
