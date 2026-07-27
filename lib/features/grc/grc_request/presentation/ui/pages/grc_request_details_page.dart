@@ -6,7 +6,7 @@
 ///              other request type renders a "not supported" placeholder.
 /// Author: Mohamed Magdy Abdelkhalek
 /// Date: 2026-07-25
-/// Dependencies: flutter_bloc, get_it, GrcRequestCubit, custom_confirm_dialog
+/// Dependencies: flutter_bloc, GrcRequestCubit, custom_confirm_dialog
 library;
 
 import 'package:demo_app/core/custom/3-custom_dropdwon_calander.dart';
@@ -33,7 +33,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 
 class GrcRequestDetailsPage extends StatelessWidget {
@@ -48,10 +47,12 @@ class GrcRequestDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<GrcRequestCubit>(
-      create: (_) => GetIt.instance<GrcRequestCubit>(),
-      child: _GrcRequestDetailsBody(module: module, request: request),
-    );
+    // GrcRequestCubit is provided by the caller (grc_requests_list_page.dart
+    // wraps this page's route in BlocProvider.value using its own instance)
+    // so the details page and list page share one Cubit and stay in sync
+    // without a manual re-fetch. Only read/watch it here, don't resolve a
+    // fresh one from GetIt.
+    return _GrcRequestDetailsBody(module: module, request: request);
   }
 }
 

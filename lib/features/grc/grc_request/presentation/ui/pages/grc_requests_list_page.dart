@@ -190,17 +190,23 @@ class _GrcRequestsListBodyState extends State<_GrcRequestsListBody> {
             request.type != GrcRequestType.reassignOwner) {
           return;
         }
+        final requestCubit = context.read<GrcRequestCubit>();
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => GrcRequestDetailsPage(
-              module: widget.module,
-              request: request,
+            builder: (_) => BlocProvider<GrcRequestCubit>.value(
+              value: requestCubit,
+              child: GrcRequestDetailsPage(
+                module: widget.module,
+                request: request,
+              ),
             ),
           ),
-        ).then((_) => context
-            .read<GrcRequestCubit>()
-            .getRequestsForModule(widget.module.moduleId));
+        );
+        // No post-navigation refetch needed: the details page shares this
+        // same GrcRequestCubit instance, so its approve/reject actions emit
+        // state this page's own BlocConsumer (still mounted underneath the
+        // pushed route) already listens to and refetches from below.
       },
       child: Container(
         padding: EdgeInsets.all(16.r),
