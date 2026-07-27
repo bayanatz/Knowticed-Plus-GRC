@@ -135,7 +135,7 @@ class ChampionCubit extends Cubit<ChampionState> {
     );
   }
 
-  Future<void> createChampion({
+  Future<Either<Failure, ChampionEntity>> createChampion({
     required String moduleId,
     required String championEmail,
     required List<AssigningControlEntity> assigningControls,
@@ -153,6 +153,7 @@ class ChampionCubit extends Cubit<ChampionState> {
       (failure) => emit(ChampionFailure(failure.message)),
       (champion) => emit(ChampionActionSuccess(champion)),
     );
+    return result;
   }
 
   Future<void> updateChampion({

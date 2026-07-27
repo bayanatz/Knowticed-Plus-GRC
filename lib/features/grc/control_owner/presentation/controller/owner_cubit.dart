@@ -163,7 +163,7 @@ class OwnerCubit extends Cubit<OwnerState> {
     );
   }
 
-  Future<void> createOwner({
+  Future<Either<Failure, OwnerEntity>> createOwner({
     required String moduleId,
     required String ownerEmail,
     required List<AssigningControlEntity> assigningControls,
@@ -181,6 +181,7 @@ class OwnerCubit extends Cubit<OwnerState> {
       (failure) => emit(OwnerFailure(failure.message)),
       (owner) => emit(OwnerActionSuccess(owner)),
     );
+    return result;
   }
 
   Future<void> updateOwner({

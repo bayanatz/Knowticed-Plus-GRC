@@ -52,7 +52,6 @@ import 'package:demo_app/core/helper/main_helper/employee_helper.dart';
 import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/assignee_bulk_upload/assignee_bulk_upload_page.dart';
 import 'package:demo_app/features/grc/control_champion/domain/entities/champion_entity.dart';
-import 'package:demo_app/features/grc/control_champion/domain/use_cases/create_champion_usecase.dart';
 import 'package:demo_app/features/grc/control_champion/presentation/controller/champion_cubit.dart';
 import 'package:demo_app/features/grc/control_champion/presentation/ui/pages/add_champion_page.dart';
 import 'package:get/get.dart' hide Trans;
@@ -60,7 +59,6 @@ import 'package:demo_app/core/custom/1-custom_dropdwon.dart';
 import 'package:demo_app/features/department/presentation/controller/add_department_controller.dart';
 import 'package:demo_app/features/grc/control_owner/domain/entities/owner_entity.dart';
 import 'package:demo_app/features/grc/control_owner/presentation/controller/owner_cubit.dart';
-import 'package:demo_app/features/grc/control_owner/domain/use_cases/create_owner_usecase.dart';
 import 'package:demo_app/features/grc/control_owner/presentation/ui/pages/add_owner_page.dart';
 import 'package:demo_app/features/grc/control_owner/presentation/ui/pages/control_owner_details_page.dart';
 import 'package:demo_app/features/grc/control_champion/presentation/ui/pages/control_champion_details_page.dart';
@@ -763,6 +761,7 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
   }
 
   Future<void> _openChampionBulkUpload(BuildContext context) async {
+    final championCubit = context.read<ChampionCubit>();
     final result = await Navigator.push<bool>(
       context,
       PageRouteBuilder(
@@ -775,13 +774,10 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
             required assigningControls,
             required editorId,
           }) {
-            return GetIt.instance<CreateChampionUseCase>().call(
-              CreateChampionParams(
-                moduleId: moduleId,
-                championEmail: email,
-                assigningControls: assigningControls,
-                editorId: editorId,
-              ),
+            return championCubit.createChampion(
+              moduleId: moduleId,
+              championEmail: email,
+              assigningControls: assigningControls,
             );
           },
         ),
@@ -1032,6 +1028,7 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
             .getAllOwners(moduleId: widget.module.moduleId);
       }
     } else if (choice == 'bulk') {
+      final ownerCubit = context.read<OwnerCubit>();
       final result = await Navigator.push<bool>(
         context,
         PageRouteBuilder(
@@ -1044,13 +1041,10 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
               required assigningControls,
               required editorId,
             }) {
-              return GetIt.instance<CreateOwnerUseCase>().call(
-                CreateOwnerParams(
-                  moduleId: moduleId,
-                  ownerEmail: email,
-                  assigningControls: assigningControls,
-                  editorId: editorId,
-                ),
+              return ownerCubit.createOwner(
+                moduleId: moduleId,
+                ownerEmail: email,
+                assigningControls: assigningControls,
               );
             },
           ),
