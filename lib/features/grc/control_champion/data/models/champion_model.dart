@@ -67,7 +67,7 @@ class ChampionModel {
     return ChampionModel(
       championEmail: championEmail,
       assigningControls: [initialAssigningControls],
-      status: const ['Active'],
+      status: [ChampionStatus.active.value],
       modificationDate: [now],
       modifiers: [modifierEmail],
     );
