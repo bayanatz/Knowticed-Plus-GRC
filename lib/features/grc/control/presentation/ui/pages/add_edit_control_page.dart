@@ -440,12 +440,12 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
   void _onUploadDocumentAr() {
     showUploadDialog(
       context: context,
-      dialogTitle: 'رفع مستند الضابط (عربي)',
-      titleFieldLabel: 'عنوان المستند',
-      titleFieldHint: 'اكتب هنا',
-      browseLabel: 'تصفح الملفات',
-      submitLabel: 'إرسال',
-      discardLabel: 'إلغاء',
+      dialogTitle: 'Upload Control Document (Arabic)'.tr,
+      titleFieldLabel: 'Document Title'.tr,
+      titleFieldHint: 'Type here'.tr,
+      browseLabel: 'Browse Files'.tr,
+      submitLabel: 'Submit'.tr,
+      discardLabel: 'Cancel'.tr,
       textDirection: TextDirection.rtl,
       allowedExtensions: const ['pdf', 'doc', 'docx'],
       onSubmit: (file, title) {
@@ -1229,15 +1229,16 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                           Expanded(
                                             child: _isArabicEnabled
                                                 ? _textField(
-                                                    label: 'اسم ضابط',
-                                                    hint: 'اكتب هنا',
+                                                    label: 'Control Name'.tr,
+                                                    hint: 'Type here'.tr,
                                                     controller:
                                                         _nameArController,
                                                     rtl: true,
                                                     submitted: _submitted &&
                                                         _arabicTouched,
                                                     arabicOnlyError:
-                                                        'يجب كتابة اسم ضابط باللغة العربية',
+                                                        'Control Name must be written in Arabic'
+                                                            .tr,
                                                   )
                                                 : _textField(
                                                     label: 'Control Number'.tr,
@@ -1264,14 +1265,15 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                           SizedBox(height: 15.h),
                                           _isArabicEnabled
                                               ? _textField(
-                                                  label: 'اسم ضابط',
-                                                  hint: 'اكتب هنا',
+                                                  label: 'Control Name'.tr,
+                                                  hint: 'Type here'.tr,
                                                   controller: _nameArController,
                                                   rtl: true,
                                                   submitted: _submitted &&
                                                       _arabicTouched,
                                                   arabicOnlyError:
-                                                      'يجب كتابة اسم ضابط باللغة العربية',
+                                                      'Control Name must be written in Arabic'
+                                                          .tr,
                                                 )
                                               : _textField(
                                                   label: 'Control Number'.tr,
@@ -1301,14 +1303,15 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                             SizedBox(width: 10.w),
                                             Expanded(
                                               child: _textField(
-                                                label: 'رقم ضابط',
-                                                hint: 'اكتب هنا',
+                                                label: 'Control Number'.tr,
+                                                hint: 'Type here'.tr,
                                                 controller: _numberArController,
                                                 rtl: true,
                                                 submitted: _submitted &&
                                                     _arabicTouched,
                                                 arabicOnlyError:
-                                                    'يجب كتابة رقم ضابط باللغة العربية',
+                                                    'Control Number must be written in Arabic'
+                                                        .tr,
                                               ),
                                             ),
                                           ])
@@ -1324,14 +1327,15 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                             ),
                                             SizedBox(height: 15.h),
                                             _textField(
-                                              label: 'رقم ضابط',
-                                              hint: 'اكتب هنا',
+                                              label: 'Control Number'.tr,
+                                              hint: 'Type here'.tr,
                                               controller: _numberArController,
                                               rtl: true,
                                               submitted:
                                                   _submitted && _arabicTouched,
                                               arabicOnlyError:
-                                                  'يجب كتابة رقم ضابط باللغة العربية',
+                                                  'Control Number must be written in Arabic'
+                                                      .tr,
                                             ),
                                           ]),
                                     SizedBox(height: 15.h),
@@ -1352,8 +1356,8 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                   if (_isArabicEnabled) ...[
                                     SizedBox(height: 15.h),
                                     _textField(
-                                      label: 'وصف ضابط',
-                                      hint: 'اكتب وصف',
+                                      label: 'Control Description'.tr,
+                                      hint: 'Write a Description'.tr,
                                       controller: _descriptionArController,
                                       rtl: true,
                                       submitted: _submitted && _arabicTouched,
@@ -1362,7 +1366,8 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                       maxLength: 500,
                                       showCharCount: true,
                                       arabicOnlyError:
-                                          'يجب كتابة وصف ضابط باللغة العربية',
+                                          'Control Description must be written in Arabic'
+                                              .tr,
                                     ),
                                   ],
                                   SizedBox(height: 15.h),

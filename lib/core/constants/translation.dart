@@ -3640,6 +3640,17 @@ No class actions, class arbitrations, or representative actions for users locate
           'See Comments': 'See Comments',
           'Not Assigned': 'Not Assigned',
           'Control Name': 'Control Name',
+          'Control Number': 'Control Number',
+          'Upload Control Document (Arabic)': 'Upload Control Document (Arabic)',
+          'Document Title': 'Document Title',
+          'Browse Files': 'Browse Files',
+          'Write a Description': 'Write a Description',
+          'Control Name must be written in Arabic':
+              'Control Name must be written in Arabic',
+          'Control Number must be written in Arabic':
+              'Control Number must be written in Arabic',
+          'Control Description must be written in Arabic':
+              'Control Description must be written in Arabic',
           'Edit Controls': 'Edit Controls',
           'Add Controls': 'Add Controls',
           'Choose Controls': 'Choose Controls',
@@ -4234,6 +4245,17 @@ No class actions, class arbitrations, or representative actions for users locate
           'See Comments': 'عرض التعليقات',
           'Not Assigned': 'غير معين',
           'Control Name': 'اسم الضابط',
+          'Control Number': 'رقم الضابط',
+          'Upload Control Document (Arabic)': 'رفع مستند الضابط (عربي)',
+          'Document Title': 'عنوان المستند',
+          'Browse Files': 'تصفح الملفات',
+          'Write a Description': 'اكتب وصف',
+          'Control Name must be written in Arabic':
+              'يجب كتابة اسم الضابط باللغة العربية',
+          'Control Number must be written in Arabic':
+              'يجب كتابة رقم الضابط باللغة العربية',
+          'Control Description must be written in Arabic':
+              'يجب كتابة وصف الضابط باللغة العربية',
           'Edit Controls': 'تحرير الضوابط',
           'Add Controls': 'إضافة ضوابط',
           'Choose Controls': 'اختر الضوابط',
