@@ -29,6 +29,7 @@ import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_control_completeness.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_control_model.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_document_info.dart';
+import 'package:demo_app/features/grc/shared/widgets/grc_responsive_field_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
@@ -217,24 +218,106 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
+  /// The Control Name (English) + (Arabic-or-Number) paired row.
+  Widget _buildNameRow(bool isTablet) {
     final control = widget.control;
-    final isArabicEnabled = widget.isArabicEnabled;
-    final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
+    return GrcResponsiveFieldRow(
+      isTablet: isTablet,
+      children: [
+        _textField(
+          label: 'Control Name',
+          hint: 'Text here',
+          controller: control.nameController,
+          isMandatory: true,
+          englishOnlyError: 'Control Name must be written in English',
+        ),
+        widget.isArabicEnabled
+            ? _textField(
+                label: 'اسم ضابط',
+                hint: 'اكتب هنا',
+                controller: control.nameArController,
+                rtl: true,
+                isMandatory: controlArabicTouched(control),
+                arabicOnlyError: 'يجب كتابة اسم ضابط باللغة العربية',
+              )
+            : _textField(
+                label: 'Control Number'.tr,
+                hint: 'Text here',
+                controller: control.numberController,
+                isMandatory: true,
+                onlyDigits: true,
+                englishOnlyError:
+                    'Control Number must be written in English'.tr,
+              ),
+      ],
+    );
+  }
 
-    Widget twoColumns(Widget left, Widget right) => isTablet
-        ? Row(children: [
-            Expanded(child: left),
-            SizedBox(width: 10.w),
-            Expanded(child: right),
-          ])
-        : Column(children: [
-            left,
-            SizedBox(height: 15.h),
-            right,
-          ]);
+  /// The Control Number (English) + (Arabic) paired row — Arabic mode only.
+  Widget _buildNumberRow(bool isTablet) {
+    final control = widget.control;
+    return GrcResponsiveFieldRow(
+      isTablet: isTablet,
+      children: [
+        _textField(
+          label: 'Control Number'.tr,
+          hint: 'Text here',
+          controller: control.numberController,
+          isMandatory: true,
+          onlyDigits: true,
+          englishOnlyError: 'Control Number must be written in English'.tr,
+        ),
+        _textField(
+          label: 'رقم ضابط',
+          hint: 'اكتب هنا',
+          controller: control.numberArController,
+          rtl: true,
+          isMandatory: controlArabicTouched(control),
+          arabicOnlyError: 'يجب كتابة رقم ضابط باللغة العربية',
+        ),
+      ],
+    );
+  }
 
+  /// The Control Description (English) and, in Arabic mode, (Arabic) fields.
+  Widget _buildDescriptionFields() {
+    final control = widget.control;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _textField(
+          label: 'Control Description',
+          hint: 'Text here',
+          controller: control.descriptionController,
+          maxLines: 3,
+          minLines: 3,
+          maxLength: 500,
+          showCharCount: true,
+          isMandatory: true,
+          englishOnlyError: 'Control Description must be written in English',
+        ),
+        if (widget.isArabicEnabled) ...[
+          SizedBox(height: 15.h),
+          _textField(
+            label: 'وصف ضابط',
+            hint: 'اكتب وصف',
+            controller: control.descriptionArController,
+            rtl: true,
+            maxLines: 3,
+            minLines: 3,
+            maxLength: 500,
+            showCharCount: true,
+            isMandatory: controlArabicTouched(control),
+            arabicOnlyError: 'يجب كتابة وصف ضابط باللغة العربية',
+          ),
+        ],
+      ],
+    );
+  }
+
+  /// The Frequency dropdown + Control Weight field paired row.
+  Widget _buildFrequencyWeightRow(bool isTablet) {
+    final control = widget.control;
     final frequencyField = CustomDropdown<String>(
       label: 'Frequency',
       hint: 'Choose Here',
@@ -264,6 +347,58 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
       onlyDigits: true,
     );
 
+    return GrcResponsiveFieldRow(
+      isTablet: isTablet,
+      children: [frequencyField, weightField],
+    );
+  }
+
+  /// The Control Document upload columns. Two Expanded columns split the row
+  /// 50/50 when Arabic is on; with only the ENG column left, an Expanded there
+  /// would stretch it across the whole row instead of keeping that same
+  /// half-width look, so a [FractionallySizedBox] is used instead.
+  Widget _buildDocumentsRow() {
+    final control = widget.control;
+    return widget.isArabicEnabled
+        ? Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 10.w,
+            children: [
+              Expanded(
+                child: _documentColumn(
+                  label: 'Control Document ENG',
+                  document: control.documentEn,
+                  onRemove: widget.onRemoveDocumentEn,
+                  onUpload: widget.onUploadDocumentEn,
+                ),
+              ),
+              Expanded(
+                child: _documentColumn(
+                  label: 'Control Document AR',
+                  document: control.documentAr,
+                  onRemove: widget.onRemoveDocumentAr,
+                  onUpload: widget.onUploadDocumentAr,
+                ),
+              ),
+            ],
+          )
+        : FractionallySizedBox(
+            widthFactor: 0.5,
+            alignment: Alignment.centerLeft,
+            child: _documentColumn(
+              label: 'Control Document ENG',
+              document: control.documentEn,
+              onRemove: widget.onRemoveDocumentEn,
+              onUpload: widget.onUploadDocumentEn,
+            ),
+          );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isArabicEnabled = widget.isArabicEnabled;
+    final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(15.sp),
@@ -284,132 +419,17 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
                     color: AppColors.secondaryText, size: 18.sp),
               ),
             ),
-          twoColumns(
-            _textField(
-              label: 'Control Name',
-              hint: 'Text here',
-              controller: control.nameController,
-              isMandatory: true,
-              englishOnlyError: 'Control Name must be written in English',
-            ),
-            isArabicEnabled
-                ? _textField(
-                    label: 'اسم ضابط',
-                    hint: 'اكتب هنا',
-                    controller: control.nameArController,
-                    rtl: true,
-                    isMandatory: controlArabicTouched(control),
-                    arabicOnlyError: 'يجب كتابة اسم ضابط باللغة العربية',
-                  )
-                : _textField(
-                    label: 'Control Number'.tr,
-                    hint: 'Text here',
-                    controller: control.numberController,
-                    isMandatory: true,
-                    onlyDigits: true,
-                    englishOnlyError:
-                        'Control Number must be written in English'.tr,
-                  ),
-          ),
+          _buildNameRow(isTablet),
           SizedBox(height: 15.h),
           if (isArabicEnabled) ...[
-            twoColumns(
-              _textField(
-                label: 'Control Number'.tr,
-                hint: 'Text here',
-                controller: control.numberController,
-                isMandatory: true,
-                onlyDigits: true,
-                englishOnlyError:
-                    'Control Number must be written in English'.tr,
-              ),
-              _textField(
-                label: 'رقم ضابط',
-                hint: 'اكتب هنا',
-                controller: control.numberArController,
-                rtl: true,
-                isMandatory: controlArabicTouched(control),
-                arabicOnlyError: 'يجب كتابة رقم ضابط باللغة العربية',
-              ),
-            ),
+            _buildNumberRow(isTablet),
             SizedBox(height: 15.h),
           ],
-          _textField(
-            label: 'Control Description',
-            hint: 'Text here',
-            controller: control.descriptionController,
-            maxLines: 3,
-            minLines: 3,
-            maxLength: 500,
-            showCharCount: true,
-            isMandatory: true,
-            englishOnlyError: 'Control Description must be written in English',
-          ),
+          _buildDescriptionFields(),
           SizedBox(height: 15.h),
-          if (isArabicEnabled) ...[
-            _textField(
-              label: 'وصف ضابط',
-              hint: 'اكتب وصف',
-              controller: control.descriptionArController,
-              rtl: true,
-              maxLines: 3,
-              minLines: 3,
-              maxLength: 500,
-              showCharCount: true,
-              isMandatory: controlArabicTouched(control),
-              arabicOnlyError: 'يجب كتابة وصف ضابط باللغة العربية',
-            ),
-            SizedBox(height: 15.h),
-          ],
-          isTablet
-              ? Row(children: [
-                  Expanded(child: frequencyField),
-                  SizedBox(width: 10.w),
-                  Expanded(child: weightField),
-                ])
-              : Column(children: [
-                  frequencyField,
-                  SizedBox(height: 15.h),
-                  weightField,
-                ]),
+          _buildFrequencyWeightRow(isTablet),
           SizedBox(height: 15.h),
-          // Two Expanded columns split the row 50/50 when Arabic is on;
-          // with only the ENG column left, an Expanded there would stretch
-          // it across the whole row instead of keeping that same
-          // half-width look.
-          isArabicEnabled
-              ? Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 10.w,
-                  children: [
-                    Expanded(
-                      child: _documentColumn(
-                        label: 'Control Document ENG',
-                        document: control.documentEn,
-                        onRemove: widget.onRemoveDocumentEn,
-                        onUpload: widget.onUploadDocumentEn,
-                      ),
-                    ),
-                    Expanded(
-                      child: _documentColumn(
-                        label: 'Control Document AR',
-                        document: control.documentAr,
-                        onRemove: widget.onRemoveDocumentAr,
-                        onUpload: widget.onUploadDocumentAr,
-                      ),
-                    ),
-                  ],
-                )
-              : FractionallySizedBox(
-                  widthFactor: 0.5,
-                  alignment: Alignment.centerLeft,
-                  child: _documentColumn(
-                    label: 'Control Document ENG',
-                    document: control.documentEn,
-                    onRemove: widget.onRemoveDocumentEn,
-                    onUpload: widget.onUploadDocumentEn,
-                  ),
-                ),
+          _buildDocumentsRow(),
         ],
       ),
     );

@@ -40,6 +40,7 @@ import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details
     show containsEnglishLetters, containsArabicLetters;
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_document_info.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_document_preview_widget.dart';
+import 'package:demo_app/features/grc/shared/widgets/grc_responsive_field_row.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -978,36 +979,6 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
     );
   }
 
-  /// function name: [_responsiveFieldRow]
-  ///
-  /// purpose: shared layout helper for the form's paired fields. On tablets
-  ///          each child is wrapped in an [Expanded] and laid out in a [Row]
-  ///          with a 10.w gap between them; on phones the children stack in a
-  ///          [Column] with a 15.h gap. This is the single source of truth for
-  ///          the `isTablet ? Row(...) : Column(...)` pattern that the Name,
-  ///          Number, and Frequency/Weight rows all share.
-  ///
-  /// parameters:
-  ///            [bool] isTablet: whether to lay the children out side by side
-  ///            [List<Widget>] children: the two (or more) fields to arrange
-  ///
-  /// return type: [Widget] - a Row (tablet) or Column (phone) of the children
-  Widget _responsiveFieldRow({
-    required bool isTablet,
-    required List<Widget> children,
-  }) {
-    final spaced = <Widget>[];
-    for (var i = 0; i < children.length; i++) {
-      spaced.add(isTablet ? Expanded(child: children[i]) : children[i]);
-      if (i != children.length - 1) {
-        spaced.add(isTablet ? SizedBox(width: 10.w) : SizedBox(height: 15.h));
-      }
-    }
-    return isTablet
-        ? Row(children: spaced)
-        : Column(children: spaced);
-  }
-
   Widget _buildAppBar() {
     return PaginationAppBar(
       screensTitles: [
@@ -1051,7 +1022,7 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
 
   /// The Control Name (English) + (Arabic-or-Number) paired row.
   Widget _buildNameRow(bool isTablet) {
-    return _responsiveFieldRow(
+    return GrcResponsiveFieldRow(
       isTablet: isTablet,
       children: [
         _textField(
@@ -1084,7 +1055,7 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
 
   /// The Control Number (English) + (Arabic) paired row — Arabic mode only.
   Widget _buildNumberRow(bool isTablet) {
-    return _responsiveFieldRow(
+    return GrcResponsiveFieldRow(
       isTablet: isTablet,
       children: [
         _textField(
@@ -1213,7 +1184,7 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
 
   /// The Frequency dropdown + Control Weight field paired row.
   Widget _buildFrequencyWeightRow(bool isTablet) {
-    return _responsiveFieldRow(
+    return GrcResponsiveFieldRow(
       isTablet: isTablet,
       children: [
         CustomDropdown<String>(

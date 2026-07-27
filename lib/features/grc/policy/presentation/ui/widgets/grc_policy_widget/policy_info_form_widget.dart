@@ -28,6 +28,7 @@ import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details_widget/grc_form_fields.dart'
     show containsEnglishLetters, containsArabicLetters;
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_document_info.dart';
+import 'package:demo_app/features/grc/shared/widgets/grc_responsive_field_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart' hide TextDirection;
@@ -282,82 +283,69 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
+  /// The Policy Name (English) + (Arabic-or-Number) paired row.
+  Widget _buildNameRow(bool isTablet) {
+    return GrcResponsiveFieldRow(
+      isTablet: isTablet,
+      children: [
+        _textField(
+          label: 'Policy Name',
+          hint: 'Text here',
+          controller: widget.nameController,
+          isMandatory: true,
+          englishOnlyError: 'Policy Name must be written in English',
+        ),
+        widget.isArabicEnabled
+            ? _textField(
+                label: 'اسم السياسة',
+                hint: 'اكتب هنا',
+                controller: widget.nameArController,
+                rtl: true,
+                isMandatory: _arabicTouched,
+                arabicOnlyError: 'يجب كتابة اسم السياسة باللغة العربية',
+              )
+            : _textField(
+                label: 'Policy Number',
+                hint: 'Text here',
+                controller: widget.numberController,
+                isMandatory: true,
+                onlyDigits: true,
+                englishOnlyError: 'Policy Number must be written in English',
+              ),
+      ],
+    );
+  }
 
-    final endBeforeStart = widget.endDate != null &&
-        widget.startDate != null &&
-        widget.endDate!.isBefore(widget.startDate!);
+  /// The Policy Number (English) + (Arabic) paired row — Arabic mode only.
+  Widget _buildNumberRow(bool isTablet) {
+    return GrcResponsiveFieldRow(
+      isTablet: isTablet,
+      children: [
+        _textField(
+          label: 'Policy Number',
+          hint: 'Text here',
+          controller: widget.numberController,
+          isMandatory: true,
+          onlyDigits: true,
+          englishOnlyError: 'Policy Number must be written in English',
+        ),
+        _textField(
+          label: 'رقم السياسة',
+          hint: 'اكتب هنا',
+          controller: widget.numberArController,
+          rtl: true,
+          isMandatory: _arabicTouched,
+          arabicOnlyError: 'يجب كتابة رقم السياسة باللغة العربية',
+        ),
+      ],
+    );
+  }
 
-    Widget twoColumns(Widget left, Widget right) => isTablet
-        ? Row(children: [
-            Expanded(child: left),
-            SizedBox(width: 10.w),
-            Expanded(child: right),
-          ])
-        : Column(children: [
-            left,
-            SizedBox(height: 15.h),
-            right,
-          ]);
-
+  /// The Policy Description (English) and, in Arabic mode, (Arabic) fields.
+  Widget _buildDescriptionFields() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (widget.imageFile != null ||
-            (widget.imageUrl != null && widget.imageUrl!.isNotEmpty)) ...[
-          _readOnlyImage(),
-          SizedBox(height: 16.h),
-        ],
-        twoColumns(
-          _textField(
-            label: 'Policy Name',
-            hint: 'Text here',
-            controller: widget.nameController,
-            isMandatory: true,
-            englishOnlyError: 'Policy Name must be written in English',
-          ),
-          widget.isArabicEnabled
-              ? _textField(
-                  label: 'اسم السياسة',
-                  hint: 'اكتب هنا',
-                  controller: widget.nameArController,
-                  rtl: true,
-                  isMandatory: _arabicTouched,
-                  arabicOnlyError: 'يجب كتابة اسم السياسة باللغة العربية',
-                )
-              : _textField(
-                  label: 'Policy Number',
-                  hint: 'Text here',
-                  controller: widget.numberController,
-                  isMandatory: true,
-                  onlyDigits: true,
-                  englishOnlyError: 'Policy Number must be written in English',
-                ),
-        ),
-        SizedBox(height: 15.h),
-        if (widget.isArabicEnabled) ...[
-          twoColumns(
-            _textField(
-              label: 'Policy Number',
-              hint: 'Text here',
-              controller: widget.numberController,
-              isMandatory: true,
-              onlyDigits: true,
-              englishOnlyError: 'Policy Number must be written in English',
-            ),
-            _textField(
-              label: 'رقم السياسة',
-              hint: 'اكتب هنا',
-              controller: widget.numberArController,
-              rtl: true,
-              isMandatory: _arabicTouched,
-              arabicOnlyError: 'يجب كتابة رقم السياسة باللغة العربية',
-            ),
-          ),
-          SizedBox(height: 15.h),
-        ],
         _textField(
           label: 'Policy Description',
           hint: 'Text here',
@@ -369,8 +357,8 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
           isMandatory: true,
           englishOnlyError: 'Policy Description must be written in English',
         ),
-        SizedBox(height: 15.h),
         if (widget.isArabicEnabled) ...[
+          SizedBox(height: 15.h),
           _textField(
             label: 'وصف السياسة',
             hint: 'اكتب وصف',
@@ -383,97 +371,144 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
             isMandatory: _arabicTouched,
             arabicOnlyError: 'يجب كتابة وصف السياسة باللغة العربية',
           ),
+        ],
+      ],
+    );
+  }
+
+  /// The Start Date + End Date paired row.
+  Widget _buildDateRow(bool isTablet) {
+    final endBeforeStart = widget.endDate != null &&
+        widget.startDate != null &&
+        widget.endDate!.isBefore(widget.startDate!);
+
+    return GrcResponsiveFieldRow(
+      isTablet: isTablet,
+      children: [
+        CustomDropdownCalendar(
+          borderRadius: BorderRadius.circular(4.r),
+          label: 'Start Date',
+          hint: 'Select Start Date',
+          value: widget.startDate,
+          onChanged: widget.onStartDateChanged,
+          enabled: !widget.readOnly,
+          fillColor: AppColors.background,
+          labelStyle:
+              StyleText.fontSize16Weight500.copyWith(color: AppColors.text),
+          hintStyle: StyleText.fontSize14Weight500
+              .copyWith(color: AppColors.secondaryText.withOpacity(.7)),
+          required: false,
+          dateFormatter: (d) => DateFormat('d MMM yyyy').format(d),
+          errorText: !widget.submitted
+              ? null
+              : widget.startDate == null
+                  ? 'This field is required.'
+                  : null,
+        ),
+        CustomDropdownCalendar(
+          borderRadius: BorderRadius.circular(4.r),
+          label: 'End Date',
+          hint: 'Select End Date',
+          value: widget.endDate,
+          onChanged: widget.onEndDateChanged,
+          enabled: !widget.readOnly,
+          fillColor: AppColors.background,
+          labelStyle:
+              StyleText.fontSize16Weight500.copyWith(color: AppColors.text),
+          hintStyle: StyleText.fontSize14Weight500
+              .copyWith(color: AppColors.secondaryText.withOpacity(.7)),
+          required: false,
+          firstDate: widget.startDate,
+          dateFormatter: (d) => DateFormat('d MMM yyyy').format(d),
+          errorText: !widget.submitted
+              ? null
+              : widget.endDate == null
+                  ? 'This field is required.'
+                  : endBeforeStart
+                      ? 'End date cannot be before start date.'
+                      : null,
+        ),
+      ],
+    );
+  }
+
+  /// The Policy Weight field. On tablets it's paired with an empty spacer
+  /// column to keep it half-width, matching the other paired rows; on
+  /// phones it's rendered alone, full width.
+  ///
+  /// NOTE: intentionally NOT routed through [GrcResponsiveFieldRow] — the
+  /// phone branch renders the field by itself with no matching second
+  /// child/gap, which the shared helper's Column would add unconditionally.
+  /// Preserved exactly as it was inline — this is a pure move, not a
+  /// behavior change.
+  Widget _buildWeightRow(bool isTablet) {
+    final weightField = _textField(
+      label: 'Policy Weight',
+      hint: 'Text here',
+      controller: widget.weightController,
+      isMandatory: true,
+      customError: _weightError,
+    );
+
+    return isTablet
+        ? Row(children: [
+            Expanded(child: weightField),
+            SizedBox(width: 10.w),
+            const Expanded(child: SizedBox()),
+          ])
+        : weightField;
+  }
+
+  /// The Policy Document upload columns.
+  Widget _buildDocumentsRow(bool isTablet) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _documentSection(
+          title: 'Policy Document ENG',
+          document: widget.documentEn,
+          onUpload: widget.onUploadDocumentEn,
+          onRemove: widget.onRemoveDocumentEn,
+        ),
+        SizedBox(width: 10.w),
+        if (widget.isArabicEnabled)
+          _documentSection(
+            title: 'Policy Document AR',
+            document: widget.documentAr,
+            onUpload: widget.onUploadDocumentAr,
+            onRemove: widget.onRemoveDocumentAr,
+          )
+        else if (isTablet)
+          const Expanded(child: SizedBox()),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (widget.imageFile != null ||
+            (widget.imageUrl != null && widget.imageUrl!.isNotEmpty)) ...[
+          _readOnlyImage(),
+          SizedBox(height: 16.h),
+        ],
+        _buildNameRow(isTablet),
+        SizedBox(height: 15.h),
+        if (widget.isArabicEnabled) ...[
+          _buildNumberRow(isTablet),
           SizedBox(height: 15.h),
         ],
-        twoColumns(
-          CustomDropdownCalendar(
-            borderRadius: BorderRadius.circular(4.r),
-            label: 'Start Date',
-            hint: 'Select Start Date',
-            value: widget.startDate,
-            onChanged: widget.onStartDateChanged,
-            enabled: !widget.readOnly,
-            fillColor: AppColors.background,
-            labelStyle:
-                StyleText.fontSize16Weight500.copyWith(color: AppColors.text),
-            hintStyle: StyleText.fontSize14Weight500
-                .copyWith(color: AppColors.secondaryText.withOpacity(.7)),
-            required: false,
-            dateFormatter: (d) => DateFormat('d MMM yyyy').format(d),
-            errorText: !widget.submitted
-                ? null
-                : widget.startDate == null
-                    ? 'This field is required.'
-                    : null,
-          ),
-          CustomDropdownCalendar(
-            borderRadius: BorderRadius.circular(4.r),
-            label: 'End Date',
-            hint: 'Select End Date',
-            value: widget.endDate,
-            onChanged: widget.onEndDateChanged,
-            enabled: !widget.readOnly,
-            fillColor: AppColors.background,
-            labelStyle:
-                StyleText.fontSize16Weight500.copyWith(color: AppColors.text),
-            hintStyle: StyleText.fontSize14Weight500
-                .copyWith(color: AppColors.secondaryText.withOpacity(.7)),
-            required: false,
-            firstDate: widget.startDate,
-            dateFormatter: (d) => DateFormat('d MMM yyyy').format(d),
-            errorText: !widget.submitted
-                ? null
-                : widget.endDate == null
-                    ? 'This field is required.'
-                    : endBeforeStart
-                        ? 'End date cannot be before start date.'
-                        : null,
-          ),
-        ),
+        _buildDescriptionFields(),
         SizedBox(height: 15.h),
-        isTablet
-            ? Row(children: [
-                Expanded(
-                  child: _textField(
-                    label: 'Policy Weight',
-                    hint: 'Text here',
-                    controller: widget.weightController,
-                    isMandatory: true,
-                    customError: _weightError,
-                  ),
-                ),
-                SizedBox(width: 10.w),
-                const Expanded(child: SizedBox()),
-              ])
-            : _textField(
-                label: 'Policy Weight',
-                hint: 'Text here',
-                controller: widget.weightController,
-                isMandatory: true,
-                customError: _weightError,
-              ),
+        _buildDateRow(isTablet),
         SizedBox(height: 15.h),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _documentSection(
-              title: 'Policy Document ENG',
-              document: widget.documentEn,
-              onUpload: widget.onUploadDocumentEn,
-              onRemove: widget.onRemoveDocumentEn,
-            ),
-            SizedBox(width: 10.w),
-            if (widget.isArabicEnabled)
-              _documentSection(
-                title: 'Policy Document AR',
-                document: widget.documentAr,
-                onUpload: widget.onUploadDocumentAr,
-                onRemove: widget.onRemoveDocumentAr,
-              )
-            else if (isTablet)
-              const Expanded(child: SizedBox()),
-          ],
-        ),
+        _buildWeightRow(isTablet),
+        SizedBox(height: 15.h),
+        _buildDocumentsRow(isTablet),
       ],
     );
   }
