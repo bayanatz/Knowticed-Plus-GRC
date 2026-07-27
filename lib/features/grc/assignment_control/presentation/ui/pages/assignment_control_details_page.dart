@@ -66,6 +66,13 @@ class _AssignmentControlDetailsPageState
   }
 
   void _confirmSubmit(BuildContext context, PlatformFile file, String note) {
+    if (file.path == null) {
+      showErrorDialog(
+        context: context,
+        subtitle: 'Could not read the selected file. Please try again.'.tr,
+      );
+      return;
+    }
     final cubit = context.read<AssignmentControlCubit>();
     showConfirmDialog(
       context: context,
@@ -141,7 +148,8 @@ class _AssignmentControlDetailsPageState
       children: [
         Text('$label: ', style: CardStyles.label(12).copyWith(color: color)),
         Expanded(
-          child: Text(value, style: CardStyles.value(12).copyWith(color: color)),
+          child:
+              Text(value, style: CardStyles.value(12).copyWith(color: color)),
         ),
       ],
     );
@@ -160,7 +168,8 @@ class _AssignmentControlDetailsPageState
         CircleAvatar(
           radius: 20.r,
           backgroundColor: AppColors.barrierColor,
-          backgroundImage: photo.startsWith('http') ? NetworkImage(photo) : null,
+          backgroundImage:
+              photo.startsWith('http') ? NetworkImage(photo) : null,
         ),
         SizedBox(width: 8.w),
         Column(
@@ -190,7 +199,8 @@ class _AssignmentControlDetailsPageState
         children: [
           Icon(style.icon, size: 16.sp, color: style.color),
           SizedBox(width: 6.w),
-          Text(tab.label.tr, style: CardStyles.value(14).copyWith(color: style.color)),
+          Text(tab.label.tr,
+              style: CardStyles.value(14).copyWith(color: style.color)),
         ],
       ),
     );
@@ -427,7 +437,8 @@ class _AssignmentControlDetailsPageState
                                             ? () {}
                                             : () => _onActionPressed(context),
                                         textStyle: StyleText.fontSize14Weight500
-                                            .copyWith(color: AppColors.textButton),
+                                            .copyWith(
+                                                color: AppColors.textButton),
                                         color: AppColors.primary,
                                         image:
                                             'assets/icons_assets/data_grc_assets/upload_minimalistic.svg',
@@ -444,9 +455,11 @@ class _AssignmentControlDetailsPageState
                             ] else ...[
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  _submitterRow(context, assignment.lastModifier),
+                                  _submitterRow(
+                                      context, assignment.lastModifier),
                                   Text(
                                     '${'Submission Date'.tr}: '
                                     '${_cardDateFormat.format(assignment.lastModificationDate)} '
@@ -468,8 +481,8 @@ class _AssignmentControlDetailsPageState
                                 ),
                               SizedBox(height: 12.h),
                               if (assignment.submissionNote.isNotEmpty) ...[
-                                _labelValueRow(
-                                    'Submission Notes'.tr, assignment.submissionNote),
+                                _labelValueRow('Submission Notes'.tr,
+                                    assignment.submissionNote),
                                 SizedBox(height: 12.h),
                               ],
                               if (rejectionReason != null &&
@@ -483,7 +496,8 @@ class _AssignmentControlDetailsPageState
                               ],
                               if (_isRejected)
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     SizedBox(
                                       width: 180.w,
@@ -495,7 +509,8 @@ class _AssignmentControlDetailsPageState
                                         height: 44.h,
                                         color: AppColors.primary,
                                         textStyle: StyleText.fontSize14Weight500
-                                            .copyWith(color: AppColors.textButton),
+                                            .copyWith(
+                                                color: AppColors.textButton),
                                       ),
                                     ),
                                     _statusPill(widget.item.tab),
