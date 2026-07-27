@@ -21,17 +21,22 @@ import 'package:demo_app/features/grc/control/domain/entities/control_status.dar
 import 'package:demo_app/features/grc/control/presentation/ui/pages/add_edit_control_page.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/control_details_page.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/control_weight_issue/control_weight_issue_page.dart';
+import 'package:demo_app/features/grc/control_champion/presentation/controller/champion_cubit.dart';
+import 'package:demo_app/features/grc/control_owner/presentation/controller/owner_cubit.dart';
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details_widget/grc_owner_section.dart';
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
+import 'package:demo_app/features/grc/policy/presentation/controller/policy_cubit.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/control_card_widget.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_document_info.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_document_preview_widget.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/policy_details_widget/grc_owner_badge.dart';
 import 'package:demo_app/features/roles/widgets/filter_bar_item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 
 /// class name: [PolicyViewModeWidget]
@@ -405,20 +410,39 @@ class _PolicyViewModeWidgetState extends State<PolicyViewModeWidget> {
 
   Future<void> _openControlDetails(ControlEntity control) async {
     if (control.status == ControlStatus.draft) {
+      // Flow-start entry point (editing a draft Control straight from the
+      // list, bypassing ControlDetailsPage) — no ancestor page already
+      // holds these cubits, so a fresh set is created here, same as the
+      // "Add Control" entry point in PolicyDetailsPage.
       await Navigator.push<bool>(
         context,
         PageRouteBuilder(
-          pageBuilder: (_, __, ___) => AddEditControlPage(
-            policy: widget.policy,
-            moduleId: widget.module.moduleId,
-            policyId: widget.policy.id,
-            existingControl: control,
-            siblingControls: widget.controls,
-            policyStartDate: widget.policy.startDate,
-            policyEndDate: widget.policy.endDate,
-            policyHasArabic: widget.policy.policyNameAr.trim().isNotEmpty ||
-                widget.policy.policyNumberAr.trim().isNotEmpty ||
-                widget.policy.policyDescriptionAr.trim().isNotEmpty,
+          pageBuilder: (_, __, ___) => MultiBlocProvider(
+            providers: [
+              BlocProvider<PolicyCubit>(
+                create: (_) => GetIt.instance<PolicyCubit>(),
+              ),
+              BlocProvider<ChampionCubit>(
+                create: (_) => GetIt.instance<ChampionCubit>()
+                  ..getAllChampions(moduleId: widget.module.moduleId),
+              ),
+              BlocProvider<OwnerCubit>(
+                create: (_) => GetIt.instance<OwnerCubit>()
+                  ..getAllOwners(moduleId: widget.module.moduleId),
+              ),
+            ],
+            child: AddEditControlPage(
+              policy: widget.policy,
+              moduleId: widget.module.moduleId,
+              policyId: widget.policy.id,
+              existingControl: control,
+              siblingControls: widget.controls,
+              policyStartDate: widget.policy.startDate,
+              policyEndDate: widget.policy.endDate,
+              policyHasArabic: widget.policy.policyNameAr.trim().isNotEmpty ||
+                  widget.policy.policyNumberAr.trim().isNotEmpty ||
+                  widget.policy.policyDescriptionAr.trim().isNotEmpty,
+            ),
           ),
           transitionsBuilder: (_, animation, __, child) =>
               FadeTransition(opacity: animation, child: child),

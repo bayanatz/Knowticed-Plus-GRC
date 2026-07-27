@@ -28,6 +28,7 @@ import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/add_edit_control_page.dart';
+import 'package:demo_app/features/grc/control_champion/presentation/controller/champion_cubit.dart';
 import 'package:demo_app/features/grc/control_owner/domain/entities/owner_entity.dart';
 import 'package:demo_app/features/grc/control_owner/presentation/controller/owner_cubit.dart';
 import 'package:demo_app/features/grc/control_owner/presentation/ui/pages/control_previous_owners_page.dart';
@@ -47,8 +48,10 @@ import 'package:intl/intl.dart' hide TextDirection;
 /// class name: [ControlDetailsPage]
 ///
 /// purpose: entry-point widget for the Control Details screen. Provides its
-///          own [PolicyCubit] (delete + post-edit refresh) and [OwnerCubit]
-///          (owner lookup).
+///          own [PolicyCubit] (delete + post-edit refresh), [ChampionCubit]
+///          and [OwnerCubit] (champion/owner lookup), and hands all three
+///          down to [AddEditControlPage] via `BlocProvider.value` so state
+///          doesn't diverge between the two pages.
 ///
 /// authors: Mohamed Magdy Abdelkhalek
 ///
@@ -73,6 +76,10 @@ class ControlDetailsPage extends StatelessWidget {
       providers: [
         BlocProvider<PolicyCubit>(
           create: (_) => GetIt.instance<PolicyCubit>(),
+        ),
+        BlocProvider<ChampionCubit>(
+          create: (_) => GetIt.instance<ChampionCubit>()
+            ..getAllChampions(moduleId: module.moduleId),
         ),
         BlocProvider<OwnerCubit>(
           create: (_) => GetIt.instance<OwnerCubit>()
@@ -116,20 +123,29 @@ class _ControlDetailsBodyState extends State<_ControlDetailsBody> {
   }
 
   Future<void> _openEditControl(PolicyCubit cubit) async {
+    final championCubit = context.read<ChampionCubit>();
+    final ownerCubit = context.read<OwnerCubit>();
     await Navigator.push<bool>(
       context,
       PageRouteBuilder(
-        pageBuilder: (_, __, ___) => AddEditControlPage(
-          policy: widget.policy,
-          moduleId: widget.module.moduleId,
-          policyId: widget.policy.id,
-          existingControl: _control,
-          siblingControls: widget.siblingControls,
-          policyStartDate: widget.policy.startDate,
-          policyEndDate: widget.policy.endDate,
-          policyHasArabic: widget.policy.policyNameAr.trim().isNotEmpty ||
-              widget.policy.policyNumberAr.trim().isNotEmpty ||
-              widget.policy.policyDescriptionAr.trim().isNotEmpty,
+        pageBuilder: (_, __, ___) => MultiBlocProvider(
+          providers: [
+            BlocProvider<PolicyCubit>.value(value: cubit),
+            BlocProvider<ChampionCubit>.value(value: championCubit),
+            BlocProvider<OwnerCubit>.value(value: ownerCubit),
+          ],
+          child: AddEditControlPage(
+            policy: widget.policy,
+            moduleId: widget.module.moduleId,
+            policyId: widget.policy.id,
+            existingControl: _control,
+            siblingControls: widget.siblingControls,
+            policyStartDate: widget.policy.startDate,
+            policyEndDate: widget.policy.endDate,
+            policyHasArabic: widget.policy.policyNameAr.trim().isNotEmpty ||
+                widget.policy.policyNumberAr.trim().isNotEmpty ||
+                widget.policy.policyDescriptionAr.trim().isNotEmpty,
+          ),
         ),
         transitionsBuilder: (_, animation, __, child) =>
             FadeTransition(opacity: animation, child: child),

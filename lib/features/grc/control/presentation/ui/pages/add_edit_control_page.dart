@@ -47,7 +47,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get.dart';
-import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:demo_app/features/grc/control/domain/entities/assigning_control.dart';
 import 'package:demo_app/features/grc/control_champion/domain/entities/champion_entity.dart';
@@ -1134,22 +1133,14 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
   Widget build(BuildContext context) {
     final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
 
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<PolicyCubit>(create: (_) => GetIt.instance<PolicyCubit>()),
-        BlocProvider<ChampionCubit>(
-          create: (_) => GetIt.instance<ChampionCubit>()
-            ..getAllChampions(moduleId: widget.moduleId),
-        ),
-        BlocProvider<OwnerCubit>(
-          create: (_) => GetIt.instance<OwnerCubit>()
-            ..getAllOwners(moduleId: widget.moduleId),
-        ),
-      ],
-      child: Builder(
-        builder: (ctx) {
-          final cubit = ctx.read<PolicyCubit>();
-          return BlocListener<PolicyCubit, PolicyState>(
+    // Policy/Champion/Owner cubits are provided by whichever page pushed
+    // this route (ControlDetailsPage reuses its own instances via
+    // BlocProvider.value; flow-start entry points such as "Add Control"
+    // create fresh ones) — this page only ever reads them.
+    return Builder(
+      builder: (ctx) {
+        final cubit = ctx.read<PolicyCubit>();
+        return BlocListener<PolicyCubit, PolicyState>(
             listener: _onStateChange,
             child: Scaffold(
               body: SafeArea(
@@ -1640,7 +1631,6 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
             ),
           );
         },
-      ),
-    );
+      );
   }
 }

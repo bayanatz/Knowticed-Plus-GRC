@@ -43,6 +43,8 @@ import 'package:demo_app/core/custom/loading.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
+import 'package:demo_app/features/grc/control_champion/presentation/controller/champion_cubit.dart';
+import 'package:demo_app/features/grc/control_owner/presentation/controller/owner_cubit.dart';
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
 import 'package:demo_app/features/grc/policy/presentation/controller/policy_cubit.dart';
@@ -190,21 +192,40 @@ class _PolicyDetailsBodyState extends State<_PolicyDetailsBody> {
     }
   }
 
+  // Flow-start entry point (Add Control / edit-from-list) — there is no
+  // ancestor page already holding these cubits, so a fresh set is created
+  // here and handed to AddEditControlPage, matching the set ControlDetailsPage
+  // provides when its own edit flow pushes the same page.
   Future<void> _openAddEditControl({ControlEntity? existing}) async {
     final result = await Navigator.push<bool>(
       context,
       PageRouteBuilder(
-        pageBuilder: (_, __, ___) => AddEditControlPage(
-          policy: _policy!,
-          moduleId: widget.moduleId,
-          policyId: widget.policyId,
-          existingControl: existing,
-          siblingControls: _controls,
-          policyStartDate: _policy!.startDate,
-          policyEndDate: _policy!.endDate,
-          policyHasArabic: _policy!.policyNameAr.trim().isNotEmpty ||
-              _policy!.policyNumberAr.trim().isNotEmpty ||
-              _policy!.policyDescriptionAr.trim().isNotEmpty,
+        pageBuilder: (_, __, ___) => MultiBlocProvider(
+          providers: [
+            BlocProvider<PolicyCubit>(
+              create: (_) => GetIt.instance<PolicyCubit>(),
+            ),
+            BlocProvider<ChampionCubit>(
+              create: (_) => GetIt.instance<ChampionCubit>()
+                ..getAllChampions(moduleId: widget.moduleId),
+            ),
+            BlocProvider<OwnerCubit>(
+              create: (_) => GetIt.instance<OwnerCubit>()
+                ..getAllOwners(moduleId: widget.moduleId),
+            ),
+          ],
+          child: AddEditControlPage(
+            policy: _policy!,
+            moduleId: widget.moduleId,
+            policyId: widget.policyId,
+            existingControl: existing,
+            siblingControls: _controls,
+            policyStartDate: _policy!.startDate,
+            policyEndDate: _policy!.endDate,
+            policyHasArabic: _policy!.policyNameAr.trim().isNotEmpty ||
+                _policy!.policyNumberAr.trim().isNotEmpty ||
+                _policy!.policyDescriptionAr.trim().isNotEmpty,
+          ),
         ),
         transitionsBuilder: (_, animation, __, child) =>
             FadeTransition(opacity: animation, child: child),
