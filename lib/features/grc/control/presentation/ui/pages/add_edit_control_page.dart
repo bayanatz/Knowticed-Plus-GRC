@@ -978,6 +978,434 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
     );
   }
 
+  /// function name: [_responsiveFieldRow]
+  ///
+  /// purpose: shared layout helper for the form's paired fields. On tablets
+  ///          each child is wrapped in an [Expanded] and laid out in a [Row]
+  ///          with a 10.w gap between them; on phones the children stack in a
+  ///          [Column] with a 15.h gap. This is the single source of truth for
+  ///          the `isTablet ? Row(...) : Column(...)` pattern that the Name,
+  ///          Number, and Frequency/Weight rows all share.
+  ///
+  /// parameters:
+  ///            [bool] isTablet: whether to lay the children out side by side
+  ///            [List<Widget>] children: the two (or more) fields to arrange
+  ///
+  /// return type: [Widget] - a Row (tablet) or Column (phone) of the children
+  Widget _responsiveFieldRow({
+    required bool isTablet,
+    required List<Widget> children,
+  }) {
+    final spaced = <Widget>[];
+    for (var i = 0; i < children.length; i++) {
+      spaced.add(isTablet ? Expanded(child: children[i]) : children[i]);
+      if (i != children.length - 1) {
+        spaced.add(isTablet ? SizedBox(width: 10.w) : SizedBox(height: 15.h));
+      }
+    }
+    return isTablet
+        ? Row(children: spaced)
+        : Column(children: spaced);
+  }
+
+  Widget _buildAppBar() {
+    return PaginationAppBar(
+      screensTitles: [
+        'GRC'.tr,
+        context.isArabic
+            ? widget.policy.policyNameAr
+            : widget.policy.policyNameEn,
+        context.isArabic
+            ? "Edit ${widget.existingControl?.controlsNameAr}"
+            : "Edit ${widget.existingControl?.controlsNameEn}",
+      ],
+    );
+  }
+
+  /// The "Status" switch row. Only an already-saved Control has a real status
+  /// to manually deactivate — Create mode's status isn't decided until
+  /// Add/Save For Later is pressed — so this is rendered only in Edit mode.
+  Widget _buildStatusRow() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        SvgPicture.asset(
+            'assets/icons_assets/data_grc_assets/icons_status.svg'),
+        SizedBox(width: 10.w),
+        Text('Status'.tr),
+        SizedBox(width: 10.w),
+        FlutterSwitch(
+          width: 38.sp,
+          height: 22.sp,
+          padding: 3.sp,
+          borderRadius: 20.sp,
+          toggleSize: 16.sp,
+          activeColor: AppColors.secondaryPrimary,
+          inactiveColor: Colors.grey.withValues(alpha: 0.16),
+          value: !_manualInactive,
+          onToggle: (v) => setState(() => _manualInactive = !v),
+        ),
+      ],
+    );
+  }
+
+  /// The Control Name (English) + (Arabic-or-Number) paired row.
+  Widget _buildNameRow(bool isTablet) {
+    return _responsiveFieldRow(
+      isTablet: isTablet,
+      children: [
+        _textField(
+          label: 'Control Name'.tr,
+          hint: 'Text here'.tr,
+          controller: _nameController,
+          submitted: _submitted,
+          englishOnlyError: 'Control Name must be written in English'.tr,
+        ),
+        _isArabicEnabled
+            ? _textField(
+                label: 'Control Name'.tr,
+                hint: 'Type here'.tr,
+                controller: _nameArController,
+                rtl: true,
+                submitted: _submitted && _arabicTouched,
+                arabicOnlyError: 'Control Name must be written in Arabic'.tr,
+              )
+            : _textField(
+                label: 'Control Number'.tr,
+                hint: 'Text here'.tr,
+                controller: _numberController,
+                submitted: _submitted,
+                englishOnlyError:
+                    'Control Number must be written in English'.tr,
+              ),
+      ],
+    );
+  }
+
+  /// The Control Number (English) + (Arabic) paired row — Arabic mode only.
+  Widget _buildNumberRow(bool isTablet) {
+    return _responsiveFieldRow(
+      isTablet: isTablet,
+      children: [
+        _textField(
+          label: 'Control Number'.tr,
+          hint: 'Text here'.tr,
+          controller: _numberController,
+          submitted: _submitted,
+          englishOnlyError: 'Control Number must be written in English'.tr,
+        ),
+        _textField(
+          label: 'Control Number'.tr,
+          hint: 'Type here'.tr,
+          controller: _numberArController,
+          rtl: true,
+          submitted: _submitted && _arabicTouched,
+          arabicOnlyError: 'Control Number must be written in Arabic'.tr,
+        ),
+      ],
+    );
+  }
+
+  /// The Control Description (English) and, in Arabic mode, (Arabic) fields.
+  Widget _buildDescriptionFields() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _textField(
+          label: 'Control Description'.tr,
+          hint: 'Text here'.tr,
+          controller: _descriptionController,
+          submitted: _submitted,
+          maxLines: 3,
+          minLines: 3,
+          maxLength: 500,
+          showCharCount: true,
+          englishOnlyError:
+              'Control Description must be written in English'.tr,
+        ),
+        if (_isArabicEnabled) ...[
+          SizedBox(height: 15.h),
+          _textField(
+            label: 'Control Description'.tr,
+            hint: 'Write a Description'.tr,
+            controller: _descriptionArController,
+            rtl: true,
+            submitted: _submitted && _arabicTouched,
+            maxLines: 3,
+            minLines: 3,
+            maxLength: 500,
+            showCharCount: true,
+            arabicOnlyError: 'Control Description must be written in Arabic'.tr,
+          ),
+        ],
+      ],
+    );
+  }
+
+  /// The Start Date + End Date paired row — Edit mode only.
+  ///
+  /// NOTE: intentionally NOT routed through [_responsiveFieldRow]. The tablet
+  /// layout passes a `dateFormatter` to each [CustomDropdownCalendar] that the
+  /// phone layout omits, so the two branches build genuinely different widgets
+  /// and can't share a single children list. Preserved exactly as it was
+  /// inline — this is a pure move, not a behavior change.
+  Widget _buildDateRow(bool isTablet) {
+    return isTablet
+        ? Row(children: [
+            Expanded(
+              child: CustomDropdownCalendar(
+                borderRadius: BorderRadius.circular(4.r),
+                label: 'Start Date'.tr,
+                hint: 'Select Start Date'.tr,
+                value: _startDate,
+                onChanged: (d) => setState(() => _startDate = d),
+                fillColor: AppColors.background,
+                firstDate: widget.policyStartDate,
+                lastDate: widget.policyEndDate,
+                dateFormatter: (d) =>
+                    intl.DateFormat('d MMM yyyy').format(d),
+                errorText: _startDateError,
+              ),
+            ),
+            SizedBox(width: 10.w),
+            Expanded(
+              child: CustomDropdownCalendar(
+                borderRadius: BorderRadius.circular(4.r),
+                label: 'End Date'.tr,
+                hint: 'Select End Date'.tr,
+                value: _endDate,
+                onChanged: (d) => setState(() => _endDate = d),
+                fillColor: AppColors.background,
+                firstDate: _startDate ?? widget.policyStartDate,
+                lastDate: widget.policyEndDate,
+                dateFormatter: (d) =>
+                    intl.DateFormat('d MMM yyyy').format(d),
+                errorText: _endDateError,
+              ),
+            ),
+          ])
+        : Column(children: [
+            CustomDropdownCalendar(
+              borderRadius: BorderRadius.circular(4.r),
+              label: 'Start Date'.tr,
+              hint: 'Select Start Date'.tr,
+              value: _startDate,
+              onChanged: (d) => setState(() => _startDate = d),
+              fillColor: AppColors.background,
+              firstDate: widget.policyStartDate,
+              lastDate: widget.policyEndDate,
+              errorText: _startDateError,
+            ),
+            SizedBox(height: 15.h),
+            CustomDropdownCalendar(
+              borderRadius: BorderRadius.circular(4.r),
+              label: 'End Date'.tr,
+              hint: 'Select End Date'.tr,
+              value: _endDate,
+              onChanged: (d) => setState(() => _endDate = d),
+              fillColor: AppColors.background,
+              firstDate: _startDate ?? widget.policyStartDate,
+              lastDate: widget.policyEndDate,
+              errorText: _endDateError,
+            ),
+          ]);
+  }
+
+  /// The Frequency dropdown + Control Weight field paired row.
+  Widget _buildFrequencyWeightRow(bool isTablet) {
+    return _responsiveFieldRow(
+      isTablet: isTablet,
+      children: [
+        CustomDropdown<String>(
+          label: 'Frequency'.tr,
+          hint: 'Choose Here'.tr,
+          items: ControlFrequency.allValues
+              .map((d) => DropdownItem<String>(value: d, label: d))
+              .toList(),
+          value: _frequency,
+          onChanged: (v) => setState(() => _frequency = v),
+          fillColor: AppColors.background,
+          errorText: _submitted && _frequency == null
+              ? 'This field is required.'.tr
+              : null,
+        ),
+        _textField(
+          label: 'Control Weight'.tr,
+          hint: 'Text Here'.tr,
+          controller: _weightController,
+          submitted: _submitted,
+          onlyDigits: true,
+          customError: _weightError,
+        ),
+      ],
+    );
+  }
+
+  /// The Control Document upload columns. Two Expanded columns split the row
+  /// 50/50 when Arabic is on; with only the ENG column left, an Expanded there
+  /// would stretch it across the whole row instead of keeping that same
+  /// half-width look, so a [FractionallySizedBox] is used instead.
+  Widget _buildDocumentsRow() {
+    return _isArabicEnabled
+        ? Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: _documentColumn(
+                  label: 'Control Document ENG',
+                  document: _documentEn,
+                  onRemove: _onRemoveDocumentEn,
+                  onUpload: _onUploadDocumentEn,
+                ),
+              ),
+              SizedBox(width: 10.w),
+              Expanded(
+                child: _documentColumn(
+                  label: 'Control Document AR',
+                  document: _documentAr,
+                  onRemove: _onRemoveDocumentAr,
+                  onUpload: _onUploadDocumentAr,
+                ),
+              ),
+            ],
+          )
+        : FractionallySizedBox(
+            widthFactor: 0.5,
+            alignment: Alignment.centerLeft,
+            child: _documentColumn(
+              label: 'Control Document ENG',
+              document: _documentEn,
+              onRemove: _onRemoveDocumentEn,
+              onUpload: _onUploadDocumentEn,
+            ),
+          );
+  }
+
+  /// The scrollable form card: every field, wrapped in the rounded container
+  /// that fills the space between the app bar and the action buttons.
+  Widget _buildFormCard(bool isTablet) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(15.sp),
+      decoration: BoxDecoration(
+        color: AppColors.field,
+        borderRadius: BorderRadius.circular(8.sp),
+      ),
+      child: ScrollConfiguration(
+        behavior:
+            ScrollConfiguration.of(context).copyWith(scrollbars: false),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildNameRow(isTablet),
+              SizedBox(height: 15.h),
+              if (_isArabicEnabled) ...[
+                _buildNumberRow(isTablet),
+                SizedBox(height: 15.h),
+              ],
+              _buildDescriptionFields(),
+              SizedBox(height: 15.h),
+              if (_isEdit) ...[
+                _buildDateRow(isTablet),
+                SizedBox(height: 15.h),
+              ],
+              _buildFrequencyWeightRow(isTablet),
+              SizedBox(height: 15.h),
+              _buildDocumentsRow(),
+              SizedBox(height: 15.h),
+              if (_isEdit) _buildDepartmentsSection(),
+              _buildAssigneesSections(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// The bottom action bar: Discard on the left, and (Save For Later +)
+  /// Add/Save on the right. [ctx] is the Builder context that carries the
+  /// Policy/Champion/Owner cubits; [cubit] is the already-read PolicyCubit.
+  Widget _buildActionButtons(PolicyCubit cubit, BuildContext ctx) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        customButton(
+          title: 'Discard'.tr,
+          function: () => Navigator.of(context).pop(),
+          height: 38.h,
+          width: 150.w,
+          color: AppColors.grey,
+          textColor: AppColors.text,
+          borderColor: AppColors.border,
+        ),
+        Row(
+          children: [
+            if (!_isEdit) ...[
+              customButton(
+                title: 'Save For Later'.tr,
+                function: () {
+                  showConfirmDialog(
+                    context: context,
+                    title: 'Save As Draft'.tr,
+                    cancelLabel: 'Cancel'.tr,
+                    confirmLabel: 'Save'.tr,
+                    subtitle:
+                        'Are you sure you want to save this control as a draft?'
+                            .tr,
+                    onConfirm: () =>
+                        _onSave(cubit, status: ControlStatus.draft),
+                  );
+                },
+                height: 38.h,
+                width: 150.w,
+                color: AppColors.grey,
+                textColor: AppColors.text,
+                borderColor: AppColors.border,
+              ),
+              SizedBox(width: 10.w),
+            ],
+            customButton(
+              title: _isEdit ? 'Save'.tr : 'Add'.tr,
+              function: () {
+                if (_isEdit &&
+                    (!_isDepartmentsWeightValid ||
+                        !_isControlDateRangeValid)) {
+                  setState(() {});
+                  return;
+                }
+                showConfirmDialog(
+                  context: context,
+                  title: _isEdit
+                      ? 'Editing Control'.tr
+                      : 'Creating Control'.tr,
+                  cancelLabel: 'No'.tr,
+                  confirmLabel: 'Yes'.tr,
+                  subtitle: _isEdit
+                      ? 'Are You Sure You Want To Edit This Control ?'.tr
+                      : 'Are You Sure You Want To Create This Control ?'.tr,
+                  onConfirm: () => _onSave(
+                    cubit,
+                    status: cubit.resolveControlStatus(
+                      requested: cubit
+                          .computeDateBasedStatus(_effectiveStartDate),
+                      manualInactive: _manualInactive,
+                      hasAnyAssignee: _hasAnyAssignee(ctx),
+                    ),
+                  ),
+                );
+              },
+              height: 38.h,
+              width: 150.w,
+              color: AppColors.primary,
+              textColor: AppColors.textButton,
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
@@ -990,502 +1418,28 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
       builder: (ctx) {
         final cubit = ctx.read<PolicyCubit>();
         return BlocListener<PolicyCubit, PolicyState>(
-            listener: _onStateChange,
-            child: Scaffold(
-              body: SafeArea(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      PaginationAppBar(
-                        screensTitles: [
-                          'GRC'.tr,
-                          context.isArabic
-                              ? widget.policy.policyNameAr
-                              : widget.policy.policyNameEn,
-                          context.isArabic
-                              ? "Edit ${widget.existingControl?.controlsNameAr}"
-                              : "Edit ${widget.existingControl?.controlsNameEn}",
-                        ],
-                      ),
-                      // Only an already-saved Control has a real status to
-                      // manually deactivate — Create mode's status isn't
-                      // decided until Add/Save For Later is pressed.
-                      if (_isEdit)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            SvgPicture.asset(
-                                'assets/icons_assets/data_grc_assets/icons_status.svg'),
-                            SizedBox(width: 10.w),
-                            Text('Status'.tr),
-                            SizedBox(width: 10.w),
-                            FlutterSwitch(
-                              width: 38.sp,
-                              height: 22.sp,
-                              padding: 3.sp,
-                              borderRadius: 20.sp,
-                              toggleSize: 16.sp,
-                              activeColor: AppColors.secondaryPrimary,
-                              inactiveColor:
-                                  Colors.grey.withValues(alpha: 0.16),
-                              value: !_manualInactive,
-                              onToggle: (v) =>
-                                  setState(() => _manualInactive = !v),
-                            ),
-                          ],
-                        ),
-                      SizedBox(height: 12.h),
-                      Expanded(
-                        child: Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.all(15.sp),
-                          decoration: BoxDecoration(
-                            color: AppColors.field,
-                            borderRadius: BorderRadius.circular(8.sp),
-                          ),
-                          child: ScrollConfiguration(
-                            behavior: ScrollConfiguration.of(context)
-                                .copyWith(scrollbars: false),
-                            child: SingleChildScrollView(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  isTablet
-                                      ? Row(children: [
-                                          Expanded(
-                                            child: _textField(
-                                              label: 'Control Name'.tr,
-                                              hint: 'Text here'.tr,
-                                              controller: _nameController,
-                                              submitted: _submitted,
-                                              englishOnlyError:
-                                                  'Control Name must be written in English'
-                                                      .tr,
-                                            ),
-                                          ),
-                                          SizedBox(width: 10.w),
-                                          Expanded(
-                                            child: _isArabicEnabled
-                                                ? _textField(
-                                                    label: 'Control Name'.tr,
-                                                    hint: 'Type here'.tr,
-                                                    controller:
-                                                        _nameArController,
-                                                    rtl: true,
-                                                    submitted: _submitted &&
-                                                        _arabicTouched,
-                                                    arabicOnlyError:
-                                                        'Control Name must be written in Arabic'
-                                                            .tr,
-                                                  )
-                                                : _textField(
-                                                    label: 'Control Number'.tr,
-                                                    hint: 'Text here'.tr,
-                                                    controller:
-                                                        _numberController,
-                                                    submitted: _submitted,
-                                                    englishOnlyError:
-                                                        'Control Number must be written in English'
-                                                            .tr,
-                                                  ),
-                                          ),
-                                        ])
-                                      : Column(children: [
-                                          _textField(
-                                            label: 'Control Name'.tr,
-                                            hint: 'Text here'.tr,
-                                            controller: _nameController,
-                                            submitted: _submitted,
-                                            englishOnlyError:
-                                                'Control Name must be written in English'
-                                                    .tr,
-                                          ),
-                                          SizedBox(height: 15.h),
-                                          _isArabicEnabled
-                                              ? _textField(
-                                                  label: 'Control Name'.tr,
-                                                  hint: 'Type here'.tr,
-                                                  controller: _nameArController,
-                                                  rtl: true,
-                                                  submitted: _submitted &&
-                                                      _arabicTouched,
-                                                  arabicOnlyError:
-                                                      'Control Name must be written in Arabic'
-                                                          .tr,
-                                                )
-                                              : _textField(
-                                                  label: 'Control Number'.tr,
-                                                  hint: 'Text here'.tr,
-                                                  controller: _numberController,
-                                                  submitted: _submitted,
-                                                  englishOnlyError:
-                                                      'Control Number must be written in English'
-                                                          .tr,
-                                                ),
-                                        ]),
-                                  SizedBox(height: 15.h),
-                                  if (_isArabicEnabled) ...[
-                                    isTablet
-                                        ? Row(children: [
-                                            Expanded(
-                                              child: _textField(
-                                                label: 'Control Number'.tr,
-                                                hint: 'Text here'.tr,
-                                                controller: _numberController,
-                                                submitted: _submitted,
-                                                englishOnlyError:
-                                                    'Control Number must be written in English'
-                                                        .tr,
-                                              ),
-                                            ),
-                                            SizedBox(width: 10.w),
-                                            Expanded(
-                                              child: _textField(
-                                                label: 'Control Number'.tr,
-                                                hint: 'Type here'.tr,
-                                                controller: _numberArController,
-                                                rtl: true,
-                                                submitted: _submitted &&
-                                                    _arabicTouched,
-                                                arabicOnlyError:
-                                                    'Control Number must be written in Arabic'
-                                                        .tr,
-                                              ),
-                                            ),
-                                          ])
-                                        : Column(children: [
-                                            _textField(
-                                              label: 'Control Number'.tr,
-                                              hint: 'Text here'.tr,
-                                              controller: _numberController,
-                                              submitted: _submitted,
-                                              englishOnlyError:
-                                                  'Control Number must be written in English'
-                                                      .tr,
-                                            ),
-                                            SizedBox(height: 15.h),
-                                            _textField(
-                                              label: 'Control Number'.tr,
-                                              hint: 'Type here'.tr,
-                                              controller: _numberArController,
-                                              rtl: true,
-                                              submitted:
-                                                  _submitted && _arabicTouched,
-                                              arabicOnlyError:
-                                                  'Control Number must be written in Arabic'
-                                                      .tr,
-                                            ),
-                                          ]),
-                                    SizedBox(height: 15.h),
-                                  ],
-                                  _textField(
-                                    label: 'Control Description'.tr,
-                                    hint: 'Text here'.tr,
-                                    controller: _descriptionController,
-                                    submitted: _submitted,
-                                    maxLines: 3,
-                                    minLines: 3,
-                                    maxLength: 500,
-                                    showCharCount: true,
-                                    englishOnlyError:
-                                        'Control Description must be written in English'
-                                            .tr,
-                                  ),
-                                  if (_isArabicEnabled) ...[
-                                    SizedBox(height: 15.h),
-                                    _textField(
-                                      label: 'Control Description'.tr,
-                                      hint: 'Write a Description'.tr,
-                                      controller: _descriptionArController,
-                                      rtl: true,
-                                      submitted: _submitted && _arabicTouched,
-                                      maxLines: 3,
-                                      minLines: 3,
-                                      maxLength: 500,
-                                      showCharCount: true,
-                                      arabicOnlyError:
-                                          'Control Description must be written in Arabic'
-                                              .tr,
-                                    ),
-                                  ],
-                                  SizedBox(height: 15.h),
-                                  if (_isEdit) ...[
-                                    isTablet
-                                        ? Row(children: [
-                                            Expanded(
-                                              child: CustomDropdownCalendar(
-                                                borderRadius:
-                                                    BorderRadius.circular(4.r),
-                                                label: 'Start Date'.tr,
-                                                hint: 'Select Start Date'.tr,
-                                                value: _startDate,
-                                                onChanged: (d) => setState(
-                                                    () => _startDate = d),
-                                                fillColor: AppColors.background,
-                                                firstDate:
-                                                    widget.policyStartDate,
-                                                lastDate: widget.policyEndDate,
-                                                dateFormatter: (d) =>
-                                                    intl.DateFormat(
-                                                            'd MMM yyyy')
-                                                        .format(d),
-                                                errorText: _startDateError,
-                                              ),
-                                            ),
-                                            SizedBox(width: 10.w),
-                                            Expanded(
-                                              child: CustomDropdownCalendar(
-                                                borderRadius:
-                                                    BorderRadius.circular(4.r),
-                                                label: 'End Date'.tr,
-                                                hint: 'Select End Date'.tr,
-                                                value: _endDate,
-                                                onChanged: (d) => setState(
-                                                    () => _endDate = d),
-                                                fillColor: AppColors.background,
-                                                firstDate: _startDate ??
-                                                    widget.policyStartDate,
-                                                lastDate: widget.policyEndDate,
-                                                dateFormatter: (d) =>
-                                                    intl.DateFormat(
-                                                            'd MMM yyyy')
-                                                        .format(d),
-                                                errorText: _endDateError,
-                                              ),
-                                            ),
-                                          ])
-                                        : Column(children: [
-                                            CustomDropdownCalendar(
-                                              borderRadius:
-                                                  BorderRadius.circular(4.r),
-                                              label: 'Start Date'.tr,
-                                              hint: 'Select Start Date'.tr,
-                                              value: _startDate,
-                                              onChanged: (d) => setState(
-                                                  () => _startDate = d),
-                                              fillColor: AppColors.background,
-                                              firstDate: widget.policyStartDate,
-                                              lastDate: widget.policyEndDate,
-                                              errorText: _startDateError,
-                                            ),
-                                            SizedBox(height: 15.h),
-                                            CustomDropdownCalendar(
-                                              borderRadius:
-                                                  BorderRadius.circular(4.r),
-                                              label: 'End Date'.tr,
-                                              hint: 'Select End Date'.tr,
-                                              value: _endDate,
-                                              onChanged: (d) =>
-                                                  setState(() => _endDate = d),
-                                              fillColor: AppColors.background,
-                                              firstDate: _startDate ??
-                                                  widget.policyStartDate,
-                                              lastDate: widget.policyEndDate,
-                                              errorText: _endDateError,
-                                            ),
-                                          ]),
-                                    SizedBox(height: 15.h),
-                                  ],
-                                  isTablet
-                                      ? Row(children: [
-                                          Expanded(
-                                            child: CustomDropdown<String>(
-                                              label: 'Frequency'.tr,
-                                              hint: 'Choose Here'.tr,
-                                              items: ControlFrequency.allValues
-                                                  .map((d) =>
-                                                      DropdownItem<String>(
-                                                          value: d, label: d))
-                                                  .toList(),
-                                              value: _frequency,
-                                              onChanged: (v) => setState(
-                                                  () => _frequency = v),
-                                              fillColor: AppColors.background,
-                                              errorText: _submitted &&
-                                                      _frequency == null
-                                                  ? 'This field is required.'.tr
-                                                  : null,
-                                            ),
-                                          ),
-                                          SizedBox(width: 10.w),
-                                          Expanded(
-                                            child: _textField(
-                                              label: 'Control Weight'.tr,
-                                              hint: 'Text Here'.tr,
-                                              controller: _weightController,
-                                              submitted: _submitted,
-                                              onlyDigits: true,
-                                              customError: _weightError,
-                                            ),
-                                          ),
-                                        ])
-                                      : Column(children: [
-                                          CustomDropdown<String>(
-                                            label: 'Frequency'.tr,
-                                            hint: 'Choose Here'.tr,
-                                            items: ControlFrequency.allValues
-                                                .map((d) =>
-                                                    DropdownItem<String>(
-                                                        value: d, label: d))
-                                                .toList(),
-                                            value: _frequency,
-                                            onChanged: (v) =>
-                                                setState(() => _frequency = v),
-                                            fillColor: AppColors.background,
-                                            errorText: _submitted &&
-                                                    _frequency == null
-                                                ? 'This field is required.'.tr
-                                                : null,
-                                          ),
-                                          SizedBox(height: 15.h),
-                                          _textField(
-                                            label: 'Control Weight'.tr,
-                                            hint: 'Text Here'.tr,
-                                            controller: _weightController,
-                                            submitted: _submitted,
-                                            onlyDigits: true,
-                                            customError: _weightError,
-                                          ),
-                                        ]),
-                                  SizedBox(height: 15.h),
-                                  // Two Expanded columns split the row 50/50
-                                  // when Arabic is on; with only the ENG
-                                  // column left, an Expanded there would
-                                  // stretch it across the whole row instead
-                                  // of keeping that same half-width look.
-                                  _isArabicEnabled
-                                      ? Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Expanded(
-                                              child: _documentColumn(
-                                                label: 'Control Document ENG',
-                                                document: _documentEn,
-                                                onRemove: _onRemoveDocumentEn,
-                                                onUpload: _onUploadDocumentEn,
-                                              ),
-                                            ),
-                                            SizedBox(width: 10.w),
-                                            Expanded(
-                                              child: _documentColumn(
-                                                label: 'Control Document AR',
-                                                document: _documentAr,
-                                                onRemove: _onRemoveDocumentAr,
-                                                onUpload: _onUploadDocumentAr,
-                                              ),
-                                            ),
-                                          ],
-                                        )
-                                      : FractionallySizedBox(
-                                          widthFactor: 0.5,
-                                          alignment: Alignment.centerLeft,
-                                          child: _documentColumn(
-                                            label: 'Control Document ENG',
-                                            document: _documentEn,
-                                            onRemove: _onRemoveDocumentEn,
-                                            onUpload: _onUploadDocumentEn,
-                                          ),
-                                        ),
-                                  SizedBox(height: 15.h),
-                                  if (_isEdit) _buildDepartmentsSection(),
-                                  _buildAssigneesSections(),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 16.h),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          customButton(
-                            title: 'Discard'.tr,
-                            function: () => Navigator.of(context).pop(),
-                            height: 38.h,
-                            width: 150.w,
-                            color: AppColors.grey,
-                            textColor: AppColors.text,
-                            borderColor: AppColors.border,
-                          ),
-                          Row(
-                            children: [
-                              if (!_isEdit) ...[
-                                customButton(
-                                  title: 'Save For Later'.tr,
-                                  function: () {
-                                    showConfirmDialog(
-                                      context: context,
-                                      title: 'Save As Draft'.tr,
-                                      cancelLabel: 'Cancel'.tr,
-                                      confirmLabel: 'Save'.tr,
-                                      subtitle:
-                                          'Are you sure you want to save this control as a draft?'
-                                              .tr,
-                                      onConfirm: () => _onSave(cubit,
-                                          status: ControlStatus.draft),
-                                    );
-                                  },
-                                  height: 38.h,
-                                  width: 150.w,
-                                  color: AppColors.grey,
-                                  textColor: AppColors.text,
-                                  borderColor: AppColors.border,
-                                ),
-                                SizedBox(width: 10.w),
-                              ],
-                              customButton(
-                                title: _isEdit ? 'Save'.tr : 'Add'.tr,
-                                function: () {
-                                  if (_isEdit &&
-                                      (!_isDepartmentsWeightValid ||
-                                          !_isControlDateRangeValid)) {
-                                    setState(() {});
-                                    return;
-                                  }
-                                  showConfirmDialog(
-                                    context: context,
-                                    title: _isEdit
-                                        ? 'Editing Control'.tr
-                                        : 'Creating Control'.tr,
-                                    cancelLabel: 'No'.tr,
-                                    confirmLabel: 'Yes'.tr,
-                                    subtitle: _isEdit
-                                        ? 'Are You Sure You Want To Edit This Control ?'
-                                            .tr
-                                        : 'Are You Sure You Want To Create This Control ?'
-                                            .tr,
-                                    onConfirm: () => _onSave(
-                                      cubit,
-                                      status: cubit.resolveControlStatus(
-                                        requested: cubit.computeDateBasedStatus(
-                                            _effectiveStartDate),
-                                        manualInactive: _manualInactive,
-                                        hasAnyAssignee: _hasAnyAssignee(ctx),
-                                      ),
-                                    ),
-                                  );
-                                },
-                                height: 38.h,
-                                width: 150.w,
-                                color: AppColors.primary,
-                                textColor: AppColors.textButton,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 16.h),
-                    ],
-                  ),
+          listener: _onStateChange,
+          child: Scaffold(
+            body: SafeArea(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildAppBar(),
+                    if (_isEdit) _buildStatusRow(),
+                    SizedBox(height: 12.h),
+                    Expanded(child: _buildFormCard(isTablet)),
+                    SizedBox(height: 16.h),
+                    _buildActionButtons(cubit, ctx),
+                    SizedBox(height: 16.h),
+                  ],
                 ),
               ),
             ),
-          );
-        },
-      );
+          ),
+        );
+      },
+    );
   }
 }
