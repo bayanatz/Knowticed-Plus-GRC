@@ -219,6 +219,48 @@ class _GrcRequestDetailsBodyState extends State<_GrcRequestDetailsBody> {
     );
   }
 
+  /// Mirrors GrcRequestsListPage's own `_canCancel` rule exactly: only the
+  /// requester, only while pending, and only before the request's start
+  /// date has arrived.
+  bool get _canCancel =>
+      widget.isMyRequest &&
+      _request.status == ApprovalStatus.pending &&
+      _request.startDate != null &&
+      _request.startDate!.isAfter(DateTime.now());
+
+  void _onCancel(BuildContext context) {
+    showConfirmDialog(
+      context: context,
+      title: 'Cancel Request'.tr,
+      subtitle: 'Are you sure you want to cancel this request?'.tr,
+      cancelLabel: 'No'.tr,
+      confirmLabel: 'Yes'.tr,
+      onConfirm: () {
+        context.read<GrcRequestCubit>().cancelRequest(
+              moduleId: widget.module.moduleId,
+              requestId: _request.id,
+            );
+      },
+    );
+  }
+
+  Widget _cancelButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () => _onCancel(context),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+        decoration: BoxDecoration(
+          border: Border.all(color: AppColors.red),
+          borderRadius: BorderRadius.circular(20.r),
+        ),
+        child: Text(
+          'Cancel'.tr,
+          style: StyleText.fontSize12Weight500.copyWith(color: AppColors.red),
+        ),
+      ),
+    );
+  }
+
   void _onApprove() {
     showConfirmDialog(
       context: context,
@@ -312,13 +354,20 @@ class _GrcRequestDetailsBodyState extends State<_GrcRequestDetailsBody> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              PaginationAppBar(
-                screensTitles: [
-                  'GRC'.tr,
-                  context.isArabic
-                      ? widget.module.moduleNameAr
-                      : widget.module.moduleNameEn,
-                  'Requests Details'.tr,
+              Row(
+                children: [
+                  Expanded(
+                    child: PaginationAppBar(
+                      screensTitles: [
+                        'GRC'.tr,
+                        context.isArabic
+                            ? widget.module.moduleNameAr
+                            : widget.module.moduleNameEn,
+                        'Requests Details'.tr,
+                      ],
+                    ),
+                  ),
+                  if (_canCancel) _cancelButton(context),
                 ],
               ),
               Expanded(
