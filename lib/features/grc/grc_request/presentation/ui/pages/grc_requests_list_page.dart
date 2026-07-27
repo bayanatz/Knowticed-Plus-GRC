@@ -96,6 +96,12 @@ class _GrcRequestsListBodyState extends State<_GrcRequestsListBody> {
     if (widget.onlyRequestedBy != null) {
       scoped =
           scoped.where((r) => r.requestedBy == widget.onlyRequestedBy).toList();
+    } else {
+      // Canceled requests are only relevant to the requester, so keep them
+      // out of the module-wide "Requests" view — they still show up in
+      // "My Requests".
+      scoped =
+          scoped.where((r) => r.status != ApprovalStatus.canceled).toList();
     }
     return scoped;
   }
@@ -155,6 +161,120 @@ class _GrcRequestsListBodyState extends State<_GrcRequestsListBody> {
     );
   }
 
+  /// Per-status counts (All/Approved/Pending/Rejected) shown on the filter
+  /// chips, computed from the scoped (but not search/status-filtered)
+  /// request list.
+  Map<ApprovalStatus, int> _buildStatusCounts(
+      List<GrcRequestEntity> requests) {
+    return {
+      for (final s in [
+        ApprovalStatus.all,
+        ApprovalStatus.approved,
+        ApprovalStatus.pending,
+        ApprovalStatus.rejected,
+      ])
+        s: s == ApprovalStatus.all
+            ? requests.length
+            : requests.where((r) => r.status == s).length,
+    };
+  }
+
+  Widget _buildRequestCard(
+    BuildContext context,
+    GrcRequestEntity request,
+    DateFormat dateFormat,
+  ) {
+    return GestureDetector(
+      onTap: () {
+        if (request.type != GrcRequestType.reassignChampion &&
+            request.type != GrcRequestType.reassignOwner) {
+          return;
+        }
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => GrcRequestDetailsPage(
+              module: widget.module,
+              request: request,
+            ),
+          ),
+        ).then((_) => context
+            .read<GrcRequestCubit>()
+            .getRequestsForModule(widget.module.moduleId));
+      },
+      child: Container(
+        padding: EdgeInsets.all(16.r),
+        decoration: BoxDecoration(
+          color: AppColors.card,
+          borderRadius: CardStyles.radius(),
+          boxShadow: CardStyles.shadow,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    '${'Request Type'.tr}: ${request.type.value}',
+                    style: StyleText.fontSize12Weight600
+                        .copyWith(color: AppColors.text),
+                  ),
+                ),
+                Text(
+                  '${'Request Date'.tr}: ${dateFormat.format(request.requestDate)}',
+                  style: StyleText.fontSize12Weight400
+                      .copyWith(color: AppColors.secondaryText),
+                ),
+              ],
+            ),
+            SizedBox(height: 15.h),
+            GrcOwnerBadge(
+              ownerEmails: widget.module.moduleOwners,
+              label: 'Department Manager:'.tr,
+            ),
+            SizedBox(height: 15.h),
+            Expanded(
+              child: Text(
+                '${'Request Note'.tr}: ${request.note}',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style:
+                    StyleText.fontSize12Weight400.copyWith(color: AppColors.text),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                if (_canCancel(request)) ...[
+                  GestureDetector(
+                    onTap: () => _onCancel(context, request),
+                    child: Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: AppColors.red),
+                        borderRadius: BorderRadius.circular(20.r),
+                      ),
+                      child: Text(
+                        'Cancel'.tr,
+                        style: StyleText.fontSize12Weight500
+                            .copyWith(color: AppColors.red),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 8.w),
+                ],
+                _statusPill(request.status),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final dateFormat = DateFormat('d MMM yyyy');
@@ -166,7 +286,12 @@ class _GrcRequestsListBodyState extends State<_GrcRequestsListBody> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               PaginationAppBar(
-                screensTitles: [widget.module.moduleNameEn, 'Requests'.tr],
+                screensTitles: [
+                  widget.module.moduleNameEn,
+                  widget.onlyRequestedBy != null
+                      ? 'My Requests'.tr
+                      : 'Requests'.tr,
+                ],
               ),
               SizedBox(height: 16.h),
               BlocConsumer<GrcRequestCubit, GrcRequestState>(
@@ -184,17 +309,7 @@ class _GrcRequestsListBodyState extends State<_GrcRequestsListBody> {
                   final requests = _scopeRequests(state is GrcRequestListLoaded
                       ? state.requests
                       : <GrcRequestEntity>[]);
-                  final counts = {
-                    for (final s in [
-                      ApprovalStatus.all,
-                      ApprovalStatus.approved,
-                      ApprovalStatus.pending,
-                      ApprovalStatus.rejected,
-                    ])
-                      s: s == ApprovalStatus.all
-                          ? requests.length
-                          : requests.where((r) => r.status == s).length,
-                  };
+                  final counts = _buildStatusCounts(requests);
                   final filtered = _applyFilters(requests);
 
                   return Expanded(
@@ -255,126 +370,12 @@ class _GrcRequestsListBodyState extends State<_GrcRequestsListBody> {
                                     mainAxisSpacing: 16,
                                   ),
                                   itemCount: filtered.length,
-                                  itemBuilder: (context, index) {
-                                    final request = filtered[index];
-                                    return GestureDetector(
-                                      onTap: () {
-                                        if (request.type !=
-                                                GrcRequestType
-                                                    .reassignChampion &&
-                                            request.type !=
-                                                GrcRequestType.reassignOwner) {
-                                          return;
-                                        }
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (_) =>
-                                                GrcRequestDetailsPage(
-                                              module: widget.module,
-                                              request: request,
-                                            ),
-                                          ),
-                                        ).then((_) => context
-                                            .read<GrcRequestCubit>()
-                                            .getRequestsForModule(
-                                                widget.module.moduleId));
-                                      },
-                                      child: Container(
-                                        padding: EdgeInsets.all(16.r),
-                                        decoration: BoxDecoration(
-                                          color: AppColors.card,
-                                          borderRadius: CardStyles.radius(),
-                                          boxShadow: CardStyles.shadow,
-                                        ),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Expanded(
-                                                  child: Text(
-                                                    '${'Request Type'.tr}: ${request.type.value}',
-                                                    style: StyleText
-                                                        .fontSize12Weight600
-                                                        .copyWith(
-                                                            color:
-                                                                AppColors.text),
-                                                  ),
-                                                ),
-                                                Text(
-                                                  '${'Request Date'.tr}: ${dateFormat.format(request.requestDate)}',
-                                                  style: StyleText
-                                                      .fontSize12Weight400
-                                                      .copyWith(
-                                                          color: AppColors
-                                                              .secondaryText),
-                                                ),
-                                              ],
-                                            ),
-                                            SizedBox(height: 15.h),
-                                            GrcOwnerBadge(
-                                              ownerEmails:
-                                                  widget.module.moduleOwners,
-                                              label: 'Department Manager:'.tr,
-                                            ),
-                                            SizedBox(height: 15.h),
-                                            Expanded(
-                                              child: Text(
-                                                '${'Request Note'.tr}: ${request.note}',
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: StyleText
-                                                    .fontSize12Weight400
-                                                    .copyWith(
-                                                        color: AppColors.text),
-                                              ),
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              children: [
-                                                if (_canCancel(request)) ...[
-                                                  GestureDetector(
-                                                    onTap: () => _onCancel(
-                                                        context, request),
-                                                    child: Container(
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              horizontal: 10.w,
-                                                              vertical: 6.h),
-                                                      decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color:
-                                                                AppColors.red),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(20.r),
-                                                      ),
-                                                      child: Text(
-                                                        'Cancel'.tr,
-                                                        style: StyleText
-                                                            .fontSize12Weight500
-                                                            .copyWith(
-                                                                color: AppColors
-                                                                    .red),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 8.w),
-                                                ],
-                                                _statusPill(request.status),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },
+                                  itemBuilder: (context, index) =>
+                                      _buildRequestCard(
+                                    context,
+                                    filtered[index],
+                                    dateFormat,
+                                  ),
                                 ),
                         ),
                       ],
