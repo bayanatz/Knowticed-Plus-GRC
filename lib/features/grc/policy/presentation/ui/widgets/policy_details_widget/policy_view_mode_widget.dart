@@ -28,7 +28,7 @@ import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
 import 'package:demo_app/features/grc/policy/presentation/controller/policy_cubit.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/control_card_widget.dart';
-import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_document_info.dart';
+import 'package:demo_app/features/grc/policy/domain/entities/policy_document_info.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_document_preview_widget.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/policy_details_widget/grc_owner_badge.dart';
 import 'package:demo_app/features/roles/widgets/filter_bar_item.dart';

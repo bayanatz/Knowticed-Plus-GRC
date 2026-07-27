@@ -29,7 +29,7 @@ import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details
     show containsEnglishLetters, containsArabicLetters;
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_control_completeness.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_control_model.dart';
-import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_document_info.dart';
+import 'package:demo_app/features/grc/policy/domain/entities/policy_document_info.dart';
 import 'package:demo_app/features/grc/shared/widgets/grc_responsive_field_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

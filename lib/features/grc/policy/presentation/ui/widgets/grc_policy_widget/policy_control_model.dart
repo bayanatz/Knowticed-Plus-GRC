@@ -17,7 +17,7 @@ library;
 
 import 'package:flutter/material.dart';
 
-import 'policy_document_info.dart';
+import 'package:demo_app/features/grc/policy/domain/entities/policy_document_info.dart';
 
 class PolicyControlModel {
   final TextEditingController nameController;

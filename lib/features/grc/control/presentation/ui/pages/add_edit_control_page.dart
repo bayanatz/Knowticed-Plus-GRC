@@ -38,7 +38,7 @@ import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart'
 import 'package:demo_app/features/grc/policy/presentation/controller/policy_cubit.dart';
 import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details_widget/grc_form_fields.dart'
     show containsEnglishLetters, containsArabicLetters;
-import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_document_info.dart';
+import 'package:demo_app/features/grc/policy/domain/entities/policy_document_info.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_document_preview_widget.dart';
 import 'package:demo_app/features/grc/shared/widgets/grc_responsive_field_row.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';

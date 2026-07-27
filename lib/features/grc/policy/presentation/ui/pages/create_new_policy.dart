@@ -47,7 +47,7 @@ import 'package:demo_app/features/grc/policy/presentation/ui/widgets/create_new_
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/create_new_policy_widget/create_policy_step2_preview.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_control_completeness.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_control_model.dart';
-import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_document_info.dart';
+import 'package:demo_app/features/grc/policy/domain/entities/policy_document_info.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
 import 'package:demo_app/features/settings/core_widgets/main_widget/custom_button_widget.dart';
 import 'package:flutter/material.dart';
