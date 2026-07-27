@@ -189,12 +189,12 @@ class _PolicyEditPageState extends State<PolicyEditPage> {
   void _onUploadDocumentAr() {
     showUploadDialog(
       context: context,
-      dialogTitle: 'رفع مستند السياسة (عربي)',
-      titleFieldLabel: 'عنوان المستند',
-      titleFieldHint: 'اكتب هنا',
-      browseLabel: 'تصفح الملفات',
-      submitLabel: 'إرسال',
-      discardLabel: 'إلغاء',
+      dialogTitle: 'Upload Policy Document (Arabic)'.tr,
+      titleFieldLabel: 'Document Title'.tr,
+      titleFieldHint: 'Type here'.tr,
+      browseLabel: 'Browse Files'.tr,
+      submitLabel: 'Submit'.tr,
+      discardLabel: 'Cancel'.tr,
       textDirection: TextDirection.rtl,
       allowedExtensions: const ['pdf', 'doc', 'docx'],
       onSubmit: (file, title) {
