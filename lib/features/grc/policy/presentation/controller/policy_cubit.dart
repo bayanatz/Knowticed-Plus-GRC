@@ -23,6 +23,8 @@ library;
 import 'dart:io';
 
 import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
+import 'package:dartz/dartz.dart';
+import 'package:demo_app/core/network/failure_model.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_status.dart';
 
@@ -338,27 +340,12 @@ class PolicyCubit extends Cubit<PolicyState> {
         final failedControls = <({PendingControlInput input, String message})>[];
         for (final input in controls) {
           final controlResult = await _createControlUseCase.call(
-            CreateControlParams(
+            _buildCreateControlParams(
               moduleId: moduleId,
               policyId: policy.id,
               editorId: editorId,
-              controlsNameEn: input.controlsNameEn,
-              controlsNameAr: input.controlsNameAr,
-              controlsNumberEn: input.controlsNumberEn,
-              controlsNumberAr: input.controlsNumberAr,
-              controlsDescriptionEn: input.controlsDescriptionEn,
-              controlsDescriptionAr: input.controlsDescriptionAr,
-              controlsWeight: input.controlsWeight,
-              frequency: input.frequency,
-              startDate: input.startDate,
-              endDate: input.endDate,
-              departments: input.departments,
-              equalWeights: input.equalWeights,
-              score: input.score,
-              status: input.status,
-              controlsDocumentFileEn: input.controlsDocumentFileEn,
+              input: input,
               controlsDocumentUrlEn: input.controlsDocumentUrlEn,
-              controlsDocumentFileAr: input.controlsDocumentFileAr,
               controlsDocumentUrlAr: input.controlsDocumentUrlAr,
             ),
           );
@@ -518,47 +505,12 @@ class PolicyCubit extends Cubit<PolicyState> {
         final failedControls =
             <({PendingControlInput input, String message})>[];
         for (final input in controls) {
-          final controlResult = input.existingControlId != null
-              ? await _updateControlUseCase.call(UpdateControlParams(
-                  id: input.existingControlId!,
-                  moduleId: moduleId,
-                  policyId: id,
-                  editorId: editorId,
-                  controlsNameEn: input.controlsNameEn,
-                  controlsNameAr: input.controlsNameAr,
-                  controlsNumberEn: input.controlsNumberEn,
-                  controlsNumberAr: input.controlsNumberAr,
-                  controlsDescriptionEn: input.controlsDescriptionEn,
-                  controlsDescriptionAr: input.controlsDescriptionAr,
-                  controlsWeight: input.controlsWeight,
-                  frequency: input.frequency,
-                  startDate: input.startDate,
-                  endDate: input.endDate,
-                  status: input.status,
-                  controlsDocumentFileEn: input.controlsDocumentFileEn,
-                  controlsDocumentFileAr: input.controlsDocumentFileAr,
-                ))
-              : await _createControlUseCase.call(CreateControlParams(
-                  moduleId: moduleId,
-                  policyId: id,
-                  editorId: editorId,
-                  controlsNameEn: input.controlsNameEn,
-                  controlsNameAr: input.controlsNameAr,
-                  controlsNumberEn: input.controlsNumberEn,
-                  controlsNumberAr: input.controlsNumberAr,
-                  controlsDescriptionEn: input.controlsDescriptionEn,
-                  controlsDescriptionAr: input.controlsDescriptionAr,
-                  controlsWeight: input.controlsWeight,
-                  frequency: input.frequency,
-                  startDate: input.startDate,
-                  endDate: input.endDate,
-                  departments: input.departments,
-                  equalWeights: input.equalWeights,
-                  score: input.score,
-                  status: input.status,
-                  controlsDocumentFileEn: input.controlsDocumentFileEn,
-                  controlsDocumentFileAr: input.controlsDocumentFileAr,
-                ));
+          final controlResult = await _upsertControlForUpdate(
+            input: input,
+            moduleId: moduleId,
+            policyId: id,
+            editorId: editorId,
+          );
           controlResult.fold(
             (failure) =>
                 failedControls.add((input: input, message: failure.message)),
@@ -573,6 +525,92 @@ class PolicyCubit extends Cubit<PolicyState> {
         }
       },
     );
+  }
+
+  /// function name: [_buildCreateControlParams]
+  ///
+  /// purpose: shared builder for the [CreateControlParams] assembled from a
+  ///          [PendingControlInput] in both [_createPolicyWithControls] and
+  ///          [updatePolicyWithControls]. Faithful DRY extraction of the two
+  ///          previously copy-pasted field-mapping blocks: every control field
+  ///          is taken from [input]; the ids ([moduleId]/[policyId]/[editorId])
+  ///          and the two document URLs vary per call site and so are passed
+  ///          in. The create-during-update path passes no URLs, preserving its
+  ///          original behavior of leaving them null.
+  CreateControlParams _buildCreateControlParams({
+    required String moduleId,
+    required String policyId,
+    required String editorId,
+    required PendingControlInput input,
+    String? controlsDocumentUrlEn,
+    String? controlsDocumentUrlAr,
+  }) {
+    return CreateControlParams(
+      moduleId: moduleId,
+      policyId: policyId,
+      editorId: editorId,
+      controlsNameEn: input.controlsNameEn,
+      controlsNameAr: input.controlsNameAr,
+      controlsNumberEn: input.controlsNumberEn,
+      controlsNumberAr: input.controlsNumberAr,
+      controlsDescriptionEn: input.controlsDescriptionEn,
+      controlsDescriptionAr: input.controlsDescriptionAr,
+      controlsWeight: input.controlsWeight,
+      frequency: input.frequency,
+      startDate: input.startDate,
+      endDate: input.endDate,
+      departments: input.departments,
+      equalWeights: input.equalWeights,
+      score: input.score,
+      status: input.status,
+      controlsDocumentFileEn: input.controlsDocumentFileEn,
+      controlsDocumentUrlEn: controlsDocumentUrlEn,
+      controlsDocumentFileAr: input.controlsDocumentFileAr,
+      controlsDocumentUrlAr: controlsDocumentUrlAr,
+    );
+  }
+
+  /// function name: [_upsertControlForUpdate]
+  ///
+  /// purpose: per-control decision for [updatePolicyWithControls] — update the
+  ///          control in place when [PendingControlInput.existingControlId] is
+  ///          set, otherwise create it fresh. Extracted from the loop's inline
+  ///          ternary to reduce nesting; behavior is unchanged (the update
+  ///          branch still omits departments/equalWeights/score/URLs and the
+  ///          create branch still passes no document URLs).
+  Future<Either<Failure, ControlEntity>> _upsertControlForUpdate({
+    required PendingControlInput input,
+    required String moduleId,
+    required String policyId,
+    required String editorId,
+  }) {
+    if (input.existingControlId != null) {
+      return _updateControlUseCase.call(UpdateControlParams(
+        id: input.existingControlId!,
+        moduleId: moduleId,
+        policyId: policyId,
+        editorId: editorId,
+        controlsNameEn: input.controlsNameEn,
+        controlsNameAr: input.controlsNameAr,
+        controlsNumberEn: input.controlsNumberEn,
+        controlsNumberAr: input.controlsNumberAr,
+        controlsDescriptionEn: input.controlsDescriptionEn,
+        controlsDescriptionAr: input.controlsDescriptionAr,
+        controlsWeight: input.controlsWeight,
+        frequency: input.frequency,
+        startDate: input.startDate,
+        endDate: input.endDate,
+        status: input.status,
+        controlsDocumentFileEn: input.controlsDocumentFileEn,
+        controlsDocumentFileAr: input.controlsDocumentFileAr,
+      ));
+    }
+    return _createControlUseCase.call(_buildCreateControlParams(
+      moduleId: moduleId,
+      policyId: policyId,
+      editorId: editorId,
+      input: input,
+    ));
   }
 
   Future<void> deletePolicy({
