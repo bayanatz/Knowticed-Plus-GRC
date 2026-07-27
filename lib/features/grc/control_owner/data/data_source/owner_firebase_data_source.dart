@@ -10,6 +10,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:demo_app/core/network/get_base_url.dart';
 import 'package:demo_app/features/grc/control_owner/data/models/owner_model.dart';
+import 'package:demo_app/features/grc/control_owner/domain/entities/owner_status.dart';
 
 import 'owner_data_source.dart';
 
@@ -66,7 +67,7 @@ class OwnerFirebaseDataSource implements OwnerDataSource {
       final models =
           snapshot.docs.map((doc) => OwnerModel.fromJson(doc.data()));
       if (includeRemoved) return models.toList();
-      return models.where((m) => m.status.last != 'Removed').toList();
+      return models.where((m) => m.status.last != OwnerStatus.removed.value).toList();
     } catch (e) {
       throw Exception('Failed to fetch the Control Owners: $e');
     }
