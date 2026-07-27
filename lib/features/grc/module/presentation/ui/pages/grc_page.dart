@@ -181,12 +181,24 @@ class _GovernanceRiskAndCompliancePageState
     GRCModuleEntity? entity,
     bool autoDelete = false,
   }) async {
+    // Share this list page's own GRCModuleCubit with the details page via
+    // BlocProvider.value instead of letting the details page resolve a second,
+    // disconnected instance from GetIt. The details page performs
+    // create/edit/delete/restore on this exact instance. The cubit emits
+    // GRCModuleActionSuccess (not a fresh GRCModuleListLoaded) after an action,
+    // so the list is still explicitly re-fetched below once the details page
+    // pops true — that refetch is what returns the shared cubit to a
+    // GRCModuleListLoaded state the list's BlocBuilder can render.
+    final cubit = context.read<GRCModuleCubit>();
     final reloaded = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
-        builder: (_) => GovernanceRiskAndComplianceDetails(
-          mode: mode,
-          entity: entity,
-          autoDelete: autoDelete,
+        builder: (_) => BlocProvider.value(
+          value: cubit,
+          child: GovernanceRiskAndComplianceDetails(
+            mode: mode,
+            entity: entity,
+            autoDelete: autoDelete,
+          ),
         ),
       ),
     );

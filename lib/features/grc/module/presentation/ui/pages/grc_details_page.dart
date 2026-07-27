@@ -37,7 +37,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
-import 'package:get_it/get_it.dart';
 
 /// enum name: [GrcPageMode]
 ///
@@ -293,11 +292,14 @@ class _GovernanceRiskAndComplianceDetailsState
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => GetIt.instance<GRCModuleCubit>(),
-      child: Builder(
-        builder: (ctx) {
-          final cubit = ctx.read<GRCModuleCubit>();
+    // The GRCModuleCubit is provided by the page that pushed this route
+    // (GovernanceRiskAndCompliancePage hands its own instance down via
+    // BlocProvider.value) so the list and this page share ONE cubit instance
+    // and never diverge. This page reads that shared instance — it must NOT
+    // create a second one from GetIt.
+    return Builder(
+      builder: (ctx) {
+        final cubit = ctx.read<GRCModuleCubit>();
           _scheduleAutoDelete(ctx, cubit);
           return BlocListener<GRCModuleCubit, GRCModuleState>(
             listener: _onStateChange,
@@ -438,8 +440,7 @@ class _GovernanceRiskAndComplianceDetailsState
             ),
           );
         },
-      ),
-    );
+      );
   }
 }
 
