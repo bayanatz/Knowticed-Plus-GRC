@@ -129,6 +129,62 @@ class _ControlOwnerDetailsBodyState extends State<_ControlOwnerDetailsBody> {
     );
   }
 
+  Future<void> _handleReassignTap() async {
+    setState(() => _isReassignLoading = true);
+    await _loadAllData();
+    if (mounted) {
+      setState(() => _isReassignLoading = false);
+    }
+    if (!context.mounted) return;
+    final result = await Navigator.push<bool>(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) => BlocProvider.value(
+          value: context.read<OwnerCubit>(),
+          child: ReassignOwnerPage(
+            owner: _currentOwner,
+            module: widget.module,
+            allPolicies: _allPolicies,
+            policyControls: _policyControls,
+          ),
+        ),
+        transitionsBuilder: (_, animation, __, child) =>
+            FadeTransition(opacity: animation, child: child),
+        transitionDuration: const Duration(milliseconds: 300),
+      ),
+    );
+    if (result == true && mounted) {
+      context.read<OwnerCubit>().getAllOwners(moduleId: widget.module.moduleId);
+      Navigator.pop(context, true);
+    }
+  }
+
+  Future<void> _handleEditTap() async {
+    setState(() => _isEditLoading = true);
+    await _loadAllData();
+    if (mounted) {
+      setState(() => _isEditLoading = false);
+    }
+    if (!context.mounted) return;
+    final result = await showDialog<OwnerEntity>(
+      context: context,
+      builder: (dialogCtx) => BlocProvider.value(
+        value: context.read<OwnerCubit>(),
+        child: EditOwnerControlsPage(
+          owner: _currentOwner,
+          module: widget.module,
+          allPolicies: _allPolicies,
+          policyControls: _policyControls,
+        ),
+      ),
+    );
+    if (result != null && mounted) {
+      setState(() {
+        _currentOwner = result;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // Get unique assigned policies
@@ -261,41 +317,7 @@ class _ControlOwnerDetailsBodyState extends State<_ControlOwnerDetailsBody> {
                 width: 135.w,
                 title: "Reassign".tr,
                 height: 34.h,
-                function: _isReassignLoading
-                    ? () {}
-                    : () async {
-                        setState(() => _isReassignLoading = true);
-                        await _loadAllData();
-                        if (mounted) {
-                          setState(() => _isReassignLoading = false);
-                        }
-                        if (!context.mounted) return;
-                        final result = await Navigator.push<bool>(
-                          context,
-                          PageRouteBuilder(
-                            pageBuilder: (_, __, ___) => BlocProvider.value(
-                              value: context.read<OwnerCubit>(),
-                              child: ReassignOwnerPage(
-                                owner: _currentOwner,
-                                module: widget.module,
-                                allPolicies: _allPolicies,
-                                policyControls: _policyControls,
-                              ),
-                            ),
-                            transitionsBuilder: (_, animation, __, child) =>
-                                FadeTransition(
-                                    opacity: animation, child: child),
-                            transitionDuration:
-                                const Duration(milliseconds: 300),
-                          ),
-                        );
-                        if (result == true && mounted) {
-                          context
-                              .read<OwnerCubit>()
-                              .getAllOwners(moduleId: widget.module.moduleId);
-                          Navigator.pop(context, true);
-                        }
-                      },
+                function: _isReassignLoading ? () {} : _handleReassignTap,
                 color: AppColors.primary,
                 textStyle: StyleText.fontSize14Weight500,
               ),
@@ -312,33 +334,7 @@ class _ControlOwnerDetailsBodyState extends State<_ControlOwnerDetailsBody> {
                 heightImage: 16.h,
                 image: "assets/icons_assets/data_grc_assets/editButton.svg",
                 title: "Edit".tr,
-                function: _isEditLoading
-                    ? () {}
-                    : () async {
-                        setState(() => _isEditLoading = true);
-                        await _loadAllData();
-                        if (mounted) {
-                          setState(() => _isEditLoading = false);
-                        }
-                        if (!context.mounted) return;
-                        final result = await showDialog<OwnerEntity>(
-                          context: context,
-                          builder: (dialogCtx) => BlocProvider.value(
-                            value: context.read<OwnerCubit>(),
-                            child: EditOwnerControlsPage(
-                              owner: _currentOwner,
-                              module: widget.module,
-                              allPolicies: _allPolicies,
-                              policyControls: _policyControls,
-                            ),
-                          ),
-                        );
-                        if (result != null && mounted) {
-                          setState(() {
-                            _currentOwner = result;
-                          });
-                        }
-                      },
+                function: _isEditLoading ? () {} : _handleEditTap,
                 color: AppColors.primary,
                 textStyle: StyleText.fontSize14Weight500,
               ),
