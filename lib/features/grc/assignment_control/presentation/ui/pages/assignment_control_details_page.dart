@@ -6,11 +6,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:intl/intl.dart';
+import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
 import 'package:demo_app/core/custom/10_custom_upload_document.dart';
 import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart'
     hide showUploadDialog;
 import 'package:demo_app/core/custom/16-custom_card_styles.dart';
-import 'package:demo_app/core/custom/21-custom_contact_card.dart';
 import 'package:demo_app/core/custom/22-custom_uploaded_document_card.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
@@ -86,15 +86,40 @@ class _AssignmentControlDetailsPageState
     );
   }
 
-  Widget _ownerRow(BuildContext context, String? email) {
+  /// Compact "Label: [avatar] Name [Message]" row used inline inside the
+  /// Policy/Control Details cards — deliberately not the full ContactCard
+  /// widget, which renders as its own bordered/shadowed card and doesn't
+  /// match the flat inline look these two cards need.
+  Widget _ownerInlineRow(BuildContext context, String label, String? email) {
     if (email == null || email.isEmpty) return const SizedBox.shrink();
     final employee = findEmployeeByEmail(email);
     final name = employeeDisplayName(context, email);
     final photo = employee.displayPhoto;
-    return ContactCard(
-      name: name,
-      avatar: photo.startsWith('http') ? NetworkImage(photo) : null,
-      onMessage: () {},
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text('$label: ', style: CardStyles.label(12)),
+        CircleAvatar(
+          radius: 16.r,
+          backgroundColor: AppColors.barrierColor,
+          backgroundImage: photo.startsWith('http') ? NetworkImage(photo) : null,
+        ),
+        SizedBox(width: 8.w),
+        Text(name, style: CardStyles.value(12)),
+        SizedBox(width: 16.w),
+        customButtonWithSvg(
+          title: 'Message'.tr,
+          function: () {},
+          textStyle:
+              StyleText.fontSize14Weight500.copyWith(color: AppColors.textButton),
+          color: AppColors.primary,
+          image: CardSvg.message,
+          widthImage: 18.r,
+          heightImage: 18.r,
+          colorBorder: AppColors.transparent,
+          svgColor: AppColors.textButton,
+        ),
+      ],
     );
   }
 
@@ -186,9 +211,7 @@ class _AssignmentControlDetailsPageState
                           ),
                           SizedBox(height: 12.h),
                           if (moduleOwnerEmail != null) ...[
-                            Text('Module Owner'.tr, style: CardStyles.label(12)),
-                            SizedBox(height: 4.h),
-                            _ownerRow(context, moduleOwnerEmail),
+                            _ownerInlineRow(context, 'Module Owner'.tr, moduleOwnerEmail),
                             SizedBox(height: 12.h),
                           ],
                           Row(
@@ -234,9 +257,37 @@ class _AssignmentControlDetailsPageState
                         Text('Control Details'.tr, style: StyleText.fontSize16Weight600),
                         SizedBox(height: 8.h),
                         _sectionCard(children: [
-                          Text(
-                            isArabic ? control.controlsNameAr : control.controlsNameEn,
-                            style: StyleText.fontSize16Weight600,
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  isArabic
+                                      ? control.controlsNameAr
+                                      : control.controlsNameEn,
+                                  style: StyleText.fontSize16Weight600,
+                                ),
+                              ),
+                              if (assignment?.controlScore != null)
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 10.w, vertical: 4.h),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.background,
+                                    borderRadius: BorderRadius.circular(20.r),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text('${'Score'.tr}: ', style: CardStyles.label(12)),
+                                      Text(
+                                        assignment!.controlScore!.toInt().toString(),
+                                        style: CardStyles.value(12)
+                                            .copyWith(color: Colors.green),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                            ],
                           ),
                           SizedBox(height: 8.h),
                           _labelValueRow(
@@ -256,16 +307,8 @@ class _AssignmentControlDetailsPageState
                                 ),
                               ),
                               if (widget.item.ownerEmail != null)
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Control Owner'.tr, style: CardStyles.label(12)),
-                                      SizedBox(height: 4.h),
-                                      _ownerRow(context, widget.item.ownerEmail),
-                                    ],
-                                  ),
-                                ),
+                                _ownerInlineRow(
+                                    context, 'Control Owner'.tr, widget.item.ownerEmail),
                             ],
                           ),
                         ]),
