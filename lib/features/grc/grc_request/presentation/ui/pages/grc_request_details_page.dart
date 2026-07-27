@@ -15,6 +15,7 @@ import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart';
 import 'package:demo_app/core/custom/16-custom_card_styles.dart';
 import 'package:demo_app/core/custom/21-custom_contact_card.dart';
 import 'package:demo_app/core/enums/approval_status.dart';
+import 'package:demo_app/core/local_widgets/main_widget/custom_button.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
@@ -245,19 +246,11 @@ class _GrcRequestDetailsBodyState extends State<_GrcRequestDetailsBody> {
   }
 
   Widget _cancelButton(BuildContext context) {
-    return GestureDetector(
+    return CustomButton(
+      width: 100.w,
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
       onTap: () => _onCancel(context),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
-        decoration: BoxDecoration(
-          border: Border.all(color: AppColors.red),
-          borderRadius: BorderRadius.circular(20.r),
-        ),
-        child: Text(
-          'Cancel'.tr,
-          style: StyleText.fontSize12Weight500.copyWith(color: AppColors.red),
-        ),
-      ),
+      buttonText: 'Cancel'.tr,
     );
   }
 

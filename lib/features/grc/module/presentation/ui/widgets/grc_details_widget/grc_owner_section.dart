@@ -72,7 +72,11 @@ class GrcOwnerSection extends StatefulWidget {
 
   /// The label shown above the picker. Defaults to the Module Owner
   /// picker's original hardcoded text so existing callers are unaffected.
-  final String sectionTitle;
+  final String? sectionTitle;
+
+  /// Inline validation message shown below the picker (e.g. "Please select
+  /// a new Control Champion"). Null/empty renders nothing.
+  final String? errorText;
 
   const GrcOwnerSection({
     super.key,
@@ -83,7 +87,8 @@ class GrcOwnerSection extends StatefulWidget {
     this.onOwnersChanged,
     this.singleSelect = false,
     this.showRemoveIconWhenSelected = false,
-    this.sectionTitle = 'Module Owner',
+    this.sectionTitle,
+    this.errorText,
   });
 
   @override
@@ -248,11 +253,16 @@ class _GrcOwnerSectionState extends State<GrcOwnerSection> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                widget.sectionTitle.tr,
-                style: AppTextStyles.font16BlackRegularCairo
-                    .copyWith(fontSize: 14.sp),
-              ),
+              widget.sectionTitle == null
+                  ? SizedBox.shrink()
+                  : Padding(
+                      padding: EdgeInsets.only(bottom: 8.h),
+                      child: Text(
+                        widget.sectionTitle!,
+                        style: AppTextStyles.font16BlackRegularCairo
+                            .copyWith(fontSize: 14.sp),
+                      ),
+                    ),
               SizedBox(height: 8.h),
               if (!widget.isViewMode) ...[
                 Row(
@@ -284,6 +294,14 @@ class _GrcOwnerSectionState extends State<GrcOwnerSection> {
                 )
               else
                 _buildOwnerGrid(context, owners),
+              if (widget.errorText != null && widget.errorText!.isNotEmpty) ...[
+                SizedBox(height: 6.h),
+                Text(
+                  widget.errorText!,
+                  style: AppTextStyles.font16BlackRegularCairo
+                      .copyWith(fontSize: 12.sp, color: AppColors.red),
+                ),
+              ],
             ],
           );
         },

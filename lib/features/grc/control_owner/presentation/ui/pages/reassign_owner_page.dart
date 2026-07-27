@@ -284,13 +284,14 @@ class _ReassignOwnerPageState extends State<ReassignOwnerPage> {
 
     return [
       Text('Current Control Owner'.tr,
-          style:
-              StyleText.fontSize16Weight600.copyWith(color: AppColors.text)),
+          style: StyleText.fontSize16Weight600.copyWith(color: AppColors.text)),
       SizedBox(height: 8.h),
       ContactCard(
         name: currentName,
-        jobTitle: currentTitle.isNotEmpty ? currentTitle : grcMockJobTitleFallback.tr,
-        department: currentDept.isNotEmpty ? currentDept : grcMockDepartmentFallback.tr,
+        jobTitle:
+            currentTitle.isNotEmpty ? currentTitle : grcMockJobTitleFallback.tr,
+        department:
+            currentDept.isNotEmpty ? currentDept : grcMockDepartmentFallback.tr,
         email: widget.owner.ownerEmail,
         phone: currentPhone,
         avatar:
@@ -304,8 +305,7 @@ class _ReassignOwnerPageState extends State<ReassignOwnerPage> {
   List<Widget> _buildNewOwnerSection() {
     return [
       Text('New Control Owner'.tr,
-          style:
-              StyleText.fontSize16Weight600.copyWith(color: AppColors.text)),
+          style: StyleText.fontSize16Weight600.copyWith(color: AppColors.text)),
       SizedBox(height: 8.h),
       Container(
         padding: EdgeInsets.all(16.r),
@@ -346,7 +346,9 @@ class _ReassignOwnerPageState extends State<ReassignOwnerPage> {
               fillColor: AppColors.background,
               firstDate: DateTime(2000),
               lastDate: DateTime(2100),
-              dateFormatter: dateFormat.format,
+              dateFormatter: (d) =>
+                  DateFormat('d MMM yyyy', context.isArabic ? 'ar' : 'en')
+                      .format(d),
             ),
           ),
           SizedBox(width: 16.w),
@@ -359,7 +361,9 @@ class _ReassignOwnerPageState extends State<ReassignOwnerPage> {
               fillColor: AppColors.background,
               firstDate: DateTime(2000),
               lastDate: DateTime(2100),
-              dateFormatter: dateFormat.format,
+              dateFormatter: (d) =>
+                  DateFormat('d MMM yyyy', context.isArabic ? 'ar' : 'en')
+                      .format(d),
             ),
           ),
         ],
@@ -381,8 +385,7 @@ class _ReassignOwnerPageState extends State<ReassignOwnerPage> {
   List<Widget> _buildAssignedControlsSection(BuildContext context) {
     return [
       Text('Assigned Controls'.tr,
-          style:
-              StyleText.fontSize14Weight500.copyWith(color: AppColors.text)),
+          style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text)),
       SizedBox(height: 8.h),
       _reassignedControls.isEmpty
           ? Text(
@@ -423,8 +426,7 @@ class _ReassignOwnerPageState extends State<ReassignOwnerPage> {
   List<Widget> _buildAssigningControlsFormSection() {
     return [
       Text('Assigning Controls'.tr,
-          style:
-              StyleText.fontSize16Weight600.copyWith(color: AppColors.text)),
+          style: StyleText.fontSize16Weight600.copyWith(color: AppColors.text)),
       SizedBox(height: 12.h),
       ...List.generate(_pendingRows.length, (i) {
         final row = _pendingRows[i];
@@ -494,8 +496,8 @@ class _ReassignOwnerPageState extends State<ReassignOwnerPage> {
                 title: _submitting ? 'Submitting...'.tr : 'Submit'.tr,
                 function: _submitting ? () {} : () => _submit(context),
                 color: AppColors.primary,
-                textStyle: StyleText.fontSize16Weight500
-                    .copyWith(color: Colors.black),
+                textStyle:
+                    StyleText.fontSize16Weight500.copyWith(color: Colors.black),
               ),
       ],
     );

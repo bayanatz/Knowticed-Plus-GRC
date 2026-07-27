@@ -159,17 +159,17 @@ class _GrcRequestsListBodyState extends State<_GrcRequestsListBody> {
     );
   }
 
-  /// Per-status counts (All/Approved/Pending/Rejected) shown on the filter
-  /// chips, computed from the scoped (but not search/status-filtered)
-  /// request list.
-  Map<ApprovalStatus, int> _buildStatusCounts(
-      List<GrcRequestEntity> requests) {
+  /// Per-status counts (All/Approved/Pending/Rejected, plus Canceled in the
+  /// "My Requests" view) shown on the filter chips, computed from the
+  /// scoped (but not search/status-filtered) request list.
+  Map<ApprovalStatus, int> _buildStatusCounts(List<GrcRequestEntity> requests) {
     return {
       for (final s in [
         ApprovalStatus.all,
         ApprovalStatus.approved,
         ApprovalStatus.pending,
         ApprovalStatus.rejected,
+        if (widget.onlyRequestedBy != null) ApprovalStatus.canceled,
       ])
         s: s == ApprovalStatus.all
             ? requests.length
@@ -244,32 +244,33 @@ class _GrcRequestsListBodyState extends State<_GrcRequestsListBody> {
                 '${'Request Note'.tr}: ${request.note}',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style:
-                    StyleText.fontSize12Weight400.copyWith(color: AppColors.text),
+                style: StyleText.fontSize12Weight400
+                    .copyWith(color: AppColors.text),
               ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                if (_canCancel(request)) ...[
-                  GestureDetector(
-                    onTap: () => _onCancel(context, request),
-                    child: Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: AppColors.red),
-                        borderRadius: BorderRadius.circular(20.r),
-                      ),
-                      child: Text(
-                        'Cancel'.tr,
-                        style: StyleText.fontSize12Weight500
-                            .copyWith(color: AppColors.red),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 8.w),
-                ],
+                // if (_canCancel(request)) ...[
+                //   GestureDetector(
+                //     onTap: () => _onCancel(context, request),
+                //     child: Container(
+                //       padding:
+                //           EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+                //       decoration: BoxDecoration(
+                //         border: Border.all(color: AppColors.red),
+                //         borderRadius: BorderRadius.circular(20.r),
+                //       ),
+                //       child: Text(
+                //         'Cancel'.tr,
+                //         style: StyleText.fontSize12Weight500
+                //             .copyWith(color: AppColors.red),
+                //       ),
+                //     ),
+                //   ),
+                //   SizedBox(width: 8.w),
+                // ],
+
                 _statusPill(request.status),
               ],
             ),
@@ -348,6 +349,13 @@ class _GrcRequestsListBodyState extends State<_GrcRequestsListBody> {
                               count: counts[ApprovalStatus.rejected]!,
                               labelColor: ApprovalStatus.rejected.color,
                             ),
+                            if (widget.onlyRequestedBy != null)
+                              StatusChipItem(
+                                key: ApprovalStatus.canceled.name,
+                                label: 'Canceled'.tr,
+                                count: counts[ApprovalStatus.canceled]!,
+                                labelColor: ApprovalStatus.canceled.color,
+                              ),
                           ],
                         ),
                         SizedBox(height: 16.h),

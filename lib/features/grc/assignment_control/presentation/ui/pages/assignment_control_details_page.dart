@@ -60,7 +60,6 @@ class _AssignmentControlDetailsPageState
       titleFieldLabel: 'Submission Note'.tr,
       titleFieldHint: 'Text here'.tr,
       submitLabel: 'Submit'.tr,
-      
       onSubmit: (file, note) => _confirmSubmit(context, file, note),
     );
   }

@@ -151,7 +151,8 @@ class _AssignmentControlsListBodyState
                           children: [
                             AppSearchTextField(
                               controller: _searchController,
-                              onChanged: (v) => setState(() => _searchQuery = v),
+                              onChanged: (v) =>
+                                  setState(() => _searchQuery = v),
                               hintText: 'Search'.tr,
                             ),
                           ],

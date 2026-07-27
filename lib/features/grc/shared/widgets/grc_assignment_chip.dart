@@ -20,11 +20,10 @@ class GrcAssignmentChip extends StatelessWidget {
   Widget build(BuildContext context) {
     if (onRemove == null) {
       return Container(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
         decoration: BoxDecoration(
-          color: AppColors.background,
-          border: Border.all(color: AppColors.border),
-          borderRadius: BorderRadius.circular(8.r),
+          color: AppColors.card,
+          borderRadius: BorderRadius.circular(4.r),
         ),
         child: Text(
           label,
@@ -36,14 +35,15 @@ class GrcAssignmentChip extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
       decoration: BoxDecoration(
         color: AppColors.background,
-        borderRadius: BorderRadius.circular(24.r),
+        borderRadius: BorderRadius.circular(8.r),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
             label,
-            style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
+            style:
+                StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
           ),
           SizedBox(width: 8.w),
           GestureDetector(
