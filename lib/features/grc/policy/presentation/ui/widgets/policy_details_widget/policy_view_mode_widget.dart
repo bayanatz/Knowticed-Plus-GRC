@@ -101,21 +101,29 @@ class _PolicyViewModeWidgetState extends State<PolicyViewModeWidget> {
   }
 
   ControlStatus? _statusForControlKey(String key) {
-    switch (key) {
-      case 'Active':
-        return ControlStatus.active;
-      case 'Inactive':
-        return ControlStatus.inactive;
-      case 'Scheduled':
-        return ControlStatus.scheduled;
-      case 'Expired':
-        return ControlStatus.expired;
-      case 'Unassigned':
-        return ControlStatus.unassigned;
-      case 'Draft':
-        return ControlStatus.draft;
-      default:
-        return null;
+    for (final status in ControlStatus.values) {
+      if (status.value == key) return status;
+    }
+    return null;
+  }
+
+  /// Chip color per [ControlStatus], keyed by the enum itself rather than
+  /// its display string so a renamed display label can't silently drop the
+  /// color mapping.
+  Color _colorForControlStatus(ControlStatus status) {
+    switch (status) {
+      case ControlStatus.active:
+        return AppColors.green;
+      case ControlStatus.inactive:
+        return AppColors.orange;
+      case ControlStatus.scheduled:
+        return AppColors.primary;
+      case ControlStatus.expired:
+        return AppColors.red;
+      case ControlStatus.unassigned:
+        return AppColors.blue;
+      case ControlStatus.draft:
+        return AppColors.colorGrey;
     }
   }
 
@@ -147,16 +155,8 @@ class _PolicyViewModeWidgetState extends State<PolicyViewModeWidget> {
   Map<String, int> _countControlsByStatus(List<ControlEntity> controls) {
     return {
       'all': controls.length,
-      'Active': controls.where((c) => c.status == ControlStatus.active).length,
-      'Inactive':
-          controls.where((c) => c.status == ControlStatus.inactive).length,
-      'Scheduled':
-          controls.where((c) => c.status == ControlStatus.scheduled).length,
-      'Expired':
-          controls.where((c) => c.status == ControlStatus.expired).length,
-      'Unassigned':
-          controls.where((c) => c.status == ControlStatus.unassigned).length,
-      'Draft': controls.where((c) => c.status == ControlStatus.draft).length,
+      for (final status in ControlStatus.values)
+        status.value: controls.where((c) => c.status == status).length,
     };
   }
 
@@ -165,18 +165,11 @@ class _PolicyViewModeWidgetState extends State<PolicyViewModeWidget> {
     final counts = _countControlsByStatus(controls);
     return [
       MapEntry('all', {'num': counts['all'] ?? 0, 'color': AppColors.text}),
-      MapEntry(
-          'Active', {'num': counts['Active'] ?? 0, 'color': AppColors.green}),
-      MapEntry('Inactive',
-          {'num': counts['Inactive'] ?? 0, 'color': AppColors.orange}),
-      MapEntry('Scheduled',
-          {'num': counts['Scheduled'] ?? 0, 'color': AppColors.primary}),
-      MapEntry(
-          'Expired', {'num': counts['Expired'] ?? 0, 'color': AppColors.red}),
-      MapEntry('Unassigned',
-          {'num': counts['Unassigned'] ?? 0, 'color': AppColors.blue}),
-      MapEntry(
-          'Draft', {'num': counts['Draft'] ?? 0, 'color': AppColors.colorGrey}),
+      for (final status in ControlStatus.values)
+        MapEntry(status.value, {
+          'num': counts[status.value] ?? 0,
+          'color': _colorForControlStatus(status),
+        }),
     ];
   }
 

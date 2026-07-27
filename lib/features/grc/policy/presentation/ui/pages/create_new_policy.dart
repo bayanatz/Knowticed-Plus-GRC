@@ -507,7 +507,7 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
     }
 
     if (state is PolicyActionSuccess) {
-      final isDraft = state.policy.status.value == 'Draft';
+      final isDraft = state.policy.status == PolicyStatus.draft;
       showSuccessDialog(
         context: context,
         title: isDraft ? 'Saved as Draft'.tr : 'Policy Created'.tr,

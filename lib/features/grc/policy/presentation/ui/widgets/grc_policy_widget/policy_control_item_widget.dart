@@ -24,6 +24,7 @@ import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_text_styles.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
+import 'package:demo_app/features/grc/control/domain/entities/control_frequency.dart';
 import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details_widget/grc_form_fields.dart'
     show containsEnglishLetters, containsArabicLetters;
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_control_completeness.dart';
@@ -322,14 +323,9 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
     final frequencyField = CustomDropdown<String>(
       label: 'Frequency'.tr,
       hint: 'Choose Here'.tr,
-      items: const [
-        'Weekly',
-        'Bi weekly',
-        'Monthly',
-        'Quarterly',
-        'Semi Annual',
-        'Annually',
-      ].map((d) => DropdownItem<String>(value: d, label: d.tr)).toList(),
+      items: ControlFrequency.allValues
+          .map((d) => DropdownItem<String>(value: d, label: d.tr))
+          .toList(),
       value: control.frequency,
       onChanged: widget.onFrequencyChanged,
       fillColor: AppColors.background,
