@@ -38,11 +38,13 @@ import 'package:intl/intl.dart';
 class GrcRequestDetailsPage extends StatelessWidget {
   final GRCModuleEntity module;
   final GrcRequestEntity request;
+  final bool isMyRequest;
 
   const GrcRequestDetailsPage({
     super.key,
     required this.module,
     required this.request,
+    required this.isMyRequest,
   });
 
   @override
@@ -52,15 +54,24 @@ class GrcRequestDetailsPage extends StatelessWidget {
     // so the details page and list page share one Cubit and stay in sync
     // without a manual re-fetch. Only read/watch it here, don't resolve a
     // fresh one from GetIt.
-    return _GrcRequestDetailsBody(module: module, request: request);
+    return _GrcRequestDetailsBody(
+      module: module,
+      request: request,
+      isMyRequest: isMyRequest,
+    );
   }
 }
 
 class _GrcRequestDetailsBody extends StatefulWidget {
   final GRCModuleEntity module;
   final GrcRequestEntity request;
+  final bool isMyRequest;
 
-  const _GrcRequestDetailsBody({required this.module, required this.request});
+  const _GrcRequestDetailsBody({
+    required this.module,
+    required this.request,
+    required this.isMyRequest,
+  });
 
   @override
   State<_GrcRequestDetailsBody> createState() => _GrcRequestDetailsBodyState();
@@ -280,8 +291,7 @@ class _GrcRequestDetailsBodyState extends State<_GrcRequestDetailsBody> {
                 ],
               ),
               SizedBox(height: 40.h),
-              Center(
-                  child: Text('This request type is not supported yet.'.tr)),
+              Center(child: Text('This request type is not supported yet.'.tr)),
             ],
           ),
         ),
@@ -365,8 +375,7 @@ class _GrcRequestDetailsBodyState extends State<_GrcRequestDetailsBody> {
 
   /// "New Control Champion/Owner" card: assignee contact info, the requested
   /// start/end dates, the request note, and the (same) assigned controls.
-  Widget _buildNewAssigneeSection(
-      BuildContext context, DateFormat dateFormat) {
+  Widget _buildNewAssigneeSection(BuildContext context, DateFormat dateFormat) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(20.r),
@@ -457,10 +466,11 @@ class _GrcRequestDetailsBodyState extends State<_GrcRequestDetailsBody> {
     );
   }
 
-  /// Approve/Reject buttons while the request is pending, otherwise a
-  /// read-only banner showing the decided (approved/rejected) status.
+  /// Approve/Reject buttons for an approver viewing a pending request;
+  /// otherwise a read-only status banner (pending-for-requester, approved,
+  /// rejected-with-reason, or canceled).
   Widget _buildActionOrStatusSection(BuildContext context) {
-    if (_request.status == ApprovalStatus.pending) {
+    if (_request.status == ApprovalStatus.pending && !widget.isMyRequest) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
@@ -469,7 +479,7 @@ class _GrcRequestDetailsBodyState extends State<_GrcRequestDetailsBody> {
             space: 8.w,
             widthImage: 18.w,
             heightImage: 18.h,
-            image: CardSvg.reject,
+            image: "assets/icons_assets/data_grc_assets/icons_icon _trash.svg",
             title: 'Reject'.tr,
             function: _onReject,
             color: AppColors.red,
@@ -483,7 +493,7 @@ class _GrcRequestDetailsBodyState extends State<_GrcRequestDetailsBody> {
             space: 8.w,
             widthImage: 18.w,
             heightImage: 18.h,
-            image: CardSvg.approve,
+            image: 'assets/icons_assets/data_grc_assets/images_success.svg',
             title: 'Approve'.tr,
             function: _onApprove,
             color: AppColors.green,
@@ -494,24 +504,30 @@ class _GrcRequestDetailsBodyState extends State<_GrcRequestDetailsBody> {
         ],
       );
     }
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [_statusBanner(_request.status)],
+    );
+  }
+
+  /// Read-only colored banner for any [ApprovalStatus], using
+  /// [ApprovalStatus.color]/[GetApprovalStatusName.getName] as the single
+  /// source of truth for status styling. `rejected` additionally shows the
+  /// stored rejection reason.
+  Widget _statusBanner(ApprovalStatus status) {
+    final color = status.color;
+    final text = status == ApprovalStatus.rejected
+        ? '${'Rejected'.tr}: ${_request.rejectionReason ?? ''}'
+        : status.getName.tr;
     return Container(
       padding: EdgeInsets.all(12.r),
       decoration: BoxDecoration(
-        color: (_request.status == ApprovalStatus.approved
-                ? AppColors.green
-                : AppColors.red)
-            .withOpacity(0.1),
+        color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(8.r),
       ),
       child: Text(
-        _request.status == ApprovalStatus.approved
-            ? 'Approved'.tr
-            : '${'Rejected'.tr}: ${_request.rejectionReason ?? ''}',
-        style: StyleText.fontSize14Weight500.copyWith(
-          color: _request.status == ApprovalStatus.approved
-              ? AppColors.green
-              : AppColors.red,
-        ),
+        text,
+        style: StyleText.fontSize14Weight500.copyWith(color: color),
       ),
     );
   }

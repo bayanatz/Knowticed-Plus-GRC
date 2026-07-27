@@ -196,6 +196,7 @@ class _GrcRequestsListBodyState extends State<_GrcRequestsListBody> {
               child: GrcRequestDetailsPage(
                 module: widget.module,
                 request: request,
+                isMyRequest: widget.onlyRequestedBy != null,
               ),
             ),
           ),
