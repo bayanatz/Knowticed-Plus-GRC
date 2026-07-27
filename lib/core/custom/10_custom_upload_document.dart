@@ -180,10 +180,11 @@ class _UploadDialogState extends State<_UploadDialog> {
   // ── Submit handler ──
   void _handleSubmit() {
     setState(() => _submitted = true);
-    if (_pickedFile == null) return;
+    final file = _pickedFile;
+    if (file == null) return;
     if (_titleCtrl.text.trim().isEmpty) return;
     Navigator.of(context).pop();
-    widget.onSubmit?.call(_pickedFile!, _titleCtrl.text.trim());
+    widget.onSubmit?.call(file, _titleCtrl.text.trim());
   }
 
   // ── Helpers ──
