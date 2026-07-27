@@ -4,13 +4,11 @@ import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/helper/main_helper/employee_helper.dart';
 import 'package:demo_app/core/constants/app_assets.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
-import 'package:demo_app/features/grc/control/domain/use_cases/get_control_usecases.dart';
 import 'package:demo_app/features/grc/control_champion/domain/entities/champion_entity.dart';
 import 'package:demo_app/features/grc/control_champion/domain/entities/champion_status.dart';
 import 'package:demo_app/features/grc/control_champion/presentation/controller/champion_cubit.dart';
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
-import 'package:demo_app/features/grc/policy/domain/use_cases/get_policy_usecases.dart';
 import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
 import 'package:demo_app/features/grc/shared/widgets/grc_assignment_chip.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
@@ -81,15 +79,16 @@ class _ControlChampionDetailsBodyState
   }
 
   Future<void> _loadAllData() async {
-    final polResult = await GetIt.instance<GetAllPoliciesUseCase>()
-        .call(moduleId: widget.module.moduleId);
+    final championCubit = context.read<ChampionCubit>();
+    final polResult =
+        await championCubit.getAllPolicies(moduleId: widget.module.moduleId);
     await polResult.fold(
       (failure) async {},
       (policies) async {
         _allPolicies = policies;
         for (final policy in policies) {
-          final ctrlResult = await GetIt.instance<GetAllControlsUseCase>()
-              .call(moduleId: widget.module.moduleId, policyId: policy.id);
+          final ctrlResult = await championCubit.getAllControlsForPolicy(
+              moduleId: widget.module.moduleId, policyId: policy.id);
           ctrlResult.fold(
             (failure) {},
             (controls) {

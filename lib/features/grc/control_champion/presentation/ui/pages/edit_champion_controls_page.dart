@@ -8,10 +8,8 @@ import 'package:demo_app/features/grc/control/domain/entities/control_entity.dar
 import 'package:demo_app/features/grc/control/domain/entities/control_status_resolver.dart';
 import 'package:demo_app/features/grc/control/domain/use_cases/update_control_usecase.dart';
 import 'package:demo_app/features/grc/control_champion/domain/entities/champion_entity.dart';
-import 'package:demo_app/features/grc/control_champion/domain/use_cases/get_champion_usecases.dart';
 import 'package:demo_app/features/grc/control_champion/presentation/controller/champion_cubit.dart';
 import 'package:demo_app/features/grc/control_owner/domain/entities/owner_entity.dart';
-import 'package:demo_app/features/grc/control_owner/domain/use_cases/get_owner_usecases.dart';
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
 import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
@@ -24,7 +22,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:get_it/get_it.dart';
 
 class EditChampionControlsPage extends StatefulWidget {
   final ChampionEntity champion;
@@ -120,24 +117,27 @@ class _EditChampionControlsPageState extends State<EditChampionControlsPage> {
     final removed = originalPairs.difference(newPairs);
     if (added.isEmpty && removed.isEmpty) return;
 
+    final championCubit = context.read<ChampionCubit>();
+
     var otherChampions = const <ChampionEntity>[];
     var owners = const <OwnerEntity>[];
     if (removed.isNotEmpty) {
-      final championsResult = await GetIt.instance<GetAllChampionsUseCase>()
-          .call(moduleId: widget.module.moduleId);
+      final championsResult = await championCubit.getAllChampionsRaw(
+        moduleId: widget.module.moduleId,
+      );
       otherChampions = championsResult.fold(
         (failure) => const <ChampionEntity>[],
         (champions) => champions
             .where((c) => c.championEmail != widget.champion.championEmail)
             .toList(),
       );
-      final ownersResult = await GetIt.instance<GetAllOwnersUseCase>()
-          .call(moduleId: widget.module.moduleId);
+      final ownersResult = await championCubit.getAllOwners(
+        moduleId: widget.module.moduleId,
+      );
       owners = ownersResult.fold((failure) => const <OwnerEntity>[], (o) => o);
     }
 
     final editor = currentGrcUserEmail();
-    final updateUseCase = GetIt.instance<UpdateControlUseCase>();
 
     Future<void> applyStatus(
       (String, String) pair, {
@@ -152,7 +152,7 @@ class _EditChampionControlsPageState extends State<EditChampionControlsPage> {
         hasAnyAssignee: hasAnyAssignee,
       );
       if (newStatus == control.status) return;
-      await updateUseCase.call(
+      await championCubit.updateControl(
         UpdateControlParams(
           id: control.id,
           moduleId: widget.module.moduleId,

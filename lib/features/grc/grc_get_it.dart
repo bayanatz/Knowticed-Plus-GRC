@@ -530,6 +530,10 @@ void setupGRCDependencies(GetIt sl) {
       updateChampionUseCase: sl<UpdateChampionUseCase>(),
       getGrcRequestsUseCase: sl<GetGrcRequestsUseCase>(),
       applyChampionReassignmentUseCase: sl<ApplyChampionReassignmentUseCase>(),
+      getAllPoliciesUseCase: sl<GetAllPoliciesUseCase>(),
+      getAllControlsUseCase: sl<GetAllControlsUseCase>(),
+      updateControlUseCase: sl<UpdateControlUseCase>(),
+      getAllOwnersUseCase: sl<GetAllOwnersUseCase>(),
     ),
   );
 

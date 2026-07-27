@@ -5,8 +5,13 @@
 /// Date: 2026-07-19
 /// Dependencies: flutter_bloc, use cases, ChampionEntity, AssigningControlEntity
 
+import 'package:dartz/dartz.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:demo_app/core/network/failure_model.dart';
 import 'package:demo_app/features/grc/control/domain/entities/assigning_control.dart';
+import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
+import 'package:demo_app/features/grc/control/domain/use_cases/get_control_usecases.dart';
+import 'package:demo_app/features/grc/control/domain/use_cases/update_control_usecase.dart';
 import 'package:demo_app/features/grc/control_champion/domain/entities/champion_entity.dart';
 import 'package:demo_app/features/grc/control_champion/domain/entities/champion_status.dart';
 import 'package:demo_app/features/grc/control_champion/domain/use_cases/create_champion_usecase.dart';
@@ -14,7 +19,11 @@ import 'package:demo_app/features/grc/control_champion/domain/use_cases/get_cham
 import 'package:demo_app/features/grc/control_champion/domain/use_cases/update_champion_usecase.dart';
 import 'package:demo_app/features/grc/control_champion/domain/entities/champion_request_resolver.dart';
 import 'package:demo_app/features/grc/control_champion/domain/use_cases/apply_champion_reassignment_usecase.dart';
+import 'package:demo_app/features/grc/control_owner/domain/entities/owner_entity.dart';
+import 'package:demo_app/features/grc/control_owner/domain/use_cases/get_owner_usecases.dart';
 import 'package:demo_app/features/grc/grc_request/domain/use_cases/get_grc_requests_usecase.dart';
+import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
+import 'package:demo_app/features/grc/policy/domain/use_cases/get_policy_usecases.dart';
 import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
 
 part 'champion_state.dart';
@@ -27,12 +36,20 @@ class ChampionCubit extends Cubit<ChampionState> {
     required UpdateChampionUseCase updateChampionUseCase,
     required GetGrcRequestsUseCase getGrcRequestsUseCase,
     required ApplyChampionReassignmentUseCase applyChampionReassignmentUseCase,
+    required GetAllPoliciesUseCase getAllPoliciesUseCase,
+    required GetAllControlsUseCase getAllControlsUseCase,
+    required UpdateControlUseCase updateControlUseCase,
+    required GetAllOwnersUseCase getAllOwnersUseCase,
   })  : _createUseCase = createChampionUseCase,
         _getUseCase = getChampionUseCase,
         _getAllUseCase = getAllChampionsUseCase,
         _updateUseCase = updateChampionUseCase,
         _getGrcRequestsUseCase = getGrcRequestsUseCase,
         _applyReassignmentUseCase = applyChampionReassignmentUseCase,
+        _getAllPoliciesUseCase = getAllPoliciesUseCase,
+        _getAllControlsUseCase = getAllControlsUseCase,
+        _updateControlUseCase = updateControlUseCase,
+        _getAllOwnersUseCase = getAllOwnersUseCase,
         super(ChampionInitial());
 
   final CreateChampionUseCase _createUseCase;
@@ -41,6 +58,10 @@ class ChampionCubit extends Cubit<ChampionState> {
   final UpdateChampionUseCase _updateUseCase;
   final GetGrcRequestsUseCase _getGrcRequestsUseCase;
   final ApplyChampionReassignmentUseCase _applyReassignmentUseCase;
+  final GetAllPoliciesUseCase _getAllPoliciesUseCase;
+  final GetAllControlsUseCase _getAllControlsUseCase;
+  final UpdateControlUseCase _updateControlUseCase;
+  final GetAllOwnersUseCase _getAllOwnersUseCase;
 
   Future<void> getAllChampions({
     required String moduleId,
@@ -154,6 +175,48 @@ class ChampionCubit extends Cubit<ChampionState> {
       (failure) => emit(ChampionFailure(failure.message)),
       (champion) => emit(ChampionActionSuccess(champion)),
     );
+  }
+
+  /// Thin pass-throughs for the Policy/Control/Owner use cases the three
+  /// Control Champion pages used to resolve straight out of `GetIt` inside
+  /// their own `State`. Routing them through the Cubit (instead of adding
+  /// new emitted states) keeps each page's existing `result.fold(...)`
+  /// call-site logic byte-for-byte the same — only where the use case
+  /// instance comes from changes.
+  Future<Either<Failure, List<PolicyEntity>>> getAllPolicies({
+    required String moduleId,
+  }) {
+    return _getAllPoliciesUseCase.call(moduleId: moduleId);
+  }
+
+  Future<Either<Failure, List<ControlEntity>>> getAllControlsForPolicy({
+    required String moduleId,
+    required String policyId,
+  }) {
+    return _getAllControlsUseCase.call(moduleId: moduleId, policyId: policyId);
+  }
+
+  Future<Either<Failure, ControlEntity>> updateControl(
+    UpdateControlParams params,
+  ) {
+    return _updateControlUseCase.call(params);
+  }
+
+  Future<Either<Failure, List<OwnerEntity>>> getAllOwners({
+    required String moduleId,
+  }) {
+    return _getAllOwnersUseCase.call(moduleId: moduleId);
+  }
+
+  /// Raw champions fetch with none of [getAllChampions]'s side effects
+  /// (reassignment sweep, expired-control stripping, state emission) — used
+  /// internally by pages that just need the current champion list for a
+  /// computation, not to update the Cubit's list state.
+  Future<Either<Failure, List<ChampionEntity>>> getAllChampionsRaw({
+    required String moduleId,
+    bool includeRemoved = false,
+  }) {
+    return _getAllUseCase.call(moduleId: moduleId, includeRemoved: includeRemoved);
   }
 
   /// Every champion email in [champions] whose Assigning_Controls already
