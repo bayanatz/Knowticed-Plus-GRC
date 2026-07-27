@@ -133,45 +133,39 @@ class _ReassignOwnerPageState extends State<ReassignOwnerPage> {
 
     setState(() => _submitting = true);
 
-    try {
-      final requestCubit = context.read<GrcRequestCubit>();
-      await requestCubit.createRequest(
-        CreateGrcRequestParams(
-          type: GrcRequestType.reassignOwner,
-          moduleId: widget.module.moduleId,
-          requestedBy: currentGrcUserEmail(),
-          note: _noteController.text,
-          currentOwnerEmail: widget.owner.ownerEmail,
-          newOwnerEmail: newOwnerEmail!,
-          controls: _reassignedControls,
-          startDate: _startDate!,
-          endDate: _endDate,
-        ),
-      );
+    final requestCubit = context.read<GrcRequestCubit>();
+    await requestCubit.createRequest(
+      CreateGrcRequestParams(
+        type: GrcRequestType.reassignOwner,
+        moduleId: widget.module.moduleId,
+        requestedBy: currentGrcUserEmail(),
+        note: _noteController.text,
+        currentOwnerEmail: widget.owner.ownerEmail,
+        newOwnerEmail: newOwnerEmail!,
+        controls: _reassignedControls,
+        startDate: _startDate!,
+        endDate: _endDate,
+      ),
+    );
 
-      final state = requestCubit.state;
-      if (state is GrcRequestActionSuccess) {
-        if (!context.mounted) return;
-        showSuccessDialog(
-          context: context,
-          title: 'Request Submitted'.tr,
-          subtitle: 'Your reassign owner request has been submitted.'.tr,
-        );
-        Navigator.pop(context, true);
-      } else if (state is GrcRequestFailure) {
-        if (!context.mounted) return;
-        showErrorDialog(
-          context: context,
-          subtitle: 'Failed to submit request: ${state.message}',
-        );
-      }
-    } catch (e) {
-      if (!context.mounted) return;
-      showErrorDialog(context: context, subtitle: 'An error occurred: $e');
-    } finally {
-      if (mounted) {
-        setState(() => _submitting = false);
-      }
+    if (mounted) {
+      setState(() => _submitting = false);
+    }
+    if (!context.mounted) return;
+
+    final state = requestCubit.state;
+    if (state is GrcRequestActionSuccess) {
+      showSuccessDialog(
+        context: context,
+        title: 'Request Submitted'.tr,
+        subtitle: 'Your reassign owner request has been submitted.'.tr,
+      );
+      Navigator.pop(context, true);
+    } else if (state is GrcRequestFailure) {
+      showErrorDialog(
+        context: context,
+        subtitle: 'Failed to submit request: ${state.message}',
+      );
     }
   }
 
