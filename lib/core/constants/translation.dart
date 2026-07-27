@@ -3680,6 +3680,13 @@ No class actions, class arbitrations, or representative actions for users locate
           'Create New GRC Module': 'Create New GRC Module',
           'Edit GRC Module': 'Edit GRC Module',
           'GRC Module Name': 'GRC Module Name',
+          'GRC Module Name is required': 'GRC Module Name is required',
+          'GRC Module Name must be written in Arabic':
+              'GRC Module Name must be written in Arabic',
+          'Description is required': 'Description is required',
+          'Description must be written in Arabic':
+              'Description must be written in Arabic',
+          'This field is required.': 'This field is required.',
           'Activation Date': 'Activation Date',
           'Select Activation Date': 'Select Activation Date',
           'Module Owner': 'Module Owner',
@@ -4289,6 +4296,13 @@ No class actions, class arbitrations, or representative actions for users locate
           'Create New GRC Module': 'إنشاء وحدة حوكمة جديدة',
           'Edit GRC Module': 'تعديل وحدة الحوكمة',
           'GRC Module Name': 'اسم وحدة الحوكمة',
+          'GRC Module Name is required': 'اسم وحدة الحوكمة مطلوب',
+          'GRC Module Name must be written in Arabic':
+              'يجب كتابة اسم وحدة الحوكمة باللغة العربية',
+          'Description is required': 'الوصف مطلوب',
+          'Description must be written in Arabic':
+              'يجب كتابة الوصف باللغة العربية',
+          'This field is required.': 'هذا الحقل مطلوب',
           'Activation Date': 'تاريخ التفعيل',
           'Select Activation Date': 'اختر تاريخ التفعيل',
           'Module Owner': 'مالك الوحدة',

@@ -174,7 +174,7 @@ class _GrcModuleChampionsTabState extends State<GrcModuleChampionsTab> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CustomButton(
-                  buttonText: 'My Requests',
+                  buttonText: 'My Requests'.tr,
                   width: 110.w,
                   onTap: () {
                     Navigator.push(
@@ -190,7 +190,7 @@ class _GrcModuleChampionsTabState extends State<GrcModuleChampionsTab> {
                   },
                 ),
                 CustomButton(
-                  buttonText: 'Requests',
+                  buttonText: 'Requests'.tr,
                   width: 110.w,
                   onTap: () {
                     Navigator.push(

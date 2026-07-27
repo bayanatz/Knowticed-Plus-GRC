@@ -173,8 +173,8 @@ class _GrcFormFieldsState extends State<GrcFormFields> {
         errorText: _arabicFieldErrorText(
           submitted: submitted,
           text: nameArController.text,
-          requiredMessage: "عنوان اطار الحوكمه مطلوب",
-          wrongScriptMessage: "يجب كتابة عنوان اطار الحوكمه باللغة العربية",
+          requiredMessage: 'GRC Module Name is required'.tr,
+          wrongScriptMessage: 'GRC Module Name must be written in Arabic'.tr,
         ),
         submitted: submitted,
         readOnly: readOnly,
@@ -311,8 +311,8 @@ class _GrcFormFieldsState extends State<GrcFormFields> {
         errorText: _arabicFieldErrorText(
           submitted: submitted,
           text: descArController.text,
-          requiredMessage: "الوصف مطلوب",
-          wrongScriptMessage: "يجب كتابة الوصف باللغة العربية",
+          requiredMessage: 'Description is required'.tr,
+          wrongScriptMessage: 'Description must be written in Arabic'.tr,
         ),
         submitted: submitted,
         readOnly: readOnly,
@@ -341,8 +341,7 @@ class _GrcFormFieldsState extends State<GrcFormFields> {
     final submitted = widget.submitted;
     final readOnly = widget.readOnly;
 
-    final requiredError =
-        context.isArabic ? 'هذا الحقل مطلوب' : 'This field is required.';
+    final requiredError = 'This field is required.'.tr;
 
     final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
 

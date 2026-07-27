@@ -77,6 +77,12 @@ class PolicyEntity {
     required this.lastEditor,
   });
 
+  /// The policy name in the caller's language. Extracted so
+  /// `context.isArabic ? policyNameAr : policyNameEn` doesn't get repeated
+  /// across presentation files (mirrors [GRCModuleEntity.localizedName]).
+  String localizedName({required bool isArabic}) =>
+      isArabic ? policyNameAr : policyNameEn;
+
   /// function name: [copyWith]
   ///
   /// purpose: create a new [PolicyEntity] with selected fields replaced

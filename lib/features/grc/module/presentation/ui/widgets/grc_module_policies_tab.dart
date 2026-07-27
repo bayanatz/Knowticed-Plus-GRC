@@ -464,17 +464,17 @@ class _PolicyCard extends StatelessWidget {
           context.read<PolicyCubit>().getAllPolicies(moduleId: module.moduleId);
         }
       },
-      title: context.isArabic ? policy.policyNameAr : policy.policyNameEn,
+      title: policy.localizedName(isArabic: context.isArabic),
       infoRows: [
         CardInfo(
-          label: context.isArabic ? 'الرقم :' : 'Number :',
+          label: '${'Number'.tr}:',
           value:
               context.isArabic ? policy.policyNumberAr : policy.policyNumberEn,
         ),
       ],
-      complianceLabel: context.isArabic ? 'الحالة:' : 'Status:',
+      complianceLabel: '${'Status'.tr}:',
       complianceScore: policy.status.value.tr,
-      footerLabel: context.isArabic ? 'آخر تحديث:' : 'Last Update:',
+      footerLabel: '${'Last Update'.tr}:',
       footerValue: DateFormat('d MMM yyyy', context.isArabic ? 'ar' : 'en')
           .format(policy.lastModifiedDate),
     );
