@@ -22,7 +22,6 @@ import 'package:demo_app/features/grc/assignment_control/presentation/controller
 import 'package:demo_app/features/grc/assignment_control/presentation/ui/widgets/assignment_control_card.dart';
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
-import 'package:demo_app/features/settings/core_widgets/main_widget/custom_button_widget.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
 
 final DateFormat _cardDateFormat = DateFormat('d MMM yyyy');
@@ -61,6 +60,7 @@ class _AssignmentControlDetailsPageState
       titleFieldLabel: 'Submission Note'.tr,
       titleFieldHint: 'Text here'.tr,
       submitLabel: 'Submit'.tr,
+      
       onSubmit: (file, note) => _confirmSubmit(context, file, note),
     );
   }
@@ -184,6 +184,42 @@ class _AssignmentControlDetailsPageState
     );
   }
 
+  /// The Upload/Resubmit Evidence button, replaced with a small spinner
+  /// while a submit is in flight so the user gets clear loading feedback.
+  Widget _submitButton(BuildContext context, bool isSaving) {
+    if (isSaving) {
+      return SizedBox(
+        width: 180.w,
+        height: 44.h,
+        child: Center(
+          child: SizedBox(
+            width: 20.w,
+            height: 20.w,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: AppColors.primary,
+            ),
+          ),
+        ),
+      );
+    }
+    return SizedBox(
+      width: 180.w,
+      child: customButtonWithSvg(
+        title: _actionLabel.tr,
+        function: () => _onActionPressed(context),
+        textStyle:
+            StyleText.fontSize14Weight500.copyWith(color: AppColors.textButton),
+        color: AppColors.primary,
+        image: 'assets/icons_assets/data_grc_assets/upload_minimalistic.svg',
+        widthImage: 18.r,
+        heightImage: 18.r,
+        colorBorder: AppColors.transparent,
+        svgColor: AppColors.textButton,
+      ),
+    );
+  }
+
   /// Bordered, colored pill showing [tab]'s status (icon + label), matching
   /// the status pill already used on the list page's cards.
   Widget _statusPill(AssignmentControlTab tab) {
@@ -225,6 +261,13 @@ class _AssignmentControlDetailsPageState
     return BlocConsumer<AssignmentControlCubit, AssignmentControlState>(
       listener: (context, state) {
         if (state is AssignmentControlActionSuccess) {
+          // Refresh the shared list cubit now so the list page (already
+          // underneath us) shows the new status/tab counts by the time we
+          // pop back to it, instead of the stale pre-submit snapshot.
+          context.read<AssignmentControlCubit>().getMyAssignmentControls(
+                moduleId: widget.module.moduleId,
+                championEmail: currentGrcUserEmail(),
+              );
           showSuccessDialog(
             context: context,
             title: 'Evidence Submitted'.tr,
@@ -429,25 +472,7 @@ class _AssignmentControlDetailsPageState
                                           BlendMode.srcIn),
                                     ),
                                     SizedBox(height: 16.h),
-                                    SizedBox(
-                                      width: 180.w,
-                                      child: customButtonWithSvg(
-                                        title: _actionLabel.tr,
-                                        function: isSaving
-                                            ? () {}
-                                            : () => _onActionPressed(context),
-                                        textStyle: StyleText.fontSize14Weight500
-                                            .copyWith(
-                                                color: AppColors.textButton),
-                                        color: AppColors.primary,
-                                        image:
-                                            'assets/icons_assets/data_grc_assets/upload_minimalistic.svg',
-                                        widthImage: 18.r,
-                                        heightImage: 18.r,
-                                        colorBorder: AppColors.transparent,
-                                        svgColor: AppColors.textButton,
-                                      ),
-                                    ),
+                                    _submitButton(context, isSaving),
                                   ],
                                 ),
                               ),
@@ -499,20 +524,7 @@ class _AssignmentControlDetailsPageState
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    SizedBox(
-                                      width: 180.w,
-                                      child: customButton(
-                                        title: _actionLabel.tr,
-                                        function: isSaving
-                                            ? () {}
-                                            : () => _onActionPressed(context),
-                                        height: 44.h,
-                                        color: AppColors.primary,
-                                        textStyle: StyleText.fontSize14Weight500
-                                            .copyWith(
-                                                color: AppColors.textButton),
-                                      ),
-                                    ),
+                                    _submitButton(context, isSaving),
                                     _statusPill(widget.item.tab),
                                   ],
                                 )
