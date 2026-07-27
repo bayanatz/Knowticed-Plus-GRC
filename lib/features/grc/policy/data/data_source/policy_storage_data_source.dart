@@ -1,3 +1,5 @@
+// ignore_for_file: dangling_library_doc_comments
+
 /// Module: Policy Management
 /// Description: Handles uploading Policy images and Policy/Control documents
 ///              to Firebase Storage, returning public download URLs to be
@@ -184,6 +186,44 @@ class PolicyStorageDataSource {
       return await uploadTask.ref.getDownloadURL();
     } catch (e) {
       throw Exception('Failed to upload the Control document: $e');
+    }
+  }
+
+  // ------------------------------------------------------------------
+  // ASSIGNMENT CONTROL EVIDENCE
+  // ------------------------------------------------------------------
+
+  /// function name: [uploadAssignmentEvidence]
+  ///
+  /// purpose: upload a Control Champion's submitted evidence file to
+  ///          Firebase Storage and return its public download URL, to be
+  ///          stored as one revision of AssignmentControlModel's
+  ///          submissionDocument history list. Stored under a top-level
+  ///          folder (not under Policies_Files) since Assignment_Controls
+  ///          documents live directly under the Module, not under a Policy.
+  ///
+  /// parameters:
+  ///            [String] moduleId: id of the GRC Module the assignment belongs to
+  ///            [String] controlId: id of the Control the evidence is for
+  ///            [String] championEmail: email of the champion submitting
+  ///            [File] documentFile: the local evidence file to upload
+  ///
+  /// return type: [Future<String>] - the download URL of the uploaded evidence file, or throws an Exception on failure
+  Future<String> uploadAssignmentEvidence({
+    required String moduleId,
+    required String controlId,
+    required String championEmail,
+    required File documentFile,
+  }) async {
+    try {
+      final fileName = _buildFileName(documentFile);
+      final ref = _storage.ref(
+        'Assignment_Controls_Files/$moduleId/$controlId/$championEmail/$fileName',
+      );
+      final uploadTask = await ref.putFile(documentFile);
+      return await uploadTask.ref.getDownloadURL();
+    } catch (e) {
+      throw Exception('Failed to upload the Assignment Control evidence: $e');
     }
   }
 
