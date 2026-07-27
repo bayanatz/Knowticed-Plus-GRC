@@ -171,13 +171,23 @@ class _PolicyDetailsBodyState extends State<_PolicyDetailsBody> {
   }
 
   Future<void> _openEditPolicy() async {
+    // Hand this page's own PolicyCubit down to the edit page via
+    // BlocProvider.value instead of letting it resolve a second, disconnected
+    // instance from GetIt, so both pages act on ONE cubit. The cubit emits
+    // PolicyActionSuccess (not a fresh PolicySingleLoaded) after a save, so the
+    // policy is still explicitly re-fetched below once Edit pops true — that
+    // refetch is what returns this page's local _policy to the latest state.
+    final policyCubit = context.read<PolicyCubit>();
     final result = await Navigator.push<bool>(
       context,
       PageRouteBuilder(
-        pageBuilder: (_, __, ___) => PolicyEditPage(
-          moduleId: widget.moduleId,
-          policy: _policy!,
-          module: widget.module,
+        pageBuilder: (_, __, ___) => BlocProvider<PolicyCubit>.value(
+          value: policyCubit,
+          child: PolicyEditPage(
+            moduleId: widget.moduleId,
+            policy: _policy!,
+            module: widget.module,
+          ),
         ),
         transitionsBuilder: (_, animation, __, child) =>
             FadeTransition(opacity: animation, child: child),
@@ -185,10 +195,10 @@ class _PolicyDetailsBodyState extends State<_PolicyDetailsBody> {
       ),
     );
     if (result == true && mounted) {
-      context.read<PolicyCubit>().getPolicy(
-            widget.policyId,
-            moduleId: widget.moduleId,
-          );
+      policyCubit.getPolicy(
+        widget.policyId,
+        moduleId: widget.moduleId,
+      );
     }
   }
 

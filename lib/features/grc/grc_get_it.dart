@@ -493,8 +493,12 @@ void setupGRCDependencies(GetIt sl) {
 
   /// class name: [PolicyCubit]
   /// purpose: presentation-layer state manager for all Policy and Control
-  /// operations. Registered as a factory so each page gets an independent
-  /// cubit instance.
+  /// operations. Registered as a factory so each flow-start page gets an
+  /// independent cubit instance (the policy list, the Policy Details page, and
+  /// the standalone Create flow each resolve their own). Pages pushed as a
+  /// continuation of an existing flow do NOT resolve a fresh one — e.g. the
+  /// Policy Edit page reuses the Details page's instance via
+  /// BlocProvider.value so the two never diverge.
   sl.registerFactory<PolicyCubit>(
     () => PolicyCubit(
       createPolicyUseCase: sl<CreatePolicyUseCase>(),

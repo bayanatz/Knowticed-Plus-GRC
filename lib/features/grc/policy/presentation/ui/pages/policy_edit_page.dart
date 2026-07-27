@@ -1,12 +1,13 @@
 /// Module: GRC Policy Management
 /// Description: Full-page form for editing an existing Policy, opened from
-///              the Policy Details page's Edit action. Mirrors the
-///              AddEditControlPage pattern: its own route, its own
-///              [PolicyCubit] instance, pops `true` on a successful save so
-///              the Details page can refresh.
+///              the Policy Details page's Edit action. Its own route, but it
+///              shares the Policy Details page's [PolicyCubit] instance
+///              (handed down via `BlocProvider.value`) instead of resolving a
+///              second one, so the two pages never diverge. Pops `true` on a
+///              successful save so the Details page can refresh.
 /// Author: Mohamed Magdy Abdelkhalek
 /// Date: 2026-07-18
-/// Dependencies: flutter_bloc, PolicyCubit, PolicyEntity, get_it,
+/// Dependencies: flutter_bloc, PolicyCubit, PolicyEntity,
 ///               PolicyEditModeWidget
 /// Revision History: 2026-07-18 - Split out of policy_details_page.dart's
 ///                                in-place edit mode into its own page.
@@ -44,7 +45,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
-import 'package:get_it/get_it.dart';
 
 /// class name: [PolicyEditPage]
 ///
@@ -305,14 +305,17 @@ class _PolicyEditPageState extends State<PolicyEditPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => GetIt.instance<PolicyCubit>(),
-      child: Builder(
-        builder: (ctx) {
-          final cubit = ctx.read<PolicyCubit>();
-          return BlocListener<PolicyCubit, PolicyState>(
-            listener: _onStateChange,
-            child: Scaffold(
+    // The PolicyCubit is provided by the Policy Details page that pushed this
+    // route (it hands its own instance down via BlocProvider.value) so the
+    // Details page and this edit form share ONE cubit instance and never
+    // diverge. Only read that shared instance here — never resolve a second
+    // one from GetIt.
+    return Builder(
+      builder: (ctx) {
+        final cubit = ctx.read<PolicyCubit>();
+        return BlocListener<PolicyCubit, PolicyState>(
+          listener: _onStateChange,
+          child: Scaffold(
               body: SafeArea(
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -410,7 +413,6 @@ class _PolicyEditPageState extends State<PolicyEditPage> {
             ),
           );
         },
-      ),
-    );
+      );
   }
 }
