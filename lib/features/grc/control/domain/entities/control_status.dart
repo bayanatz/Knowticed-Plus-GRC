@@ -87,4 +87,48 @@ enum ControlStatus {
         return ControlStatus.unassigned;
     }
   }
+
+  /// function name: [computeDateBased]
+  ///
+  /// purpose: date-based "would-be" status before any assignee/manual
+  ///          override: Scheduled if [effectiveStartDate] hasn't arrived yet
+  ///          (strictly after the start of today), otherwise Active.
+  ///
+  /// parameters:
+  ///            [DateTime] effectiveStartDate: the control's effective start date
+  ///
+  /// return type: [ControlStatus] - scheduled or active
+  static ControlStatus computeDateBased(DateTime effectiveStartDate) {
+    final today = DateTime.now();
+    final startOfToday = DateTime(today.year, today.month, today.day);
+    return effectiveStartDate.isAfter(startOfToday)
+        ? ControlStatus.scheduled
+        : ControlStatus.active;
+  }
+
+  /// function name: [resolve]
+  ///
+  /// purpose: applies the manual-Inactive and assignee-based overrides on
+  ///          top of [requested]: Draft (Save For Later) always wins as-is.
+  ///          Otherwise, if the user flipped the "Status" switch to Inactive
+  ///          ([manualInactive]), that wins next. Failing both, any other
+  ///          status becomes Unassigned unless at least one Champion or
+  ///          Owner is currently assigned ([hasAnyAssignee]), in which case
+  ///          [requested] (the date-computed Scheduled/Active) stands.
+  ///
+  /// parameters:
+  ///            [ControlStatus] requested: the status requested before overrides
+  ///            [bool] manualInactive: whether the user manually set Inactive
+  ///            [bool] hasAnyAssignee: whether at least one Champion/Owner is assigned
+  ///
+  /// return type: [ControlStatus] - the final resolved status
+  static ControlStatus resolve({
+    required ControlStatus requested,
+    required bool manualInactive,
+    required bool hasAnyAssignee,
+  }) {
+    if (requested == ControlStatus.draft) return requested;
+    if (manualInactive) return ControlStatus.inactive;
+    return hasAnyAssignee ? requested : ControlStatus.unassigned;
+  }
 }
