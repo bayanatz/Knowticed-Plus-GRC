@@ -180,22 +180,6 @@ class _PolicyViewModeWidgetState extends State<PolicyViewModeWidget> {
     ];
   }
 
-  /// Sum of every non-Draft control's weight — Draft controls haven't been
-  /// published yet, so they don't count toward the total. Shown next to
-  /// the "Control Weight Issue" banner so an out-of-balance policy
-  /// (controls that don't add up to 100) is obvious at a glance.
-  ///
-  /// NOTE: assumes [ControlEntity.controlWeight] exists, mirroring
-  /// [PolicyEntity.policyWeight]. Adjust the field name if different.
-  double _totalControlWeight(List<ControlEntity> controls) => controls
-      .where((c) => c.status != ControlStatus.draft)
-      .fold<double>(0, (sum, c) => sum + c.controlsWeight);
-
-  bool _hasControlWeightIssue(List<ControlEntity> controls) {
-    final counted = controls.where((c) => c.status != ControlStatus.draft);
-    return counted.isNotEmpty && _totalControlWeight(controls) != 100;
-  }
-
   /// Policy Number on the left, Last Edit date on the right — matches the
   /// top row of the "Policy Details" card in the design.
   Widget _buildNumberAndLastEditRow() {
@@ -386,7 +370,7 @@ class _PolicyViewModeWidgetState extends State<PolicyViewModeWidget> {
   }
 
   Widget _buildWeightIssueBanner(List<ControlEntity> controls) {
-    if (!_hasControlWeightIssue(controls)) return const SizedBox.shrink();
+    if (!controls.hasControlWeightIssue) return const SizedBox.shrink();
     return customButton(
       title: 'Control Weight Issue'.tr,
       function: () => Navigator.push(

@@ -172,3 +172,21 @@ class ControlEntity {
     );
   }
 }
+
+/// Business rule: a Policy's Controls should collectively add up to 100
+/// weight, but Draft controls haven't been published yet so they don't
+/// count toward that total. Extracted from `PolicyViewModeWidget`'s State
+/// (where it lived as private helpers) so the rule lives with the entity
+/// instead of a View widget.
+extension ControlListWeightX on List<ControlEntity> {
+  /// Sum of every non-Draft control's weight.
+  double get totalControlWeight => where((c) => c.status != ControlStatus.draft)
+      .fold<double>(0, (sum, c) => sum + c.controlsWeight);
+
+  /// True when there's at least one non-Draft control and their weights
+  /// don't add up to 100 — i.e. the policy's controls are out of balance.
+  bool get hasControlWeightIssue {
+    final counted = where((c) => c.status != ControlStatus.draft);
+    return counted.isNotEmpty && totalControlWeight != 100;
+  }
+}
