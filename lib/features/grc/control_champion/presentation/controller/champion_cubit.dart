@@ -155,4 +155,88 @@ class ChampionCubit extends Cubit<ChampionState> {
       (champion) => emit(ChampionActionSuccess(champion)),
     );
   }
+
+  /// Every champion email in [champions] whose Assigning_Controls already
+  /// includes this exact {[policyId], [controlId]} pair. Moved verbatim from
+  /// AddEditControlPage's former `_alreadyAssignedChampionEmails`, with the
+  /// control/policy id threaded in as parameters instead of read from widget
+  /// state.
+  List<String> alreadyAssignedEmails(
+    List<ChampionEntity> champions, {
+    required String policyId,
+    required String controlId,
+  }) {
+    return champions
+        .where((c) => c.assigningControls
+            .any((a) => a.policyId == policyId && a.controlId == controlId))
+        .map((c) => c.championEmail)
+        .toList();
+  }
+
+  ChampionEntity? _findByEmail(List<ChampionEntity> all, String email) {
+    for (final c in all) {
+      if (c.championEmail == email) return c;
+    }
+    return null;
+  }
+
+  /// Reconciles [selected] (the picker's current selection) against
+  /// [alreadyAssigned] (what was true when the page opened) by
+  /// appending/removing this {[policyId], [controlId]} pair on exactly the
+  /// champions whose selection state actually changed. Every call is awaited
+  /// sequentially — at most a handful of people per save, simplicity over
+  /// throughput. Returns false if any individual update/create failed. Moved
+  /// verbatim from AddEditControlPage's former `_applyChampionDiff`; the
+  /// `cubit`/`this.moduleId`/`this.policyId` it used to close over are now
+  /// `this`/[moduleId]/[policyId] parameters.
+  Future<bool> applyAssignmentDiff({
+    required List<ChampionEntity> allChampions,
+    required List<String> alreadyAssigned,
+    required List<String> selected,
+    required String moduleId,
+    required String policyId,
+    required String controlId,
+  }) async {
+    var success = true;
+    final added = selected.where((e) => !alreadyAssigned.contains(e));
+    final removed = alreadyAssigned.where((e) => !selected.contains(e));
+
+    for (final email in added) {
+      final existing = _findByEmail(allChampions, email);
+      if (existing != null) {
+        await updateChampion(
+          championEmail: email,
+          moduleId: moduleId,
+          assigningControls: [
+            ...existing.assigningControls,
+            AssigningControlEntity(policyId: policyId, controlId: controlId),
+          ],
+        );
+      } else {
+        await createChampion(
+          moduleId: moduleId,
+          championEmail: email,
+          assigningControls: [
+            AssigningControlEntity(policyId: policyId, controlId: controlId),
+          ],
+        );
+      }
+      if (state is ChampionFailure) success = false;
+    }
+
+    for (final email in removed) {
+      final existing = _findByEmail(allChampions, email);
+      if (existing == null) continue;
+      await updateChampion(
+        championEmail: email,
+        moduleId: moduleId,
+        assigningControls: existing.assigningControls
+            .where((a) => !(a.policyId == policyId && a.controlId == controlId))
+            .toList(),
+      );
+      if (state is ChampionFailure) success = false;
+    }
+
+    return success;
+  }
 }

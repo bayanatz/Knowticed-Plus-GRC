@@ -161,4 +161,84 @@ class OwnerCubit extends Cubit<OwnerState> {
       (owner) => emit(OwnerActionSuccess(owner)),
     );
   }
+
+  /// Every owner email in [owners] whose Assigning_Controls already includes
+  /// this exact {[policyId], [controlId]} pair. Moved verbatim from
+  /// AddEditControlPage's former `_alreadyAssignedOwnerEmails`, with the
+  /// control/policy id threaded in as parameters instead of read from widget
+  /// state.
+  List<String> alreadyAssignedEmails(
+    List<OwnerEntity> owners, {
+    required String policyId,
+    required String controlId,
+  }) {
+    return owners
+        .where((o) => o.assigningControls
+            .any((a) => a.policyId == policyId && a.controlId == controlId))
+        .map((o) => o.ownerEmail)
+        .toList();
+  }
+
+  OwnerEntity? _findByEmail(List<OwnerEntity> all, String email) {
+    for (final o in all) {
+      if (o.ownerEmail == email) return o;
+    }
+    return null;
+  }
+
+  /// Mirrors ChampionCubit.applyAssignmentDiff for Control Owners. Reconciles
+  /// [selected] against [alreadyAssigned] by appending/removing this
+  /// {[policyId], [controlId]} pair on exactly the owners whose selection
+  /// changed. Returns false if any individual update/create failed. Moved
+  /// verbatim from AddEditControlPage's former `_applyOwnerDiff`.
+  Future<bool> applyAssignmentDiff({
+    required List<OwnerEntity> allOwners,
+    required List<String> alreadyAssigned,
+    required List<String> selected,
+    required String moduleId,
+    required String policyId,
+    required String controlId,
+  }) async {
+    var success = true;
+    final added = selected.where((e) => !alreadyAssigned.contains(e));
+    final removed = alreadyAssigned.where((e) => !selected.contains(e));
+
+    for (final email in added) {
+      final existing = _findByEmail(allOwners, email);
+      if (existing != null) {
+        await updateOwner(
+          ownerEmail: email,
+          moduleId: moduleId,
+          assigningControls: [
+            ...existing.assigningControls,
+            AssigningControlEntity(policyId: policyId, controlId: controlId),
+          ],
+        );
+      } else {
+        await createOwner(
+          moduleId: moduleId,
+          ownerEmail: email,
+          assigningControls: [
+            AssigningControlEntity(policyId: policyId, controlId: controlId),
+          ],
+        );
+      }
+      if (state is OwnerFailure) success = false;
+    }
+
+    for (final email in removed) {
+      final existing = _findByEmail(allOwners, email);
+      if (existing == null) continue;
+      await updateOwner(
+        ownerEmail: email,
+        moduleId: moduleId,
+        assigningControls: existing.assigningControls
+            .where((a) => !(a.policyId == policyId && a.controlId == controlId))
+            .toList(),
+      );
+      if (state is OwnerFailure) success = false;
+    }
+
+    return success;
+  }
 }

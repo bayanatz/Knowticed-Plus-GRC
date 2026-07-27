@@ -723,6 +723,39 @@ List<double>? departmentsWeights,
     );
   }
 
+  /// Date-based "would-be" status before any assignee/manual override:
+  /// Scheduled if [effectiveStartDate] hasn't arrived yet (strictly after the
+  /// start of today), otherwise Active. Moved verbatim from
+  /// AddEditControlPage's former `_computedStatus` getter — the caller passes
+  /// the effective start date (inherited Policy date in Create mode, the
+  /// control's own edited date in Edit mode).
+  ControlStatus computeDateBasedStatus(DateTime effectiveStartDate) {
+    final today = DateTime.now();
+    final startOfToday = DateTime(today.year, today.month, today.day);
+    return effectiveStartDate.isAfter(startOfToday)
+        ? ControlStatus.scheduled
+        : ControlStatus.active;
+  }
+
+  /// Applies the manual-Inactive and assignee-based overrides on top of
+  /// [requested]: Draft (Save For Later) always wins as-is. Otherwise, if the
+  /// user flipped the "Status" switch to Inactive ([manualInactive]), that
+  /// wins next. Failing both, any other status becomes Unassigned unless at
+  /// least one Champion or Owner is currently assigned ([hasAnyAssignee]), in
+  /// which case [requested] (the date-computed Scheduled/Active) stands.
+  /// Moved verbatim from AddEditControlPage's former `_resolvedStatus`; the
+  /// `_hasAnyAssignee` check it used to call is now resolved by the caller and
+  /// passed in as [hasAnyAssignee].
+  ControlStatus resolveControlStatus({
+    required ControlStatus requested,
+    required bool manualInactive,
+    required bool hasAnyAssignee,
+  }) {
+    if (requested == ControlStatus.draft) return requested;
+    if (manualInactive) return ControlStatus.inactive;
+    return hasAnyAssignee ? requested : ControlStatus.unassigned;
+  }
+
   Future<void> deleteControl({
     required String id,
     required String moduleId,

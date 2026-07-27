@@ -48,10 +48,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart' as intl;
-import 'package:demo_app/features/grc/control/domain/entities/assigning_control.dart';
-import 'package:demo_app/features/grc/control_champion/domain/entities/champion_entity.dart';
 import 'package:demo_app/features/grc/control_champion/presentation/controller/champion_cubit.dart';
-import 'package:demo_app/features/grc/control_owner/domain/entities/owner_entity.dart';
 import 'package:demo_app/features/grc/control_owner/presentation/controller/owner_cubit.dart';
 import 'package:demo_app/features/grc/module/presentation/controller/cubit/grc_owner_cubit.dart';
 import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details_widget/grc_owner_section.dart';
@@ -510,49 +507,33 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
     return Directionality(textDirection: TextDirection.rtl, child: field);
   }
 
-  /// Scheduled if the effective Start Date (the inherited Policy date in
-  /// Create mode, or the control's own edited date in Edit mode) hasn't
-  /// arrived yet (strictly after today), otherwise Active. This is the
-  /// "would-be" status before [_resolvedStatus]'s assignee-based
-  /// Unassigned override is applied — used by both the Add and Save
-  /// actions, recomputed every time either is pressed.
-  ControlStatus get _computedStatus {
-    final today = DateTime.now();
-    final startOfToday = DateTime(today.year, today.month, today.day);
-    return _effectiveStartDate.isAfter(startOfToday)
-        ? ControlStatus.scheduled
-        : ControlStatus.active;
-  }
-
   /// True if at least one Champion or Owner is currently assigned to this
   /// control: the live picker selection if the user touched it, otherwise
   /// whoever was already assigned when the page opened. A brand-new
   /// Control has no assignees section at all (Create mode hides it), so
   /// this is always false there.
   bool _hasAnyAssignee(BuildContext context) {
-    final championState = context.read<ChampionCubit>().state;
+    final championCubit = context.read<ChampionCubit>();
+    final championState = championCubit.state;
     final championEmails = _currentChampionEmails ??
         (_isEdit && championState is ChampionListLoaded
-            ? _alreadyAssignedChampionEmails(championState.champions)
+            ? championCubit.alreadyAssignedEmails(
+                championState.champions,
+                policyId: widget.policyId,
+                controlId: widget.existingControl!.id,
+              )
             : const <String>[]);
-    final ownerState = context.read<OwnerCubit>().state;
+    final ownerCubit = context.read<OwnerCubit>();
+    final ownerState = ownerCubit.state;
     final ownerEmails = _currentOwnerEmails ??
         (_isEdit && ownerState is OwnerListLoaded
-            ? _alreadyAssignedOwnerEmails(ownerState.owners)
+            ? ownerCubit.alreadyAssignedEmails(
+                ownerState.owners,
+                policyId: widget.policyId,
+                controlId: widget.existingControl!.id,
+              )
             : const <String>[]);
     return championEmails.isNotEmpty || ownerEmails.isNotEmpty;
-  }
-
-  /// Applies the manual-Inactive and assignee-based overrides on top of
-  /// [requested]: Draft (Save For Later) always wins as-is. Otherwise, if
-  /// the user flipped the "Status" switch to Inactive, that wins next.
-  /// Failing both, any other status becomes Unassigned unless at least one
-  /// Champion or Owner is currently assigned, in which case [requested]
-  /// (the date-computed Scheduled/Active) stands.
-  ControlStatus _resolvedStatus(BuildContext context, ControlStatus requested) {
-    if (requested == ControlStatus.draft) return requested;
-    if (_manualInactive) return ControlStatus.inactive;
-    return _hasAnyAssignee(context) ? requested : ControlStatus.unassigned;
   }
 
   void _onSave(PolicyCubit cubit, {required ControlStatus status}) {
@@ -863,159 +844,6 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
     );
   }
 
-  /// Every Champion email whose Assigning_Controls already includes this
-  /// exact {Policy, Control} pair. Only meaningful in edit mode.
-  List<String> _alreadyAssignedChampionEmails(List<ChampionEntity> champions) {
-    final controlId = widget.existingControl!.id;
-    return champions
-        .where((c) => c.assigningControls.any(
-            (a) => a.policyId == widget.policyId && a.controlId == controlId))
-        .map((c) => c.championEmail)
-        .toList();
-  }
-
-  /// Every Owner email whose Assigning_Controls already includes this
-  /// exact {Policy, Control} pair. Only meaningful in edit mode.
-  List<String> _alreadyAssignedOwnerEmails(List<OwnerEntity> owners) {
-    final controlId = widget.existingControl!.id;
-    return owners
-        .where((o) => o.assigningControls.any(
-            (a) => a.policyId == widget.policyId && a.controlId == controlId))
-        .map((o) => o.ownerEmail)
-        .toList();
-  }
-
-  ChampionEntity? _findChampion(List<ChampionEntity> all, String email) {
-    for (final c in all) {
-      if (c.championEmail == email) return c;
-    }
-    return null;
-  }
-
-  OwnerEntity? _findOwner(List<OwnerEntity> all, String email) {
-    for (final o in all) {
-      if (o.ownerEmail == email) return o;
-    }
-    return null;
-  }
-
-  /// function name: [_applyChampionDiff]
-  ///
-  /// purpose: reconcile [selected] (the picker's current selection) against
-  ///          [alreadyAssigned] (what was true when the page opened) by
-  ///          appending/removing this {Policy, Control} pair on exactly the
-  ///          people whose selection state actually changed. Every call is
-  ///          awaited sequentially — at most a handful of people per save,
-  ///          simplicity over throughput.
-  ///
-  /// return type: [Future<bool>] - false if any individual update/create failed
-  Future<bool> _applyChampionDiff({
-    required ChampionCubit cubit,
-    required List<ChampionEntity> allChampions,
-    required List<String> alreadyAssigned,
-    required List<String> selected,
-    required String controlId,
-  }) async {
-    var success = true;
-    final added = selected.where((e) => !alreadyAssigned.contains(e));
-    final removed = alreadyAssigned.where((e) => !selected.contains(e));
-
-    for (final email in added) {
-      final existing = _findChampion(allChampions, email);
-      if (existing != null) {
-        await cubit.updateChampion(
-          championEmail: email,
-          moduleId: widget.moduleId,
-          assigningControls: [
-            ...existing.assigningControls,
-            AssigningControlEntity(
-                policyId: widget.policyId, controlId: controlId),
-          ],
-        );
-      } else {
-        await cubit.createChampion(
-          moduleId: widget.moduleId,
-          championEmail: email,
-          assigningControls: [
-            AssigningControlEntity(
-                policyId: widget.policyId, controlId: controlId),
-          ],
-        );
-      }
-      if (cubit.state is ChampionFailure) success = false;
-    }
-
-    for (final email in removed) {
-      final existing = _findChampion(allChampions, email);
-      if (existing == null) continue;
-      await cubit.updateChampion(
-        championEmail: email,
-        moduleId: widget.moduleId,
-        assigningControls: existing.assigningControls
-            .where((a) =>
-                !(a.policyId == widget.policyId && a.controlId == controlId))
-            .toList(),
-      );
-      if (cubit.state is ChampionFailure) success = false;
-    }
-
-    return success;
-  }
-
-  /// Mirrors [_applyChampionDiff] for Control Owners.
-  Future<bool> _applyOwnerDiff({
-    required OwnerCubit cubit,
-    required List<OwnerEntity> allOwners,
-    required List<String> alreadyAssigned,
-    required List<String> selected,
-    required String controlId,
-  }) async {
-    var success = true;
-    final added = selected.where((e) => !alreadyAssigned.contains(e));
-    final removed = alreadyAssigned.where((e) => !selected.contains(e));
-
-    for (final email in added) {
-      final existing = _findOwner(allOwners, email);
-      if (existing != null) {
-        await cubit.updateOwner(
-          ownerEmail: email,
-          moduleId: widget.moduleId,
-          assigningControls: [
-            ...existing.assigningControls,
-            AssigningControlEntity(
-                policyId: widget.policyId, controlId: controlId),
-          ],
-        );
-      } else {
-        await cubit.createOwner(
-          moduleId: widget.moduleId,
-          ownerEmail: email,
-          assigningControls: [
-            AssigningControlEntity(
-                policyId: widget.policyId, controlId: controlId),
-          ],
-        );
-      }
-      if (cubit.state is OwnerFailure) success = false;
-    }
-
-    for (final email in removed) {
-      final existing = _findOwner(allOwners, email);
-      if (existing == null) continue;
-      await cubit.updateOwner(
-        ownerEmail: email,
-        moduleId: widget.moduleId,
-        assigningControls: existing.assigningControls
-            .where((a) =>
-                !(a.policyId == widget.policyId && a.controlId == controlId))
-            .toList(),
-      );
-      if (cubit.state is OwnerFailure) success = false;
-    }
-
-    return success;
-  }
-
   /// function name: [_applyAssigneeChanges]
   ///
   /// purpose: called once the Control itself has already saved
@@ -1025,6 +853,11 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
   ///          way [_buildAssigneesSections] did, and diffs it against
   ///          whatever the user last toggled. If a Cubit never finished
   ///          loading, that side is skipped entirely rather than guessed at.
+  ///          The per-cubit "already assigned" resolution and the actual
+  ///          create/update diffing now live in ChampionCubit/OwnerCubit
+  ///          (`alreadyAssignedEmails`/`applyAssignmentDiff`); this method is
+  ///          the remaining UI-side orchestration that wires them together
+  ///          and surfaces a failure to the user.
   Future<void> _applyAssigneeChanges(BuildContext context) async {
     final controlId = widget.existingControl!.id;
     final championCubit = context.read<ChampionCubit>();
@@ -1033,14 +866,18 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
 
     final championState = championCubit.state;
     if (championState is ChampionListLoaded) {
-      final alreadyAssigned =
-          _alreadyAssignedChampionEmails(championState.champions);
+      final alreadyAssigned = championCubit.alreadyAssignedEmails(
+        championState.champions,
+        policyId: widget.policyId,
+        controlId: controlId,
+      );
       final selected = _currentChampionEmails ?? alreadyAssigned;
-      final ok = await _applyChampionDiff(
-        cubit: championCubit,
+      final ok = await championCubit.applyAssignmentDiff(
         allChampions: championState.champions,
         alreadyAssigned: alreadyAssigned,
         selected: selected,
+        moduleId: widget.moduleId,
+        policyId: widget.policyId,
         controlId: controlId,
       );
       if (!ok) hadFailure = true;
@@ -1048,13 +885,18 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
 
     final ownerState = ownerCubit.state;
     if (ownerState is OwnerListLoaded) {
-      final alreadyAssigned = _alreadyAssignedOwnerEmails(ownerState.owners);
+      final alreadyAssigned = ownerCubit.alreadyAssignedEmails(
+        ownerState.owners,
+        policyId: widget.policyId,
+        controlId: controlId,
+      );
       final selected = _currentOwnerEmails ?? alreadyAssigned;
-      final ok = await _applyOwnerDiff(
-        cubit: ownerCubit,
+      final ok = await ownerCubit.applyAssignmentDiff(
         allOwners: ownerState.owners,
         alreadyAssigned: alreadyAssigned,
         selected: selected,
+        moduleId: widget.moduleId,
+        policyId: widget.policyId,
         controlId: controlId,
       );
       if (!ok) hadFailure = true;
@@ -1097,8 +939,11 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
             }
             return GrcOwnerSection(
               sectionTitle: 'Control Champions',
-              initialOwnerEmails:
-                  _alreadyAssignedChampionEmails(state.champions),
+              initialOwnerEmails: context.read<ChampionCubit>().alreadyAssignedEmails(
+                    state.champions,
+                    policyId: widget.policyId,
+                    controlId: widget.existingControl!.id,
+                  ),
               selectedDepartmentNames: _realSelectedDepartments,
               showRemoveIconWhenSelected: true,
               onOwnersChanged: (selected) => setState(() =>
@@ -1117,7 +962,11 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
             }
             return GrcOwnerSection(
               sectionTitle: 'Control Owner',
-              initialOwnerEmails: _alreadyAssignedOwnerEmails(state.owners),
+              initialOwnerEmails: context.read<OwnerCubit>().alreadyAssignedEmails(
+                    state.owners,
+                    policyId: widget.policyId,
+                    controlId: widget.existingControl!.id,
+                  ),
               selectedDepartmentNames: _realSelectedDepartments,
               showRemoveIconWhenSelected: true,
               onOwnersChanged: (selected) => setState(() =>
@@ -1609,9 +1458,15 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                                             .tr
                                         : 'Are You Sure You Want To Create This Control ?'
                                             .tr,
-                                    onConfirm: () => _onSave(cubit,
-                                        status: _resolvedStatus(
-                                            ctx, _computedStatus)),
+                                    onConfirm: () => _onSave(
+                                      cubit,
+                                      status: cubit.resolveControlStatus(
+                                        requested: cubit.computeDateBasedStatus(
+                                            _effectiveStartDate),
+                                        manualInactive: _manualInactive,
+                                        hasAnyAssignee: _hasAnyAssignee(ctx),
+                                      ),
+                                    ),
                                   );
                                 },
                                 height: 38.h,
