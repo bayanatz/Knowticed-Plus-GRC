@@ -4,12 +4,7 @@ import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart';
 import 'package:demo_app/features/grc/control/domain/entities/assigning_control.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
-import 'package:demo_app/features/grc/control/domain/entities/control_status_resolver.dart';
-import 'package:demo_app/features/grc/control/domain/use_cases/update_control_usecase.dart';
-import 'package:demo_app/features/grc/control_champion/domain/entities/champion_entity.dart';
-import 'package:demo_app/features/grc/control_champion/domain/use_cases/get_champion_usecases.dart';
 import 'package:demo_app/features/grc/control_owner/domain/entities/owner_entity.dart';
-import 'package:demo_app/features/grc/control_owner/domain/use_cases/get_owner_usecases.dart';
 import 'package:demo_app/features/grc/control_owner/presentation/controller/owner_cubit.dart';
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
@@ -23,7 +18,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:get_it/get_it.dart';
 
 class EditOwnerControlsPage extends StatefulWidget {
   final OwnerEntity owner;
@@ -91,86 +85,17 @@ class _EditOwnerControlsPageState extends State<EditOwnerControlsPage> {
     // Fire-and-forget: these touch each affected Control document directly
     // (not the Owner doc this page's own loading/success state tracks),
     // so they don't need to block the Save button.
-    _recomputeControlStatuses();
+    context.read<OwnerCubit>().recomputeControlStatuses(
+          owner: widget.owner,
+          newControls: _tempControls,
+          moduleId: widget.module.moduleId,
+          policyControls: widget.policyControls,
+        );
     context.read<OwnerCubit>().updateOwner(
           ownerEmail: widget.owner.ownerEmail,
           moduleId: widget.module.moduleId,
           assigningControls: _tempControls,
         );
-  }
-
-  /// function name: [_recomputeControlStatuses]
-  ///
-  /// purpose: before [_tempControls] is persisted, recompute the status of
-  ///          every control whose assignment to this Owner just changed
-  ///          — a newly-added control flips Unassigned -> Scheduled/Active;
-  ///          a newly-removed one flips back to Unassigned, but only if no
-  ///          other Owner or Champion in the module still covers it.
-  ///          Controls currently Draft/Inactive/Expired are left untouched
-  ///          either way (see [shouldRecomputeAssigneeBasedStatus]).
-  Future<void> _recomputeControlStatuses() async {
-    final originalPairs = widget.owner.assigningControls
-        .map((ac) => (ac.policyId, ac.controlId))
-        .toSet();
-    final newPairs =
-        _tempControls.map((ac) => (ac.policyId, ac.controlId)).toSet();
-    final added = newPairs.difference(originalPairs);
-    final removed = originalPairs.difference(newPairs);
-    if (added.isEmpty && removed.isEmpty) return;
-
-    var champions = const <ChampionEntity>[];
-    var otherOwners = const <OwnerEntity>[];
-    if (removed.isNotEmpty) {
-      final championsResult = await GetIt.instance<GetAllChampionsUseCase>()
-          .call(moduleId: widget.module.moduleId);
-      champions =
-          championsResult.fold((failure) => const <ChampionEntity>[], (c) => c);
-      final ownersResult = await GetIt.instance<GetAllOwnersUseCase>()
-          .call(moduleId: widget.module.moduleId);
-      otherOwners = ownersResult.fold(
-        (failure) => const <OwnerEntity>[],
-        (owners) => owners
-            .where((o) => o.ownerEmail != widget.owner.ownerEmail)
-            .toList(),
-      );
-    }
-
-    final editor = currentGrcUserEmail();
-    final updateUseCase = GetIt.instance<UpdateControlUseCase>();
-
-    Future<void> applyStatus(
-      (String, String) pair, {
-      required bool hasAnyAssignee,
-    }) async {
-      final control = findControlInPolicy(widget.policyControls, pair.$1, pair.$2);
-      if (control == null) return;
-      if (!shouldRecomputeAssigneeBasedStatus(control.status)) return;
-      final newStatus = computeAssigneeBasedControlStatus(
-        effectiveStartDate: control.startDate,
-        hasAnyAssignee: hasAnyAssignee,
-      );
-      if (newStatus == control.status) return;
-      await updateUseCase.call(
-        UpdateControlParams(
-          id: control.id,
-          moduleId: widget.module.moduleId,
-          policyId: pair.$1,
-          editorId: editor,
-          status: newStatus,
-        ),
-      );
-    }
-
-    for (final pair in added) {
-      await applyStatus(pair, hasAnyAssignee: true);
-    }
-    for (final pair in removed) {
-      final stillCovered = champions.any((c) => c.assigningControls
-              .any((ac) => ac.policyId == pair.$1 && ac.controlId == pair.$2)) ||
-          otherOwners.any((o) => o.assigningControls
-              .any((ac) => ac.policyId == pair.$1 && ac.controlId == pair.$2));
-      await applyStatus(pair, hasAnyAssignee: stillCovered);
-    }
   }
 
   @override

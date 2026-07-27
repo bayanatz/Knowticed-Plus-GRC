@@ -6,8 +6,14 @@
 /// Dependencies: flutter_bloc, use cases, OwnerEntity, AssigningControlEntity
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:demo_app/features/grc/control/domain/entities/assigning_control.dart';
+import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
+import 'package:demo_app/features/grc/control/domain/entities/control_status_resolver.dart';
+import 'package:demo_app/features/grc/control/domain/use_cases/update_control_usecase.dart';
+import 'package:demo_app/features/grc/control_champion/domain/entities/champion_entity.dart';
 import 'package:demo_app/features/grc/control_champion/domain/entities/champion_request_resolver.dart';
+import 'package:demo_app/features/grc/control_champion/domain/use_cases/get_champion_usecases.dart';
 import 'package:demo_app/features/grc/control_owner/domain/entities/owner_entity.dart';
 import 'package:demo_app/features/grc/control_owner/domain/entities/owner_status.dart';
 import 'package:demo_app/features/grc/control_owner/domain/use_cases/apply_owner_reassignment_usecase.dart';
@@ -177,6 +183,93 @@ class OwnerCubit extends Cubit<OwnerState> {
             .any((a) => a.policyId == policyId && a.controlId == controlId))
         .map((o) => o.ownerEmail)
         .toList();
+  }
+
+  /// function name: [recomputeControlStatuses]
+  ///
+  /// purpose: before the Owner's controls are persisted, recompute the status
+  ///          of every control whose assignment to [owner] just changed
+  ///          — a newly-added control flips Unassigned -> Scheduled/Active;
+  ///          a newly-removed one flips back to Unassigned, but only if no
+  ///          other Owner or Champion in the module still covers it.
+  ///          Controls currently Draft/Inactive/Expired are left untouched
+  ///          either way (see [shouldRecomputeAssigneeBasedStatus]).
+  ///
+  ///          Moved verbatim out of EditOwnerControlsPage's former private
+  ///          `_recomputeControlStatuses`, with the owner, the newly-selected
+  ///          controls, the moduleId and the policy->controls lookup threaded
+  ///          in as explicit parameters instead of read from widget/State.
+  ///          Intentionally emits no state: it touches Control documents
+  ///          directly, not the Owner document this cubit's state tracks, so
+  ///          the page invokes it fire-and-forget alongside updateOwner.
+  Future<void> recomputeControlStatuses({
+    required OwnerEntity owner,
+    required List<AssigningControlEntity> newControls,
+    required String moduleId,
+    required Map<String, List<ControlEntity>> policyControls,
+  }) async {
+    final originalPairs = owner.assigningControls
+        .map((ac) => (ac.policyId, ac.controlId))
+        .toSet();
+    final newPairs =
+        newControls.map((ac) => (ac.policyId, ac.controlId)).toSet();
+    final added = newPairs.difference(originalPairs);
+    final removed = originalPairs.difference(newPairs);
+    if (added.isEmpty && removed.isEmpty) return;
+
+    var champions = const <ChampionEntity>[];
+    var otherOwners = const <OwnerEntity>[];
+    if (removed.isNotEmpty) {
+      final championsResult = await GetIt.instance<GetAllChampionsUseCase>()
+          .call(moduleId: moduleId);
+      champions =
+          championsResult.fold((failure) => const <ChampionEntity>[], (c) => c);
+      final ownersResult = await GetIt.instance<GetAllOwnersUseCase>()
+          .call(moduleId: moduleId);
+      otherOwners = ownersResult.fold(
+        (failure) => const <OwnerEntity>[],
+        (owners) => owners
+            .where((o) => o.ownerEmail != owner.ownerEmail)
+            .toList(),
+      );
+    }
+
+    final editor = currentGrcUserEmail();
+    final updateUseCase = GetIt.instance<UpdateControlUseCase>();
+
+    Future<void> applyStatus(
+      (String, String) pair, {
+      required bool hasAnyAssignee,
+    }) async {
+      final control = findControlInPolicy(policyControls, pair.$1, pair.$2);
+      if (control == null) return;
+      if (!shouldRecomputeAssigneeBasedStatus(control.status)) return;
+      final newStatus = computeAssigneeBasedControlStatus(
+        effectiveStartDate: control.startDate,
+        hasAnyAssignee: hasAnyAssignee,
+      );
+      if (newStatus == control.status) return;
+      await updateUseCase.call(
+        UpdateControlParams(
+          id: control.id,
+          moduleId: moduleId,
+          policyId: pair.$1,
+          editorId: editor,
+          status: newStatus,
+        ),
+      );
+    }
+
+    for (final pair in added) {
+      await applyStatus(pair, hasAnyAssignee: true);
+    }
+    for (final pair in removed) {
+      final stillCovered = champions.any((c) => c.assigningControls
+              .any((ac) => ac.policyId == pair.$1 && ac.controlId == pair.$2)) ||
+          otherOwners.any((o) => o.assigningControls
+              .any((ac) => ac.policyId == pair.$1 && ac.controlId == pair.$2));
+      await applyStatus(pair, hasAnyAssignee: stillCovered);
+    }
   }
 
   OwnerEntity? _findByEmail(List<OwnerEntity> all, String email) {
