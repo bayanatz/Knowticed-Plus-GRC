@@ -4,43 +4,45 @@
 ///              Details page's Controls section.
 /// Author: Mohamed Magdy Abdelkhalek
 /// Date: 2026-07-15
-/// Dependencies: flutter_bloc, PolicyCubit, ControlEntity, ControlStatus, get_it
+/// Dependencies: flutter_bloc, ControlCubit, ControlEntity, ControlStatus, get_it
 /// Revision History: 2026-07-15 - Initial creation
+///                   2026-07-27 - Split form sections out into
+///                                widgets/add_edit_control_widget/
 library;
 
 /// ************************* FILE INFO *************************** ///
 /// File Name: add_edit_control_page.dart
 /// Purpose: Contains AddEditControlPage, the create/edit form for a single
 ///          Control. Enforces that this control's weight plus every sibling
-///          control's weight sums to 100.
+///          control's weight sums to 100. Owns all form state and
+///          save/validation logic; every visual section is delegated to a
+///          widget under widgets/add_edit_control_widget/.
 /// Author: Mohamed Magdy Abdelkhalek
 /// Created At: 15/7/2026
 
-import 'package:demo_app/core/custom/1-custom_dropdwon.dart';
-import 'package:demo_app/core/custom/2-custom_textfield.dart';
-import 'package:demo_app/core/custom/3-custom_dropdwon_calander.dart';
-import 'package:demo_app/core/custom/5-custom_button.dart';
-import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
 import 'package:demo_app/core/custom/10_custom_upload_document.dart';
 import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart'
     hide showUploadDialog;
-import 'package:demo_app/core/custom/31-custom_multi_select_dropdown.dart';
 import 'package:demo_app/core/custom/loading.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
-import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/department/presentation/controller/add_department_controller.dart';
-import 'package:demo_app/features/grc/control/domain/entities/control_department_weight.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
-import 'package:demo_app/features/grc/control/domain/entities/control_frequency.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_status.dart';
+import 'package:demo_app/features/grc/control/presentation/controller/control_assignee_assignments.dart';
+import 'package:demo_app/features/grc/control/presentation/controller/control_department_weight_form.dart';
+import 'package:demo_app/features/grc/control/presentation/ui/widgets/add_edit_control_widget/control_action_buttons_widget.dart';
+import 'package:demo_app/features/grc/control/presentation/ui/widgets/add_edit_control_widget/control_assignees_section_widget.dart';
+import 'package:demo_app/features/grc/control/presentation/ui/widgets/add_edit_control_widget/control_date_row_widget.dart';
+import 'package:demo_app/features/grc/control/presentation/ui/widgets/add_edit_control_widget/control_departments_section_widget.dart';
+import 'package:demo_app/features/grc/control/presentation/ui/widgets/add_edit_control_widget/control_documents_row_widget.dart';
+import 'package:demo_app/features/grc/control/presentation/ui/widgets/add_edit_control_widget/control_frequency_weight_row_widget.dart';
+import 'package:demo_app/features/grc/control/presentation/ui/widgets/add_edit_control_widget/control_info_form_widget.dart';
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
-import 'package:demo_app/features/grc/policy/presentation/controller/policy_cubit.dart';
+import 'package:demo_app/features/grc/control/presentation/controller/control_cubit.dart';
 import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details_widget/grc_form_fields.dart'
     show containsEnglishLetters, containsArabicLetters;
 import 'package:demo_app/features/grc/policy/domain/entities/policy_document_info.dart';
-import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_document_preview_widget.dart';
-import 'package:demo_app/features/grc/shared/widgets/grc_responsive_field_row.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -48,11 +50,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart' as intl;
-import 'package:demo_app/features/grc/control_champion/presentation/controller/champion_cubit.dart';
-import 'package:demo_app/features/grc/control_owner/presentation/controller/owner_cubit.dart';
-import 'package:demo_app/features/grc/module/presentation/controller/cubit/grc_owner_cubit.dart';
-import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details_widget/grc_owner_section.dart';
 
 /// class name: [AddEditControlPage]
 ///
@@ -110,24 +107,9 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
   /// Edit mode (see initState) so re-opening an already-Inactive control
   /// shows the switch correctly; always false in Create mode.
   bool _manualInactive = false;
-  List<String>? _currentChampionEmails;
-  List<String>? _currentOwnerEmails;
 
-  static const String _allDepartmentsValue = 'All';
-
-  // Department + weight state.
-  // - [_selectedDepartments] holds every checked value from the Department
-  //   multi-select, including the [_allDepartmentsValue] sentinel when "All"
-  //   is checked. [_realSelectedDepartments] strips that sentinel out.
-  // - Checking "All" (or manually checking every real department) selects
-  //   every department and forces [_equalWeights] on, since an all-department
-  //   split is always equal by definition.
-  // - Otherwise [_equalWeights] is user-controlled: true auto-splits 100
-  //   evenly across the selected departments, false requires a manual weight
-  //   per department (summing to 100) via [_departmentWeightControllers].
-  bool _equalWeights = true;
-  List<String> _selectedDepartments = [];
-  final Map<String, TextEditingController> _departmentWeightControllers = {};
+  final _assignees = ControlAssigneeAssignments();
+  final _departmentsForm = ControlDepartmentWeightForm();
 
   bool get _isEdit => widget.existingControl != null;
 
@@ -176,26 +158,12 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
     _documentAr = existing.controlsDocumentAr != null
         ? PolicyDocumentInfo.fromUrl(existing.controlsDocumentAr!)
         : null;
-    _equalWeights = existing.equalWeights;
-    final existingDepartmentNames =
-        existing.departments.map((d) => d.department).toList();
-    final totalDepartmentsCount =
-        Get.find<MainCoreDepartmentController>().departmentIds.length;
-    final wasAllDepartments = existingDepartmentNames.isNotEmpty &&
-        existingDepartmentNames.length == totalDepartmentsCount;
-    _selectedDepartments = [
-      if (wasAllDepartments) _allDepartmentsValue,
-      ...existingDepartmentNames,
-    ];
-    // Rows (and their weight fields) are hidden entirely once "All" is
-    // selected, so only build controllers otherwise. The persisted weight is
-    // shown as-is — when equalWeights is true that's already an equal split.
-    if (!wasAllDepartments) {
-      for (final d in existing.departments) {
-        _departmentWeightControllers[d.department] =
-            TextEditingController(text: formatControlWeight(d.weight));
-      }
-    }
+    _departmentsForm.prefillFromExisting(
+      departments: existing.departments,
+      equalWeights: existing.equalWeights,
+      totalDepartmentsCount:
+          Get.find<MainCoreDepartmentController>().departmentIds.length,
+    );
   }
 
   @override
@@ -207,9 +175,7 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
     _descriptionController.dispose();
     _descriptionArController.dispose();
     _weightController.dispose();
-    for (final c in _departmentWeightControllers.values) {
-      c.dispose();
-    }
+    _departmentsForm.dispose();
     super.dispose();
   }
 
@@ -218,21 +184,6 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
       .fold<double>(0, (sum, c) => sum + c.controlsWeight);
 
   double get _thisWeight => double.tryParse(_weightController.text.trim()) ?? 0;
-
-  double get _totalDepartmentsWeight => _departmentWeightControllers.values
-      .fold<double>(0, (sum, c) => sum + (double.tryParse(c.text.trim()) ?? 0));
-
-  /// Every checked department, minus the [_allDepartmentsValue] sentinel.
-  List<String> get _realSelectedDepartments =>
-      _selectedDepartments.where((d) => d != _allDepartmentsValue).toList();
-
-  bool get _isAllDepartmentsSelected =>
-      _selectedDepartments.contains(_allDepartmentsValue);
-
-  bool get _isDepartmentsWeightValid =>
-      _equalWeights ||
-      _realSelectedDepartments.isEmpty ||
-      _totalDepartmentsWeight == 100;
 
   /// True unless the currently entered Start/End Date fall outside the
   /// parent Policy's own Start/End Date range, or End Date is before Start
@@ -273,122 +224,6 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
     return null;
   }
 
-  /// The department names to send to the cubit on save.
-  List<String> get _departmentsForSave => _realSelectedDepartments;
-
-  /// The manual per-department weights to send to the cubit on save. `null`
-  /// when [_equalWeights] is true, since the model generates an equal split
-  /// on its own.
-  List<double>? get _departmentWeightsForSave {
-    if (_equalWeights) return null;
-    return _realSelectedDepartments
-        .map((d) =>
-            double.tryParse(
-                _departmentWeightControllers[d]?.text.trim() ?? '') ??
-            0)
-        .toList();
-  }
-
-  /// Keeps [_departmentWeightControllers] in sync with the currently
-  /// selected (non-"All") departments: adds a controller for newly selected
-  /// departments and disposes/removes controllers for deselected ones.
-  void _syncDepartmentWeightControllers() {
-    final selected = _realSelectedDepartments.toSet();
-    _departmentWeightControllers.removeWhere((department, controller) {
-      final stale = !selected.contains(department);
-      if (stale) controller.dispose();
-      return stale;
-    });
-    for (final department in selected) {
-      _departmentWeightControllers.putIfAbsent(
-          department, () => TextEditingController(text: '0'));
-    }
-  }
-
-  /// Overwrites every selected department's weight controller with its
-  /// share of an equal 100-way split, matching [DepartmentWeight.equalSplit]
-  /// (the same helper the backend uses on save) so what's shown here is
-  /// exactly what gets persisted.
-  void _applyEqualSplitToControllers() {
-    for (final entry in DepartmentWeight.equalSplit(_realSelectedDepartments)) {
-      _departmentWeightControllers[entry.department]?.text =
-          formatControlWeight(entry.weight);
-    }
-  }
-
-  void _onEqualWeightsChanged(bool value) {
-    if (_isAllDepartmentsSelected) return;
-    setState(() {
-      _equalWeights = value;
-      _syncDepartmentWeightControllers();
-      if (value) _applyEqualSplitToControllers();
-    });
-  }
-
-  /// function name: [_onDepartmentsChanged]
-  ///
-  /// purpose: reconcile the raw toggle event from [CustomMultiSelectDropdown]
-  ///          against the business rule that "All" and "every real department
-  ///          individually checked" are the same state, and that state always
-  ///          forces [_equalWeights] on.
-  ///
-  /// parameters:
-  ///            [List<String>] newSelection: the full new selection reported by the dropdown
-  ///            [List<String>] availableDepartmentNames: every real (non-"All") department name
-  void _onDepartmentsChanged(
-      List<String> newSelection, List<String> availableDepartmentNames) {
-    final justChecked =
-        newSelection.where((d) => !_selectedDepartments.contains(d)).toList();
-    final justUnchecked =
-        _selectedDepartments.where((d) => !newSelection.contains(d)).toList();
-    final toggled = justChecked.isNotEmpty
-        ? justChecked.first
-        : (justUnchecked.isNotEmpty ? justUnchecked.first : null);
-
-    setState(() {
-      if (toggled == _allDepartmentsValue) {
-        if (justChecked.contains(_allDepartmentsValue)) {
-          _selectedDepartments = [
-            _allDepartmentsValue,
-            ...availableDepartmentNames,
-          ];
-          _equalWeights = true;
-        } else {
-          _selectedDepartments = [];
-        }
-      } else {
-        final realSelection =
-            newSelection.where((d) => d != _allDepartmentsValue).toList();
-        if (availableDepartmentNames.isNotEmpty &&
-            realSelection.length == availableDepartmentNames.length) {
-          _selectedDepartments = [_allDepartmentsValue, ...realSelection];
-          _equalWeights = true;
-        } else {
-          _selectedDepartments = realSelection;
-        }
-      }
-      if (_isAllDepartmentsSelected) {
-        for (final c in _departmentWeightControllers.values) {
-          c.dispose();
-        }
-        _departmentWeightControllers.clear();
-      } else {
-        _syncDepartmentWeightControllers();
-        if (_equalWeights) _applyEqualSplitToControllers();
-      }
-    });
-  }
-
-  void _onRemoveDepartment(String department) {
-    setState(() {
-      _selectedDepartments = _selectedDepartments
-          .where((d) => d != department && d != _allDepartmentsValue)
-          .toList();
-      _departmentWeightControllers.remove(department)?.dispose();
-      if (_equalWeights) _applyEqualSplitToControllers();
-    });
-  }
-
   bool _validate() {
     setState(() => _submitted = true);
     final endBeforeStart = _endDate != null &&
@@ -414,8 +249,9 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
             (_startDate != null && _endDate != null && !endBeforeStart)) &&
         double.tryParse(_weightController.text.trim()) != null &&
         (!_isEdit ||
-            (_realSelectedDepartments.isNotEmpty &&
-                (_equalWeights || _totalDepartmentsWeight == 100)));
+            (_departmentsForm.realSelectedDepartments.isNotEmpty &&
+                (_departmentsForm.equalWeights ||
+                    _departmentsForm.totalDepartmentsWeight == 100)));
   }
 
   void _onUploadDocumentEn() {
@@ -454,90 +290,7 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
   void _onRemoveDocumentEn() => setState(() => _documentEn = null);
   void _onRemoveDocumentAr() => setState(() => _documentAr = null);
 
-  /// Live validation for the Control Weight field: must be a positive
-  /// number no greater than 100, mirroring Policy Weight's own rule.
-  String? get _weightError {
-    final text = _weightController.text.trim();
-    if (text.isEmpty) return null;
-    final value = double.tryParse(text);
-    if (value == null) return 'Control Weight must be a valid number'.tr;
-    if (value <= 0) return 'Control Weight must be a positive number'.tr;
-    if (value > 100) return 'Control Weight cannot be more than 100'.tr;
-    return null;
-  }
-
-  /// Shared text field builder: shows a live English-only/Arabic-only
-  /// language-mismatch error, matching the same rule used elsewhere in
-  /// this feature (e.g. PolicyControlItemWidget).
-  Widget _textField({
-    required String label,
-    required String hint,
-    required TextEditingController controller,
-    bool rtl = false,
-    int? maxLines,
-    int? minLines,
-    int? maxLength,
-    bool showCharCount = false,
-    bool onlyDigits = false,
-    bool submitted = false,
-    String? englishOnlyError,
-    String? arabicOnlyError,
-    String? customError,
-  }) {
-    final languageError = rtl
-        ? (containsEnglishLetters(controller.text) ? arabicOnlyError : null)
-        : (containsArabicLetters(controller.text) ? englishOnlyError : null);
-
-    final field = CustomTextField(
-      label: label,
-      hint: hint,
-      controller: controller,
-      required: true,
-      submitted: submitted,
-      onlyDigits: onlyDigits,
-      errorText: customError ?? languageError,
-      maxLines: maxLines,
-      minLines: minLines,
-      maxLength: maxLength,
-      showCharCount: showCharCount,
-      fillColor: AppColors.background,
-      onChanged: (_) => setState(() {}),
-    );
-
-    if (!rtl) return field;
-    return Directionality(textDirection: TextDirection.rtl, child: field);
-  }
-
-  /// True if at least one Champion or Owner is currently assigned to this
-  /// control: the live picker selection if the user touched it, otherwise
-  /// whoever was already assigned when the page opened. A brand-new
-  /// Control has no assignees section at all (Create mode hides it), so
-  /// this is always false there.
-  bool _hasAnyAssignee(BuildContext context) {
-    final championCubit = context.read<ChampionCubit>();
-    final championState = championCubit.state;
-    final championEmails = _currentChampionEmails ??
-        (_isEdit && championState is ChampionListLoaded
-            ? championCubit.alreadyAssignedEmails(
-                championState.champions,
-                policyId: widget.policyId,
-                controlId: widget.existingControl!.id,
-              )
-            : const <String>[]);
-    final ownerCubit = context.read<OwnerCubit>();
-    final ownerState = ownerCubit.state;
-    final ownerEmails = _currentOwnerEmails ??
-        (_isEdit && ownerState is OwnerListLoaded
-            ? ownerCubit.alreadyAssignedEmails(
-                ownerState.owners,
-                policyId: widget.policyId,
-                controlId: widget.existingControl!.id,
-              )
-            : const <String>[]);
-    return championEmails.isNotEmpty || ownerEmails.isNotEmpty;
-  }
-
-  void _onSave(PolicyCubit cubit, {required ControlStatus status}) {
+  void _onSave(ControlCubit cubit, {required ControlStatus status}) {
     if (_isEdit) {
       cubit.updateControl(
         id: widget.existingControl!.id,
@@ -553,9 +306,9 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
         frequency: _frequency,
         startDate: _startDate,
         endDate: _endDate,
-        departments: _departmentsForSave,
-        departmentsWeights: _departmentWeightsForSave,
-        equalWeights: _equalWeights,
+        departments: _departmentsForm.departmentsForSave,
+        departmentsWeights: _departmentsForm.departmentWeightsForSave,
+        equalWeights: _departmentsForm.equalWeights,
         status: status,
         controlsDocumentFileEn: _documentEn?.file,
         controlsDocumentUrlEn:
@@ -589,16 +342,27 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
     }
   }
 
-  Future<void> _onStateChange(BuildContext context, PolicyState state) async {
-    if (state is PolicyLoading) {
+  Future<void> _onStateChange(BuildContext context, ControlState state) async {
+    if (state is ControlLoading) {
       showLoadingIndicator();
       return;
     }
     hideLoadingIndicator();
 
-    if (state is PolicyControlActionSuccess) {
+    if (state is ControlActionSuccess) {
       if (_isEdit) {
-        await _applyAssigneeChanges(context);
+        final hadFailure = await _assignees.applyAssigneeChanges(
+          context: context,
+          moduleId: widget.moduleId,
+          policyId: widget.policyId,
+          controlId: widget.existingControl!.id,
+        );
+        if (hadFailure && context.mounted) {
+          await showErrorDialog(
+            context: context,
+            subtitle: "Some champion/owner assignments couldn't be saved.".tr,
+          );
+        }
       }
       if (!context.mounted) return;
       final isDraft = state.control.status == ControlStatus.draft;
@@ -617,60 +381,9 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
       return;
     }
 
-    if (state is PolicyFailure) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(state.message), backgroundColor: AppColors.red),
-      );
+    if (state is ControlFailure) {
+      showErrorDialog(context: context, subtitle: state.message);
     }
-  }
-
-  Widget _documentButton({required VoidCallback onTap, required String title}) {
-    return customButtonWithSvg(
-      colorBorder: AppColors.primary,
-      space: 10.w,
-      radius: 8.r,
-      widthImage: 16.w,
-      heightImage: 16.h,
-      function: onTap,
-      title: title,
-      textStyle:
-          StyleText.fontSize14Weight500.copyWith(color: AppColors.textButton),
-      image: 'assets/hrAsset/Upload.svg',
-      color: AppColors.primary,
-      width: 220.w,
-      height: 36.h,
-      svgColor: AppColors.textButton,
-    );
-  }
-
-  /// function name: [_documentColumn]
-  ///
-  /// purpose: one document upload/preview column — shared by the ENG and AR
-  ///          Control Document sections so their layout stays identical
-  ///          whether they're shown side by side or (Arabic disabled) alone.
-  Widget _documentColumn({
-    required String label,
-    required PolicyDocumentInfo? document,
-    required VoidCallback onRemove,
-    required VoidCallback onUpload,
-  }) {
-    return Column(
-      spacing: 8.h,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label,
-            style:
-                StyleText.fontSize14Weight500.copyWith(color: AppColors.text)),
-        document != null
-            ? PolicyDocumentPreviewWidget(
-                document: document, onRemove: onRemove)
-            : SizedBox(
-                width: double.infinity,
-                child:
-                    _documentButton(onTap: onUpload, title: 'Control Document'),
-              ),
-      ],
-    );
   }
 
   /// function name: [_availableDepartmentNames]
@@ -690,293 +403,6 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
         .whereType<String>()
         .where((name) => name.isNotEmpty)
         .toList();
-  }
-
-  /// function name: [_buildDepartmentsSection]
-  ///
-  /// purpose: render the Department multi-select next to the Equal Weights
-  ///          toggle. Checking "All" (or every real department individually)
-  ///          selects every department and locks Equal Weights on, since an
-  ///          all-department split is always equal. Otherwise Equal Weights
-  ///          is user-controlled: on auto-splits 100 across the selection,
-  ///          off shows an editable weight row per selected department with
-  ///          a running total below (highlighted in red until it sums to
-  ///          100).
-  Widget _buildDepartmentsSection() {
-    final availableDepartmentNames = _availableDepartmentNames(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: CustomMultiSelectDropdown<String>(
-                label: 'Department'.tr,
-                hint: 'Select Department'.tr,
-                items: [
-                  MultiSelectDropdownItem<String>(
-                      value: _allDepartmentsValue, label: 'All'.tr),
-                  ...availableDepartmentNames.map(
-                    (d) => MultiSelectDropdownItem<String>(value: d, label: d),
-                  ),
-                ],
-                values: _selectedDepartments,
-                onChanged: (newSelection) => _onDepartmentsChanged(
-                    newSelection, availableDepartmentNames),
-                fillColor: AppColors.background,
-                errorText: _submitted && _realSelectedDepartments.isEmpty
-                    ? 'This field is required.'.tr
-                    : null,
-              ),
-            ),
-            SizedBox(width: 10.w),
-            Expanded(
-              child: Row(
-                children: [
-                  Text(
-                    'Equal Weights'.tr,
-                    style: StyleText.fontSize14Weight500
-                        .copyWith(color: AppColors.text),
-                  ),
-                  Spacer(),
-                  FlutterSwitch(
-                    width: 38.sp,
-                    height: 22.sp,
-                    padding: 3.sp,
-                    borderRadius: 20.sp,
-                    toggleSize: 16.sp,
-                    activeColor: AppColors.secondaryPrimary,
-                    inactiveColor: Colors.grey.withValues(alpha: 0.16),
-                    value: _equalWeights,
-                    onToggle: _onEqualWeightsChanged,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        if (_realSelectedDepartments.isNotEmpty &&
-            !_isAllDepartmentsSelected) ...[
-          SizedBox(height: 15.h),
-          ..._realSelectedDepartments.map(_buildDepartmentWeightRow),
-          Container(
-            width: 160.w,
-            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: _isDepartmentsWeightValid
-                    ? AppColors.border
-                    : AppColors.red,
-              ),
-              borderRadius: BorderRadius.circular(6.r),
-            ),
-            child: Text(
-              '${'Total Weight'.tr} : ${_totalDepartmentsWeight.toStringAsFixed(0)}',
-              style: StyleText.fontSize14Weight500.copyWith(
-                color:
-                    _isDepartmentsWeightValid ? AppColors.text : AppColors.red,
-              ),
-            ),
-          ),
-          if (!_isDepartmentsWeightValid) ...[
-            SizedBox(height: 4.h),
-            Text(
-              'Total Weight should be 100'.tr,
-              style:
-                  StyleText.fontSize14Weight500.copyWith(color: AppColors.red),
-            ),
-          ],
-        ],
-      ],
-    );
-  }
-
-  /// function name: [_buildDepartmentWeightRow]
-  ///
-  /// purpose: render a single selected department's name alongside its
-  ///          weight field and a control to remove it from the selection.
-  ///          The weight field is editable while Equal Weights is off, and
-  ///          read-only (showing the auto-computed equal share) while it's
-  ///          on — hidden entirely only when "All" is selected instead.
-  ///
-  /// parameters:
-  ///            [String] department: the department name this row represents
-  ///
-  /// return type: [Widget] - the row widget for this department
-  Widget _buildDepartmentWeightRow(String department) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 10.h),
-      child: Row(
-        children: [
-          Expanded(
-            child: Container(
-              height: 40.h,
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.symmetric(horizontal: 12.w),
-              decoration: BoxDecoration(
-                color: AppColors.background,
-                borderRadius: BorderRadius.circular(4.r),
-              ),
-              child: Text(
-                department,
-                style: StyleText.fontSize14Weight500
-                    .copyWith(color: AppColors.text),
-              ),
-            ),
-          ),
-          SizedBox(width: 10.w),
-          Expanded(
-            child: CustomTextField(
-              hint: '0',
-              controller: _departmentWeightControllers[department],
-              fillColor: AppColors.background,
-              readOnly: _equalWeights,
-              onChanged: _equalWeights ? null : (_) => setState(() {}),
-            ),
-          ),
-          SizedBox(width: 4.w),
-          IconButton(
-            icon: Icon(Icons.remove_circle, color: AppColors.red, size: 20.sp),
-            onPressed: () => _onRemoveDepartment(department),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// function name: [_applyAssigneeChanges]
-  ///
-  /// purpose: called once the Control itself has already saved
-  ///          successfully. Reads each Cubit's already-loaded state
-  ///          directly (no re-fetch — the page loaded it once on open and
-  ///          never refreshes it), recomputes "already assigned" the same
-  ///          way [_buildAssigneesSections] did, and diffs it against
-  ///          whatever the user last toggled. If a Cubit never finished
-  ///          loading, that side is skipped entirely rather than guessed at.
-  ///          The per-cubit "already assigned" resolution and the actual
-  ///          create/update diffing now live in ChampionCubit/OwnerCubit
-  ///          (`alreadyAssignedEmails`/`applyAssignmentDiff`); this method is
-  ///          the remaining UI-side orchestration that wires them together
-  ///          and surfaces a failure to the user.
-  Future<void> _applyAssigneeChanges(BuildContext context) async {
-    final controlId = widget.existingControl!.id;
-    final championCubit = context.read<ChampionCubit>();
-    final ownerCubit = context.read<OwnerCubit>();
-    var hadFailure = false;
-
-    final championState = championCubit.state;
-    if (championState is ChampionListLoaded) {
-      final alreadyAssigned = championCubit.alreadyAssignedEmails(
-        championState.champions,
-        policyId: widget.policyId,
-        controlId: controlId,
-      );
-      final selected = _currentChampionEmails ?? alreadyAssigned;
-      final ok = await championCubit.applyAssignmentDiff(
-        allChampions: championState.champions,
-        alreadyAssigned: alreadyAssigned,
-        selected: selected,
-        moduleId: widget.moduleId,
-        policyId: widget.policyId,
-        controlId: controlId,
-      );
-      if (!ok) hadFailure = true;
-    }
-
-    final ownerState = ownerCubit.state;
-    if (ownerState is OwnerListLoaded) {
-      final alreadyAssigned = ownerCubit.alreadyAssignedEmails(
-        ownerState.owners,
-        policyId: widget.policyId,
-        controlId: controlId,
-      );
-      final selected = _currentOwnerEmails ?? alreadyAssigned;
-      final ok = await ownerCubit.applyAssignmentDiff(
-        allOwners: ownerState.owners,
-        alreadyAssigned: alreadyAssigned,
-        selected: selected,
-        moduleId: widget.moduleId,
-        policyId: widget.policyId,
-        controlId: controlId,
-      );
-      if (!ok) hadFailure = true;
-    }
-
-    if (hadFailure && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content:
-              Text("Some champion/owner assignments couldn't be saved.".tr),
-          backgroundColor: AppColors.red,
-        ),
-      );
-    }
-  }
-
-  /// function name: [_buildAssigneesSections]
-  ///
-  /// purpose: render the "Control Champions" and "Control Owner" pickers
-  ///          below the Departments section. Edit mode only — a new
-  ///          Control has no id to assign against yet. Each picker starts
-  ///          pre-selected with whoever is already assigned to this exact
-  ///          {Policy, Control} pair, filtered live by the Control's
-  ///          currently-selected departments, and reports every toggle back
-  ///          via [_currentChampionEmails]/[_currentOwnerEmails] — nothing
-  ///          is persisted here; see [_applyAssigneeChanges] (Task 4) for
-  ///          that, which runs after the Control itself saves.
-  Widget _buildAssigneesSections() {
-    if (!_isEdit) return const SizedBox.shrink();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(height: 15.h),
-        BlocBuilder<ChampionCubit, ChampionState>(
-          builder: (context, state) {
-            if (state is! ChampionListLoaded) {
-              return Center(
-                child: CircularProgressIndicator(color: AppColors.primary),
-              );
-            }
-            return GrcOwnerSection(
-              sectionTitle: 'Control Champions',
-              initialOwnerEmails: context.read<ChampionCubit>().alreadyAssignedEmails(
-                    state.champions,
-                    policyId: widget.policyId,
-                    controlId: widget.existingControl!.id,
-                  ),
-              selectedDepartmentNames: _realSelectedDepartments,
-              showRemoveIconWhenSelected: true,
-              onOwnersChanged: (selected) => setState(() =>
-                  _currentChampionEmails =
-                      selected.map((o) => o.email).toList()),
-            );
-          },
-        ),
-        SizedBox(height: 15.h),
-        BlocBuilder<OwnerCubit, OwnerState>(
-          builder: (context, state) {
-            if (state is! OwnerListLoaded) {
-              return Center(
-                child: CircularProgressIndicator(color: AppColors.primary),
-              );
-            }
-            return GrcOwnerSection(
-              sectionTitle: 'Control Owner',
-              initialOwnerEmails: context.read<OwnerCubit>().alreadyAssignedEmails(
-                    state.owners,
-                    policyId: widget.policyId,
-                    controlId: widget.existingControl!.id,
-                  ),
-              selectedDepartmentNames: _realSelectedDepartments,
-              showRemoveIconWhenSelected: true,
-              onOwnersChanged: (selected) => setState(() =>
-                  _currentOwnerEmails = selected.map((o) => o.email).toList()),
-            );
-          },
-        ),
-      ],
-    );
   }
 
   Widget _buildAppBar() {
@@ -1020,241 +446,11 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
     );
   }
 
-  /// The Control Name (English) + (Arabic-or-Number) paired row.
-  Widget _buildNameRow(bool isTablet) {
-    return GrcResponsiveFieldRow(
-      isTablet: isTablet,
-      children: [
-        _textField(
-          label: 'Control Name'.tr,
-          hint: 'Text here'.tr,
-          controller: _nameController,
-          submitted: _submitted,
-          englishOnlyError: 'Control Name must be written in English'.tr,
-        ),
-        _isArabicEnabled
-            ? _textField(
-                label: 'Control Name'.tr,
-                hint: 'Type here'.tr,
-                controller: _nameArController,
-                rtl: true,
-                submitted: _submitted && _arabicTouched,
-                arabicOnlyError: 'Control Name must be written in Arabic'.tr,
-              )
-            : _textField(
-                label: 'Control Number'.tr,
-                hint: 'Text here'.tr,
-                controller: _numberController,
-                submitted: _submitted,
-                englishOnlyError:
-                    'Control Number must be written in English'.tr,
-              ),
-      ],
-    );
-  }
-
-  /// The Control Number (English) + (Arabic) paired row — Arabic mode only.
-  Widget _buildNumberRow(bool isTablet) {
-    return GrcResponsiveFieldRow(
-      isTablet: isTablet,
-      children: [
-        _textField(
-          label: 'Control Number'.tr,
-          hint: 'Text here'.tr,
-          controller: _numberController,
-          submitted: _submitted,
-          englishOnlyError: 'Control Number must be written in English'.tr,
-        ),
-        _textField(
-          label: 'Control Number'.tr,
-          hint: 'Type here'.tr,
-          controller: _numberArController,
-          rtl: true,
-          submitted: _submitted && _arabicTouched,
-          arabicOnlyError: 'Control Number must be written in Arabic'.tr,
-        ),
-      ],
-    );
-  }
-
-  /// The Control Description (English) and, in Arabic mode, (Arabic) fields.
-  Widget _buildDescriptionFields() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _textField(
-          label: 'Control Description'.tr,
-          hint: 'Text here'.tr,
-          controller: _descriptionController,
-          submitted: _submitted,
-          maxLines: 3,
-          minLines: 3,
-          maxLength: 500,
-          showCharCount: true,
-          englishOnlyError:
-              'Control Description must be written in English'.tr,
-        ),
-        if (_isArabicEnabled) ...[
-          SizedBox(height: 15.h),
-          _textField(
-            label: 'Control Description'.tr,
-            hint: 'Write a Description'.tr,
-            controller: _descriptionArController,
-            rtl: true,
-            submitted: _submitted && _arabicTouched,
-            maxLines: 3,
-            minLines: 3,
-            maxLength: 500,
-            showCharCount: true,
-            arabicOnlyError: 'Control Description must be written in Arabic'.tr,
-          ),
-        ],
-      ],
-    );
-  }
-
-  /// The Start Date + End Date paired row — Edit mode only.
-  ///
-  /// NOTE: intentionally NOT routed through [_responsiveFieldRow]. The tablet
-  /// layout passes a `dateFormatter` to each [CustomDropdownCalendar] that the
-  /// phone layout omits, so the two branches build genuinely different widgets
-  /// and can't share a single children list. Preserved exactly as it was
-  /// inline — this is a pure move, not a behavior change.
-  Widget _buildDateRow(bool isTablet) {
-    return isTablet
-        ? Row(children: [
-            Expanded(
-              child: CustomDropdownCalendar(
-                borderRadius: BorderRadius.circular(4.r),
-                label: 'Start Date'.tr,
-                hint: 'Select Start Date'.tr,
-                value: _startDate,
-                onChanged: (d) => setState(() => _startDate = d),
-                fillColor: AppColors.background,
-                firstDate: widget.policyStartDate,
-                lastDate: widget.policyEndDate,
-                dateFormatter: (d) =>
-                    intl.DateFormat('d MMM yyyy').format(d),
-                errorText: _startDateError,
-              ),
-            ),
-            SizedBox(width: 10.w),
-            Expanded(
-              child: CustomDropdownCalendar(
-                borderRadius: BorderRadius.circular(4.r),
-                label: 'End Date'.tr,
-                hint: 'Select End Date'.tr,
-                value: _endDate,
-                onChanged: (d) => setState(() => _endDate = d),
-                fillColor: AppColors.background,
-                firstDate: _startDate ?? widget.policyStartDate,
-                lastDate: widget.policyEndDate,
-                dateFormatter: (d) =>
-                    intl.DateFormat('d MMM yyyy').format(d),
-                errorText: _endDateError,
-              ),
-            ),
-          ])
-        : Column(children: [
-            CustomDropdownCalendar(
-              borderRadius: BorderRadius.circular(4.r),
-              label: 'Start Date'.tr,
-              hint: 'Select Start Date'.tr,
-              value: _startDate,
-              onChanged: (d) => setState(() => _startDate = d),
-              fillColor: AppColors.background,
-              firstDate: widget.policyStartDate,
-              lastDate: widget.policyEndDate,
-              errorText: _startDateError,
-            ),
-            SizedBox(height: 15.h),
-            CustomDropdownCalendar(
-              borderRadius: BorderRadius.circular(4.r),
-              label: 'End Date'.tr,
-              hint: 'Select End Date'.tr,
-              value: _endDate,
-              onChanged: (d) => setState(() => _endDate = d),
-              fillColor: AppColors.background,
-              firstDate: _startDate ?? widget.policyStartDate,
-              lastDate: widget.policyEndDate,
-              errorText: _endDateError,
-            ),
-          ]);
-  }
-
-  /// The Frequency dropdown + Control Weight field paired row.
-  Widget _buildFrequencyWeightRow(bool isTablet) {
-    return GrcResponsiveFieldRow(
-      isTablet: isTablet,
-      children: [
-        CustomDropdown<String>(
-          label: 'Frequency'.tr,
-          hint: 'Choose Here'.tr,
-          items: ControlFrequency.allValues
-              .map((d) => DropdownItem<String>(value: d, label: d))
-              .toList(),
-          value: _frequency,
-          onChanged: (v) => setState(() => _frequency = v),
-          fillColor: AppColors.background,
-          errorText: _submitted && _frequency == null
-              ? 'This field is required.'.tr
-              : null,
-        ),
-        _textField(
-          label: 'Control Weight'.tr,
-          hint: 'Text Here'.tr,
-          controller: _weightController,
-          submitted: _submitted,
-          onlyDigits: true,
-          customError: _weightError,
-        ),
-      ],
-    );
-  }
-
-  /// The Control Document upload columns. Two Expanded columns split the row
-  /// 50/50 when Arabic is on; with only the ENG column left, an Expanded there
-  /// would stretch it across the whole row instead of keeping that same
-  /// half-width look, so a [FractionallySizedBox] is used instead.
-  Widget _buildDocumentsRow() {
-    return _isArabicEnabled
-        ? Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: _documentColumn(
-                  label: 'Control Document ENG',
-                  document: _documentEn,
-                  onRemove: _onRemoveDocumentEn,
-                  onUpload: _onUploadDocumentEn,
-                ),
-              ),
-              SizedBox(width: 10.w),
-              Expanded(
-                child: _documentColumn(
-                  label: 'Control Document AR',
-                  document: _documentAr,
-                  onRemove: _onRemoveDocumentAr,
-                  onUpload: _onUploadDocumentAr,
-                ),
-              ),
-            ],
-          )
-        : FractionallySizedBox(
-            widthFactor: 0.5,
-            alignment: Alignment.centerLeft,
-            child: _documentColumn(
-              label: 'Control Document ENG',
-              document: _documentEn,
-              onRemove: _onRemoveDocumentEn,
-              onUpload: _onUploadDocumentEn,
-            ),
-          );
-  }
-
   /// The scrollable form card: every field, wrapped in the rounded container
   /// that fills the space between the app bar and the action buttons.
   Widget _buildFormCard(bool isTablet) {
+    final availableDepartmentNames =
+        _isEdit ? _availableDepartmentNames(context) : const <String>[];
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(15.sp),
@@ -1269,24 +465,90 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildNameRow(isTablet),
-              SizedBox(height: 15.h),
-              if (_isArabicEnabled) ...[
-                _buildNumberRow(isTablet),
-                SizedBox(height: 15.h),
-              ],
-              _buildDescriptionFields(),
+              ControlInfoFormWidget(
+                isTablet: isTablet,
+                isArabicEnabled: _isArabicEnabled,
+                submitted: _submitted,
+                arabicTouched: _arabicTouched,
+                nameController: _nameController,
+                nameArController: _nameArController,
+                numberController: _numberController,
+                numberArController: _numberArController,
+                descriptionController: _descriptionController,
+                descriptionArController: _descriptionArController,
+              ),
               SizedBox(height: 15.h),
               if (_isEdit) ...[
-                _buildDateRow(isTablet),
+                ControlDateRowWidget(
+                  isTablet: isTablet,
+                  startDate: _startDate,
+                  endDate: _endDate,
+                  onStartDateChanged: (d) => setState(() => _startDate = d),
+                  onEndDateChanged: (d) => setState(() => _endDate = d),
+                  firstDate: widget.policyStartDate,
+                  lastDate: widget.policyEndDate,
+                  startDateError: _startDateError,
+                  endDateError: _endDateError,
+                ),
                 SizedBox(height: 15.h),
               ],
-              _buildFrequencyWeightRow(isTablet),
+              ControlFrequencyWeightRowWidget(
+                isTablet: isTablet,
+                submitted: _submitted,
+                frequency: _frequency,
+                onFrequencyChanged: (v) => setState(() => _frequency = v),
+                weightController: _weightController,
+              ),
               SizedBox(height: 15.h),
-              _buildDocumentsRow(),
+              ControlDocumentsRowWidget(
+                isArabicEnabled: _isArabicEnabled,
+                documentEn: _documentEn,
+                documentAr: _documentAr,
+                onUploadDocumentEn: _onUploadDocumentEn,
+                onUploadDocumentAr: _onUploadDocumentAr,
+                onRemoveDocumentEn: _onRemoveDocumentEn,
+                onRemoveDocumentAr: _onRemoveDocumentAr,
+              ),
               SizedBox(height: 15.h),
-              if (_isEdit) _buildDepartmentsSection(),
-              _buildAssigneesSections(),
+              if (_isEdit)
+                ControlDepartmentsSectionWidget(
+                  allDepartmentsValue:
+                      ControlDepartmentWeightForm.allDepartmentsValue,
+                  availableDepartmentNames: availableDepartmentNames,
+                  selectedDepartments: _departmentsForm.selectedDepartments,
+                  realSelectedDepartments:
+                      _departmentsForm.realSelectedDepartments,
+                  isAllDepartmentsSelected:
+                      _departmentsForm.isAllDepartmentsSelected,
+                  equalWeights: _departmentsForm.equalWeights,
+                  departmentWeightControllers:
+                      _departmentsForm.departmentWeightControllers,
+                  totalDepartmentsWeight:
+                      _departmentsForm.totalDepartmentsWeight,
+                  isDepartmentsWeightValid:
+                      _departmentsForm.isDepartmentsWeightValid,
+                  submitted: _submitted,
+                  onDepartmentsChanged: (newSelection) => setState(() =>
+                      _departmentsForm.onDepartmentsChanged(
+                          newSelection, availableDepartmentNames)),
+                  onEqualWeightsChanged: (v) => setState(
+                      () => _departmentsForm.onEqualWeightsChanged(v)),
+                  onRemoveDepartment: (d) => setState(
+                      () => _departmentsForm.onRemoveDepartment(d)),
+                ),
+              if (_isEdit)
+                ControlAssigneesSectionWidget(
+                  policyId: widget.policyId,
+                  controlId: widget.existingControl!.id,
+                  realSelectedDepartments:
+                      _departmentsForm.realSelectedDepartments,
+                  onChampionsChanged: (selected) => setState(() =>
+                      _assignees.currentChampionEmails =
+                          selected.map((o) => o.email).toList()),
+                  onOwnersChanged: (selected) => setState(() =>
+                      _assignees.currentOwnerEmails =
+                          selected.map((o) => o.email).toList()),
+                ),
             ],
           ),
         ),
@@ -1296,84 +558,55 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
 
   /// The bottom action bar: Discard on the left, and (Save For Later +)
   /// Add/Save on the right. [ctx] is the Builder context that carries the
-  /// Policy/Champion/Owner cubits; [cubit] is the already-read PolicyCubit.
-  Widget _buildActionButtons(PolicyCubit cubit, BuildContext ctx) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        customButton(
-          title: 'Discard'.tr,
-          function: () => Navigator.of(context).pop(),
-          height: 38.h,
-          width: 150.w,
-          color: AppColors.grey,
-          textColor: AppColors.text,
-          borderColor: AppColors.border,
-        ),
-        Row(
-          children: [
-            if (!_isEdit) ...[
-              customButton(
-                title: 'Save For Later'.tr,
-                function: () {
-                  showConfirmDialog(
-                    context: context,
-                    title: 'Save As Draft'.tr,
-                    cancelLabel: 'Cancel'.tr,
-                    confirmLabel: 'Save'.tr,
-                    subtitle:
-                        'Are you sure you want to save this control as a draft?'
-                            .tr,
-                    onConfirm: () =>
-                        _onSave(cubit, status: ControlStatus.draft),
-                  );
-                },
-                height: 38.h,
-                width: 150.w,
-                color: AppColors.grey,
-                textColor: AppColors.text,
-                borderColor: AppColors.border,
+  /// Champion/Owner cubits; [cubit] is the already-read ControlCubit.
+  Widget _buildActionButtons(ControlCubit cubit, BuildContext ctx) {
+    return ControlActionButtonsWidget(
+      isEdit: _isEdit,
+      onDiscard: () => Navigator.of(context).pop(),
+      onSaveDraft: _isEdit
+          ? null
+          : () {
+              showConfirmDialog(
+                context: context,
+                title: 'Save As Draft'.tr,
+                cancelLabel: 'Cancel'.tr,
+                confirmLabel: 'Save'.tr,
+                subtitle:
+                    'Are you sure you want to save this control as a draft?'
+                        .tr,
+                onConfirm: () => _onSave(cubit, status: ControlStatus.draft),
+              );
+            },
+      onSave: () {
+        if (_isEdit &&
+            (!_departmentsForm.isDepartmentsWeightValid ||
+                !_isControlDateRangeValid)) {
+          setState(() {});
+          return;
+        }
+        showConfirmDialog(
+          context: context,
+          title: _isEdit ? 'Editing Control'.tr : 'Creating Control'.tr,
+          cancelLabel: 'No'.tr,
+          confirmLabel: 'Yes'.tr,
+          subtitle: _isEdit
+              ? 'Are You Sure You Want To Edit This Control ?'.tr
+              : 'Are You Sure You Want To Create This Control ?'.tr,
+          onConfirm: () => _onSave(
+            cubit,
+            status: ControlStatus.resolve(
+              requested: ControlStatus.computeDateBased(_effectiveStartDate),
+              manualInactive: _manualInactive,
+              hasAnyAssignee: _assignees.hasAnyAssignee(
+                context: ctx,
+                isEdit: _isEdit,
+                policyId: widget.policyId,
+                controlId: widget.existingControl?.id ?? '',
               ),
-              SizedBox(width: 10.w),
-            ],
-            customButton(
-              title: _isEdit ? 'Save'.tr : 'Add'.tr,
-              function: () {
-                if (_isEdit &&
-                    (!_isDepartmentsWeightValid ||
-                        !_isControlDateRangeValid)) {
-                  setState(() {});
-                  return;
-                }
-                showConfirmDialog(
-                  context: context,
-                  title: _isEdit
-                      ? 'Editing Control'.tr
-                      : 'Creating Control'.tr,
-                  cancelLabel: 'No'.tr,
-                  confirmLabel: 'Yes'.tr,
-                  subtitle: _isEdit
-                      ? 'Are You Sure You Want To Edit This Control ?'.tr
-                      : 'Are You Sure You Want To Create This Control ?'.tr,
-                  onConfirm: () => _onSave(
-                    cubit,
-                    status: cubit.resolveControlStatus(
-                      requested: cubit
-                          .computeDateBasedStatus(_effectiveStartDate),
-                      manualInactive: _manualInactive,
-                      hasAnyAssignee: _hasAnyAssignee(ctx),
-                    ),
-                  ),
-                );
-              },
-              height: 38.h,
-              width: 150.w,
-              color: AppColors.primary,
-              textColor: AppColors.textButton,
             ),
-          ],
-        ),
-      ],
+          ),
+        );
+      },
     );
   }
 
@@ -1381,14 +614,14 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
   Widget build(BuildContext context) {
     final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
 
-    // Policy/Champion/Owner cubits are provided by whichever page pushed
+    // Control/Champion/Owner cubits are provided by whichever page pushed
     // this route (ControlDetailsPage reuses its own instances via
     // BlocProvider.value; flow-start entry points such as "Add Control"
     // create fresh ones) — this page only ever reads them.
     return Builder(
       builder: (ctx) {
-        final cubit = ctx.read<PolicyCubit>();
-        return BlocListener<PolicyCubit, PolicyState>(
+        final cubit = ctx.read<ControlCubit>();
+        return BlocListener<ControlCubit, ControlState>(
           listener: _onStateChange,
           child: Scaffold(
             body: SafeArea(

@@ -4,39 +4,42 @@
 ///              separate full-page route, AddEditControlPage.
 /// Author: Mohamed Magdy Abdelkhalek
 /// Date: 2026-07-21
-/// Dependencies: flutter_bloc, PolicyCubit, OwnerCubit, ControlEntity,
-///               GRCModuleEntity, PolicyEntity, get_it
+/// Dependencies: flutter_bloc, ControlCubit, ChampionCubit, OwnerCubit,
+///               ControlEntity, GRCModuleEntity, PolicyEntity, get_it
 /// Revision History: 2026-07-21 - Initial creation
+///                   2026-07-28 - Split view sections out into
+///                                widgets/control_details_widget/
 library;
 
 /// ************************* FILE INFO *************************** ///
 /// File Name: control_details_page.dart
 /// Purpose: Contains ControlDetailsPage, the read/delete details screen for
 ///          a single Control, opened by tapping a Control card on the
-///          Policy Details page.
+///          Policy Details page. Owns the Control state (post-edit/delete
+///          refresh); every visual section is delegated to a widget under
+///          widgets/control_details_widget/.
 /// Author: Mohamed Magdy Abdelkhalek
 /// Created At: 21/7/2026
 
 import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart'
     show showSuccessDialog, showErrorDialog;
-import 'package:demo_app/core/custom/16-custom_card_styles.dart';
-import 'package:demo_app/core/custom/22-custom_uploaded_document_card.dart';
-import 'package:demo_app/core/custom/5-custom_button.dart';
 import 'package:demo_app/core/custom/loading.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
-import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/add_edit_control_page.dart';
+import 'package:demo_app/features/grc/control/presentation/ui/widgets/control_details_widget/control_departments_weight_section_widget.dart';
+import 'package:demo_app/features/grc/control/presentation/ui/widgets/control_details_widget/control_description_section_widget.dart';
+import 'package:demo_app/features/grc/control/presentation/ui/widgets/control_details_widget/control_documents_preview_row_widget.dart';
+import 'package:demo_app/features/grc/control/presentation/ui/widgets/control_details_widget/control_frequency_weight_dates_row_widget.dart';
+import 'package:demo_app/features/grc/control/presentation/ui/widgets/control_details_widget/control_score_and_previous_owners_row_widget.dart';
 import 'package:demo_app/features/grc/control_champion/presentation/controller/champion_cubit.dart';
-import 'package:demo_app/features/grc/control_owner/domain/entities/owner_entity.dart';
 import 'package:demo_app/features/grc/control_owner/presentation/controller/owner_cubit.dart';
 import 'package:demo_app/features/grc/control_owner/presentation/ui/pages/control_previous_owners_page.dart';
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details_widget/grc_action_buttons.dart';
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
-import 'package:demo_app/features/grc/policy/presentation/controller/policy_cubit.dart';
-import 'package:demo_app/features/grc/policy/presentation/ui/widgets/policy_details_widget/grc_owner_badge.dart';
+import 'package:demo_app/features/grc/control/presentation/controller/control_cubit.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -48,7 +51,7 @@ import 'package:intl/intl.dart' hide TextDirection;
 /// class name: [ControlDetailsPage]
 ///
 /// purpose: entry-point widget for the Control Details screen. Provides its
-///          own [PolicyCubit] (delete + post-edit refresh), [ChampionCubit]
+///          own [ControlCubit] (delete + post-edit refresh), [ChampionCubit]
 ///          and [OwnerCubit] (champion/owner lookup), and hands all three
 ///          down to [AddEditControlPage] via `BlocProvider.value` so state
 ///          doesn't diverge between the two pages.
@@ -74,8 +77,8 @@ class ControlDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<PolicyCubit>(
-          create: (_) => GetIt.instance<PolicyCubit>(),
+        BlocProvider<ControlCubit>(
+          create: (_) => GetIt.instance<ControlCubit>(),
         ),
         BlocProvider<ChampionCubit>(
           create: (_) => GetIt.instance<ChampionCubit>()
@@ -122,7 +125,7 @@ class _ControlDetailsBodyState extends State<_ControlDetailsBody> {
     _control = widget.initialControl;
   }
 
-  Future<void> _openEditControl(PolicyCubit cubit) async {
+  Future<void> _openEditControl(ControlCubit cubit) async {
     final championCubit = context.read<ChampionCubit>();
     final ownerCubit = context.read<OwnerCubit>();
     await Navigator.push<bool>(
@@ -130,7 +133,7 @@ class _ControlDetailsBodyState extends State<_ControlDetailsBody> {
       PageRouteBuilder(
         pageBuilder: (_, __, ___) => MultiBlocProvider(
           providers: [
-            BlocProvider<PolicyCubit>.value(value: cubit),
+            BlocProvider<ControlCubit>.value(value: cubit),
             BlocProvider<ChampionCubit>.value(value: championCubit),
             BlocProvider<OwnerCubit>.value(value: ownerCubit),
           ],
@@ -160,7 +163,7 @@ class _ControlDetailsBodyState extends State<_ControlDetailsBody> {
     }
   }
 
-  void _onDelete(PolicyCubit cubit) {
+  void _onDelete(ControlCubit cubit) {
     cubit.deleteControl(
       id: _control.id,
       moduleId: widget.module.moduleId,
@@ -168,20 +171,20 @@ class _ControlDetailsBodyState extends State<_ControlDetailsBody> {
     );
   }
 
-  void _onStateChange(BuildContext context, PolicyState state) {
-    if (state is PolicyLoading) {
+  void _onStateChange(BuildContext context, ControlState state) {
+    if (state is ControlLoading) {
       showLoadingIndicator();
       return;
     }
     hideLoadingIndicator();
 
-    if (state is PolicyControlsListLoaded) {
+    if (state is ControlsListLoaded) {
       final updated = state.controls.where((c) => c.id == _control.id);
       if (updated.isNotEmpty) setState(() => _control = updated.first);
       return;
     }
 
-    if (state is PolicyControlDeleted) {
+    if (state is ControlDeleted) {
       showSuccessDialog(
         context: context,
         title: 'Control Deleted'.tr,
@@ -191,146 +194,9 @@ class _ControlDetailsBodyState extends State<_ControlDetailsBody> {
       return;
     }
 
-    if (state is PolicyFailure) {
+    if (state is ControlFailure) {
       showErrorDialog(context: context, subtitle: state.message);
     }
-  }
-
-  Widget _infoRow(String label, String value) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 8.h),
-      child: Text.rich(
-        TextSpan(
-          text: '$label ',
-          style: CardStyles.label(14),
-          children: [TextSpan(text: value, style: CardStyles.value(14))],
-        ),
-      ),
-    );
-  }
-
-  /// Every owner email assigned to this exact {Policy, Control} pair, in
-  /// [owners]' original order. Mirrors AddEditControlPage's
-  /// `_alreadyAssignedOwnerEmails`.
-  List<String> _ownerEmailsForControl(List<OwnerEntity> owners) {
-    return owners
-        .where((o) => o.assigningControls.any((a) =>
-            a.policyId == widget.policy.id && a.controlId == _control.id))
-        .map((o) => o.ownerEmail)
-        .toList();
-  }
-
-  Widget _buildDescriptionHeaderRow(DateFormat dateFormat) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Control Description'.tr,
-          style: StyleText.fontSize14Weight500
-              .copyWith(color: AppColors.secondaryText),
-        ),
-        Text(
-          '${'Last Update'.tr}: ${dateFormat.format(_control.lastModifiedDate)}',
-          style: StyleText.fontSize12Weight400
-              .copyWith(color: AppColors.secondaryText),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDocumentsRow(DateFormat dateFormat) {
-    final hasEn = _control.controlsDocumentEn != null;
-    final hasAr = _control.controlsDocumentAr != null;
-    if (!hasEn && !hasAr) return const SizedBox.shrink();
-
-    Widget documentCard(String url) => Expanded(
-          child: Container(
-            decoration: BoxDecoration(
-              color: AppColors.field,
-              borderRadius: BorderRadius.circular(8.r),
-              border: Border.all(color: AppColors.border),
-            ),
-            child: ProductWarrantyCard(
-              fileName: url.split('/').last,
-              date: dateFormat.format(_control.lastModifiedDate),
-            ),
-          ),
-        );
-
-    return Padding(
-      padding: EdgeInsets.only(bottom: 10.h),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (hasEn) documentCard(_control.controlsDocumentEn!),
-          if (hasEn && hasAr) SizedBox(width: 12.w),
-          if (hasAr) documentCard(_control.controlsDocumentAr!),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFrequencyWeightDatesRow(DateFormat dateFormat) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(child: _infoRow('Frequency:'.tr, _control.frequency)),
-        Expanded(
-          child: _infoRow(
-            'Control Weight:'.tr,
-            _control.controlsWeight.toStringAsFixed(0),
-          ),
-        ),
-        Expanded(
-          child: _infoRow(
-            'Start Date:'.tr,
-            dateFormat.format(_control.startDate),
-          ),
-        ),
-        Expanded(
-          child: _infoRow('End Date:'.tr, dateFormat.format(_control.endDate)),
-        ),
-      ],
-    );
-  }
-
-  Widget _departmentChip(String text) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
-      decoration: BoxDecoration(
-        color: AppColors.background,
-        borderRadius: BorderRadius.circular(4.r),
-      ),
-      child: Text(
-        text,
-        style: StyleText.fontSize12Weight500.copyWith(color: AppColors.text),
-      ),
-    );
-  }
-
-  Widget _buildDepartmentsWeightSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Departments Weight'.tr,
-          style: StyleText.fontSize14Weight500
-              .copyWith(color: AppColors.secondaryText),
-        ),
-        SizedBox(height: 8.h),
-        _control.departments.isEmpty
-            ? _departmentChip('Not Assigned'.tr)
-            : Wrap(
-                spacing: 8.w,
-                runSpacing: 8.h,
-                children: _control.departments
-                    .map((d) => _departmentChip(
-                        '${d.department} | ${d.weight.toStringAsFixed(0)}'))
-                    .toList(),
-              ),
-      ],
-    );
   }
 
   void _openPreviousControlOwners() {
@@ -349,50 +215,13 @@ class _ControlDetailsBodyState extends State<_ControlDetailsBody> {
     );
   }
 
-  Widget _buildScoreAndPreviousOwnersRow() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-          decoration: BoxDecoration(
-            color: AppColors.field,
-            borderRadius: BorderRadius.circular(4.r),
-          ),
-          child: Text.rich(
-            TextSpan(
-              text: '${'Score'.tr}: ',
-              style: StyleText.fontSize14Weight500
-                  .copyWith(color: AppColors.secondaryText),
-              children: [
-                TextSpan(
-                  text: '${_control.score}',
-                  style: StyleText.fontSize14Weight600
-                      .copyWith(color: AppColors.green),
-                ),
-              ],
-            ),
-          ),
-        ),
-        customButton(
-          title: 'Previous Control Owners'.tr,
-          function: _openPreviousControlOwners,
-          height: 38.h,
-          color: AppColors.primary,
-          textStyle: StyleText.fontSize14Weight500
-              .copyWith(color: AppColors.textButton),
-        ),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<PolicyCubit>();
+    final cubit = context.read<ControlCubit>();
     final isArabic = context.isArabic;
     final dateFormat = DateFormat('d MMM yyyy', isArabic ? 'ar' : 'en');
 
-    return BlocListener<PolicyCubit, PolicyState>(
+    return BlocListener<ControlCubit, ControlState>(
       listener: _onStateChange,
       child: Scaffold(
         body: SafeArea(
@@ -423,7 +252,10 @@ class _ControlDetailsBodyState extends State<_ControlDetailsBody> {
                       'Are You Sure You Want To Delete This Control ?',
                 ),
                 SizedBox(height: 12.h),
-                _buildScoreAndPreviousOwnersRow(),
+                ControlScoreAndPreviousOwnersRowWidget(
+                  score: _control.score,
+                  onPreviousOwnersTap: _openPreviousControlOwners,
+                ),
                 SizedBox(height: 12.h),
                 Expanded(
                   child: ScrollConfiguration(
@@ -440,32 +272,33 @@ class _ControlDetailsBodyState extends State<_ControlDetailsBody> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _buildDescriptionHeaderRow(dateFormat),
-                            Text(
-                              isArabic
-                                  ? _control.controlsDescriptionAr
-                                  : _control.controlsDescriptionEn,
-                              style: StyleText.fontSize12Weight500
-                                  .copyWith(color: AppColors.secondaryText),
+                            ControlDescriptionSectionWidget(
+                              descriptionEn: _control.controlsDescriptionEn,
+                              descriptionAr: _control.controlsDescriptionAr,
+                              isArabic: isArabic,
+                              lastModifiedDate: _control.lastModifiedDate,
+                              dateFormat: dateFormat,
+                              policyId: widget.policy.id,
+                              controlId: _control.id,
                             ),
                             SizedBox(height: 10.h),
-                            BlocBuilder<OwnerCubit, OwnerState>(
-                              builder: (context, state) {
-                                final owners = state is OwnerListLoaded
-                                    ? state.owners
-                                    : const <OwnerEntity>[];
-                                return GrcOwnerBadge(
-                                  label: 'Control Owner:',
-                                  ownerEmails: _ownerEmailsForControl(owners),
-                                  onMessageTap: (owner) {},
-                                );
-                              },
+                            ControlDocumentsPreviewRowWidget(
+                              documentEnUrl: _control.controlsDocumentEn,
+                              documentArUrl: _control.controlsDocumentAr,
+                              lastModifiedDate: _control.lastModifiedDate,
+                              dateFormat: dateFormat,
+                            ),
+                            ControlFrequencyWeightDatesRowWidget(
+                              frequency: _control.frequency,
+                              weight: _control.controlsWeight,
+                              startDate: _control.startDate,
+                              endDate: _control.endDate,
+                              dateFormat: dateFormat,
                             ),
                             SizedBox(height: 10.h),
-                            _buildDocumentsRow(dateFormat),
-                            _buildFrequencyWeightDatesRow(dateFormat),
-                            SizedBox(height: 10.h),
-                            _buildDepartmentsWeightSection(),
+                            ControlDepartmentsWeightSectionWidget(
+                              departments: _control.departments,
+                            ),
                           ],
                         ),
                       ),
