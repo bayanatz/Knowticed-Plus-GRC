@@ -185,237 +185,26 @@ class _ControlChampionDetailsBodyState
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // Employee Profile Card
-                        ContactCard(
+                        _buildProfileCard(
                           name: name,
-                          jobTitle:
-                              jobTitle.isNotEmpty ? jobTitle : 'Technician'.tr,
-                          department:
-                              department.isNotEmpty ? department : 'IT'.tr,
+                          jobTitle: jobTitle,
+                          department: department,
                           email: email,
                           phone: phone,
-                          avatar: photo.startsWith('http')
-                              ? NetworkImage(photo)
-                              : null,
-                          onMessage: () {},
+                          photo: photo,
                         ),
                         SizedBox(height: 15.h),
 
                         // Action Buttons
-                        Row(
-                          spacing: 8.w,
-                          children: [
-                            customButtonWithSvg(
-                              colorBorder: AppColors.primary,
-                              space: 8.w,
-                              widthImage: 16.w,
-                              heightImage: 16.h,
-                              image:
-                                  "assets/icons_assets/data_grc_assets/messages_new.svg",
-                              title: "Contact Manager".tr,
-                              function: () {},
-                              color: AppColors.primary,
-                              textStyle: StyleText.fontSize14Weight500,
-                            ),
-                            _isReassignLoading
-                                ? Container(
-                                    height: 34.h,
-                                    width: 135.w,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.primary,
-                                      borderRadius: BorderRadius.circular(8.r),
-                                    ),
-                                    alignment: Alignment.center,
-                                    child: SizedBox(
-                                      height: 18.h,
-                                      width: 18.h,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  )
-                                : customButton(
-                                    title: "Reassign".tr,
-                                    height: 34.h,
-                                    width: 135.w,
-                                    function: () async {
-                                      setState(() => _isReassignLoading = true);
-                                      await _loadAllData();
-                                      if (mounted) {
-                                        setState(
-                                            () => _isReassignLoading = false);
-                                      }
-                                      if (!context.mounted) return;
-                                      final result = await Navigator.push<bool>(
-                                        context,
-                                        PageRouteBuilder(
-                                          pageBuilder: (_, __, ___) =>
-                                              BlocProvider.value(
-                                            value:
-                                                context.read<ChampionCubit>(),
-                                            child: ReassignChampionPage(
-                                              champion: _currentChampion,
-                                              module: widget.module,
-                                              allPolicies: _allPolicies,
-                                              policyControls: _policyControls,
-                                            ),
-                                          ),
-                                          transitionsBuilder:
-                                              (_, animation, __, child) =>
-                                                  FadeTransition(
-                                                      opacity: animation,
-                                                      child: child),
-                                          transitionDuration:
-                                              const Duration(milliseconds: 300),
-                                        ),
-                                      );
-                                      if (result == true && mounted) {
-                                        context
-                                            .read<ChampionCubit>()
-                                            .getAllChampions(
-                                                moduleId:
-                                                    widget.module.moduleId);
-                                        Navigator.pop(context, true);
-                                      }
-                                    },
-                                    color: AppColors.primary,
-                                    textStyle: StyleText.fontSize14Weight500,
-                                  ),
-                            Spacer(),
-                            _isEditLoading
-                                ? Container(
-                                    width: 135.w,
-                                    height: 34.h,
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal:
-                                            ButtonSizing.horizontalPadding),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.primary,
-                                      border:
-                                          Border.all(color: AppColors.primary),
-                                      borderRadius: BorderRadius.circular(
-                                          ButtonSizing.radius),
-                                    ),
-                                    alignment: Alignment.center,
-                                    child: SizedBox(
-                                      height: 18.h,
-                                      width: 18.h,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  )
-                                : customButtonWithSvg(
-                                    colorBorder: AppColors.primary,
-                                    space: 8.w,
-                                    widthImage: 16.w,
-                                    heightImage: 16.h,
-                                    image:
-                                        "assets/icons_assets/data_grc_assets/editButton.svg",
-                                    title: "Edit".tr,
-                                    function: () async {
-                                      setState(() => _isEditLoading = true);
-                                      await _loadAllData();
-                                      if (mounted) {
-                                        setState(() => _isEditLoading = false);
-                                      }
-                                      if (!context.mounted) return;
-                                      final result =
-                                          await showDialog<ChampionEntity>(
-                                        context: context,
-                                        builder: (dialogCtx) =>
-                                            BlocProvider.value(
-                                          value: context.read<ChampionCubit>(),
-                                          child: EditChampionControlsPage(
-                                            champion: _currentChampion,
-                                            module: widget.module,
-                                            allPolicies: _allPolicies,
-                                            policyControls: _policyControls,
-                                          ),
-                                        ),
-                                      );
-                                      if (result != null && mounted) {
-                                        setState(() {
-                                          _currentChampion = result;
-                                        });
-                                      }
-                                    },
-                                    color: AppColors.primary,
-                                    textStyle: StyleText.fontSize14Weight500,
-                                  ),
-                            customButtonWithSvg(
-                              colorBorder: AppColors.red,
-                              space: 8.w,
-                              widthImage: 16.w,
-                              heightImage: 16.h,
-                              image:
-                                  "assets/icons_assets/data_grc_assets/icons_icon _trash.svg",
-                              title: "Remove".tr,
-                              function: () => _showDeleteConfirmation(context),
-                              color: AppColors.red,
-                              textStyle: StyleText.fontSize14Weight500
-                                  .copyWith(color: Colors.white),
-                              svgColor: Colors.white,
-                            ),
-                          ],
-                        ),
+                        _buildActionButtonsRow(context),
                         SizedBox(height: 24.h),
 
                         // Policies Section
-                        Text(
-                          'Policies'.tr,
-                          style: StyleText.fontSize16Weight600
-                              .copyWith(color: AppColors.text),
-                        ),
-                        SizedBox(height: 12.h),
-                        _isLoadingData
-                            ? Center(
-                                child: CircularProgressIndicator(
-                                    color: AppColors.primary))
-                            : Wrap(
-                                spacing: 10.w,
-                                runSpacing: 10.h,
-                                children: assignedPolicyIds.map((policyId) {
-                                  final policy = _getPolicyEntity(policyId);
-                                  final pName = policy != null
-                                      ? (context.isArabic
-                                          ? policy.policyNameAr
-                                          : policy.policyNameEn)
-                                      : policyId;
-                                  return GrcAssignmentChip(label: pName);
-                                }).toList(),
-                              ),
+                        ..._buildPoliciesSection(context, assignedPolicyIds),
                         SizedBox(height: 24.h),
 
                         // Controls Section
-                        Text(
-                          'Controls'.tr,
-                          style: StyleText.fontSize16Weight600
-                              .copyWith(color: AppColors.text),
-                        ),
-                        SizedBox(height: 12.h),
-                        _isLoadingData
-                            ? Center(
-                                child: CircularProgressIndicator(
-                                    color: AppColors.primary))
-                            : Wrap(
-                                spacing: 10.w,
-                                runSpacing: 10.h,
-                                children: _currentChampion.assigningControls
-                                    .map((ac) {
-                                  final ctrl = findControlInPolicy(
-                                      _policyControls,
-                                      ac.policyId,
-                                      ac.controlId);
-                                  final cName = ctrl != null
-                                      ? (context.isArabic
-                                          ? ctrl.controlsNameAr
-                                          : ctrl.controlsNameEn)
-                                      : ac.controlId;
-                                  return GrcAssignmentChip(label: cName);
-                                }).toList(),
-                              ),
+                        ..._buildControlsSection(context),
                         SizedBox(height: 24.h),
                       ],
                     ),
@@ -427,5 +216,221 @@ class _ControlChampionDetailsBodyState
         ),
       ),
     );
+  }
+
+  Widget _buildProfileCard({
+    required String name,
+    required String jobTitle,
+    required String department,
+    required String email,
+    required String phone,
+    required String photo,
+  }) {
+    return ContactCard(
+      name: name,
+      jobTitle: jobTitle.isNotEmpty ? jobTitle : 'Technician'.tr,
+      department: department.isNotEmpty ? department : 'IT'.tr,
+      email: email,
+      phone: phone,
+      avatar: photo.startsWith('http') ? NetworkImage(photo) : null,
+      onMessage: () {},
+    );
+  }
+
+  Widget _buildActionButtonsRow(BuildContext context) {
+    return Row(
+      spacing: 8.w,
+      children: [
+        customButtonWithSvg(
+          colorBorder: AppColors.primary,
+          space: 8.w,
+          widthImage: 16.w,
+          heightImage: 16.h,
+          image: "assets/icons_assets/data_grc_assets/messages_new.svg",
+          title: "Contact Manager".tr,
+          function: () {},
+          color: AppColors.primary,
+          textStyle: StyleText.fontSize14Weight500,
+        ),
+        _isReassignLoading
+            ? Container(
+                height: 34.h,
+                width: 135.w,
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                alignment: Alignment.center,
+                child: SizedBox(
+                  height: 18.h,
+                  width: 18.h,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.white,
+                  ),
+                ),
+              )
+            : customButton(
+                title: "Reassign".tr,
+                height: 34.h,
+                width: 135.w,
+                function: () async {
+                  setState(() => _isReassignLoading = true);
+                  await _loadAllData();
+                  if (mounted) {
+                    setState(() => _isReassignLoading = false);
+                  }
+                  if (!context.mounted) return;
+                  final result = await Navigator.push<bool>(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (_, __, ___) => BlocProvider.value(
+                        value: context.read<ChampionCubit>(),
+                        child: ReassignChampionPage(
+                          champion: _currentChampion,
+                          module: widget.module,
+                          allPolicies: _allPolicies,
+                          policyControls: _policyControls,
+                        ),
+                      ),
+                      transitionsBuilder: (_, animation, __, child) =>
+                          FadeTransition(opacity: animation, child: child),
+                      transitionDuration: const Duration(milliseconds: 300),
+                    ),
+                  );
+                  if (result == true && mounted) {
+                    context
+                        .read<ChampionCubit>()
+                        .getAllChampions(moduleId: widget.module.moduleId);
+                    Navigator.pop(context, true);
+                  }
+                },
+                color: AppColors.primary,
+                textStyle: StyleText.fontSize14Weight500,
+              ),
+        Spacer(),
+        _isEditLoading
+            ? Container(
+                width: 135.w,
+                height: 34.h,
+                padding: EdgeInsets.symmetric(
+                    horizontal: ButtonSizing.horizontalPadding),
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  border: Border.all(color: AppColors.primary),
+                  borderRadius: BorderRadius.circular(ButtonSizing.radius),
+                ),
+                alignment: Alignment.center,
+                child: SizedBox(
+                  height: 18.h,
+                  width: 18.h,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.white,
+                  ),
+                ),
+              )
+            : customButtonWithSvg(
+                colorBorder: AppColors.primary,
+                space: 8.w,
+                widthImage: 16.w,
+                heightImage: 16.h,
+                image: "assets/icons_assets/data_grc_assets/editButton.svg",
+                title: "Edit".tr,
+                function: () async {
+                  setState(() => _isEditLoading = true);
+                  await _loadAllData();
+                  if (mounted) {
+                    setState(() => _isEditLoading = false);
+                  }
+                  if (!context.mounted) return;
+                  final result = await showDialog<ChampionEntity>(
+                    context: context,
+                    builder: (dialogCtx) => BlocProvider.value(
+                      value: context.read<ChampionCubit>(),
+                      child: EditChampionControlsPage(
+                        champion: _currentChampion,
+                        module: widget.module,
+                        allPolicies: _allPolicies,
+                        policyControls: _policyControls,
+                      ),
+                    ),
+                  );
+                  if (result != null && mounted) {
+                    setState(() {
+                      _currentChampion = result;
+                    });
+                  }
+                },
+                color: AppColors.primary,
+                textStyle: StyleText.fontSize14Weight500,
+              ),
+        customButtonWithSvg(
+          colorBorder: AppColors.red,
+          space: 8.w,
+          widthImage: 16.w,
+          heightImage: 16.h,
+          image: "assets/icons_assets/data_grc_assets/icons_icon _trash.svg",
+          title: "Remove".tr,
+          function: () => _showDeleteConfirmation(context),
+          color: AppColors.red,
+          textStyle:
+              StyleText.fontSize14Weight500.copyWith(color: Colors.white),
+          svgColor: Colors.white,
+        ),
+      ],
+    );
+  }
+
+  List<Widget> _buildPoliciesSection(
+      BuildContext context, List<String> assignedPolicyIds) {
+    return [
+      Text(
+        'Policies'.tr,
+        style: StyleText.fontSize16Weight600.copyWith(color: AppColors.text),
+      ),
+      SizedBox(height: 12.h),
+      _isLoadingData
+          ? Center(child: CircularProgressIndicator(color: AppColors.primary))
+          : Wrap(
+              spacing: 10.w,
+              runSpacing: 10.h,
+              children: assignedPolicyIds.map((policyId) {
+                final policy = _getPolicyEntity(policyId);
+                final pName = policy != null
+                    ? (context.isArabic
+                        ? policy.policyNameAr
+                        : policy.policyNameEn)
+                    : policyId;
+                return GrcAssignmentChip(label: pName);
+              }).toList(),
+            ),
+    ];
+  }
+
+  List<Widget> _buildControlsSection(BuildContext context) {
+    return [
+      Text(
+        'Controls'.tr,
+        style: StyleText.fontSize16Weight600.copyWith(color: AppColors.text),
+      ),
+      SizedBox(height: 12.h),
+      _isLoadingData
+          ? Center(child: CircularProgressIndicator(color: AppColors.primary))
+          : Wrap(
+              spacing: 10.w,
+              runSpacing: 10.h,
+              children: _currentChampion.assigningControls.map((ac) {
+                final ctrl = findControlInPolicy(
+                    _policyControls, ac.policyId, ac.controlId);
+                final cName = ctrl != null
+                    ? (context.isArabic
+                        ? ctrl.controlsNameAr
+                        : ctrl.controlsNameEn)
+                    : ac.controlId;
+                return GrcAssignmentChip(label: cName);
+              }).toList(),
+            ),
+    ];
   }
 }

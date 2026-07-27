@@ -210,148 +210,26 @@ class _EditChampionControlsPageState extends State<EditChampionControlsPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Header
-                    Row(
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(10.r),
-                          decoration: BoxDecoration(
-                            color: AppColors.primary,
-                            shape: BoxShape.circle,
-                          ),
-                          child: SvgPicture.asset(
-                            "assets/icons_assets/data_grc_assets/editButton.svg",
-                            height: 24.h,
-                          ),
-                        ),
-                        SizedBox(width: 12.w),
-                        Text(
-                          'Edit Controls'.tr,
-                          style: StyleText.fontSize20Weight600
-                              .copyWith(color: AppColors.text),
-                        ),
-                      ],
-                    ),
+                    _buildHeader(),
                     SizedBox(height: 16.h),
 
                     // Assigned Controls Section
-                    Text(
-                      'Assigned Controls'.tr,
-                      style: StyleText.fontSize16Weight500
-                          .copyWith(color: AppColors.text),
-                    ),
-                    SizedBox(height: 10.h),
-                    _tempControls.isEmpty
-                        ? Text(
-                            'No Controls assigned.'.tr,
-                            style: StyleText.fontSize14Weight400
-                                .copyWith(color: AppColors.secondaryText),
-                          )
-                        : Wrap(
-                            spacing: 8.w,
-                            runSpacing: 8.h,
-                            children:
-                                List.generate(_tempControls.length, (index) {
-                              final ac = _tempControls[index];
-                              final ctrl = findControlInPolicy(
-                                  widget.policyControls,
-                                  ac.policyId,
-                                  ac.controlId);
-                              final cName = ctrl != null
-                                  ? (context.isArabic
-                                      ? ctrl.controlsNameAr
-                                      : ctrl.controlsNameEn)
-                                  : ac.controlId;
-                              return GrcAssignmentChip(
-                                label: cName,
-                                onRemove: () => _removeControl(index),
-                              );
-                            }),
-                          ),
+                    ..._buildAssignedControlsSection(context),
                     SizedBox(height: 16.h),
 
                     // One Policy + Controls picker row per pending
                     // assignment. Tapping "+ Add Policy" below appends
                     // another independent row; nothing here touches
                     // "Assigned Controls" until Save.
-                    ...List.generate(_pendingRows.length, (i) {
-                      final row = _pendingRows[i];
-                      final availableControlsForPolicy = row.policyId != null
-                          ? (widget.policyControls[row.policyId] ?? [])
-                          : <ControlEntity>[];
-
-                      return Padding(
-                        padding: EdgeInsets.only(bottom: 12.h),
-                        child: GrcPolicyControlPickerRow(
-                          policies: widget.allPolicies,
-                          policyId: row.policyId,
-                          onPolicyChanged: (v) {
-                            setState(() {
-                              row.policyId = v;
-                              row.controlIds = [];
-                            });
-                          },
-                          availableControls: availableControlsForPolicy,
-                          controlsEnabled: row.policyId != null,
-                          controlIds: row.controlIds,
-                          onControlsChanged: (v) =>
-                              setState(() => row.controlIds = v),
-                          controlsLabel: 'Add Controls',
-                          controlsHint: 'Choose Controls',
-                          spacing: 12.w,
-                        ),
-                      );
-                    }),
+                    ..._buildPendingRows(),
                     SizedBox(height: 8.h),
 
                     // Add Policy Button
-                    customButtonWithSvg(
-                      title: 'Add Policy'.tr,
-                      function: _addPolicyRow,
-                      width: 140.w,
-                      radius: 8,
-                      svgColor: AppColors.card,
-                      color: AppColors.blackButton,
-                      textStyle: StyleText.fontSize14Weight500
-                          .copyWith(color: Colors.white),
-                      image:
-                          'assets/icons_assets/database_builder_assets/plus_head.svg',
-                      widthImage: 16.w,
-                      heightImage: 16.h,
-                      colorBorder: AppColors.blackButton,
-                    ),
+                    _buildAddPolicyButton(),
                     SizedBox(height: 16.h),
 
                     // Save Button
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: isSaving
-                          ? Container(
-                              width: 120.w,
-                              height: 38.h,
-                              decoration: BoxDecoration(
-                                color: AppColors.primary,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              alignment: Alignment.center,
-                              child: SizedBox(
-                                height: 18.h,
-                                width: 18.h,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            )
-                          : customButton(
-                              title: 'Save'.tr,
-                              function: () => _confirmAndSave(context),
-                              width: 120.w,
-                              radius: 12,
-                              color: AppColors.primary,
-                              textStyle: StyleText.fontSize14Weight500
-                                  .copyWith(color: Colors.black),
-                            ),
-                    ),
+                    _buildSaveButton(context, isSaving),
                   ],
                 ),
               ),
@@ -359,6 +237,142 @@ class _EditChampionControlsPageState extends State<EditChampionControlsPage> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildHeader() {
+    return Row(
+      children: [
+        Container(
+          padding: EdgeInsets.all(10.r),
+          decoration: BoxDecoration(
+            color: AppColors.primary,
+            shape: BoxShape.circle,
+          ),
+          child: SvgPicture.asset(
+            "assets/icons_assets/data_grc_assets/editButton.svg",
+            height: 24.h,
+          ),
+        ),
+        SizedBox(width: 12.w),
+        Text(
+          'Edit Controls'.tr,
+          style: StyleText.fontSize20Weight600.copyWith(color: AppColors.text),
+        ),
+      ],
+    );
+  }
+
+  List<Widget> _buildAssignedControlsSection(BuildContext context) {
+    return [
+      Text(
+        'Assigned Controls'.tr,
+        style: StyleText.fontSize16Weight500.copyWith(color: AppColors.text),
+      ),
+      SizedBox(height: 10.h),
+      _tempControls.isEmpty
+          ? Text(
+              'No Controls assigned.'.tr,
+              style: StyleText.fontSize14Weight400
+                  .copyWith(color: AppColors.secondaryText),
+            )
+          : Wrap(
+              spacing: 8.w,
+              runSpacing: 8.h,
+              children: List.generate(_tempControls.length, (index) {
+                final ac = _tempControls[index];
+                final ctrl = findControlInPolicy(
+                    widget.policyControls, ac.policyId, ac.controlId);
+                final cName = ctrl != null
+                    ? (context.isArabic
+                        ? ctrl.controlsNameAr
+                        : ctrl.controlsNameEn)
+                    : ac.controlId;
+                return GrcAssignmentChip(
+                  label: cName,
+                  onRemove: () => _removeControl(index),
+                );
+              }),
+            ),
+    ];
+  }
+
+  List<Widget> _buildPendingRows() {
+    return List.generate(_pendingRows.length, (i) {
+      final row = _pendingRows[i];
+      final availableControlsForPolicy = row.policyId != null
+          ? (widget.policyControls[row.policyId] ?? [])
+          : <ControlEntity>[];
+
+      return Padding(
+        padding: EdgeInsets.only(bottom: 12.h),
+        child: GrcPolicyControlPickerRow(
+          policies: widget.allPolicies,
+          policyId: row.policyId,
+          onPolicyChanged: (v) {
+            setState(() {
+              row.policyId = v;
+              row.controlIds = [];
+            });
+          },
+          availableControls: availableControlsForPolicy,
+          controlsEnabled: row.policyId != null,
+          controlIds: row.controlIds,
+          onControlsChanged: (v) => setState(() => row.controlIds = v),
+          controlsLabel: 'Add Controls',
+          controlsHint: 'Choose Controls',
+          spacing: 12.w,
+        ),
+      );
+    });
+  }
+
+  Widget _buildAddPolicyButton() {
+    return customButtonWithSvg(
+      title: 'Add Policy'.tr,
+      function: _addPolicyRow,
+      width: 140.w,
+      radius: 8,
+      svgColor: AppColors.card,
+      color: AppColors.blackButton,
+      textStyle: StyleText.fontSize14Weight500.copyWith(color: Colors.white),
+      image: 'assets/icons_assets/database_builder_assets/plus_head.svg',
+      widthImage: 16.w,
+      heightImage: 16.h,
+      colorBorder: AppColors.blackButton,
+    );
+  }
+
+  Widget _buildSaveButton(BuildContext context, bool isSaving) {
+    return Align(
+      alignment: Alignment.centerRight,
+      child: isSaving
+          ? Container(
+              width: 120.w,
+              height: 38.h,
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              alignment: Alignment.center,
+              child: SizedBox(
+                height: 18.h,
+                width: 18.h,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.black,
+                ),
+              ),
+            )
+          : customButton(
+              title: 'Save'.tr,
+              function: () => _confirmAndSave(context),
+              width: 120.w,
+              radius: 12,
+              color: AppColors.primary,
+              textStyle:
+                  StyleText.fontSize14Weight500.copyWith(color: Colors.black),
+            ),
     );
   }
 }
