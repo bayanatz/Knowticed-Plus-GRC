@@ -31,6 +31,7 @@ import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_
 import 'package:demo_app/features/grc/shared/widgets/grc_responsive_field_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 
 import 'policy_document_preview_widget.dart';
@@ -145,9 +146,9 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
     final text = widget.weightController.text.trim();
     if (text.isEmpty) return null;
     final value = double.tryParse(text);
-    if (value == null) return 'Policy Weight must be a valid number';
-    if (value <= 0) return 'Policy Weight must be a positive number';
-    if (value > 100) return 'Policy Weight cannot be more than 100';
+    if (value == null) return 'Policy Weight must be a valid number'.tr;
+    if (value <= 0) return 'Policy Weight must be a positive number'.tr;
+    if (value > 100) return 'Policy Weight cannot be more than 100'.tr;
     return null;
   }
 
@@ -238,8 +239,8 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
                   document: document, onRemove: onRemove)
               : SizedBox(
                   width: double.infinity,
-                  child:
-                      _documentButton(onTap: onUpload, title: 'Policy Document'),
+                  child: _documentButton(
+                      onTap: onUpload, title: 'Policy Document'.tr),
                 ),
         ],
       ),
@@ -289,28 +290,28 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
       isTablet: isTablet,
       children: [
         _textField(
-          label: 'Policy Name',
-          hint: 'Text here',
+          label: 'Policy Name'.tr,
+          hint: 'Text here'.tr,
           controller: widget.nameController,
           isMandatory: true,
-          englishOnlyError: 'Policy Name must be written in English',
+          englishOnlyError: 'Policy Name must be written in English'.tr,
         ),
         widget.isArabicEnabled
             ? _textField(
-                label: 'اسم السياسة',
-                hint: 'اكتب هنا',
+                label: 'Policy Name'.tr,
+                hint: 'Type here'.tr,
                 controller: widget.nameArController,
                 rtl: true,
                 isMandatory: _arabicTouched,
-                arabicOnlyError: 'يجب كتابة اسم السياسة باللغة العربية',
+                arabicOnlyError: 'Policy Name must be written in Arabic'.tr,
               )
             : _textField(
-                label: 'Policy Number',
-                hint: 'Text here',
+                label: 'GRC Policy Number'.tr,
+                hint: 'Text here'.tr,
                 controller: widget.numberController,
                 isMandatory: true,
                 onlyDigits: true,
-                englishOnlyError: 'Policy Number must be written in English',
+                englishOnlyError: 'Policy Number must be written in English'.tr,
               ),
       ],
     );
@@ -322,20 +323,20 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
       isTablet: isTablet,
       children: [
         _textField(
-          label: 'Policy Number',
-          hint: 'Text here',
+          label: 'GRC Policy Number'.tr,
+          hint: 'Text here'.tr,
           controller: widget.numberController,
           isMandatory: true,
           onlyDigits: true,
-          englishOnlyError: 'Policy Number must be written in English',
+          englishOnlyError: 'Policy Number must be written in English'.tr,
         ),
         _textField(
-          label: 'رقم السياسة',
-          hint: 'اكتب هنا',
+          label: 'GRC Policy Number'.tr,
+          hint: 'Type here'.tr,
           controller: widget.numberArController,
           rtl: true,
           isMandatory: _arabicTouched,
-          arabicOnlyError: 'يجب كتابة رقم السياسة باللغة العربية',
+          arabicOnlyError: 'Policy Number must be written in Arabic'.tr,
         ),
       ],
     );
@@ -347,21 +348,22 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _textField(
-          label: 'Policy Description',
-          hint: 'Text here',
+          label: 'Policy Description'.tr,
+          hint: 'Text here'.tr,
           controller: widget.descriptionController,
           maxLines: 3,
           minLines: 3,
           maxLength: 500,
           showCharCount: true,
           isMandatory: true,
-          englishOnlyError: 'Policy Description must be written in English',
+          englishOnlyError:
+              'Policy Description must be written in English'.tr,
         ),
         if (widget.isArabicEnabled) ...[
           SizedBox(height: 15.h),
           _textField(
-            label: 'وصف السياسة',
-            hint: 'اكتب وصف',
+            label: 'Policy Description'.tr,
+            hint: 'Write a Description'.tr,
             controller: widget.descriptionArController,
             rtl: true,
             maxLines: 3,
@@ -369,7 +371,7 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
             maxLength: 500,
             showCharCount: true,
             isMandatory: _arabicTouched,
-            arabicOnlyError: 'يجب كتابة وصف السياسة باللغة العربية',
+            arabicOnlyError: 'Policy Description must be written in Arabic'.tr,
           ),
         ],
       ],
@@ -387,8 +389,8 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
       children: [
         CustomDropdownCalendar(
           borderRadius: BorderRadius.circular(4.r),
-          label: 'Start Date',
-          hint: 'Select Start Date',
+          label: 'Start Date'.tr,
+          hint: 'Select Start Date'.tr,
           value: widget.startDate,
           onChanged: widget.onStartDateChanged,
           enabled: !widget.readOnly,
@@ -402,13 +404,13 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
           errorText: !widget.submitted
               ? null
               : widget.startDate == null
-                  ? 'This field is required.'
+                  ? 'This field is required.'.tr
                   : null,
         ),
         CustomDropdownCalendar(
           borderRadius: BorderRadius.circular(4.r),
-          label: 'End Date',
-          hint: 'Select End Date',
+          label: 'End Date'.tr,
+          hint: 'Select End Date'.tr,
           value: widget.endDate,
           onChanged: widget.onEndDateChanged,
           enabled: !widget.readOnly,
@@ -423,9 +425,9 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
           errorText: !widget.submitted
               ? null
               : widget.endDate == null
-                  ? 'This field is required.'
+                  ? 'This field is required.'.tr
                   : endBeforeStart
-                      ? 'End date cannot be before start date.'
+                      ? 'End date cannot be before start date.'.tr
                       : null,
         ),
       ],
@@ -443,8 +445,8 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
   /// behavior change.
   Widget _buildWeightRow(bool isTablet) {
     final weightField = _textField(
-      label: 'Policy Weight',
-      hint: 'Text here',
+      label: 'Policy Weight'.tr,
+      hint: 'Text here'.tr,
       controller: widget.weightController,
       isMandatory: true,
       customError: _weightError,
@@ -465,7 +467,7 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _documentSection(
-          title: 'Policy Document ENG',
+          title: 'Policy Document ENG'.tr,
           document: widget.documentEn,
           onUpload: widget.onUploadDocumentEn,
           onRemove: widget.onRemoveDocumentEn,
@@ -473,7 +475,7 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
         SizedBox(width: 10.w),
         if (widget.isArabicEnabled)
           _documentSection(
-            title: 'Policy Document AR',
+            title: 'Policy Document AR'.tr,
             document: widget.documentAr,
             onUpload: widget.onUploadDocumentAr,
             onRemove: widget.onRemoveDocumentAr,
