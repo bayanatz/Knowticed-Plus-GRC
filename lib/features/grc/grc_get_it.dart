@@ -70,6 +70,7 @@ import 'package:demo_app/features/grc/module/presentation/controller/cubit/grc_m
 import 'package:demo_app/features/grc/module/presentation/controller/cubit/grc_previous_owners_cubit.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/control_weight_issue/control_weight_history_cubit.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/control_weight_issue/control_weight_issue_cubit.dart';
+import 'package:demo_app/features/grc/control/presentation/controller/control_cubit.dart';
 import 'package:demo_app/features/grc/control_champion/presentation/controller/champion_cubit.dart';
 import 'package:demo_app/features/grc/control_owner/presentation/controller/owner_cubit.dart';
 import 'package:demo_app/features/grc/control_owner/presentation/controller/control_previous_owners_cubit.dart';
@@ -488,6 +489,20 @@ void setupGRCDependencies(GetIt sl) {
   sl.registerFactory<GrcPreviousOwnersCubit>(
     () => GrcPreviousOwnersCubit(
       getOwnerHistoryUseCase: sl<GetGRCModuleOwnerHistoryUseCase>(),
+    ),
+  );
+
+  /// class name: [ControlCubit]
+  /// purpose: presentation-layer state manager for standalone Control
+  /// operations (create/update/delete/list-all). Registered as a factory so
+  /// each flow-start page gets an independent instance, same convention as
+  /// PolicyCubit/ChampionCubit/OwnerCubit.
+  sl.registerFactory<ControlCubit>(
+    () => ControlCubit(
+      createControlUseCase: sl<CreateControlUseCase>(),
+      updateControlUseCase: sl<UpdateControlUseCase>(),
+      deleteControlUseCase: sl<DeleteControlUseCase>(),
+      getAllControlsUseCase: sl<GetAllControlsUseCase>(),
     ),
   );
 
