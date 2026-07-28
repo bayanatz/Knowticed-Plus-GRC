@@ -30,6 +30,11 @@ class GrcPolicyControlPickerRow extends StatelessWidget {
   final String controlsLabel;
   final String controlsHint;
 
+  /// Control ids shown in the dropdown but not selectable (e.g. a Control
+  /// that already has a Champion/Owner assigned elsewhere) — the item still
+  /// appears, just dimmed and unresponsive to taps.
+  final List<String> disabledControlIds;
+
   /// Horizontal gap between the two dropdowns, pre-scaled by the caller
   /// (e.g. `10.w`, `12.w`, `16.w`) — the three call sites disagreed on
   /// this value and none of them treated it as meaningful, so it stays a
@@ -54,6 +59,7 @@ class GrcPolicyControlPickerRow extends StatelessWidget {
     this.controlsErrorText,
     this.controlsLabel = 'Control',
     this.controlsHint = 'Choose Control',
+    this.disabledControlIds = const [],
     this.spacing = 12,
     this.onRemoveRow,
   });
@@ -91,6 +97,7 @@ class GrcPolicyControlPickerRow extends StatelessWidget {
                 .map((c) => MultiSelectDropdownItem<String>(
                       value: c.id,
                       label: context.isArabic ? c.controlsNameAr : c.controlsNameEn,
+                      enabled: !disabledControlIds.contains(c.id),
                     ))
                 .toList(),
             values: controlIds,

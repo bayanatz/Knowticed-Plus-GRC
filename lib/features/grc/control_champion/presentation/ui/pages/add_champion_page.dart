@@ -17,6 +17,7 @@ import 'package:demo_app/features/grc/control/domain/entities/assigning_control.
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_status_resolver.dart';
 import 'package:demo_app/features/grc/control/domain/use_cases/update_control_usecase.dart';
+import 'package:demo_app/features/grc/control_champion/domain/entities/champion_entity.dart';
 import 'package:demo_app/features/grc/control_champion/presentation/controller/champion_cubit.dart';
 import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
 import 'package:demo_app/features/grc/shared/widgets/grc_policy_control_picker_row.dart';
@@ -69,6 +70,12 @@ class _AddChampionPageState extends State<AddChampionPage> {
   bool _loadingPolicies = true;
   bool _submitted = false;
 
+  /// Every Champion currently assigned to any {Policy, Control} pair in this
+  /// module — used to disable Controls that already have a Champion, since
+  /// each Control now allows only one. Fetched once on open, same "snapshot,
+  /// no re-fetch" approach the rest of this page uses for Policies/Controls.
+  List<ChampionEntity> _existingChampions = [];
+
   // Resolved once up-front (instead of via BlocProvider's `create:`) so it's
   // available to _loadPolicies() from initState(), before this State's own
   // build() has run and created the BlocProvider below it in the tree.
@@ -79,6 +86,7 @@ class _AddChampionPageState extends State<AddChampionPage> {
     super.initState();
     _championCubit = GetIt.instance<ChampionCubit>();
     _loadPolicies();
+    _loadExistingChampions();
   }
 
   @override
@@ -98,6 +106,24 @@ class _AddChampionPageState extends State<AddChampionPage> {
         _loadingPolicies = false;
       }),
     );
+  }
+
+  Future<void> _loadExistingChampions() async {
+    final result =
+        await _championCubit.getAllChampionsRaw(moduleId: widget.moduleId);
+    if (!mounted) return;
+    result.fold(
+      (failure) {},
+      (champions) => setState(() => _existingChampions = champions),
+    );
+  }
+
+  /// True if [controlId] under [policyId] already has any Champion assigned
+  /// — such a Control is shown but disabled in the picker, since only one
+  /// Champion per Control is allowed.
+  bool _controlHasChampion(String policyId, String controlId) {
+    return _existingChampions.any((c) => c.assigningControls
+        .any((a) => a.policyId == policyId && a.controlId == controlId));
   }
 
   Future<void> _onPolicyChanged(
@@ -156,11 +182,11 @@ class _AddChampionPageState extends State<AddChampionPage> {
               // each row into one {Policy, Control} pair per selected
               // Control.
               assigningControls: _rows
-                  .expand((r) => r.controlIds.map((controlId) =>
-                      AssigningControlEntity(
-                        policyId: r.policyId!,
-                        controlId: controlId,
-                      )))
+                  .expand((r) =>
+                      r.controlIds.map((controlId) => AssigningControlEntity(
+                            policyId: r.policyId!,
+                            controlId: controlId,
+                          )))
                   .toList(),
             );
       },
@@ -236,7 +262,9 @@ class _AddChampionPageState extends State<AddChampionPage> {
                       PaginationAppBar(
                         screensTitles: [
                           'GRC'.tr,
-                          context.isArabic ? widget.moduleNameAr : widget.moduleNameEn,
+                          context.isArabic
+                              ? widget.moduleNameAr
+                              : widget.moduleNameEn,
                           'Adding New Control Champion'.tr,
                         ],
                       ),
@@ -281,7 +309,8 @@ class _AddChampionPageState extends State<AddChampionPage> {
               padding: EdgeInsets.only(top: 8.h),
               child: Text(
                 'Please select a Control Champion'.tr,
-                style: StyleText.fontSize12Weight500.copyWith(color: AppColors.red),
+                style: StyleText.fontSize12Weight500
+                    .copyWith(color: AppColors.red),
               ),
             ),
         ],
@@ -315,19 +344,28 @@ class _AddChampionPageState extends State<AddChampionPage> {
               controlsEnabled:
                   _rows[i].policyId != null && !_rows[i].isLoadingControls,
               controlIds: _rows[i].controlIds,
-              onControlsChanged: (v) =>
-                  setState(() => _rows[i].controlIds = v),
+              onControlsChanged: (v) => setState(() => _rows[i].controlIds = v),
               controlsErrorText: _submitted && _rows[i].controlIds.isEmpty
                   ? 'Required'.tr
                   : null,
+              disabledControlIds: _rows[i].policyId == null
+                  ? const []
+                  : _rows[i]
+                      .availableControls
+                      .where(
+                          (c) => _controlHasChampion(_rows[i].policyId!, c.id))
+                      .map((c) => c.id)
+                      .toList(),
               spacing: 10.w,
               onRemoveRow: _rows.length > 1 ? () => _removeRow(i) : null,
             ),
             SizedBox(height: 12.h),
           ],
-          TextButton(
-            onPressed: _addRow,
-            child: Text('+ Policy'.tr, style: StyleText.fontSize14Weight500),
+          customButton(
+            width: 120.w,
+            color: AppColors.black,
+            function: _addRow,
+            title: '+ Policy'.tr,
           ),
         ],
       ),
@@ -336,23 +374,23 @@ class _AddChampionPageState extends State<AddChampionPage> {
 
   Widget _buildButtons(BuildContext context, bool isSubmitting) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Expanded(
-          child: customButton(
-            title: 'Discard'.tr,
-            function: () => Navigator.pop(context, false),
-            color: AppColors.colorGrey,
-            textStyle: StyleText.fontSize16Weight500.copyWith(color: AppColors.text),
-          ),
+        customButton(
+          width: 120.w,
+          title: 'Discard'.tr,
+          function: () => Navigator.pop(context, false),
+          color: AppColors.colorGrey,
+          textStyle:
+              StyleText.fontSize16Weight500.copyWith(color: AppColors.text),
         ),
-        SizedBox(width: 10.w),
-        Expanded(
-          child: customButton(
-            title: 'Submit'.tr,
-            function: isSubmitting ? () {} : () => _submit(context),
-            color: AppColors.primary,
-            textStyle: StyleText.fontSize16Weight500.copyWith(color: AppColors.textButton),
-          ),
+        customButton(
+          width: 120.w,
+          title: 'Submit'.tr,
+          function: isSubmitting ? () {} : () => _submit(context),
+          color: AppColors.primary,
+          textStyle: StyleText.fontSize16Weight500
+              .copyWith(color: AppColors.textButton),
         ),
       ],
     );

@@ -19,6 +19,7 @@ import 'package:demo_app/features/grc/control/domain/entities/assigning_control.
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_status_resolver.dart';
 import 'package:demo_app/features/grc/control/domain/use_cases/update_control_usecase.dart';
+import 'package:demo_app/features/grc/control_owner/domain/entities/owner_entity.dart';
 import 'package:demo_app/features/grc/control_owner/presentation/controller/owner_cubit.dart';
 import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
 import 'package:demo_app/features/grc/shared/widgets/grc_policy_control_picker_row.dart';
@@ -71,6 +72,12 @@ class _AddOwnerPageState extends State<AddOwnerPage> {
   bool _loadingPolicies = true;
   bool _submitted = false;
 
+  /// Every Owner currently assigned to any {Policy, Control} pair in this
+  /// module — used to disable Controls that already have an Owner, since
+  /// each Control now allows only one. Fetched once on open, same "snapshot,
+  /// no re-fetch" approach the rest of this page uses for Policies/Controls.
+  List<OwnerEntity> _existingOwners = [];
+
   // Resolved once up-front (instead of via BlocProvider's `create:`) so it's
   // available to _loadPolicies() from initState(), before this State's own
   // build() has run and created the BlocProvider below it in the tree.
@@ -81,6 +88,7 @@ class _AddOwnerPageState extends State<AddOwnerPage> {
     super.initState();
     _ownerCubit = GetIt.instance<OwnerCubit>();
     _loadPolicies();
+    _loadExistingOwners();
   }
 
   @override
@@ -90,8 +98,7 @@ class _AddOwnerPageState extends State<AddOwnerPage> {
   }
 
   Future<void> _loadPolicies() async {
-    final result =
-        await _ownerCubit.getAllPolicies(moduleId: widget.moduleId);
+    final result = await _ownerCubit.getAllPolicies(moduleId: widget.moduleId);
     if (!mounted) return;
     result.fold(
       (failure) => setState(() => _loadingPolicies = false),
@@ -100,6 +107,23 @@ class _AddOwnerPageState extends State<AddOwnerPage> {
         _loadingPolicies = false;
       }),
     );
+  }
+
+  Future<void> _loadExistingOwners() async {
+    final result = await _ownerCubit.getAllOwnersRaw(moduleId: widget.moduleId);
+    if (!mounted) return;
+    result.fold(
+      (failure) {},
+      (owners) => setState(() => _existingOwners = owners),
+    );
+  }
+
+  /// True if [controlId] under [policyId] already has any Owner assigned —
+  /// such a Control is shown but disabled in the picker, since only one
+  /// Owner per Control is allowed.
+  bool _controlHasOwner(String policyId, String controlId) {
+    return _existingOwners.any((o) => o.assigningControls
+        .any((a) => a.policyId == policyId && a.controlId == controlId));
   }
 
   Future<void> _onPolicyChanged(
@@ -158,11 +182,11 @@ class _AddOwnerPageState extends State<AddOwnerPage> {
               // each row into one {Policy, Control} pair per selected
               // Control.
               assigningControls: _rows
-                  .expand((r) => r.controlIds.map((controlId) =>
-                      AssigningControlEntity(
-                        policyId: r.policyId!,
-                        controlId: controlId,
-                      )))
+                  .expand((r) =>
+                      r.controlIds.map((controlId) => AssigningControlEntity(
+                            policyId: r.policyId!,
+                            controlId: controlId,
+                          )))
                   .toList(),
             );
       },
@@ -238,7 +262,9 @@ class _AddOwnerPageState extends State<AddOwnerPage> {
                       PaginationAppBar(
                         screensTitles: [
                           'GRC'.tr,
-                          context.isArabic ? widget.moduleNameAr : widget.moduleNameEn,
+                          context.isArabic
+                              ? widget.moduleNameAr
+                              : widget.moduleNameEn,
                           'Adding New Control Owner'.tr,
                         ],
                       ),
@@ -283,7 +309,8 @@ class _AddOwnerPageState extends State<AddOwnerPage> {
               padding: EdgeInsets.only(top: 8.h),
               child: Text(
                 'Please select a Control Owner'.tr,
-                style: StyleText.fontSize12Weight500.copyWith(color: AppColors.red),
+                style: StyleText.fontSize12Weight500
+                    .copyWith(color: AppColors.red),
               ),
             ),
         ],
@@ -317,11 +344,17 @@ class _AddOwnerPageState extends State<AddOwnerPage> {
               controlsEnabled:
                   _rows[i].policyId != null && !_rows[i].isLoadingControls,
               controlIds: _rows[i].controlIds,
-              onControlsChanged: (v) =>
-                  setState(() => _rows[i].controlIds = v),
+              onControlsChanged: (v) => setState(() => _rows[i].controlIds = v),
               controlsErrorText: _submitted && _rows[i].controlIds.isEmpty
                   ? 'Required'.tr
                   : null,
+              disabledControlIds: _rows[i].policyId == null
+                  ? const []
+                  : _rows[i]
+                      .availableControls
+                      .where((c) => _controlHasOwner(_rows[i].policyId!, c.id))
+                      .map((c) => c.id)
+                      .toList(),
               spacing: 10.w,
               onRemoveRow: _rows.length > 1 ? () => _removeRow(i) : null,
             ),
@@ -344,7 +377,8 @@ class _AddOwnerPageState extends State<AddOwnerPage> {
             title: 'Discard'.tr,
             function: () => Navigator.pop(context, false),
             color: AppColors.colorGrey,
-            textStyle: StyleText.fontSize16Weight500.copyWith(color: AppColors.text),
+            textStyle:
+                StyleText.fontSize16Weight500.copyWith(color: AppColors.text),
           ),
         ),
         SizedBox(width: 10.w),
@@ -353,7 +387,8 @@ class _AddOwnerPageState extends State<AddOwnerPage> {
             title: 'Submit'.tr,
             function: isSubmitting ? () {} : () => _submit(context),
             color: AppColors.primary,
-            textStyle: StyleText.fontSize16Weight500.copyWith(color: AppColors.textButton),
+            textStyle: StyleText.fontSize16Weight500
+                .copyWith(color: AppColors.textButton),
           ),
         ),
       ],

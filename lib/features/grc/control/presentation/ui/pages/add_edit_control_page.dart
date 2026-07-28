@@ -108,6 +108,12 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
   /// shows the switch correctly; always false in Create mode.
   bool _manualInactive = false;
 
+  /// True once the user has attempted to Save at least once — gates the
+  /// "Please select a Control Owner" error so it never appears just from
+  /// picking a Champion, only once a save was actually attempted while that
+  /// Champion has no Owner.
+  bool _assigneesSaveAttempted = false;
+
   final _assignees = ControlAssigneeAssignments();
   final _departmentsForm = ControlDepartmentWeightForm();
 
@@ -184,6 +190,38 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
       .fold<double>(0, (sum, c) => sum + c.controlsWeight);
 
   double get _thisWeight => double.tryParse(_weightController.text.trim()) ?? 0;
+
+  /// The currently selected Champion/Owner emails — live selection if
+  /// touched, otherwise whoever is already assigned. Each is hidden from the
+  /// *other* picker (see ControlAssigneesSectionWidget) so the same person
+  /// can never be picked as both this Control's Champion and its Owner.
+  List<String> get _currentChampionEmails => _assignees.resolvedChampionEmails(
+        context: context,
+        isEdit: _isEdit,
+        policyId: widget.policyId,
+        controlId: widget.existingControl?.id ?? '',
+      );
+  List<String> get _currentOwnerEmails => _assignees.resolvedOwnerEmails(
+        context: context,
+        isEdit: _isEdit,
+        policyId: widget.policyId,
+        controlId: widget.existingControl?.id ?? '',
+      );
+
+  /// True once a Save was attempted while a Control Champion is assigned but
+  /// no Control Owner is — an Owner is required whenever a Champion is
+  /// assigned, while an Owner alone (no Champion) is valid. Recomputed live
+  /// so fixing the selection clears the error without needing another Save
+  /// press.
+  bool get _ownerRequiredForChampion =>
+      _assigneesSaveAttempted &&
+      _isEdit &&
+      _assignees.isChampionWithoutOwner(
+        context: context,
+        isEdit: _isEdit,
+        policyId: widget.policyId,
+        controlId: widget.existingControl?.id ?? '',
+      );
 
   /// True unless the currently entered Start/End Date fall outside the
   /// parent Policy's own Start/End Date range, or End Date is before Start
@@ -459,8 +497,7 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
         borderRadius: BorderRadius.circular(8.sp),
       ),
       child: ScrollConfiguration(
-        behavior:
-            ScrollConfiguration.of(context).copyWith(scrollbars: false),
+        behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -531,10 +568,10 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                   onDepartmentsChanged: (newSelection) => setState(() =>
                       _departmentsForm.onDepartmentsChanged(
                           newSelection, availableDepartmentNames)),
-                  onEqualWeightsChanged: (v) => setState(
-                      () => _departmentsForm.onEqualWeightsChanged(v)),
-                  onRemoveDepartment: (d) => setState(
-                      () => _departmentsForm.onRemoveDepartment(d)),
+                  onEqualWeightsChanged: (v) =>
+                      setState(() => _departmentsForm.onEqualWeightsChanged(v)),
+                  onRemoveDepartment: (d) =>
+                      setState(() => _departmentsForm.onRemoveDepartment(d)),
                 ),
               if (_isEdit)
                 ControlAssigneesSectionWidget(
@@ -548,6 +585,11 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                   onOwnersChanged: (selected) => setState(() =>
                       _assignees.currentOwnerEmails =
                           selected.map((o) => o.email).toList()),
+                  ownerErrorText: _ownerRequiredForChampion
+                      ? 'Please select a Control Owner'.tr
+                      : null,
+                  selectedChampionEmails: _currentChampionEmails,
+                  selectedOwnerEmails: _currentOwnerEmails,
                 ),
             ],
           ),
@@ -572,16 +614,16 @@ class _AddEditControlPageState extends State<AddEditControlPage> {
                 cancelLabel: 'Cancel'.tr,
                 confirmLabel: 'Save'.tr,
                 subtitle:
-                    'Are you sure you want to save this control as a draft?'
-                        .tr,
+                    'Are you sure you want to save this control as a draft?'.tr,
                 onConfirm: () => _onSave(cubit, status: ControlStatus.draft),
               );
             },
       onSave: () {
+        setState(() => _assigneesSaveAttempted = true);
         if (_isEdit &&
             (!_departmentsForm.isDepartmentsWeightValid ||
-                !_isControlDateRangeValid)) {
-          setState(() {});
+                !_isControlDateRangeValid ||
+                _ownerRequiredForChampion)) {
           return;
         }
         showConfirmDialog(

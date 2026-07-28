@@ -57,9 +57,10 @@ class ControlWeightIssueCubit extends Cubit<ControlWeightIssueState> {
 
   /// function name: [load]
   ///
-  /// purpose: fetch every non-Draft Control under [moduleId]/[policyId]
-  ///          and build fresh row data. Draft controls haven't been
-  ///          published yet, so they don't count toward this Policy's
+  /// purpose: fetch every Active/Scheduled/Unassigned Control under
+  ///          [moduleId]/[policyId] and build fresh row data. Draft controls
+  ///          haven't been published yet, and Inactive/Expired controls are
+  ///          no longer in effect, so neither count toward this Policy's
   ///          weight total. Disposes any previously held row data first.
   ///
   /// parameters:
@@ -80,8 +81,12 @@ class ControlWeightIssueCubit extends Cubit<ControlWeightIssueState> {
     }, (controls) => controls);
     if (controls == null) return;
 
-    final counted =
-        controls.where((c) => c.status != ControlStatus.draft).toList();
+    final counted = controls
+        .where((c) =>
+            c.status == ControlStatus.active ||
+            c.status == ControlStatus.scheduled ||
+            c.status == ControlStatus.unassigned)
+        .toList();
 
     _rowsData?.dispose();
     _rowsData = ControlWeightIssueRows(

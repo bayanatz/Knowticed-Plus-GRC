@@ -11,6 +11,7 @@
 /// Revision History: 2026-07-20 - Initial creation
 library;
 
+import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
@@ -59,8 +60,7 @@ class ControlWeightIssuePage extends StatelessWidget {
             ..load(module.moduleId, policy.id),
         ),
         BlocProvider<ControlWeightHistoryCubit>(
-          create: (_) => GetIt.instance<ControlWeightHistoryCubit>()
-            ..loadHistory(module.moduleId, policy.id),
+          create: (_) => GetIt.instance<ControlWeightHistoryCubit>(),
         ),
       ],
       child: _ControlWeightIssueBody(module: module, policy: policy),
@@ -75,11 +75,13 @@ class _ControlWeightIssueBody extends StatefulWidget {
   const _ControlWeightIssueBody({required this.module, required this.policy});
 
   @override
-  State<_ControlWeightIssueBody> createState() => _ControlWeightIssueBodyState();
+  State<_ControlWeightIssueBody> createState() =>
+      _ControlWeightIssueBodyState();
 }
 
 class _ControlWeightIssueBodyState extends State<_ControlWeightIssueBody> {
   int _selectedTab = 0;
+  bool _historyLoaded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -93,8 +95,12 @@ class _ControlWeightIssueBodyState extends State<_ControlWeightIssueBody> {
               PaginationAppBar(
                 screensTitles: [
                   'GRC'.tr,
-                  context.isArabic ? widget.module.moduleNameAr : widget.module.moduleNameEn,
-                  context.isArabic ? widget.policy.policyNameAr : widget.policy.policyNameEn,
+                  context.isArabic
+                      ? widget.module.moduleNameAr
+                      : widget.module.moduleNameEn,
+                  context.isArabic
+                      ? widget.policy.policyNameAr
+                      : widget.policy.policyNameEn,
                   'Control Weight Issue'.tr,
                 ],
               ),
@@ -123,10 +129,20 @@ class _ControlWeightIssueBodyState extends State<_ControlWeightIssueBody> {
     );
   }
 
+  void _selectTab(int index) {
+    setState(() => _selectedTab = index);
+    if (index == 1 && !_historyLoaded) {
+      _historyLoaded = true;
+      context
+          .read<ControlWeightHistoryCubit>()
+          .loadHistory(widget.module.moduleId, widget.policy.id);
+    }
+  }
+
   Widget _tabItem(String label, int index) {
     final isSelected = _selectedTab == index;
     return GestureDetector(
-      onTap: () => setState(() => _selectedTab = index),
+      onTap: () => _selectTab(index),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -149,21 +165,22 @@ class _ControlWeightIssueBodyState extends State<_ControlWeightIssueBody> {
     return BlocConsumer<ControlWeightIssueCubit, ControlWeightIssueState>(
       listener: (context, state) {
         if (state is ControlWeightIssueApplySuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('You Have Successfully Edited Controls Weights'.tr)),
+          showSuccessDialog(
+            context: context,
+            subtitle: 'You Have Successfully Edited Controls Weights'.tr,
           );
         }
         if (state is ControlWeightIssueFailure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message)),
-          );
+          showErrorDialog(context: context, subtitle: state.message);
         }
       },
       builder: (context, state) {
-        if (state is ControlWeightIssueLoading || state is ControlWeightIssueInitial) {
+        if (state is ControlWeightIssueLoading ||
+            state is ControlWeightIssueInitial) {
           return Padding(
             padding: EdgeInsets.symmetric(vertical: 60.h),
-            child: Center(child: CircularProgressIndicator(color: AppColors.primary)),
+            child: Center(
+                child: CircularProgressIndicator(color: AppColors.primary)),
           );
         }
 
@@ -179,7 +196,8 @@ class _ControlWeightIssueBodyState extends State<_ControlWeightIssueBody> {
             child: Center(
               child: Text(
                 state.message,
-                style: StyleText.fontSize14Weight500.copyWith(color: AppColors.red),
+                style: StyleText.fontSize14Weight500
+                    .copyWith(color: AppColors.red),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -223,7 +241,9 @@ class _ControlWeightIssueBodyState extends State<_ControlWeightIssueBody> {
               ),
             ),
             SizedBox(height: 12.h),
-            Align(alignment: Alignment.centerRight, child: _buildTotalWeight(rowsData)),
+            Align(
+                alignment: Alignment.centerRight,
+                child: _buildTotalWeight(rowsData)),
             SizedBox(height: 12.h),
             if (isEditing)
               Row(
@@ -239,11 +259,23 @@ class _ControlWeightIssueBodyState extends State<_ControlWeightIssueBody> {
                   customButton(
                     title: 'Apply Changes'.tr,
                     function: rowsData.totalWeightValid
-                        ? () => cubit.applyChanges(widget.module.moduleId, widget.policy.id)
+                        ? () => showConfirmDialog(
+                              context: context,
+                              title: 'Editing Controls Weight'.tr,
+                              cancelLabel: 'No'.tr,
+                              confirmLabel: 'Yes'.tr,
+                              subtitle:
+                                  'Are You Sure You Want To Edit Controls Weight ?'
+                                      .tr,
+                              onConfirm: () => cubit.applyChanges(
+                                  widget.module.moduleId, widget.policy.id),
+                            )
                         : () {},
                     width: 150.w,
                     height: 38.h,
-                    color: rowsData.totalWeightValid ? AppColors.primary : AppColors.secondaryText,
+                    color: rowsData.totalWeightValid
+                        ? AppColors.primary
+                        : AppColors.secondaryText,
                   ),
                 ],
               ),
@@ -253,10 +285,25 @@ class _ControlWeightIssueBodyState extends State<_ControlWeightIssueBody> {
     );
   }
 
-  static const List<double> _columnWidths = [40, 110, 150, 200, 110, 130, 110, 110];
+  static const List<double> _columnWidths = [
+    40,
+    110,
+    150,
+    200,
+    110,
+    130,
+    110,
+    110
+  ];
   static const List<String> _headers = [
-    'NO', 'Control Number', 'Control Name', 'Control Description',
-    'Control Weight', 'No of Departments', 'Start Date', 'End Date',
+    'NO',
+    'Control Number',
+    'Control Name',
+    'Control Description',
+    'Control Weight',
+    'No of Departments',
+    'Start Date',
+    'End Date',
   ];
 
   Widget _buildTable(
@@ -276,7 +323,9 @@ class _ControlWeightIssueBodyState extends State<_ControlWeightIssueBody> {
                 width: _columnWidths[i].w,
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 4.w),
-                  child: Text(_headers[i].tr, style: StyleText.fontSize14Weight600.copyWith(color: AppColors.text)),
+                  child: Text(_headers[i].tr,
+                      style: StyleText.fontSize14Weight600
+                          .copyWith(color: AppColors.text)),
                 ),
               ),
           ],
@@ -301,31 +350,71 @@ class _ControlWeightIssueBodyState extends State<_ControlWeightIssueBody> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          _cell(0, Text('${index + 1}', style: StyleText.fontSize14Weight500.copyWith(color: AppColors.secondaryText))),
-          _cell(1, Text(isArabic ? row.controlsNumberAr : row.controlsNumberEn, style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text), overflow: TextOverflow.ellipsis)),
-          _cell(2, Text(isArabic ? row.controlsNameAr : row.controlsNameEn, style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text), overflow: TextOverflow.ellipsis)),
-          _cell(3, Text(isArabic ? row.controlsDescriptionAr : row.controlsDescriptionEn, style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text), overflow: TextOverflow.ellipsis)),
+          _cell(
+              0,
+              Text('${index + 1}',
+                  style: StyleText.fontSize14Weight500
+                      .copyWith(color: AppColors.secondaryText))),
+          _cell(
+              1,
+              Text(isArabic ? row.controlsNumberAr : row.controlsNumberEn,
+                  style: StyleText.fontSize14Weight500
+                      .copyWith(color: AppColors.text),
+                  overflow: TextOverflow.ellipsis)),
+          _cell(
+              2,
+              Text(isArabic ? row.controlsNameAr : row.controlsNameEn,
+                  style: StyleText.fontSize14Weight500
+                      .copyWith(color: AppColors.text),
+                  overflow: TextOverflow.ellipsis)),
+          _cell(
+              3,
+              Text(
+                  isArabic
+                      ? row.controlsDescriptionAr
+                      : row.controlsDescriptionEn,
+                  style: StyleText.fontSize14Weight500
+                      .copyWith(color: AppColors.text),
+                  overflow: TextOverflow.ellipsis)),
           _cell(
             4,
             isEditing
                 ? TextField(
                     controller: row.weightController,
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    keyboardType:
+                        const TextInputType.numberWithOptions(decimal: true),
                     onChanged: (_) => cubit.revalidate(),
-                    style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
+                    style: StyleText.fontSize14Weight500
+                        .copyWith(color: AppColors.text),
                     decoration: InputDecoration(
                       isDense: true,
                       filled: true,
                       fillColor: AppColors.card,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(4.r)),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(4.r)),
                     ),
                   )
-                : Text(formatControlWeight(row.currentWeight), style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text)),
+                : Text(formatControlWeight(row.currentWeight),
+                    style: StyleText.fontSize14Weight500
+                        .copyWith(color: AppColors.text)),
           ),
-          _cell(5, Text('${row.noOfDepartments}', style: StyleText.fontSize14Weight500.copyWith(color: AppColors.secondaryText))),
-          _cell(6, Text(dateFormat.format(row.startDate), style: StyleText.fontSize14Weight500.copyWith(color: AppColors.secondaryText))),
-          _cell(7, Text(dateFormat.format(row.endDate), style: StyleText.fontSize14Weight500.copyWith(color: AppColors.secondaryText))),
+          _cell(
+              5,
+              Text('${row.noOfDepartments}',
+                  style: StyleText.fontSize14Weight500
+                      .copyWith(color: AppColors.secondaryText))),
+          _cell(
+              6,
+              Text(dateFormat.format(row.startDate),
+                  style: StyleText.fontSize14Weight500
+                      .copyWith(color: AppColors.secondaryText))),
+          _cell(
+              7,
+              Text(dateFormat.format(row.endDate),
+                  style: StyleText.fontSize14Weight500
+                      .copyWith(color: AppColors.secondaryText))),
         ],
       ),
     );
@@ -334,7 +423,8 @@ class _ControlWeightIssueBodyState extends State<_ControlWeightIssueBody> {
   Widget _cell(int columnIndex, Widget child) {
     return SizedBox(
       width: _columnWidths[columnIndex].w,
-      child: Padding(padding: EdgeInsets.symmetric(horizontal: 4.w), child: child),
+      child:
+          Padding(padding: EdgeInsets.symmetric(horizontal: 4.w), child: child),
     );
   }
 
@@ -351,7 +441,8 @@ class _ControlWeightIssueBodyState extends State<_ControlWeightIssueBody> {
           ),
           child: Text(
             '${'Total Weight'.tr} : ${formatControlWeight(rowsData.totalWeight)}',
-            style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
+            style:
+                StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
           ),
         ),
         if (!valid) ...[

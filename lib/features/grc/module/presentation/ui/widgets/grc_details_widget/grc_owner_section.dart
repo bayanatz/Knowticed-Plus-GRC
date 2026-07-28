@@ -78,6 +78,11 @@ class GrcOwnerSection extends StatefulWidget {
   /// a new Control Champion"). Null/empty renders nothing.
   final String? errorText;
 
+  /// Emails hidden from the picker entirely — used so a person already
+  /// picked in a related picker (e.g. this Control's Champion) can't also be
+  /// picked here (e.g. as its Owner).
+  final List<String> excludeEmails;
+
   const GrcOwnerSection({
     super.key,
     this.isViewMode = false,
@@ -89,6 +94,7 @@ class GrcOwnerSection extends StatefulWidget {
     this.showRemoveIconWhenSelected = false,
     this.sectionTitle,
     this.errorText,
+    this.excludeEmails = const [],
   });
 
   @override
@@ -108,6 +114,7 @@ class _GrcOwnerSectionState extends State<GrcOwnerSection> {
         initialOwnerEmails: widget.initialOwnerEmails,
         selectedDepartmentName: widget.selectedDepartmentName,
         selectedDepartmentNames: widget.selectedDepartmentNames,
+        excludeEmails: widget.excludeEmails,
       ),
     );
   }
@@ -124,6 +131,9 @@ class _GrcOwnerSectionState extends State<GrcOwnerSection> {
                 ? null
                 : [widget.selectedDepartmentName!]),
       );
+    }
+    if (!_listEquals(oldWidget.excludeEmails, widget.excludeEmails)) {
+      _cubit.filterByExcludedEmails(widget.excludeEmails);
     }
   }
 

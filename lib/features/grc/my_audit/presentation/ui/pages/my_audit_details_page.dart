@@ -389,8 +389,8 @@ class _MyAuditDetailsPageState extends State<MyAuditDetailsPage> {
                                               textStyle: StyleText
                                                   .fontSize14Weight500
                                                   .copyWith(
-                                                      color: AppColors
-                                                          .textButton),
+                                                      color:
+                                                          AppColors.textButton),
                                             ),
                                           ),
                                   // Text('Submission'.tr,
@@ -464,10 +464,8 @@ class _MyAuditDetailsPageState extends State<MyAuditDetailsPage> {
                                   if (widget.item.tab == MyAuditTab.pending)
                                     isSaving
                                         ? Align(
-                                            alignment:
-                                                Alignment.centerRight,
-                                            child:
-                                                GrcButtonLoadingPlaceholder(
+                                            alignment: Alignment.centerRight,
+                                            child: GrcButtonLoadingPlaceholder(
                                               width: 120.w,
                                               height: 44.h,
                                             ),

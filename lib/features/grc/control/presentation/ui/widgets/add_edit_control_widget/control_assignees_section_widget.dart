@@ -48,6 +48,18 @@ class ControlAssigneesSectionWidget extends StatelessWidget {
   final void Function(List<OwnerData> selected) onChampionsChanged;
   final void Function(List<OwnerData> selected) onOwnersChanged;
 
+  /// Shown below the Control Owner picker when a Champion is assigned but no
+  /// Owner is — a Control's Champion always requires an Owner too. Null/empty
+  /// renders nothing.
+  final String? ownerErrorText;
+
+  /// The currently selected Champion/Owner emails (live selection if
+  /// touched, otherwise whoever is already assigned) — each is hidden from
+  /// the *other* picker so the same person can never be both this Control's
+  /// Champion and its Owner at once.
+  final List<String> selectedChampionEmails;
+  final List<String> selectedOwnerEmails;
+
   const ControlAssigneesSectionWidget({
     super.key,
     required this.policyId,
@@ -55,6 +67,9 @@ class ControlAssigneesSectionWidget extends StatelessWidget {
     required this.realSelectedDepartments,
     required this.onChampionsChanged,
     required this.onOwnersChanged,
+    required this.selectedChampionEmails,
+    required this.selectedOwnerEmails,
+    this.ownerErrorText,
   });
 
   @override
@@ -79,6 +94,8 @@ class ControlAssigneesSectionWidget extends StatelessWidget {
                   ),
               selectedDepartmentNames: realSelectedDepartments,
               showRemoveIconWhenSelected: true,
+              singleSelect: true,
+              excludeEmails: selectedOwnerEmails,
               onOwnersChanged: onChampionsChanged,
             );
           },
@@ -100,6 +117,9 @@ class ControlAssigneesSectionWidget extends StatelessWidget {
                   ),
               selectedDepartmentNames: realSelectedDepartments,
               showRemoveIconWhenSelected: true,
+              singleSelect: true,
+              errorText: ownerErrorText,
+              excludeEmails: selectedChampionEmails,
               onOwnersChanged: onOwnersChanged,
             );
           },

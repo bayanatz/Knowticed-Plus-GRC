@@ -208,6 +208,17 @@ class OwnerCubit extends Cubit<OwnerState> {
     );
   }
 
+  /// Raw owners fetch with none of [getAllOwners]'s side effects
+  /// (reassignment sweep, expired-control stripping, state emission) — used
+  /// internally by pages that just need the current owner list for a
+  /// computation, not to update the Cubit's list state.
+  Future<Either<Failure, List<OwnerEntity>>> getAllOwnersRaw({
+    required String moduleId,
+    bool includeRemoved = false,
+  }) {
+    return _getAllUseCase.call(moduleId: moduleId, includeRemoved: includeRemoved);
+  }
+
   /// Every owner email in [owners] whose Assigning_Controls already includes
   /// this exact {[policyId], [controlId]} pair. Moved verbatim from
   /// AddEditControlPage's former `_alreadyAssignedOwnerEmails`, with the

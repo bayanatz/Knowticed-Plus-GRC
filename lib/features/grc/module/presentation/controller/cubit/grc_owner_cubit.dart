@@ -35,12 +35,14 @@ class GrcOwnerCubit extends Cubit<GrcOwnerState> {
   List<OwnerData> filteredOwners = [];
   String _searchQuery = '';
   List<String>? _selectedDepartmentNames;
+  List<String> _excludedEmails = const [];
 
   void loadOwners(
     BuildContext context, {
     List<String> initialOwnerEmails = const [],
     String? selectedDepartmentName,
     List<String>? selectedDepartmentNames,
+    List<String> excludeEmails = const [],
   }) {
     if (!Get.isRegistered<MainCoreEmployeeController>()) return;
     final ctrl = Get.find<MainCoreEmployeeController>();
@@ -58,6 +60,7 @@ class GrcOwnerCubit extends Cubit<GrcOwnerState> {
     }).toList();
     _selectedDepartmentNames = selectedDepartmentNames ??
         (selectedDepartmentName == null ? null : [selectedDepartmentName]);
+    _excludedEmails = excludeEmails;
     _applyFilters();
   }
 
@@ -91,6 +94,15 @@ class GrcOwnerCubit extends Cubit<GrcOwnerState> {
     return true;
   }
 
+  /// Hides whoever is in [emails] from the picker entirely — used so a
+  /// person already picked as this Control's Champion can't also be picked
+  /// as its Owner (and vice versa). Pass an empty list to clear.
+  void filterByExcludedEmails(List<String> emails) {
+    if (_listEquals(_excludedEmails, emails)) return;
+    _excludedEmails = emails;
+    _applyFilters();
+  }
+
   void _applyFilters() {
     filteredOwners = _allOwners.where((o) {
       final matchesDepartment = _selectedDepartmentNames == null ||
@@ -100,7 +112,8 @@ class GrcOwnerCubit extends Cubit<GrcOwnerState> {
           o.name.toLowerCase().contains(_searchQuery) ||
           o.department.toLowerCase().contains(_searchQuery) ||
           o.jobTitle.toLowerCase().contains(_searchQuery);
-      return matchesDepartment && matchesSearch;
+      final notExcluded = !_excludedEmails.contains(o.email);
+      return matchesDepartment && matchesSearch && notExcluded;
     }).toList();
     emit(GrcOwnerLoaded());
   }

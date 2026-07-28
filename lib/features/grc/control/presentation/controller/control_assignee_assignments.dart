@@ -42,6 +42,46 @@ class ControlAssigneeAssignments {
   List<String>? currentChampionEmails;
   List<String>? currentOwnerEmails;
 
+  /// The live Champion picker selection if the user touched it, otherwise
+  /// whoever was already assigned when the page opened.
+  List<String> resolvedChampionEmails({
+    required BuildContext context,
+    required bool isEdit,
+    required String policyId,
+    required String controlId,
+  }) {
+    final championCubit = context.read<ChampionCubit>();
+    final championState = championCubit.state;
+    return currentChampionEmails ??
+        (isEdit && championState is ChampionListLoaded
+            ? championCubit.alreadyAssignedEmails(
+                championState.champions,
+                policyId: policyId,
+                controlId: controlId,
+              )
+            : const <String>[]);
+  }
+
+  /// The live Owner picker selection if the user touched it, otherwise
+  /// whoever was already assigned when the page opened.
+  List<String> resolvedOwnerEmails({
+    required BuildContext context,
+    required bool isEdit,
+    required String policyId,
+    required String controlId,
+  }) {
+    final ownerCubit = context.read<OwnerCubit>();
+    final ownerState = ownerCubit.state;
+    return currentOwnerEmails ??
+        (isEdit && ownerState is OwnerListLoaded
+            ? ownerCubit.alreadyAssignedEmails(
+                ownerState.owners,
+                policyId: policyId,
+                controlId: controlId,
+              )
+            : const <String>[]);
+  }
+
   /// True if at least one Champion or Owner is currently assigned: the live
   /// picker selection if the user touched it, otherwise whoever was already
   /// assigned when the page opened. A brand-new Control has no assignees
@@ -52,27 +92,44 @@ class ControlAssigneeAssignments {
     required String policyId,
     required String controlId,
   }) {
-    final championCubit = context.read<ChampionCubit>();
-    final championState = championCubit.state;
-    final championEmails = currentChampionEmails ??
-        (isEdit && championState is ChampionListLoaded
-            ? championCubit.alreadyAssignedEmails(
-                championState.champions,
-                policyId: policyId,
-                controlId: controlId,
-              )
-            : const <String>[]);
-    final ownerCubit = context.read<OwnerCubit>();
-    final ownerState = ownerCubit.state;
-    final ownerEmails = currentOwnerEmails ??
-        (isEdit && ownerState is OwnerListLoaded
-            ? ownerCubit.alreadyAssignedEmails(
-                ownerState.owners,
-                policyId: policyId,
-                controlId: controlId,
-              )
-            : const <String>[]);
+    final championEmails = resolvedChampionEmails(
+      context: context,
+      isEdit: isEdit,
+      policyId: policyId,
+      controlId: controlId,
+    );
+    final ownerEmails = resolvedOwnerEmails(
+      context: context,
+      isEdit: isEdit,
+      policyId: policyId,
+      controlId: controlId,
+    );
     return championEmails.isNotEmpty || ownerEmails.isNotEmpty;
+  }
+
+  /// True only when a Champion is currently assigned but no Owner is — a
+  /// Control's Champion always requires an Owner to also be assigned, while
+  /// an Owner alone (no Champion) is valid on its own.
+  bool isChampionWithoutOwner({
+    required BuildContext context,
+    required bool isEdit,
+    required String policyId,
+    required String controlId,
+  }) {
+    final championEmails = resolvedChampionEmails(
+      context: context,
+      isEdit: isEdit,
+      policyId: policyId,
+      controlId: controlId,
+    );
+    if (championEmails.isEmpty) return false;
+    final ownerEmails = resolvedOwnerEmails(
+      context: context,
+      isEdit: isEdit,
+      policyId: policyId,
+      controlId: controlId,
+    );
+    return ownerEmails.isEmpty;
   }
 
   /// function name: [applyAssigneeChanges]

@@ -54,8 +54,7 @@ class PolicyWeightIssuePage extends StatelessWidget {
               GetIt.instance<PolicyWeightIssueCubit>()..load(module.moduleId),
         ),
         BlocProvider<PolicyWeightHistoryCubit>(
-          create: (_) => GetIt.instance<PolicyWeightHistoryCubit>()
-            ..loadHistory(module.moduleId),
+          create: (_) => GetIt.instance<PolicyWeightHistoryCubit>(),
         ),
       ],
       child: _PolicyWeightIssueBody(module: module),
@@ -74,6 +73,7 @@ class _PolicyWeightIssueBody extends StatefulWidget {
 
 class _PolicyWeightIssueBodyState extends State<_PolicyWeightIssueBody> {
   int _selectedTab = 0;
+  bool _historyLoaded = false;
 
   String _formatWeight(double value) {
     return value == value.roundToDouble()
@@ -124,10 +124,20 @@ class _PolicyWeightIssueBodyState extends State<_PolicyWeightIssueBody> {
     );
   }
 
+  void _selectTab(int index) {
+    setState(() => _selectedTab = index);
+    if (index == 1 && !_historyLoaded) {
+      _historyLoaded = true;
+      context
+          .read<PolicyWeightHistoryCubit>()
+          .loadHistory(widget.module.moduleId);
+    }
+  }
+
   Widget _tabItem(String label, int index) {
     final isSelected = _selectedTab == index;
     return GestureDetector(
-      onTap: () => setState(() => _selectedTab = index),
+      onTap: () => _selectTab(index),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -244,7 +254,17 @@ class _PolicyWeightIssueBodyState extends State<_PolicyWeightIssueBody> {
                   customButton(
                     title: 'Apply Changes'.tr,
                     function: rowsData.totalWeightValid
-                        ? () => cubit.applyChanges(widget.module.moduleId)
+                        ? () => showConfirmDialog(
+                              context: context,
+                              title: 'Editing Policies Weight'.tr,
+                              cancelLabel: 'No'.tr,
+                              confirmLabel: 'Yes'.tr,
+                              subtitle:
+                                  'Are You Sure You Want To Edit Policies Weight ?'
+                                      .tr,
+                              onConfirm: () =>
+                                  cubit.applyChanges(widget.module.moduleId),
+                            )
                         : () {},
                     width: 150.w,
                     height: 38.h,

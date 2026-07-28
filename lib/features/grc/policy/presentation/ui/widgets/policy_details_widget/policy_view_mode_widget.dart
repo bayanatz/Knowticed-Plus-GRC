@@ -366,18 +366,21 @@ class _PolicyViewModeWidgetState extends State<PolicyViewModeWidget> {
     if (!controls.hasControlWeightIssue) return const SizedBox.shrink();
     return customButton(
       title: 'Control Weight Issue'.tr,
-      function: () => Navigator.push(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (_, __, ___) => ControlWeightIssuePage(
-            module: widget.module,
-            policy: widget.policy,
+      function: () async {
+        await Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (_, __, ___) => ControlWeightIssuePage(
+              module: widget.module,
+              policy: widget.policy,
+            ),
+            transitionsBuilder: (_, animation, __, child) =>
+                FadeTransition(opacity: animation, child: child),
+            transitionDuration: const Duration(milliseconds: 300),
           ),
-          transitionsBuilder: (_, animation, __, child) =>
-              FadeTransition(opacity: animation, child: child),
-          transitionDuration: const Duration(milliseconds: 300),
-        ),
-      ),
+        );
+        widget.onControlsChanged();
+      },
       height: 38.h,
       color: AppColors.primary,
       textStyle:

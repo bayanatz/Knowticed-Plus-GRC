@@ -179,12 +179,13 @@ class _GrcModulePoliciesTabState extends State<GrcModulePoliciesTab> {
             state is PolicyListLoaded ? state.policies : <PolicyEntity>[];
         final counts = _countByStatus(allPolicies);
         final filtered = _applySearch(_applyStatusFilter(allPolicies));
-        final weightIssueTotal = allPolicies
-            .where((p) =>
-                p.status == PolicyStatus.active ||
-                p.status == PolicyStatus.scheduled)
-            .fold<double>(0, (sum, p) => sum + p.policyWeight);
-        final hasPolicyWeightIssue = weightIssueTotal > 100;
+        final weightScopedPolicies = allPolicies.where((p) =>
+            p.status == PolicyStatus.active ||
+            p.status == PolicyStatus.scheduled);
+        final weightIssueTotal = weightScopedPolicies.fold<double>(
+            0, (sum, p) => sum + p.policyWeight);
+        final hasPolicyWeightIssue = weightScopedPolicies.isNotEmpty &&
+            (weightIssueTotal - 100).abs() >= 0.001;
 
         final List<MapEntry<String, Map<String, dynamic>>> status = [
           MapEntry('all', {'num': counts['all'] ?? 0, 'color': AppColors.text}),
@@ -306,8 +307,7 @@ class _GrcModulePoliciesTabState extends State<GrcModulePoliciesTab> {
                               PolicyWeightIssuePage(module: widget.module),
                           transitionsBuilder: (_, animation, __, child) =>
                               FadeTransition(opacity: animation, child: child),
-                          transitionDuration:
-                              const Duration(milliseconds: 300),
+                          transitionDuration: const Duration(milliseconds: 300),
                         ),
                       );
                       if (context.mounted) {
