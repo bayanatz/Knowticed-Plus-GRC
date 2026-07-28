@@ -342,7 +342,7 @@ class _AssignmentControlDetailsPageState
                                       width: 56.w,
                                       height: 56.h,
                                       colorFilter: ColorFilter.mode(
-                                          AppColors.text.withOpacity(0.4),
+                                          AppColors.text.withValues(alpha: 0.4),
                                           BlendMode.srcIn),
                                     ),
                                     SizedBox(height: 16.h),

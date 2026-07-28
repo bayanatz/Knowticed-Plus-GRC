@@ -2,7 +2,7 @@
 /// Description: Firestore model for one Control Champion's submission
 ///              cycle on a Control, following the same history-list
 ///              pattern as ControlModel/ChampionModel/GRCModuleModel:
-///              every mutable field is a List<T>, index i is one revision
+///              every mutable field is a `List<T>`, index i is one revision
 ///              (Submit/Reject/Resubmit/Approve). Firestore path:
 ///              GRC Modules/{Module_ID}/Assignment Controls/{Assignment_Controls_ID}
 ///              where Assignment_Controls_ID = "{controlId}_{championEmail}".
@@ -163,21 +163,21 @@ class AssignmentControlModel {
       modifier: [...modifier, editorEmail],
       modificationDate: [...modificationDate, now],
       departmentManagerRejectionReasons: [
-        ...this.departmentManagerRejectionReasons,
+        ...departmentManagerRejectionReasons,
         departmentManagerRejectionReason ??
-            this.departmentManagerRejectionReasons.last,
+            departmentManagerRejectionReasons.last,
       ],
       controlScore: [
         ...this.controlScore,
         controlScore ?? this.controlScore.last,
       ],
       controlOwnerJustifications: [
-        ...this.controlOwnerJustifications,
-        controlOwnerJustification ?? this.controlOwnerJustifications.last,
+        ...controlOwnerJustifications,
+        controlOwnerJustification ?? controlOwnerJustifications.last,
       ],
       controlOwnerRejectionReasons: [
-        ...this.controlOwnerRejectionReasons,
-        controlOwnerRejectionReason ?? this.controlOwnerRejectionReasons.last,
+        ...controlOwnerRejectionReasons,
+        controlOwnerRejectionReason ?? controlOwnerRejectionReasons.last,
       ],
     );
   }
