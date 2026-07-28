@@ -17,7 +17,16 @@ import 'package:demo_app/features/grc/module/data/data_source/grc_module_firebas
 import 'package:demo_app/features/grc/module/data/data_source/grc_module_storage_data_source.dart';
 import 'package:demo_app/features/grc/policy/data/data_source/policy_firebase_data_source.dart';
 import 'package:demo_app/features/grc/policy/data/data_source/policy_storage_data_source.dart';
+import 'package:demo_app/features/grc/approval/data/data_source/approval_firebase_data_source.dart';
+import 'package:demo_app/features/grc/approval/data/repository/approval_repository_impl.dart';
+import 'package:demo_app/features/grc/approval/domain/repository/approval_repository.dart';
+import 'package:demo_app/features/grc/approval/domain/use_cases/create_or_update_pending_approval_usecase.dart';
+import 'package:demo_app/features/grc/approval/domain/use_cases/decide_approval_usecase.dart';
+import 'package:demo_app/features/grc/approval/domain/use_cases/get_all_approvals_usecase.dart';
+import 'package:demo_app/features/grc/approval/presentation/controller/approval_cubit.dart';
 import 'package:demo_app/features/grc/assignment_control/data/data_source/assignment_control_firebase_data_source.dart';
+import 'package:demo_app/features/grc/assignment_control/domain/use_cases/apply_manager_decision_usecase.dart';
+import 'package:demo_app/features/grc/assignment_control/domain/use_cases/get_assignment_control_by_id_usecase.dart';
 import 'package:demo_app/features/grc/control_champion/domain/entities/champion_request_resolver.dart';
 import 'package:demo_app/features/grc/control_champion/domain/use_cases/apply_champion_reassignment_usecase.dart';
 import 'package:demo_app/features/grc/control_owner/domain/use_cases/apply_owner_reassignment_usecase.dart';
@@ -161,6 +170,12 @@ void setupGRCDependencies(GetIt sl) {
     () => AssignmentControlFirebaseDataSource(),
   );
 
+  /// class name: [ApprovalFirebaseDataSource]
+  /// purpose: Cloud Firestore CRUD operations for Approval documents.
+  sl.registerLazySingleton<ApprovalFirebaseDataSource>(
+    () => ApprovalFirebaseDataSource(),
+  );
+
   // ─── 2. Repository ──────────────────────────────────────────────────────────
 
   /// class name: [GRCModuleRepositoryImpl] registered as [GRCModuleRepository]
@@ -223,6 +238,12 @@ void setupGRCDependencies(GetIt sl) {
       dataSource: sl<AssignmentControlFirebaseDataSource>(),
       storageDataSource: sl<PolicyStorageDataSource>(),
     ),
+  );
+
+  /// class name: [ApprovalRepositoryImpl] registered as [ApprovalRepository]
+  /// purpose: orchestrates the Approval data source and maps models to entities.
+  sl.registerLazySingleton<ApprovalRepository>(
+    () => ApprovalRepositoryImpl(dataSource: sl<ApprovalFirebaseDataSource>()),
   );
 
   // ─── 3. Use Cases ───────────────────────────────────────────────────────────
@@ -466,6 +487,40 @@ void setupGRCDependencies(GetIt sl) {
     () => SubmitEvidenceUseCase(sl<AssignmentControlRepository>()),
   );
 
+  /// class name: [GetAssignmentControlByIdUseCase]
+  /// purpose: business logic for fetching an Assignment Control directly
+  /// by its raw Firestore doc id (used by the Approvals feature).
+  sl.registerLazySingleton<GetAssignmentControlByIdUseCase>(
+    () => GetAssignmentControlByIdUseCase(sl<AssignmentControlRepository>()),
+  );
+
+  /// class name: [ApplyManagerDecisionUseCase]
+  /// purpose: business logic for recording a Department Manager's
+  /// Approve/Reject decision on an Assignment Control.
+  sl.registerLazySingleton<ApplyManagerDecisionUseCase>(
+    () => ApplyManagerDecisionUseCase(sl<AssignmentControlRepository>()),
+  );
+
+  /// class name: [GetAllApprovalsUseCase]
+  /// purpose: business logic for fetching every Approval in a module.
+  sl.registerLazySingleton<GetAllApprovalsUseCase>(
+    () => GetAllApprovalsUseCase(sl<ApprovalRepository>()),
+  );
+
+  /// class name: [CreateOrUpdatePendingApprovalUseCase]
+  /// purpose: business logic for creating or resetting to Pending the
+  /// Approval linked to a Champion's submission.
+  sl.registerLazySingleton<CreateOrUpdatePendingApprovalUseCase>(
+    () => CreateOrUpdatePendingApprovalUseCase(sl<ApprovalRepository>()),
+  );
+
+  /// class name: [DecideApprovalUseCase]
+  /// purpose: business logic for recording a manager's Approve/Reject
+  /// decision on an Approval.
+  sl.registerLazySingleton<DecideApprovalUseCase>(
+    () => DecideApprovalUseCase(sl<ApprovalRepository>()),
+  );
+
   // ─── 4. Cubit (Presentation) ────────────────────────────────────────────────
 
   /// class name: [GRCModuleCubit]
@@ -645,6 +700,22 @@ void setupGRCDependencies(GetIt sl) {
       getAllPoliciesUseCase: sl<GetAllPoliciesUseCase>(),
       getAssignmentControlUseCase: sl<GetAssignmentControlUseCase>(),
       submitEvidenceUseCase: sl<SubmitEvidenceUseCase>(),
+      createOrUpdatePendingApprovalUseCase: sl<CreateOrUpdatePendingApprovalUseCase>(),
+    ),
+  );
+
+  /// class name: [ApprovalCubit]
+  /// purpose: presentation-layer state manager for the Department
+  /// Manager's Approvals list and Approve/Reject actions. Registered as a
+  /// factory so each page gets an independent cubit instance.
+  sl.registerFactory<ApprovalCubit>(
+    () => ApprovalCubit(
+      getAllApprovalsUseCase: sl<GetAllApprovalsUseCase>(),
+      getAssignmentControlByIdUseCase: sl<GetAssignmentControlByIdUseCase>(),
+      getAllControlsUseCase: sl<GetAllControlsUseCase>(),
+      getAllPoliciesUseCase: sl<GetAllPoliciesUseCase>(),
+      decideApprovalUseCase: sl<DecideApprovalUseCase>(),
+      applyManagerDecisionUseCase: sl<ApplyManagerDecisionUseCase>(),
     ),
   );
 }

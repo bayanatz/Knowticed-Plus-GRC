@@ -27,6 +27,7 @@ import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
+import 'package:demo_app/features/grc/approval/presentation/ui/pages/approvals_list_page.dart';
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_module_champions_tab.dart';
 import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_module_owners_tab.dart';
@@ -170,7 +171,16 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
                   children: [
                     customButton(
                       title: "Approvals".tr,
-                      function: () {},
+                      function: () => Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (_, __, ___) =>
+                              ApprovalsListPage(module: widget.module),
+                          transitionsBuilder: (_, animation, __, child) =>
+                              FadeTransition(opacity: animation, child: child),
+                          transitionDuration: const Duration(milliseconds: 300),
+                        ),
+                      ),
                       width: 120.w,
                       height: 38.h,
                       color: AppColors.primary,
