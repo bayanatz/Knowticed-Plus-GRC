@@ -63,26 +63,29 @@ class _DialogShell extends StatelessWidget {
   }
 }
 
-/// Yellow primary button (matches your customButton style).
+/// Yellow primary button (matches your customButton style). Pass
+/// `enabled: false` to render it greyed-out and non-tappable — used by
+/// [_CommentDialog] to lock Submit until the required field has text.
 Widget _primaryBtn({
   required String label,
   required VoidCallback onTap,
   double? width,
+  bool enabled = true,
 }) {
   return GestureDetector(
-    onTap: onTap,
+    onTap: enabled ? onTap : null,
     child: Container(
       width: width,
       height: 36.sp,
       decoration: BoxDecoration(
-        color: AppColors.primary, // #FFDE59
+        color: enabled ? AppColors.primary : AppColors.colorGrey, // #FFDE59
         borderRadius: BorderRadius.circular(8.r),
       ),
       child: Center(
         child: Text(
           label,
-          style: StyleText.fontSize14Weight500
-              .copyWith(color: AppColors.textButton),
+          style: StyleText.fontSize14Weight500.copyWith(
+              color: enabled ? AppColors.textButton : AppColors.text),
         ),
       ),
     ),
@@ -581,6 +584,7 @@ class _CommentDialogState extends State<_CommentDialog> {
               label: widget.submitLabel,
               onTap: _handleSubmit,
               width: 120.w,
+              enabled: _controller.text.trim().isNotEmpty,
             ),
           ),
           SizedBox(height: 4.h),

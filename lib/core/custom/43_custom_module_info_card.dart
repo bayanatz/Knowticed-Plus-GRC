@@ -251,9 +251,7 @@ class LanguageToggle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.card,
-        borderRadius: BorderRadius.circular(8.r)
-      ),
+          color: AppColors.card, borderRadius: BorderRadius.circular(8.r)),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -272,7 +270,6 @@ class LanguageToggle extends StatelessWidget {
       onTap: onChanged == null ? null : () => onChanged!(index),
       borderRadius: CardStyles.radius(),
       child: Container(
-
         padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
         decoration: BoxDecoration(
           color: selected ? AppColors.primary : AppColors.card,

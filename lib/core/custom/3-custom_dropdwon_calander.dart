@@ -94,21 +94,21 @@ class _CustomDropdownCalendarState extends State<CustomDropdownCalendar> {
         ),
         okButton: _buildActionButton('Set Date'.tr),
         cancelButton: _buildActionButton('Cancel'.tr, isCancel: true),
-        weekdayLabelTextStyle: StyleText.fontSize16Weight400
-            .copyWith(color: AppColors.primary),
-        controlsTextStyle: StyleText.fontSize14Weight400
-            .copyWith(color: AppColors.primary),
-        selectedYearTextStyle: StyleText.fontSize14Weight400
-            .copyWith(color: AppColors.primary),
+        weekdayLabelTextStyle:
+            StyleText.fontSize16Weight400.copyWith(color: AppColors.primary),
+        controlsTextStyle:
+            StyleText.fontSize14Weight400.copyWith(color: AppColors.primary),
+        selectedYearTextStyle:
+            StyleText.fontSize14Weight400.copyWith(color: AppColors.primary),
         selectedDayHighlightColor: AppColors.primary,
         dayTextStyle:
-        StyleText.fontSize14Weight400.copyWith(color: AppColors.text),
-        selectedDayTextStyle: StyleText.fontSize14Weight400
-            .copyWith(color: AppColors.textButton),
+            StyleText.fontSize14Weight400.copyWith(color: AppColors.text),
+        selectedDayTextStyle:
+            StyleText.fontSize14Weight400.copyWith(color: AppColors.textButton),
         yearTextStyle:
-        StyleText.fontSize14Weight400.copyWith(color: AppColors.text),
+            StyleText.fontSize14Weight400.copyWith(color: AppColors.text),
         todayTextStyle:
-        StyleText.fontSize14Weight400.copyWith(color: AppColors.text),
+            StyleText.fontSize14Weight400.copyWith(color: AppColors.text),
         buttonPadding: EdgeInsets.symmetric(horizontal: 14.sp),
       ),
       dialogSize: Size(320.w, 320.h),
@@ -179,14 +179,15 @@ class _CustomDropdownCalendarState extends State<CustomDropdownCalendar> {
 
   String _formatDate(DateTime d) =>
       widget.dateFormatter?.call(d) ??
-          '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
+      '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
 
   @override
   Widget build(BuildContext context) {
     final hasError = widget.errorText != null && widget.errorText!.isNotEmpty;
     final radius = widget.borderRadius ?? BorderRadius.circular(8.r);
     final isDisabled = !widget.enabled;
-    final displayText = widget.value != null ? _formatDate(widget.value!) : null;
+    final displayText =
+        widget.value != null ? _formatDate(widget.value!) : null;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -201,11 +202,16 @@ class _CustomDropdownCalendarState extends State<CustomDropdownCalendar> {
                     color: hasError
                         ? AppColors.red
                         : isDisabled
-                        ? AppColors.text.withOpacity(0.4)
-                        : AppColors.text,
+                            ? AppColors.text.withOpacity(0.4)
+                            : AppColors.text,
                   ),
               children: widget.required
-                  ? [TextSpan(text: ' *', style: StyleText.fontSize14Weight500.copyWith(color: AppColors.red))]
+                  ? [
+                      TextSpan(
+                          text: ' *',
+                          style: StyleText.fontSize14Weight500
+                              .copyWith(color: AppColors.red))
+                    ]
                   : [],
             ),
           ),
@@ -219,7 +225,7 @@ class _CustomDropdownCalendarState extends State<CustomDropdownCalendar> {
             decoration: InputDecoration(
               isDense: true,
               contentPadding:
-              EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+                  EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
               filled: true,
               fillColor: isDisabled
                   ? (widget.fillColor ?? AppColors.card).withOpacity(0.5)
@@ -228,16 +234,18 @@ class _CustomDropdownCalendarState extends State<CustomDropdownCalendar> {
                   borderRadius: radius, borderSide: BorderSide.none),
               enabledBorder: hasError
                   ? OutlineInputBorder(
-                  borderRadius: radius,
-                  borderSide: BorderSide(color: AppColors.red, width: 1.5.w))
+                      borderRadius: radius,
+                      borderSide:
+                          BorderSide(color: AppColors.red, width: 1.5.w))
                   : OutlineInputBorder(
-                  borderRadius: radius, borderSide: BorderSide.none),
+                      borderRadius: radius, borderSide: BorderSide.none),
               focusedBorder: hasError
                   ? OutlineInputBorder(
-                  borderRadius: radius,
-                  borderSide: BorderSide(color: AppColors.red, width: 1.5.w))
+                      borderRadius: radius,
+                      borderSide:
+                          BorderSide(color: AppColors.red, width: 1.5.w))
                   : OutlineInputBorder(
-                  borderRadius: radius, borderSide: BorderSide.none),
+                      borderRadius: radius, borderSide: BorderSide.none),
               disabledBorder: OutlineInputBorder(
                   borderRadius: radius, borderSide: BorderSide.none),
               prefixIcon: null,
@@ -253,8 +261,8 @@ class _CustomDropdownCalendarState extends State<CustomDropdownCalendar> {
                     hasError
                         ? AppColors.red
                         : isDisabled
-                        ? AppColors.text.withOpacity(0.3)
-                        : AppColors.text.withOpacity(0.5),
+                            ? AppColors.text.withOpacity(0.3)
+                            : AppColors.text.withOpacity(0.5),
                     BlendMode.srcIn,
                   ),
                 ),
@@ -262,20 +270,21 @@ class _CustomDropdownCalendarState extends State<CustomDropdownCalendar> {
               suffixIconConstraints: const BoxConstraints(),
               hintText: displayText == null ? (widget.hint ?? '') : null,
               hintStyle: widget.hintStyle ??
-                  StyleText.fontSize14Weight400.copyWith(color: AppColors.text.withOpacity(0.4)),
+                  StyleText.fontSize14Weight400
+                      .copyWith(color: AppColors.text.withOpacity(0.4)),
               errorText: null,
             ),
             child: displayText != null
                 ? Text(
-              displayText,
-              style: widget.valueStyle ??
-                  StyleText.fontSize14Weight400.copyWith(
-                    color: isDisabled
-                        ? AppColors.text.withOpacity(0.4)
-                        : AppColors.text,
-                  ),
-              overflow: TextOverflow.ellipsis,
-            )
+                    displayText,
+                    style: widget.valueStyle ??
+                        StyleText.fontSize14Weight400.copyWith(
+                          color: isDisabled
+                              ? AppColors.text.withOpacity(0.4)
+                              : AppColors.text,
+                        ),
+                    overflow: TextOverflow.ellipsis,
+                  )
                 : const SizedBox.shrink(),
           ),
         ),
@@ -288,8 +297,8 @@ class _CustomDropdownCalendarState extends State<CustomDropdownCalendar> {
           SizedBox(height: 4.h),
           Text(widget.helperText!,
               style: widget.helperStyle ??
-                  StyleText.fontSize12Weight400.copyWith(
-                      color: AppColors.text.withOpacity(0.5))),
+                  StyleText.fontSize12Weight400
+                      .copyWith(color: AppColors.text.withOpacity(0.5))),
         ],
       ],
     );

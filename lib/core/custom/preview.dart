@@ -28,7 +28,7 @@ import '7_custom_button_with_icon.dart';
 import '8-custom_filter_app.dart';
 import '9_filter_tab_with_container.dart';
 import '10-custom_tabs.dart';
-import '10_custom_upload_dialog.dart';
+import '10_custom_upload_document.dart';
 // 11's own showUploadDialog is a near-duplicate of 10's — hidden here to
 // avoid an ambiguous-import error; section 10 already demos the dedicated one.
 import '11_custom_confirm_diaolog.dart' hide showUploadDialog;

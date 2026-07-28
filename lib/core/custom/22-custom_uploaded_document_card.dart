@@ -22,7 +22,7 @@ import 'package:demo_app/core/custom/16-custom_card_styles.dart';
 /// )
 /// ```
 class ProductWarrantyCard extends StatelessWidget {
-  final String title;
+  final String? title;
   final String fileName;
   final String? fileSize;
   final String? date;
@@ -33,7 +33,7 @@ class ProductWarrantyCard extends StatelessWidget {
 
   const ProductWarrantyCard({
     super.key,
-    required this.title,
+    this.title,
     required this.fileName,
     this.fileSize,
     this.date,
@@ -51,7 +51,7 @@ class ProductWarrantyCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(title, style: CardStyles.label(12)),
+          if (title != null) Text(title!, style: CardStyles.label(12)),
           SizedBox(height: 6.h),
           InkWell(
             onTap: onTapFile,
@@ -109,7 +109,6 @@ class ProductWarrantyCard extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-
                       if (onRemove != null) ...[
                         SizedBox(height: 2.h),
                         InkWell(
@@ -122,12 +121,9 @@ class ProductWarrantyCard extends StatelessWidget {
                           ),
                         ),
                       ],
-
                       SizedBox(height: 2.h),
-
                       if (date != null)
                         Text(date!, style: CardStyles.label(10)),
-
                     ],
                   ),
                 ],

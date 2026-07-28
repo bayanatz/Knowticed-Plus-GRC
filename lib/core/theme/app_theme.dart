@@ -15,7 +15,6 @@ abstract class AppTheme {
 
   static final ThemeData lightTheme = ThemeData.light().copyWith(
     textTheme: TextTheme(
-
       headlineMedium: AppTextStyles.font20BlackCairoMedium,
       headlineSmall: AppTextStyles.font16BlackCairoMedium,
       titleLarge: AppTextStyles.font18BlackCairoMedium,
@@ -31,9 +30,9 @@ abstract class AppTheme {
       displayMedium: AppTextStyles.font20BlackCairoMedium,
       displaySmall: AppTextStyles.font16BlackCairoMedium,
     ),
-    splashFactory: NoSplash.splashFactory,  // ADD THIS
-    highlightColor: Colors.transparent,     // ADD THIS
-    splashColor: Colors.transparent,        // ADD THIS
+    splashFactory: NoSplash.splashFactory, // ADD THIS
+    highlightColor: Colors.transparent, // ADD THIS
+    splashColor: Colors.transparent, // ADD THIS
     primaryColor: AppColors.primary,
     scaffoldBackgroundColor: AppColors.background,
 
@@ -124,9 +123,9 @@ abstract class AppTheme {
       displaySmall: AppTextStyles.font16BlackCairoMedium,
     ),
     scaffoldBackgroundColor: AppColors.background,
-    splashFactory: NoSplash.splashFactory,  // ADD THIS
-    highlightColor: Colors.transparent,     // ADD THIS
-    splashColor: Colors.transparent,        // ADD THIS
+    splashFactory: NoSplash.splashFactory, // ADD THIS
+    highlightColor: Colors.transparent, // ADD THIS
+    splashColor: Colors.transparent, // ADD THIS
     colorScheme: ColorScheme.dark(
       primary: AppColors.secondaryPrimary,
       onPrimary: Colors.white,
@@ -276,7 +275,8 @@ abstract class AppTheme {
     'darkDashboardTable': const Color(0xFF28282B),
     'greyIcon': const Color(0xffA6A6A6),
     'drawerColor': const Color(0xFF797979),
-    'blackButton': Colors.black
+    'blackButton': Colors.black,
+    "greyDark": const Color(0xff8D8D8D),
   };
 
   // ****************** DEFINE DARK COLOR PALETTE HERE ******************
@@ -393,20 +393,20 @@ abstract class AppTheme {
   }
 
   static void interfaceInitTheme(
-      Color primaryColor, Color secondaryColor, bool isDarkMode) =>
+          Color primaryColor, Color secondaryColor, bool isDarkMode) =>
       initTheme(primaryColor, secondaryColor, isDarkMode);
 
   static void interfaceToggleTheme() => toggleTheme();
 
   static void toggleTheme() async {
-    isDark = !isDark!;
+    isDark = !isDark;
     setCurrentThemeColors();
   }
 
   static Color contrastColor() {
     final double primaryLuminance = AppColors.primary.computeLuminance();
-    final double secondaryPrimaryLuminance = AppColors.secondaryPrimary.computeLuminance();
-
+    final double secondaryPrimaryLuminance =
+        AppColors.secondaryPrimary.computeLuminance();
 
     // Check if both colors are light or dark
     if (primaryLuminance > 0.5 && secondaryPrimaryLuminance > 0.5) {
