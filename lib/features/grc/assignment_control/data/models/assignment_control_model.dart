@@ -97,14 +97,13 @@ class AssignmentControlModel {
 
   /// Builds the first revision of a submission cycle — always Status
   /// "Submitted" (there is no stored "Pending" revision; see design spec).
-  /// [departmentManager] is always null for now — no dept-manager lookup
-  /// exists yet in this codebase (left for the future Approvals spec).
   factory AssignmentControlModel.create({
     required String submissionId,
     required String controlChampionEmail,
     required String policyId,
     required String controlId,
     required String? controlOwner,
+    required String? departmentManager,
     required String submissionDocument,
     required String submissionNote,
     required String editorEmail,
@@ -116,7 +115,7 @@ class AssignmentControlModel {
       policyId: policyId,
       controlId: controlId,
       controlOwner: controlOwner,
-      departmentManager: null,
+      departmentManager: departmentManager,
       submissionDocument: [submissionDocument],
       submissionNote: [submissionNote],
       status: [AssignmentControlStatus.submitted.value],

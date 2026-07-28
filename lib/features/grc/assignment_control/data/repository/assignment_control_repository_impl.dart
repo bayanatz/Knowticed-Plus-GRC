@@ -50,12 +50,53 @@ class AssignmentControlRepositoryImpl implements AssignmentControlRepository {
   }
 
   @override
+  Future<Either<Failure, AssignmentControlEntity?>> getAssignmentControlById({
+    required String moduleId,
+    required String id,
+  }) async {
+    try {
+      final model = await _dataSource.get(id, moduleId: moduleId);
+      return Right(model?.toEntity());
+    } catch (e) {
+      return Left(FirebaseFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, AssignmentControlEntity>> applyManagerDecision({
+    required String moduleId,
+    required String controlId,
+    required String championEmail,
+    required AssignmentControlStatus newStatus,
+    String? rejectionReason,
+    required String editorEmail,
+  }) async {
+    try {
+      final id = _docId(controlId: controlId, championEmail: championEmail);
+      final current = await _dataSource.get(id, moduleId: moduleId);
+      if (current == null) {
+        return Left(ValidationError('Assignment Control not found (id: $id)'));
+      }
+      final model = current.copyWithUpdate(
+        status: newStatus.value,
+        departmentManagerRejectionReason: rejectionReason,
+        editorEmail: editorEmail,
+      );
+      final saved = await _dataSource.update(model, moduleId: moduleId);
+      return Right(saved.toEntity());
+    } catch (e) {
+      return Left(FirebaseFailure(e.toString()));
+    }
+  }
+
+  @override
   Future<Either<Failure, AssignmentControlEntity>> submitEvidence({
     required String moduleId,
     required String policyId,
     required String controlId,
     required String championEmail,
     required String? controlOwnerEmail,
+    required String? departmentManagerEmail,
     required File documentFile,
     required String note,
     required String editorEmail,
@@ -78,6 +119,7 @@ class AssignmentControlRepositoryImpl implements AssignmentControlRepository {
           policyId: policyId,
           controlId: controlId,
           controlOwner: controlOwnerEmail,
+          departmentManager: departmentManagerEmail,
           submissionDocument: documentUrl,
           submissionNote: note,
           editorEmail: editorEmail,
