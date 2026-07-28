@@ -8,7 +8,12 @@
 import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:demo_app/core/network/failure_model.dart';
+import 'package:demo_app/features/employee/domain/entities/employee_entity.dart';
+import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
+import 'package:demo_app/features/grc/approval/domain/entities/approval_resolver.dart';
+import 'package:demo_app/features/grc/approval/domain/use_cases/create_or_update_pending_approval_usecase.dart';
 import 'package:demo_app/features/grc/assignment_control/domain/entities/assignment_control_entity.dart';
 import 'package:demo_app/features/grc/assignment_control/domain/entities/assignment_control_item.dart';
 import 'package:demo_app/features/grc/assignment_control/domain/entities/assignment_control_resolver.dart';
@@ -32,12 +37,14 @@ class AssignmentControlCubit extends Cubit<AssignmentControlState> {
     required GetAllPoliciesUseCase getAllPoliciesUseCase,
     required GetAssignmentControlUseCase getAssignmentControlUseCase,
     required SubmitEvidenceUseCase submitEvidenceUseCase,
+    required CreateOrUpdatePendingApprovalUseCase createOrUpdatePendingApprovalUseCase,
   })  : _getChampionUseCase = getChampionUseCase,
         _getAllControlsUseCase = getAllControlsUseCase,
         _getAllOwnersUseCase = getAllOwnersUseCase,
         _getAllPoliciesUseCase = getAllPoliciesUseCase,
         _getAssignmentControlUseCase = getAssignmentControlUseCase,
         _submitEvidenceUseCase = submitEvidenceUseCase,
+        _createOrUpdatePendingApprovalUseCase = createOrUpdatePendingApprovalUseCase,
         super(AssignmentControlInitial());
 
   final GetChampionUseCase _getChampionUseCase;
@@ -46,6 +53,7 @@ class AssignmentControlCubit extends Cubit<AssignmentControlState> {
   final GetAllPoliciesUseCase _getAllPoliciesUseCase;
   final GetAssignmentControlUseCase _getAssignmentControlUseCase;
   final SubmitEvidenceUseCase _submitEvidenceUseCase;
+  final CreateOrUpdatePendingApprovalUseCase _createOrUpdatePendingApprovalUseCase;
 
   /// Loads every control this champion is assigned to (via ChampionModel,
   /// no Assignment_Controls doc required), resolves each control's details
@@ -123,8 +131,10 @@ class AssignmentControlCubit extends Cubit<AssignmentControlState> {
     );
   }
 
-  /// Resolves the current Control Owner for this policy+control (if any),
-  /// then submits (creates or resubmits) the evidence.
+  /// Resolves the current Control Owner and Department Manager for this
+  /// policy+control (if any), submits (creates or resubmits) the evidence,
+  /// then creates/resets the linked Approval doc to Pending so the manager's
+  /// Approvals list picks it up.
   Future<void> submitEvidence({
     required String moduleId,
     required String policyId,
@@ -144,6 +154,15 @@ class AssignmentControlCubit extends Cubit<AssignmentControlState> {
       ),
     );
 
+    final employees = Get.isRegistered<MainCoreEmployeeController>()
+        ? (Get.find<MainCoreEmployeeController>().allEmployeesEntities ??
+            const <EmployeeEntityPro>[])
+        : const <EmployeeEntityPro>[];
+    final departmentManagerEmail = findDepartmentManagerEmail(
+      employees,
+      championEmail: championEmail,
+    );
+
     final result = await _submitEvidenceUseCase.call(
       SubmitEvidenceParams(
         moduleId: moduleId,
@@ -151,15 +170,26 @@ class AssignmentControlCubit extends Cubit<AssignmentControlState> {
         controlId: controlId,
         championEmail: championEmail,
         controlOwnerEmail: ownerEmail,
+        departmentManagerEmail: departmentManagerEmail,
         documentFile: documentFile,
         note: note,
         editorEmail: championEmail,
       ),
     );
 
-    result.fold(
-      (failure) => emit(AssignmentControlFailure(failure.message)),
-      (assignment) => emit(AssignmentControlActionSuccess(assignment)),
+    await result.fold(
+      (failure) async => emit(AssignmentControlFailure(failure.message)),
+      (assignment) async {
+        await _createOrUpdatePendingApprovalUseCase.call(
+          CreateOrUpdatePendingApprovalParams(
+            moduleId: moduleId,
+            controlId: controlId,
+            championEmail: championEmail,
+            editorEmail: championEmail,
+          ),
+        );
+        emit(AssignmentControlActionSuccess(assignment));
+      },
     );
   }
 }
