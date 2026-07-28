@@ -95,6 +95,11 @@ class _ApprovalDetailsPageState extends State<ApprovalDetailsPage> {
     final isArabic = context.isArabic;
     final championEmail = assignmentControl.controlChampionEmail;
     final isPending = widget.item.approval.status == ApprovalStatus.pending;
+    final moduleOwnerEmail = widget.module.moduleOwners.isNotEmpty
+        ? widget.module.moduleOwners.first
+        : null;
+    final policyDocument =
+        isArabic ? policy.policyDocumentAr : policy.policyDocumentEn;
 
     return BlocConsumer<ApprovalCubit, ApprovalState>(
       listener: (context, state) {
@@ -142,11 +147,59 @@ class _ApprovalDetailsPageState extends State<ApprovalDetailsPage> {
                             style: StyleText.fontSize16Weight600,
                           ),
                           SizedBox(height: 8.h),
+                          Text('Policy Description'.tr, style: CardStyles.label(12)),
+                          SizedBox(height: 4.h),
                           Text(
                             isArabic
                                 ? policy.policyDescriptionAr
                                 : policy.policyDescriptionEn,
                             style: CardStyles.value(12),
+                          ),
+                          SizedBox(height: 12.h),
+                          if (moduleOwnerEmail != null) ...[
+                            GrcContactInlineRow(
+                                label: 'Module Owner'.tr, email: moduleOwnerEmail),
+                            SizedBox(height: 12.h),
+                          ],
+                          Row(
+                            children: [
+                              Expanded(
+                                child: GrcLabelValueRow('Policy Weight'.tr,
+                                    policy.policyWeight.toString()),
+                              ),
+                              Expanded(
+                                child: GrcLabelValueRow(
+                                  'Policy Number'.tr,
+                                  isArabic
+                                      ? policy.policyNumberAr
+                                      : policy.policyNumberEn,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8.h),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    GrcLabelValueRow('Start Date'.tr,
+                                        _cardDateFormat.format(policy.startDate)),
+                                    SizedBox(height: 4.h),
+                                    GrcLabelValueRow('End Date'.tr,
+                                        _cardDateFormat.format(policy.endDate)),
+                                  ],
+                                ),
+                              ),
+                              if (policyDocument != null && policyDocument.isNotEmpty)
+                                ProductWarrantyCard(
+                                  fileName:
+                                      policyDocument.split('/').last.split('?').first,
+                                  onTapFile: () {},
+                                ),
+                            ],
                           ),
                         ]),
                         SizedBox(height: 15.h),
@@ -168,16 +221,17 @@ class _ApprovalDetailsPageState extends State<ApprovalDetailsPage> {
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              if (assignmentControl.controlOwner != null)
-                                Expanded(
-                                  child: GrcContactInlineRow(
-                                    label: 'Control Owner'.tr,
-                                    email: assignmentControl.controlOwner,
-                                  ),
+                              Expanded(
+                                child: GrcContactInlineRow(
+                                  label: 'Control Owner'.tr,
+                                  email: assignmentControl.controlOwner,
                                 ),
-                              GrcContactInlineRow(
-                                label: 'Control Champion'.tr,
-                                email: championEmail,
+                              ),
+                              Expanded(
+                                child: GrcContactInlineRow(
+                                  label: 'Control Champion'.tr,
+                                  email: championEmail,
+                                ),
                               ),
                             ],
                           ),
