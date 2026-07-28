@@ -38,6 +38,7 @@ import 'package:demo_app/features/grc/control/domain/entities/control_status.dar
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
 import 'package:demo_app/features/grc/policy/domain/entities/policy_status.dart';
 import 'package:demo_app/features/grc/policy/presentation/controller/policy_cubit.dart';
+import 'package:demo_app/features/grc/control/presentation/controller/control_cubit.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/pages/add_policy_controls.dart';
 import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details_widget/grc_form_fields.dart'
     show containsEnglishLetters, containsArabicLetters;
@@ -374,17 +375,14 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
   bool get _hasControlErrors => _controls.any(
       (c) => c.nameController.text.trim().isNotEmpty && _controlHasErrors(c));
 
-  /// function name: [_showBlockingErrorsSnackbar]
+  /// function name: [_showBlockingErrorsDialog]
   ///
-  /// purpose: show the shared red snackbar used whenever Save For Later or
+  /// purpose: show the shared error dialog used whenever Save For Later or
   ///          Publish is blocked by an unresolved validation error.
-  void _showBlockingErrorsSnackbar() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content:
-            Text('Please fix the highlighted errors before continuing.'.tr),
-        backgroundColor: AppColors.red,
-      ),
+  void _showBlockingErrorsDialog() {
+    showErrorDialog(
+      context: context,
+      subtitle: 'Please fix the highlighted errors before continuing.'.tr,
     );
   }
 
@@ -408,11 +406,9 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
   void _handleNextPressed() {
     setState(() => _step0Submitted = true);
     if (!_validateStep0()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Please fill all required fields'.tr),
-          backgroundColor: AppColors.red,
-        ),
+      showErrorDialog(
+        context: context,
+        subtitle: 'Please fill all required fields'.tr,
       );
       return;
     }
@@ -421,7 +417,7 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
 
   void _handleSaveForLaterPressed(PolicyCubit cubit) {
     if (_hasPolicyLanguageErrors || _hasControlErrors) {
-      _showBlockingErrorsSnackbar();
+      _showBlockingErrorsDialog();
       return;
     }
     showConfirmDialog(
@@ -437,7 +433,7 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
   void _handlePreviewPressed() {
     setState(() => _controlsSubmitted = true);
     if (_hasPolicyLanguageErrors || _hasControlErrors) {
-      _showBlockingErrorsSnackbar();
+      _showBlockingErrorsDialog();
       return;
     }
     if (_hasIncompleteTouchedControl) {
@@ -448,16 +444,14 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
 
   void _handlePublishPressed(PolicyCubit cubit) {
     if (!_isWeightValid) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Total Weight should be 100'.tr),
-          backgroundColor: AppColors.red,
-        ),
+      showErrorDialog(
+        context: context,
+        subtitle: 'Total Weight should be 100'.tr,
       );
       return;
     }
     if (_hasPolicyLanguageErrors || _hasControlErrors) {
-      _showBlockingErrorsSnackbar();
+      _showBlockingErrorsDialog();
       return;
     }
     showConfirmDialog(
@@ -494,18 +488,6 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
     }
     hideLoadingIndicator();
 
-    if (state is PolicyControlsListLoaded) {
-      if (widget.existingPolicy == null) return;
-      _originalControlIds = state.controls.map((c) => c.id).toSet();
-      setState(() {
-        for (final c in _controls) c.dispose();
-        _controls = state.controls.isEmpty
-            ? [PolicyControlModel()]
-            : state.controls.map(_controlModelFromEntity).toList();
-      });
-      return;
-    }
-
     if (state is PolicyActionSuccess) {
       final isDraft = state.policy.status == PolicyStatus.draft;
       showSuccessDialog(
@@ -526,25 +508,30 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
       // Policy's new state either way.
       final reasons =
           state.failedControls.map((f) => f.message).toSet().join('; ');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
+      showErrorDialog(
+        context: context,
+        subtitle:
             '${'Policy saved, but one or more Controls failed to save:'.tr} $reasons',
-          ),
-          backgroundColor: AppColors.red,
-        ),
       );
       Navigator.of(context).pop(true);
       return;
     }
 
     if (state is PolicyFailure) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(state.message),
-          backgroundColor: AppColors.red,
-        ),
-      );
+      showErrorDialog(context: context, subtitle: state.message);
+    }
+  }
+
+  void _onControlStateChange(BuildContext context, ControlState state) {
+    if (state is ControlsListLoaded) {
+      if (widget.existingPolicy == null) return;
+      _originalControlIds = state.controls.map((c) => c.id).toSet();
+      setState(() {
+        for (final c in _controls) c.dispose();
+        _controls = state.controls.isEmpty
+            ? [PolicyControlModel()]
+            : state.controls.map(_controlModelFromEntity).toList();
+      });
     }
   }
 
@@ -553,20 +540,33 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
   // ----------------------------------------------------------------
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) {
-        final cubit = GetIt.instance<PolicyCubit>();
-        final existing = widget.existingPolicy;
-        if (existing != null) {
-          cubit.getAllControls(moduleId: widget.moduleId, policyId: existing.id);
-        }
-        return cubit;
-      },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<PolicyCubit>(create: (_) => GetIt.instance<PolicyCubit>()),
+        BlocProvider<ControlCubit>(
+          create: (_) {
+            final cubit = GetIt.instance<ControlCubit>();
+            final existing = widget.existingPolicy;
+            if (existing != null) {
+              cubit.getAllControls(
+                moduleId: widget.moduleId,
+                policyId: existing.id,
+              );
+            }
+            return cubit;
+          },
+        ),
+      ],
       child: Builder(
         builder: (ctx) {
           final cubit = ctx.read<PolicyCubit>();
-          return BlocListener<PolicyCubit, PolicyState>(
-            listener: _onStateChange,
+          return MultiBlocListener(
+            listeners: [
+              BlocListener<PolicyCubit, PolicyState>(listener: _onStateChange),
+              BlocListener<ControlCubit, ControlState>(
+                listener: _onControlStateChange,
+              ),
+            ],
             child: Scaffold(
               body: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
