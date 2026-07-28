@@ -26,7 +26,7 @@ import 'package:demo_app/features/grc/control_owner/presentation/controller/owne
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_details_widget/grc_owner_section.dart';
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
-import 'package:demo_app/features/grc/policy/presentation/controller/policy_cubit.dart';
+import 'package:demo_app/features/grc/control/presentation/controller/control_cubit.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/control_card_widget.dart';
 import 'package:demo_app/features/grc/policy/domain/entities/policy_document_info.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_document_preview_widget.dart';
@@ -396,8 +396,8 @@ class _PolicyViewModeWidgetState extends State<PolicyViewModeWidget> {
         PageRouteBuilder(
           pageBuilder: (_, __, ___) => MultiBlocProvider(
             providers: [
-              BlocProvider<PolicyCubit>(
-                create: (_) => GetIt.instance<PolicyCubit>(),
+              BlocProvider<ControlCubit>(
+                create: (_) => GetIt.instance<ControlCubit>(),
               ),
               BlocProvider<ChampionCubit>(
                 create: (_) => GetIt.instance<ChampionCubit>()
