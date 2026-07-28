@@ -73,10 +73,11 @@ class AssignmentControlModel {
     required this.controlOwnerJustifications,
     required this.controlOwnerRejectionReasons,
   }) {
-    assert(
-      _allSameLength(),
-      'All AssignmentControlModel Lists must have the same number of elements (same index count)',
-    );
+    if (!_allSameLength()) {
+      throw ArgumentError(
+        'All AssignmentControlModel Lists must have the same number of elements (same index count)',
+      );
+    }
   }
 
   bool _allSameLength() {

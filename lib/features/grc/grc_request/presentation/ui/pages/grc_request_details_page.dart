@@ -291,8 +291,9 @@ class _GrcRequestDetailsBodyState extends State<_GrcRequestDetailsBody> {
             state.request.id == _request.id) {
           setState(() => _request = state.request);
         } else if (state is GrcRequestFailure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('${'Action failed: '.tr} ${state.message}')),
+          showErrorDialog(
+            context: context,
+            subtitle: '${'Action failed: '.tr} ${state.message}',
           );
         }
       },

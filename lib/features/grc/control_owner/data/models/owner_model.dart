@@ -55,14 +55,16 @@ class OwnerModel {
     required this.modificationDate,
     required this.modifiers,
   }) {
-    assert(
-      _allSameLength(),
-      'All OwnerModel history Lists must have the same number of elements (same index count)',
-    );
-    assert(
-      controlOwnerPermissions.length == assigningControls.last.length,
-      'controlOwnerPermissions must have exactly one entry per control in the latest Assigning_Controls revision',
-    );
+    if (!_allSameLength()) {
+      throw ArgumentError(
+        'All OwnerModel history Lists must have the same number of elements (same index count)',
+      );
+    }
+    if (controlOwnerPermissions.length != assigningControls.last.length) {
+      throw ArgumentError(
+        'controlOwnerPermissions must have exactly one entry per control in the latest Assigning_Controls revision',
+      );
+    }
   }
 
   bool _allSameLength() {

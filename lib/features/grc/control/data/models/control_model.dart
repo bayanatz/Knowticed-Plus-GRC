@@ -120,10 +120,11 @@ class ControlModel {
     required this.lastModifiedDate,
     required this.editors,
   }) {
-    assert(
-      _allSameLength(),
-      'All ControlModel Lists must have the same number of elements (same index count)',
-    );
+    if (!_allSameLength()) {
+      throw ArgumentError(
+        'All ControlModel Lists must have the same number of elements (same index count)',
+      );
+    }
   }
 
   /// function name: [_allSameLength]

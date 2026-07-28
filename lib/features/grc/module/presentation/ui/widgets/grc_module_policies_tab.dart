@@ -298,16 +298,24 @@ class _GrcModulePoliciesTabState extends State<GrcModulePoliciesTab> {
                 if (hasPolicyWeightIssue)
                   customButton(
                     title: "Policy Weight Issue".tr,
-                    function: () => Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (_, __, ___) =>
-                            PolicyWeightIssuePage(module: widget.module),
-                        transitionsBuilder: (_, animation, __, child) =>
-                            FadeTransition(opacity: animation, child: child),
-                        transitionDuration: const Duration(milliseconds: 300),
-                      ),
-                    ),
+                    function: () async {
+                      await Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (_, __, ___) =>
+                              PolicyWeightIssuePage(module: widget.module),
+                          transitionsBuilder: (_, animation, __, child) =>
+                              FadeTransition(opacity: animation, child: child),
+                          transitionDuration:
+                              const Duration(milliseconds: 300),
+                        ),
+                      );
+                      if (context.mounted) {
+                        context
+                            .read<PolicyCubit>()
+                            .getAllPolicies(moduleId: widget.module.moduleId);
+                      }
+                    },
                     width: isTablet ? 180.w : 160.w,
                     height: 38.h,
                     color: AppColors.primary,

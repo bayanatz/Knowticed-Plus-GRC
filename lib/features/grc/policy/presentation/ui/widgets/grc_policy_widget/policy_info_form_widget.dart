@@ -310,7 +310,6 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
                 hint: 'Text here'.tr,
                 controller: widget.numberController,
                 isMandatory: true,
-                onlyDigits: true,
                 englishOnlyError: 'Policy Number must be written in English'.tr,
               ),
       ],
@@ -327,7 +326,6 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
           hint: 'Text here'.tr,
           controller: widget.numberController,
           isMandatory: true,
-          onlyDigits: true,
           englishOnlyError: 'Policy Number must be written in English'.tr,
         ),
         _textField(

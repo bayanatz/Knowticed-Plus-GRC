@@ -295,14 +295,11 @@ class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
   ///
   /// return type: [bool] - true if all required fields are non-empty
   bool _validateStep0() {
-    final today = DateTime.now();
-    final startOfToday = DateTime(today.year, today.month, today.day);
     return _nameController.text.trim().isNotEmpty &&
         _numberController.text.trim().isNotEmpty &&
         _descriptionController.text.trim().isNotEmpty &&
         _startDate != null &&
         _endDate != null &&
-        !_startDate!.isBefore(startOfToday) &&
         !_endDate!.isBefore(_startDate!) &&
         _weightController.text.trim().isNotEmpty &&
         (!_isArabicEnabled || !_arabicTouched ||

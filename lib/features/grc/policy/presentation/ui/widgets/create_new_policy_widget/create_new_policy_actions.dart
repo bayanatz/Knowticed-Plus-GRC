@@ -126,11 +126,9 @@ extension _CreateNewPolicyActions on _CreateNewPolicyPageState {
   /// return type: void
   void _onPublish(PolicyCubit cubit) {
     if (!_isWeightValid) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Total Weight should be 100'.tr),
-          backgroundColor: AppColors.red,
-        ),
+      showErrorDialog(
+        context: context,
+        subtitle: 'Total Weight should be 100'.tr,
       );
       return;
     }

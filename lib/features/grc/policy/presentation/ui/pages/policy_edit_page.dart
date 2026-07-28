@@ -143,8 +143,6 @@ class _PolicyEditPageState extends State<PolicyEditPage> {
 
   bool _validate() {
     setState(() => _submitted = true);
-    final today = DateTime.now();
-    final startOfToday = DateTime(today.year, today.month, today.day);
     final endBeforeStart = _endDate != null &&
         _startDate != null &&
         _endDate!.isBefore(_startDate!);
@@ -164,7 +162,6 @@ class _PolicyEditPageState extends State<PolicyEditPage> {
                 !containsEnglishLetters(_numberArController.text) &&
                 !containsEnglishLetters(_descriptionArController.text))) &&
         _startDate != null &&
-        !_startDate!.isBefore(startOfToday) &&
         _endDate != null &&
         !endBeforeStart &&
         double.tryParse(_weightController.text.trim()) != null;
@@ -262,9 +259,7 @@ class _PolicyEditPageState extends State<PolicyEditPage> {
     }
 
     if (state is PolicyFailure) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(state.message), backgroundColor: AppColors.red),
-      );
+      showErrorDialog(context: context, subtitle: state.message);
     }
   }
 
@@ -316,103 +311,101 @@ class _PolicyEditPageState extends State<PolicyEditPage> {
         return BlocListener<PolicyCubit, PolicyState>(
           listener: _onStateChange,
           child: Scaffold(
-              body: SafeArea(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      PaginationAppBar(
-                        screensTitles: [
-                          'GRC'.tr,
-                          context.isArabic
-                              ? widget.module.moduleNameAr
-                              : widget.module.moduleNameEn,
-                          context.isArabic
-                              ? "Edit ${widget.policy.policyNameAr}"
-                              : "Edit ${widget.policy.policyNameEn}",
-                        ],
-                      ),
-                      SizedBox(height: 12.h),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          SvgPicture.asset(
-                              'assets/icons_assets/data_grc_assets/icons_status.svg'),
-                          SizedBox(width: 10.w),
-                          Text('Status'.tr),
-                          SizedBox(width: 10.w),
-                          FlutterSwitch(
-                            width: 38.sp,
-                            height: 22.sp,
-                            padding: 3.sp,
-                            borderRadius: 20.sp,
-                            toggleSize: 16.sp,
-                            activeColor: AppColors.secondaryPrimary,
-                            inactiveColor: Colors.grey.withOpacity(.16),
-                            value: !_statusInactive,
-                            onToggle: (v) =>
-                                setState(() => _statusInactive = !v),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 12.h),
-                      Expanded(
-                        child: Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.all(15.sp),
-                          decoration: BoxDecoration(
-                            color: AppColors.field,
-                            borderRadius: BorderRadius.circular(8.sp),
-                          ),
-                          child: ScrollConfiguration(
-                            behavior: ScrollConfiguration.of(context)
-                                .copyWith(scrollbars: false),
-                            child: SingleChildScrollView(
-                              child: PolicyEditModeWidget(
-                                isArabicEnabled: _isArabicEnabled,
-                                onArabicToggle: (v) =>
-                                    setState(() => _isArabicEnabled = v),
-                                imageFile: _imageFile,
-                                imageUrl: _imageUrl,
-                                onImagePicked: (file) =>
-                                    setState(() => _imageFile = file),
-                                submitted: _submitted,
-                                nameController: _nameController,
-                                nameArController: _nameArController,
-                                numberController: _numberController,
-                                numberArController: _numberArController,
-                                descriptionController: _descriptionController,
-                                descriptionArController:
-                                    _descriptionArController,
-                                weightController: _weightController,
-                                startDate: _startDate,
-                                endDate: _endDate,
-                                onStartDateChanged: (d) =>
-                                    setState(() => _startDate = d),
-                                onEndDateChanged: (d) =>
-                                    setState(() => _endDate = d),
-                                documentEn: _documentEn,
-                                documentAr: _documentAr,
-                                onUploadDocumentEn: _onUploadDocumentEn,
-                                onUploadDocumentAr: _onUploadDocumentAr,
-                                onRemoveDocumentEn: _onRemoveDocumentEn,
-                                onRemoveDocumentAr: _onRemoveDocumentAr,
-                              ),
+            body: SafeArea(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    PaginationAppBar(
+                      screensTitles: [
+                        'GRC'.tr,
+                        context.isArabic
+                            ? widget.module.moduleNameAr
+                            : widget.module.moduleNameEn,
+                        context.isArabic
+                            ? "Edit ${widget.policy.policyNameAr}"
+                            : "Edit ${widget.policy.policyNameEn}",
+                      ],
+                    ),
+                    SizedBox(height: 12.h),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        SvgPicture.asset(
+                            'assets/icons_assets/data_grc_assets/icons_status.svg'),
+                        SizedBox(width: 10.w),
+                        Text('Status'.tr),
+                        SizedBox(width: 10.w),
+                        FlutterSwitch(
+                          width: 38.sp,
+                          height: 22.sp,
+                          padding: 3.sp,
+                          borderRadius: 20.sp,
+                          toggleSize: 16.sp,
+                          activeColor: AppColors.secondaryPrimary,
+                          inactiveColor: Colors.grey.withOpacity(.16),
+                          value: !_statusInactive,
+                          onToggle: (v) => setState(() => _statusInactive = !v),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 12.h),
+                    Expanded(
+                      child: Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.all(15.sp),
+                        decoration: BoxDecoration(
+                          color: AppColors.field,
+                          borderRadius: BorderRadius.circular(8.sp),
+                        ),
+                        child: ScrollConfiguration(
+                          behavior: ScrollConfiguration.of(context)
+                              .copyWith(scrollbars: false),
+                          child: SingleChildScrollView(
+                            child: PolicyEditModeWidget(
+                              isArabicEnabled: _isArabicEnabled,
+                              onArabicToggle: (v) =>
+                                  setState(() => _isArabicEnabled = v),
+                              imageFile: _imageFile,
+                              imageUrl: _imageUrl,
+                              onImagePicked: (file) =>
+                                  setState(() => _imageFile = file),
+                              submitted: _submitted,
+                              nameController: _nameController,
+                              nameArController: _nameArController,
+                              numberController: _numberController,
+                              numberArController: _numberArController,
+                              descriptionController: _descriptionController,
+                              descriptionArController: _descriptionArController,
+                              weightController: _weightController,
+                              startDate: _startDate,
+                              endDate: _endDate,
+                              onStartDateChanged: (d) =>
+                                  setState(() => _startDate = d),
+                              onEndDateChanged: (d) =>
+                                  setState(() => _endDate = d),
+                              documentEn: _documentEn,
+                              documentAr: _documentAr,
+                              onUploadDocumentEn: _onUploadDocumentEn,
+                              onUploadDocumentAr: _onUploadDocumentAr,
+                              onRemoveDocumentEn: _onRemoveDocumentEn,
+                              onRemoveDocumentAr: _onRemoveDocumentAr,
                             ),
                           ),
                         ),
                       ),
-                      SizedBox(height: 16.h),
-                      _buildBottomButtons(cubit),
-                      SizedBox(height: 16.h),
-                    ],
-                  ),
+                    ),
+                    SizedBox(height: 16.h),
+                    _buildBottomButtons(cubit),
+                    SizedBox(height: 16.h),
+                  ],
                 ),
               ),
             ),
-          );
-        },
-      );
+          ),
+        );
+      },
+    );
   }
 }

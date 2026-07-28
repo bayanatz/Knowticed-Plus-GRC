@@ -134,10 +134,11 @@ class GRCModuleModel {
     required this.modificationDate,
     required this.modifiers,
   }) {
-    assert(
-      _allSameLength(),
-      'All Lists must have the same number of elements (same index count)',
-    );
+    if (!_allSameLength()) {
+      throw ArgumentError(
+        'All Lists must have the same number of elements (same index count)',
+      );
+    }
   }
 
   /// function name: [_allSameLength]

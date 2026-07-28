@@ -139,8 +139,11 @@ class PolicyModel {
     required this.lastModifiedDate,
     required this.editors,
   }) {
-    assert(_allSameLength(),
-        'All PolicyModel Lists must have the same number of elements');
+    if (!_allSameLength()) {
+      throw ArgumentError(
+        'All PolicyModel Lists must have the same number of elements',
+      );
+    }
   }
 
   /// function name: [_allSameLength]

@@ -11,6 +11,7 @@
 /// Revision History: 2026-07-19 - Initial creation
 library;
 
+import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
@@ -49,10 +50,12 @@ class PolicyWeightIssuePage extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<PolicyWeightIssueCubit>(
-          create: (_) => GetIt.instance<PolicyWeightIssueCubit>()..load(module.moduleId),
+          create: (_) =>
+              GetIt.instance<PolicyWeightIssueCubit>()..load(module.moduleId),
         ),
         BlocProvider<PolicyWeightHistoryCubit>(
-          create: (_) => GetIt.instance<PolicyWeightHistoryCubit>()..loadHistory(module.moduleId),
+          create: (_) => GetIt.instance<PolicyWeightHistoryCubit>()
+            ..loadHistory(module.moduleId),
         ),
       ],
       child: _PolicyWeightIssueBody(module: module),
@@ -90,7 +93,9 @@ class _PolicyWeightIssueBodyState extends State<_PolicyWeightIssueBody> {
               PaginationAppBar(
                 screensTitles: [
                   'GRC'.tr,
-                  context.isArabic ? widget.module.moduleNameAr : widget.module.moduleNameEn,
+                  context.isArabic
+                      ? widget.module.moduleNameAr
+                      : widget.module.moduleNameEn,
                   'Policy Weight Issue'.tr,
                 ],
               ),
@@ -145,21 +150,22 @@ class _PolicyWeightIssueBodyState extends State<_PolicyWeightIssueBody> {
     return BlocConsumer<PolicyWeightIssueCubit, PolicyWeightIssueState>(
       listener: (context, state) {
         if (state is PolicyWeightIssueApplySuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('You Have Successfully Edited Policies Weights'.tr)),
+          showSuccessDialog(
+            context: context,
+            subtitle: 'You Have Successfully Edited Policies Weights'.tr,
           );
         }
         if (state is PolicyWeightIssueFailure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message)),
-          );
+          showErrorDialog(context: context, subtitle: state.message);
         }
       },
       builder: (context, state) {
-        if (state is PolicyWeightIssueLoading || state is PolicyWeightIssueInitial) {
+        if (state is PolicyWeightIssueLoading ||
+            state is PolicyWeightIssueInitial) {
           return Padding(
             padding: EdgeInsets.symmetric(vertical: 60.h),
-            child: Center(child: CircularProgressIndicator(color: AppColors.primary)),
+            child: Center(
+                child: CircularProgressIndicator(color: AppColors.primary)),
           );
         }
 
@@ -175,7 +181,8 @@ class _PolicyWeightIssueBodyState extends State<_PolicyWeightIssueBody> {
             child: Center(
               child: Text(
                 state.message,
-                style: StyleText.fontSize14Weight500.copyWith(color: AppColors.red),
+                style: StyleText.fontSize14Weight500
+                    .copyWith(color: AppColors.red),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -219,7 +226,9 @@ class _PolicyWeightIssueBodyState extends State<_PolicyWeightIssueBody> {
               ),
             ),
             SizedBox(height: 12.h),
-            Align(alignment: Alignment.centerRight, child: _buildTotalWeight(rowsData)),
+            Align(
+                alignment: Alignment.centerRight,
+                child: _buildTotalWeight(rowsData)),
             SizedBox(height: 12.h),
             if (isEditing)
               Row(
@@ -239,7 +248,9 @@ class _PolicyWeightIssueBodyState extends State<_PolicyWeightIssueBody> {
                         : () {},
                     width: 150.w,
                     height: 38.h,
-                    color: rowsData.totalWeightValid ? AppColors.primary : AppColors.secondaryText,
+                    color: rowsData.totalWeightValid
+                        ? AppColors.primary
+                        : AppColors.secondaryText,
                   ),
                 ],
               ),
@@ -249,10 +260,25 @@ class _PolicyWeightIssueBodyState extends State<_PolicyWeightIssueBody> {
     );
   }
 
-  static const List<double> _columnWidths = [40, 110, 150, 200, 110, 100, 110, 110];
+  static const List<double> _columnWidths = [
+    40,
+    110,
+    150,
+    200,
+    110,
+    100,
+    110,
+    110
+  ];
   static const List<String> _headers = [
-    'NO', 'Policy Number', 'Policy Name', 'Policy Description',
-    'Policy Weight', 'No of Controls', 'Start Date', 'End Date',
+    'NO',
+    'Policy Number',
+    'Policy Name',
+    'Policy Description',
+    'Policy Weight',
+    'No of Controls',
+    'Start Date',
+    'End Date',
   ];
 
   Widget _buildTable(
@@ -272,7 +298,9 @@ class _PolicyWeightIssueBodyState extends State<_PolicyWeightIssueBody> {
                 width: _columnWidths[i].w,
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 4.w),
-                  child: Text(_headers[i].tr, style: StyleText.fontSize14Weight600.copyWith(color: AppColors.text)),
+                  child: Text(_headers[i].tr,
+                      style: StyleText.fontSize14Weight600
+                          .copyWith(color: AppColors.text)),
                 ),
               ),
           ],
@@ -297,31 +325,68 @@ class _PolicyWeightIssueBodyState extends State<_PolicyWeightIssueBody> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          _cell(0, Text('${index + 1}', style: StyleText.fontSize14Weight500.copyWith(color: AppColors.secondaryText))),
-          _cell(1, Text(isArabic ? row.policyNumberAr : row.policyNumberEn, style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text), overflow: TextOverflow.ellipsis)),
-          _cell(2, Text(isArabic ? row.policyNameAr : row.policyNameEn, style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text), overflow: TextOverflow.ellipsis)),
-          _cell(3, Text(isArabic ? row.policyDescriptionAr : row.policyDescriptionEn, style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text), overflow: TextOverflow.ellipsis)),
+          _cell(
+              0,
+              Text('${index + 1}',
+                  style: StyleText.fontSize14Weight500
+                      .copyWith(color: AppColors.secondaryText))),
+          _cell(
+              1,
+              Text(isArabic ? row.policyNumberAr : row.policyNumberEn,
+                  style: StyleText.fontSize14Weight500
+                      .copyWith(color: AppColors.text),
+                  overflow: TextOverflow.ellipsis)),
+          _cell(
+              2,
+              Text(isArabic ? row.policyNameAr : row.policyNameEn,
+                  style: StyleText.fontSize14Weight500
+                      .copyWith(color: AppColors.text),
+                  overflow: TextOverflow.ellipsis)),
+          _cell(
+              3,
+              Text(isArabic ? row.policyDescriptionAr : row.policyDescriptionEn,
+                  style: StyleText.fontSize14Weight500
+                      .copyWith(color: AppColors.text),
+                  overflow: TextOverflow.ellipsis)),
           _cell(
             4,
             isEditing
                 ? TextField(
                     controller: row.weightController,
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    keyboardType:
+                        const TextInputType.numberWithOptions(decimal: true),
                     onChanged: (_) => cubit.revalidate(),
-                    style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
+                    style: StyleText.fontSize14Weight500
+                        .copyWith(color: AppColors.text),
                     decoration: InputDecoration(
                       isDense: true,
                       filled: true,
                       fillColor: AppColors.card,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(4.r)),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(4.r)),
                     ),
                   )
-                : Text(_formatWeight(row.currentWeight), style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text)),
+                : Text(_formatWeight(row.currentWeight),
+                    style: StyleText.fontSize14Weight500
+                        .copyWith(color: AppColors.text)),
           ),
-          _cell(5, Text('${row.noOfControls}', style: StyleText.fontSize14Weight500.copyWith(color: AppColors.secondaryText))),
-          _cell(6, Text(dateFormat.format(row.startDate), style: StyleText.fontSize14Weight500.copyWith(color: AppColors.secondaryText))),
-          _cell(7, Text(dateFormat.format(row.endDate), style: StyleText.fontSize14Weight500.copyWith(color: AppColors.secondaryText))),
+          _cell(
+              5,
+              Text('${row.noOfControls}',
+                  style: StyleText.fontSize14Weight500
+                      .copyWith(color: AppColors.secondaryText))),
+          _cell(
+              6,
+              Text(dateFormat.format(row.startDate),
+                  style: StyleText.fontSize14Weight500
+                      .copyWith(color: AppColors.secondaryText))),
+          _cell(
+              7,
+              Text(dateFormat.format(row.endDate),
+                  style: StyleText.fontSize14Weight500
+                      .copyWith(color: AppColors.secondaryText))),
         ],
       ),
     );
@@ -330,7 +395,8 @@ class _PolicyWeightIssueBodyState extends State<_PolicyWeightIssueBody> {
   Widget _cell(int columnIndex, Widget child) {
     return SizedBox(
       width: _columnWidths[columnIndex].w,
-      child: Padding(padding: EdgeInsets.symmetric(horizontal: 4.w), child: child),
+      child:
+          Padding(padding: EdgeInsets.symmetric(horizontal: 4.w), child: child),
     );
   }
 
@@ -347,7 +413,8 @@ class _PolicyWeightIssueBodyState extends State<_PolicyWeightIssueBody> {
           ),
           child: Text(
             '${'Total Weight'.tr} : ${_formatWeight(rowsData.totalWeight)}',
-            style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
+            style:
+                StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
           ),
         ),
         if (!valid) ...[

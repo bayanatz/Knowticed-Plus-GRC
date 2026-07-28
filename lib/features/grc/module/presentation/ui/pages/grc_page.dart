@@ -115,15 +115,18 @@ class _GovernanceRiskAndCompliancePageState
     // "all" shows everything; each other tab filters by its own condition.
     if (_selectedStatus == GrcModuleStatus.active.value) {
       result = result
-          .where((m) => !m.isRemoved && m.status == GrcModuleStatus.active.value)
+          .where(
+              (m) => !m.isRemoved && m.status == GrcModuleStatus.active.value)
           .toList();
     } else if (_selectedStatus == GrcModuleStatus.inactive.value) {
       result = result
-          .where((m) => !m.isRemoved && m.status == GrcModuleStatus.inactive.value)
+          .where(
+              (m) => !m.isRemoved && m.status == GrcModuleStatus.inactive.value)
           .toList();
     } else if (_selectedStatus == GrcModuleStatus.scheduled.value) {
       result = result
-          .where((m) => !m.isRemoved && m.status == GrcModuleStatus.scheduled.value)
+          .where((m) =>
+              !m.isRemoved && m.status == GrcModuleStatus.scheduled.value)
           .toList();
     } else if (_selectedStatus == GrcModuleStatus.removed.value) {
       result = result.where((m) => m.isRemoved).toList();
@@ -158,18 +161,18 @@ class _GovernanceRiskAndCompliancePageState
     return {
       'all': modules.length,
       GrcModuleStatus.active.value: modules
-          .where((m) => !m.isRemoved && m.status == GrcModuleStatus.active.value)
+          .where(
+              (m) => !m.isRemoved && m.status == GrcModuleStatus.active.value)
           .length,
       GrcModuleStatus.inactive.value: modules
           .where(
               (m) => !m.isRemoved && m.status == GrcModuleStatus.inactive.value)
           .length,
       GrcModuleStatus.scheduled.value: modules
-          .where(
-              (m) => !m.isRemoved && m.status == GrcModuleStatus.scheduled.value)
+          .where((m) =>
+              !m.isRemoved && m.status == GrcModuleStatus.scheduled.value)
           .length,
-      GrcModuleStatus.removed.value:
-          modules.where((m) => m.isRemoved).length,
+      GrcModuleStatus.removed.value: modules.where((m) => m.isRemoved).length,
     };
   }
 
@@ -203,8 +206,18 @@ class _GovernanceRiskAndCompliancePageState
       ),
     );
 
-    if (reloaded == true && context.mounted) {
-      context.read<GRCModuleCubit>().getAllModules(includeDeleted: true);
+    // Use the already-captured `cubit` reference here, not `context.read`.
+    // On tablet this list page lives inside a nested Navigator while the
+    // success/error dialogs shown by the details page open on the root
+    // Navigator (Flutter's showDialog defaults to useRootNavigator: true).
+    // That cross-Navigator interaction can leave this specific BuildContext
+    // reporting unmounted right as the push future resolves, even though the
+    // widget is still visibly on screen and its Cubit is very much alive —
+    // gating the refresh on `context.mounted` silently dropped it in that
+    // case. A Cubit isn't tied to any BuildContext's lifecycle, so calling
+    // it directly on the captured reference is always safe here.
+    if (reloaded == true) {
+      cubit.getAllModules(includeDeleted: true);
     }
   }
 

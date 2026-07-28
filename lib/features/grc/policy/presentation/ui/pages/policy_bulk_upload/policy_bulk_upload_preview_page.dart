@@ -101,9 +101,7 @@ class _PolicyBulkUploadPreviewPageState
       if (rowsData.errorLocations.isNotEmpty) {
         _jumpToError(true, rowsData);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Add at least one row'.tr)),
-        );
+        showErrorDialog(context: context, subtitle: 'Add at least one row'.tr);
       }
       return;
     }
@@ -125,12 +123,10 @@ class _PolicyBulkUploadPreviewPageState
       listener: (context, state) {
         if (state is PolicyBulkUploadSubmitResult) {
           if (state.succeededCount > 0) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
+            showSuccessDialog(
+              context: context,
+              subtitle:
                   '${state.succeededCount} ${'polic(y/ies) created'.tr}',
-                ),
-              ),
             );
           }
           if (state.failed.isEmpty) {
@@ -253,8 +249,9 @@ class _PolicyBulkUploadPreviewPageState
           title: 'Remove Selection'.tr,
           function: () {
             if (rowsData.selectedRows.isEmpty) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Select at least one row'.tr)),
+              showErrorDialog(
+                context: context,
+                subtitle: 'Select at least one row'.tr,
               );
               return;
             }
@@ -270,8 +267,9 @@ class _PolicyBulkUploadPreviewPageState
           title: 'Duplication'.tr,
           function: () {
             if (rowsData.selectedRows.length != 1) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Select exactly one row to duplicate'.tr)),
+              showErrorDialog(
+                context: context,
+                subtitle: 'Select exactly one row to duplicate'.tr,
               );
               return;
             }

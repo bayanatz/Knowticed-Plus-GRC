@@ -42,10 +42,11 @@ class ChampionModel {
     required this.modificationDate,
     required this.modifiers,
   }) {
-    assert(
-      _allSameLength(),
-      'All ChampionModel Lists must have the same number of elements (same index count)',
-    );
+    if (!_allSameLength()) {
+      throw ArgumentError(
+        'All ChampionModel Lists must have the same number of elements (same index count)',
+      );
+    }
   }
 
   bool _allSameLength() {
