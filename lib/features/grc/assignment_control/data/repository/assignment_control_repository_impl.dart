@@ -90,6 +90,34 @@ class AssignmentControlRepositoryImpl implements AssignmentControlRepository {
   }
 
   @override
+  Future<Either<Failure, AssignmentControlEntity>> applyOwnerScore({
+    required String moduleId,
+    required String controlId,
+    required String championEmail,
+    required double score,
+    String? justification,
+    required String editorEmail,
+  }) async {
+    try {
+      final id = _docId(controlId: controlId, championEmail: championEmail);
+      final current = await _dataSource.get(id, moduleId: moduleId);
+      if (current == null) {
+        return Left(ValidationError('Assignment Control not found (id: $id)'));
+      }
+      final model = current.copyWithUpdate(
+        status: AssignmentControlStatus.approved.value,
+        controlScore: score,
+        controlOwnerJustification: justification,
+        editorEmail: editorEmail,
+      );
+      final saved = await _dataSource.update(model, moduleId: moduleId);
+      return Right(saved.toEntity());
+    } catch (e) {
+      return Left(FirebaseFailure(e.toString()));
+    }
+  }
+
+  @override
   Future<Either<Failure, AssignmentControlEntity>> submitEvidence({
     required String moduleId,
     required String policyId,

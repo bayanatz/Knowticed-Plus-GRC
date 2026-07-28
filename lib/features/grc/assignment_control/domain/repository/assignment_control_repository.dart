@@ -38,6 +38,19 @@ abstract class AssignmentControlRepository {
     required String editorEmail,
   });
 
+  /// Records the Control Owner's score (from My Audits), appending one more
+  /// revision to the Assignment Control and setting its status to the
+  /// terminal [AssignmentControlStatus.approved] — the final state of the
+  /// whole Champion/Manager/Owner workflow. [justification] is optional.
+  Future<Either<Failure, AssignmentControlEntity>> applyOwnerScore({
+    required String moduleId,
+    required String controlId,
+    required String championEmail,
+    required double score,
+    String? justification,
+    required String editorEmail,
+  });
+
   Future<Either<Failure, AssignmentControlEntity>> submitEvidence({
     required String moduleId,
     required String policyId,
