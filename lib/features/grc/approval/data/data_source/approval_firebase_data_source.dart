@@ -4,6 +4,7 @@
 ///              GRC Modules/{Module_ID}/Approvals/{Approval_ID}.
 /// Author: Mohamed Magdy Abdelkhalek
 /// Date: 2026-07-28
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:demo_app/core/network/get_base_url.dart';

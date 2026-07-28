@@ -2,7 +2,7 @@
 /// Description: Firestore model for one Department Manager approval
 ///              decision on a Champion's Assignment Control submission,
 ///              following the same history-list pattern as
-///              AssignmentControlModel: every mutable field is a List<T>,
+///              AssignmentControlModel: every mutable field is a `List<T>`,
 ///              index i is one revision. One document per control+champion
 ///              pair, reused across resubmission cycles (the linked
 ///              Assignment_Controls document already preserves the full
@@ -103,12 +103,12 @@ class ApprovalModel {
       submissionId: submissionId,
       status: [...this.status, status ?? this.status.last],
       reasonsOfRejection: [
-        ...this.reasonsOfRejection,
-        reasonOfRejection ?? this.reasonsOfRejection.last,
+        ...reasonsOfRejection,
+        reasonOfRejection ?? reasonsOfRejection.last,
       ],
       approvalComments: [
-        ...this.approvalComments,
-        approvalComment ?? this.approvalComments.last,
+        ...approvalComments,
+        approvalComment ?? approvalComments.last,
       ],
       modifier: [...modifier, editorEmail],
       modificationDate: [...modificationDate, now],
