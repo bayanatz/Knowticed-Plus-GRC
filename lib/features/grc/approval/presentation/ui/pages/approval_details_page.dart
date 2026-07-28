@@ -17,6 +17,7 @@ import 'package:demo_app/features/grc/approval/presentation/controller/approval_
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
 import 'package:demo_app/features/grc/shared/helpers/grc_document_launcher.dart';
+import 'package:demo_app/features/grc/shared/widgets/grc_button_loading_placeholder.dart';
 import 'package:demo_app/features/grc/shared/widgets/grc_contact_inline_row.dart';
 import 'package:demo_app/features/grc/shared/widgets/grc_label_value_row.dart';
 import 'package:demo_app/features/grc/shared/widgets/grc_section_card.dart';
@@ -133,22 +134,28 @@ class _ApprovalDetailsPageState extends State<ApprovalDetailsPage> {
                     screensTitles: [
                       'GRC'.tr,
                       'Approvals'.tr,
-                      isArabic ? control.controlsNameAr : control.controlsNameEn,
+                      isArabic
+                          ? control.controlsNameAr
+                          : control.controlsNameEn,
                     ],
                   ),
                   SizedBox(height: 15.h),
                   Expanded(
                     child: ListView(
                       children: [
-                        Text('Policy Details'.tr, style: StyleText.fontSize16Weight600),
+                        Text('Policy Details'.tr,
+                            style: StyleText.fontSize16Weight600),
                         SizedBox(height: 8.h),
                         GrcSectionCard(children: [
                           Text(
-                            isArabic ? policy.policyNameAr : policy.policyNameEn,
+                            isArabic
+                                ? policy.policyNameAr
+                                : policy.policyNameEn,
                             style: StyleText.fontSize16Weight600,
                           ),
                           SizedBox(height: 8.h),
-                          Text('Policy Description'.tr, style: CardStyles.label(12)),
+                          Text('Policy Description'.tr,
+                              style: CardStyles.label(12)),
                           SizedBox(height: 4.h),
                           Text(
                             isArabic
@@ -159,7 +166,8 @@ class _ApprovalDetailsPageState extends State<ApprovalDetailsPage> {
                           SizedBox(height: 12.h),
                           if (moduleOwnerEmail != null) ...[
                             GrcContactInlineRow(
-                                label: 'Module Owner'.tr, email: moduleOwnerEmail),
+                                label: 'Module Owner'.tr,
+                                email: moduleOwnerEmail),
                             SizedBox(height: 12.h),
                           ],
                           Row(
@@ -186,29 +194,39 @@ class _ApprovalDetailsPageState extends State<ApprovalDetailsPage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    GrcLabelValueRow('Start Date'.tr,
-                                        _cardDateFormat.format(policy.startDate)),
+                                    GrcLabelValueRow(
+                                        'Start Date'.tr,
+                                        _cardDateFormat
+                                            .format(policy.startDate)),
                                     SizedBox(height: 4.h),
                                     GrcLabelValueRow('End Date'.tr,
                                         _cardDateFormat.format(policy.endDate)),
                                   ],
                                 ),
                               ),
-                              if (policyDocument != null && policyDocument.isNotEmpty)
+                              if (policyDocument != null &&
+                                  policyDocument.isNotEmpty)
                                 ProductWarrantyCard(
-                                  fileName:
-                                      policyDocument.split('/').last.split('?').first,
-                                  onTapFile: () => openGrcDocument(policyDocument),
+                                  fileName: policyDocument
+                                      .split('/')
+                                      .last
+                                      .split('?')
+                                      .first,
+                                  onTapFile: () =>
+                                      openGrcDocument(policyDocument),
                                 ),
                             ],
                           ),
                         ]),
                         SizedBox(height: 15.h),
-                        Text('Control Details'.tr, style: StyleText.fontSize16Weight600),
+                        Text('Control Details'.tr,
+                            style: StyleText.fontSize16Weight600),
                         SizedBox(height: 8.h),
                         GrcSectionCard(children: [
                           Text(
-                            isArabic ? control.controlsNameAr : control.controlsNameEn,
+                            isArabic
+                                ? control.controlsNameAr
+                                : control.controlsNameEn,
                             style: StyleText.fontSize16Weight600,
                           ),
                           SizedBox(height: 8.h),
@@ -241,18 +259,21 @@ class _ApprovalDetailsPageState extends State<ApprovalDetailsPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Approvals'.tr, style: StyleText.fontSize16Weight600),
+                            Text('Approvals'.tr,
+                                style: StyleText.fontSize16Weight600),
                             GrcSectionSubTabs(
                               labels: ['Approvals'.tr, 'Inquires'.tr],
                               selected: _approvalsTab,
-                              onChanged: (i) => setState(() => _approvalsTab = i),
+                              onChanged: (i) =>
+                                  setState(() => _approvalsTab = i),
                             ),
                           ],
                         ),
                         SizedBox(height: 8.h),
                         if (_approvalsTab == 1)
                           GrcSectionCard(children: [
-                            Text('Inquiries coming soon'.tr, style: CardStyles.value(12)),
+                            Text('Inquiries coming soon'.tr,
+                                style: CardStyles.value(12)),
                           ])
                         else
                           GrcSectionCard(children: [
@@ -273,17 +294,20 @@ class _ApprovalDetailsPageState extends State<ApprovalDetailsPage> {
                                     .last
                                     .split('?')
                                     .first,
-                                onTapFile: () =>
-                                    openGrcDocument(assignmentControl.submissionDocument),
+                                onTapFile: () => openGrcDocument(
+                                    assignmentControl.submissionDocument),
                               ),
                             SizedBox(height: 12.h),
-                            if (assignmentControl.submissionNote.isNotEmpty) ...[
-                              GrcLabelValueRow(
-                                  'Submission Notes'.tr, assignmentControl.submissionNote),
+                            if (assignmentControl
+                                .submissionNote.isNotEmpty) ...[
+                              GrcLabelValueRow('Submission Notes'.tr,
+                                  assignmentControl.submissionNote),
                               SizedBox(height: 12.h),
                             ],
-                            if (widget.item.approval.reasonOfRejection != null &&
-                                widget.item.approval.reasonOfRejection!.isNotEmpty) ...[
+                            if (widget.item.approval.reasonOfRejection !=
+                                    null &&
+                                widget.item.approval.reasonOfRejection!
+                                    .isNotEmpty) ...[
                               GrcLabelValueRow(
                                 'Reasons of Rejection'.tr,
                                 widget.item.approval.reasonOfRejection!,
@@ -293,35 +317,42 @@ class _ApprovalDetailsPageState extends State<ApprovalDetailsPage> {
                             ],
                             SizedBox(height: 8.h),
                             if (isPending)
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: customButton(
-                                      title: 'Reject'.tr,
-                                      function: isSaving
-                                          ? () {}
-                                          : () => _onRejectPressed(context),
-                                      height: 44.h,
-                                      color: AppColors.red,
-                                      textStyle: StyleText.fontSize16Weight500
-                                          .copyWith(color: AppColors.textButton),
-                                    ),
-                                  ),
-                                  SizedBox(width: 12.w),
-                                  Expanded(
-                                    child: customButton(
-                                      title: 'Approve'.tr,
-                                      function: isSaving
-                                          ? () {}
-                                          : () => _onApprovePressed(context),
-                                      height: 44.h,
-                                      color: AppColors.primary,
-                                      textStyle: StyleText.fontSize16Weight500
-                                          .copyWith(color: AppColors.textButton),
-                                    ),
-                                  ),
-                                ],
-                              )
+                              isSaving
+                                  ? Align(
+                                      alignment: Alignment.centerRight,
+                                      child: GrcButtonLoadingPlaceholder(
+                                        width: 120.w,
+                                        height: 44.h,
+                                      ),
+                                    )
+                                  : Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        customButton(
+                                          width: 120.w,
+                                          title: 'Reject'.tr,
+                                          function: () =>
+                                              _onRejectPressed(context),
+                                          color: AppColors.red,
+                                          textStyle: StyleText
+                                              .fontSize16Weight500
+                                              .copyWith(
+                                                  color: AppColors.textButton),
+                                        ),
+                                        SizedBox(width: 12.w),
+                                        customButton(
+                                          width: 120.w,
+                                          title: 'Approve'.tr,
+                                          function: () =>
+                                              _onApprovePressed(context),
+                                          color: AppColors.primary,
+                                          textStyle: StyleText
+                                              .fontSize16Weight500
+                                              .copyWith(
+                                                  color: AppColors.textButton),
+                                        ),
+                                      ],
+                                    )
                             else
                               Align(
                                 alignment: Alignment.centerRight,

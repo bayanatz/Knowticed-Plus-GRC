@@ -17,6 +17,7 @@ import 'package:demo_app/features/grc/my_audit/presentation/controller/my_audit_
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
 import 'package:demo_app/features/grc/shared/helpers/grc_document_launcher.dart';
+import 'package:demo_app/features/grc/shared/widgets/grc_button_loading_placeholder.dart';
 import 'package:demo_app/features/grc/shared/widgets/grc_contact_inline_row.dart';
 import 'package:demo_app/features/grc/shared/widgets/grc_label_value_row.dart';
 import 'package:demo_app/features/grc/shared/widgets/grc_score_badge.dart';
@@ -34,7 +35,8 @@ class MyAuditDetailsPage extends StatefulWidget {
   final MyAuditItem item;
   final GRCModuleEntity module;
 
-  const MyAuditDetailsPage({super.key, required this.item, required this.module});
+  const MyAuditDetailsPage(
+      {super.key, required this.item, required this.module});
 
   @override
   State<MyAuditDetailsPage> createState() => _MyAuditDetailsPageState();
@@ -87,18 +89,21 @@ class _MyAuditDetailsPageState extends State<MyAuditDetailsPage> {
 
   void _onScorePressed(BuildContext context) {
     final cubit = context.read<MyAuditCubit>();
-    final scoreController =
-        TextEditingController(text: widget.item.audit?.controlScore?.toString() ?? '');
-    final justificationController =
-        TextEditingController(text: widget.item.audit?.controlOwnerJustification ?? '');
+    final scoreController = TextEditingController(
+        text: widget.item.audit?.controlScore?.toString() ?? '');
+    final justificationController = TextEditingController(
+        text: widget.item.audit?.controlOwnerJustification ?? '');
     showDialog(
       context: context,
       barrierColor: AppColors.totalBlack.withValues(alpha: 0.4),
       builder: (dialogContext) => Dialog(
         backgroundColor: AppColors.card,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
-        child: Padding(
-          padding: EdgeInsets.all(20.r),
+        insetPadding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+        child: Container(
+          width: 380.w,
+          padding: EdgeInsets.all(16.r),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -106,17 +111,18 @@ class _MyAuditDetailsPageState extends State<MyAuditDetailsPage> {
               Row(
                 children: [
                   Container(
-                    width: 36.r,
-                    height: 36.r,
-                    decoration:
-                        BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
-                    child: Icon(Icons.workspace_premium, size: 18.r, color: AppColors.textButton),
+                    width: 30.r,
+                    height: 30.r,
+                    decoration: BoxDecoration(
+                        color: AppColors.primary, shape: BoxShape.circle),
+                    child: Icon(Icons.workspace_premium,
+                        size: 16.r, color: AppColors.textButton),
                   ),
-                  SizedBox(width: 10.w),
-                  Text('Give a Score'.tr, style: StyleText.fontSize16Weight600),
+                  SizedBox(width: 8.w),
+                  Text('Give a Score'.tr, style: StyleText.fontSize14Weight600),
                 ],
               ),
-              SizedBox(height: 20.h),
+              SizedBox(height: 16.h),
               Text('Score'.tr, style: CardStyles.label(12)),
               SizedBox(height: 6.h),
               CustomTextField(
@@ -124,40 +130,43 @@ class _MyAuditDetailsPageState extends State<MyAuditDetailsPage> {
                 controller: scoreController,
                 keyboardType: TextInputType.number,
               ),
-              SizedBox(height: 16.h),
+              SizedBox(height: 12.h),
               Text('Justifications'.tr, style: CardStyles.label(12)),
               SizedBox(height: 6.h),
               CustomTextField(
                 hint: 'Text here'.tr,
                 controller: justificationController,
-                maxLines: 4,
+                maxLines: 3,
               ),
-              SizedBox(height: 20.h),
+              SizedBox(height: 16.h),
               Align(
                 alignment: Alignment.centerRight,
                 child: SizedBox(
-                  width: 160.w,
+                  width: 120.w,
                   child: customButton(
                     title: 'Submit'.tr,
                     function: () {
-                      final score = double.tryParse(scoreController.text.trim());
+                      final score =
+                          double.tryParse(scoreController.text.trim());
                       if (score == null) return;
                       Navigator.of(dialogContext).pop();
                       cubit.submitScore(
                         moduleId: widget.module.moduleId,
                         controlId: widget.item.control.id,
-                        championEmail: widget.item.assignmentControl!.controlChampionEmail,
+                        championEmail:
+                            widget.item.assignmentControl!.controlChampionEmail,
                         ownerEmail: currentGrcUserEmail(),
                         score: score,
-                        justification: justificationController.text.trim().isEmpty
-                            ? null
-                            : justificationController.text.trim(),
+                        justification:
+                            justificationController.text.trim().isEmpty
+                                ? null
+                                : justificationController.text.trim(),
                       );
                     },
-                    height: 44.h,
+                    height: 36.h,
                     color: AppColors.primary,
-                    textStyle:
-                        StyleText.fontSize16Weight500.copyWith(color: AppColors.textButton),
+                    textStyle: StyleText.fontSize14Weight500
+                        .copyWith(color: AppColors.textButton),
                   ),
                 ),
               ),
@@ -175,6 +184,11 @@ class _MyAuditDetailsPageState extends State<MyAuditDetailsPage> {
     final policy = widget.item.policy;
     final assignmentControl = widget.item.assignmentControl;
     final audit = widget.item.audit;
+    final moduleOwnerEmail = widget.module.moduleOwners.isNotEmpty
+        ? widget.module.moduleOwners.first
+        : null;
+    final policyDocument =
+        isArabic ? policy.policyDocumentAr : policy.policyDocumentEn;
 
     return BlocConsumer<MyAuditCubit, MyAuditState>(
       listener: (context, state) {
@@ -209,24 +223,33 @@ class _MyAuditDetailsPageState extends State<MyAuditDetailsPage> {
                     screensTitles: [
                       'GRC'.tr,
                       'My Audit'.tr,
-                      isArabic ? control.controlsNameAr : control.controlsNameEn,
+                      isArabic
+                          ? control.controlsNameAr
+                          : control.controlsNameEn,
                     ],
                   ),
                   SizedBox(height: 15.h),
                   Expanded(
                     child: assignmentControl == null
-                        ? _OverdueBody(control: control, policy: policy, isArabic: isArabic)
+                        ? _OverdueBody(
+                            control: control,
+                            policy: policy,
+                            isArabic: isArabic)
                         : ListView(
                             children: [
-                              Text('Policy Details'.tr, style: StyleText.fontSize16Weight600),
+                              Text('Policy Details'.tr,
+                                  style: StyleText.fontSize16Weight600),
                               SizedBox(height: 8.h),
                               GrcSectionCard(children: [
                                 Text(
-                                  isArabic ? policy.policyNameAr : policy.policyNameEn,
+                                  isArabic
+                                      ? policy.policyNameAr
+                                      : policy.policyNameEn,
                                   style: StyleText.fontSize16Weight600,
                                 ),
                                 SizedBox(height: 8.h),
-                                Text('Policy Description'.tr, style: CardStyles.label(12)),
+                                Text('Policy Description'.tr,
+                                    style: CardStyles.label(12)),
                                 SizedBox(height: 4.h),
                                 Text(
                                   isArabic
@@ -234,21 +257,83 @@ class _MyAuditDetailsPageState extends State<MyAuditDetailsPage> {
                                       : policy.policyDescriptionEn,
                                   style: CardStyles.value(12),
                                 ),
+                                SizedBox(height: 12.h),
+                                if (moduleOwnerEmail != null) ...[
+                                  GrcContactInlineRow(
+                                      label: 'Module Owner'.tr,
+                                      email: moduleOwnerEmail),
+                                  SizedBox(height: 12.h),
+                                ],
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: GrcLabelValueRow(
+                                          'Policy Weight'.tr,
+                                          policy.policyWeight.toString()),
+                                    ),
+                                    Expanded(
+                                      child: GrcLabelValueRow(
+                                        'Policy Number'.tr,
+                                        isArabic
+                                            ? policy.policyNumberAr
+                                            : policy.policyNumberEn,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 8.h),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          GrcLabelValueRow(
+                                              'Start Date'.tr,
+                                              _cardDateFormat
+                                                  .format(policy.startDate)),
+                                          SizedBox(height: 4.h),
+                                          GrcLabelValueRow(
+                                              'End Date'.tr,
+                                              _cardDateFormat
+                                                  .format(policy.endDate)),
+                                        ],
+                                      ),
+                                    ),
+                                    if (policyDocument != null &&
+                                        policyDocument.isNotEmpty)
+                                      ProductWarrantyCard(
+                                        fileName: policyDocument
+                                            .split('/')
+                                            .last
+                                            .split('?')
+                                            .first,
+                                        onTapFile: () =>
+                                            openGrcDocument(policyDocument),
+                                      ),
+                                  ],
+                                ),
                               ]),
                               SizedBox(height: 15.h),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text('Control Details'.tr,
                                       style: StyleText.fontSize16Weight600),
                                   if (assignmentControl.controlScore != null)
-                                    GrcScoreBadge(score: assignmentControl.controlScore!),
+                                    GrcScoreBadge(
+                                        score: assignmentControl.controlScore!),
                                 ],
                               ),
                               SizedBox(height: 8.h),
                               GrcSectionCard(children: [
                                 Text(
-                                  isArabic ? control.controlsNameAr : control.controlsNameEn,
+                                  isArabic
+                                      ? control.controlsNameAr
+                                      : control.controlsNameEn,
                                   style: StyleText.fontSize16Weight600,
                                 ),
                                 SizedBox(height: 8.h),
@@ -271,42 +356,50 @@ class _MyAuditDetailsPageState extends State<MyAuditDetailsPage> {
                                     Expanded(
                                       child: GrcContactInlineRow(
                                         label: 'Control Champion'.tr,
-                                        email: assignmentControl.controlChampionEmail,
+                                        email: assignmentControl
+                                            .controlChampionEmail,
                                       ),
                                     ),
                                   ],
                                 ),
                               ]),
                               SizedBox(height: 15.h),
-                              if (widget.item.tab == MyAuditTab.outstanding ||
-                                  widget.item.tab == MyAuditTab.scored)
-                                Padding(
-                                  padding: EdgeInsets.only(bottom: 8.h),
-                                  child: SizedBox(
-                                    width: 160.w,
-                                    child: customButton(
-                                      title: (widget.item.tab == MyAuditTab.scored
-                                              ? 'Edit Score'
-                                              : 'Add Score')
-                                          .tr,
-                                      function: isSaving
-                                          ? () {}
-                                          : () => _onScorePressed(context),
-                                      height: 40.h,
-                                      color: AppColors.primary,
-                                      textStyle: StyleText.fontSize14Weight500
-                                          .copyWith(color: AppColors.textButton),
-                                    ),
-                                  ),
-                                ),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text('Submission'.tr, style: StyleText.fontSize16Weight600),
+                                  if (widget.item.tab ==
+                                          MyAuditTab.outstanding ||
+                                      widget.item.tab == MyAuditTab.scored)
+                                    isSaving
+                                        ? GrcButtonLoadingPlaceholder(
+                                            width: 120.w, height: 34.h)
+                                        : SizedBox(
+                                            width: 120.w,
+                                            child: customButton(
+                                              title: (widget.item.tab ==
+                                                          MyAuditTab.scored
+                                                      ? 'Edit Score'
+                                                      : 'Add Score')
+                                                  .tr,
+                                              function: () =>
+                                                  _onScorePressed(context),
+                                              width: 120.w,
+                                              color: AppColors.primary,
+                                              textStyle: StyleText
+                                                  .fontSize14Weight500
+                                                  .copyWith(
+                                                      color: AppColors
+                                                          .textButton),
+                                            ),
+                                          ),
+                                  // Text('Submission'.tr,
+                                  //     style: StyleText.fontSize16Weight600),
                                   GrcSectionSubTabs(
                                     labels: ['Submission'.tr, 'Inquires'.tr],
                                     selected: _submissionTab,
-                                    onChanged: (i) => setState(() => _submissionTab = i),
+                                    onChanged: (i) =>
+                                        setState(() => _submissionTab = i),
                                   ),
                                 ],
                               ),
@@ -319,11 +412,14 @@ class _MyAuditDetailsPageState extends State<MyAuditDetailsPage> {
                               else
                                 GrcSectionCard(children: [
                                   Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       GrcSubmitterRow(
-                                          email: assignmentControl.controlChampionEmail),
+                                          email: assignmentControl
+                                              .controlChampionEmail),
                                       Text(
                                         '${'Submission Date'.tr}: '
                                         '${_cardDateFormat.format(assignmentControl.lastModificationDate)} '
@@ -334,24 +430,29 @@ class _MyAuditDetailsPageState extends State<MyAuditDetailsPage> {
                                     ],
                                   ),
                                   SizedBox(height: 12.h),
-                                  if (assignmentControl.submissionDocument.isNotEmpty)
+                                  if (assignmentControl
+                                      .submissionDocument.isNotEmpty)
                                     ProductWarrantyCard(
-                                      fileName: assignmentControl.submissionDocument
+                                      fileName: assignmentControl
+                                          .submissionDocument
                                           .split('/')
                                           .last
                                           .split('?')
                                           .first,
-                                      onTapFile: () =>
-                                          openGrcDocument(assignmentControl.submissionDocument),
+                                      onTapFile: () => openGrcDocument(
+                                          assignmentControl.submissionDocument),
                                     ),
                                   SizedBox(height: 12.h),
-                                  if (assignmentControl.submissionNote.isNotEmpty) ...[
+                                  if (assignmentControl
+                                      .submissionNote.isNotEmpty) ...[
                                     GrcLabelValueRow('Submission Notes'.tr,
                                         assignmentControl.submissionNote),
                                     SizedBox(height: 12.h),
                                   ],
-                                  if (audit?.controlOwnerReasonOfRejection != null &&
-                                      audit!.controlOwnerReasonOfRejection!.isNotEmpty) ...[
+                                  if (audit?.controlOwnerReasonOfRejection !=
+                                          null &&
+                                      audit!.controlOwnerReasonOfRejection!
+                                          .isNotEmpty) ...[
                                     GrcLabelValueRow(
                                       'Reasons of Rejection'.tr,
                                       audit.controlOwnerReasonOfRejection!,
@@ -361,35 +462,47 @@ class _MyAuditDetailsPageState extends State<MyAuditDetailsPage> {
                                   ],
                                   SizedBox(height: 8.h),
                                   if (widget.item.tab == MyAuditTab.pending)
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: customButton(
-                                            title: 'Reject'.tr,
-                                            function: isSaving
-                                                ? () {}
-                                                : () => _onRejectPressed(context),
-                                            height: 44.h,
-                                            color: AppColors.red,
-                                            textStyle: StyleText.fontSize16Weight500
-                                                .copyWith(color: AppColors.textButton),
-                                          ),
-                                        ),
-                                        SizedBox(width: 12.w),
-                                        Expanded(
-                                          child: customButton(
-                                            title: 'Approve'.tr,
-                                            function: isSaving
-                                                ? () {}
-                                                : () => _onApprovePressed(context),
-                                            height: 44.h,
-                                            color: AppColors.primary,
-                                            textStyle: StyleText.fontSize16Weight500
-                                                .copyWith(color: AppColors.textButton),
-                                          ),
-                                        ),
-                                      ],
-                                    )
+                                    isSaving
+                                        ? Align(
+                                            alignment:
+                                                Alignment.centerRight,
+                                            child:
+                                                GrcButtonLoadingPlaceholder(
+                                              width: 120.w,
+                                              height: 44.h,
+                                            ),
+                                          )
+                                        : Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              customButton(
+                                                title: 'Reject'.tr,
+                                                function: () =>
+                                                    _onRejectPressed(context),
+                                                width: 120.w,
+                                                color: AppColors.red,
+                                                textStyle: StyleText
+                                                    .fontSize16Weight500
+                                                    .copyWith(
+                                                        color: AppColors
+                                                            .textButton),
+                                              ),
+                                              SizedBox(width: 12.w),
+                                              customButton(
+                                                title: 'Approve'.tr,
+                                                function: () =>
+                                                    _onApprovePressed(context),
+                                                width: 120.w,
+                                                color: AppColors.primary,
+                                                textStyle: StyleText
+                                                    .fontSize16Weight500
+                                                    .copyWith(
+                                                        color: AppColors
+                                                            .textButton),
+                                              ),
+                                            ],
+                                          )
                                   else
                                     Align(
                                       alignment: Alignment.centerRight,
@@ -422,7 +535,8 @@ class _OverdueBody extends StatelessWidget {
   final dynamic policy;
   final bool isArabic;
 
-  const _OverdueBody({required this.control, required this.policy, required this.isArabic});
+  const _OverdueBody(
+      {required this.control, required this.policy, required this.isArabic});
 
   @override
   Widget build(BuildContext context) {
@@ -432,7 +546,9 @@ class _OverdueBody extends StatelessWidget {
         SizedBox(height: 8.h),
         GrcSectionCard(children: [
           Text(
-            isArabic ? policy.policyNameAr as String : policy.policyNameEn as String,
+            isArabic
+                ? policy.policyNameAr as String
+                : policy.policyNameEn as String,
             style: StyleText.fontSize16Weight600,
           ),
         ]),
@@ -441,13 +557,16 @@ class _OverdueBody extends StatelessWidget {
         SizedBox(height: 8.h),
         GrcSectionCard(children: [
           Text(
-            isArabic ? control.controlsNameAr as String : control.controlsNameEn as String,
+            isArabic
+                ? control.controlsNameAr as String
+                : control.controlsNameEn as String,
             style: StyleText.fontSize16Weight600,
           ),
         ]),
         SizedBox(height: 15.h),
         GrcSectionCard(children: [
-          Text('No submission was made before the deadline'.tr, style: CardStyles.value(12)),
+          Text('No submission was made before the deadline'.tr,
+              style: CardStyles.value(12)),
         ]),
       ],
     );
