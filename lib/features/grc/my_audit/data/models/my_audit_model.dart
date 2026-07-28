@@ -110,12 +110,12 @@ class MyAuditModel {
       status: [...this.status, status ?? this.status.last],
       controlScore: [...this.controlScore, controlScore ?? this.controlScore.last],
       controlOwnerJustifications: [
-        ...this.controlOwnerJustifications,
-        controlOwnerJustification ?? this.controlOwnerJustifications.last,
+        ...controlOwnerJustifications,
+        controlOwnerJustification ?? controlOwnerJustifications.last,
       ],
       controlOwnerReasonsOfRejection: [
-        ...this.controlOwnerReasonsOfRejection,
-        controlOwnerReasonOfRejection ?? this.controlOwnerReasonsOfRejection.last,
+        ...controlOwnerReasonsOfRejection,
+        controlOwnerReasonOfRejection ?? controlOwnerReasonsOfRejection.last,
       ],
       modifier: [...modifier, editorEmail],
       modificationDate: [...modificationDate, now],
