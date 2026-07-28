@@ -4,6 +4,7 @@
 ///              shape.
 /// Author: Mohamed Magdy Abdelkhalek
 /// Date: 2026-07-28
+library;
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:demo_app/features/grc/approval/domain/entities/approval_entity.dart';
@@ -18,6 +19,7 @@ import 'package:demo_app/features/grc/assignment_control/domain/use_cases/apply_
 import 'package:demo_app/features/grc/assignment_control/domain/use_cases/get_assignment_control_by_id_usecase.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
 import 'package:demo_app/features/grc/control/domain/use_cases/get_control_usecases.dart';
+import 'package:demo_app/features/grc/my_audit/domain/use_cases/create_or_update_pending_my_audit_usecase.dart';
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
 import 'package:demo_app/features/grc/policy/domain/use_cases/get_policy_usecases.dart';
 
@@ -31,12 +33,14 @@ class ApprovalCubit extends Cubit<ApprovalState> {
     required GetAllPoliciesUseCase getAllPoliciesUseCase,
     required DecideApprovalUseCase decideApprovalUseCase,
     required ApplyManagerDecisionUseCase applyManagerDecisionUseCase,
+    required CreateOrUpdatePendingMyAuditUseCase createOrUpdatePendingMyAuditUseCase,
   })  : _getAllApprovalsUseCase = getAllApprovalsUseCase,
         _getAssignmentControlByIdUseCase = getAssignmentControlByIdUseCase,
         _getAllControlsUseCase = getAllControlsUseCase,
         _getAllPoliciesUseCase = getAllPoliciesUseCase,
         _decideApprovalUseCase = decideApprovalUseCase,
         _applyManagerDecisionUseCase = applyManagerDecisionUseCase,
+        _createOrUpdatePendingMyAuditUseCase = createOrUpdatePendingMyAuditUseCase,
         super(ApprovalInitial());
 
   final GetAllApprovalsUseCase _getAllApprovalsUseCase;
@@ -45,6 +49,7 @@ class ApprovalCubit extends Cubit<ApprovalState> {
   final GetAllPoliciesUseCase _getAllPoliciesUseCase;
   final DecideApprovalUseCase _decideApprovalUseCase;
   final ApplyManagerDecisionUseCase _applyManagerDecisionUseCase;
+  final CreateOrUpdatePendingMyAuditUseCase _createOrUpdatePendingMyAuditUseCase;
 
   /// Loads every Approval (any status) whose linked Assignment Control's
   /// Department Manager is [managerEmail], resolving each one's
@@ -143,9 +148,19 @@ class ApprovalCubit extends Cubit<ApprovalState> {
             editorEmail: managerEmail,
           ),
         );
-        acResult.fold(
-          (failure) => emit(ApprovalFailure(failure.message)),
-          (_) => emit(ApprovalActionSuccess(approval)),
+        await acResult.fold(
+          (failure) async => emit(ApprovalFailure(failure.message)),
+          (_) async {
+            await _createOrUpdatePendingMyAuditUseCase.call(
+              CreateOrUpdatePendingMyAuditParams(
+                moduleId: moduleId,
+                controlId: controlId,
+                championEmail: championEmail,
+                editorEmail: managerEmail,
+              ),
+            );
+            emit(ApprovalActionSuccess(approval));
+          },
         );
       },
     );
