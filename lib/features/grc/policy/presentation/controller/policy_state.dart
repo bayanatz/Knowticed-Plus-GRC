@@ -5,11 +5,11 @@ part of 'policy_cubit.dart';
 /// Purpose: Contains all sealed state classes emitted by [PolicyCubit].
 /// Author: Mohamed Magdy Abdelkhalek
 /// Created At: 5/7/2026
-/// Revision History: 2026-07-14 - Added PolicyActionPartialSuccess,
-///                                PolicyControlActionSuccess,
-///                                PolicyControlsListLoaded,
-///                                PolicyControlDeleted for the Control side
-///                                of PolicyCubit
+/// Revision History: 2026-07-14 - Added PolicyActionPartialSuccess
+///                   2026-07-28 - Removed PolicyControlActionSuccess/
+///                                PolicyControlsListLoaded/
+///                                PolicyControlDeleted — moved to
+///                                ControlState (ControlCubit extraction)
 
 sealed class PolicyState {}
 
@@ -58,25 +58,4 @@ final class PolicyFailure extends PolicyState {
   final String message;
 
   PolicyFailure(this.message);
-}
-
-/// State emitted when a single Control create/update completes successfully.
-final class PolicyControlActionSuccess extends PolicyState {
-  final ControlEntity control;
-
-  PolicyControlActionSuccess(this.control);
-}
-
-/// State emitted when a Policy's Controls have been fetched successfully.
-final class PolicyControlsListLoaded extends PolicyState {
-  final List<ControlEntity> controls;
-
-  PolicyControlsListLoaded(this.controls);
-}
-
-/// State emitted when a Control has been deleted successfully.
-final class PolicyControlDeleted extends PolicyState {
-  final String controlId;
-
-  PolicyControlDeleted(this.controlId);
 }

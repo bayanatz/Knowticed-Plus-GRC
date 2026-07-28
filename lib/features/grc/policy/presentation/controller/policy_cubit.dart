@@ -1,10 +1,14 @@
 /// Module: Policy Management
-/// Description: BLoC Cubit that manages Policy and Control state for the
-///              presentation layer. Delegates all operations to the
-///              corresponding use cases and emits typed [PolicyState]
-///              subclasses. Owns both Policy and Control operations (one
-///              cubit for this feature) because the Create-Policy UI treats
-///              "policy + its initial controls" as a single user action.
+/// Description: BLoC Cubit that manages Policy state for the presentation
+///              layer. Delegates all operations to the corresponding use
+///              cases and emits typed [PolicyState] subclasses. Still holds
+///              a direct dependency on CreateControlUseCase/
+///              UpdateControlUseCase/DeleteControlUseCase for
+///              createPolicy/saveAsDraft/updatePolicyWithControls, which
+///              treat "Policy + its bundled initial Controls" as one wizard
+///              action — that's a Policy-workflow concern, not Control
+///              state, so it stays here rather than moving to ControlCubit
+///              (see docs/superpowers/specs/2026-07-28-control-cubit-extraction-design.md).
 /// Author: Mohamed Magdy Abdelkhalek
 /// Date: 2026-07-05
 /// Dependencies: flutter_bloc, use cases, PolicyEntity, ControlEntity
@@ -15,9 +19,12 @@
 ///                                repository level (see
 ///                                _createPolicyWithControls for the
 ///                                orchestration), split single document
-///                                fields into En/Ar, added standalone
-///                                Control methods (createControl/
-///                                updateControl/deleteControl/getAllControls)
+///                                fields into En/Ar
+///                   2026-07-28 - Extracted the standalone Control methods
+///                                (createControl/updateControl/
+///                                deleteControl/getAllControls) and the
+///                                two ControlStatus business-rule helpers
+///                                into ControlCubit/ControlStatus
 library;
 
 import 'dart:io';
@@ -115,7 +122,6 @@ class PolicyCubit extends Cubit<PolicyState> {
     required CreateControlUseCase createControlUseCase,
     required UpdateControlUseCase updateControlUseCase,
     required DeleteControlUseCase deleteControlUseCase,
-    required GetAllControlsUseCase getAllControlsUseCase,
   })  : _createUseCase = createPolicyUseCase,
         _getUseCase = getPolicyUseCase,
         _getAllUseCase = getAllPoliciesUseCase,
@@ -125,7 +131,6 @@ class PolicyCubit extends Cubit<PolicyState> {
         _createControlUseCase = createControlUseCase,
         _updateControlUseCase = updateControlUseCase,
         _deleteControlUseCase = deleteControlUseCase,
-        _getAllControlsUseCase = getAllControlsUseCase,
         super(PolicyInitial());
 
   final CreatePolicyUseCase _createUseCase;
@@ -137,7 +142,6 @@ class PolicyCubit extends Cubit<PolicyState> {
   final CreateControlUseCase _createControlUseCase;
   final UpdateControlUseCase _updateControlUseCase;
   final DeleteControlUseCase _deleteControlUseCase;
-  final GetAllControlsUseCase _getAllControlsUseCase;
 
   /// Resolves the currently logged-in user's email.
   String get _currentUserEmail {
@@ -641,186 +645,4 @@ class PolicyCubit extends Cubit<PolicyState> {
     );
   }
 
-  // ================================================================
-  // CONTROL (standalone — always against an existing Policy)
-  // ================================================================
-
-  Future<void> createControl({
-    required String moduleId,
-    required String policyId,
-    required String controlsNameEn,
-    required String controlsNameAr,
-    required String controlsNumberEn,
-    required String controlsNumberAr,
-    required String controlsDescriptionEn,
-    required String controlsDescriptionAr,
-    required double controlsWeight,
-    required String frequency,
-    required DateTime startDate,
-    required DateTime endDate,
-    required List<String> departments,
-    required bool equalWeights,
-    required int score,
-    required ControlStatus status,
-List<double>? departmentsWeights,
-    File? controlsDocumentFileEn,
-    String? controlsDocumentUrlEn,
-    File? controlsDocumentFileAr,
-    String? controlsDocumentUrlAr,
-  }) async {
-    emit(PolicyLoading());
-    final result = await _createControlUseCase.call(
-      CreateControlParams(
-        moduleId: moduleId,
-        policyId: policyId,
-        editorId: _currentUserEmail,
-        controlsNameEn: controlsNameEn,
-        controlsNameAr: controlsNameAr,
-        controlsNumberEn: controlsNumberEn,
-        controlsNumberAr: controlsNumberAr,
-        controlsDescriptionEn: controlsDescriptionEn,
-        controlsDescriptionAr: controlsDescriptionAr,
-        controlsWeight: controlsWeight,
-
-        frequency: frequency,
-        startDate: startDate,
-        endDate: endDate,
-        departments: departments,
-        departmentsWeights: departmentsWeights,
-        equalWeights: equalWeights,
-        score: score,
-        status: status,
-        controlsDocumentFileEn: controlsDocumentFileEn,
-        controlsDocumentUrlEn: controlsDocumentUrlEn,
-        controlsDocumentFileAr: controlsDocumentFileAr,
-        controlsDocumentUrlAr: controlsDocumentUrlAr,
-      ),
-    );
-    result.fold(
-      (failure) => emit(PolicyFailure(failure.message)),
-      (control) => emit(PolicyControlActionSuccess(control)),
-    );
-  }
-
-  Future<void> updateControl({
-    required String id,
-    required String moduleId,
-    required String policyId,
-    String? controlsNameEn,
-    String? controlsNameAr,
-    String? controlsNumberEn,
-    String? controlsNumberAr,
-    String? controlsDescriptionEn,
-    String? controlsDescriptionAr,
-    double? controlsWeight,
-    String? frequency,
-    DateTime? startDate,
-    DateTime? endDate,
-    List<String>? departments,
-    bool? equalWeights,
-    int? score,
-    ControlStatus? status,
-    List<double>? departmentsWeights,
-    File? controlsDocumentFileEn,
-    String? controlsDocumentUrlEn,
-    File? controlsDocumentFileAr,
-    String? controlsDocumentUrlAr,
-  }) async {
-    emit(PolicyLoading());
-    final result = await _updateControlUseCase.call(
-      UpdateControlParams(
-        id: id,
-        moduleId: moduleId,
-        policyId: policyId,
-        editorId: _currentUserEmail,
-        controlsNameEn: controlsNameEn,
-        controlsNameAr: controlsNameAr,
-        controlsNumberEn: controlsNumberEn,
-        controlsNumberAr: controlsNumberAr,
-        controlsDescriptionEn: controlsDescriptionEn,
-        controlsDescriptionAr: controlsDescriptionAr,
-        controlsWeight: controlsWeight,
-        frequency: frequency,
-        startDate: startDate,
-        endDate: endDate,
-        
-        departments: departments,
-        departmentsWeights: departmentsWeights,
-        equalWeights: equalWeights,
-        score: score,
-        status: status,
-        controlsDocumentFileEn: controlsDocumentFileEn,
-        controlsDocumentUrlEn: controlsDocumentUrlEn,
-        controlsDocumentFileAr: controlsDocumentFileAr,
-        controlsDocumentUrlAr: controlsDocumentUrlAr,
-      ),
-    );
-    result.fold(
-      (failure) => emit(PolicyFailure(failure.message)),
-      (control) => emit(PolicyControlActionSuccess(control)),
-    );
-  }
-
-  /// Date-based "would-be" status before any assignee/manual override:
-  /// Scheduled if [effectiveStartDate] hasn't arrived yet (strictly after the
-  /// start of today), otherwise Active. Moved verbatim from
-  /// AddEditControlPage's former `_computedStatus` getter — the caller passes
-  /// the effective start date (inherited Policy date in Create mode, the
-  /// control's own edited date in Edit mode).
-  ControlStatus computeDateBasedStatus(DateTime effectiveStartDate) {
-    final today = DateTime.now();
-    final startOfToday = DateTime(today.year, today.month, today.day);
-    return effectiveStartDate.isAfter(startOfToday)
-        ? ControlStatus.scheduled
-        : ControlStatus.active;
-  }
-
-  /// Applies the manual-Inactive and assignee-based overrides on top of
-  /// [requested]: Draft (Save For Later) always wins as-is. Otherwise, if the
-  /// user flipped the "Status" switch to Inactive ([manualInactive]), that
-  /// wins next. Failing both, any other status becomes Unassigned unless at
-  /// least one Champion or Owner is currently assigned ([hasAnyAssignee]), in
-  /// which case [requested] (the date-computed Scheduled/Active) stands.
-  /// Moved verbatim from AddEditControlPage's former `_resolvedStatus`; the
-  /// `_hasAnyAssignee` check it used to call is now resolved by the caller and
-  /// passed in as [hasAnyAssignee].
-  ControlStatus resolveControlStatus({
-    required ControlStatus requested,
-    required bool manualInactive,
-    required bool hasAnyAssignee,
-  }) {
-    if (requested == ControlStatus.draft) return requested;
-    if (manualInactive) return ControlStatus.inactive;
-    return hasAnyAssignee ? requested : ControlStatus.unassigned;
-  }
-
-  Future<void> deleteControl({
-    required String id,
-    required String moduleId,
-    required String policyId,
-  }) async {
-    emit(PolicyLoading());
-    final result = await _deleteControlUseCase.call(
-      DeleteControlParams(id: id, moduleId: moduleId, policyId: policyId),
-    );
-    result.fold(
-      (failure) => emit(PolicyFailure(failure.message)),
-      (_) => emit(PolicyControlDeleted(id)),
-    );
-  }
-
-  Future<void> getAllControls({
-    required String moduleId,
-    required String policyId,
-  }) async {
-    emit(PolicyLoading());
-    final result = await _getAllControlsUseCase.call(
-      moduleId: moduleId,
-      policyId: policyId,
-    );
-    result.fold(
-      (failure) => emit(PolicyFailure(failure.message)),
-      (controls) => emit(PolicyControlsListLoaded(controls)),
-    );
-  }
 }

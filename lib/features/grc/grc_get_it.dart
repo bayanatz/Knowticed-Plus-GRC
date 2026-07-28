@@ -525,7 +525,6 @@ void setupGRCDependencies(GetIt sl) {
       createControlUseCase: sl<CreateControlUseCase>(),
       updateControlUseCase: sl<UpdateControlUseCase>(),
       deleteControlUseCase: sl<DeleteControlUseCase>(),
-      getAllControlsUseCase: sl<GetAllControlsUseCase>(),
     ),
   );
 
