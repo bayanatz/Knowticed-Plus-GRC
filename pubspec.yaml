@@ -156,6 +156,8 @@ flutter:
     - assets/lottie_assets/roles_lottie_assets/
     - assets/lottie_assets/services_lottie_assets/
     - assets/lottie_assets/tracking_lottie_assets/
+    # Default avatar placeholders
+    - assets/images/
     # Remaining non-image assets (pdf / zip) kept in place
     - assets/
 
