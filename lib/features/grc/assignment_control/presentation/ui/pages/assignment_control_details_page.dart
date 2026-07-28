@@ -22,6 +22,7 @@ import 'package:demo_app/features/grc/assignment_control/presentation/controller
 import 'package:demo_app/features/grc/assignment_control/presentation/ui/widgets/assignment_control_card.dart';
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
+import 'package:demo_app/features/grc/shared/helpers/grc_document_launcher.dart';
 import 'package:demo_app/features/grc/shared/widgets/grc_contact_inline_row.dart';
 import 'package:demo_app/features/grc/shared/widgets/grc_label_value_row.dart';
 import 'package:demo_app/features/grc/shared/widgets/grc_score_badge.dart';
@@ -260,7 +261,7 @@ class _AssignmentControlDetailsPageState
                                       .last
                                       .split('?')
                                       .first,
-                                  onTapFile: () {},
+                                  onTapFile: () => openGrcDocument(policyDocument),
                                 ),
                             ],
                           ),
@@ -374,7 +375,8 @@ class _AssignmentControlDetailsPageState
                                       .last
                                       .split('?')
                                       .first,
-                                  onTapFile: () {},
+                                  onTapFile: () =>
+                                      openGrcDocument(assignment.submissionDocument),
                                 ),
                               SizedBox(height: 12.h),
                               if (assignment.submissionNote.isNotEmpty) ...[

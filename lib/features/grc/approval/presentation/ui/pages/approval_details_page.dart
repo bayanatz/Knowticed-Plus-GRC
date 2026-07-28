@@ -16,6 +16,7 @@ import 'package:demo_app/features/grc/approval/domain/entities/approval_status.d
 import 'package:demo_app/features/grc/approval/presentation/controller/approval_cubit.dart';
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
+import 'package:demo_app/features/grc/shared/helpers/grc_document_launcher.dart';
 import 'package:demo_app/features/grc/shared/widgets/grc_contact_inline_row.dart';
 import 'package:demo_app/features/grc/shared/widgets/grc_label_value_row.dart';
 import 'package:demo_app/features/grc/shared/widgets/grc_section_card.dart';
@@ -197,7 +198,7 @@ class _ApprovalDetailsPageState extends State<ApprovalDetailsPage> {
                                 ProductWarrantyCard(
                                   fileName:
                                       policyDocument.split('/').last.split('?').first,
-                                  onTapFile: () {},
+                                  onTapFile: () => openGrcDocument(policyDocument),
                                 ),
                             ],
                           ),
@@ -272,7 +273,8 @@ class _ApprovalDetailsPageState extends State<ApprovalDetailsPage> {
                                     .last
                                     .split('?')
                                     .first,
-                                onTapFile: () {},
+                                onTapFile: () =>
+                                    openGrcDocument(assignmentControl.submissionDocument),
                               ),
                             SizedBox(height: 12.h),
                             if (assignmentControl.submissionNote.isNotEmpty) ...[
