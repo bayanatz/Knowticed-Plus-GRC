@@ -24,6 +24,15 @@ import 'package:demo_app/features/grc/approval/domain/use_cases/create_or_update
 import 'package:demo_app/features/grc/approval/domain/use_cases/decide_approval_usecase.dart';
 import 'package:demo_app/features/grc/approval/domain/use_cases/get_all_approvals_usecase.dart';
 import 'package:demo_app/features/grc/approval/presentation/controller/approval_cubit.dart';
+import 'package:demo_app/features/grc/my_audit/data/data_source/my_audit_firebase_data_source.dart';
+import 'package:demo_app/features/grc/my_audit/data/repository/my_audit_repository_impl.dart';
+import 'package:demo_app/features/grc/my_audit/domain/repository/my_audit_repository.dart';
+import 'package:demo_app/features/grc/my_audit/domain/use_cases/apply_my_audit_score_usecase.dart';
+import 'package:demo_app/features/grc/my_audit/domain/use_cases/create_or_update_pending_my_audit_usecase.dart';
+import 'package:demo_app/features/grc/my_audit/domain/use_cases/decide_my_audit_usecase.dart';
+import 'package:demo_app/features/grc/my_audit/domain/use_cases/get_all_my_audits_usecase.dart';
+import 'package:demo_app/features/grc/my_audit/presentation/controller/my_audit_cubit.dart';
+import 'package:demo_app/features/grc/assignment_control/domain/use_cases/apply_owner_score_usecase.dart';
 import 'package:demo_app/features/grc/assignment_control/data/data_source/assignment_control_firebase_data_source.dart';
 import 'package:demo_app/features/grc/assignment_control/domain/use_cases/apply_manager_decision_usecase.dart';
 import 'package:demo_app/features/grc/assignment_control/domain/use_cases/get_assignment_control_by_id_usecase.dart';
@@ -176,6 +185,12 @@ void setupGRCDependencies(GetIt sl) {
     () => ApprovalFirebaseDataSource(),
   );
 
+  /// class name: [MyAuditFirebaseDataSource]
+  /// purpose: Cloud Firestore CRUD operations for My Audit documents.
+  sl.registerLazySingleton<MyAuditFirebaseDataSource>(
+    () => MyAuditFirebaseDataSource(),
+  );
+
   // ─── 2. Repository ──────────────────────────────────────────────────────────
 
   /// class name: [GRCModuleRepositoryImpl] registered as [GRCModuleRepository]
@@ -244,6 +259,12 @@ void setupGRCDependencies(GetIt sl) {
   /// purpose: orchestrates the Approval data source and maps models to entities.
   sl.registerLazySingleton<ApprovalRepository>(
     () => ApprovalRepositoryImpl(dataSource: sl<ApprovalFirebaseDataSource>()),
+  );
+
+  /// class name: [MyAuditRepositoryImpl] registered as [MyAuditRepository]
+  /// purpose: orchestrates the My Audit data source and maps models to entities.
+  sl.registerLazySingleton<MyAuditRepository>(
+    () => MyAuditRepositoryImpl(dataSource: sl<MyAuditFirebaseDataSource>()),
   );
 
   // ─── 3. Use Cases ───────────────────────────────────────────────────────────
@@ -521,6 +542,39 @@ void setupGRCDependencies(GetIt sl) {
     () => DecideApprovalUseCase(sl<ApprovalRepository>()),
   );
 
+  /// class name: [ApplyOwnerScoreUseCase]
+  /// purpose: business logic for recording a Control Owner's score on an
+  /// Assignment Control (used by My Audits).
+  sl.registerLazySingleton<ApplyOwnerScoreUseCase>(
+    () => ApplyOwnerScoreUseCase(sl<AssignmentControlRepository>()),
+  );
+
+  /// class name: [GetAllMyAuditsUseCase]
+  /// purpose: business logic for fetching every My Audit in a module.
+  sl.registerLazySingleton<GetAllMyAuditsUseCase>(
+    () => GetAllMyAuditsUseCase(sl<MyAuditRepository>()),
+  );
+
+  /// class name: [CreateOrUpdatePendingMyAuditUseCase]
+  /// purpose: business logic for creating or resetting to Pending the My
+  /// Audit linked to a manager-approved Approval.
+  sl.registerLazySingleton<CreateOrUpdatePendingMyAuditUseCase>(
+    () => CreateOrUpdatePendingMyAuditUseCase(sl<MyAuditRepository>()),
+  );
+
+  /// class name: [DecideMyAuditUseCase]
+  /// purpose: business logic for recording a Control Owner's Approve/Reject
+  /// decision on a My Audit.
+  sl.registerLazySingleton<DecideMyAuditUseCase>(
+    () => DecideMyAuditUseCase(sl<MyAuditRepository>()),
+  );
+
+  /// class name: [ApplyMyAuditScoreUseCase]
+  /// purpose: business logic for recording a score on a My Audit.
+  sl.registerLazySingleton<ApplyMyAuditScoreUseCase>(
+    () => ApplyMyAuditScoreUseCase(sl<MyAuditRepository>()),
+  );
+
   // ─── 4. Cubit (Presentation) ────────────────────────────────────────────────
 
   /// class name: [GRCModuleCubit]
@@ -716,6 +770,25 @@ void setupGRCDependencies(GetIt sl) {
       getAllPoliciesUseCase: sl<GetAllPoliciesUseCase>(),
       decideApprovalUseCase: sl<DecideApprovalUseCase>(),
       applyManagerDecisionUseCase: sl<ApplyManagerDecisionUseCase>(),
+      createOrUpdatePendingMyAuditUseCase: sl<CreateOrUpdatePendingMyAuditUseCase>(),
+    ),
+  );
+
+  /// class name: [MyAuditCubit]
+  /// purpose: presentation-layer state manager for the Control Owner's My
+  /// Audits list and Approve/Reject/Score actions. Registered as a factory
+  /// so each page gets an independent cubit instance.
+  sl.registerFactory<MyAuditCubit>(
+    () => MyAuditCubit(
+      getAllMyAuditsUseCase: sl<GetAllMyAuditsUseCase>(),
+      getAssignmentControlByIdUseCase: sl<GetAssignmentControlByIdUseCase>(),
+      getOwnerUseCase: sl<GetOwnerUseCase>(),
+      getAllControlsUseCase: sl<GetAllControlsUseCase>(),
+      getAllPoliciesUseCase: sl<GetAllPoliciesUseCase>(),
+      decideMyAuditUseCase: sl<DecideMyAuditUseCase>(),
+      applyMyAuditScoreUseCase: sl<ApplyMyAuditScoreUseCase>(),
+      applyManagerDecisionUseCase: sl<ApplyManagerDecisionUseCase>(),
+      applyOwnerScoreUseCase: sl<ApplyOwnerScoreUseCase>(),
     ),
   );
 }

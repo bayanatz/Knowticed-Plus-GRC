@@ -29,6 +29,7 @@ import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/grc/approval/presentation/ui/pages/approvals_list_page.dart';
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
+import 'package:demo_app/features/grc/my_audit/presentation/ui/pages/my_audits_list_page.dart';
 import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_module_champions_tab.dart';
 import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_module_owners_tab.dart';
 import 'package:demo_app/features/grc/module/presentation/ui/widgets/grc_module_policies_tab.dart';
@@ -208,7 +209,16 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
                     Spacer(),
                     customButton(
                       title: "My Audits".tr,
-                      function: () {},
+                      function: () => Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (_, __, ___) =>
+                              MyAuditsListPage(module: widget.module),
+                          transitionsBuilder: (_, animation, __, child) =>
+                              FadeTransition(opacity: animation, child: child),
+                          transitionDuration: const Duration(milliseconds: 300),
+                        ),
+                      ),
                       width: 135.w,
                       color: AppColors.primary,
                       textStyle: StyleText.fontSize16Weight500
