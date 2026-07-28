@@ -7,6 +7,8 @@ import 'package:demo_app/core/custom/16-custom_card_styles.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/features/grc/assignment_control/domain/entities/assignment_control_item.dart';
 import 'package:demo_app/features/grc/assignment_control/domain/entities/assignment_control_tab.dart';
+import 'package:demo_app/features/grc/shared/widgets/grc_score_badge.dart';
+import 'package:demo_app/features/grc/shared/widgets/grc_status_pill.dart';
 
 final DateFormat _dueDateFormat = DateFormat('d MMM yyyy');
 
@@ -87,17 +89,7 @@ class AssignmentControlCard extends StatelessWidget {
                 ),
                 if (score != null) ...[
                   SizedBox(width: 8.w),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
-                    decoration: BoxDecoration(
-                      color: AppColors.background,
-                      borderRadius: BorderRadius.circular(20.r),
-                    ),
-                    child: Text(
-                      'Score: ${score.toInt()}'.tr,
-                      style: CardStyles.label(11),
-                    ),
-                  ),
+                  GrcScoreBadge(score: score),
                 ],
               ],
             ),
@@ -120,24 +112,7 @@ class AssignmentControlCard extends StatelessWidget {
                         : null,
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: style.color),
-                    borderRadius: BorderRadius.circular(20.r),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(style.icon, size: 12.sp, color: style.color),
-                      SizedBox(width: 4.w),
-                      Text(
-                        item.tab.label.tr,
-                        style: CardStyles.label(11).copyWith(color: style.color),
-                      ),
-                    ],
-                  ),
-                ),
+                GrcStatusPill(label: item.tab.label.tr, color: style.color, icon: style.icon),
               ],
             ),
           ],

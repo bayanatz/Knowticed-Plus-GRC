@@ -7,6 +7,8 @@
 /// Date: 2026-07-28
 library;
 
+import 'package:flutter/material.dart';
+import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/features/employee/domain/entities/employee_entity.dart';
 import 'package:demo_app/features/grc/assignment_control/domain/entities/assignment_control_entity.dart';
 import 'package:demo_app/features/grc/control/domain/entities/control_entity.dart';
@@ -15,6 +17,26 @@ import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart'
 import 'approval_entity.dart';
 import 'approval_item.dart';
 import 'approval_status.dart';
+
+/// Visual identity (color + icon) for one [ApprovalStatus], shared by the
+/// status pill on the Approvals card, tab bar, and details page.
+class ApprovalStatusStyle {
+  final Color color;
+  final IconData icon;
+
+  const ApprovalStatusStyle({required this.color, required this.icon});
+
+  static ApprovalStatusStyle of(ApprovalStatus status) {
+    switch (status) {
+      case ApprovalStatus.pending:
+        return ApprovalStatusStyle(color: AppColors.warning, icon: Icons.schedule);
+      case ApprovalStatus.approved:
+        return const ApprovalStatusStyle(color: Colors.green, icon: Icons.check_circle);
+      case ApprovalStatus.rejected:
+        return const ApprovalStatusStyle(color: Colors.red, icon: Icons.block);
+    }
+  }
+}
 
 /// Finds the Department Manager for [championEmail]: another employee
 /// sharing the champion's `departmentId` whose `title` starts with "Chief"
@@ -45,13 +67,14 @@ String? findDepartmentManagerEmail(
   return null;
 }
 
-/// Joins every Pending [approvals] entry with its linked
-/// [assignmentControls] (keyed by Assignment_Controls doc id, i.e.
-/// [ApprovalEntity.submissionId]), keeping only the ones whose Assignment
-/// Control's `departmentManager` matches [managerEmail], then resolves each
-/// one's Control/Policy from the already-loaded [policyControls]/[policies]
-/// maps. A pair whose Assignment Control, Control, or Policy can't be found
-/// is silently skipped.
+/// Joins every [approvals] entry (any status — All/Approved/Pending/Rejected
+/// are all shown to the manager, filtered client-side by the list page) with
+/// its linked [assignmentControls] (keyed by Assignment_Controls doc id,
+/// i.e. [ApprovalEntity.submissionId]), keeping only the ones whose
+/// Assignment Control's `departmentManager` matches [managerEmail], then
+/// resolves each one's Control/Policy from the already-loaded
+/// [policyControls]/[policies] maps. A pair whose Assignment Control,
+/// Control, or Policy can't be found is silently skipped.
 List<ApprovalItem> buildApprovalItems({
   required List<ApprovalEntity> approvals,
   required Map<String, AssignmentControlEntity> assignmentControls,
@@ -61,7 +84,6 @@ List<ApprovalItem> buildApprovalItems({
 }) {
   final items = <ApprovalItem>[];
   for (final approval in approvals) {
-    if (approval.status != ApprovalStatus.pending) continue;
     final assignmentControl = assignmentControls[approval.submissionId];
     if (assignmentControl == null) continue;
     if (assignmentControl.departmentManager != managerEmail) continue;

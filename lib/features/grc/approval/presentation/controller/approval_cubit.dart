@@ -46,9 +46,11 @@ class ApprovalCubit extends Cubit<ApprovalState> {
   final DecideApprovalUseCase _decideApprovalUseCase;
   final ApplyManagerDecisionUseCase _applyManagerDecisionUseCase;
 
-  /// Loads every Pending Approval whose linked Assignment Control's
+  /// Loads every Approval (any status) whose linked Assignment Control's
   /// Department Manager is [managerEmail], resolving each one's
-  /// Control/Policy details for display.
+  /// Control/Policy details for display. The list page filters by status
+  /// (All/Approved/Pending/Rejected) client-side, mirroring how the
+  /// Champion's Assignment Controls list derives its own tabs.
   Future<void> getMyApprovals({
     required String moduleId,
     required String managerEmail,
@@ -59,11 +61,8 @@ class ApprovalCubit extends Cubit<ApprovalState> {
     await approvalsResult.fold(
       (failure) async => emit(ApprovalFailure(failure.message)),
       (approvals) async {
-        final pending =
-            approvals.where((a) => a.status == ApprovalStatus.pending).toList();
-
         final assignmentControls = <String, AssignmentControlEntity>{};
-        for (final approval in pending) {
+        for (final approval in approvals) {
           final result = await _getAssignmentControlByIdUseCase.call(
             moduleId: moduleId,
             id: approval.submissionId,
@@ -102,7 +101,7 @@ class ApprovalCubit extends Cubit<ApprovalState> {
 
         emit(ApprovalListLoaded(
           buildApprovalItems(
-            approvals: pending,
+            approvals: approvals,
             assignmentControls: assignmentControls,
             policyControls: policyControls,
             policies: policies,

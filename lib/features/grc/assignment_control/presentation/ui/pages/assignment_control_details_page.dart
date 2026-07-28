@@ -22,6 +22,13 @@ import 'package:demo_app/features/grc/assignment_control/presentation/controller
 import 'package:demo_app/features/grc/assignment_control/presentation/ui/widgets/assignment_control_card.dart';
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
+import 'package:demo_app/features/grc/shared/widgets/grc_contact_inline_row.dart';
+import 'package:demo_app/features/grc/shared/widgets/grc_label_value_row.dart';
+import 'package:demo_app/features/grc/shared/widgets/grc_score_badge.dart';
+import 'package:demo_app/features/grc/shared/widgets/grc_section_card.dart';
+import 'package:demo_app/features/grc/shared/widgets/grc_section_sub_tabs.dart';
+import 'package:demo_app/features/grc/shared/widgets/grc_status_pill.dart';
+import 'package:demo_app/features/grc/shared/widgets/grc_submitter_row.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
 
 final DateFormat _cardDateFormat = DateFormat('d MMM yyyy');
@@ -90,99 +97,6 @@ class _AssignmentControlDetailsPageState
     );
   }
 
-  /// Compact "Label: [avatar] Name [Message]" row used inline inside the
-  /// Policy/Control Details cards — deliberately not the full ContactCard
-  /// widget, which renders as its own bordered/shadowed card and doesn't
-  /// match the flat inline look these two cards need.
-  Widget _ownerInlineRow(BuildContext context, String label, String? email) {
-    if (email == null || email.isEmpty) return const SizedBox.shrink();
-    final employee = findEmployeeByEmail(email);
-    final name = employeeDisplayName(context, email);
-    final photo = employee.displayPhoto;
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text('$label: ', style: CardStyles.label(12)),
-        CircleAvatar(
-          radius: 16.r,
-          backgroundColor: AppColors.barrierColor,
-          backgroundImage:
-              photo.startsWith('http') ? NetworkImage(photo) : null,
-        ),
-        SizedBox(width: 8.w),
-        Text(name, style: CardStyles.value(12)),
-        SizedBox(width: 16.w),
-        customButtonWithSvg(
-          title: 'Message'.tr,
-          function: () {},
-          textStyle: StyleText.fontSize14Weight500
-              .copyWith(color: AppColors.textButton),
-          color: AppColors.primary,
-          image: CardSvg.message,
-          widthImage: 18.r,
-          heightImage: 18.r,
-          colorBorder: AppColors.transparent,
-          svgColor: AppColors.textButton,
-        ),
-      ],
-    );
-  }
-
-  Widget _sectionCard({required List<Widget> children}) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(12.r),
-      decoration: BoxDecoration(
-        color: AppColors.card,
-        borderRadius: CardStyles.radius(),
-        boxShadow: CardStyles.shadow,
-      ),
-      child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start, children: children),
-    );
-  }
-
-  Widget _labelValueRow(String label, String value, {Color? color}) {
-    return Row(
-      children: [
-        Text('$label: ', style: CardStyles.label(12).copyWith(color: color)),
-        Expanded(
-          child:
-              Text(value, style: CardStyles.value(12).copyWith(color: color)),
-        ),
-      ],
-    );
-  }
-
-  /// Avatar + name + job title for whoever last touched this submission
-  /// ([AssignmentControlEntity.lastModifier]'s email).
-  Widget _submitterRow(BuildContext context, String email) {
-    final employee = findEmployeeByEmail(email);
-    final name = employeeDisplayName(context, email);
-    final role = employee.localizedJobTitle(context);
-    final photo = employee.displayPhoto;
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        CircleAvatar(
-          radius: 20.r,
-          backgroundColor: AppColors.barrierColor,
-          backgroundImage:
-              photo.startsWith('http') ? NetworkImage(photo) : null,
-        ),
-        SizedBox(width: 8.w),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(name, style: CardStyles.value(14)),
-            if (role.isNotEmpty) Text(role, style: CardStyles.label(12)),
-          ],
-        ),
-      ],
-    );
-  }
-
   /// The Upload/Resubmit Evidence button, replaced with a small spinner
   /// while a submit is in flight so the user gets clear loading feedback.
   Widget _submitButton(BuildContext context, bool isSaving) {
@@ -215,28 +129,6 @@ class _AssignmentControlDetailsPageState
         heightImage: 18.r,
         colorBorder: AppColors.transparent,
         svgColor: AppColors.textButton,
-      ),
-    );
-  }
-
-  /// Bordered, colored pill showing [tab]'s status (icon + label), matching
-  /// the status pill already used on the list page's cards.
-  Widget _statusPill(AssignmentControlTab tab) {
-    final style = AssignmentControlTabStyle.of(tab);
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-      decoration: BoxDecoration(
-        border: Border.all(color: style.color),
-        borderRadius: BorderRadius.circular(20.r),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(style.icon, size: 16.sp, color: style.color),
-          SizedBox(width: 6.w),
-          Text(tab.label.tr,
-              style: CardStyles.value(14).copyWith(color: style.color)),
-        ],
       ),
     );
   }
@@ -279,6 +171,7 @@ class _AssignmentControlDetailsPageState
       },
       builder: (context, state) {
         final isSaving = state is AssignmentControlLoading;
+        final style = AssignmentControlTabStyle.of(widget.item.tab);
         return Scaffold(
           body: SafeArea(
             child: Padding(
@@ -302,7 +195,7 @@ class _AssignmentControlDetailsPageState
                         Text('Policy Details'.tr,
                             style: StyleText.fontSize16Weight600),
                         SizedBox(height: 8.h),
-                        _sectionCard(children: [
+                        GrcSectionCard(children: [
                           Text(
                             isArabic
                                 ? policy.policyNameAr
@@ -321,18 +214,18 @@ class _AssignmentControlDetailsPageState
                           ),
                           SizedBox(height: 12.h),
                           if (moduleOwnerEmail != null) ...[
-                            _ownerInlineRow(
-                                context, 'Module Owner'.tr, moduleOwnerEmail),
+                            GrcContactInlineRow(
+                                label: 'Module Owner'.tr, email: moduleOwnerEmail),
                             SizedBox(height: 12.h),
                           ],
                           Row(
                             children: [
                               Expanded(
-                                child: _labelValueRow('Policy Weight'.tr,
+                                child: GrcLabelValueRow('Policy Weight'.tr,
                                     policy.policyWeight.toString()),
                               ),
                               Expanded(
-                                child: _labelValueRow(
+                                child: GrcLabelValueRow(
                                   'Policy Number'.tr,
                                   isArabic
                                       ? policy.policyNumberAr
@@ -349,12 +242,12 @@ class _AssignmentControlDetailsPageState
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    _labelValueRow(
+                                    GrcLabelValueRow(
                                         'Start Date'.tr,
                                         _cardDateFormat
                                             .format(policy.startDate)),
                                     SizedBox(height: 4.h),
-                                    _labelValueRow('End Date'.tr,
+                                    GrcLabelValueRow('End Date'.tr,
                                         _cardDateFormat.format(policy.endDate)),
                                   ],
                                 ),
@@ -376,7 +269,7 @@ class _AssignmentControlDetailsPageState
                         Text('Control Details'.tr,
                             style: StyleText.fontSize16Weight600),
                         SizedBox(height: 8.h),
-                        _sectionCard(children: [
+                        GrcSectionCard(children: [
                           Row(
                             children: [
                               Expanded(
@@ -388,32 +281,11 @@ class _AssignmentControlDetailsPageState
                                 ),
                               ),
                               if (assignment?.controlScore != null)
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 10.w, vertical: 4.h),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.background,
-                                    borderRadius: BorderRadius.circular(20.r),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text('${'Score'.tr}: ',
-                                          style: CardStyles.label(12)),
-                                      Text(
-                                        assignment!.controlScore!
-                                            .toInt()
-                                            .toString(),
-                                        style: CardStyles.value(12)
-                                            .copyWith(color: Colors.green),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                                GrcScoreBadge(score: assignment!.controlScore!),
                             ],
                           ),
                           SizedBox(height: 8.h),
-                          _labelValueRow(
+                          GrcLabelValueRow(
                             'Description'.tr,
                             isArabic
                                 ? control.controlsDescriptionAr
@@ -424,14 +296,15 @@ class _AssignmentControlDetailsPageState
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Expanded(
-                                child: _labelValueRow(
+                                child: GrcLabelValueRow(
                                   'Control Weight'.tr,
                                   control.controlsWeight.toString(),
                                 ),
                               ),
                               if (widget.item.ownerEmail != null)
-                                _ownerInlineRow(context, 'Control Owner'.tr,
-                                    widget.item.ownerEmail),
+                                GrcContactInlineRow(
+                                    label: 'Control Owner'.tr,
+                                    email: widget.item.ownerEmail),
                             ],
                           ),
                         ]),
@@ -441,7 +314,8 @@ class _AssignmentControlDetailsPageState
                           children: [
                             Text('Submissions'.tr,
                                 style: StyleText.fontSize16Weight600),
-                            _SubmissionsSubTabs(
+                            GrcSectionSubTabs(
+                              labels: ['Submission'.tr, 'Inquires'.tr],
                               selected: _submissionsTab,
                               onChanged: (i) =>
                                   setState(() => _submissionsTab = i),
@@ -450,12 +324,12 @@ class _AssignmentControlDetailsPageState
                         ),
                         SizedBox(height: 8.h),
                         if (_submissionsTab == 1)
-                          _sectionCard(children: [
+                          GrcSectionCard(children: [
                             Text('Inquiries coming soon'.tr,
                                 style: CardStyles.value(12)),
                           ])
                         else
-                          _sectionCard(children: [
+                          GrcSectionCard(children: [
                             if (assignment == null) ...[
                               SizedBox(height: 20.h),
                               Center(
@@ -482,8 +356,7 @@ class _AssignmentControlDetailsPageState
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  _submitterRow(
-                                      context, assignment.lastModifier),
+                                  GrcSubmitterRow(email: assignment.lastModifier),
                                   Text(
                                     '${'Submission Date'.tr}: '
                                     '${_cardDateFormat.format(assignment.lastModificationDate)} '
@@ -505,13 +378,13 @@ class _AssignmentControlDetailsPageState
                                 ),
                               SizedBox(height: 12.h),
                               if (assignment.submissionNote.isNotEmpty) ...[
-                                _labelValueRow('Submission Notes'.tr,
+                                GrcLabelValueRow('Submission Notes'.tr,
                                     assignment.submissionNote),
                                 SizedBox(height: 12.h),
                               ],
                               if (rejectionReason != null &&
                                   rejectionReason.isNotEmpty) ...[
-                                _labelValueRow(
+                                GrcLabelValueRow(
                                   'Reasons of Rejection'.tr,
                                   rejectionReason,
                                   color: Colors.red,
@@ -524,13 +397,21 @@ class _AssignmentControlDetailsPageState
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     _submitButton(context, isSaving),
-                                    _statusPill(widget.item.tab),
+                                    GrcStatusPill(
+                                      label: widget.item.tab.label.tr,
+                                      color: style.color,
+                                      icon: style.icon,
+                                    ),
                                   ],
                                 )
                               else
                                 Align(
                                   alignment: Alignment.centerRight,
-                                  child: _statusPill(widget.item.tab),
+                                  child: GrcStatusPill(
+                                    label: widget.item.tab.label.tr,
+                                    color: style.color,
+                                    icon: style.icon,
+                                  ),
                                 ),
                             ],
                           ]),
@@ -544,48 +425,6 @@ class _AssignmentControlDetailsPageState
           ),
         );
       },
-    );
-  }
-}
-
-/// "Submission | Inquires" toggle shown at the top-right of the Submissions
-/// section. Inquires is a placeholder — the full comment-thread feature is a
-/// separate, future spec.
-class _SubmissionsSubTabs extends StatelessWidget {
-  final int selected;
-  final ValueChanged<int> onChanged;
-
-  const _SubmissionsSubTabs({required this.selected, required this.onChanged});
-
-  @override
-  Widget build(BuildContext context) {
-    Widget tab(String label, int index) {
-      final isSelected = selected == index;
-      return InkWell(
-        onTap: () => onChanged(index),
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-          decoration: BoxDecoration(
-            color: isSelected ? AppColors.primary : null,
-            borderRadius: BorderRadius.circular(20.r),
-          ),
-          child: Text(
-            label,
-            style: StyleText.fontSize12Weight400.copyWith(
-              color: isSelected ? AppColors.textButton : AppColors.text,
-            ),
-          ),
-        ),
-      );
-    }
-
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        tab('Submission'.tr, 0),
-        SizedBox(width: 8.w),
-        tab('Inquires'.tr, 1),
-      ],
     );
   }
 }

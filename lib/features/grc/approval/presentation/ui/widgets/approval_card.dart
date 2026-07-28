@@ -5,7 +5,11 @@ import 'package:intl/intl.dart';
 import 'package:demo_app/core/custom/16-custom_card_styles.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/features/grc/approval/domain/entities/approval_item.dart';
+import 'package:demo_app/features/grc/approval/domain/entities/approval_resolver.dart';
+import 'package:demo_app/features/grc/approval/domain/entities/approval_status.dart';
 import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
+import 'package:demo_app/features/grc/shared/widgets/grc_score_badge.dart';
+import 'package:demo_app/features/grc/shared/widgets/grc_status_pill.dart';
 
 final DateFormat _cardDateFormat = DateFormat('d MMM yyyy');
 
@@ -27,6 +31,9 @@ class ApprovalCard extends StatelessWidget {
     final policy = item.policy;
     final championEmail = item.assignmentControl.controlChampionEmail;
     final championName = employeeDisplayName(context, championEmail);
+    final championPhoto = findEmployeeByEmail(championEmail).displayPhoto;
+    final score = item.assignmentControl.controlScore;
+    final style = ApprovalStatusStyle.of(item.approval.status);
 
     return InkWell(
       onTap: onTap,
@@ -43,37 +50,65 @@ class ApprovalCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              isArabic ? control.controlsNameAr : control.controlsNameEn,
-              style: CardStyles.value(14),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    isArabic ? control.controlsNameAr : control.controlsNameEn,
+                    style: CardStyles.value(14),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                Text(
+                  '${'Request Date'.tr}: ${_cardDateFormat.format(item.assignmentControl.lastModificationDate)}',
+                  style: CardStyles.label(11),
+                ),
+              ],
             ),
-            SizedBox(height: 4.h),
+            SizedBox(height: 6.h),
             Text(
               '${'Policy Name'.tr}: ${isArabic ? policy.policyNameAr : policy.policyNameEn}',
               style: CardStyles.label(12),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
-            SizedBox(height: 4.h),
-            Text(
-              '${'Champion'.tr}: $championName',
-              style: CardStyles.label(12),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+            SizedBox(height: 8.h),
+            Row(
+              children: [
+                Text('${'Control Champion'.tr}: ', style: CardStyles.label(12)),
+                CircleAvatar(
+                  radius: 12.r,
+                  backgroundColor: AppColors.barrierColor,
+                  backgroundImage:
+                      championPhoto.startsWith('http') ? NetworkImage(championPhoto) : null,
+                ),
+                SizedBox(width: 6.w),
+                Expanded(
+                  child: Text(
+                    championName,
+                    style: CardStyles.value(12),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: 4.h),
-            Text(
-              '${'Champion Email'.tr}: $championEmail',
-              style: CardStyles.label(12),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            SizedBox(height: 4.h),
-            Text(
-              '${'Submission Date'.tr}: ${_cardDateFormat.format(item.assignmentControl.lastModificationDate)}',
-              style: CardStyles.label(12),
+            SizedBox(height: 10.h),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                if (score != null) ...[
+                  GrcScoreBadge(score: score),
+                  SizedBox(width: 8.w),
+                ],
+                if (item.approval.status != ApprovalStatus.pending)
+                  GrcStatusPill(
+                    label: item.approval.status.value.tr,
+                    color: style.color,
+                    icon: style.icon,
+                  ),
+              ],
             ),
           ],
         ),

@@ -11,13 +11,22 @@ import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/grc/approval/domain/entities/approval_item.dart';
+import 'package:demo_app/features/grc/approval/domain/entities/approval_resolver.dart';
+import 'package:demo_app/features/grc/approval/domain/entities/approval_status.dart';
 import 'package:demo_app/features/grc/approval/presentation/controller/approval_cubit.dart';
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
+import 'package:demo_app/features/grc/shared/widgets/grc_contact_inline_row.dart';
+import 'package:demo_app/features/grc/shared/widgets/grc_label_value_row.dart';
+import 'package:demo_app/features/grc/shared/widgets/grc_section_card.dart';
+import 'package:demo_app/features/grc/shared/widgets/grc_section_sub_tabs.dart';
+import 'package:demo_app/features/grc/shared/widgets/grc_status_pill.dart';
+import 'package:demo_app/features/grc/shared/widgets/grc_submitter_row.dart';
 import 'package:demo_app/features/settings/core_widgets/main_widget/custom_button_widget.dart';
 import 'package:demo_app/features/home/core_widgets/main_widget/pagination_app_bar.dart';
 
 final DateFormat _cardDateFormat = DateFormat('d MMM yyyy');
+final DateFormat _cardTimeFormat = DateFormat('h:mm a');
 
 class ApprovalDetailsPage extends StatefulWidget {
   final ApprovalItem item;
@@ -34,12 +43,14 @@ class ApprovalDetailsPage extends StatefulWidget {
 }
 
 class _ApprovalDetailsPageState extends State<ApprovalDetailsPage> {
+  int _approvalsTab = 0; // 0 = Approvals, 1 = Inquires
+
   void _onApprovePressed(BuildContext context) {
     final cubit = context.read<ApprovalCubit>();
     showConfirmDialog(
       context: context,
       title: 'Approve Request'.tr,
-      subtitle: 'Approve this request?'.tr,
+      subtitle: 'Are you sure you want to approve this request?'.tr,
       confirmLabel: 'Yes'.tr,
       cancelLabel: 'No'.tr,
       onConfirm: () => cubit.approve(
@@ -55,14 +66,14 @@ class _ApprovalDetailsPageState extends State<ApprovalDetailsPage> {
     final cubit = context.read<ApprovalCubit>();
     showConfirmDialog(
       context: context,
-      title: 'Reject Request'.tr,
-      subtitle: 'Reject this request?'.tr,
+      title: 'Reject Document'.tr,
+      subtitle: 'Are you sure you want to reject this document?'.tr,
       confirmLabel: 'Yes'.tr,
       cancelLabel: 'No'.tr,
       onConfirm: () => showCommentDialog(
         context: context,
-        title: 'Reason of Rejection'.tr,
-        fieldLabel: 'Reason of Rejection'.tr,
+        title: 'Reason Of Rejection'.tr,
+        fieldLabel: 'Justifications'.tr,
         hint: 'Text here'.tr,
         submitLabel: 'Submit'.tr,
         onSubmit: (reason) => cubit.reject(
@@ -76,28 +87,6 @@ class _ApprovalDetailsPageState extends State<ApprovalDetailsPage> {
     );
   }
 
-  Widget _labelValueRow(String label, String value) {
-    return Row(
-      children: [
-        Text('$label: ', style: CardStyles.label(12)),
-        Expanded(child: Text(value, style: CardStyles.value(12))),
-      ],
-    );
-  }
-
-  Widget _sectionCard({required List<Widget> children}) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(12.r),
-      decoration: BoxDecoration(
-        color: AppColors.card,
-        borderRadius: CardStyles.radius(),
-        boxShadow: CardStyles.shadow,
-      ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: children),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final control = widget.item.control;
@@ -105,7 +94,7 @@ class _ApprovalDetailsPageState extends State<ApprovalDetailsPage> {
     final assignmentControl = widget.item.assignmentControl;
     final isArabic = context.isArabic;
     final championEmail = assignmentControl.controlChampionEmail;
-    final championName = employeeDisplayName(context, championEmail);
+    final isPending = widget.item.approval.status == ApprovalStatus.pending;
 
     return BlocConsumer<ApprovalCubit, ApprovalState>(
       listener: (context, state) {
@@ -126,6 +115,7 @@ class _ApprovalDetailsPageState extends State<ApprovalDetailsPage> {
       },
       builder: (context, state) {
         final isSaving = state is ApprovalLoading;
+        final style = ApprovalStatusStyle.of(widget.item.approval.status);
         return Scaffold(
           body: SafeArea(
             child: Padding(
@@ -146,7 +136,7 @@ class _ApprovalDetailsPageState extends State<ApprovalDetailsPage> {
                       children: [
                         Text('Policy Details'.tr, style: StyleText.fontSize16Weight600),
                         SizedBox(height: 8.h),
-                        _sectionCard(children: [
+                        GrcSectionCard(children: [
                           Text(
                             isArabic ? policy.policyNameAr : policy.policyNameEn,
                             style: StyleText.fontSize16Weight600,
@@ -162,78 +152,130 @@ class _ApprovalDetailsPageState extends State<ApprovalDetailsPage> {
                         SizedBox(height: 15.h),
                         Text('Control Details'.tr, style: StyleText.fontSize16Weight600),
                         SizedBox(height: 8.h),
-                        _sectionCard(children: [
+                        GrcSectionCard(children: [
                           Text(
                             isArabic ? control.controlsNameAr : control.controlsNameEn,
                             style: StyleText.fontSize16Weight600,
                           ),
                           SizedBox(height: 8.h),
-                          _labelValueRow(
+                          GrcLabelValueRow(
                             'Description'.tr,
                             isArabic
                                 ? control.controlsDescriptionAr
                                 : control.controlsDescriptionEn,
                           ),
+                          SizedBox(height: 12.h),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (assignmentControl.controlOwner != null)
+                                Expanded(
+                                  child: GrcContactInlineRow(
+                                    label: 'Control Owner'.tr,
+                                    email: assignmentControl.controlOwner,
+                                  ),
+                                ),
+                              GrcContactInlineRow(
+                                label: 'Control Champion'.tr,
+                                email: championEmail,
+                              ),
+                            ],
+                          ),
                         ]),
                         SizedBox(height: 15.h),
-                        Text('Champion & Submission'.tr,
-                            style: StyleText.fontSize16Weight600),
-                        SizedBox(height: 8.h),
-                        _sectionCard(children: [
-                          _labelValueRow('Champion'.tr, championName),
-                          SizedBox(height: 8.h),
-                          _labelValueRow('Champion Email'.tr, championEmail),
-                          SizedBox(height: 8.h),
-                          _labelValueRow(
-                            'Submission Date'.tr,
-                            _cardDateFormat.format(assignmentControl.lastModificationDate),
-                          ),
-                          SizedBox(height: 12.h),
-                          if (assignmentControl.submissionNote.isNotEmpty) ...[
-                            _labelValueRow(
-                                'Submission Notes'.tr, assignmentControl.submissionNote),
-                            SizedBox(height: 12.h),
-                          ],
-                          if (assignmentControl.submissionDocument.isNotEmpty)
-                            ProductWarrantyCard(
-                              fileName: assignmentControl.submissionDocument
-                                  .split('/')
-                                  .last
-                                  .split('?')
-                                  .first,
-                              onTapFile: () {},
-                            ),
-                        ]),
-                        SizedBox(height: 20.h),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Expanded(
-                              child: customButton(
-                                title: 'Reject'.tr,
-                                function: isSaving
-                                    ? () {}
-                                    : () => _onRejectPressed(context),
-                                height: 44.h,
-                                color: AppColors.red,
-                                textStyle: StyleText.fontSize16Weight500
-                                    .copyWith(color: AppColors.textButton),
-                              ),
-                            ),
-                            SizedBox(width: 12.w),
-                            Expanded(
-                              child: customButton(
-                                title: 'Approve'.tr,
-                                function: isSaving
-                                    ? () {}
-                                    : () => _onApprovePressed(context),
-                                height: 44.h,
-                                color: AppColors.primary,
-                                textStyle: StyleText.fontSize16Weight500
-                                    .copyWith(color: AppColors.textButton),
-                              ),
+                            Text('Approvals'.tr, style: StyleText.fontSize16Weight600),
+                            GrcSectionSubTabs(
+                              labels: ['Approvals'.tr, 'Inquires'.tr],
+                              selected: _approvalsTab,
+                              onChanged: (i) => setState(() => _approvalsTab = i),
                             ),
                           ],
                         ),
+                        SizedBox(height: 8.h),
+                        if (_approvalsTab == 1)
+                          GrcSectionCard(children: [
+                            Text('Inquiries coming soon'.tr, style: CardStyles.value(12)),
+                          ])
+                        else
+                          GrcSectionCard(children: [
+                            GrcSubmitterRow(email: championEmail),
+                            SizedBox(height: 8.h),
+                            Text(
+                              '${'Submission Date'.tr}: '
+                              '${_cardDateFormat.format(assignmentControl.lastModificationDate)} '
+                              '${'At'.tr} '
+                              '${_cardTimeFormat.format(assignmentControl.lastModificationDate)}',
+                              style: CardStyles.label(12),
+                            ),
+                            SizedBox(height: 12.h),
+                            if (assignmentControl.submissionDocument.isNotEmpty)
+                              ProductWarrantyCard(
+                                fileName: assignmentControl.submissionDocument
+                                    .split('/')
+                                    .last
+                                    .split('?')
+                                    .first,
+                                onTapFile: () {},
+                              ),
+                            SizedBox(height: 12.h),
+                            if (assignmentControl.submissionNote.isNotEmpty) ...[
+                              GrcLabelValueRow(
+                                  'Submission Notes'.tr, assignmentControl.submissionNote),
+                              SizedBox(height: 12.h),
+                            ],
+                            if (widget.item.approval.reasonOfRejection != null &&
+                                widget.item.approval.reasonOfRejection!.isNotEmpty) ...[
+                              GrcLabelValueRow(
+                                'Reasons of Rejection'.tr,
+                                widget.item.approval.reasonOfRejection!,
+                                color: Colors.red,
+                              ),
+                              SizedBox(height: 12.h),
+                            ],
+                            SizedBox(height: 8.h),
+                            if (isPending)
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: customButton(
+                                      title: 'Reject'.tr,
+                                      function: isSaving
+                                          ? () {}
+                                          : () => _onRejectPressed(context),
+                                      height: 44.h,
+                                      color: AppColors.red,
+                                      textStyle: StyleText.fontSize16Weight500
+                                          .copyWith(color: AppColors.textButton),
+                                    ),
+                                  ),
+                                  SizedBox(width: 12.w),
+                                  Expanded(
+                                    child: customButton(
+                                      title: 'Approve'.tr,
+                                      function: isSaving
+                                          ? () {}
+                                          : () => _onApprovePressed(context),
+                                      height: 44.h,
+                                      color: AppColors.primary,
+                                      textStyle: StyleText.fontSize16Weight500
+                                          .copyWith(color: AppColors.textButton),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            else
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: GrcStatusPill(
+                                  label: widget.item.approval.status.value.tr,
+                                  color: style.color,
+                                  icon: style.icon,
+                                ),
+                              ),
+                          ]),
                         SizedBox(height: 15.h),
                       ],
                     ),
