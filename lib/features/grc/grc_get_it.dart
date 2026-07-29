@@ -32,6 +32,7 @@ import 'package:demo_app/features/grc/my_audit/domain/use_cases/create_or_update
 import 'package:demo_app/features/grc/my_audit/domain/use_cases/decide_my_audit_usecase.dart';
 import 'package:demo_app/features/grc/my_audit/domain/use_cases/get_all_my_audits_usecase.dart';
 import 'package:demo_app/features/grc/my_audit/presentation/controller/my_audit_cubit.dart';
+import 'package:demo_app/features/grc/shared/use_cases/recalculate_score_rollup_usecase.dart';
 import 'package:demo_app/features/grc/assignment_control/domain/use_cases/apply_owner_score_usecase.dart';
 import 'package:demo_app/features/grc/assignment_control/data/data_source/assignment_control_firebase_data_source.dart';
 import 'package:demo_app/features/grc/assignment_control/domain/use_cases/apply_manager_decision_usecase.dart';
@@ -575,6 +576,19 @@ void setupGRCDependencies(GetIt sl) {
     () => ApplyMyAuditScoreUseCase(sl<MyAuditRepository>()),
   );
 
+  /// class name: [RecalculateScoreRollupUseCase]
+  /// purpose: recomputes and persists Control -> Policy -> Module scores
+  /// after a Control Owner submits or edits a score in My Audits.
+  sl.registerLazySingleton<RecalculateScoreRollupUseCase>(
+    () => RecalculateScoreRollupUseCase(
+      updateControlUseCase: sl<UpdateControlUseCase>(),
+      getAllControlsUseCase: sl<GetAllControlsUseCase>(),
+      updatePolicyUseCase: sl<UpdatePolicyUseCase>(),
+      getAllPoliciesUseCase: sl<GetAllPoliciesUseCase>(),
+      updateGrcModuleUseCase: sl<UpdateGRCModuleUseCase>(),
+    ),
+  );
+
   // ─── 4. Cubit (Presentation) ────────────────────────────────────────────────
 
   /// class name: [GRCModuleCubit]
@@ -789,6 +803,7 @@ void setupGRCDependencies(GetIt sl) {
       applyMyAuditScoreUseCase: sl<ApplyMyAuditScoreUseCase>(),
       applyManagerDecisionUseCase: sl<ApplyManagerDecisionUseCase>(),
       applyOwnerScoreUseCase: sl<ApplyOwnerScoreUseCase>(),
+      recalculateScoreRollupUseCase: sl<RecalculateScoreRollupUseCase>(),
     ),
   );
 }

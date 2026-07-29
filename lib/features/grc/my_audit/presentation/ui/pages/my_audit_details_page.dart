@@ -152,6 +152,7 @@ class _MyAuditDetailsPageState extends State<MyAuditDetailsPage> {
                       Navigator.of(dialogContext).pop();
                       cubit.submitScore(
                         moduleId: widget.module.moduleId,
+                        policyId: widget.item.control.policyId,
                         controlId: widget.item.control.id,
                         championEmail:
                             widget.item.assignmentControl!.controlChampionEmail,

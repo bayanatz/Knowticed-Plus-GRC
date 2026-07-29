@@ -25,6 +25,7 @@ import 'package:demo_app/features/grc/my_audit/domain/use_cases/decide_my_audit_
 import 'package:demo_app/features/grc/my_audit/domain/use_cases/get_all_my_audits_usecase.dart';
 import 'package:demo_app/features/grc/policy/domain/entities/policy_entity.dart';
 import 'package:demo_app/features/grc/policy/domain/use_cases/get_policy_usecases.dart';
+import 'package:demo_app/features/grc/shared/use_cases/recalculate_score_rollup_usecase.dart';
 
 part 'my_audit_state.dart';
 
@@ -39,6 +40,7 @@ class MyAuditCubit extends Cubit<MyAuditState> {
     required ApplyMyAuditScoreUseCase applyMyAuditScoreUseCase,
     required ApplyManagerDecisionUseCase applyManagerDecisionUseCase,
     required ApplyOwnerScoreUseCase applyOwnerScoreUseCase,
+    required RecalculateScoreRollupUseCase recalculateScoreRollupUseCase,
   })  : _getAllMyAuditsUseCase = getAllMyAuditsUseCase,
         _getAssignmentControlByIdUseCase = getAssignmentControlByIdUseCase,
         _getOwnerUseCase = getOwnerUseCase,
@@ -48,6 +50,7 @@ class MyAuditCubit extends Cubit<MyAuditState> {
         _applyMyAuditScoreUseCase = applyMyAuditScoreUseCase,
         _applyManagerDecisionUseCase = applyManagerDecisionUseCase,
         _applyOwnerScoreUseCase = applyOwnerScoreUseCase,
+        _recalculateScoreRollupUseCase = recalculateScoreRollupUseCase,
         super(MyAuditInitial());
 
   final GetAllMyAuditsUseCase _getAllMyAuditsUseCase;
@@ -59,6 +62,7 @@ class MyAuditCubit extends Cubit<MyAuditState> {
   final ApplyMyAuditScoreUseCase _applyMyAuditScoreUseCase;
   final ApplyManagerDecisionUseCase _applyManagerDecisionUseCase;
   final ApplyOwnerScoreUseCase _applyOwnerScoreUseCase;
+  final RecalculateScoreRollupUseCase _recalculateScoreRollupUseCase;
 
   /// Loads every My_Audit whose linked Assignment Control's `controlOwner`
   /// is [ownerEmail], plus a derived Overdue row for each of this Owner's
@@ -202,6 +206,7 @@ class MyAuditCubit extends Cubit<MyAuditState> {
   /// (the terminal state of the whole workflow).
   Future<void> submitScore({
     required String moduleId,
+    required String policyId,
     required String controlId,
     required String championEmail,
     required String ownerEmail,
@@ -233,9 +238,18 @@ class MyAuditCubit extends Cubit<MyAuditState> {
             editorEmail: ownerEmail,
           ),
         );
-        acResult.fold(
-          (failure) => emit(MyAuditFailure(failure.message)),
-          (_) => emit(MyAuditActionSuccess(audit)),
+        await acResult.fold(
+          (failure) async => emit(MyAuditFailure(failure.message)),
+          (_) async {
+            await _recalculateScoreRollupUseCase.call(
+              moduleId: moduleId,
+              policyId: policyId,
+              controlId: controlId,
+              controlScore: score,
+              editorEmail: ownerEmail,
+            );
+            emit(MyAuditActionSuccess(audit));
+          },
         );
       },
     );
