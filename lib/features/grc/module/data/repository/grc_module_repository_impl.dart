@@ -171,6 +171,7 @@ class GRCModuleRepositoryImpl implements GRCModuleRepository {
     DateTime? activationDate,
     List<String>? owners,
     String? status,
+    double? score,
     File? imageFile,
     String? imageUrl,
   }) async {
@@ -196,6 +197,7 @@ class GRCModuleRepositoryImpl implements GRCModuleRepository {
         moduleActivationDate: activationDate,
         owners: owners,
         status: status,
+        score: score,
         modifierEmail: editorId,
       );
 

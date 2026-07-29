@@ -48,6 +48,8 @@ class GRCModuleEntity {
   /// "Removed" replaces the old isDeleted flag.
   final String status;
 
+  final double score;
+
   // Tracking fields (latest values only)
   final DateTime createdAt;
   final DateTime modificationDate;
@@ -66,6 +68,7 @@ class GRCModuleEntity {
     required this.moduleActivationDate,
     required this.moduleOwners,
     required this.status,
+    required this.score,
     required this.createdAt,
     required this.modificationDate,
     required this.lastModifier,
@@ -107,6 +110,7 @@ class GRCModuleEntity {
     DateTime? moduleActivationDate,
     List<String>? moduleOwners,
     String? status,
+    double? score,
   }) {
     return GRCModuleEntity(
       moduleId: moduleId,
@@ -120,6 +124,7 @@ class GRCModuleEntity {
       moduleActivationDate: moduleActivationDate ?? this.moduleActivationDate,
       moduleOwners: moduleOwners ?? this.moduleOwners,
       status: status ?? this.status,
+      score: score ?? this.score,
       createdAt: createdAt,
       modificationDate: modificationDate,
       lastModifier: lastModifier,

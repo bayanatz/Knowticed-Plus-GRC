@@ -95,6 +95,7 @@ class GRCModuleModel {
   static const String _keyModuleActivationDate = 'Module_Activation_Date';
   static const String _keyModuleOwners = 'Module_Owners';
   static const String _keyStatus = 'Status';
+  static const String _keyModuleScore = 'Module_Score';
 
   final String moduleId;
 
@@ -114,6 +115,8 @@ class GRCModuleModel {
   /// "Active" | "Inactive" | "Scheduled" | "Removed"
   final List<String> status;
 
+  final List<double> score;
+
   // Tracking fields
   final List<DateTime> modificationDate;
 
@@ -131,6 +134,7 @@ class GRCModuleModel {
     required this.moduleActivationDate,
     required this.moduleOwners,
     required this.status,
+    required this.score,
     required this.modificationDate,
     required this.modifiers,
   }) {
@@ -161,6 +165,7 @@ class GRCModuleModel {
       moduleActivationDate.length,
       moduleOwners.length,
       status.length,
+      score.length,
       modificationDate.length,
       modifiers.length,
     };
@@ -198,6 +203,7 @@ class GRCModuleModel {
     required DateTime moduleActivationDate,
     required List<String> owners,
     required String status,
+    double score = 0,
     required String modifierEmail,
   }) {
     final now = DateTime.now();
@@ -218,6 +224,7 @@ class GRCModuleModel {
           activationDate: moduleActivationDate,
         ),
       ],
+      score: [score],
       modificationDate: [now],
       modifiers: [modifierEmail],
     );
@@ -256,6 +263,7 @@ class GRCModuleModel {
     DateTime? moduleActivationDate,
     List<String>? owners,
     String? status,
+    double? score,
     required String modifierEmail,
   }) {
     final now = DateTime.now();
@@ -300,6 +308,7 @@ class GRCModuleModel {
               moduleActivationDate ?? this.moduleActivationDate.last,
         ),
       ],
+      score: [...this.score, score ?? this.score.last],
       modificationDate: [...modificationDate, now],
       modifiers: [...modifiers, modifierEmail],
     );
@@ -333,6 +342,7 @@ class GRCModuleModel {
       // Already JSON-encoded strings — stored as List<String> in Firestore.
       _keyModuleOwners: moduleOwners,
       _keyStatus: status,
+      _keyModuleScore: score,
       GrcFirestoreKeys.modificationDate:
           modificationDate.map((d) => _storageDateFormat.format(d)).toList(),
       GrcFirestoreKeys.modifiers: modifiers,
@@ -374,6 +384,11 @@ class GRCModuleModel {
           // added default to "Active".
           : List<String>.filled(
               modifiersRaw.length, GrcModuleStatus.active.value),
+      score: json[_keyModuleScore] != null
+          ? (json[_keyModuleScore] as List)
+              .map((e) => (e as num).toDouble())
+              .toList()
+          : List<double>.filled(modifiersRaw.length, 0),
       modificationDate:
           (json[GrcFirestoreKeys.modificationDate] as List? ?? [])
               .map((d) => _storageDateFormat.parse(d as String))
@@ -411,6 +426,7 @@ class GRCModuleModel {
         requestedStatus: status.last,
         activationDate: currentActivationDate,
       ),
+      score: score.last,
       createdAt: modificationDate.first,
       modificationDate: modificationDate.last,
       lastModifier: modifiers.last,

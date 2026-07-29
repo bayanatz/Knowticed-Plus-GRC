@@ -68,6 +68,7 @@ class UpdateGRCModuleUseCase {
     DateTime? activationDate,
     List<String>? owners,
     String? status,
+    double? score,
     File? imageFile,
     String? imageUrl,
   }) {
@@ -82,6 +83,7 @@ class UpdateGRCModuleUseCase {
       activationDate: activationDate,
       owners: owners,
       status: status,
+      score: score,
       imageFile: imageFile,
       imageUrl: imageUrl,
     );

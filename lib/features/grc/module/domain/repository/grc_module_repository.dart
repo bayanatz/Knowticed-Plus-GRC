@@ -128,6 +128,7 @@ abstract class GRCModuleRepository {
     DateTime? activationDate,
     List<String>? owners,
     String? status,
+    double? score,
     File? imageFile,
     String? imageUrl,
   });
