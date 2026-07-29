@@ -24,13 +24,19 @@ import 'package:demo_app/features/grc/policy/domain/entities/policy_status.dart'
 import 'package:demo_app/features/grc/policy/domain/use_cases/get_policy_usecases.dart';
 import 'package:demo_app/features/grc/policy/domain/use_cases/update_policy_usecase.dart';
 
-/// Weighted sum of every non-Draft Control's score under one Policy —
-/// Σ(control.score × control.controlsWeight / 100). Matches the existing
-/// Draft-exclusion convention in control_entity.dart's
-/// ControlListWeightX.hasControlWeightIssue.
+/// Weighted sum of every Active/Scheduled/Unassigned Control's score under
+/// one Policy — Σ(control.score × control.controlsWeight / 100). Matches
+/// the existing weight-scoping convention in control_entity.dart's
+/// ControlListWeightX.hasControlWeightIssue (excludes Draft, Inactive, and
+/// Expired controls).
 double computePolicyScore(List<ControlEntity> controls) {
+  const weightScopedStatuses = {
+    ControlStatus.active,
+    ControlStatus.scheduled,
+    ControlStatus.unassigned,
+  };
   return controls
-      .where((c) => c.status != ControlStatus.draft)
+      .where((c) => weightScopedStatuses.contains(c.status))
       .fold<double>(0, (sum, c) => sum + c.score * c.controlsWeight / 100);
 }
 

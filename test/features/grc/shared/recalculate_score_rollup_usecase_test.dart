@@ -83,6 +83,26 @@ void main() {
       expect(computePolicyScore(controls), 40 + 25);
     });
 
+    test('excludes Inactive and Expired controls, matching '
+        'hasControlWeightIssue\'s weight-scoped statuses', () {
+      final controls = [
+        _control(score: 80, weight: 50),
+        _control(score: 100, weight: 25),
+        _control(score: 999, weight: 25, status: ControlStatus.inactive),
+        _control(score: 999, weight: 25, status: ControlStatus.expired),
+      ];
+      expect(computePolicyScore(controls), 40 + 25);
+    });
+
+    test('includes Unassigned controls', () {
+      final controls = [
+        _control(score: 80, weight: 50),
+        _control(score: 100, weight: 25),
+        _control(score: 60, weight: 25, status: ControlStatus.unassigned),
+      ];
+      expect(computePolicyScore(controls), 80);
+    });
+
     test('empty list yields 0', () {
       expect(computePolicyScore(const []), 0);
     });
