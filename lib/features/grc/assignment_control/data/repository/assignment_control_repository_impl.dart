@@ -16,6 +16,7 @@ import 'package:demo_app/features/grc/assignment_control/data/data_source/assign
 import 'package:demo_app/features/grc/assignment_control/data/models/assignment_control_model.dart';
 import 'package:demo_app/features/grc/assignment_control/domain/entities/assignment_control_entity.dart';
 import 'package:demo_app/features/grc/assignment_control/domain/entities/assignment_control_status.dart';
+import 'package:demo_app/features/grc/assignment_control/domain/entities/submission_history_entry.dart';
 import 'package:demo_app/features/grc/assignment_control/domain/repository/assignment_control_repository.dart';
 import 'package:demo_app/features/grc/policy/data/data_source/policy_storage_data_source.dart';
 
@@ -163,6 +164,21 @@ class AssignmentControlRepositoryImpl implements AssignmentControlRepository {
         saved = await _dataSource.update(model, moduleId: moduleId);
       }
       return Right(saved.toEntity());
+    } catch (e) {
+      return Left(FirebaseFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<SubmissionHistoryEntry>>> getSubmissionHistory({
+    required String moduleId,
+    required String controlId,
+    required String championEmail,
+  }) async {
+    try {
+      final id = _docId(controlId: controlId, championEmail: championEmail);
+      final model = await _dataSource.get(id, moduleId: moduleId);
+      return Right(model?.toSubmissionHistory() ?? const []);
     } catch (e) {
       return Left(FirebaseFailure(e.toString()));
     }

@@ -4,6 +4,7 @@ import 'package:dartz/dartz.dart';
 import 'package:demo_app/core/network/failure_model.dart';
 import 'package:demo_app/features/grc/assignment_control/domain/entities/assignment_control_entity.dart';
 import 'package:demo_app/features/grc/assignment_control/domain/entities/assignment_control_status.dart';
+import 'package:demo_app/features/grc/assignment_control/domain/entities/submission_history_entry.dart';
 
 abstract class AssignmentControlRepository {
   /// Returns Right(null) — not an error — when no submission has ever been
@@ -61,5 +62,15 @@ abstract class AssignmentControlRepository {
     required File documentFile,
     required String note,
     required String editorEmail,
+  });
+
+  /// Derives one entry per distinct file ever submitted for this
+  /// control+champion pair, newest file first — see
+  /// [AssignmentControlModel.toSubmissionHistory]. Returns an empty list
+  /// (not a failure) when nothing has ever been submitted.
+  Future<Either<Failure, List<SubmissionHistoryEntry>>> getSubmissionHistory({
+    required String moduleId,
+    required String controlId,
+    required String championEmail,
   });
 }

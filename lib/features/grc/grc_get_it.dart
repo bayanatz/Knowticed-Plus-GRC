@@ -37,6 +37,7 @@ import 'package:demo_app/features/grc/assignment_control/domain/use_cases/apply_
 import 'package:demo_app/features/grc/assignment_control/data/data_source/assignment_control_firebase_data_source.dart';
 import 'package:demo_app/features/grc/assignment_control/domain/use_cases/apply_manager_decision_usecase.dart';
 import 'package:demo_app/features/grc/assignment_control/domain/use_cases/get_assignment_control_by_id_usecase.dart';
+import 'package:demo_app/features/grc/assignment_control/domain/use_cases/get_submission_history_usecase.dart';
 import 'package:demo_app/features/grc/control_champion/domain/entities/champion_request_resolver.dart';
 import 'package:demo_app/features/grc/control_champion/domain/use_cases/apply_champion_reassignment_usecase.dart';
 import 'package:demo_app/features/grc/control_owner/domain/use_cases/apply_owner_reassignment_usecase.dart';
@@ -521,6 +522,13 @@ void setupGRCDependencies(GetIt sl) {
   /// Approve/Reject decision on an Assignment Control.
   sl.registerLazySingleton<ApplyManagerDecisionUseCase>(
     () => ApplyManagerDecisionUseCase(sl<AssignmentControlRepository>()),
+  );
+
+  /// class name: [GetSubmissionHistoryUseCase]
+  /// purpose: business logic for deriving the per-file Submission History
+  /// (one card per distinct file) shown on MyAuditDetailsPage.
+  sl.registerLazySingleton<GetSubmissionHistoryUseCase>(
+    () => GetSubmissionHistoryUseCase(sl<AssignmentControlRepository>()),
   );
 
   /// class name: [GetAllApprovalsUseCase]
