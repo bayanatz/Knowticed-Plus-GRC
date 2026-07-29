@@ -95,6 +95,7 @@ import 'package:demo_app/features/grc/control_champion/presentation/controller/c
 import 'package:demo_app/features/grc/control_owner/presentation/controller/owner_cubit.dart';
 import 'package:demo_app/features/grc/control_owner/presentation/controller/control_previous_owners_cubit.dart';
 import 'package:demo_app/features/grc/assignment_control/presentation/controller/assignment_control_cubit.dart';
+import 'package:demo_app/features/grc/assignment_control/presentation/controller/submission_history_cubit.dart';
 import 'package:demo_app/features/grc/policy/presentation/controller/policy_cubit.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/pages/policy_weight_issue/policy_weight_history_cubit.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/pages/policy_weight_issue/policy_weight_issue_cubit.dart';
@@ -812,6 +813,17 @@ void setupGRCDependencies(GetIt sl) {
       applyManagerDecisionUseCase: sl<ApplyManagerDecisionUseCase>(),
       applyOwnerScoreUseCase: sl<ApplyOwnerScoreUseCase>(),
       recalculateScoreRollupUseCase: sl<RecalculateScoreRollupUseCase>(),
+    ),
+  );
+
+  /// class name: [SubmissionHistoryCubit]
+  /// purpose: presentation-layer state manager for one Assignment
+  /// Control's per-file Submission History cards, kept independent of the
+  /// shared MyAuditCubit (see the class doc comment for why). Registered
+  /// as a factory so each MyAuditDetailsPage instance gets its own cubit.
+  sl.registerFactory<SubmissionHistoryCubit>(
+    () => SubmissionHistoryCubit(
+      getSubmissionHistoryUseCase: sl<GetSubmissionHistoryUseCase>(),
     ),
   );
 }
