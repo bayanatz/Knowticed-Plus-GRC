@@ -20,7 +20,6 @@ import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/grc/assignment_control/domain/entities/assignment_control_item.dart';
 import 'package:demo_app/features/grc/assignment_control/domain/entities/assignment_control_status.dart';
 import 'package:demo_app/features/grc/assignment_control/domain/entities/assignment_control_tab.dart';
-import 'package:demo_app/features/grc/assignment_control/domain/entities/submission_history_entry.dart';
 import 'package:demo_app/features/grc/assignment_control/presentation/controller/assignment_control_cubit.dart';
 import 'package:demo_app/features/grc/assignment_control/presentation/controller/submission_history_cubit.dart';
 import 'package:demo_app/features/grc/assignment_control/presentation/ui/widgets/assignment_control_card.dart';
