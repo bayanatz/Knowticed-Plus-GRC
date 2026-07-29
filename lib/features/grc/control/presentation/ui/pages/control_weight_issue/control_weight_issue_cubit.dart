@@ -15,6 +15,7 @@ import 'package:demo_app/features/grc/control/domain/use_cases/get_control_useca
 import 'package:demo_app/features/grc/control/domain/use_cases/update_control_usecase.dart';
 import 'package:demo_app/features/grc/control/presentation/ui/pages/control_weight_issue/control_weight_issue_row.dart';
 import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
+import 'package:demo_app/features/grc/shared/use_cases/recalculate_score_rollup_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'control_weight_issue_state.dart';
@@ -36,12 +37,15 @@ class ControlWeightIssueCubit extends Cubit<ControlWeightIssueState> {
   ControlWeightIssueCubit({
     required GetAllControlsUseCase getAllControlsUseCase,
     required UpdateControlUseCase updateControlUseCase,
+    required RecalculateScoreRollupUseCase recalculateScoreRollupUseCase,
   })  : _getAllControlsUseCase = getAllControlsUseCase,
         _updateControlUseCase = updateControlUseCase,
+        _recalculateScoreRollupUseCase = recalculateScoreRollupUseCase,
         super(ControlWeightIssueInitial());
 
   final GetAllControlsUseCase _getAllControlsUseCase;
   final UpdateControlUseCase _updateControlUseCase;
+  final RecalculateScoreRollupUseCase _recalculateScoreRollupUseCase;
 
   ControlWeightIssueRows? _rowsData;
 
@@ -150,8 +154,13 @@ class ControlWeightIssueCubit extends Cubit<ControlWeightIssueState> {
   /// function name: [applyChanges]
   ///
   /// purpose: persist every row whose weight actually changed via
-  ///          [UpdateControlUseCase], one call per changed row. No-op if
-  ///          the live total isn't exactly 100. On full success, reloads
+  ///          [UpdateControlUseCase], one call per changed row, then
+  ///          recompute this Policy's and its Module's scores (a weight
+  ///          change alone can make a previously-correct score stale, even
+  ///          though no Control score changed) via
+  ///          [RecalculateScoreRollupUseCase.recalculatePolicyScore]/
+  ///          [RecalculateScoreRollupUseCase.recalculateModuleScore]. No-op
+  ///          if the live total isn't exactly 100. On full success, reloads
   ///          fresh data and returns to view mode; on any failure, emits
   ///          Failure for the listener snackbar then immediately re-emits
   ///          an editing Loaded state so the table stays visible in edit
@@ -186,6 +195,16 @@ class ControlWeightIssueCubit extends Cubit<ControlWeightIssueState> {
         return;
       }
     }
+
+    await _recalculateScoreRollupUseCase.recalculatePolicyScore(
+      moduleId: moduleId,
+      policyId: policyId,
+      editorEmail: editorId,
+    );
+    await _recalculateScoreRollupUseCase.recalculateModuleScore(
+      moduleId: moduleId,
+      editorEmail: editorId,
+    );
 
     emit(ControlWeightIssueApplySuccess());
     await load(moduleId, policyId);

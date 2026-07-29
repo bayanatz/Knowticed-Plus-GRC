@@ -17,6 +17,7 @@ import 'package:demo_app/features/grc/policy/domain/entities/policy_status.dart'
 import 'package:demo_app/features/grc/policy/domain/use_cases/get_policy_usecases.dart';
 import 'package:demo_app/features/grc/policy/domain/use_cases/update_policy_usecase.dart';
 import 'package:demo_app/features/grc/policy/presentation/ui/pages/policy_weight_issue/policy_weight_issue_row.dart';
+import 'package:demo_app/features/grc/shared/use_cases/recalculate_score_rollup_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 
@@ -37,14 +38,17 @@ class PolicyWeightIssueCubit extends Cubit<PolicyWeightIssueState> {
     required GetAllPoliciesUseCase getAllPoliciesUseCase,
     required GetAllControlsUseCase getAllControlsUseCase,
     required UpdatePolicyUseCase updatePolicyUseCase,
+    required RecalculateScoreRollupUseCase recalculateScoreRollupUseCase,
   })  : _getAllPoliciesUseCase = getAllPoliciesUseCase,
         _getAllControlsUseCase = getAllControlsUseCase,
         _updatePolicyUseCase = updatePolicyUseCase,
+        _recalculateScoreRollupUseCase = recalculateScoreRollupUseCase,
         super(PolicyWeightIssueInitial());
 
   final GetAllPoliciesUseCase _getAllPoliciesUseCase;
   final GetAllControlsUseCase _getAllControlsUseCase;
   final UpdatePolicyUseCase _updatePolicyUseCase;
+  final RecalculateScoreRollupUseCase _recalculateScoreRollupUseCase;
 
   PolicyWeightIssueRows? _rowsData;
 
@@ -165,9 +169,15 @@ class PolicyWeightIssueCubit extends Cubit<PolicyWeightIssueState> {
   /// function name: [applyChanges]
   ///
   /// purpose: persist every row whose weight actually changed via
-  ///          [UpdatePolicyUseCase], one call per changed row. No-op if the
-  ///          live total isn't exactly 100. On full success, reloads fresh
-  ///          data and returns to view mode; on any failure, stops and
+  ///          [UpdatePolicyUseCase], one call per changed row, then
+  ///          recompute each changed Policy's score (a weight change alone
+  ///          makes a previously-correct score stale, even with no new
+  ///          Control score) via
+  ///          [RecalculateScoreRollupUseCase.recalculatePolicyScore], and
+  ///          finally the Module's score once via
+  ///          [RecalculateScoreRollupUseCase.recalculateModuleScore]. No-op
+  ///          if the live total isn't exactly 100. On full success, reloads
+  ///          fresh data and returns to view mode; on any failure, stops and
   ///          stays in edit mode so in-progress edits aren't lost.
   ///
   /// parameters:
@@ -200,6 +210,18 @@ class PolicyWeightIssueCubit extends Cubit<PolicyWeightIssueState> {
         return;
       }
     }
+
+    for (final row in changed) {
+      await _recalculateScoreRollupUseCase.recalculatePolicyScore(
+        moduleId: moduleId,
+        policyId: row.policyId,
+        editorEmail: editorId,
+      );
+    }
+    await _recalculateScoreRollupUseCase.recalculateModuleScore(
+      moduleId: moduleId,
+      editorEmail: editorId,
+    );
 
     emit(PolicyWeightIssueApplySuccess());
     await load(moduleId);

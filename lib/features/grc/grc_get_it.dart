@@ -670,6 +670,7 @@ void setupGRCDependencies(GetIt sl) {
       getAllPoliciesUseCase: sl<GetAllPoliciesUseCase>(),
       getAllControlsUseCase: sl<GetAllControlsUseCase>(),
       updatePolicyUseCase: sl<UpdatePolicyUseCase>(),
+      recalculateScoreRollupUseCase: sl<RecalculateScoreRollupUseCase>(),
     ),
   );
 
@@ -692,6 +693,7 @@ void setupGRCDependencies(GetIt sl) {
     () => ControlWeightIssueCubit(
       getAllControlsUseCase: sl<GetAllControlsUseCase>(),
       updateControlUseCase: sl<UpdateControlUseCase>(),
+      recalculateScoreRollupUseCase: sl<RecalculateScoreRollupUseCase>(),
     ),
   );
 
