@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
 import 'package:demo_app/core/custom/10_custom_upload_document.dart';
@@ -17,8 +18,11 @@ import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/grc/assignment_control/domain/entities/assignment_control_item.dart';
+import 'package:demo_app/features/grc/assignment_control/domain/entities/assignment_control_status.dart';
 import 'package:demo_app/features/grc/assignment_control/domain/entities/assignment_control_tab.dart';
+import 'package:demo_app/features/grc/assignment_control/domain/entities/submission_history_entry.dart';
 import 'package:demo_app/features/grc/assignment_control/presentation/controller/assignment_control_cubit.dart';
+import 'package:demo_app/features/grc/assignment_control/presentation/controller/submission_history_cubit.dart';
 import 'package:demo_app/features/grc/assignment_control/presentation/ui/widgets/assignment_control_card.dart';
 import 'package:demo_app/features/grc/module/domain/entities/grc_module_entity.dart';
 import 'package:demo_app/features/grc/shared/helpers/grc_assignment_lookup.dart';
@@ -53,6 +57,27 @@ class AssignmentControlDetailsPage extends StatefulWidget {
 class _AssignmentControlDetailsPageState
     extends State<AssignmentControlDetailsPage> {
   int _submissionsTab = 0; // 0 = Submission, 1 = Inquires
+  late final SubmissionHistoryCubit _historyCubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _historyCubit = GetIt.instance<SubmissionHistoryCubit>();
+    final assignment = widget.item.assignment;
+    if (assignment != null) {
+      _historyCubit.loadHistory(
+        moduleId: widget.module.moduleId,
+        controlId: widget.item.control.id,
+        championEmail: assignment.controlChampionEmail,
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _historyCubit.close();
+    super.dispose();
+  }
 
   bool get _isRejected => widget.item.tab == AssignmentControlTab.rejected;
 
@@ -352,47 +377,104 @@ class _AssignmentControlDetailsPageState
                               ),
                               SizedBox(height: 20.h),
                             ] else ...[
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  GrcSubmitterRow(email: assignment.lastModifier),
-                                  Text(
-                                    '${'Submission Date'.tr}: '
-                                    '${_cardDateFormat.format(assignment.lastModificationDate)} '
-                                    '${'At'.tr} '
-                                    '${_cardTimeFormat.format(assignment.lastModificationDate)}',
-                                    style: CardStyles.label(12),
-                                  ),
-                                ],
+                              BlocBuilder<SubmissionHistoryCubit,
+                                  SubmissionHistoryState>(
+                                bloc: _historyCubit,
+                                builder: (context, historyState) {
+                                  if (historyState
+                                      is SubmissionHistoryFailure) {
+                                    return Text(
+                                      historyState.message,
+                                      style: CardStyles.value(12)
+                                          .copyWith(color: Colors.red),
+                                    );
+                                  }
+                                  if (historyState
+                                      is! SubmissionHistoryLoaded) {
+                                    return Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 24.h),
+                                      child: Center(
+                                        child: CircularProgressIndicator(
+                                            color: AppColors.primary),
+                                      ),
+                                    );
+                                  }
+                                  final entries = historyState.entries;
+                                  return Column(
+                                    children: [
+                                      for (final entry in entries) ...[
+                                        GrcSectionCard(children: [
+                                          Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              GrcSubmitterRow(
+                                                  email: assignment
+                                                      .controlChampionEmail),
+                                              Text(
+                                                '${'Submission Date'.tr}: '
+                                                '${_cardDateFormat.format(entry.submittedDate)} '
+                                                '${'At'.tr} '
+                                                '${_cardTimeFormat.format(entry.submittedDate)}',
+                                                style: CardStyles.label(12),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 12.h),
+                                          if (entry.document.isNotEmpty)
+                                            ProductWarrantyCard(
+                                              fileName: entry.document
+                                                  .split('/')
+                                                  .last
+                                                  .split('?')
+                                                  .first,
+                                              onTapFile: () =>
+                                                  openGrcDocument(entry.document),
+                                            ),
+                                          SizedBox(height: 12.h),
+                                          if (entry.note.isNotEmpty) ...[
+                                            GrcLabelValueRow(
+                                                'Submission Notes'.tr,
+                                                entry.note),
+                                            SizedBox(height: 12.h),
+                                          ],
+                                          if (entry.status ==
+                                                  AssignmentControlStatus
+                                                      .rejected &&
+                                              (entry.rejectionReason
+                                                      ?.isNotEmpty ??
+                                                  false)) ...[
+                                            GrcLabelValueRow(
+                                              'Reasons of Rejection'.tr,
+                                              entry.rejectionReason!,
+                                              color: Colors.red,
+                                            ),
+                                            SizedBox(height: 12.h),
+                                          ],
+                                          Align(
+                                            alignment: Alignment.centerRight,
+                                            child: GrcStatusPill(
+                                              label: entry.status.label.tr,
+                                              color:
+                                                  AssignmentControlStatusStyle
+                                                          .of(entry.status)
+                                                      .color,
+                                              icon: AssignmentControlStatusStyle
+                                                      .of(entry.status)
+                                                  .icon,
+                                            ),
+                                          ),
+                                        ]),
+                                        SizedBox(height: 12.h),
+                                      ],
+                                    ],
+                                  );
+                                },
                               ),
-                              SizedBox(height: 12.h),
-                              if (assignment.submissionDocument.isNotEmpty)
-                                ProductWarrantyCard(
-                                  fileName: assignment.submissionDocument
-                                      .split('/')
-                                      .last
-                                      .split('?')
-                                      .first,
-                                  onTapFile: () =>
-                                      openGrcDocument(assignment.submissionDocument),
-                                ),
-                              SizedBox(height: 12.h),
-                              if (assignment.submissionNote.isNotEmpty) ...[
-                                GrcLabelValueRow('Submission Notes'.tr,
-                                    assignment.submissionNote),
-                                SizedBox(height: 12.h),
-                              ],
-                              if (rejectionReason != null &&
-                                  rejectionReason.isNotEmpty) ...[
-                                GrcLabelValueRow(
-                                  'Reasons of Rejection'.tr,
-                                  rejectionReason,
-                                  color: Colors.red,
-                                ),
-                                SizedBox(height: 12.h),
-                              ],
+                              SizedBox(height: 8.h),
                               if (_isRejected)
                                 Row(
                                   mainAxisAlignment:
