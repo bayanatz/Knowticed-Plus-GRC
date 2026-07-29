@@ -1,5 +1,10 @@
 # Control Final Score — Design
 
+> **Superseded** by [2026-07-29-score-rollup-design.md](2026-07-29-score-rollup-design.md) —
+> the user decided not to defer the Policy/Module rollup after all. The Control-level
+> write described below is still accurate but is now one step inside that larger design's
+> `RecalculateScoreRollupUseCase`, not a standalone Cubit-level call. Kept for history.
+
 ## Context
 
 `ControlEntity.score` (an `int`, Firestore key `Score`) has existed since the Control
