@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:demo_app/core/custom/2-custom_textfield.dart';
 import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart';
@@ -11,6 +12,8 @@ import 'package:demo_app/core/custom/22-custom_uploaded_document_card.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
+import 'package:demo_app/features/grc/assignment_control/domain/entities/assignment_control_status.dart';
+import 'package:demo_app/features/grc/assignment_control/presentation/controller/submission_history_cubit.dart';
 import 'package:demo_app/features/grc/my_audit/domain/entities/my_audit_item.dart';
 import 'package:demo_app/features/grc/my_audit/domain/entities/my_audit_tab.dart';
 import 'package:demo_app/features/grc/my_audit/presentation/controller/my_audit_cubit.dart';
@@ -44,6 +47,27 @@ class MyAuditDetailsPage extends StatefulWidget {
 
 class _MyAuditDetailsPageState extends State<MyAuditDetailsPage> {
   int _submissionTab = 0; // 0 = Submission, 1 = Inquires
+  late final SubmissionHistoryCubit _historyCubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _historyCubit = GetIt.instance<SubmissionHistoryCubit>();
+    final assignmentControl = widget.item.assignmentControl;
+    if (assignmentControl != null) {
+      _historyCubit.loadHistory(
+        moduleId: widget.module.moduleId,
+        controlId: widget.item.control.id,
+        championEmail: assignmentControl.controlChampionEmail,
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _historyCubit.close();
+    super.dispose();
+  }
 
   void _onApprovePressed(BuildContext context) {
     final cubit = context.read<MyAuditCubit>();
@@ -411,107 +435,164 @@ class _MyAuditDetailsPageState extends State<MyAuditDetailsPage> {
                                       style: CardStyles.value(12)),
                                 ])
                               else
-                                GrcSectionCard(children: [
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      GrcSubmitterRow(
-                                          email: assignmentControl
-                                              .controlChampionEmail),
-                                      Text(
-                                        '${'Submission Date'.tr}: '
-                                        '${_cardDateFormat.format(assignmentControl.lastModificationDate)} '
-                                        '${'At'.tr} '
-                                        '${_cardTimeFormat.format(assignmentControl.lastModificationDate)}',
-                                        style: CardStyles.label(12),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 12.h),
-                                  if (assignmentControl
-                                      .submissionDocument.isNotEmpty)
-                                    ProductWarrantyCard(
-                                      fileName: assignmentControl
-                                          .submissionDocument
-                                          .split('/')
-                                          .last
-                                          .split('?')
-                                          .first,
-                                      onTapFile: () => openGrcDocument(
-                                          assignmentControl.submissionDocument),
-                                    ),
-                                  SizedBox(height: 12.h),
-                                  if (assignmentControl
-                                      .submissionNote.isNotEmpty) ...[
-                                    GrcLabelValueRow('Submission Notes'.tr,
-                                        assignmentControl.submissionNote),
-                                    SizedBox(height: 12.h),
-                                  ],
-                                  if (audit?.controlOwnerReasonOfRejection !=
-                                          null &&
-                                      audit!.controlOwnerReasonOfRejection!
-                                          .isNotEmpty) ...[
-                                    GrcLabelValueRow(
-                                      'Reasons of Rejection'.tr,
-                                      audit.controlOwnerReasonOfRejection!,
-                                      color: Colors.red,
-                                    ),
-                                    SizedBox(height: 12.h),
-                                  ],
-                                  SizedBox(height: 8.h),
-                                  if (widget.item.tab == MyAuditTab.pending)
-                                    isSaving
-                                        ? Align(
-                                            alignment: Alignment.centerRight,
-                                            child: GrcButtonLoadingPlaceholder(
-                                              width: 120.w,
-                                              height: 44.h,
+                                Column(
+                                  children: [
+                                    BlocBuilder<SubmissionHistoryCubit,
+                                        SubmissionHistoryState>(
+                                      bloc: _historyCubit,
+                                      builder: (context, historyState) {
+                                        if (historyState
+                                            is SubmissionHistoryFailure) {
+                                          return GrcSectionCard(children: [
+                                            Text(
+                                              historyState.message,
+                                              style: CardStyles.value(12)
+                                                  .copyWith(color: Colors.red),
                                             ),
-                                          )
-                                        : Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              customButton(
-                                                title: 'Reject'.tr,
-                                                function: () =>
-                                                    _onRejectPressed(context),
-                                                width: 120.w,
-                                                color: AppColors.red,
-                                                textStyle: StyleText
-                                                    .fontSize16Weight500
-                                                    .copyWith(
-                                                        color: AppColors
-                                                            .textButton),
-                                              ),
-                                              SizedBox(width: 12.w),
-                                              customButton(
-                                                title: 'Approve'.tr,
-                                                function: () =>
-                                                    _onApprovePressed(context),
-                                                width: 120.w,
-                                                color: AppColors.primary,
-                                                textStyle: StyleText
-                                                    .fontSize16Weight500
-                                                    .copyWith(
-                                                        color: AppColors
-                                                            .textButton),
-                                              ),
+                                          ]);
+                                        }
+                                        if (historyState
+                                            is! SubmissionHistoryLoaded) {
+                                          return Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 24.h),
+                                            child: Center(
+                                              child: CircularProgressIndicator(
+                                                  color: AppColors.primary),
+                                            ),
+                                          );
+                                        }
+                                        final entries = historyState.entries;
+                                        return Column(
+                                          children: [
+                                            for (final entry in entries) ...[
+                                              GrcSectionCard(children: [
+                                                Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    GrcSubmitterRow(
+                                                        email: assignmentControl
+                                                            .controlChampionEmail),
+                                                    Text(
+                                                      '${'Submission Date'.tr}: '
+                                                      '${_cardDateFormat.format(entry.submittedDate)} '
+                                                      '${'At'.tr} '
+                                                      '${_cardTimeFormat.format(entry.submittedDate)}',
+                                                      style:
+                                                          CardStyles.label(12),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(height: 12.h),
+                                                if (entry.document.isNotEmpty)
+                                                  ProductWarrantyCard(
+                                                    fileName: entry.document
+                                                        .split('/')
+                                                        .last
+                                                        .split('?')
+                                                        .first,
+                                                    onTapFile: () =>
+                                                        openGrcDocument(
+                                                            entry.document),
+                                                  ),
+                                                SizedBox(height: 12.h),
+                                                if (entry.note.isNotEmpty) ...[
+                                                  GrcLabelValueRow(
+                                                      'Submission Notes'.tr,
+                                                      entry.note),
+                                                  SizedBox(height: 12.h),
+                                                ],
+                                                if (entry.status ==
+                                                        AssignmentControlStatus
+                                                            .rejected &&
+                                                    (entry.rejectionReason
+                                                            ?.isNotEmpty ??
+                                                        false)) ...[
+                                                  GrcLabelValueRow(
+                                                    'Reasons of Rejection'.tr,
+                                                    entry.rejectionReason!,
+                                                    color: Colors.red,
+                                                  ),
+                                                  SizedBox(height: 12.h),
+                                                ],
+                                                Align(
+                                                  alignment:
+                                                      Alignment.centerRight,
+                                                  child: GrcStatusPill(
+                                                    label:
+                                                        entry.status.label.tr,
+                                                    color: AssignmentControlStatusStyle
+                                                            .of(entry.status)
+                                                        .color,
+                                                    icon: AssignmentControlStatusStyle
+                                                            .of(entry.status)
+                                                        .icon,
+                                                  ),
+                                                ),
+                                              ]),
+                                              SizedBox(height: 12.h),
                                             ],
-                                          )
-                                  else
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: GrcStatusPill(
-                                        label: widget.item.tab.label.tr,
-                                        color: style.color,
-                                        icon: style.icon,
-                                      ),
+                                          ],
+                                        );
+                                      },
                                     ),
-                                ]),
+                                    SizedBox(height: 8.h),
+                                    if (widget.item.tab == MyAuditTab.pending)
+                                      isSaving
+                                          ? Align(
+                                              alignment: Alignment.centerRight,
+                                              child: GrcButtonLoadingPlaceholder(
+                                                width: 120.w,
+                                                height: 44.h,
+                                              ),
+                                            )
+                                          : Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                customButton(
+                                                  title: 'Reject'.tr,
+                                                  function: () =>
+                                                      _onRejectPressed(context),
+                                                  width: 120.w,
+                                                  color: AppColors.red,
+                                                  textStyle: StyleText
+                                                      .fontSize16Weight500
+                                                      .copyWith(
+                                                          color: AppColors
+                                                              .textButton),
+                                                ),
+                                                SizedBox(width: 12.w),
+                                                customButton(
+                                                  title: 'Approve'.tr,
+                                                  function: () =>
+                                                      _onApprovePressed(
+                                                          context),
+                                                  width: 120.w,
+                                                  color: AppColors.primary,
+                                                  textStyle: StyleText
+                                                      .fontSize16Weight500
+                                                      .copyWith(
+                                                          color: AppColors
+                                                              .textButton),
+                                                ),
+                                              ],
+                                            )
+                                    else
+                                      Align(
+                                        alignment: Alignment.centerRight,
+                                        child: GrcStatusPill(
+                                          label: widget.item.tab.label.tr,
+                                          color: style.color,
+                                          icon: style.icon,
+                                        ),
+                                      ),
+                                  ],
+                                ),
                               SizedBox(height: 15.h),
                             ],
                           ),
