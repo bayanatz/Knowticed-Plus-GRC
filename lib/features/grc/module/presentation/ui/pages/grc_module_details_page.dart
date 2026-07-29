@@ -209,16 +209,25 @@ class _GrcModuleDetailsBodyState extends State<_GrcModuleDetailsBody> {
                     Spacer(),
                     customButton(
                       title: "My Audits".tr,
-                      function: () => Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                          pageBuilder: (_, __, ___) =>
-                              MyAuditsListPage(module: widget.module),
-                          transitionsBuilder: (_, animation, __, child) =>
-                              FadeTransition(opacity: animation, child: child),
-                          transitionDuration: const Duration(milliseconds: 300),
-                        ),
-                      ),
+                      function: () async {
+                        await Navigator.push<bool>(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder: (_, __, ___) =>
+                                MyAuditsListPage(module: widget.module),
+                            transitionsBuilder: (_, animation, __, child) =>
+                                FadeTransition(
+                                    opacity: animation, child: child),
+                            transitionDuration:
+                                const Duration(milliseconds: 300),
+                          ),
+                        );
+                        if (context.mounted) {
+                          context
+                              .read<PolicyCubit>()
+                              .getAllPolicies(moduleId: widget.module.moduleId);
+                        }
+                      },
                       width: 135.w,
                       color: AppColors.primary,
                       textStyle: StyleText.fontSize16Weight500

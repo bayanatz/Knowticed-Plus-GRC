@@ -175,6 +175,8 @@ class ControlWeightIssueCubit extends Cubit<ControlWeightIssueState> {
   Future<void> applyChanges(String moduleId, String policyId) async {
     if (!rowsData.totalWeightValid) return;
 
+    emit(ControlWeightIssueApplying());
+
     final changed = rowsData.changedRows;
     final editorId = currentGrcUserEmail();
 

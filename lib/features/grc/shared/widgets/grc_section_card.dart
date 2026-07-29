@@ -9,8 +9,9 @@ import 'package:demo_app/core/theme/app_colors.dart';
 /// built the exact same container markup independently.
 class GrcSectionCard extends StatelessWidget {
   final List<Widget> children;
+  final Color? color;
 
-  const GrcSectionCard({super.key, required this.children});
+  const GrcSectionCard({super.key, required this.children, this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -18,11 +19,11 @@ class GrcSectionCard extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.all(12.r),
       decoration: BoxDecoration(
-        color: AppColors.card,
+        color: color,
         borderRadius: CardStyles.radius(),
-        boxShadow: CardStyles.shadow,
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: children),
+      child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start, children: children),
     );
   }
 }

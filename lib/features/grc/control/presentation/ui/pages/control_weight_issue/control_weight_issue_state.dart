@@ -23,6 +23,12 @@ final class ControlWeightIssueLoaded extends ControlWeightIssueState {
   ControlWeightIssueLoaded({required this.isEditing});
 }
 
+/// State emitted the moment Apply Changes is confirmed, before any of its
+/// backend calls start. The page listens for this to show the blocking
+/// loading indicator, which stays up until [ControlWeightIssueApplySuccess]
+/// or [ControlWeightIssueFailure] is emitted.
+final class ControlWeightIssueApplying extends ControlWeightIssueState {}
+
 /// State emitted once after Apply Changes completes successfully, before
 /// the cubit reloads and emits a fresh [ControlWeightIssueLoaded]. The page
 /// listens for this to show a one-time success snackbar.

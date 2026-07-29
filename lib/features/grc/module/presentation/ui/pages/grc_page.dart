@@ -486,11 +486,21 @@ class _GovernanceRiskAndCompliancePageState
                 if (entity.isRemoved) {
                   _openDetails(context, GrcPageMode.restore, entity: entity);
                 } else {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => GrcModuleDetailsPage(module: entity),
-                    ),
-                  );
+                  // Capture the cubit (not context.read after the await) —
+                  // same reasoning as _openDetails above: dialogs shown deep
+                  // inside the details page (weight-issue Apply Changes, My
+                  // Audits score/approve/reject) use the root Navigator, and
+                  // on tablet this list page lives in a nested Navigator, so
+                  // this context can spuriously report unmounted right when
+                  // the push future resolves.
+                  final cubit = context.read<GRCModuleCubit>();
+                  Navigator.of(context)
+                      .push(
+                        MaterialPageRoute(
+                          builder: (_) => GrcModuleDetailsPage(module: entity),
+                        ),
+                      )
+                      .then((_) => cubit.getAllModules(includeDeleted: true));
                 }
               },
               onMenuTap: () => _showModuleMenu(context, moduleAt(index)),

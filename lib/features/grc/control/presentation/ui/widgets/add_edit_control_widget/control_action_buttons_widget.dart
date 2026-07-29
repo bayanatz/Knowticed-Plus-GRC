@@ -53,39 +53,38 @@ class ControlActionButtonsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        customButton(
-          title: 'Discard'.tr,
-          function: onDiscard,
-          height: 38.h,
-          width: 150.w,
-          color: AppColors.grey,
-          textColor: AppColors.text,
-          borderColor: AppColors.border,
-        ),
-        Row(
+        Column(
           children: [
+            customButton(
+              title: 'Discard'.tr,
+              function: onDiscard,
+              width: 120.w,
+              color: AppColors.grey,
+              textColor: AppColors.text,
+              borderColor: AppColors.border,
+            ),
+            SizedBox(height: 10.h),
             if (onSaveDraft != null) ...[
               customButton(
                 title: 'Save For Later'.tr,
                 function: onSaveDraft!,
-                height: 38.h,
-                width: 150.w,
+                width: 120.w,
                 color: AppColors.grey,
                 textColor: AppColors.text,
                 borderColor: AppColors.border,
               ),
               SizedBox(width: 10.w),
             ],
-            customButton(
-              title: isEdit ? 'Save'.tr : 'Add'.tr,
-              function: onSave,
-              height: 38.h,
-              width: 150.w,
-              color: AppColors.primary,
-              textColor: AppColors.textButton,
-            ),
           ],
+        ),
+        customButton(
+          title: isEdit ? 'Save'.tr : 'Add'.tr,
+          function: onSave,
+          width: 120.w,
+          color: AppColors.primary,
+          textColor: AppColors.textButton,
         ),
       ],
     );

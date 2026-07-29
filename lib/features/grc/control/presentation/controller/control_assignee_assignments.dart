@@ -135,16 +135,22 @@ class ControlAssigneeAssignments {
   /// function name: [applyAssigneeChanges]
   ///
   /// purpose: called once the Control itself has already saved
-  ///          successfully. Reads each Cubit's already-loaded state
-  ///          directly (no re-fetch — the page loaded it once on open and
-  ///          never refreshes it), recomputes "already assigned" the same
-  ///          way ControlAssigneesSectionWidget did, and diffs it against
-  ///          whatever the user last toggled. If a Cubit never finished
-  ///          loading, that side is skipped entirely rather than guessed
-  ///          at. The per-cubit "already assigned" resolution and the
-  ///          actual create/update diffing live in ChampionCubit/OwnerCubit
-  ///          (`alreadyAssignedEmails`/`applyAssignmentDiff`); this method
-  ///          is the remaining orchestration that wires them together.
+  ///          successfully. Reads each Cubit's already-loaded state as it
+  ///          stood when the page opened, recomputes "already assigned" the
+  ///          same way ControlAssigneesSectionWidget did, and diffs it
+  ///          against whatever the user last toggled. If a Cubit never
+  ///          finished loading, that side is skipped entirely rather than
+  ///          guessed at. The per-cubit "already assigned" resolution and
+  ///          the actual create/update diffing live in ChampionCubit/
+  ///          OwnerCubit (`alreadyAssignedEmails`/`applyAssignmentDiff`);
+  ///          this method is the remaining orchestration that wires them
+  ///          together. Each side that was diffed is re-fetched afterward so
+  ///          the Cubit lands back on ChampionListLoaded/OwnerListLoaded
+  ///          instead of staying on ChampionActionSuccess/OwnerActionSuccess
+  ///          — both Cubits are shared with ControlDetailsPage via
+  ///          BlocProvider.value, so leaving them there would make
+  ///          ControlAssigneesSectionWidget's pickers spin forever on every
+  ///          subsequent visit.
   ///
   /// return type: [Future<bool>] - true if at least one side failed to save
   Future<bool> applyAssigneeChanges({
@@ -174,6 +180,12 @@ class ControlAssigneeAssignments {
         controlId: controlId,
       );
       if (!ok) hadFailure = true;
+      // applyAssignmentDiff leaves the Cubit on ChampionActionSuccess/
+      // ChampionFailure, not ChampionListLoaded — refetch so it's back in the
+      // list state ControlAssigneesSectionWidget's BlocBuilder expects,
+      // otherwise that picker spins forever for the rest of this Cubit's
+      // lifetime (it's shared with ControlDetailsPage via BlocProvider.value).
+      await championCubit.getAllChampions(moduleId: moduleId);
     }
 
     final ownerState = ownerCubit.state;
@@ -193,6 +205,9 @@ class ControlAssigneeAssignments {
         controlId: controlId,
       );
       if (!ok) hadFailure = true;
+      // Same reasoning as the Champion side above: restore OwnerListLoaded
+      // so the Owner picker doesn't spin forever after this save.
+      await ownerCubit.getAllOwners(moduleId: moduleId);
     }
 
     return hadFailure;

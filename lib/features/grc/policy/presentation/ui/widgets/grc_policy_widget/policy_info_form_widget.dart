@@ -313,7 +313,7 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
                 arabicOnlyError: 'يجب كتابة اسم الوثيقة باللغة العربية',
               )
             : _textField(
-                label: 'GRC Policy Number',
+                label: 'Policy Number',
                 hint: 'Text here',
                 controller: widget.numberController,
                 isMandatory: true,

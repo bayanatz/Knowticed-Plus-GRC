@@ -1,4 +1,5 @@
 // lib/features/grc/approval/presentation/ui/pages/approval_details_page.dart
+import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,7 +13,6 @@ import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
 import 'package:demo_app/features/grc/approval/domain/entities/approval_item.dart';
-import 'package:demo_app/features/grc/approval/domain/entities/approval_resolver.dart';
 import 'package:demo_app/features/grc/approval/domain/entities/approval_status.dart';
 import 'package:demo_app/features/grc/approval/presentation/controller/approval_cubit.dart';
 import 'package:demo_app/features/grc/assignment_control/domain/entities/assignment_control_status.dart';
@@ -143,7 +143,6 @@ class _ApprovalDetailsPageState extends State<ApprovalDetailsPage> {
       },
       builder: (context, state) {
         final isSaving = state is ApprovalLoading;
-        final style = ApprovalStatusStyle.of(widget.item.approval.status);
         return Scaffold(
           body: SafeArea(
             child: Padding(
@@ -167,7 +166,7 @@ class _ApprovalDetailsPageState extends State<ApprovalDetailsPage> {
                         Text('Policy Details'.tr,
                             style: StyleText.fontSize16Weight600),
                         SizedBox(height: 8.h),
-                        GrcSectionCard(children: [
+                        GrcSectionCard(color: AppColors.card, children: [
                           Text(
                             isArabic
                                 ? policy.policyNameAr
@@ -243,7 +242,7 @@ class _ApprovalDetailsPageState extends State<ApprovalDetailsPage> {
                         Text('Control Details'.tr,
                             style: StyleText.fontSize16Weight600),
                         SizedBox(height: 8.h),
-                        GrcSectionCard(children: [
+                        GrcSectionCard(color: AppColors.card, children: [
                           Text(
                             isArabic
                                 ? control.controlsNameAr
@@ -327,117 +326,168 @@ class _ApprovalDetailsPageState extends State<ApprovalDetailsPage> {
                                   final entries = historyState.entries;
                                   return Column(
                                     children: [
-                                      for (final entry in entries) ...[
-                                        GrcSectionCard(children: [
-                                          GrcSubmitterRow(email: championEmail),
-                                          SizedBox(height: 8.h),
-                                          Text(
-                                            '${'Submission Date'.tr}: '
-                                            '${_cardDateFormat.format(entry.submittedDate)} '
-                                            '${'At'.tr} '
-                                            '${_cardTimeFormat.format(entry.submittedDate)}',
-                                            style: CardStyles.label(12),
-                                          ),
-                                          SizedBox(height: 12.h),
-                                          if (entry.document.isNotEmpty)
-                                            ProductWarrantyCard(
-                                              fileName: entry.document
-                                                  .split('/')
-                                                  .last
-                                                  .split('?')
-                                                  .first,
-                                              onTapFile: () =>
-                                                  openGrcDocument(entry.document),
-                                            ),
-                                          SizedBox(height: 12.h),
-                                          if (entry.note.isNotEmpty) ...[
-                                            GrcLabelValueRow(
-                                                'Submission Notes'.tr,
-                                                entry.note),
-                                            SizedBox(height: 12.h),
-                                          ],
-                                          if (entry.status ==
-                                                  AssignmentControlStatus
-                                                      .rejected &&
-                                              (entry.rejectionReason
-                                                      ?.isNotEmpty ??
-                                                  false)) ...[
-                                            GrcLabelValueRow(
-                                              'Reasons of Rejection'.tr,
-                                              entry.rejectionReason!,
-                                              color: Colors.red,
-                                            ),
-                                            SizedBox(height: 12.h),
-                                          ],
-                                          Align(
-                                            alignment: Alignment.centerRight,
-                                            child: GrcStatusPill(
-                                              label: entry.status.label.tr,
-                                              color:
-                                                  AssignmentControlStatusStyle
-                                                          .of(entry.status)
-                                                      .color,
-                                              icon: AssignmentControlStatusStyle
-                                                      .of(entry.status)
-                                                  .icon,
-                                            ),
-                                          ),
-                                        ]),
+                                      for (final e
+                                          in entries.asMap().entries) ...[
+                                        GrcSectionCard(
+                                            color: AppColors.card,
+                                            children: [
+                                              Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  GrcSubmitterRow(
+                                                      email: championEmail),
+                                                  Text.rich(
+                                                    TextSpan(
+                                                      children: [
+                                                        TextSpan(
+                                                          text:
+                                                              '${'Submission Date'.tr}: ',
+                                                          style: CardStyles
+                                                                  .label(12)
+                                                              .copyWith(
+                                                                  color:
+                                                                      AppColors
+                                                                          .text),
+                                                        ),
+                                                        TextSpan(
+                                                          text:
+                                                              '${_cardDateFormat.format(e.value.submittedDate)} '
+                                                              '${'At'.tr} '
+                                                              '${_cardTimeFormat.format(e.value.submittedDate)}',
+                                                          style:
+                                                              CardStyles.label(
+                                                                  12),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(height: 12.h),
+                                              if (e.value.document.isNotEmpty)
+                                                ProductWarrantyCard(
+                                                  fileName: e.value.document
+                                                      .split('/')
+                                                      .last
+                                                      .split('?')
+                                                      .first,
+                                                  onTapFile: () =>
+                                                      openGrcDocument(
+                                                          e.value.document),
+                                                ),
+                                              SizedBox(height: 12.h),
+                                              if (e.value.note.isNotEmpty) ...[
+                                                GrcLabelValueRow(
+                                                    'Submission Notes'.tr,
+                                                    e.value.note),
+                                                SizedBox(height: 12.h),
+                                              ],
+                                              if (e.value.status ==
+                                                      AssignmentControlStatus
+                                                          .rejected &&
+                                                  (e.value.rejectionReason
+                                                          ?.isNotEmpty ??
+                                                      false)) ...[
+                                                GrcLabelValueRow(
+                                                  'Reasons of Rejection'.tr,
+                                                  e.value.rejectionReason!,
+                                                  color: Colors.red,
+                                                ),
+                                                SizedBox(height: 12.h),
+                                              ],
+                                              if (e.key == 0 && isPending)
+                                                isSaving
+                                                    ? Align(
+                                                        alignment: Alignment
+                                                            .centerRight,
+                                                        child:
+                                                            GrcButtonLoadingPlaceholder(
+                                                          width: 120.w,
+                                                          height: 44.h,
+                                                        ),
+                                                      )
+                                                    : Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .end,
+                                                        children: [
+                                                          customButtonWithSvg(
+                                                            colorBorder:
+                                                                AppColors.red,
+                                                            space: 8.w,
+                                                            widthImage: 18.w,
+                                                            heightImage: 18.h,
+                                                            image:
+                                                                "assets/icons_assets/data_grc_assets/icons_icon _trash.svg",
+                                                            title: 'Reject'.tr,
+                                                            function: () =>
+                                                                _onRejectPressed(
+                                                                    context),
+                                                            color:
+                                                                AppColors.red,
+                                                            textStyle: StyleText
+                                                                .fontSize16Weight500
+                                                                .copyWith(
+                                                                    color: Colors
+                                                                        .white),
+                                                            svgColor:
+                                                                Colors.white,
+                                                          ),
+                                                          SizedBox(width: 16.w),
+                                                          customButtonWithSvg(
+                                                            colorBorder:
+                                                                AppColors.green,
+                                                            space: 8.w,
+                                                            widthImage: 18.w,
+                                                            heightImage: 18.h,
+                                                            image:
+                                                                'assets/icons_assets/data_grc_assets/images_success.svg',
+                                                            title: 'Approve'.tr,
+                                                            function: () =>
+                                                                _onApprovePressed(
+                                                                    context),
+                                                            color:
+                                                                AppColors.green,
+                                                            textStyle: StyleText
+                                                                .fontSize16Weight500
+                                                                .copyWith(
+                                                                    color: Colors
+                                                                        .white),
+                                                            svgColor:
+                                                                Colors.white,
+                                                          ),
+                                                        ],
+                                                      )
+                                              else
+                                                Align(
+                                                  alignment:
+                                                      Alignment.centerRight,
+                                                  child: GrcStatusPill(
+                                                    label:
+                                                        e.value.status.label.tr,
+                                                    color:
+                                                        AssignmentControlStatusStyle
+                                                                .of(e.value
+                                                                    .status)
+                                                            .color,
+                                                    icon:
+                                                        AssignmentControlStatusStyle
+                                                                .of(e.value
+                                                                    .status)
+                                                            .icon,
+                                                  ),
+                                                ),
+                                            ]),
                                         SizedBox(height: 12.h),
                                       ],
                                     ],
                                   );
                                 },
                               ),
-                              SizedBox(height: 8.h),
-                              if (isPending)
-                                isSaving
-                                    ? Align(
-                                        alignment: Alignment.centerRight,
-                                        child: GrcButtonLoadingPlaceholder(
-                                          width: 120.w,
-                                          height: 44.h,
-                                        ),
-                                      )
-                                    : Row(
-                                        mainAxisAlignment: MainAxisAlignment.end,
-                                        children: [
-                                          customButton(
-                                            width: 120.w,
-                                            title: 'Reject'.tr,
-                                            function: () =>
-                                                _onRejectPressed(context),
-                                            color: AppColors.red,
-                                            textStyle: StyleText
-                                                .fontSize16Weight500
-                                                .copyWith(
-                                                    color:
-                                                        AppColors.textButton),
-                                          ),
-                                          SizedBox(width: 12.w),
-                                          customButton(
-                                            width: 120.w,
-                                            title: 'Approve'.tr,
-                                            function: () =>
-                                                _onApprovePressed(context),
-                                            color: AppColors.primary,
-                                            textStyle: StyleText
-                                                .fontSize16Weight500
-                                                .copyWith(
-                                                    color:
-                                                        AppColors.textButton),
-                                          ),
-                                        ],
-                                      )
-                              else
-                                Align(
-                                  alignment: Alignment.centerRight,
-                                  child: GrcStatusPill(
-                                    label: widget.item.approval.status.value.tr,
-                                    color: style.color,
-                                    icon: style.icon,
-                                  ),
-                                ),
                             ],
                           ),
                         SizedBox(height: 15.h),

@@ -12,6 +12,7 @@
 library;
 
 import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart';
+import 'package:demo_app/core/custom/loading.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
@@ -82,6 +83,7 @@ class _ControlWeightIssueBody extends StatefulWidget {
 class _ControlWeightIssueBodyState extends State<_ControlWeightIssueBody> {
   int _selectedTab = 0;
   bool _historyLoaded = false;
+  bool _applyingDialogShown = false;
 
   @override
   Widget build(BuildContext context) {
@@ -164,6 +166,15 @@ class _ControlWeightIssueBodyState extends State<_ControlWeightIssueBody> {
   Widget _buildControlsWeightTab(BuildContext context) {
     return BlocConsumer<ControlWeightIssueCubit, ControlWeightIssueState>(
       listener: (context, state) {
+        if (state is ControlWeightIssueApplying) {
+          _applyingDialogShown = true;
+          showLoadingIndicator();
+          return;
+        }
+        if (_applyingDialogShown) {
+          _applyingDialogShown = false;
+          hideLoadingIndicator();
+        }
         if (state is ControlWeightIssueApplySuccess) {
           showSuccessDialog(
             context: context,
@@ -204,7 +215,9 @@ class _ControlWeightIssueBodyState extends State<_ControlWeightIssueBody> {
           );
         }
 
-        final isEditing = state is ControlWeightIssueLoaded && state.isEditing;
+        final isEditing =
+            (state is ControlWeightIssueLoaded && state.isEditing) ||
+                state is ControlWeightIssueApplying;
         final rowsData = cubit.rowsData;
 
         return Column(

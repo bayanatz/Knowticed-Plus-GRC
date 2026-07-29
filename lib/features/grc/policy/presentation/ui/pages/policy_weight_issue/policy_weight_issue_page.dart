@@ -12,6 +12,7 @@
 library;
 
 import 'package:demo_app/core/custom/11_custom_confirm_diaolog.dart';
+import 'package:demo_app/core/custom/loading.dart';
 import 'package:demo_app/core/extension/context_extensions.dart';
 import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:demo_app/core/theme/app_theme.dart';
@@ -74,6 +75,7 @@ class _PolicyWeightIssueBody extends StatefulWidget {
 class _PolicyWeightIssueBodyState extends State<_PolicyWeightIssueBody> {
   int _selectedTab = 0;
   bool _historyLoaded = false;
+  bool _applyingDialogShown = false;
 
   String _formatWeight(double value) {
     return value == value.roundToDouble()
@@ -159,6 +161,15 @@ class _PolicyWeightIssueBodyState extends State<_PolicyWeightIssueBody> {
   Widget _buildPoliciesWeightTab(BuildContext context) {
     return BlocConsumer<PolicyWeightIssueCubit, PolicyWeightIssueState>(
       listener: (context, state) {
+        if (state is PolicyWeightIssueApplying) {
+          _applyingDialogShown = true;
+          showLoadingIndicator();
+          return;
+        }
+        if (_applyingDialogShown) {
+          _applyingDialogShown = false;
+          hideLoadingIndicator();
+        }
         if (state is PolicyWeightIssueApplySuccess) {
           showSuccessDialog(
             context: context,
@@ -199,7 +210,9 @@ class _PolicyWeightIssueBodyState extends State<_PolicyWeightIssueBody> {
           );
         }
 
-        final isEditing = state is PolicyWeightIssueLoaded && state.isEditing;
+        final isEditing =
+            (state is PolicyWeightIssueLoaded && state.isEditing) ||
+                state is PolicyWeightIssueApplying;
         final rowsData = cubit.rowsData;
 
         return Column(

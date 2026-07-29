@@ -220,7 +220,7 @@ class _AssignmentControlDetailsPageState
                         Text('Policy Details'.tr,
                             style: StyleText.fontSize16Weight600),
                         SizedBox(height: 8.h),
-                        GrcSectionCard(children: [
+                        GrcSectionCard(color: AppColors.card, children: [
                           Text(
                             isArabic
                                 ? policy.policyNameAr
@@ -240,7 +240,8 @@ class _AssignmentControlDetailsPageState
                           SizedBox(height: 12.h),
                           if (moduleOwnerEmail != null) ...[
                             GrcContactInlineRow(
-                                label: 'Module Owner'.tr, email: moduleOwnerEmail),
+                                label: 'Module Owner'.tr,
+                                email: moduleOwnerEmail),
                             SizedBox(height: 12.h),
                           ],
                           Row(
@@ -285,7 +286,8 @@ class _AssignmentControlDetailsPageState
                                       .last
                                       .split('?')
                                       .first,
-                                  onTapFile: () => openGrcDocument(policyDocument),
+                                  onTapFile: () =>
+                                      openGrcDocument(policyDocument),
                                 ),
                             ],
                           ),
@@ -294,7 +296,7 @@ class _AssignmentControlDetailsPageState
                         Text('Control Details'.tr,
                             style: StyleText.fontSize16Weight600),
                         SizedBox(height: 8.h),
-                        GrcSectionCard(children: [
+                        GrcSectionCard(color: AppColors.card, children: [
                           Row(
                             children: [
                               Expanded(
@@ -402,100 +404,132 @@ class _AssignmentControlDetailsPageState
                                   final entries = historyState.entries;
                                   return Column(
                                     children: [
-                                      for (final entry in entries) ...[
-                                        GrcSectionCard(children: [
-                                          Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              GrcSubmitterRow(
-                                                  email: assignment
-                                                      .controlChampionEmail),
-                                              Text(
-                                                '${'Submission Date'.tr}: '
-                                                '${_cardDateFormat.format(entry.submittedDate)} '
-                                                '${'At'.tr} '
-                                                '${_cardTimeFormat.format(entry.submittedDate)}',
-                                                style: CardStyles.label(12),
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(height: 12.h),
-                                          if (entry.document.isNotEmpty)
-                                            ProductWarrantyCard(
-                                              fileName: entry.document
-                                                  .split('/')
-                                                  .last
-                                                  .split('?')
-                                                  .first,
-                                              onTapFile: () =>
-                                                  openGrcDocument(entry.document),
+                                      for (final e
+                                          in entries.asMap().entries) ...[
+                                        Container(
+                                            width: double.infinity,
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 10.h,
+                                                horizontal: 12.w),
+                                            decoration: BoxDecoration(
+                                              color: AppColors.card,
+                                              borderRadius: CardStyles.radius(),
                                             ),
-                                          SizedBox(height: 12.h),
-                                          if (entry.note.isNotEmpty) ...[
-                                            GrcLabelValueRow(
-                                                'Submission Notes'.tr,
-                                                entry.note),
-                                            SizedBox(height: 12.h),
-                                          ],
-                                          if (entry.status ==
-                                                  AssignmentControlStatus
-                                                      .rejected &&
-                                              (entry.rejectionReason
-                                                      ?.isNotEmpty ??
-                                                  false)) ...[
-                                            GrcLabelValueRow(
-                                              'Reasons of Rejection'.tr,
-                                              entry.rejectionReason!,
-                                              color: Colors.red,
-                                            ),
-                                            SizedBox(height: 12.h),
-                                          ],
-                                          Align(
-                                            alignment: Alignment.centerRight,
-                                            child: GrcStatusPill(
-                                              label: entry.status.label.tr,
-                                              color:
-                                                  AssignmentControlStatusStyle
-                                                          .of(entry.status)
-                                                      .color,
-                                              icon: AssignmentControlStatusStyle
-                                                      .of(entry.status)
-                                                  .icon,
-                                            ),
-                                          ),
-                                        ]),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    GrcSubmitterRow(
+                                                        email: assignment
+                                                            .controlChampionEmail),
+                                                    Text.rich(
+                                                      TextSpan(
+                                                        children: [
+                                                          TextSpan(
+                                                            text:
+                                                                '${'Submission Date'.tr}: ',
+                                                            style: CardStyles
+                                                                    .label(12)
+                                                                .copyWith(
+                                                                    color: AppColors
+                                                                        .text),
+                                                          ),
+                                                          TextSpan(
+                                                            text:
+                                                                '${_cardDateFormat.format(e.value.submittedDate)} '
+                                                                '${'At'.tr} '
+                                                                '${_cardTimeFormat.format(e.value.submittedDate)}',
+                                                            style: CardStyles
+                                                                .label(12),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(height: 12.h),
+                                                if (e.value.document.isNotEmpty)
+                                                  ProductWarrantyCard(
+                                                    fileName: e.value.document
+                                                        .split('/')
+                                                        .last
+                                                        .split('?')
+                                                        .first,
+                                                    onTapFile: () =>
+                                                        openGrcDocument(
+                                                            e.value.document),
+                                                  ),
+                                                SizedBox(height: 12.h),
+                                                if (e
+                                                    .value.note.isNotEmpty) ...[
+                                                  GrcLabelValueRow(
+                                                      'Submission Notes'.tr,
+                                                      e.value.note),
+                                                  SizedBox(height: 12.h),
+                                                ],
+                                                if (e.value.status ==
+                                                        AssignmentControlStatus
+                                                            .rejected &&
+                                                    (e.value.rejectionReason
+                                                            ?.isNotEmpty ??
+                                                        false)) ...[
+                                                  GrcLabelValueRow(
+                                                    'Reasons of Rejection'.tr,
+                                                    e.value.rejectionReason!,
+                                                    color: Colors.red,
+                                                  ),
+                                                  SizedBox(height: 12.h),
+                                                ],
+                                                if (e.key == 0 && _isRejected)
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      _submitButton(
+                                                          context, isSaving),
+                                                      GrcStatusPill(
+                                                        label: widget
+                                                            .item.tab.label.tr,
+                                                        color: style.color,
+                                                        icon: style.icon,
+                                                      ),
+                                                    ],
+                                                  )
+                                                else
+                                                  Align(
+                                                    alignment:
+                                                        Alignment.centerRight,
+                                                    child: GrcStatusPill(
+                                                      label: e.value.status
+                                                          .label.tr,
+                                                      color:
+                                                          AssignmentControlStatusStyle
+                                                                  .of(e.value
+                                                                      .status)
+                                                              .color,
+                                                      icon:
+                                                          AssignmentControlStatusStyle
+                                                                  .of(e.value
+                                                                      .status)
+                                                              .icon,
+                                                    ),
+                                                  ),
+                                              ],
+                                            )),
                                         SizedBox(height: 12.h),
                                       ],
                                     ],
                                   );
                                 },
                               ),
-                              SizedBox(height: 8.h),
-                              if (_isRejected)
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    _submitButton(context, isSaving),
-                                    GrcStatusPill(
-                                      label: widget.item.tab.label.tr,
-                                      color: style.color,
-                                      icon: style.icon,
-                                    ),
-                                  ],
-                                )
-                              else
-                                Align(
-                                  alignment: Alignment.centerRight,
-                                  child: GrcStatusPill(
-                                    label: widget.item.tab.label.tr,
-                                    color: style.color,
-                                    icon: style.icon,
-                                  ),
-                                ),
                             ],
                           ]),
                         SizedBox(height: 15.h),

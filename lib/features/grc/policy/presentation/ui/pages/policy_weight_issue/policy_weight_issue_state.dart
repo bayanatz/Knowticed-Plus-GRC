@@ -23,6 +23,12 @@ final class PolicyWeightIssueLoaded extends PolicyWeightIssueState {
   PolicyWeightIssueLoaded({required this.isEditing});
 }
 
+/// State emitted the moment Apply Changes is confirmed, before any of its
+/// backend calls start. The page listens for this to show the blocking
+/// loading indicator, which stays up until [PolicyWeightIssueApplySuccess]
+/// or [PolicyWeightIssueFailure] is emitted.
+final class PolicyWeightIssueApplying extends PolicyWeightIssueState {}
+
 /// State emitted once after Apply Changes completes successfully, before
 /// the cubit reloads and emits a fresh [PolicyWeightIssueLoaded]. The page
 /// listens for this to show a one-time success snackbar.
