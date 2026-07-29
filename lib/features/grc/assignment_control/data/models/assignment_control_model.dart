@@ -14,6 +14,7 @@ library;
 import 'package:intl/intl.dart';
 import 'package:demo_app/features/grc/assignment_control/domain/entities/assignment_control_entity.dart';
 import 'package:demo_app/features/grc/assignment_control/domain/entities/assignment_control_status.dart';
+import 'package:demo_app/features/grc/assignment_control/domain/entities/submission_history_entry.dart';
 import 'package:demo_app/features/grc/shared/constants/grc_firestore_keys.dart';
 
 final DateFormat _storageDateFormat = DateFormat('d MMM yyyy', 'en');
@@ -248,5 +249,37 @@ class AssignmentControlModel {
       lastModifier: modifier.last,
       lastModificationDate: modificationDate.last,
     );
+  }
+
+  /// Groups consecutive revisions that share the same [submissionDocument]
+  /// value into one [SubmissionHistoryEntry] per distinct file, newest file
+  /// first. A Reject (or Approve) never changes [submissionDocument] — it
+  /// appends a revision carrying the same document forward (see
+  /// [copyWithUpdate]) — so grouping by document value collapses those into
+  /// one card, using the *last* revision of each run for status/rejection
+  /// reason. [rejectionReason] is only ever non-null when that run's final
+  /// status is Rejected, even if a stale value is still sitting in
+  /// [departmentManagerRejectionReasons] from an earlier rejection.
+  List<SubmissionHistoryEntry> toSubmissionHistory() {
+    final entries = <SubmissionHistoryEntry>[];
+    var runStart = 0;
+    for (var i = 1; i <= submissionDocument.length; i++) {
+      final runEnds = i == submissionDocument.length ||
+          submissionDocument[i] != submissionDocument[runStart];
+      if (!runEnds) continue;
+      final end = i - 1;
+      final parsedStatus = AssignmentControlStatus.fromString(status[end]);
+      entries.add(SubmissionHistoryEntry(
+        document: submissionDocument[runStart],
+        note: submissionNote[runStart],
+        submittedDate: modificationDate[runStart],
+        status: parsedStatus,
+        rejectionReason: parsedStatus == AssignmentControlStatus.rejected
+            ? departmentManagerRejectionReasons[end]
+            : null,
+      ));
+      runStart = i;
+    }
+    return entries.reversed.toList();
   }
 }
