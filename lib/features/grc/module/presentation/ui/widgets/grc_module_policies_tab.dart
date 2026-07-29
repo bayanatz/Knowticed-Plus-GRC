@@ -480,11 +480,11 @@ class _PolicyCard extends StatelessWidget {
               context.isArabic ? policy.policyNumberAr : policy.policyNumberEn,
         ),
       ],
-      complianceLabel: '${'Status'.tr}:',
-      complianceScore: policy.status.value.tr,
-      footerLabel: '${'Last Update'.tr}:',
-      footerValue: DateFormat('d MMM yyyy', context.isArabic ? 'ar' : 'en')
-          .format(policy.lastModifiedDate),
+      complianceLabel: '${'Score'.tr}:',
+      complianceScore:
+          policy.score == 0 ? '-' : policy.score.toStringAsFixed(2),
+      footerLabel: '${'Status'.tr}:',
+      footerValue: policy.status.value.tr,
     );
   }
 }

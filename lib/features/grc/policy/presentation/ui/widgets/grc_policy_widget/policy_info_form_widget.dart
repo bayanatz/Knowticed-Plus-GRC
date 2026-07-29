@@ -178,6 +178,13 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
         ? (containsEnglishLetters(controller.text) ? arabicOnlyError : null)
         : (containsArabicLetters(controller.text) ? englishOnlyError : null);
 
+    final requiredError = (rtl &&
+            isMandatory &&
+            widget.submitted &&
+            controller.text.trim().isEmpty)
+        ? 'هذا الحقل مطلوب'
+        : null;
+
     final field = CustomTextField(
       label: label,
       hint: hint,
@@ -187,7 +194,7 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
       readOnly: widget.readOnly,
       submitted: isMandatory && widget.submitted,
       onlyDigits: onlyDigits,
-      errorText: customError ?? languageError,
+      errorText: customError ?? requiredError ?? languageError,
       maxLines: maxLines,
       minLines: minLines,
       maxLength: maxLength,
@@ -232,8 +239,8 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(title,
-              style:
-                  StyleText.fontSize16Weight500.copyWith(color: AppColors.text)),
+              style: StyleText.fontSize16Weight500
+                  .copyWith(color: AppColors.text)),
           document != null
               ? PolicyDocumentPreviewWidget(
                   document: document, onRemove: onRemove)
@@ -290,27 +297,27 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
       isTablet: isTablet,
       children: [
         _textField(
-          label: 'Policy Name'.tr,
-          hint: 'Text here'.tr,
+          label: 'Policy Name',
+          hint: 'Text here',
           controller: widget.nameController,
           isMandatory: true,
-          englishOnlyError: 'Policy Name must be written in English'.tr,
+          englishOnlyError: 'Policy Name must be written in English',
         ),
         widget.isArabicEnabled
             ? _textField(
-                label: 'Policy Name'.tr,
-                hint: 'Type here'.tr,
+                label: 'اسم السياسة',
+                hint: 'اكتب هنا',
                 controller: widget.nameArController,
                 rtl: true,
                 isMandatory: _arabicTouched,
-                arabicOnlyError: 'Policy Name must be written in Arabic'.tr,
+                arabicOnlyError: 'يجب كتابة اسم الوثيقة باللغة العربية',
               )
             : _textField(
-                label: 'GRC Policy Number'.tr,
-                hint: 'Text here'.tr,
+                label: 'GRC Policy Number',
+                hint: 'Text here',
                 controller: widget.numberController,
                 isMandatory: true,
-                englishOnlyError: 'Policy Number must be written in English'.tr,
+                englishOnlyError: 'Policy Number must be written in English',
               ),
       ],
     );
@@ -329,12 +336,12 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
           englishOnlyError: 'Policy Number must be written in English'.tr,
         ),
         _textField(
-          label: 'GRC Policy Number'.tr,
-          hint: 'Type here'.tr,
+          label: 'رقم السياسة',
+          hint: 'اكتب هنا',
           controller: widget.numberArController,
           rtl: true,
           isMandatory: _arabicTouched,
-          arabicOnlyError: 'Policy Number must be written in Arabic'.tr,
+          arabicOnlyError: 'يجب كتابة رقم الوثيقة باللغة العربية',
         ),
       ],
     );
@@ -354,14 +361,13 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
           maxLength: 500,
           showCharCount: true,
           isMandatory: true,
-          englishOnlyError:
-              'Policy Description must be written in English'.tr,
+          englishOnlyError: 'Policy Description must be written in English'.tr,
         ),
         if (widget.isArabicEnabled) ...[
           SizedBox(height: 15.h),
           _textField(
-            label: 'Policy Description'.tr,
-            hint: 'Write a Description'.tr,
+            label: 'وصف السياسة',
+            hint: 'اكتب وصفًا',
             controller: widget.descriptionArController,
             rtl: true,
             maxLines: 3,
@@ -369,7 +375,7 @@ class _PolicyInfoFormWidgetState extends State<PolicyInfoFormWidget> {
             maxLength: 500,
             showCharCount: true,
             isMandatory: _arabicTouched,
-            arabicOnlyError: 'Policy Description must be written in Arabic'.tr,
+            arabicOnlyError: 'يجب كتابة وصف السياسة باللغة العربية',
           ),
         ],
       ],

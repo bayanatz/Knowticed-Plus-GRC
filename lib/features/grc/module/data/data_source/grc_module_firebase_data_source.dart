@@ -7,6 +7,7 @@
 /// Revision History: 2026-06-30 - Initial creation
 ///                    2026-06-30 - Switched delete() to soft-delete, added restore(), and added
 ///                                 includeDeleted filtering to getAll() (Mohamed Magdy Abdelkhalek)
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:demo_app/core/network/get_base_url.dart';
@@ -38,7 +39,7 @@ class GRCModuleFirebaseDataSource implements GRCModuleDataSource {
   final FirebaseFirestore _firestore;
 
   CollectionReference<Map<String, dynamic>> get _collection =>
-      _firestore.collection('${getBaseUrl('Modules')}/grc/GRC Modules');
+      _firestore.collection(getBaseUrl('grc'));
 
   /// function name: [create]
   ///
@@ -182,12 +183,12 @@ class GRCModuleFirebaseDataSource implements GRCModuleDataSource {
     try {
       final current = await get(id);
       if (current == null) {
-        throw Exception('Cannot restore a Module that does not exist (id: $id)');
+        throw Exception(
+            'Cannot restore a Module that does not exist (id: $id)');
       }
       // status.last is 'Removed'; the entry right before it is what the
       // module's status was immediately prior to being removed.
-      final statusBeforeRemoval =
-          current.status[current.status.length - 2];
+      final statusBeforeRemoval = current.status[current.status.length - 2];
       final restoredModel = current.copyWithUpdate(
         status: statusBeforeRemoval,
         modifierEmail: editorId,

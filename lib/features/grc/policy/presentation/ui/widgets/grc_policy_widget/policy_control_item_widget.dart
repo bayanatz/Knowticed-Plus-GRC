@@ -234,19 +234,18 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
         ),
         widget.isArabicEnabled
             ? _textField(
-                label: 'Control Name'.tr,
-                hint: 'Type here'.tr,
+                label: "اسم ضابط",
+                hint: 'اكتب هنا',
                 controller: control.nameArController,
                 rtl: true,
                 isMandatory: controlArabicTouched(control),
-                arabicOnlyError: 'Control Name must be written in Arabic'.tr,
+                arabicOnlyError: 'يجب كتابة اسم التحكم باللغة العربية',
               )
             : _textField(
                 label: 'Control Number'.tr,
                 hint: 'Text here'.tr,
                 controller: control.numberController,
                 isMandatory: true,
-                onlyDigits: true,
                 englishOnlyError:
                     'Control Number must be written in English'.tr,
               ),
@@ -265,16 +264,15 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
           hint: 'Text here'.tr,
           controller: control.numberController,
           isMandatory: true,
-          onlyDigits: true,
           englishOnlyError: 'Control Number must be written in English'.tr,
         ),
         _textField(
-          label: 'Control Number'.tr,
-          hint: 'Type here'.tr,
+          label: "رقم الضابط",
+          hint: 'اكتب هنا',
           controller: control.numberArController,
           rtl: true,
           isMandatory: controlArabicTouched(control),
-          arabicOnlyError: 'Control Number must be written in Arabic'.tr,
+          arabicOnlyError: 'يجب كتابة رقم التحكم باللغة العربية',
         ),
       ],
     );
@@ -295,14 +293,13 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
           maxLength: 500,
           showCharCount: true,
           isMandatory: true,
-          englishOnlyError:
-              'Control Description must be written in English'.tr,
+          englishOnlyError: 'Control Description must be written in English'.tr,
         ),
         if (widget.isArabicEnabled) ...[
           SizedBox(height: 15.h),
           _textField(
-            label: 'Control Description'.tr,
-            hint: 'Write a Description'.tr,
+            label: "وصف التحكم",
+            hint: 'اكتب وصفاً',
             controller: control.descriptionArController,
             rtl: true,
             maxLines: 3,
@@ -310,7 +307,7 @@ class _PolicyControlItemWidgetState extends State<PolicyControlItemWidget> {
             maxLength: 500,
             showCharCount: true,
             isMandatory: controlArabicTouched(control),
-            arabicOnlyError: 'Control Description must be written in Arabic'.tr,
+            arabicOnlyError: 'يجب كتابة وصف التحكم باللغة العربية',
           ),
         ],
       ],

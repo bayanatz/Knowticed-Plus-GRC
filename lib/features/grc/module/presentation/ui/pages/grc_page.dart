@@ -578,7 +578,8 @@ class _GrcModuleCard extends StatelessWidget {
         ),
       ],
       complianceLabel: '${'Compliance Score'.tr}:',
-      complianceScore: '-',
+      complianceScore:
+          module.score == 0 ? '-' : module.score.toStringAsFixed(2),
       footerLabel: '${'Last Update'.tr}:',
       footerValue: DateFormat('d MMM yyyy', context.isArabic ? 'ar' : 'en')
           .format(module.modificationDate),

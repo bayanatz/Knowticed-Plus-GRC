@@ -17,8 +17,7 @@ class MyAuditFirebaseDataSource implements MyAuditDataSource {
 
   final FirebaseFirestore _firestore;
 
-  static String get _modulesCollectionPath =>
-      '${getBaseUrl('Modules')}/grc/GRC Modules';
+  static String get _modulesCollectionPath => getBaseUrl('grc');
   static const String _myAuditSubcollectionPath = 'My Audit';
 
   CollectionReference<Map<String, dynamic>> _collection(String moduleId) =>
@@ -42,14 +41,17 @@ class MyAuditFirebaseDataSource implements MyAuditDataSource {
   Future<List<MyAuditModel>> getAll({required String moduleId}) async {
     try {
       final snapshot = await _collection(moduleId).get();
-      return snapshot.docs.map((doc) => MyAuditModel.fromJson(doc.data())).toList();
+      return snapshot.docs
+          .map((doc) => MyAuditModel.fromJson(doc.data()))
+          .toList();
     } catch (e) {
       throw Exception('Failed to fetch the My Audits: $e');
     }
   }
 
   @override
-  Future<MyAuditModel> create(MyAuditModel model, {required String moduleId}) async {
+  Future<MyAuditModel> create(MyAuditModel model,
+      {required String moduleId}) async {
     try {
       await _collection(moduleId).doc(model.auditId).set(model.toJson());
       return model;
@@ -59,7 +61,8 @@ class MyAuditFirebaseDataSource implements MyAuditDataSource {
   }
 
   @override
-  Future<MyAuditModel> update(MyAuditModel model, {required String moduleId}) async {
+  Future<MyAuditModel> update(MyAuditModel model,
+      {required String moduleId}) async {
     try {
       await _collection(moduleId).doc(model.auditId).set(model.toJson());
       return model;

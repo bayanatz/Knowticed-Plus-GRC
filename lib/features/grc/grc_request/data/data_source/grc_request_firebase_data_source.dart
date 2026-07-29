@@ -4,6 +4,7 @@
 /// Author: Mohamed Magdy Abdelkhalek
 /// Date: 2026-07-25
 /// Dependencies: cloud_firestore, GrcRequestDataSource, GrcRequestModel
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:demo_app/core/network/get_base_url.dart';
@@ -18,8 +19,8 @@ class GrcRequestFirebaseDataSource implements GrcRequestDataSource {
   final FirebaseFirestore _firestore;
 
   static String get _modulesCollectionPath =>
-      '${getBaseUrl('Modules')}/grc/GRC Modules';
-  static const String _requestsSubcollectionPath = 'Champion Requests';
+      getBaseUrl('grc');
+  static const String _requestsSubcollectionPath = 'Requests';
 
   CollectionReference<Map<String, dynamic>> _collection(String moduleId) =>
       _firestore

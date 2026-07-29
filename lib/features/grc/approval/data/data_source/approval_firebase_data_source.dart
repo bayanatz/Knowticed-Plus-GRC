@@ -1,10 +1,8 @@
 /// Module: Approvals (Department Manager)
 /// Description: Cloud Firestore implementation of [ApprovalDataSource].
-///              Firestore path:
-///              GRC Modules/{Module_ID}/Approvals/{Approval_ID}.
+///              Firestore path: grc/{Module_ID}/Approvals/{Approval_ID}.
 /// Author: Mohamed Magdy Abdelkhalek
 /// Date: 2026-07-28
-library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:demo_app/core/network/get_base_url.dart';
@@ -18,8 +16,7 @@ class ApprovalFirebaseDataSource implements ApprovalDataSource {
 
   final FirebaseFirestore _firestore;
 
-  static String get _modulesCollectionPath =>
-      '${getBaseUrl('Modules')}/grc/GRC Modules';
+  static String get _modulesCollectionPath => getBaseUrl('grc');
   static const String _approvalsSubcollectionPath = 'Approvals';
 
   CollectionReference<Map<String, dynamic>> _collection(String moduleId) =>

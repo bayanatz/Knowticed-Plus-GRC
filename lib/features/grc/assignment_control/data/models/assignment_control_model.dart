@@ -28,12 +28,12 @@ class AssignmentControlModel {
   static const String _keySubmissionNote = 'Submission_Note';
   static const String _keyStatus = 'Status';
   static const String _keyDepartmentManagerRejectionReasons =
-      'Department_Manager_Reasons of Rejection';
+      'Department_Manager_Reasons_Of_Rejection';
   static const String _keyControlScore = 'Control_Score';
   static const String _keyControlOwnerJustifications =
       'Control_Owner_Justifications';
   static const String _keyControlOwnerRejectionReasons =
-      'Control_Owner_Reasons of Rejection';
+      'Control_Owner_Reasons_Of_Rejection';
   // Deliberately NOT reusing the shared GrcFirestoreKeys.modifiers ('Modifiers')
   // — the schema given for this feature explicitly names this field
   // "Modifier" (singular).

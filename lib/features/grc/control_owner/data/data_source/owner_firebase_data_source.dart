@@ -21,7 +21,7 @@ class OwnerFirebaseDataSource implements OwnerDataSource {
   final FirebaseFirestore _firestore;
 
   static String get _modulesCollectionPath =>
-      '${getBaseUrl('Modules')}/grc/GRC Modules';
+     getBaseUrl('grc');
   static const String _ownersSubcollectionPath = 'Control Owners';
 
   CollectionReference<Map<String, dynamic>> _collection(String moduleId) =>

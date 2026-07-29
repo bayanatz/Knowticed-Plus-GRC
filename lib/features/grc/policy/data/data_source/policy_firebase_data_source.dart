@@ -16,6 +16,7 @@
 ///                                subcollection managed by
 ///                                ControlFirebaseDataSource) (Mohamed Magdy
 ///                                Abdelkhalek)
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:demo_app/core/network/get_base_url.dart';
@@ -47,8 +48,7 @@ class PolicyFirebaseDataSource implements PolicyDataSource {
 
   final FirebaseFirestore _firestore;
 
-  static String get _modulesCollectionPath =>
-      '${getBaseUrl('Modules')}/grc/GRC Modules';
+  static String get _modulesCollectionPath => getBaseUrl('grc');
   static const String _policiesSubcollectionPath = 'Policies';
 
   /// function name: [collection]
@@ -72,7 +72,8 @@ class PolicyFirebaseDataSource implements PolicyDataSource {
           .collection(_policiesSubcollectionPath);
 
   @override
-  Future<PolicyModel> create(PolicyModel model, {required String moduleId}) async {
+  Future<PolicyModel> create(PolicyModel model,
+      {required String moduleId}) async {
     try {
       await _collection(moduleId).doc(model.id).set(model.toJson());
       return model;
@@ -111,7 +112,8 @@ class PolicyFirebaseDataSource implements PolicyDataSource {
   }
 
   @override
-  Future<PolicyModel> update(PolicyModel updatedModel, {required String moduleId}) async {
+  Future<PolicyModel> update(PolicyModel updatedModel,
+      {required String moduleId}) async {
     try {
       final docRef = _collection(moduleId).doc(updatedModel.id);
       final exists = (await docRef.get()).exists;
