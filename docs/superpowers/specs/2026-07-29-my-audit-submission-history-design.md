@@ -123,20 +123,28 @@ instead of "did an owner-email set change".
   `ApprovalStatusStyle` lives relative to `ApprovalStatus`): `.of(status)`
   → `{color, icon}` for submitted/rejected/approved (pending/overdue never
   appear in stored history, per the enum's own doc comment).
-- **`MyAuditCubit`** (modify): add a `GetSubmissionHistoryUseCase`
-  dependency and a method (e.g. `loadSubmissionHistory({required
-  moduleId, required controlId, required championEmail})`) plus a new
-  state case (e.g. `MyAuditSubmissionHistoryLoaded(List<SubmissionHistoryEntry>
-  entries)`) alongside the existing `MyAuditListLoaded`/`MyAuditActionSuccess`/etc.
-  in `my_audit_state.dart`. Exact state shape (separate state vs. a field
-  added to a loaded-details state) to be finalized during planning —
-  whichever fits the existing Cubit's state machine with least
-  disruption to the approve/reject/score flows already wired through
-  `BlocConsumer` in `my_audit_details_page.dart`.
+- **`SubmissionHistoryCubit`** (new, dedicated — finalized during planning):
+  a small standalone Cubit/state pair, *not* a `MyAuditCubit` addition.
+  `MyAuditDetailsPage` is pushed sharing the **same** `MyAuditCubit`
+  instance the My Audits list page uses (`BlocProvider.value` in
+  `my_audits_list_page.dart`); that list page's own `BlocBuilder` only
+  recognizes `MyAuditListLoaded` (`if (state is! MyAuditListLoaded) return
+  <fallback>;`), so emitting a history-only state on the shared cubit
+  would leave the list page showing a broken/loading view the next time
+  the user navigates back to it without triggering an approve/reject/score
+  action. A dedicated Cubit — the same shape every other GRC history
+  mini-feature already uses (`ControlPreviousOwnersCubit`,
+  `PolicyWeightHistoryCubit`, ...) — avoids this entirely and is more
+  consistent with those precedents than bolting onto `MyAuditCubit` would
+  have been.
 - **`my_audit_details_page.dart`** (modify): trigger the history load once
-  when the page opens (e.g. `initState`), show a loading placeholder
-  (reusing `GrcButtonLoadingPlaceholder`-style skeleton) under
-  `GrcSectionSubTabs` while it loads, then replace the current single
+  when the page opens (`initState`, via its own dedicated
+  `SubmissionHistoryCubit` instance — see above), show a centered
+  `CircularProgressIndicator` (same convention as
+  `ControlPreviousOwnersPage`'s loading state, not
+  `GrcButtonLoadingPlaceholder` — that widget is sized/shaped for a button,
+  not a card-area loading state) under `GrcSectionSubTabs` while it loads,
+  then replace the current single
   `GrcSectionCard` submission block with a `Column` of one `GrcSectionCard`
   per `SubmissionHistoryEntry` (newest first), each containing:
   - `GrcSubmitterRow(email: assignmentControl.controlChampionEmail)` +
@@ -153,7 +161,8 @@ instead of "did an owner-email set change".
 ### Wiring
 - **`grc_get_it.dart`** (modify): register `GetSubmissionHistoryUseCase`
   alongside the other `AssignmentControlRepository`-based use cases, and
-  update `MyAuditCubit`'s registration to inject it.
+  register `SubmissionHistoryCubit` as a factory (own instance per
+  `MyAuditDetailsPage`), same pattern as `ControlPreviousOwnersCubit`.
 
 ## Out of scope
 
