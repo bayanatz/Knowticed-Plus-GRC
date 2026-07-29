@@ -35,6 +35,7 @@ class UpdatePolicyParams {
   final DateTime? startDate;
   final DateTime? endDate;
   final double? policyWeight;
+  final double? score;
   final PolicyStatus? status;
   final File? imageFile;
   final String? imageUrl;
@@ -56,6 +57,7 @@ class UpdatePolicyParams {
     this.startDate,
     this.endDate,
     this.policyWeight,
+    this.score,
     this.status,
     this.imageFile,
     this.imageUrl,
@@ -88,6 +90,7 @@ class UpdatePolicyUseCase {
       startDate: params.startDate,
       endDate: params.endDate,
       policyWeight: params.policyWeight,
+      score: params.score,
       status: params.status,
       imageFile: params.imageFile,
       imageUrl: params.imageUrl,

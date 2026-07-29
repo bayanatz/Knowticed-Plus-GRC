@@ -192,6 +192,7 @@ abstract class PolicyRepository {
     DateTime? startDate,
     DateTime? endDate,
     double? policyWeight,
+    double? score,
     PolicyStatus? status,
     File? imageFile,
     String? imageUrl,

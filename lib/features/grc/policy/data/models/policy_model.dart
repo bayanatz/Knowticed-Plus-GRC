@@ -99,6 +99,7 @@ class PolicyModel {
   static const String _keyPolicyDocumentEn = 'Policy_Document_En';
   static const String _keyPolicyDocumentAr = 'Policy_Document_Ar';
   static const String _keyPolicyStatus = 'Policy_Status';
+  static const String _keyPolicyScore = 'Policy_Score';
 
   final String id;
   final String moduleId;
@@ -115,6 +116,7 @@ class PolicyModel {
   final List<String?> policyDocumentEn;
   final List<String?> policyDocumentAr;
   final List<String> status; // PolicyStatus.value strings
+  final List<double> score;
 
   // Tracking
   final List<DateTime> lastModifiedDate;
@@ -136,6 +138,7 @@ class PolicyModel {
     required this.policyDocumentEn,
     required this.policyDocumentAr,
     required this.status,
+    required this.score,
     required this.lastModifiedDate,
     required this.editors,
   }) {
@@ -168,6 +171,7 @@ class PolicyModel {
       policyDocumentEn.length,
       policyDocumentAr.length,
       status.length,
+      score.length,
       lastModifiedDate.length,
       editors.length,
     };
@@ -214,6 +218,7 @@ class PolicyModel {
     String? policyDocumentEn,
     String? policyDocumentAr,
     required PolicyStatus status,
+    double score = 0,
     required String editorId,
   }) {
     final now = DateTime.now();
@@ -233,6 +238,7 @@ class PolicyModel {
       policyDocumentEn: [policyDocumentEn],
       policyDocumentAr: [policyDocumentAr],
       status: [status.value],
+      score: [score],
       lastModifiedDate: [now],
       editors: [editorId],
     );
@@ -274,6 +280,7 @@ class PolicyModel {
     String? policyDocumentEn,
     String? policyDocumentAr,
     PolicyStatus? status,
+    double? score,
     required String editorId,
   }) {
     final now = DateTime.now();
@@ -326,6 +333,7 @@ class PolicyModel {
         policyDocumentAr ?? this.policyDocumentAr.last
       ],
       status: [...this.status, status?.value ?? this.status.last],
+      score: [...this.score, score ?? this.score.last],
       lastModifiedDate: [...lastModifiedDate, now],
       editors: [...editors, editorId],
     );
@@ -358,6 +366,7 @@ class PolicyModel {
       _keyPolicyDocumentEn: policyDocumentEn,
       _keyPolicyDocumentAr: policyDocumentAr,
       _keyPolicyStatus: status,
+      _keyPolicyScore: score,
       GrcFirestoreKeys.modificationDate:
           lastModifiedDate.map((d) => _storageDateFormat.format(d)).toList(),
       GrcFirestoreKeys.modifiers: editors,
@@ -401,6 +410,11 @@ class PolicyModel {
       status: json[_keyPolicyStatus] != null
           ? List<String>.from(json[_keyPolicyStatus])
           : List<String>.filled(editorsRaw.length, PolicyStatus.draft.value),
+      score: json[_keyPolicyScore] != null
+          ? (json[_keyPolicyScore] as List)
+              .map((e) => (e as num).toDouble())
+              .toList()
+          : List<double>.filled(editorsRaw.length, 0),
       lastModifiedDate:
           (json[GrcFirestoreKeys.modificationDate] as List? ?? [])
               .map((d) => _storageDateFormat.parse(d as String))
@@ -440,6 +454,7 @@ class PolicyModel {
         startDate: startDate.last,
         endDate: endDate.last,
       ),
+      score: score.last,
       lastModifiedDate: lastModifiedDate.last,
       lastEditor: editors.last,
     );

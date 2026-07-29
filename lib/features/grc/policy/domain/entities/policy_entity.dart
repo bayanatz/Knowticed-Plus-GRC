@@ -52,6 +52,7 @@ class PolicyEntity {
   final String? policyDocumentEn;
   final String? policyDocumentAr;
   final PolicyStatus status;
+  final double score;
 
   // Tracking fields (latest values only)
   final DateTime lastModifiedDate;
@@ -73,6 +74,7 @@ class PolicyEntity {
     required this.policyDocumentEn,
     required this.policyDocumentAr,
     required this.status,
+    required this.score,
     required this.lastModifiedDate,
     required this.lastEditor,
   });
@@ -118,6 +120,7 @@ class PolicyEntity {
     String? policyDocumentEn,
     String? policyDocumentAr,
     PolicyStatus? status,
+    double? score,
   }) {
     return PolicyEntity(
       id: id,
@@ -135,6 +138,7 @@ class PolicyEntity {
       policyDocumentEn: policyDocumentEn ?? this.policyDocumentEn,
       policyDocumentAr: policyDocumentAr ?? this.policyDocumentAr,
       status: status ?? this.status,
+      score: score ?? this.score,
       lastModifiedDate: lastModifiedDate,
       lastEditor: lastEditor,
     );
