@@ -592,6 +592,7 @@ void setupGRCDependencies(GetIt sl) {
     () => RecalculateScoreRollupUseCase(
       updateControlUseCase: sl<UpdateControlUseCase>(),
       getAllControlsUseCase: sl<GetAllControlsUseCase>(),
+      getPolicyUseCase: sl<GetPolicyUseCase>(),
       updatePolicyUseCase: sl<UpdatePolicyUseCase>(),
       getAllPoliciesUseCase: sl<GetAllPoliciesUseCase>(),
       updateGrcModuleUseCase: sl<UpdateGRCModuleUseCase>(),

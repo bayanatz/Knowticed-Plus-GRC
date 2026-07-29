@@ -65,13 +65,30 @@ PolicyEntity _policy({
 
 void main() {
   group('computePolicyScore', () {
-    test('matches the worked example from the design spec', () {
+    test('matches the reported real-world scenario: one Control at 100% '
+        'weight, Policy at 30% of its Module', () {
+      final controls = [_control(score: 80, weight: 100)];
+      expect(computePolicyScore(controls, 30), 24);
+    });
+
+    test('multi-control Policy grade is weighted by the Policy\'s own share',
+        () {
       final controls = [
         _control(score: 80, weight: 50),
         _control(score: 100, weight: 25),
         _control(score: 60, weight: 25),
       ];
-      expect(computePolicyScore(controls), 80);
+      // Controls-only grade is 80 (40+25+15); at 25% Policy weight -> 20.
+      expect(computePolicyScore(controls, 25), 20);
+    });
+
+    test('a Policy weighted at 100% reproduces the plain Controls grade', () {
+      final controls = [
+        _control(score: 80, weight: 50),
+        _control(score: 100, weight: 25),
+        _control(score: 60, weight: 25),
+      ];
+      expect(computePolicyScore(controls, 100), 80);
     });
 
     test('excludes Draft controls', () {
@@ -80,7 +97,8 @@ void main() {
         _control(score: 100, weight: 25),
         _control(score: 999, weight: 25, status: ControlStatus.draft),
       ];
-      expect(computePolicyScore(controls), 40 + 25);
+      // Controls grade excluding Draft: 40+25=65; at 50% Policy weight -> 32.5.
+      expect(computePolicyScore(controls, 50), 32.5);
     });
 
     test('excludes Inactive and Expired controls, matching '
@@ -91,7 +109,7 @@ void main() {
         _control(score: 999, weight: 25, status: ControlStatus.inactive),
         _control(score: 999, weight: 25, status: ControlStatus.expired),
       ];
-      expect(computePolicyScore(controls), 40 + 25);
+      expect(computePolicyScore(controls, 100), 65);
     });
 
     test('includes Unassigned controls', () {
@@ -100,28 +118,35 @@ void main() {
         _control(score: 100, weight: 25),
         _control(score: 60, weight: 25, status: ControlStatus.unassigned),
       ];
-      expect(computePolicyScore(controls), 80);
+      expect(computePolicyScore(controls, 100), 80);
     });
 
-    test('empty list yields 0', () {
-      expect(computePolicyScore(const []), 0);
+    test('empty list yields 0 regardless of Policy weight', () {
+      expect(computePolicyScore(const [], 30), 0);
     });
   });
 
   group('computeModuleScore', () {
-    test('matches the worked example from the design spec', () {
+    test('sums Policy scores directly, matching the reported real-world '
+        'scenario (Policy.score is already its own weighted share)', () {
+      final policies = [_policy(score: 24, weight: 30)];
+      expect(computeModuleScore(policies), 24);
+    });
+
+    test('sums multiple already-weighted Policy scores without applying '
+        'policyWeight again', () {
       final policies = [
-        _policy(score: 80, weight: 25),
-        _policy(score: 100, weight: 25),
-        _policy(score: 60, weight: 50),
+        _policy(score: 20, weight: 25),
+        _policy(score: 25, weight: 25),
+        _policy(score: 30, weight: 50),
       ];
       expect(computeModuleScore(policies), 75);
     });
 
     test('excludes everything except Active/Scheduled', () {
       final policies = [
-        _policy(score: 80, weight: 25),
-        _policy(score: 100, weight: 25, status: PolicyStatus.scheduled),
+        _policy(score: 20, weight: 25),
+        _policy(score: 25, weight: 25, status: PolicyStatus.scheduled),
         _policy(score: 999, weight: 50, status: PolicyStatus.draft),
       ];
       expect(computeModuleScore(policies), 20 + 25);

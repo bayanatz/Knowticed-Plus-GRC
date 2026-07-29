@@ -1,5 +1,18 @@
 # Final Weighted Score Rollup (Control → Policy → Module) — Design
 
+> **Amendment (2026-07-29, after first real-world test):** the formulas below in "The
+> rollup itself" were corrected. Originally `Policy.score` was a standalone 0-100 grade
+> of the Policy's own Controls (independent of the Policy's own weight within its
+> Module), and the Policy→Module weight multiplication happened only at the Module step.
+> Testing with a real Module (1 Policy at 30% weight, 1 Control at 100% weight, scored
+> 80) showed this produces a confusing `Policy.score` of 80 when the user expected 24
+> (`80 × 30%`). The corrected design bakes the Policy's own weight into `Policy.score`
+> itself — `Policy.score` now means "how many of this Policy's weight-share points were
+> earned," bounded to `[0, policyWeight]` rather than `[0, 100]` — and `computeModuleScore`
+> becomes a straight sum of already-weighted Policy scores (no second multiplication).
+> The Module's final number is identical either way; only what `Policy.score` itself
+> displays changed. See the corrected formulas below.
+
 ## Context
 
 This supersedes [2026-07-29-control-final-score-design.md](2026-07-29-control-final-score-design.md).
@@ -92,32 +105,47 @@ New file: `lib/features/grc/shared/use_cases/recalculate_score_rollup_usecase.da
 is the "domain-layer service" the user asked for — it is the only place this
 calculation happens, and it is not a Cubit. It depends only on already-existing
 repositories/use cases (`UpdateControlUseCase`, `GetAllControlsUseCase`,
-`UpdatePolicyUseCase`, `GetAllPoliciesUseCase`, `UpdateGRCModuleUseCase`) — no new
-Firestore access code anywhere.
+`GetPolicyUseCase`, `UpdatePolicyUseCase`, `GetAllPoliciesUseCase`,
+`UpdateGRCModuleUseCase`) — no new Firestore access code anywhere.
 
 ```
 call({moduleId, policyId, controlId, controlScore, editorEmail}):
   1. UpdateControlUseCase(id: controlId, moduleId, policyId, editorId: editorEmail,
      score: controlScore.round())
-     — persists the raw Control Owner score onto Control.score.
+     — persists the raw Control Owner score onto Control.score, unweighted.
 
   2. GetAllControlsUseCase(moduleId, policyId) -> all Controls under this Policy.
-     Exclude ControlStatus.draft (matches the existing hasControlWeightIssue/
-     totalControlWeight convention in control_entity.dart's ControlListWeightX).
-     newPolicyScore = Σ(control.score × control.controlsWeight / 100)
+     Exclude everything except ControlStatus.active/scheduled/unassigned (matches
+     the existing hasControlWeightIssue/totalControlWeight convention in
+     control_entity.dart's ControlListWeightX).
+     controlsGrade = Σ(control.score × control.controlsWeight / 100)
+     — the Policy's own 0-100 grade from its Controls.
+
+     GetPolicyUseCase(policyId, moduleId) -> the Policy's current policyWeight (its
+     share of the Module).
+     newPolicyScore = controlsGrade × policyWeight / 100
+     — bounded to [0, policyWeight], not [0, 100]: this is "how many of this
+     Policy's weight-share points were earned."
      UpdatePolicyUseCase(id: policyId, moduleId, editorId: editorEmail, score: newPolicyScore)
 
   3. GetAllPoliciesUseCase(moduleId) -> all Policies under this Module.
      Keep only PolicyStatus.active or PolicyStatus.scheduled (matches the existing
      weightScopedPolicies filter in grc_module_policies_tab.dart).
-     newModuleScore = Σ(policy.score × policy.policyWeight / 100)
+     newModuleScore = Σ(policy.score)
+     — a straight sum: each Policy's score is already its own weighted share (step
+     2), so no further multiplication by policyWeight happens here.
      UpdateGRCModuleUseCase.execute(id: moduleId, editorId: editorEmail, score: newModuleScore)
 ```
 
-Each step's weight is used as a plain percentage divisor (`/ 100`), matching the formula
-given by the user exactly — no normalization is applied if a Policy's/Module's weights
-don't actually sum to 100 (that drift is what the existing "Policy Weight Issue"/"Control
-Weight Issue" features are for; this rollup does not second-guess or correct it).
+Worked example (the scenario that caught the original bug): 1 Module, 1 Policy at 30%
+weight, 1 Control at 100% weight, scored 80. `controlsGrade` = 80 × 100/100 = 80.
+`newPolicyScore` = 80 × 30/100 = **24**. `newModuleScore` = Σ(24) = **24**. Both numbers
+now match what the user expects to see in Firestore.
+
+Weight is used as a plain percentage divisor (`/ 100`) at each step — no normalization is
+applied if a Policy's Controls (or a Module's Policies) don't actually sum to 100% weight
+(that drift is what the existing "Policy Weight Issue"/"Control Weight Issue" features
+are for; this rollup does not second-guess or correct it).
 
 Every step reads fresh data right before computing (no cached/incremental values), so a
 recalculation always reflects the current state of every sibling Control/Policy — this
