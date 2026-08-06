@@ -1,14 +1,18 @@
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
+// ✅ FIX: use the same EmployeeController class that is registered with
+// Get.put() in LoginController (type-name collision with the
+// organization_chart_module copy caused Get.find() to throw).
 import 'package:get/get.dart';
-import 'package:demo_app/core/services/notifications/firebase_notification_handler.dart';
+import 'package:grc_module/features/notification/services/firebase_notification_handler.dart';
 import 'package:meta/meta.dart';
 
-import 'package:demo_app/core/helper/employees/presentation/controller/employee_controller.dart';
-import '../../data/repository/notification_repository_main_core.dart';
 
-part 'notification_controller_state_main_core.dart';
+import 'package:grc_module/features/notification/data/repository/notification_repository_main_core.dart';
+import 'package:grc_module/features/settings/main_controller/presentation/controller/employee_controller.dart';
+
+part './notification_controller_state_main_core.dart';
 
 class NotificationControllerCubit extends Cubit<NotificationControllerState> {
   NotificationControllerCubit() : super(NotificationControllerInitial());

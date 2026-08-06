@@ -1,12 +1,12 @@
 // Figma: donut charts — "Demands", "Order Fulfillment Status".
 // fl_chart PieChart with center total + legend with amounts.
 import 'package:fl_chart/fl_chart.dart';
-import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:demo_app/core/custom/16-custom_card_styles.dart';
-import 'package:demo_app/core/custom/24-custom_chart_card.dart';
+import 'package:grc_module/core/theme/app_colors.dart';
+import 'package:grc_module/core/custom/16-custom_card_styles.dart';
+import 'package:grc_module/core/custom/24-custom_chart_card.dart';
 
 /// Donut chart card: ring chart, center total, legend rows with amounts.
 ///
@@ -40,6 +40,9 @@ class DonutChartCard extends StatelessWidget {
   /// Optional SVG asset placed inside the header dot.
   final String? dotIcon;
 
+  /// Show the percentage label on each ring segment (Figma: "40%", "25%").
+  final bool showPercentages;
+
   const DonutChartCard({
     super.key,
     required this.title,
@@ -53,10 +56,14 @@ class DonutChartCard extends StatelessWidget {
     this.showLegend = true,
     this.dotColor,
     this.dotIcon,
+    this.showPercentages = true,
   });
 
   @override
   Widget build(BuildContext context) {
+    final double total =
+        sections.fold<double>(0, (sum, s) => sum + s.value);
+
     final chart = SizedBox(
       width: chartSize.r,
       height: chartSize.r,
@@ -73,7 +80,14 @@ class DonutChartCard extends StatelessWidget {
                     value: s.value,
                     color: s.color,
                     radius: ringWidth.r,
-                    showTitle: false,
+                    // Figma: white percentage label on each segment.
+                    showTitle: showPercentages && total > 0,
+                    title: total > 0
+                        ? '${(s.value / total * 100).round()}%'
+                        : '',
+                    titleStyle: CardStyles.title(10)
+                        .copyWith(color: AppColors.white),
+                    titlePositionPercentageOffset: 0.5,
                   ),
               ],
             ),
@@ -84,7 +98,14 @@ class DonutChartCard extends StatelessWidget {
               if (centerValue != null)
                 Text(centerValue!, style: CardStyles.title(18)),
               if (centerLabel != null)
-                Text(centerLabel!, style: CardStyles.label(9)),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 6.w),
+                  child: Text(
+                    centerLabel!,
+                    style: CardStyles.label(9),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
             ],
           ),
         ],
@@ -108,7 +129,7 @@ class DonutChartCard extends StatelessWidget {
                         ChartLegendRow(
                           name: s.label,
                           amount: s.value.toInt().toString(),
-                          color: s.color ?? Colors.grey,
+                          color: s.color ?? AppColors.grey,
                         ),
                     ],
                   ),

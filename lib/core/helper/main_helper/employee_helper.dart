@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:demo_app/features/department/presentation/controller/add_department_controller.dart';
-import 'package:demo_app/core/extension/context_extensions.dart';
+import 'package:grc_module/core/extension/context_extensions.dart';
+import 'package:grc_module/features/roles/r4_active_directory/presentation/controller/main_core_department_cubit.dart';
 
-import 'package:demo_app/features/employee/domain/entities/employee_entity.dart';
-import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
+import 'package:grc_module/features/roles/r4_active_directory/domain/entities/employee_entity.dart';
+import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 abstract class EmployeeHelper {
   static String getEmployeeLocalizedName(
@@ -54,9 +55,9 @@ abstract class EmployeeHelper {
         employee.photo!.isEmpty ||
         employee.photo == "[]") {
       if (employee.gender == 'female') {
-        employeeImageUrl = "assets/images/female_avatar.png";
+        employeeImageUrl = "assets/icons_assets/main_icons_assets/female_avatar.svg";
       } else {
-        employeeImageUrl = "assets/images/male_avatar.png";
+        employeeImageUrl = "assets/icons_assets/main_icons_assets/male_avatar.svg";
       }
     }
 
@@ -75,12 +76,12 @@ abstract class EmployeeHelper {
   static String getEmployeeLocalizeDepartment(
       {required EmployeeEntityPro employee, required BuildContext context}) {
     if (context.isArabic) {
-      return Get.find<MainCoreDepartmentController>()
+      return context.read<MainCoreDepartmentCubit>()
               .getArabicDepartmentNameFromDepartmentId(
                   departmentId: employee.departmentId!) ??
           "";
     } else {
-      return Get.find<MainCoreDepartmentController>()
+      return context.read<MainCoreDepartmentCubit>()
               .getEnglishDepartmentNameFromDepartmentId(
                   departmentId: employee.departmentId!) ??
           "";

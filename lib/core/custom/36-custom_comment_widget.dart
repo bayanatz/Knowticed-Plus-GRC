@@ -3,20 +3,19 @@ import 'package:dio/dio.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:demo_app/core/custom/5-custom_button.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:demo_app/core/helper/main_helper/circle_progress.dart';
-import 'package:demo_app/core/helper/main_helper/format_helper.dart';
-import 'package:demo_app/core/theme/app_colors.dart';
-import 'package:demo_app/core/theme/app_text_styles.dart';
+import 'package:grc_module/core/helper/main_helper/format_title.dart';
+import 'package:grc_module/core/custom/5-custom_button.dart';
+import 'package:grc_module/core/theme/app_colors.dart';
+import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:demo_app/core/custom/32-custom_svg.dart';
-import 'package:demo_app/features/employee/presentation/controller/main_core_employee_controller.dart';
+import 'package:grc_module/core/custom/32-custom_svg.dart';
+import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
 import '../../generated/l10n.dart';
 
-
+import 'package:grc_module/core/custom/circle_progress.dart';
 
 class UniversalCommentSection extends StatelessWidget {
   final String collectionPath;
@@ -181,9 +180,9 @@ class _UniversalCommentSectionStateImpl
 
     if (_isUploading) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+         SnackBar(
           content: Text('Please wait, file is uploading...'),
-          backgroundColor: Colors.orange,
+          backgroundColor: AppColors.orange,
         ),
       );
       return;
@@ -202,9 +201,9 @@ class _UniversalCommentSectionStateImpl
 
         if (firebaseUrl == null) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
+             SnackBar(
               content: Text('Failed to upload file'),
-              backgroundColor: Colors.red,
+              backgroundColor: AppColors.red,
             ),
           );
           setState(() => _isUploading = false);
@@ -296,17 +295,17 @@ class _UniversalCommentSectionStateImpl
     switch (extension) {
       case 'pdf':
         iconData = Icons.picture_as_pdf;
-        iconColor = Colors.red;
+        iconColor = AppColors.red;
         break;
       case 'doc':
       case 'docx':
         iconData = Icons.description;
-        iconColor = Colors.blue;
+        iconColor = AppColors.blue;
         break;
       case 'xls':
       case 'xlsx':
         iconData = Icons.table_chart;
-        iconColor = Colors.green;
+        iconColor = AppColors.green;
         break;
       case 'jpg':
       case 'jpeg':
@@ -314,33 +313,33 @@ class _UniversalCommentSectionStateImpl
       case 'gif':
       case 'bmp':
         iconData = Icons.image;
-        iconColor = Colors.purple;
+        iconColor = AppColors.secondaryPrimary;
         break;
       case 'txt':
         iconData = Icons.text_snippet;
-        iconColor = Colors.grey;
+        iconColor = AppColors.grey;
         break;
       case 'zip':
       case 'rar':
       case '7z':
         iconData = Icons.folder_zip;
-        iconColor = Colors.orange;
+        iconColor = AppColors.orange;
         break;
       case 'mp3':
       case 'wav':
       case 'aac':
         iconData = Icons.audiotrack;
-        iconColor = Colors.pink;
+        iconColor = AppColors.red;
         break;
       case 'mp4':
       case 'avi':
       case 'mov':
         iconData = Icons.videocam;
-        iconColor = Colors.indigo;
+        iconColor = AppColors.blue;
         break;
       default:
         iconData = Icons.insert_drive_file;
-        iconColor = Colors.grey[700]!;
+        iconColor = AppColors.secondaryText;
     }
     return Icon(iconData, size: 28.sp, color: iconColor);
   }
@@ -416,9 +415,9 @@ class _UniversalCommentSectionStateImpl
   Future<void> _downloadFile(String? fileUrl, String fileName) async {
     if (fileUrl == null || fileUrl.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+         SnackBar(
             content: Text('File URL not available'),
-            backgroundColor: Colors.red),
+            backgroundColor: AppColors.red),
       );
       return;
     }
@@ -426,7 +425,7 @@ class _UniversalCommentSectionStateImpl
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             content: Text('Invalid file URL: $fileUrl'),
-            backgroundColor: Colors.red),
+            backgroundColor: AppColors.red),
       );
       return;
     }
@@ -461,7 +460,7 @@ class _UniversalCommentSectionStateImpl
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             content: Text('Failed to download file: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.red,
             duration: const Duration(seconds: 3)),
       );
     }
@@ -487,17 +486,17 @@ class _UniversalCommentSectionStateImpl
                       color: AppColors.primary, size: 28.sp),
                   SizedBox(width: 8.w),
                   Text(S.of(context).downloadComplete,
-                      style: AppTextStyles.font16BlackRegularCairo
+                      style: StyleText.fontSize16Weight400
                           .copyWith(color: AppColors.text)),
                 ],
               ),
               SizedBox(height: 12.h),
               Text('${S.of(context).file}: $fileName',
-                  style: AppTextStyles.font16BlackRegularCairo
+                  style: StyleText.fontSize16Weight400
                       .copyWith(color: AppColors.text)),
               SizedBox(height: 12.h),
               Text(S.of(context).saveTo,
-                  style: AppTextStyles.font16BlackRegularCairo
+                  style: StyleText.fontSize16Weight400
                       .copyWith(color: AppColors.secondaryText)),
               SizedBox(height: 12.h),
               Container(
@@ -512,7 +511,7 @@ class _UniversalCommentSectionStateImpl
                     SizedBox(width: 8.w),
                     Expanded(
                       child: Text(filePath,
-                          style: AppTextStyles.font16BlackRegularCairo
+                          style: StyleText.fontSize16Weight400
                               .copyWith(color: AppColors.text),
                           overflow: TextOverflow.ellipsis),
                     ),
@@ -523,7 +522,6 @@ class _UniversalCommentSectionStateImpl
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-
                   customButton(
                       title: S.of(context).ok,
                       function: () => Navigator.of(context).pop(),
@@ -571,7 +569,7 @@ class _UniversalCommentSectionStateImpl
               children: [
                 Text(
                   S.of(context).inquiriesAndComments,
-                  style: AppTextStyles.font16BlackMediumCairo
+                  style: StyleText.fontSize16Weight500
                       .copyWith(color: AppColors.text),
                 ),
                 Spacer(),
@@ -591,7 +589,7 @@ class _UniversalCommentSectionStateImpl
                             _isFullScreen
                                 ? S.of(context).collapse
                                 : S.of(context).expand,
-                            style: AppTextStyles.font12BlackCairoRegular.copyWith(
+                            style: StyleText.fontSize12Weight400.copyWith(
                               color: AppColors.secondaryPrimary,
                             ),
                           ),
@@ -652,9 +650,9 @@ class _UniversalCommentSectionStateImpl
 
                         if (comments.isEmpty) {
                           return Center(
-                            child: CustomSvg(
+                            child: CustomSvgImage(
                               assetPath:
-                              "assets/inquire_comment/no_comment.svg",
+                              "assets/icons_assets/main_icons_assets/chat_bubble_dots.svg",
                               width: 150.w,
                               height: 150.h,
                               fit: BoxFit.fill,
@@ -731,8 +729,8 @@ class _UniversalCommentSectionStateImpl
               if (!isCurrentUser)
                 ClipRRect(
                   borderRadius: BorderRadius.circular(30.r),
-                  child: CustomSvg(
-                    assetPath: "assets/male.svg",
+                  child: CustomSvgImage(
+                    assetPath: "assets/icons_assets/main_icons_assets/male_avatar.svg",
                     width: 45.w,
                     height: 45.h,
                     fit: BoxFit.fill,
@@ -753,7 +751,7 @@ class _UniversalCommentSectionStateImpl
                     if (commenterDepartment.isNotEmpty)
                       Text(
                         commenterDepartment,
-                        style: AppTextStyles.font12BlackCairoRegular
+                        style: StyleText.fontSize12Weight400
                             .copyWith(color: AppColors.secondaryText),
                       ),
                     SizedBox(height: 2.h),
@@ -780,8 +778,8 @@ class _UniversalCommentSectionStateImpl
               if (isCurrentUser)
                 ClipRRect(
                   borderRadius: BorderRadius.circular(30.r),
-                  child: CustomSvg(
-                    assetPath: "assets/male.svg",
+                  child: CustomSvgImage(
+                    assetPath: "assets/icons_assets/main_icons_assets/male_avatar.svg",
                     width: 45.w,
                     height: 45.h,
                     fit: BoxFit.fill,
@@ -806,10 +804,10 @@ class _UniversalCommentSectionStateImpl
                   decoration:
                   widget.style.fileChipDecoration?.copyWith() ??
                       BoxDecoration(
-                        color: Colors.blue[50],
+                        color: AppColors.blue.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(6),
                         border: Border.all(
-                            color: Colors.blue[700]!, width: 1),
+                            color: AppColors.blue, width: 1),
                       ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -828,10 +826,8 @@ class _UniversalCommentSectionStateImpl
                                 decoration:
                                 TextDecoration.underline,
                               ) ??
-                                  TextStyle(
-                                    fontSize: 12.sp,
-                                    color: Colors.blue[700],
-                                    fontWeight: FontWeight.w500,
+                                  StyleText.fontSize12Weight500.copyWith(
+                                    color: AppColors.blue,
                                     decoration:
                                     TextDecoration.underline,
                                   ),
@@ -841,8 +837,7 @@ class _UniversalCommentSectionStateImpl
                             SizedBox(height: 4.h),
                             Text(
                               _getFileType(fileName),
-                              style: TextStyle(
-                                  fontSize: 10.sp,
+                              style: StyleText.fontSize10Weight400.copyWith(
                                   color: AppColors.secondaryText),
                             ),
                           ],
@@ -860,7 +855,7 @@ class _UniversalCommentSectionStateImpl
             if (commentDate != null)
               Text(
                 _formatDate(commentDate),
-                style: AppTextStyles.font12BlackCairoRegular
+                style: StyleText.fontSize12Weight400
                     .copyWith(color: AppColors.secondaryText),
               ),
           ],
@@ -895,7 +890,7 @@ class _UniversalCommentSectionStateImpl
                     children: [
                       Text(
                         _selectedFileName!,
-                        style: AppTextStyles.font12BlackMediumCairo
+                        style: StyleText.fontSize12Weight500
                             .copyWith(color: AppColors.text),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -903,7 +898,7 @@ class _UniversalCommentSectionStateImpl
                       if (_selectedFilePath != null)
                         Text(
                           _getFileSize(_selectedFilePath!),
-                          style: AppTextStyles.font12BlackMediumCairo
+                          style: StyleText.fontSize12Weight500
                               .copyWith(color: AppColors.secondaryText),
                         ),
                     ],
@@ -930,7 +925,7 @@ class _UniversalCommentSectionStateImpl
           children: [
             Expanded(
               child: TextField(
-                style: AppTextStyles.font16BlackRegularCairo
+                style: StyleText.fontSize16Weight400
                     .copyWith(color: AppColors.text),
                 controller: _commentController,
                 maxLines: 1,
@@ -972,7 +967,7 @@ class _UniversalCommentSectionStateImpl
                 width: 46.h,
                 decoration: widget.style.sendButtonDecoration.copyWith(
                   color: _isUploading
-                      ? Colors.grey[400]
+                      ? AppColors.grey
                       : (widget.style.sendButtonDecoration.color ??
                       AppColors.primary),
                 ),
@@ -980,15 +975,15 @@ class _UniversalCommentSectionStateImpl
                     ? SizedBox(
                   width: 20.sp,
                   height: 20.sp,
-                  child: const CircularProgressIndicator(
+                  child: CircularProgressIndicator(
                     strokeWidth: 2,
                     valueColor:
-                    AlwaysStoppedAnimation<Color>(Colors.white),
+                    AlwaysStoppedAnimation<Color>(AppColors.white),
                   ),
                 )
-                    : CustomSvg(
+                    : CustomSvgImage(
                   color: AppColors.secondaryPrimaryText,
-                  assetPath: "assets/send.svg",
+                  assetPath: "assets/icons_assets/main_icons_assets/send_paper_plane_white.svg",
                   width: 20.w,
                   height: 20.h,
                   fit: BoxFit.scaleDown,
@@ -1043,7 +1038,7 @@ class _UniversalCommentSectionStateImpl
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Error selecting file: $e'),
-          backgroundColor: Colors.red,
+          backgroundColor: AppColors.red,
         ),
       );
     }
@@ -1125,37 +1120,32 @@ class CommentSectionStyle {
         containerPadding = containerPadding ?? EdgeInsets.all(15),
         commentItemDecoration = commentItemDecoration ??
             BoxDecoration(
-              color: Colors.white,
+              color: AppColors.card,
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.grey[300]!),
+              border: Border.all(color: AppColors.grey),
             ),
         userNameStyle = userNameStyle ??
-            const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
+            StyleText.fontSize14Weight700.copyWith(
+              color: AppColors.text,
             ),
         dateStyle =
-            dateStyle ?? TextStyle(fontSize: 11, color: Colors.grey[600]),
+            dateStyle ?? StyleText.fontSize11Weight400.copyWith(color: AppColors.secondaryText),
         commentTextStyle = commentTextStyle ??
-            const TextStyle(fontSize: 13, color: Colors.black87),
+            StyleText.fontSize13Weight400.copyWith(color: AppColors.text),
         hintStyle =
-            hintStyle ?? TextStyle(fontSize: 12, color: Colors.grey[500]),
+            hintStyle ?? StyleText.fontSize12Weight400.copyWith(color: AppColors.secondaryText),
         emptyStateStyle = emptyStateStyle ??
-            TextStyle(fontSize: 14, color: Colors.grey[600]),
+            StyleText.fontSize14Weight400.copyWith(color: AppColors.secondaryText),
         expandButtonStyle = expandButtonStyle ??
-            TextStyle(
-              fontSize: 12,
+            StyleText.fontSize12Weight400.copyWith(
               color: AppColors.primary,
               decoration: TextDecoration.underline,
             ),
-        avatarColor = avatarColor ?? Colors.blue[300]!,
+        avatarColor = avatarColor ?? AppColors.blue,
         avatarTextStyle = avatarTextStyle ??
-            const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: Colors.white),
-        inputFillColor = inputFillColor ?? Colors.white,
+            StyleText.fontSize14Weight700.copyWith(
+                color: AppColors.white),
+        inputFillColor = inputFillColor ?? AppColors.card,
         inputBorder = inputBorder ??
             OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
@@ -1172,18 +1162,16 @@ class CommentSectionStyle {
               color: AppColors.primary,
               borderRadius: BorderRadius.circular(8),
             ),
-        sendIconColor = sendIconColor ?? Colors.white,
-        attachIconColor = attachIconColor ?? Colors.grey[600]!,
+        sendIconColor = sendIconColor ?? AppColors.white,
+        attachIconColor = attachIconColor ?? AppColors.secondaryText,
         fileChipDecoration = fileChipDecoration ??
             BoxDecoration(
-              color: Colors.blue[50],
+              color: AppColors.blue.withOpacity(0.1),
               borderRadius: BorderRadius.circular(6),
             ),
-        fileIconColor = fileIconColor ?? Colors.blue[700]!,
+        fileIconColor = fileIconColor ?? AppColors.blue,
         fileNameStyle = fileNameStyle ??
-            TextStyle(
-              fontSize: 12,
-              color: Colors.blue[700],
-              fontWeight: FontWeight.w500,
+            StyleText.fontSize12Weight500.copyWith(
+              color: AppColors.blue,
             );
 }

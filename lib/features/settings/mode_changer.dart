@@ -1,5 +1,4 @@
-
-import 'package:demo_app/core/nav_bar_package.dart/model.dart';
+import 'package:grc_module/features/home/h2_nav_bar/utils/model.dart';
 
 class Mode {
   static bool showInvoice= false;

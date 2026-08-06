@@ -3,11 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:demo_app/core/theme/app_colors.dart';
-import 'package:demo_app/core/custom/16-custom_card_styles.dart';
-import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
-
-import '../theme/app_colors.dart';
+import 'package:grc_module/core/theme/app_colors.dart';
+import 'package:grc_module/core/custom/16-custom_card_styles.dart';
+import 'package:grc_module/core/custom/6_custom_button_with_svg.dart';
 
 /// Approval card: header icon + title + request date, info rows
 /// (requester with avatar, job title, department) and Reject/Approve buttons.
@@ -60,8 +58,8 @@ class PersonalInfoCard extends StatelessWidget {
     required this.department,
     this.rejectText = 'Reject',
     this.approveText = 'Approve',
-    this.rejectSvg = 'assets/reject.svg',
-    this.approveSvg = 'assets/approve.svg',
+    this.rejectSvg = 'assets/icons_assets/home_assets/rejected_stamp_red.svg',
+    this.approveSvg = 'assets/icons_assets/main_icons_assets/approval_badge_check.svg',
     this.onReject,
     this.onApprove,
     this.width,
@@ -89,10 +87,10 @@ class PersonalInfoCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
-                    width: 50.r,
-                    height: 50.r,
+                    width: 50.sp,
+                    height: 50.sp,
                     decoration: BoxDecoration(
-                      color: AppColors.barrierColor,
+                      color: AppColors.background,
                       borderRadius: BorderRadius.circular(4.r),
                     ),
                     child: Center(
@@ -103,7 +101,7 @@ class PersonalInfoCard extends StatelessWidget {
                         child: FittedBox(
 
                           child: headerIcon ??
-                              CardSvg.icon(CardSvg.personalInfo),
+                              CardSvg.icon(CardSvg.personalInfo,color: AppColors.secondaryText),
                         ),
                       ),
                     ),
@@ -125,7 +123,7 @@ class PersonalInfoCard extends StatelessWidget {
               Row(
                 children: [
                   CardSvg.icon(CardSvg.serviceProvider,
-                      size: 16, color: AppColors.secondaryBlack),
+                      size: 16, color: AppColors.secondaryText),
                   SizedBox(width: 4.w),
                   Text(requestedByLabel, style: CardStyles.label(13)),
                   SizedBox(width: 6.w),
@@ -181,7 +179,7 @@ class PersonalInfoCard extends StatelessWidget {
                       height: 36.h,
                       space: 8.w,
                       radius: 8.r,
-                      color: Colors.transparent,
+                      color: AppColors.transparent,
                       image: rejectSvg,
                       widthImage: 24.r,
                       heightImage: 24.r,
@@ -199,7 +197,7 @@ class PersonalInfoCard extends StatelessWidget {
                       height: 36.h,
                       space: 8.w,
                       radius: 8.r,
-                      color: Colors.transparent,
+                      color: AppColors.transparent,
                       image: approveSvg,
                       widthImage: 24.r,
                       heightImage: 24.r,

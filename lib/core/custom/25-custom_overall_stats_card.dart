@@ -2,10 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:demo_app/core/theme/app_colors.dart';
-import 'package:demo_app/core/custom/16-custom_card_styles.dart';
-
-import '../theme/app_colors.dart';
+import 'package:grc_module/core/theme/app_colors.dart';
+import 'package:grc_module/core/custom/16-custom_card_styles.dart';
 
 /// One stat tile entry. [icon] can be any widget (SVG, Icon...).
 class StatItem {
@@ -40,7 +38,8 @@ class OverallStatsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: width ?? double.infinity,
-      padding: EdgeInsets.all(15.r),
+      // Figma: card padding 16, radius 8, white bg + 2% shadow.
+      padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
         color: AppColors.card,
         borderRadius: CardStyles.radius(),
@@ -50,7 +49,7 @@ class OverallStatsCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(title, style: CardStyles.title(14)),
+          Text(title, style: CardStyles.title(16)),
           SizedBox(height: 12.h),
           LayoutBuilder(
             builder: (context, constraints) {
@@ -82,21 +81,19 @@ class _StatTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Figma "Overall" tile: large line icon + [label above, count below],
+    // no background box.
     return InkWell(
       onTap: item.onTap,
       borderRadius: CardStyles.radius(),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
-        decoration: BoxDecoration(
-          color: AppColors.background,
-          borderRadius: CardStyles.radius(),
-        ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 4.h),
         child: Row(
           children: [
             if (item.icon != null) ...[
               SizedBox(
-                width: 22.r,
-                height: 22.r,
+                width: 40.r,
+                height: 40.r,
                 child: FittedBox(child: item.icon),
               ),
               SizedBox(width: 8.w),
@@ -108,11 +105,11 @@ class _StatTile extends StatelessWidget {
                 children: [
                   Text(
                     item.label,
-                    style: CardStyles.label(11),
+                    style: CardStyles.value(14),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  Text(item.value, style: CardStyles.title(14)),
+                  Text(item.value, style: CardStyles.title(16)),
                 ],
               ),
             ),

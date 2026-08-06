@@ -9,8 +9,8 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:demo_app/core/theme/app_colors.dart';
-import 'app_font_weights.dart';
+import 'package:grc_module/core/theme/app_colors.dart';
+import './app_font_weights.dart';
 
 abstract class AppTextStyles {
   static final _storage = GetStorage();
@@ -100,7 +100,9 @@ abstract class AppTextStyles {
       );
 
   static TextStyle get font10BlackRegularInter => _withFontFamily(
-        GoogleFonts.inter(
+        // Inter is not bundled offline; use Cairo (bundled) to avoid the
+        // google_fonts "font not found" exception when runtime fetching is off.
+        GoogleFonts.cairo(
           color: AppColors.text,
           fontSize: 10.sp,
           fontWeight: AppFontWeights.regular,

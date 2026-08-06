@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:demo_app/core/network/get_base_url.dart';
+import 'package:grc_module/core/network/get_base_url.dart';
 import '../models/notification_data_model.dart';
 
 class FirestoreNotificationService {

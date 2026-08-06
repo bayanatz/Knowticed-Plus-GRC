@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../../../core/twillo/twilio_repository.dart';
-import '../models/notification_modle.dart';
-import 'notification_template_service.dart';
+import 'package:grc_module/core/twillo/twilio_repository.dart';
+import '../models/notification_model.dart';
+import './notification_template_service.dart';
 
 class NotificationSenderService {
   final NotificationTemplateService _templateService = NotificationTemplateService();

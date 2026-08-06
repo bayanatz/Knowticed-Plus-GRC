@@ -1,103 +1,136 @@
 import 'package:flutter/material.dart';
 
-import 'package:demo_app/core/custom/32-custom_svg.dart';
-import 'package:demo_app/core/theme/app_colors.dart';
-import '../theme/app_colors.dart';
+import 'package:grc_module/core/theme/app_colors.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
+import 'package:grc_module/core/custom/41_custom_button_sizing.dart';
+
+import './32-custom_svg.dart';
 
 Widget customButtonWithSvg({
   required String title,
   required VoidCallback function,
   required TextStyle textStyle,
-  double? width,
-  required double height,
-  required double space,
-  required double radius,
+  double? width, // optional & ignored: sizing is enforced by ButtonSizing
+  double? height, // optional & ignored: sizing is enforced by ButtonSizing
+  double space = 8,
+  double? radius, // optional & ignored: sizing is enforced by ButtonSizing
   required Color color,
   required String image,
   required double widthImage,
   required double heightImage,
   required Color colorBorder,
   Color? svgColor,
-  EdgeInsets? padding,
+  EdgeInsets? padding, // ignored: sizing is enforced by ButtonSizing
 }) {
-  return GestureDetector(
-    onTap: function,
-    child: Container(
-      width: width,
-      height: height,
-      decoration: BoxDecoration(
-        color: color,
-        border: Border.all(color: colorBorder),
-        borderRadius: BorderRadius.circular(radius),
-      ),
-      child: (title.trim().isEmpty && image.isNotEmpty)
-          ? Center(
-        child: CustomSvg(
-          assetPath: image,
-          height: heightImage,
-          width: widthImage,
-          color: svgColor ?? AppColors.textButton,
-          fit: BoxFit.scaleDown,
-        ),
-      )
-          : Padding(
-        padding: padding ?? EdgeInsets.zero,
-        child: image.isNotEmpty
+  return Builder(
+    builder: (context) {
+      final bool iconOnly = title.trim().isEmpty && image.isNotEmpty;
+
+      // Icon-only buttons are always 38.sp × 38.sp.
+      // Text buttons: 38.sp (mobile) / 135.sp (tablet), or null when the
+      // content doesn't fit (then wrap with 12.sp horizontal padding).
+      final double? buttonWidth = iconOnly
+          ? ButtonSizing.iconButtonSize
+          : ButtonSizing.width(
+              context,
+              title: title,
+              textStyle: textStyle,
+              extraContentWidth: image.isNotEmpty ? widthImage + space : 0,
+            );
+
+      Widget content;
+      if (iconOnly) {
+        content = Center(
+          child: CustomSvgImage(
+            assetPath: image,
+            height: heightImage,
+            width: widthImage,
+            color: svgColor ?? AppColors.textButton,
+            fit: BoxFit.scaleDown,
+          ),
+        );
+      } else {
+        final Widget inner = image.isNotEmpty
             ? Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CustomSvg(
-              assetPath: image,
-              height: heightImage,
-              width: widthImage,
-              color: svgColor,
-              fit: BoxFit.scaleDown,
-            ),
-            SizedBox(width: space),
-            Text(title, style: textStyle),
-          ],
-        )
+                mainAxisSize:
+                    buttonWidth == null ? MainAxisSize.min : MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CustomSvgImage(
+                    assetPath: image,
+                    height: heightImage,
+                    width: widthImage,
+                    color: svgColor,
+                    fit: BoxFit.scaleDown,
+                  ),
+                  SizedBox(width: space),
+                  Text(title, style: textStyle),
+                ],
+              )
             : Center(
-          child: Text(title, style: textStyle),
+                widthFactor: buttonWidth == null ? 1 : null,
+                child: Text(title, style: textStyle),
+              );
+
+        content = buttonWidth == null
+            ? Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: ButtonSizing.horizontalPadding,
+                ),
+                child: inner,
+              )
+            : inner;
+      }
+
+      return GestureDetector(
+        onTap: () {
+          HapticController.medium(); // action button
+          function();
+        },
+        child: Container(
+          width: buttonWidth,
+          height: ButtonSizing.height,
+          decoration: BoxDecoration(
+            color: color,
+            border: Border.all(color: colorBorder),
+            borderRadius: BorderRadius.circular(ButtonSizing.radius),
+          ),
+          child: content,
         ),
-      ),
-    ),
+      );
+    },
   );
 }
 
 /*
 // ── Usage ─────────────────────────────────────────────────────────────────────
+// Sizing is enforced app-wide by ButtonSizing:
+// width 38.sp (mobile) / 135.sp (tablet), height 38.sp, radius 8.r.
+// Icon-only buttons (empty title) are always 38.sp × 38.sp.
+// If the content doesn't fit, the button wraps it with 12.sp horizontal padding.
 
 // Icon + text
 customButtonWithSvg(
   title: 'Export',
   function: () {},
-  textStyle: TextStyle(fontSize: 14, color: AppColors.textButton),
-  width: 160,
-  height: 48,
-  space: 8,
-  radius: 8,
+  textStyle: StyleText.fontSize14Weight400.copyWith(color: AppColors.textButton),
   color: AppColors.primary,
-  image: 'assets/icons/export.svg',
+  image: 'assets/icons_assets/main_icons_assets/export_arrow.svg',
   widthImage: 20,
   heightImage: 20,
-  colorBorder: Colors.transparent,
+  colorBorder: AppColors.transparent,
   svgColor: AppColors.textButton,
 )
 
-// Icon only (empty title)
+// Icon only (empty title) → 38.sp × 38.sp
 customButtonWithSvg(
   title: '',
   function: () {},
-  textStyle: TextStyle(),
-  width: 48,
-  height: 48,
-  space: 0,
-  radius: 8,
+  textStyle: StyleText.fontSize14Weight400,
   color: AppColors.primary,
-  image: 'assets/icons/add.svg',
+  image: 'assets/icons_assets/main_icons_assets/plus.svg',
   widthImage: 20,
   heightImage: 20,
-  colorBorder: Colors.transparent,
+  colorBorder: AppColors.transparent,
 )
 */

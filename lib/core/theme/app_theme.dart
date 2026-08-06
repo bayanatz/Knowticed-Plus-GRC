@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-import 'package:demo_app/core/theme/app_colors.dart';
-import 'app_text_styles.dart';
+import 'package:grc_module/core/theme/app_colors.dart';
+import './app_text_styles.dart';
 
 abstract class AppTheme {
   static bool isDark = false;
@@ -197,6 +197,7 @@ abstract class AppTheme {
 
   // ****************** DEFINE COLOR PALETTE HERE ******************
   static Map<String, Color> lightThemeColors = {
+    'greyDark': const Color(0xff8D8D8D),
     'pending': const Color(0xffFF814A),
     'switchOff': const Color(0xffe9e9eb),
 
@@ -267,6 +268,8 @@ abstract class AppTheme {
     'block': const Color(0xFFDF0C0C),
     'warning': const Color(0xFFFF814A),
     'delete': const Color(0xFFDF1C1C),
+    'expiringSoon': const Color(0xFF991010),
+    'onboardingDotInactive': const Color(0x332D2D2D),
     'differentGrey': const Color(0xFF9E9E9E),
     'barrierColor': const Color(0XFFD9D9D9).withOpacity(.9),
     'totalBlack': const Color(0xFF000000),
@@ -355,6 +358,8 @@ abstract class AppTheme {
     'block': const Color(0xFFDF0C0C),
     'warning': const Color(0xffFF814A),
     'delete': const Color(0xFFDF1C1C),
+    'expiringSoon': const Color(0xFF991010),
+    'onboardingDotInactive': const Color(0xFFF2F2F2),
     'differentGrey': const Color(0xFF9E9E9E),
     'unBlock': const Color(0xFF4BB609),
     'greyBack': const Color(0xFFBCCCCC),
@@ -511,4 +516,6 @@ abstract class StyleText {
       AppTextStyles.font23BlackRegularCairo;
   static TextStyle get fontSize28Weight600 =>
       AppTextStyles.font28BlackMediumCairo;
+  static TextStyle get fontSize36Weight500 =>
+      AppTextStyles.font36BlackMediumCairo;
 }

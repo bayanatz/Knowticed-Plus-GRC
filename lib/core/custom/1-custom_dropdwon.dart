@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:demo_app/core/theme/app_colors.dart';
-import '../theme/app_colors.dart';
+import 'package:grc_module/core/theme/app_colors.dart';
+import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:grc_module/core/custom/32-custom_svg.dart';
 
 /// A dropdown item model
 class DropdownItem<T> {
@@ -157,8 +157,8 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
         openUpward: openUpward,
         items: widget.items,
         maxHeight: widget.maxOverlayHeight ?? 240.h,
-        itemHeight: widget.itemHeight ?? 44.h,
-        borderRadius: widget.borderRadius ?? BorderRadius.circular(8.r),
+        itemHeight: widget.itemHeight ?? 36.sp,
+        borderRadius: widget.borderRadius ?? BorderRadius.circular(4.r),
         elevation: widget.overlayElevation,
         itemStyle: widget.itemStyle,
         showDivider: widget.showDivider,
@@ -202,7 +202,6 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
   @override
   Widget build(BuildContext context) {
     final hasError = widget.errorText != null && widget.errorText!.isNotEmpty;
-    final radius = widget.borderRadius ?? BorderRadius.circular(8.r);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -214,9 +213,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
             text: TextSpan(
               text: widget.label,
               style: widget.labelStyle ??
-                  TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
+                  StyleText.fontSize14Weight500.copyWith(
                     color: hasError
                         ? AppColors.red
                         : widget.enabled
@@ -227,7 +224,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
                   ? [
                 TextSpan(
                   text: ' *',
-                  style: TextStyle(color: AppColors.red),
+                  style: StyleText.fontSize14Weight500.copyWith(color: AppColors.red),
                 )
               ]
                   : [],
@@ -243,7 +240,47 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
           link: _layerLink,
           child: GestureDetector(
             onTap: _toggleDropdown,
-            child: InputDecorator(
+            // InputDecorator asserts it must have a bounded width. When this
+            // dropdown is placed in a parent that provides an unbounded width
+            // (e.g. a Row/Column without Expanded/Flexible/SizedBox), fall back
+            // to sizing the trigger to its intrinsic width so it never crashes
+            // with "InputDecorator cannot have an unbounded width".
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final trigger = _buildTrigger(context);
+                return constraints.maxWidth.isFinite
+                    ? trigger
+                    : IntrinsicWidth(child: trigger);
+              },
+            ),
+          ),
+        ),
+
+        // ── Error / Helper ─────────────────────────────────
+        if (hasError) ...[
+          SizedBox(height: 4.h),
+          Text(
+            widget.errorText!,
+            style: widget.errorStyle ??
+                StyleText.fontSize12Weight400.copyWith(color: AppColors.red),
+          ),
+        ] else if (widget.helperText != null) ...[
+          SizedBox(height: 4.h),
+          Text(
+            widget.helperText!,
+            style: widget.helperStyle ??
+                StyleText.fontSize12Weight400.copyWith(
+                    color: AppColors.text.withOpacity(0.5)),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildTrigger(BuildContext context) {
+    final hasError = widget.errorText != null && widget.errorText!.isNotEmpty;
+    final radius = widget.borderRadius ?? BorderRadius.circular(4.r);
+    return InputDecorator(
               key: _triggerKey,
               isFocused: false,
               isEmpty: _selectedItem == null,
@@ -253,8 +290,8 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
                     EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
                 filled: true,
                 fillColor: widget.enabled
-                    ? (widget.fillColor ?? AppColors.card)
-                    : AppColors.card.withOpacity(0.5),
+                    ? (widget.fillColor ?? AppColors.background)
+                    : AppColors.background,
                 // ── No border rule — red only on error ──────
                 // InputDecorator does not trigger errorBorder on its own
                 // (no errorText), so we drive the border via enabledBorder.
@@ -299,11 +336,12 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
                       AnimatedRotation(
                         turns: _isOpen ? 0.5 : 0,
                         duration: const Duration(milliseconds: 180),
-                        child: SvgPicture.asset(
-                          'assets/arrowdown.svg',
-                          width: 20.sp,
-                          height: 20.sp,
-                          colorFilter: ColorFilter.mode(
+                        child: CustomSvgImage(
+   assetPath: 'assets/icons_assets/main_icons_assets/chevron_down.svg',
+   width: 20.sp,
+   height: 20.sp,
+   fit: BoxFit.contain,
+   colorFilter: ColorFilter.mode(
                             hasError
                                 ? AppColors.red
                                 : widget.enabled
@@ -311,14 +349,13 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
                                 : AppColors.text.withOpacity(0.3),
                             BlendMode.srcIn,
                           ),
-                        ),
+ ),
                       ),
                 ),
                 suffixIconConstraints: const BoxConstraints(),
                 hintText: _selectedItem == null ? (widget.hint ?? '') : null,
                 hintStyle: widget.hintStyle ??
-                    TextStyle(
-                      fontSize: 14.sp,
+                    StyleText.fontSize14Weight400.copyWith(
                       color: AppColors.text.withOpacity(0.4),
                     ),
                 // Suppress built-in error text — we render our own below
@@ -336,8 +373,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
                     child: Text(
                       _selectedItem!.label,
                       style: widget.valueStyle ??
-                          TextStyle(
-                            fontSize: 14.sp,
+                          StyleText.fontSize14Weight400.copyWith(
                             color: widget.enabled
                                 ? AppColors.text
                                 : AppColors.text.withOpacity(0.4),
@@ -350,30 +386,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
               // InputDecorator shows hintText automatically when child
               // isEmpty — but we still need a zero-height child.
                   : const SizedBox.shrink(),
-            ),
-          ),
-        ),
-
-        // ── Error / Helper ─────────────────────────────────
-        if (hasError) ...[
-          SizedBox(height: 4.h),
-          Text(
-            widget.errorText!,
-            style: widget.errorStyle ??
-                TextStyle(fontSize: 12.sp, color: AppColors.red),
-          ),
-        ] else if (widget.helperText != null) ...[
-          SizedBox(height: 4.h),
-          Text(
-            widget.helperText!,
-            style: widget.helperStyle ??
-                TextStyle(
-                    fontSize: 12.sp,
-                    color: AppColors.text.withOpacity(0.5)),
-          ),
-        ],
-      ],
-    );
+            );
   }
 }
 
@@ -479,8 +492,7 @@ class _DropdownOverlay<T> extends StatelessWidget {
                             Center(
                               child: Text(
                                 'No options',
-                                style: TextStyle(
-                                  fontSize: 13.sp,
+                                style: StyleText.fontSize13Weight400.copyWith(
                                   color: AppColors.text.withOpacity(0.4),
                                 ),
                               ),
@@ -569,7 +581,7 @@ class _DropdownItemTileState<T> extends State<_DropdownItemTile<T>> {
               ? AppColors.primary
               : (_hovered && !isDisabled)
               ? AppColors.primary
-              : Colors.transparent,
+              : AppColors.transparent,
           child: Row(
             children: [
               if (widget.item.leading != null) ...[
@@ -580,12 +592,9 @@ class _DropdownItemTileState<T> extends State<_DropdownItemTile<T>> {
                 child: Text(
                   widget.item.label,
                   style: (widget.style ??
-                      TextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: widget.isSelected
-                            ? FontWeight.w500
-                            : FontWeight.normal,
-                      ))
+                      (widget.isSelected
+                          ? StyleText.fontSize14Weight500
+                          : StyleText.fontSize14Weight400))
                       .copyWith(
                     color: isDisabled
                         ? AppColors.text.withOpacity(0.3)

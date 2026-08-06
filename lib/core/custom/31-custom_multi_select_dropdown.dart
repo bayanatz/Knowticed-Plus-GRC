@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:demo_app/core/theme/app_colors.dart';
-import 'package:demo_app/core/custom/23-custom_check_box.dart';
-import '../theme/app_colors.dart';
+import 'package:grc_module/core/theme/app_colors.dart';
+import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:grc_module/core/custom/23-custom_check_box.dart';
+import 'package:grc_module/core/custom/32-custom_svg.dart';
 
 /// A multi-select dropdown item model
 class MultiSelectDropdownItem<T> {
@@ -270,9 +270,7 @@ class _CustomMultiSelectDropdownState<T>
             text: TextSpan(
               text: widget.label,
               style: widget.labelStyle ??
-                  TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
+                  StyleText.fontSize14Weight500.copyWith(
                     color: hasError
                         ? AppColors.red
                         : widget.enabled
@@ -283,7 +281,7 @@ class _CustomMultiSelectDropdownState<T>
                   ? [
                       TextSpan(
                         text: ' *',
-                        style: TextStyle(color: AppColors.red),
+                        style: StyleText.fontSize14Weight500.copyWith(color: AppColors.red),
                       )
                     ]
                   : [],
@@ -350,11 +348,12 @@ class _CustomMultiSelectDropdownState<T>
                       AnimatedRotation(
                         turns: _isOpen ? 0.5 : 0,
                         duration: const Duration(milliseconds: 180),
-                        child: SvgPicture.asset(
-                          'assets/arrowdown.svg',
-                          width: 20.sp,
-                          height: 20.sp,
-                          colorFilter: ColorFilter.mode(
+                        child: CustomSvgImage(
+   assetPath: 'assets/icons_assets/main_icons_assets/chevron_down.svg',
+   width: 20.sp,
+   height: 20.sp,
+   fit: BoxFit.contain,
+   colorFilter: ColorFilter.mode(
                             hasError
                                 ? AppColors.red
                                 : widget.enabled
@@ -362,14 +361,13 @@ class _CustomMultiSelectDropdownState<T>
                                     : AppColors.text.withOpacity(0.3),
                             BlendMode.srcIn,
                           ),
-                        ),
+ ),
                       ),
                 ),
                 suffixIconConstraints: const BoxConstraints(),
                 hintText: isEmpty ? (widget.hint ?? '') : null,
                 hintStyle: widget.hintStyle ??
-                    TextStyle(
-                      fontSize: 14.sp,
+                    StyleText.fontSize14Weight400.copyWith(
                       color: AppColors.text.withOpacity(0.4),
                     ),
                 errorText: null,
@@ -378,8 +376,7 @@ class _CustomMultiSelectDropdownState<T>
                   ? Text(
                       _selectedText,
                       style: widget.valueStyle ??
-                          TextStyle(
-                            fontSize: 14.sp,
+                          StyleText.fontSize14Weight400.copyWith(
                             color: widget.enabled
                                 ? AppColors.text
                                 : AppColors.text.withOpacity(0.4),
@@ -397,15 +394,15 @@ class _CustomMultiSelectDropdownState<T>
           Text(
             widget.errorText!,
             style: widget.errorStyle ??
-                TextStyle(fontSize: 12.sp, color: AppColors.red),
+                StyleText.fontSize12Weight400.copyWith(color: AppColors.red),
           ),
         ] else if (widget.helperText != null) ...[
           SizedBox(height: 4.h),
           Text(
             widget.helperText!,
             style: widget.helperStyle ??
-                TextStyle(
-                    fontSize: 12.sp, color: AppColors.text.withOpacity(0.5)),
+                StyleText.fontSize12Weight400.copyWith(
+                    color: AppColors.text.withOpacity(0.5)),
           ),
         ],
       ],
@@ -507,8 +504,7 @@ class _MultiSelectOverlay<T> extends StatelessWidget {
                                   Center(
                                     child: Text(
                                       'No options',
-                                      style: TextStyle(
-                                        fontSize: 13.sp,
+                                      style: StyleText.fontSize13Weight400.copyWith(
                                         color: AppColors.text.withOpacity(0.4),
                                       ),
                                     ),
@@ -599,7 +595,7 @@ class _MultiSelectItemTileState<T> extends State<_MultiSelectItemTile<T>> {
           // background tint for selected items.
           color: _hovered && !isDisabled
               ? AppColors.primary
-              : Colors.transparent,
+              : AppColors.transparent,
           child: Row(
             children: [
               CustomCheckBox(
@@ -615,12 +611,9 @@ class _MultiSelectItemTileState<T> extends State<_MultiSelectItemTile<T>> {
                 child: Text(
                   widget.item.label,
                   style: (widget.style ??
-                          TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: widget.isSelected
-                                ? FontWeight.w500
-                                : FontWeight.normal,
-                          ))
+                          (widget.isSelected
+                              ? StyleText.fontSize14Weight500
+                              : StyleText.fontSize14Weight400))
                       .copyWith(
                     color: isDisabled
                         ? AppColors.text.withOpacity(0.3)

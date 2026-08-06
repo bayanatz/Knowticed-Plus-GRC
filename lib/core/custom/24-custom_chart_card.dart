@@ -4,26 +4,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:demo_app/core/theme/app_colors.dart';
-import 'package:demo_app/core/custom/32-custom_svg.dart';
-import 'package:demo_app/core/custom/16-custom_card_styles.dart';
-import '../theme/app_colors.dart';
+import 'package:grc_module/core/theme/app_colors.dart';
+import 'package:grc_module/core/custom/32-custom_svg.dart';
+import 'package:grc_module/core/custom/16-custom_card_styles.dart';
 
-/// SVG icon assets used by the chart widgets (assets/new/charts).
+/// SVG icon assets used by the chart widgets.
+/// All paths point to existing, pubspec-declared assets in assets/icons_assets.
 abstract class ChartSvg {
-  static const String _base = 'assets/new/charts';
-
-  static const String products = '$_base/products.svg';
-  static const String orders = '$_base/orders.svg';
-  static const String warehouse = '$_base/warehouse.svg';
-  static const String lowStock = '$_base/low_stock.svg';
-  static const String supplier = '$_base/supplier.svg';
-  static const String request = '$_base/request.svg';
-  static const String present = '$_base/present.svg';
-  static const String absent = '$_base/absent.svg';
-  static const String late = '$_base/late.svg';
-  static const String vacation = '$_base/vacation.svg';
-  static const String excused = '$_base/excused.svg';
+  static const String products = 'assets/icons_assets/home_assets/inventory_products_box.svg';
+  static const String orders = 'assets/icons_assets/home_assets/service_requests_document.svg';
+  static const String warehouse = 'assets/icons_assets/roles_assets/inventory_warehouse.svg';
+  static const String lowStock = 'assets/icons_assets/home_assets/inventory_damaged_box.svg';
+  static const String supplier = 'assets/icons_assets/services_assets/building_office.svg';
+  static const String request = 'assets/icons_assets/settings_assets/requests_edit_document.svg';
+  static const String present = 'assets/icons_assets/main_icons_assets/check_circle_green.svg';
+  static const String absent = 'assets/icons_assets/main_icons_assets/prohibited_circle.svg';
+  static const String late = 'assets/icons_assets/main_icons_assets/clock_circle.svg';
+  static const String vacation = 'assets/icons_assets/home_assets/todo_scheduled_calendar.svg';
+  static const String excused = 'assets/icons_assets/settings_assets/request_change_document.svg';
 }
 
 /// White rounded container with the standard chart header:
@@ -55,7 +53,8 @@ class ChartCard extends StatelessWidget {
     return Container(
       width: width ?? double.infinity,
       height: height,
-      padding: padding ?? EdgeInsets.all(10.r),
+      // Figma: card padding 16.
+      padding: padding ?? EdgeInsets.all(16.r),
       decoration: BoxDecoration(
         color: AppColors.card,
         borderRadius: CardStyles.radius(),
@@ -75,7 +74,7 @@ class ChartCard extends StatelessWidget {
                     color: AppColors.primary,
                     shape: BoxShape.circle
                   ),
-                  child: CustomSvg(
+                  child: CustomSvgImage(
                     assetPath: dotIcon!,
                     width: 20.r,
                     height: 20.r,
@@ -108,6 +107,32 @@ class ChartCard extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+/// Whether a bar chart renders vertically ([BarChartCard], 26) or
+/// horizontally ([HorizontalBarChartCard], 28).
+///
+/// Moved here from the removed
+/// home/h1_home_page/presentation/ui/services_management_module/dashboard_view_data/, so the chart
+/// cards and the enum that selects between them live together in core.
+enum ChartOrientation {
+  horizontal,
+  vertical;
+
+  /// Convert enum to string for Firestore storage
+  String toFirestore() => name;
+
+  /// Create enum from Firestore string
+  static ChartOrientation fromFirestore(String value) {
+    switch (value.toLowerCase()) {
+      case 'horizontal':
+        return ChartOrientation.horizontal;
+      case 'vertical':
+        return ChartOrientation.vertical;
+      default:
+        return ChartOrientation.vertical; // Default fallback
+    }
   }
 }
 

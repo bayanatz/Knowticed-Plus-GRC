@@ -1,14 +1,8 @@
-/// **************************** FILE INFO **************************** ///
-/// Purpose: Model for employee insurance data
-/// Author: Mohamed Elrashidy
-/// created At: 20/11/2024
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SingleValueTrackingModel<T>{
   List<T> values;
-  List<Timestamp>timestamps;
+  List<Timestamp> timestamps;
 
   SingleValueTrackingModel({
     required this.values,
@@ -26,7 +20,6 @@ class SingleValueTrackingModel<T>{
   }
 
   factory SingleValueTrackingModel.fromMap(Map<String, dynamic> map) {
-
     return SingleValueTrackingModel(
       values: List<T>.from(map[valuesKey] as List),
       timestamps: List<Timestamp>.from(map[timestampsKey] as List),

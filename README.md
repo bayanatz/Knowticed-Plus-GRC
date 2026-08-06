@@ -1,4 +1,4 @@
-# demo_app
+# grc_module
 
 A new Flutter project.
 

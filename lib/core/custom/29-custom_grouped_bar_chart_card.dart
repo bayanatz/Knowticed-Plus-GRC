@@ -6,11 +6,9 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:demo_app/core/theme/app_colors.dart';
-import 'package:demo_app/core/custom/16-custom_card_styles.dart';
-import 'package:demo_app/core/custom/24-custom_chart_card.dart';
-
-import '../theme/app_colors.dart';
+import 'package:grc_module/core/theme/app_colors.dart';
+import 'package:grc_module/core/custom/16-custom_card_styles.dart';
+import 'package:grc_module/core/custom/24-custom_chart_card.dart';
 
 /// One group of bars (e.g. "iPhone 18" with one value per series).
 class GroupedBarData {

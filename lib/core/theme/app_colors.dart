@@ -5,10 +5,19 @@
 
 import 'package:flutter/material.dart';
 
-import 'app_theme.dart';
+import './app_theme.dart';
 
 abstract class AppColors {
   static Map<String, Color> currentThemeColors = AppTheme.lightThemeColors;
+
+  // Theme-independent constant (avoids raw Colors.transparent in widgets, §12).
+  static const Color transparent = Colors.transparent;
+
+  /// Theme-independent disabled/inactive-state grey (was inline
+  /// `Color(0xFFD9D9D9)` in custom_check_box.dart). Matches the light-theme
+  /// barrierColor value but is kept separate since it's used for disabled
+  /// buttons/controls, not modal barriers.
+  static const Color disabledGrey = Color(0xFFD9D9D9);
 
 
   // ----------------- Black & White Colors -----------------
@@ -38,6 +47,11 @@ abstract class AppColors {
   }
   static Color get unBlock => currentThemeColors['unBlock']!;
   static Color get delete => currentThemeColors['delete']!;
+  static Color get expiringSoon => currentThemeColors['expiringSoon']!;
+
+  /// Inactive onboarding page-indicator dot (theme-aware).
+  static Color get onboardingDotInactive =>
+      currentThemeColors['onboardingDotInactive']!;
   static Color get differentGrey => currentThemeColors['differentGrey']!;
   static Color get whiteDark => currentThemeColors['whiteDark']!;
   static Color get lightRed => currentThemeColors['lightRed']!;
@@ -178,6 +192,15 @@ abstract class AppColors {
   /// AppColors.colorDarkGrey (0xFF797979)
   static const Color colorDarkGrey = Color(0xFF797979);
 
+  /// Settings input background (dark mode) — 0xFF545454
+  static const Color inputBackgroundDark = Color(0xFF545454);
+
+  /// Invoices table zebra-stripe (light) — 0xFFF1F1F1
+  static const Color tableRowLight = Color(0xFFF1F1F1);
+
+  /// Invoices table zebra-stripe (dark) — 0xFF28282B
+  static const Color tableRowDark = Color(0xFF28282B);
+
   /// AppColors.dark (0xFF4B4B4B)
   static Color get dark => currentThemeColors['greyDark']!;
 
@@ -202,15 +225,37 @@ abstract class AppColors {
   /// AppColors.yellowColor (0xffFFCC00)
   static Color get yellowColor => currentThemeColors['yellow']!;
 
-  // ----------------- Remaining MyThemeData fixed-value aliases -----------------
-  // These were defined as fixed (theme-unaware) Colors on MyThemeData.
-  // Values copied exactly from the original MyThemeData definition.
-  static const Color GreyBack = Color(0xFFBCCCCCCCC);
-  static const Color blueNew = Color(0xFF347AE2);
-  static const Color colorBlue = Color(0xFF1877F2);
-  static const Color colorGreyDisabled = Color(0xFF999999);
-  static const Color colorYellow = Color(0xFFFFDE59);
-  static const Color divider = Color(0xFFCFCAE4);
-  static const Color dividerColor = Color(0xFF959090);
-  static const Color indicatorColor = Color(0xFF0A0F0C);
+  // ----------------- Services dashboard palette (moved from ServicesColors) --
+  // Named colours used by the services admin-dashboard widgets (§12 — no raw
+  // Color(0xFF…) literals inside widgets). Kept theme-independent as the
+  // originals were.
+
+  // Pie/donut-chart palette (gold -> dark red gradient).
+  static const Color chartGold = Color(0xFFFFD700);
+  static const Color chartOrange = Color(0xFFFF9500);
+  static const Color chartAmber = Color(0xFFD4780A);
+  static const Color chartBrown = Color(0xFF8B5200);
+  static const Color chartDarkRed = Color(0xFF730606);
+
+  // Services dashboard table backgrounds (light / dark).
+  static const Color tableLightBackground = Color(0xFFF7F8FA);
+  static const Color tableDarkBackground = Color(0xFF1E1F24);
+
+  // Disabled / neutral button background (services export widgets).
+  static const Color disabledButton = Color(0xFFCCCCCCCC);
+
+  // Mobile-dashboard chart palette (master mobile).
+  static const Color chartGreen = Color(0xFF378309);
+  static const Color chartYellow = Color(0xFFFFCC00);
+  static const Color chartCrimson = Color(0xFF950E0E);
+  static const Color chartGoldDeep = Color(0xFFE5C100);
+  static const Color chartGoldPale = Color(0xFFE3D38C);
+  static const Color chartGoldBright = Color(0xFFFFDE59);
+  static const Color chartOlive = Color(0xFFA18A2D);
+  static const Color chartAmberDeep = Color(0xFFE5B800);
+  static const Color chartGreyOlive = Color(0xFF807B69);
+  static const Color chartGrey = Color(0xFF8D8D8D);
+  static const Color chartLightGrey = Color(0xFFCACACA);
+  static const Color chartTaupe = Color(0xFF6B5650);
+  static const Color chartMocha = Color(0xFF795548);
 }

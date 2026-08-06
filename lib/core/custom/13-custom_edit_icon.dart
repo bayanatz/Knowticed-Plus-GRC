@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:demo_app/core/theme/app_colors.dart';
+import 'package:grc_module/core/theme/app_colors.dart';
+import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
-import 'package:demo_app/core/custom/32-custom_svg.dart';
-import '../theme/app_colors.dart';
+import 'package:grc_module/core/custom/41_custom_button_sizing.dart';
+
+import './32-custom_svg.dart';
+import 'package:grc_module/core/extension/context_extensions.dart';
 
 /// Edit action button.
 ///
 /// Fixed (static) values:
 /// - Mobile: 38.sp x 38.sp, icon only (no text)
-/// - Non-mobile: 100.sp x 38.sp, svg + text with 8.sp space
+/// - Non-mobile: 135.sp x 38.sp, svg + text with 8.sp space;
+///   if the content doesn't fit, wraps with 12.sp horizontal padding
 /// - Border radius: 8.r
-/// - Svg: assets/new/edit.svg, 20.sp x 20.sp
+/// - Svg: assets/icons_assets/main_icons_assets/edit_pencil_square.svg, 20.sp x 20.sp
 class CustomEditIcon extends StatelessWidget {
-  static const String _svgPath = 'assets/new/edit.svg';
+  static const String _svgPath = 'assets/icons_assets/main_icons_assets/edit_pencil_square.svg';
 
   final String? title;
   final VoidCallback? onTap;
@@ -37,12 +42,12 @@ class CustomEditIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isMobile = context.isPhone;
+    final bool isMobile = ContextExtension(context).isPhone;
     final bool isArabic = Get.locale?.languageCode == 'ar';
     final String text = title ?? (isArabic ? 'تعديل' : 'Edit');
     final Color iconColor = svgColor ?? AppColors.textButton;
 
-    final Widget svg = CustomSvg(
+    final Widget svg = CustomSvgImage(
       assetPath: _svgPath,
       width: 20.sp,
       height: 20.sp,
@@ -50,36 +55,68 @@ class CustomEditIcon extends StatelessWidget {
       fit: BoxFit.scaleDown,
     );
 
+    final TextStyle effectiveStyle =
+        textStyle ?? StyleText.fontSize14Weight400.copyWith(color: iconColor);
+
+    // Enforced sizing: 38.sp icon-only on mobile; 135.sp on tablet, or
+    // content width + 12.sp horizontal padding when the text doesn't fit.
+    final double? buttonWidth = isMobile
+        ? ButtonSizing.iconButtonSize
+        : ButtonSizing.width(
+            context,
+            title: text,
+            textStyle: effectiveStyle,
+            extraContentWidth: 20.sp + 8.sp,
+          );
+
     return GestureDetector(
-      onTap: onTap,
+      onTap: onTap == null
+          ? null
+          : () {
+              HapticController.medium(); // edit
+              onTap!();
+            },
       child: Container(
-        width: isMobile ? 38.sp : 100.sp,
-        height: 38.sp,
+        width: buttonWidth,
+        height: ButtonSizing.height,
         decoration: BoxDecoration(
           color: color ?? AppColors.primary,
-          border: Border.all(color: borderColor ?? Colors.transparent),
-          borderRadius: BorderRadius.circular(8.r),
+          border: Border.all(color: borderColor ?? AppColors.transparent),
+          borderRadius: BorderRadius.circular(ButtonSizing.radius),
         ),
         child: isMobile
             ? Center(child: svg)
             : Padding(
-                padding: padding ?? EdgeInsets.zero,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    svg,
-                    SizedBox(width: 8.sp),
-                    Flexible(
-                      child: Text(
-                        text,
-                        style: textStyle ??
-                            TextStyle(fontSize: 14.sp, color: iconColor),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
+                padding: buttonWidth == null
+                    ? EdgeInsets.symmetric(
+                        horizontal: ButtonSizing.horizontalPadding,
+                      )
+                    : (padding ?? EdgeInsets.zero),
+                child: buttonWidth == null
+                    ? Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          svg,
+                          SizedBox(width: 8.sp),
+                          Text(text, style: effectiveStyle, maxLines: 1),
+                        ],
+                      )
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          svg,
+                          SizedBox(width: 8.sp),
+                          Flexible(
+                            child: Text(
+                              text,
+                              style: effectiveStyle,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
               ),
       ),
     );

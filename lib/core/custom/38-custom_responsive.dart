@@ -3,11 +3,12 @@
 // Updated: 24/1/2026 - Added controller cleanup for resize handling
 // Objectives: This file is responsible for providing a responsive widget based on screen size
 // with proper controller lifecycle management
-
-import 'package:demo_app/core/extension/context_extensions.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+
+
+import 'package:flutter/material.dart';
+import 'package:grc_module/core/extension/context_extensions.dart';
 class ResponsiveHelper extends StatefulWidget {
   final Widget mobileWidget, tabletWidget;
 
@@ -26,7 +27,7 @@ class _ResponsiveHelperState extends State<ResponsiveHelper> {
 
   @override
   Widget build(BuildContext context) {
-    final isTablet = context.isTablett;
+    final isTablet = ContextExtension(context).isTablet;
 
     // ✅ Detect size change and clean up wrong controller
     if (_wasTablet != null && _wasTablet != isTablet) {
@@ -44,32 +45,32 @@ class _ResponsiveHelperState extends State<ResponsiveHelper> {
 
   void _cleanupControllersAfterResize(bool isTablet) {
     if (isTablet) {
-      // Switched to tablet - remove NavBarController if it exists
+      // Switched to tablet - remove NavBarCubit if it exists
       try {
-        // Import NavBarController at top of file:
-        // import 'package:demo_app/features/home/nav_bar/presentation/controller/nav_bar_controller.dart';
+        // Import NavBarCubit at top of file:
+        // import 'package:grc_module/features/home/h2_nav_bar/presentation/controller/nav_bar_cubit.dart';
 
         // Uncomment this when you add the import:
-        // if (Get.isRegistered<NavBarController>()) {
-        //   print('🗑️ [RESPONSIVE] Removing NavBarController (switched to tablet)');
-        //   Get.delete<NavBarController>(force: true);
+        // if (Get.isRegistered<NavBarCubit>()) {
+        //   print('🗑️ [RESPONSIVE] Removing NavBarCubit (switched to tablet)');
+        //   Get.delete<NavBarCubit>(force: true);
         // }
       } catch (e) {
-        print('⚠️ [RESPONSIVE] Error removing NavBarController: $e');
+        print('⚠️ [RESPONSIVE] Error removing NavBarCubit: $e');
       }
     } else {
-      // Switched to mobile - remove AppDrawerController if it exists
+      // Switched to mobile - remove AppDrawerCubit if it exists
       try {
-        // Import AppDrawerController at top of file:
-        // import 'package:demo_app/features/home/app_drawer/presentation/controller/drawer_controller.dart';
+        // Import AppDrawerCubit at top of file:
+        // import 'package:grc_module/features/home/h3_app_drawer/presentation/controller/app_drawer_cubit.dart';
 
         // Uncomment this when you add the import:
-        // if (Get.isRegistered<AppDrawerController>()) {
-        //   print('🗑️ [RESPONSIVE] Removing AppDrawerController (switched to mobile)');
-        //   Get.delete<AppDrawerController>(force: true);
+        // if (Get.isRegistered<AppDrawerCubit>()) {
+        //   print('🗑️ [RESPONSIVE] Removing AppDrawerCubit (switched to mobile)');
+        //   Get.delete<AppDrawerCubit>(force: true);
         // }
       } catch (e) {
-        print('⚠️ [RESPONSIVE] Error removing AppDrawerController: $e');
+        print('⚠️ [RESPONSIVE] Error removing AppDrawerCubit: $e');
       }
     }
   }

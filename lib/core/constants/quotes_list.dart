@@ -1,5 +1,15 @@
-// REMOVED_MODULE: import 'package:demo_app/feature/home/presentation/widgets/common/gradiant_container.dart';
-import 'package:demo_app/features/home/presentation/ui/widgets/gradiant_container.dart';
+import 'package:flutter/material.dart';
+
+extension DateTimeExtension on DateTime {
+  int get dayOfYear {
+    int dayOfYear = 0;
+    for (int month = 1; month < this.month; month++) {
+      dayOfYear += DateUtils.getDaysInMonth(year, month);
+    }
+    dayOfYear += day;
+    return dayOfYear;
+  }
+}
 
 String getQuoteForToday() {
   List<String> quotes = [
@@ -207,7 +217,7 @@ String getQuoteForToday() {
   ];
 
   // Use the current day of the year to get a quote (ensuring it's within the range of the list)
-  int dayOfYear = DateTime.now().day;
+  int dayOfYear = DateTime.now().dayOfYear;
   int quoteIndex = dayOfYear % quotes.length;
   return "${quotes[quoteIndex]} - ${authors[quoteIndex]}";
 }

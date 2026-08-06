@@ -1,7 +1,7 @@
 /// **************************** FILE INFO ******************** ///
 /// FILE NAME: gelocator_repository.dart
 /// Purpose: provide location services to the app.
-/// Author: Mohamed Elrashidy
+/// Author: Amr Mesbah
 /// Created at: 2/2/2025
 
 import 'package:geolocator/geolocator.dart';

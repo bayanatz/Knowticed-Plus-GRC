@@ -9,9 +9,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:demo_app/core/theme/app_colors.dart';
-import 'package:demo_app/core/custom/16-custom_card_styles.dart';
-import '../theme/app_colors.dart';
+import 'package:grc_module/core/theme/app_colors.dart';
+import 'package:grc_module/core/custom/16-custom_card_styles.dart';
 
 /// One attendance tile: icon + label + count, with an accent color.
 class AttendanceItem {

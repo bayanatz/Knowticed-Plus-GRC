@@ -1,27 +1,47 @@
 import 'package:flutter/material.dart';
-import 'package:demo_app/core/theme/app_colors.dart';
 import 'package:get/get.dart';
 
+import 'package:grc_module/core/theme/app_colors.dart';
 
+class CircleProgress extends StatelessWidget {
+  const CircleProgress({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation<Color>(AppColors.secondaryPrimary),
+        backgroundColor: AppColors.white,
+        strokeWidth: 2.0,
+      ),
+    );
+  }
+}
+
+
+/// Full-screen modal loading overlay.
+///
+/// Canonical home for the app's loading indicator: every feature calls these
+/// two instead of rolling its own overlay.
 Future showLoadingIndicator() {
   double size = 70;
   return Get.dialog(
     Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.transparent,
       body: Center(
         child: SizedBox(
           width: size,
           height: size,
           child: CircularProgressIndicator(
             valueColor: AlwaysStoppedAnimation<Color>(AppColors.lightPrimary),
-            backgroundColor: Colors.white60,
+            backgroundColor: AppColors.white.withOpacity(0.6),
             strokeWidth: 2.0,
           ),
         ),
       ),
     ),
     barrierDismissible: false,
-    barrierColor: Colors.black.withOpacity(0.5),
+    barrierColor: AppColors.totalBlack.withOpacity(0.5),
     transitionDuration: const Duration(milliseconds: 700),
   );
 }

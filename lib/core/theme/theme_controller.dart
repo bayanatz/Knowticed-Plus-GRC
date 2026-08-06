@@ -3,12 +3,10 @@
 // import 'package:flutter/services.dart';
 // import 'package:get/get.dart';
 // import 'package:get_storage/get_storage.dart';
-//import 'package:demo_app/core/theme/app_font_size.dart';
-//import 'package:demo_app/core/theme/app_colors.dart';
-// import 'package:demo_app/features/onboarding/presentation/ui/pages/onboarding.dart';
-// import 'package:demo_app/features/settings/presentation/controller/add_company_controller.dart';
-// import 'package:demo_app/features/onboarding/welcome_screen/views/mobile_view/nav_bar.dart';
-// // import '../../features/messaging/interface/controller/messaging_init_controller.dart';
+//import 'package:grc_module/core/theme/app_font_size.dart';
+//import 'package:grc_module/core/theme/app_colors.dart';
+// import 'package:grc_module/features/onboarding/o2_intro/presentation/ui/services_management_module/onboarding.dart';
+// import 'package:grc_module/features/settings/presentation/controller/company_controller.dart';
 // import 'app_theme.dart';
 //
 // class ThemeController extends GetxController {
@@ -180,8 +178,6 @@
 //     AppTheme.toggleTheme();
 //
 //     try {
-//       if (Get.isRegistered<MessagingInitController>()) {
-//         Get.find<MessagingInitController>()
 //             .messagingConfigurations
 //             .toggleTheme();
 //       }
@@ -226,8 +222,6 @@
 //     // Initialize messaging module if needed
 //     if (withMessage) {
 //       try {
-//         if (Get.isRegistered<MessagingInitController>()) {
-//           Get.find<MessagingInitController>()
 //               .messagingConfigurations
 //               .initTheme(primary, secondary, isDark);
 //         }
@@ -344,8 +338,6 @@
 //     int.parse(storage.read('secondaryColor') ?? '0xFFE5B800');
 //
 //     try {
-//       if (Get.isRegistered<MessagingInitController>()) {
-//         Get.find<MessagingInitController>()
 //             .messagingConfigurations
 //             .updateBrandingColors(
 //             Color(primaryColor), Color(secondaryColor));
@@ -453,26 +445,37 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:demo_app/features/onboarding/presentation/ui/pages/onboarding.dart';
-import 'package:demo_app/features/settings/presentation/controller/add_company_controller.dart';
-import '../../features/messaging/interface/controller/messaging_init_controller.dart';
-import 'package:demo_app/features/roles/system_logs/controller/system_logs_controller.dart';
-import 'app_theme.dart';
-import 'package:demo_app/core/theme/app_text_styles.dart';
-import 'package:demo_app/core/theme/app_font_size.dart';
-import 'package:demo_app/core/theme/app_colors.dart';
+import 'package:grc_module/features/onboarding/o2_intro/presentation/ui/pages/onboarding.dart';
+import 'package:grc_module/features/settings/se3_company/presentation/controller/company_cubit.dart';
+import 'package:grc_module/features/roles/r5_system_logs/presentation/controller/system_logs_controller.dart';
+import './app_theme.dart';
+import 'package:grc_module/core/theme/app_text_styles.dart';
+import 'package:grc_module/core/theme/app_font_size.dart';
+import 'package:grc_module/core/theme/app_colors.dart';
 class ThemeController extends GetxController {
+  /// The company cubit is injected from main(), which owns it. It stays
+  /// optional so the handful of bare `Get.put(ThemeController())` call sites
+  /// still compile; those resolve the already-registered instance lazily.
+  ThemeController({CompanyCubit? companyCubit}) : _injectedCompanyCubit = companyCubit;
+
+  final CompanyCubit? _injectedCompanyCubit;
+
   final storage = GetStorage();
   late Rx<ThemeData> currentTheme;
   final RxBool isInitialized = false.obs;
 
-  /// Whether UI animations (e.g. slide/fade transitions) are enabled.
-  /// Toggle this to globally disable animations.
+  /// Global "play animations" preference, honoured by SlideAnimation and any
+  /// other opt-in animated widget. Previously lived on GRCThemeController in
+  /// data_grc_module; that module was removed, so it lives here now.
   final RxBool animationsEnabled = true.obs;
+
+  static const String _kAnimationsEnabled = 'animationsEnabled';
 
   @override
   void onInit() {
     super.onInit();
+
+    loadAnimationsSetting();
 
     // ⚠️ AppColors.lightTheme / darkTheme use .sp (ScreenUtil) which requires
     // ScreenUtilInit to be mounted. ThemeController is created in main() before
@@ -523,6 +526,19 @@ class ThemeController extends GetxController {
 
   /// Loads isDark + brand colors from storage. Does NOT access AppColors.lightTheme
   /// or darkTheme — those use .sp and require ScreenUtil to be ready.
+  /// Restores the animation preference from storage. Defaults to enabled.
+  void loadAnimationsSetting() {
+    animationsEnabled.value = storage.read(_kAnimationsEnabled) ?? true;
+  }
+
+  /// Enables or disables app-wide opt-in animations and persists the choice.
+  /// Widgets read [animationsEnabled] directly, so no restart is required.
+  void toggleAnimations(bool isEnabled) {
+    animationsEnabled.value = isEnabled;
+    storage.write(_kAnimationsEnabled, isEnabled);
+    update();
+  }
+
   void _loadThemePrefsSync() {
     print('🎨 [ThemeController] Loading theme prefs from storage...');
 
@@ -645,25 +661,20 @@ class ThemeController extends GetxController {
     // Log action
     systemLogsController.systemLogsAction('change theme');
 
-    // ✅ CRITICAL: Update color maps BEFORE toggling other modules
+    // Rebuild the active colour map from the isDark flag set above.
+    //
+    // ⚠️ Do NOT call AppTheme.toggleTheme() here. That method is
+    // `isDark = !isDark; setCurrentThemeColors();` — it flips the flag a
+    // *second* time and immediately undoes the branch above, so the theme
+    // always snapped back to its previous value. Assign isDark explicitly
+    // (done above) and only refresh the colour map here.
     print('🎨 [ThemeController] Updating color maps...');
     AppTheme.setCurrentThemeColors();
-    AppTheme.setCurrentThemeColors();
 
-    // Synchronize all theme systems
-    print('🎨 [ThemeController] Updating theme in all modules...');
-    AppTheme.toggleTheme();
-
-    try {
-      if (Get.isRegistered<MessagingInitController>()) {
-        Get
-            .find<MessagingInitController>()
-            .messagingConfigurations
-            .toggleTheme();
-      }
-    } catch (e) {
-      print('⚠️ [ThemeController] Error updating messaging theme: $e');
-    }
+    // main.dart wraps GetMaterialApp in GetBuilder<ThemeController>, which
+    // rebuilds on update() — not on currentTheme's Rx stream. Without this the
+    // new ThemeData only reaches MaterialApp via Get.forceAppUpdate().
+    update();
 
     // Update UI in post frame callback
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -697,19 +708,6 @@ class ThemeController extends GetxController {
     AppTheme.isDark = isDark;
     AppTheme.isDark = isDark;
 
-    // Initialize messaging module if needed
-    if (withMessage) {
-      try {
-        if (Get.isRegistered<MessagingInitController>()) {
-          Get
-              .find<MessagingInitController>()
-              .messagingConfigurations
-              .initTheme(primary, secondary, isDark);
-        }
-      } catch (e) {
-        print('⚠️ [ThemeController] Error initializing messaging theme: $e');
-      }
-    }
 
     // Initialize other theme systems with correct dark mode state
     AppTheme.initTheme(primary, secondary, isDark);
@@ -722,48 +720,51 @@ class ThemeController extends GetxController {
     print('🎨 [ThemeController] Theme initialization completed');
   }
 
-  CompanyController addCompanyController = Get.put(CompanyController());
+  // ⚠️ Must NOT re-create the company cubit on every ThemeController
+  // construction.
+  //
+  // ThemeController is created via `Get.put(ThemeController())` inside many
+  // widget build() methods, so a new ThemeController is built every frame. The
+  // old code had this as a *field* that called Get.put(CompanyController()),
+  // which risked init() -> getCompany() -> update*Color() ->
+  // Get.forceAppUpdate() -> rebuild -> re-create... an infinite loop.
+  //
+  // It is now a getter over the single instance main() created, so no
+  // construction happens here at all. The name is unchanged so the ~20 read
+  // sites below (`addCompanyController.company?...`) keep working — CompanyCubit
+  // exposes the same `company` accessor the GetX controller did.
+  CompanyCubit get addCompanyController =>
+      _injectedCompanyCubit ?? Get.find<CompanyCubit>();
+
   SystemLogsController get systemLogsController => Get.find();
 
   // ✅ FIXED: Check GetStorage FIRST for employee branding, fallback to company branding
   void updatePrimaryColor() {
-    print(
-        '🎨 [ThemeController] ========== UPDATE PRIMARY COLOR START ==========');
+
 
     // Step 1: Check if there's already a value in GetStorage (employee branding)
     String? existingColorInStorage = storage.read('primaryColor');
-    print(
-        '🎨 [ThemeController] Step 1 - Existing primaryColor in storage: $existingColorInStorage');
 
     String? colorValue;
 
     // Step 2: If storage is empty, load from company branding
     if (existingColorInStorage == null || existingColorInStorage.isEmpty) {
-      print(
-          '🎨 [ThemeController] Step 2 - Storage is empty, loading from company branding...');
-      print('🎨 [ThemeController] Company status: ${addCompanyController.company
-          ?.status}');
+
 
       colorValue = addCompanyController.company?.status == 'active'
           ? addCompanyController.company?.primaryColor?.primaryColor?.lastOrNull
           : null;
 
-      print('🎨 [ThemeController] Primary color from company: $colorValue');
 
       if (colorValue != null && colorValue.isNotEmpty) {
         storage.write('primaryColor', colorValue);
-        print(
-            '🎨 [ThemeController] ✅ Wrote company color to storage: $colorValue');
       }
     } else {
       // Use existing storage value (employee branding)
       colorValue = existingColorInStorage;
-      print(
-          '🎨 [ThemeController] Step 2 - Using existing storage value (employee branding): $colorValue');
+
     }
 
-    // Step 3: Apply the color to theme
-    print('🎨 [ThemeController] Step 3 - Applying color to theme...');
 
 
     final _primaryColor = colorValue != null && colorValue.isNotEmpty
@@ -776,11 +777,9 @@ class ThemeController extends GetxController {
     AppColors.currentThemeColors['primary'] = _primaryColor;
     AppColors.currentThemeColors['lightPrimary'] = _primaryColor;
 
-    print('🎨 [ThemeController] ✅ AppColors.lightPrimary set to: ${AppColors
-        .lightPrimary}');
+
 
     // Step 4: Refresh current theme to apply new color
-    print('🎨 [ThemeController] Step 4 - Refreshing theme...');
     if (currentTheme.value == AppColors.lightTheme) {
       currentTheme.value = AppColors.lightTheme;
     } else {
@@ -788,14 +787,11 @@ class ThemeController extends GetxController {
     }
 
     // Step 5: Update modules AFTER setting the storage values
-    print('🎨 [ThemeController] Step 5 - Updating modules branding...');
     updateModulesBranding();
 
     // Step 6: Force UI update
-    print('🎨 [ThemeController] Step 6 - Forcing UI update...');
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Get.forceAppUpdate();
-      print('🎨 [ThemeController] ✅ UI update forced');
     });
 
     print('🎨 [ThemeController] ========== UPDATE PRIMARY COLOR END ==========');
@@ -885,17 +881,6 @@ class ThemeController extends GetxController {
     final int secondaryColor =
     int.parse(storage.read('secondaryColor') ?? '0xFFE5B800');
 
-    try {
-      if (Get.isRegistered<MessagingInitController>()) {
-        Get
-            .find<MessagingInitController>()
-            .messagingConfigurations
-            .updateBrandingColors(
-            Color(primaryColor), Color(secondaryColor));
-      }
-    } catch (e) {
-      print('⚠️ [ThemeController] Error updating messaging branding: $e');
-    }
 
     AppTheme.interfaceUpdateBrandingColors(
         Color(primaryColor), Color(secondaryColor));

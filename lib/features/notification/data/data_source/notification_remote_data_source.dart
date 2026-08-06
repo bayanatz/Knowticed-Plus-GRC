@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
-import 'package:demo_app/core/services/firebase/repository/firebase_repository.dart';
-import 'package:demo_app/features/notification/data/models/notification_model_main_core.dart';
+import 'package:grc_module/core/services/firebase/repository/firebase_repository.dart';
 
-import '../../../../core/network/failure_model.dart';
-import 'package:demo_app/core/network/get_base_url.dart';
+import 'package:grc_module/core/network/failure_model.dart';
+import 'package:grc_module/core/network/get_base_url.dart';
+
+import '../models/notification_model_core.dart' show NotificationModel;
 
 class NotificationRemoteDataSource {
   WriteBatch _batch = FirebaseFirestore.instance.batch();

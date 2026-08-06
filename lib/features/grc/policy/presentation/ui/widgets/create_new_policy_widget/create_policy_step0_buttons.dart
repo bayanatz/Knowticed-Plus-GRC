@@ -1,0 +1,70 @@
+/// Module: GRC Policy Management
+/// Description: Bottom action buttons for step 0 (Policy Info) of the
+///              Create Policy page — Discard and Next.
+/// Author: Mohamed Magdy Abdelkhalek
+/// Date: 2026-07-16
+/// Dependencies: Flutter SDK, AppColors, StyleText, customButton
+/// Revision History: 2026-07-16 - Extracted from create_new_policy.dart
+library;
+
+import 'package:grc_module/core/custom/5-custom_button.dart';
+/// ************************* FILE INFO *************************** ///
+/// File Name: create_policy_step0_buttons.dart
+/// Purpose: Contains CreatePolicyStep0Buttons, the Discard/Next button row
+///          shown on step 0 of CreateNewPolicyPage.
+/// Author: Mohamed Magdy Abdelkhalek
+/// Created At: 16/7/2026
+
+import 'package:grc_module/core/theme/app_colors.dart';
+import 'package:grc_module/core/theme/app_theme.dart';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:grc_module/generated/l10n.dart';
+
+/// class name: [CreatePolicyStep0Buttons]
+///
+/// purpose: Discard/Next button row for step 0. All validation, dialogs,
+///          and step transitions are handled by the parent page via the
+///          callbacks; this widget only renders the row.
+///
+/// authors: Mohamed Magdy Abdelkhalek
+///
+/// created at: 16/7/2026
+class CreatePolicyStep0Buttons extends StatelessWidget {
+  final VoidCallback onDiscard;
+  final VoidCallback onNext;
+
+  const CreatePolicyStep0Buttons({
+    super.key,
+    required this.onDiscard,
+    required this.onNext,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        customButton(
+          title: S.of(context).discard,
+          function: onDiscard,
+          height: 38.h,
+          width: 150.w,
+          color: AppColors.grey,
+          textStyle:
+              StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
+        ),
+        customButton(
+          title: S.of(context).next,
+          function: onNext,
+          height: 38.h,
+          width: 150.w,
+          color: AppColors.primary,
+          textStyle: StyleText.fontSize14Weight500
+              .copyWith(color: AppColors.textButton),
+        ),
+      ],
+    );
+  }
+}

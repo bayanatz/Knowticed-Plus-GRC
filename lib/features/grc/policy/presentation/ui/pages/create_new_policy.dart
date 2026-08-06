@@ -1,0 +1,745 @@
+/// Module: GRC Policy Management
+/// Description: Three-step page for creating a new GRC policy.
+///              Step 0: Policy info form.
+///              Step 1: Add / edit controls.
+///              Step 2: Full preview with controls table, weight validation,
+///                      Equal Weight, and Publish action.
+/// Author: Mohamed Magdy Abdelkhalek
+/// Date: 2026-07-06
+/// Dependencies: Flutter SDK, AppColors, AppTheme, PolicyCubit,
+///               PolicyControlsTableWidget
+/// Revision History: 2026-07-01 - Initial creation
+///                   2026-07-06 - Added step 2 preview, Draft/Publish status,
+///                                Equal Weight, weight validation (Mohamed Elrashidy)
+///                   2026-07-16 - Split step content and button rows into
+///                                their own widget files (Mohamed Magdy Abdelkhalek)
+library;
+
+/// ************************* FILE INFO *************************** ///
+/// File Name: create_new_policy.dart
+/// Purpose: Contains CreateNewPolicyPage, the three-step form for policy
+///          creation — step 0: policy info, step 1: controls, step 2: preview.
+/// Author: Mohamed Magdy Abdelkhalek
+/// Created At: 1/7/2026
+
+import 'dart:io';
+
+// 11's own showUploadDialog is a near-duplicate of 10's — hidden here to
+// avoid an ambiguous-import error; section 10 already demos the dedicated one.
+import 'package:grc_module/core/custom/11_custom_confirm_diaolog.dart'
+    hide showUploadDialog;
+import 'package:grc_module/core/custom/5-custom_button.dart';
+import 'package:grc_module/core/custom/loading.dart';
+import 'package:grc_module/core/extension/context_extensions.dart';
+import 'package:grc_module/core/theme/app_colors.dart';
+import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:grc_module/features/grc/control/domain/entities/control_entity.dart';
+import 'package:grc_module/features/grc/control/domain/entities/control_status.dart';
+import 'package:grc_module/features/grc/policy/domain/entities/policy_entity.dart';
+import 'package:grc_module/features/grc/policy/domain/entities/policy_status.dart';
+import 'package:grc_module/features/grc/policy/presentation/controller/policy_cubit.dart';
+import 'package:grc_module/features/grc/control/presentation/controller/control_cubit.dart';
+import 'package:grc_module/features/grc/policy/presentation/ui/pages/add_policy_controls.dart';
+import 'package:grc_module/features/grc/module/presentation/ui/widgets/grc_details_widget/grc_form_fields.dart'
+    show containsEnglishLetters, containsArabicLetters;
+import 'package:grc_module/features/grc/policy/presentation/ui/widgets/create_new_policy_widget/create_policy_step0.dart';
+import 'package:grc_module/features/grc/policy/presentation/ui/widgets/create_new_policy_widget/create_policy_step0_buttons.dart';
+import 'package:grc_module/features/grc/policy/presentation/ui/widgets/create_new_policy_widget/create_policy_buttons.dart';
+import 'package:grc_module/features/grc/policy/presentation/ui/widgets/create_new_policy_widget/create_policy_step2_preview.dart';
+import 'package:grc_module/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_control_completeness.dart';
+import 'package:grc_module/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_control_model.dart';
+import 'package:grc_module/features/grc/policy/domain/entities/policy_document_info.dart';
+import 'package:grc_module/core/helper/main_helper/pagination_app_bar.dart';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get_it/get_it.dart';
+
+import '../../../../../../core/custom/52_custom_upload_document.dart';
+import 'package:grc_module/generated/l10n.dart';
+import 'package:grc_module/core/custom/57_custom_dialog_manager.dart';
+part '../widgets/create_new_policy_widget/create_new_policy_actions.dart';
+
+/// class name: [CreateNewPolicyPage]
+///
+/// purpose: three-step page that collects policy info (step 0), manages
+///          controls (step 1), then shows a full preview with the controls
+///          table (step 2). The body switches in-place via [_step]; no new
+///          routes are pushed.
+///
+///          Supported actions:
+///           - Save For Later  → persists as [PolicyStatus.draft]
+///           - Preview         → advances from step 1 to step 2
+///           - Equal Weight    → distributes 100 equally across all controls
+///           - Publish         → persists as [PolicyStatus.active] (requires
+///                               total weight == 100)
+///
+/// authors: Mohamed Magdy Abdelkhalek
+///
+/// created at: 1/7/2026
+class CreateNewPolicyPage extends StatefulWidget {
+  final String moduleId;
+  final String moduleNameEn;
+  final String moduleNameAr;
+
+  /// When set, the wizard resumes this already-saved Draft instead of
+  /// starting blank: Step 0 is prefilled from it and its saved Controls
+  /// are fetched and prefilled into Step 1. Save For Later/Publish then
+  /// update this same Policy instead of creating a new one.
+  final PolicyEntity? existingPolicy;
+
+  const CreateNewPolicyPage({
+    super.key,
+    required this.moduleId,
+    required this.moduleNameEn,
+    required this.moduleNameAr,
+    this.existingPolicy,
+  });
+
+  @override
+  State<CreateNewPolicyPage> createState() => _CreateNewPolicyPageState();
+}
+
+class _CreateNewPolicyPageState extends State<CreateNewPolicyPage> {
+  // ----------------------------------------------------------------
+  // State
+  // ----------------------------------------------------------------
+  int _step = 0; // 0 = info, 1 = controls, 2 = preview
+  bool _isArabicEnabled = true;
+  bool _step0Submitted = false;
+  bool _controlsSubmitted = false;
+
+  // Step 0 controllers
+  final _nameController = TextEditingController();
+  final _nameArController = TextEditingController();
+  final _numberController = TextEditingController();
+  final _numberArController = TextEditingController();
+  final _descriptionController = TextEditingController();
+  final _descriptionArController = TextEditingController();
+  final _weightController = TextEditingController();
+
+  List<PolicyControlModel> _controls = [PolicyControlModel()];
+
+  DateTime? _startDate;
+  DateTime? _endDate;
+  File? _imageFile;
+  String? _imageUrl;
+  PolicyDocumentInfo? _documentEn;
+  PolicyDocumentInfo? _documentAr;
+
+  /// Snapshot of the ids of controls already saved under [widget.existingPolicy]
+  /// at the moment they were loaded — diffed against what's still touched
+  /// in [_controls] at save time to know which ones the user removed.
+  Set<String> _originalControlIds = {};
+
+  // ----------------------------------------------------------------
+  // Lifecycle
+  // ----------------------------------------------------------------
+  @override
+  void initState() {
+    super.initState();
+    final existing = widget.existingPolicy;
+    if (existing == null) return;
+    _nameController.text = existing.policyNameEn;
+    _nameArController.text = existing.policyNameAr;
+    _numberController.text = existing.policyNumberEn;
+    _numberArController.text = existing.policyNumberAr;
+    _descriptionController.text = existing.policyDescriptionEn;
+    _descriptionArController.text = existing.policyDescriptionAr;
+    _weightController.text = existing.policyWeight.toStringAsFixed(0);
+    _startDate = existing.startDate;
+    _endDate = existing.endDate;
+    _imageUrl = existing.policyImage;
+    _documentEn = existing.policyDocumentEn != null
+        ? PolicyDocumentInfo.fromUrl(existing.policyDocumentEn!)
+        : null;
+    _documentAr = existing.policyDocumentAr != null
+        ? PolicyDocumentInfo.fromUrl(existing.policyDocumentAr!)
+        : null;
+    // No stored toggle for this — infer it from whether any Arabic field
+    // was ever filled in, the same way the fields themselves imply it.
+    _isArabicEnabled = existing.policyNameAr.trim().isNotEmpty ||
+        existing.policyNumberAr.trim().isNotEmpty ||
+        existing.policyDescriptionAr.trim().isNotEmpty;
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _nameArController.dispose();
+    _numberController.dispose();
+    _numberArController.dispose();
+    _descriptionController.dispose();
+    _descriptionArController.dispose();
+    _weightController.dispose();
+    for (final c in _controls) c.dispose();
+    super.dispose();
+  }
+
+  // ----------------------------------------------------------------
+  // Helpers
+  // ----------------------------------------------------------------
+
+  /// function name: [_totalControlWeight]
+  ///
+  /// purpose: sum up the weight values entered for all controls.
+  ///
+  /// parameters: none
+  ///
+  /// return type: [double] - the current total control weight
+  double get _totalControlWeight => _controls.fold(
+        0,
+        (sum, c) =>
+            sum + (double.tryParse(c.weightController.text.trim()) ?? 0),
+      );
+
+  /// function name: [_touchedControls]
+  ///
+  /// purpose: the subset of [_controls] the user has actually entered data
+  ///          into — see [controlIsTouched]. An untouched default control
+  ///          card is not a "real" control.
+  ///
+  /// parameters: none
+  ///
+  /// return type: [List<PolicyControlModel>]
+  List<PolicyControlModel> get _touchedControls =>
+      _controls.where(controlIsTouched).toList();
+
+  /// function name: [_hasIncompleteTouchedControl]
+  ///
+  /// purpose: true if any touched control is missing a required field —
+  ///          see [controlIsComplete]. Used to block Preview until every
+  ///          control the user started filling in is finished.
+  ///
+  /// parameters: none
+  ///
+  /// return type: [bool]
+  bool get _hasIncompleteTouchedControl => _touchedControls.any(
+      (c) => !controlIsComplete(c, isArabicEnabled: _isArabicEnabled));
+
+  bool get _isWeightValid =>
+      _touchedControls.isEmpty || _totalControlWeight == 100;
+
+  /// function name: [_canPreview]
+  ///
+  /// purpose: same conditions [_handlePreviewPressed] already checks before
+  ///          allowing the step transition — reused here so the Preview
+  ///          button itself is disabled/greyed while any of them fail,
+  ///          instead of the button always being clickable and only then
+  ///          surfacing per-field required errors (which fired the moment
+  ///          any field anywhere was touched, not just the one being
+  ///          edited).
+  ///
+  /// parameters: none
+  ///
+  /// return type: [bool]
+  bool get _canPreview =>
+      !_hasPolicyLanguageErrors && !_hasControlErrors && !_hasIncompleteTouchedControl;
+
+  void _onUploadDocumentEn() {
+    showUploadDialog(
+      context: context,
+      dialogTitle: S.of(context).uploadPolicyDocumentEnglish,
+      titleFieldLabel: S.of(context).documentTitle,
+      titleFieldHint: S.of(context).Texthere,
+      browseLabel: S.of(context).browseFiles,
+      submitLabel: S.of(context).submit,
+      discardLabel: S.of(context).discard,
+      allowedExtensions: const ['pdf', 'doc', 'docx'],
+      onSubmit: (file, title) {
+        setState(() => _documentEn = PolicyDocumentInfo.fromPlatformFile(file));
+      },
+    );
+  }
+
+  void _onUploadDocumentAr() {
+    showUploadDialog(
+      context: context,
+      dialogTitle: S.of(context).uploadPolicyDocumentArabic,
+      titleFieldLabel: S.of(context).documentTitle,
+      titleFieldHint: S.of(context).typeHere,
+      browseLabel: S.of(context).browseFiles,
+      submitLabel: S.of(context).submit,
+      discardLabel: S.of(context).Cancel,
+      textDirection: TextDirection.rtl,
+      allowedExtensions: const ['pdf', 'doc', 'docx'],
+      onSubmit: (file, title) {
+        setState(() => _documentAr = PolicyDocumentInfo.fromPlatformFile(file));
+      },
+    );
+  }
+
+  /// function name: [_onStartDateChanged]
+  ///
+  /// purpose: update the start date and, if the previously selected end
+  ///          date now falls before it, clear the end date so the user must
+  ///          pick a new one.
+  ///
+  /// parameters:
+  ///            [DateTime?] date: the newly selected start date
+  ///
+  /// return type: void
+  void _onStartDateChanged(DateTime? date) {
+    setState(() {
+      _startDate = date;
+      if (_endDate != null && date != null && _endDate!.isBefore(date)) {
+        _endDate = null;
+      }
+    });
+  }
+
+  /// function name: [_validateStep0]
+  ///
+  /// purpose: verify that all required policy-info fields have been filled
+  ///          before allowing the user to advance to step 1.
+  ///
+  /// parameters: none
+  ///
+  /// return type: [bool] - true if all required fields are non-empty
+  bool _validateStep0() {
+    return _nameController.text.trim().isNotEmpty &&
+        _numberController.text.trim().isNotEmpty &&
+        _descriptionController.text.trim().isNotEmpty &&
+        _startDate != null &&
+        _endDate != null &&
+        !_endDate!.isBefore(_startDate!) &&
+        _weightController.text.trim().isNotEmpty &&
+        (!_isArabicEnabled || !_arabicTouched ||
+            (_nameArController.text.trim().isNotEmpty &&
+                _numberArController.text.trim().isNotEmpty &&
+                _descriptionArController.text.trim().isNotEmpty)) &&
+        !_hasPolicyLanguageErrors;
+  }
+
+  /// True once the user has entered something into any Arabic policy-info
+  /// field. Turning the Arabic toggle on by itself doesn't make Name/
+  /// Number/Description AR required — only starting to fill one of them
+  /// in does, at which point all three become required together.
+  bool get _arabicTouched =>
+      _nameArController.text.trim().isNotEmpty ||
+      _numberArController.text.trim().isNotEmpty ||
+      _descriptionArController.text.trim().isNotEmpty;
+
+  /// function name: [_hasPolicyLanguageErrors]
+  ///
+  /// purpose: true if any policy-level EN/AR field currently shows a
+  ///          language-mismatch error (English field containing Arabic
+  ///          letters, or vice versa). Used to block Publish/Save For Later
+  ///          until the user fixes highlighted errors.
+  bool get _hasPolicyLanguageErrors {
+    if (containsArabicLetters(_nameController.text)) return true;
+    if (containsArabicLetters(_numberController.text)) return true;
+    if (containsArabicLetters(_descriptionController.text)) return true;
+    if (_isArabicEnabled) {
+      if (containsEnglishLetters(_nameArController.text)) return true;
+      if (containsEnglishLetters(_numberArController.text)) return true;
+      if (containsEnglishLetters(_descriptionArController.text)) return true;
+    }
+    return false;
+  }
+
+  /// function name: [_controlHasErrors]
+  ///
+  /// purpose: true if [control] currently shows a language-mismatch error
+  ///          on Name/Number/Description, or a date-range error (its own
+  ///          End Date before its Start Date, or either date falling
+  ///          outside the parent Policy's own Start/End Date range).
+  bool _controlHasErrors(PolicyControlModel control) {
+    if (containsArabicLetters(control.nameController.text)) return true;
+    if (containsArabicLetters(control.numberController.text)) return true;
+    if (containsArabicLetters(control.descriptionController.text)) return true;
+    if (_isArabicEnabled) {
+      if (containsEnglishLetters(control.nameArController.text)) return true;
+      if (containsEnglishLetters(control.numberArController.text)) return true;
+      if (containsEnglishLetters(control.descriptionArController.text))
+        return true;
+    }
+    final start = control.startDate;
+    final end = control.endDate;
+    if (start != null && end != null && end.isBefore(start)) return true;
+    for (final date in [start, end]) {
+      if (date == null) continue;
+      if (_startDate != null && date.isBefore(_startDate!)) return true;
+      if (_endDate != null && date.isAfter(_endDate!)) return true;
+    }
+    return false;
+  }
+
+  /// function name: [_hasControlErrors]
+  ///
+  /// purpose: true if any filled-in control (non-empty English name — the
+  ///          same filter [_buildPendingControls] uses to decide which
+  ///          controls are actually sent to the cubit) currently has a
+  ///          language or date-range error.
+  bool get _hasControlErrors => _controls.any(
+      (c) => c.nameController.text.trim().isNotEmpty && _controlHasErrors(c));
+
+  /// function name: [_showBlockingErrorsDialog]
+  ///
+  /// purpose: show the shared error dialog used whenever Save For Later or
+  ///          Publish is blocked by an unresolved validation error.
+  void _showBlockingErrorsDialog() {
+    CustomDialogManager.showMessage(
+      context: context,
+      lottiePath: "assets/lottie_assets/main_lottie_assets/error.json",
+      title: S.of(context).unsuccessful,
+      subtitle: S.of(context).pleaseFixTheHighlightedErrorsBeforeContinuing,
+    );
+  }
+
+  // ----------------------------------------------------------------
+  // Button-row press handlers
+  // ----------------------------------------------------------------
+
+  void _handleDiscardPressed() {
+    showConfirmDialog(
+      context: context,
+      title: S.of(context).discardPolicy,
+      subtitle:
+          S.of(context).areYouSureYouWantToDiscardThisPolicy,
+      confirmLabel: S.of(context).discard,
+      cancelLabel: S.of(context).Cancel,
+      onConfirm: () => Navigator.of(context).pop(),
+    );
+  }
+
+  void _handleNextPressed() {
+    setState(() => _step0Submitted = true);
+    if (!_validateStep0()) {
+      CustomDialogManager.showMessage(
+        context: context,
+        lottiePath: "assets/lottie_assets/main_lottie_assets/error.json",
+        title: S.of(context).unsuccessful,
+        subtitle: S.of(context).fillAllRequiredFields,
+      );
+      return;
+    }
+    setState(() => _step = 1);
+  }
+
+  void _handleSaveForLaterPressed(PolicyCubit cubit) {
+    if (_hasPolicyLanguageErrors || _hasControlErrors) {
+      _showBlockingErrorsDialog();
+      return;
+    }
+    showConfirmDialog(
+      context: context,
+      title: S.of(context).saveAsDraft,
+      subtitle: S.of(context).areYouSureYouWantToSaveThisPolicyAsADraft,
+      confirmLabel: S.of(context).Save,
+      cancelLabel: S.of(context).Cancel,
+      onConfirm: () => _onSaveForLater(cubit),
+    );
+  }
+
+  void _handlePreviewPressed() {
+    setState(() => _controlsSubmitted = true);
+    if (_hasPolicyLanguageErrors || _hasControlErrors) {
+      _showBlockingErrorsDialog();
+      return;
+    }
+    if (_hasIncompleteTouchedControl) {
+      return;
+    }
+    setState(() => _step = 2);
+  }
+
+  void _handlePublishPressed(PolicyCubit cubit) {
+    if (!_isWeightValid) {
+      CustomDialogManager.showMessage(
+        context: context,
+        lottiePath: "assets/lottie_assets/main_lottie_assets/error.json",
+        title: S.of(context).unsuccessful,
+        subtitle: S.of(context).totalWeightShouldBe100,
+      );
+      return;
+    }
+    if (_hasPolicyLanguageErrors || _hasControlErrors) {
+      _showBlockingErrorsDialog();
+      return;
+    }
+    showConfirmDialog(
+      context: context,
+      title: S.of(context).publishPolicy,
+      subtitle:
+          S.of(context).areYouSureYouWantToPublishThisPolicy,
+      confirmLabel: S.of(context).publish,
+      cancelLabel: S.of(context).Cancel,
+      onConfirm: () => _onPublish(cubit),
+    );
+  }
+
+  // ----------------------------------------------------------------
+  // BlocListener callback
+  // ----------------------------------------------------------------
+
+  /// function name: [_onStateChange]
+  ///
+  /// purpose: react to [PolicyState] changes emitted by [PolicyCubit]:
+  ///          show / hide the loading indicator, display success dialogs,
+  ///          and show error snackbars.
+  ///
+  /// parameters:
+  ///            [BuildContext] context: the current build context
+  ///            [PolicyState] state: the newly emitted state
+  ///
+  /// return type: void
+  void _onStateChange(BuildContext context, PolicyState state) {
+    if (state is PolicyLoading) {
+      showLoadingIndicator();
+      return;
+    }
+    hideLoadingIndicator();
+
+    if (state is PolicyActionSuccess) {
+      final isDraft = state.policy.status == PolicyStatus.draft;
+      showSuccessDialog(
+        context: context,
+        title: isDraft ? S.of(context).savedAsDraft : S.of(context).policyCreated,
+        subtitle: isDraft
+            ? S.of(context).policySavedAsDraftSuccessfully
+            : S.of(context).youSuccessfullyCreatedThisPolicy,
+      );
+      Navigator.of(context).pop(true);
+      return;
+    }
+
+    if (state is PolicyActionPartialSuccess) {
+      // The Policy itself was saved/updated successfully at this point —
+      // only one or more of its Controls failed. Surface that instead of
+      // staying silent, and still leave: the list needs to reflect the
+      // Policy's new state either way.
+      final reasons =
+          state.failedControls.map((f) => f.message).toSet().join('; ');
+      CustomDialogManager.showMessage(
+        context: context,
+        lottiePath: "assets/lottie_assets/main_lottie_assets/error.json",
+        title: S.of(context).unsuccessful,
+        subtitle: '${S.of(context).policySavedButOneOrMoreControlsFailedToSave} $reasons',
+      );
+      Navigator.of(context).pop(true);
+      return;
+    }
+
+    if (state is PolicyFailure) {
+      CustomDialogManager.showMessage(
+        context: context,
+        lottiePath: "assets/lottie_assets/main_lottie_assets/error.json",
+        title: S.of(context).unsuccessful,
+        subtitle: state.message,
+      );
+    }
+  }
+
+  void _onControlStateChange(BuildContext context, ControlState state) {
+    if (state is ControlsListLoaded) {
+      if (widget.existingPolicy == null) return;
+      _originalControlIds = state.controls.map((c) => c.id).toSet();
+      setState(() {
+        for (final c in _controls) c.dispose();
+        _controls = state.controls.isEmpty
+            ? [PolicyControlModel()]
+            : state.controls.map(_controlModelFromEntity).toList();
+      });
+    }
+  }
+
+  // ----------------------------------------------------------------
+  // Build
+  // ----------------------------------------------------------------
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<PolicyCubit>(create: (_) => GetIt.instance<PolicyCubit>()),
+        BlocProvider<ControlCubit>(
+          create: (_) {
+            final cubit = GetIt.instance<ControlCubit>();
+            final existing = widget.existingPolicy;
+            if (existing != null) {
+              cubit.getAllControls(
+                moduleId: widget.moduleId,
+                policyId: existing.id,
+              );
+            }
+            return cubit;
+          },
+        ),
+      ],
+      child: Builder(
+        builder: (ctx) {
+          final cubit = ctx.read<PolicyCubit>();
+          return MultiBlocListener(
+            listeners: [
+              BlocListener<PolicyCubit, PolicyState>(listener: _onStateChange),
+              BlocListener<ControlCubit, ControlState>(
+                listener: _onControlStateChange,
+              ),
+            ],
+            child: Scaffold(
+              body: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    PaginationAppBar(
+                      screensTitles: [
+                        S.of(ctx).grc,
+                        ctx.isArabic
+                            ? widget.moduleNameAr
+                            : widget.moduleNameEn,
+                        S.of(ctx).createNewPolicy,
+                      ],
+                    ),
+                    Expanded(child: _buildCurrentStep()),
+                    SizedBox(height: 16.h),
+                    _buildButtons(cubit),
+                    SizedBox(height: 16.h),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildCurrentStep() {
+    switch (_step) {
+      case 0:
+        return _buildStep0();
+      case 1:
+        return _buildStep1();
+      case 2:
+        return _buildStep2();
+      default:
+        return _buildStep0();
+    }
+  }
+
+  // ----------------------------------------------------------------
+  // Step 0: Policy Info
+  // ----------------------------------------------------------------
+  Widget _buildStep0() {
+    return CreatePolicyStep0(
+      isArabicEnabled: _isArabicEnabled,
+      onArabicToggle: (v) => setState(() => _isArabicEnabled = v),
+      imageFile: _imageFile,
+      onImagePicked: (file) => setState(() => _imageFile = file),
+      submitted: _step0Submitted,
+      nameController: _nameController,
+      nameArController: _nameArController,
+      numberController: _numberController,
+      numberArController: _numberArController,
+      descriptionController: _descriptionController,
+      descriptionArController: _descriptionArController,
+      weightController: _weightController,
+      startDate: _startDate,
+      endDate: _endDate,
+      onStartDateChanged: _onStartDateChanged,
+      onEndDateChanged: (d) => setState(() => _endDate = d),
+      documentEn: _documentEn,
+      documentAr: _documentAr,
+      onUploadDocumentEn: _onUploadDocumentEn,
+      onUploadDocumentAr: _onUploadDocumentAr,
+      onRemoveDocumentEn: () => setState(() => _documentEn = null),
+      onRemoveDocumentAr: () => setState(() => _documentAr = null),
+    );
+  }
+
+  // ----------------------------------------------------------------
+  // Step 1: Controls
+  // ----------------------------------------------------------------
+  Widget _buildStep1() {
+    return AddPolicyControlsPage(
+      isArabicEnabled: _isArabicEnabled,
+      controls: _controls,
+      policyStartDate: _startDate,
+      policyEndDate: _endDate,
+      controlsSubmitted: _controlsSubmitted,
+      // Rebuilds on every keystroke in any control card so the Preview
+      // button's grey/enabled state (_canPreview) updates live instead of
+      // only refreshing on the next unrelated setState.
+      onChanged: () => setState(() {}),
+    );
+  }
+
+  // ----------------------------------------------------------------
+  // Step 2: Preview — policy summary + controls table
+  // ----------------------------------------------------------------
+  Widget _buildStep2() {
+    return CreatePolicyStep2Preview(
+      isArabicEnabled: _isArabicEnabled,
+      nameController: _nameController,
+      nameArController: _nameArController,
+      numberController: _numberController,
+      numberArController: _numberArController,
+      descriptionController: _descriptionController,
+      descriptionArController: _descriptionArController,
+      weightController: _weightController,
+      startDate: _startDate,
+      endDate: _endDate,
+      imageFile: _imageFile,
+      imageUrl: _imageUrl,
+      documentEn: _documentEn,
+      documentAr: _documentAr,
+      touchedControls: _touchedControls,
+      onControlsChanged: () => setState(() {}),
+    );
+  }
+
+  // ----------------------------------------------------------------
+  // Buttons row per step
+  // ----------------------------------------------------------------
+
+  /// function name: [_buildButtons]
+  ///
+  /// purpose: render the correct bottom-action buttons depending on the
+  ///          current step.
+  ///
+  /// parameters:
+  ///            [PolicyCubit] cubit: the cubit instance from the BlocProvider
+  ///
+  /// return type: [Widget]
+  Widget _buildButtons(PolicyCubit cubit) {
+    switch (_step) {
+      case 0:
+        return CreatePolicyStep0Buttons(
+          onDiscard: _handleDiscardPressed,
+          onNext: _handleNextPressed,
+        );
+      case 1:
+        return CreatePolicyBackSaveButtons(
+          onBack: () => setState(() => _step = 0),
+          onSaveForLater: () => _handleSaveForLaterPressed(cubit),
+          trailingButton: customButton(
+            title: S.of(context).preview,
+            function: _canPreview ? _handlePreviewPressed : () {},
+            height: 38.h,
+            width: 150.w,
+            color: _canPreview ? AppColors.primary : AppColors.colorGrey,
+            textStyle: StyleText.fontSize14Weight500
+                .copyWith(color: AppColors.textButton),
+          ),
+        );
+      case 2:
+        return CreatePolicyBackSaveButtons(
+          onBack: () => setState(() => _step = 1),
+          onSaveForLater: () => _handleSaveForLaterPressed(cubit),
+          trailingButton: customButton(
+            title: S.of(context).publish,
+            function: () => _handlePublishPressed(cubit),
+            height: 38.h,
+            width: 150.w,
+            color: AppColors.primary,
+            textStyle: StyleText.fontSize14Weight500
+                .copyWith(color: AppColors.textButton),
+          ),
+        );
+      default:
+        return const SizedBox.shrink();
+    }
+  }
+}

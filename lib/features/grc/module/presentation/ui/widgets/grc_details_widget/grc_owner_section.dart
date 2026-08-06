@@ -1,0 +1,321 @@
+/// Module: GRC Module Management
+/// Description: Provides the Module Owner section for the GRC Module details
+///              page. In view/restore mode shows only selected owners; in
+///              create/edit mode shows all employees with a search field so
+///              the user can toggle selection.
+/// Author: Mohamed Magdy Abdelkhalek
+/// Date: 2026-06-29
+/// Dependencies: GrcOwnerCubit, PersonChipCard, AppSearchTextField
+/// Revision History: 2026-06-29 - Initial creation
+///                    2026-06-30 - Added initialOwnerEmails for pre-selection (Mohamed Magdy Abdelkhalek)
+library;
+
+import 'package:grc_module/core/custom/19-Custom_Employee_Card.dart';
+
+/// ************************* FILE INFO *************************** ///
+/// File Name: grc_owner_section.dart
+/// Purpose: Contains GrcOwnerSection, which renders the owner-selection grid
+///          for a GRC Module in both view and edit modes.
+/// Author: Mohamed Magdy Abdelkhalek
+/// Created At: 29/6/2026
+
+import 'package:grc_module/core/custom/35-custom_search_widget_custom.dart';
+import 'package:grc_module/core/theme/app_colors.dart';
+import 'package:grc_module/core/theme/app_text_styles.dart';
+import 'package:grc_module/features/grc/module/presentation/controller/cubit/grc_owner_cubit.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get_utils/src/extensions/string_extensions.dart';
+import 'package:grc_module/generated/l10n.dart';
+
+/// class name: [GrcOwnerSection]
+///
+/// purpose: displays the Module Owner picker section inside the GRC Module
+///          details page. Owns a private [GrcOwnerCubit] instance and passes
+///          [initialOwnerEmails] to pre-select existing owners. In view/restore
+///          mode only selected owners are shown; in create/edit mode all
+///          employees appear with a search bar.
+///
+/// authors: Mohamed Magdy Abdelkhalek
+///
+/// created at: 29/6/2026
+class GrcOwnerSection extends StatefulWidget {
+  final bool isViewMode;
+
+  /// Emails of owners already assigned to the module.
+  /// - In view/restore mode  → only these owners are displayed.
+  /// - In create/edit mode   → these owners are pre-selected.
+  final List<String> initialOwnerEmails;
+
+  /// The department currently selected on the form. When set, only
+  /// employees belonging to this department are shown as owner candidates.
+  final String? selectedDepartmentName;
+
+  /// Same idea as [selectedDepartmentName] but for callers that can be
+  /// scoped to several departments at once (e.g. a Control). When set,
+  /// takes precedence over [selectedDepartmentName].
+  final List<String>? selectedDepartmentNames;
+
+  final void Function(List<OwnerData> selected)? onOwnersChanged;
+
+  /// When true, selecting one person clears any previous selection so at
+  /// most one [OwnerData] is selected at a time (used by the Add
+  /// Champion/Add Owner pages, where exactly one person is being assigned).
+  final bool singleSelect;
+
+  /// When true, an already-selected person shows a red remove icon instead
+  /// of a checked checkbox (used by the Control assignee pickers, where
+  /// picking someone reads as "assign" and un-picking reads as "remove").
+  /// Tapping the card still toggles selection either way.
+  final bool showRemoveIconWhenSelected;
+
+  /// The label shown above the picker. Defaults to the Module Owner
+  /// picker's original hardcoded text so existing callers are unaffected.
+  final String? sectionTitle;
+
+  /// Inline validation message shown below the picker (e.g. "Please select
+  /// a new Control Champion"). Null/empty renders nothing.
+  final String? errorText;
+
+  /// Emails hidden from the picker entirely — used so a person already
+  /// picked in a related picker (e.g. this Control's Champion) can't also be
+  /// picked here (e.g. as its Owner).
+  final List<String> excludeEmails;
+
+  const GrcOwnerSection({
+    super.key,
+    this.isViewMode = false,
+    this.initialOwnerEmails = const [],
+    this.selectedDepartmentName,
+    this.selectedDepartmentNames,
+    this.onOwnersChanged,
+    this.singleSelect = false,
+    this.showRemoveIconWhenSelected = false,
+    this.sectionTitle,
+    this.errorText,
+    this.excludeEmails = const [],
+  });
+
+  @override
+  State<GrcOwnerSection> createState() => _GrcOwnerSectionState();
+}
+
+class _GrcOwnerSectionState extends State<GrcOwnerSection> {
+  late final GrcOwnerCubit _cubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _cubit = GrcOwnerCubit();
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _cubit.loadOwners(
+        context,
+        initialOwnerEmails: widget.initialOwnerEmails,
+        selectedDepartmentName: widget.selectedDepartmentName,
+        selectedDepartmentNames: widget.selectedDepartmentNames,
+        excludeEmails: widget.excludeEmails,
+      ),
+    );
+  }
+
+  @override
+  void didUpdateWidget(covariant GrcOwnerSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selectedDepartmentName != widget.selectedDepartmentName ||
+        !_listEquals(oldWidget.selectedDepartmentNames,
+            widget.selectedDepartmentNames)) {
+      _cubit.filterByDepartments(
+        widget.selectedDepartmentNames ??
+            (widget.selectedDepartmentName == null
+                ? null
+                : [widget.selectedDepartmentName!]),
+      );
+    }
+    if (!_listEquals(oldWidget.excludeEmails, widget.excludeEmails)) {
+      _cubit.filterByExcludedEmails(widget.excludeEmails);
+    }
+  }
+
+  bool _listEquals(List<String>? a, List<String>? b) {
+    if (a == null || b == null) return a == b;
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
+  }
+
+  @override
+  void dispose() {
+    _cubit.close();
+    super.dispose();
+  }
+
+  ImageProvider _buildAvatar(String photo) {
+    if (photo.startsWith('http')) return NetworkImage(photo);
+    return AssetImage(photo);
+  }
+
+  void _onToggle(int index) {
+    _cubit.toggleOwner(index, singleSelect: widget.singleSelect);
+    widget.onOwnersChanged?.call(_cubit.selectedOwners);
+  }
+
+  Widget _buildOwnerGrid(BuildContext context, List<OwnerData> owners) {
+    final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
+
+    if (isTablet) {
+      // 2-column grid
+      return Column(
+        children: List.generate((owners.length / 2).ceil(), (i) {
+          final left = owners[i * 2];
+          final rightIdx = i * 2 + 1;
+          return Padding(
+            padding: EdgeInsets.only(bottom: 10.h),
+            child: Row(
+              children: [
+                Expanded(
+                  child: PersonChipCard(
+                    name: left.name.capitalize!,
+                    subtitle1: left.department,
+                    subtitle2: left.jobTitle,
+                    avatar: _buildAvatar(left.photo),
+                    isSelected: left.isSelected,
+                    showCheckBox: !widget.isViewMode,
+                    trailing:
+                        (widget.showRemoveIconWhenSelected && left.isSelected)
+                            ? Icon(Icons.remove_circle,
+                                color: AppColors.red, size: 20.sp)
+                            : null,
+                    width: double.infinity,
+                    backgroundColor: AppColors.background,
+                    onTap: widget.isViewMode ? null : () => _onToggle(i * 2),
+                  ),
+                ),
+                SizedBox(width: 10.w),
+                if (rightIdx < owners.length)
+                  Expanded(
+                    child: PersonChipCard(
+                      name: owners[rightIdx].name,
+                      subtitle1: owners[rightIdx].department,
+                      subtitle2: owners[rightIdx].jobTitle,
+                      avatar: _buildAvatar(owners[rightIdx].photo),
+                      isSelected: owners[rightIdx].isSelected,
+                      showCheckBox: !widget.isViewMode,
+                      trailing: (widget.showRemoveIconWhenSelected &&
+                              owners[rightIdx].isSelected)
+                          ? Icon(Icons.remove_circle,
+                              color: AppColors.red, size: 20.sp)
+                          : null,
+                      width: double.infinity,
+                      backgroundColor: AppColors.background,
+                      onTap:
+                          widget.isViewMode ? null : () => _onToggle(rightIdx),
+                    ),
+                  )
+                else
+                  const Expanded(child: SizedBox()),
+              ],
+            ),
+          );
+        }),
+      );
+    }
+
+    // Mobile: 1-column list (full-width cards)
+    return Column(
+      children: List.generate(owners.length, (i) {
+        final owner = owners[i];
+        return Padding(
+          padding: EdgeInsets.only(bottom: 10.h),
+          child: PersonChipCard(
+            name: owner.name,
+            subtitle1: owner.department,
+            subtitle2: owner.jobTitle,
+            avatar: _buildAvatar(owner.photo),
+            isSelected: owner.isSelected,
+            showCheckBox: !widget.isViewMode,
+            trailing: (widget.showRemoveIconWhenSelected && owner.isSelected)
+                ? Icon(Icons.remove_circle, color: AppColors.red, size: 20.sp)
+                : null,
+            width: double.infinity,
+            backgroundColor: AppColors.background,
+            onTap: widget.isViewMode ? null : () => _onToggle(i),
+          ),
+        );
+      }),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider.value(
+      value: _cubit,
+      child: BlocBuilder<GrcOwnerCubit, GrcOwnerState>(
+        builder: (context, state) {
+          // In view/restore mode show only the selected (assigned) owners.
+          // In create/edit mode show all employees so the user can pick.
+          final owners = widget.isViewMode
+              ? _cubit.filteredOwners.where((o) => o.isSelected).toList()
+              : _cubit.filteredOwners;
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              widget.sectionTitle == null
+                  ? SizedBox.shrink()
+                  : Padding(
+                      padding: EdgeInsets.only(bottom: 8.h),
+                      child: Text(
+                        widget.sectionTitle!,
+                        style: AppTextStyles.font16BlackRegularCairo
+                            .copyWith(fontSize: 14.sp),
+                      ),
+                    ),
+              SizedBox(height: 8.h),
+              if (!widget.isViewMode) ...[
+                Row(
+                  children: [
+                    AppSearchTextField(
+                      controller: _cubit.searchController,
+                      onChanged: _cubit.search,
+                      hintText: S.of(context).search,
+                      fillColor: AppColors.background,
+                    ),
+                  ],
+                ),
+                SizedBox(height: 12.h),
+              ],
+              if (owners.isEmpty)
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16.h),
+                  child: Center(
+                    child: Text(
+                      widget.isViewMode
+                          ? S.of(context).noOwnersAssigned
+                          : S.of(context).noPeopleFound,
+                      style: AppTextStyles.font16BlackRegularCairo.copyWith(
+                        fontSize: 13.sp,
+                        color: AppColors.secondaryText,
+                      ),
+                    ),
+                  ),
+                )
+              else
+                _buildOwnerGrid(context, owners),
+              if (widget.errorText != null && widget.errorText!.isNotEmpty) ...[
+                SizedBox(height: 6.h),
+                Text(
+                  widget.errorText!,
+                  style: AppTextStyles.font16BlackRegularCairo
+                      .copyWith(fontSize: 12.sp, color: AppColors.red),
+                ),
+              ],
+            ],
+          );
+        },
+      ),
+    );
+  }
+}

@@ -3,10 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:demo_app/core/theme/app_colors.dart';
-import 'package:demo_app/core/custom/16-custom_card_styles.dart';
-import 'package:demo_app/core/custom/6_custom_button_with_svg.dart';
-import '../theme/app_colors.dart';
+import 'package:grc_module/core/theme/app_colors.dart';
+import 'package:grc_module/core/custom/16-custom_card_styles.dart';
+import 'package:grc_module/core/custom/6_custom_button_with_svg.dart';
 
 /// Contact/employee card: avatar + name + (title, email) + (department,
 /// phone) + primary action button.
@@ -187,7 +186,7 @@ class ContactCard extends StatelessWidget {
         image: CardSvg.message,
         widthImage: 24.r,
         heightImage: 24.r,
-        colorBorder: Colors.transparent,
+        colorBorder: AppColors.transparent,
         svgColor: AppColors.textButton,
         padding: EdgeInsets.symmetric(horizontal: 16.w),
       );

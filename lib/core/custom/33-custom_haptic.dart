@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
-import 'package:demo_app/core/helper/main_helper/haptic_controller.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
-export 'package:demo_app/core/helper/main_helper/haptic_controller.dart' show HapticController;
+export 'package:grc_module/core/theme/haptic_controller.dart' show HapticController;
 
 /// Global, app-wide access to the [HapticController].
 ///
@@ -10,7 +10,7 @@ export 'package:demo_app/core/helper/main_helper/haptic_controller.dart' show Ha
 /// in every widget, just import this file and call:
 ///
 /// ```dart
-/// import 'package:demo_app/core/custom/33-custom_haptic.dart';
+/// import 'package:grc_module/core/custom/33-custom_haptic.dart';
 ///
 /// hapticController.triggerHapticFeedback();
 /// ```

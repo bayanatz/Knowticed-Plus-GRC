@@ -1,5 +1,5 @@
-name: demo_app
-description: "demo_app demo starter app for module development."
+name: grc_module
+description: "grc_module application."
 publish_to: 'none'
 
 version: 1.0.0+1
@@ -81,6 +81,9 @@ dependencies:
   chewie: ^1.13.0
   crypto: ^3.0.7
   flutter_bloc: ^9.1.1
+  # added for features/messaging
+  mime: ^1.0.6
+  cloud_firestore_platform_interface: ^6.6.5
   flutter_localization: ^0.3.2
   shared_preferences: ^2.5.3
   shimmer: ^3.0.0
@@ -121,58 +124,60 @@ flutter:
   generate: true
 
   assets:
-    - assets/images/
-    - assets/formbuilder/
-    - assets/hrAsset/
-    - assets/tracker/icons/
-    - assets/tracker/lottie/
-    - assets/calender/
-    - assets/knowlege_module/
-    - assets/tracker/images/
-    - assets/database/
-    - assets/services_module/
-    - assets/database/fonts/
-    - assets/database/icons/
-    - assets/home_module/
-    - assets/database/images/
-    - assets/inquire_comment/
-    - assets/database/lottie/
-    - assets/dashboard/
-    - assets/images/details/
-    - assets/dummyFile/
-    - assets/fonts/
+    # Icons categorized by module
+    - assets/icons_assets/calendar_assets/
+    - assets/icons_assets/form_builder_assets/
+    - assets/icons_assets/home_assets/
+    - assets/icons_assets/main_icons_assets/
+    - assets/icons_assets/messaging_assets/
+    - assets/icons_assets/notification_assets/
+    - assets/icons_assets/onboarding_assets/
+    - assets/icons_assets/organization_chart_assets/
+    - assets/icons_assets/roles_assets/
+    - assets/icons_assets/services_assets/
+    - assets/icons_assets/settings_assets/
+    - assets/icons_assets/data_grc_assets/
+    - assets/icons_assets/database_builder_assets/
+    - assets/icons_assets/knowledge_hub_assets/
+    - assets/icons_assets/qiyas_assets/
+    # Loose asset folders referenced directly by path from Dart.
+    # NOTE: assets/flags, assets/png_assets/flags, assets/vectors, assets/hrAsset
+    # and assets/knowldge_image_module are referenced in code but no source file
+    # for them exists in any project, so they are intentionally NOT declared —
+    # Flutter fails the build on an empty asset directory.
     - assets/icons/
-    - assets/state/
-    - assets/
-    - assets/images/profile/
-    - assets/images/community/
-    - assets/images/management/
-    - assets/images/icons/
-    - assets/lottie/
-    - assets/images/grc_images/
-    - assets/lotties/
-    - assets/icon_drwaer/
-    - assets/dailog/
-    - assets/formbuilder/lottie/
-    - assets/formbuilder/vectors/
-    - assets/formbuilder/flags/
-    - assets/vectors/
+    - assets/png_assets/
     - assets/svg/
-    - assets/roles_icons/
-    - assets/roles_module/
-    - assets/notification_module/
-    - assets/settings/
-    - assets/icons_drawer_news/
-    - assets/icons_settings_new/
-    - assets/settings_drawer/
-    - assets/state_icon/
-    - assets/icons_module/
-    - assets/employee_assets/
-    - assets/skeleton/common/icons/
-    - assets/skeleton/roles/icons/
-    - assets/skeleton/home/icons/
-    - assets/message_modules/
+    # Lottie categorized by module
+    - assets/lottie_assets/events_lottie_assets/
+    - assets/lottie_assets/home_lottie_assets/
+    - assets/lottie_assets/inventory_lottie_assets/
+    - assets/lottie_assets/main_lottie_assets/
+    - assets/lottie_assets/messaging_lottie_assets/
+    - assets/lottie_assets/notification_lottie_assets/
+    - assets/lottie_assets/organization_chart_lottie_assets/
+    - assets/lottie_assets/roles_lottie_assets/
+    # Bundled Google Fonts (offline: GoogleFonts.config.allowRuntimeFetching = false)
+    # google_fonts matches these .ttf files by filename (e.g. Cairo-Medium.ttf),
+    # so the folders holding them must be declared as assets.
+    - assets/fonts/fonts_english/Cairo/
+    - assets/fonts/fonts_english/Montserrat/
+    # Remaining non-image assets (pdf / zip) kept in place
+    - assets/
 
+  # To add assets to your application, add an assets section, like this:
+  # assets:
+  #   - images/a_dot_burr.jpeg
+  #   - images/a_dot_ham.jpeg
+  # An image asset can refer to one or more resolution-specific "variants", see
+  # https://flutter.dev/assets-and-images/#resolution-aware
+  # For details regarding adding assets from package dependencies, see
+  # https://flutter.dev/assets-and-images/#from-packages
+  # To add custom fonts to your application, add a fonts section here,
+  # in this "flutter" section. Each entry in this list should have a
+  # "family" key with the font family name, and a "fonts" key with a
+  # list giving the asset and other descriptors for the font. For
+  # example:
   fonts:
     - family: Cairo
       fonts:
@@ -231,6 +236,8 @@ flutter:
     - family: Vazirmatn
       fonts:
         - asset: assets/fonts/fonts_arabic/Vazirmatn/Vazirmatn-Regular.ttf
+
+
 
 flutter_launcher_icons:
   android: "launcher_icon"

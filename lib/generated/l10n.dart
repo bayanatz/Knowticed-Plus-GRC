@@ -54,6 +54,256 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `th`
+  String get th {
+    return Intl.message('th', name: 'th', desc: '', args: []);
+  }
+
+  /// `3rd`
+  String get k3rd {
+    return Intl.message('3rd', name: 'k3rd', desc: '', args: []);
+  }
+
+  /// `2nd`
+  String get k2nd {
+    return Intl.message('2nd', name: 'k2nd', desc: '', args: []);
+  }
+
+  /// `1st`
+  String get k1st {
+    return Intl.message('1st', name: 'k1st', desc: '', args: []);
+  }
+
+  /// `You cannot add an option that already exists`
+  String get youCannotAddAnOptionThatAlreadyExists {
+    return Intl.message(
+      'You cannot add an option that already exists',
+      name: 'youCannotAddAnOptionThatAlreadyExists',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `UnAggregated`
+  String get unaggregated {
+    return Intl.message(
+      'UnAggregated',
+      name: 'unaggregated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `timeMinutes`
+  String get timeminutes {
+    return Intl.message('timeMinutes', name: 'timeminutes', desc: '', args: []);
+  }
+
+  /// `Tabulated`
+  String get tabulated {
+    return Intl.message('Tabulated', name: 'tabulated', desc: '', args: []);
+  }
+
+  /// `Saved Colors`
+  String get savedColors {
+    return Intl.message(
+      'Saved Colors',
+      name: 'savedColors',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Requested Form`
+  String get requestedForm {
+    return Intl.message(
+      'Requested Form',
+      name: 'requestedForm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please Enter The valid Phone Number`
+  String get pleaseEnterTheValidPhoneNumber {
+    return Intl.message(
+      'Please Enter The valid Phone Number',
+      name: 'pleaseEnterTheValidPhoneNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please Enter The valid Email`
+  String get pleaseEnterTheValidEmail {
+    return Intl.message(
+      'Please Enter The valid Email',
+      name: 'pleaseEnterTheValidEmail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please Enter The Text In English Language`
+  String get pleaseEnterTheTextInEnglishLanguage {
+    return Intl.message(
+      'Please Enter The Text In English Language',
+      name: 'pleaseEnterTheTextInEnglishLanguage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please Enter The Text In Arabic Language`
+  String get pleaseEnterTheTextInArabicLanguage {
+    return Intl.message(
+      'Please Enter The Text In Arabic Language',
+      name: 'pleaseEnterTheTextInArabicLanguage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter numbers only more then 0`
+  String get pleaseEnterNumbersOnlyMoreThen0 {
+    return Intl.message(
+      'Please enter numbers only more then 0',
+      name: 'pleaseEnterNumbersOnlyMoreThen0',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter a valid link`
+  String get pleaseEnterAValidLink {
+    return Intl.message(
+      'Please enter a valid link',
+      name: 'pleaseEnterAValidLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Month`
+  String get month2 {
+    return Intl.message('Month', name: 'month2', desc: '', args: []);
+  }
+
+  /// `Longitude invalid.`
+  String get longitudeInvalid {
+    return Intl.message(
+      'Longitude invalid.',
+      name: 'longitudeInvalid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Link invalid`
+  String get linkInvalid {
+    return Intl.message(
+      'Link invalid',
+      name: 'linkInvalid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Latitude invalid.`
+  String get latitudeInvalid {
+    return Intl.message(
+      'Latitude invalid.',
+      name: 'latitudeInvalid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Document Details`
+  String get documentDetails {
+    return Intl.message(
+      'Document Details',
+      name: 'documentDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Click`
+  String get click {
+    return Intl.message('Click', name: 'click', desc: '', args: []);
+  }
+
+  /// `UnTabulated`
+  String get untabulated {
+    return Intl.message('UnTabulated', name: 'untabulated', desc: '', args: []);
+  }
+
+  /// `Aggregated`
+  String get aggregated {
+    return Intl.message('Aggregated', name: 'aggregated', desc: '', args: []);
+  }
+
+  /// `Total: `
+  String get total2 {
+    return Intl.message('Total: ', name: 'total2', desc: '', args: []);
+  }
+
+  /// `Total Response: `
+  String get totalResponse {
+    return Intl.message(
+      'Total Response: ',
+      name: 'totalResponse',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Group Found`
+  String get noGroupFound {
+    return Intl.message(
+      'No Group Found',
+      name: 'noGroupFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Message Form Owner`
+  String get messageFormOwner {
+    return Intl.message(
+      'Message Form Owner',
+      name: 'messageFormOwner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Building / Apartment`
+  String get buildingApartment {
+    return Intl.message(
+      'Building / Apartment',
+      name: 'buildingApartment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not Accepted`
+  String get notAccepted {
+    return Intl.message(
+      'Not Accepted',
+      name: 'notAccepted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Accepted`
+  String get accepted {
+    return Intl.message('Accepted', name: 'accepted', desc: '', args: []);
+  }
+
   /// `Draft saved successfully!`
   String get draftSavedSuccessfully {
     return Intl.message(
@@ -9384,6 +9634,41 @@ class S {
     );
   }
 
+  /// `Bachelor's Degree`
+  String get bachelorDegree {
+    return Intl.message(
+      'Bachelor\'s Degree',
+      name: 'bachelorDegree',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Master's Degree`
+  String get masterDegree {
+    return Intl.message(
+      'Master\'s Degree',
+      name: 'masterDegree',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `PhD`
+  String get phdDegree {
+    return Intl.message('PhD', name: 'phdDegree', desc: '', args: []);
+  }
+
+  /// `Diploma`
+  String get diploma {
+    return Intl.message('Diploma', name: 'diploma', desc: '', args: []);
+  }
+
+  /// `Certificate`
+  String get certificate {
+    return Intl.message('Certificate', name: 'certificate', desc: '', args: []);
+  }
+
   /// `Graduation Year`
   String get graduationYear {
     return Intl.message(
@@ -10259,10 +10544,10 @@ class S {
     );
   }
 
-  /// `assets/images/success.svg`
+  /// `assets/icons_assets/main_icons_assets/check_circle_green.svg`
   String get imageAsset {
     return Intl.message(
-      'assets/images/success.svg',
+      'assets/icons_assets/main_icons_assets/check_circle_green.svg',
       name: 'imageAsset',
       desc: '',
       args: [],
@@ -16825,10 +17110,10 @@ class S {
   }
 
   /// `Form Builder`
-  String get form_builder {
+  String get services_app {
     return Intl.message(
       'Form Builder',
-      name: 'form_builder',
+      name: 'services_app',
       desc: '',
       args: [],
     );
@@ -16882,6 +17167,7608 @@ class S {
   /// `Created At`
   String get createdAt {
     return Intl.message('Created At', name: 'createdAt', desc: '', args: []);
+  }
+
+  /// `Activating Requests`
+  String get activatingRequests {
+    return Intl.message(
+      'Activating Requests',
+      name: 'activatingRequests',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to activate these requests?`
+  String get areYouSureActivateRequests {
+    return Intl.message(
+      'Are you sure you want to activate these requests?',
+      name: 'areYouSureActivateRequests',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Service Provider`
+  String get editServiceProvider {
+    return Intl.message(
+      'Edit Service Provider',
+      name: 'editServiceProvider',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Master Upload`
+  String get masterUpload {
+    return Intl.message(
+      'Master Upload',
+      name: 'masterUpload',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Services Data`
+  String get servicesData {
+    return Intl.message(
+      'Services Data',
+      name: 'servicesData',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Services & Requests Activated Successfully`
+  String get servicesRequestsActivatedSuccessfully {
+    return Intl.message(
+      'Services & Requests Activated Successfully',
+      name: 'servicesRequestsActivatedSuccessfully',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Approved`
+  String get sm_approved {
+    return Intl.message('Approved', name: 'sm_approved', desc: '', args: []);
+  }
+
+  /// `Breached SLA`
+  String get sm_breachedSla {
+    return Intl.message(
+      'Breached SLA',
+      name: 'sm_breachedSla',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `chooseUnit`
+  String get sm_chooseunit {
+    return Intl.message(
+      'chooseUnit',
+      name: 'sm_chooseunit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `day`
+  String get sm_day {
+    return Intl.message('day', name: 'sm_day', desc: '', args: []);
+  }
+
+  /// `days`
+  String get sm_days {
+    return Intl.message('days', name: 'sm_days', desc: '', args: []);
+  }
+
+  /// `Doesn't Need Approval`
+  String get sm_doesnTNeedApproval {
+    return Intl.message(
+      'Doesn\'t Need Approval',
+      name: 'sm_doesnTNeedApproval',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Done`
+  String get sm_done {
+    return Intl.message('Done', name: 'sm_done', desc: '', args: []);
+  }
+
+  /// `Duplicate Info Name`
+  String get sm_duplicateInfoName {
+    return Intl.message(
+      'Duplicate Info Name',
+      name: 'sm_duplicateInfoName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `hour`
+  String get sm_hour {
+    return Intl.message('hour', name: 'sm_hour', desc: '', args: []);
+  }
+
+  /// `hours`
+  String get sm_hours {
+    return Intl.message('hours', name: 'sm_hours', desc: '', args: []);
+  }
+
+  /// `Inprogress`
+  String get sm_inprogress {
+    return Intl.message(
+      'Inprogress',
+      name: 'sm_inprogress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `minute`
+  String get sm_minute {
+    return Intl.message('minute', name: 'sm_minute', desc: '', args: []);
+  }
+
+  /// `minutes`
+  String get sm_minutes {
+    return Intl.message('minutes', name: 'sm_minutes', desc: '', args: []);
+  }
+
+  /// `month`
+  String get sm_month {
+    return Intl.message('month', name: 'sm_month', desc: '', args: []);
+  }
+
+  /// `months`
+  String get sm_months {
+    return Intl.message('months', name: 'sm_months', desc: '', args: []);
+  }
+
+  /// `Need Approval`
+  String get sm_needApproval {
+    return Intl.message(
+      'Need Approval',
+      name: 'sm_needApproval',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No requests found`
+  String get sm_noRequestsFound {
+    return Intl.message(
+      'No requests found',
+      name: 'sm_noRequestsFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `second`
+  String get sm_second {
+    return Intl.message('second', name: 'sm_second', desc: '', args: []);
+  }
+
+  /// `seconds`
+  String get sm_seconds {
+    return Intl.message('seconds', name: 'sm_seconds', desc: '', args: []);
+  }
+
+  /// `Selected`
+  String get sm_selected {
+    return Intl.message('Selected', name: 'sm_selected', desc: '', args: []);
+  }
+
+  /// `selected`
+  String get sm_selected2 {
+    return Intl.message('selected', name: 'sm_selected2', desc: '', args: []);
+  }
+
+  /// `Service Created Successfully`
+  String get sm_serviceCreatedSuccessfully {
+    return Intl.message(
+      'Service Created Successfully',
+      name: 'sm_serviceCreatedSuccessfully',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Service Updated Successfully`
+  String get sm_serviceUpdatedSuccessfully {
+    return Intl.message(
+      'Service Updated Successfully',
+      name: 'sm_serviceUpdatedSuccessfully',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unknown`
+  String get sm_unknown {
+    return Intl.message('Unknown', name: 'sm_unknown', desc: '', args: []);
+  }
+
+  /// `Unknown Unit`
+  String get sm_unknownUnit {
+    return Intl.message(
+      'Unknown Unit',
+      name: 'sm_unknownUnit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unspecified`
+  String get sm_unspecified {
+    return Intl.message(
+      'Unspecified',
+      name: 'sm_unspecified',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `week`
+  String get sm_week {
+    return Intl.message('week', name: 'sm_week', desc: '', args: []);
+  }
+
+  /// `weeks`
+  String get sm_weeks {
+    return Intl.message('weeks', name: 'sm_weeks', desc: '', args: []);
+  }
+
+  /// `year`
+  String get sm_year {
+    return Intl.message('year', name: 'sm_year', desc: '', args: []);
+  }
+
+  /// `Afghan`
+  String get afghan {
+    return Intl.message('Afghan', name: 'afghan', desc: '', args: []);
+  }
+
+  /// `Albanian`
+  String get albanian {
+    return Intl.message('Albanian', name: 'albanian', desc: '', args: []);
+  }
+
+  /// `Algerian`
+  String get algerian {
+    return Intl.message('Algerian', name: 'algerian', desc: '', args: []);
+  }
+
+  /// `American`
+  String get american {
+    return Intl.message('American', name: 'american', desc: '', args: []);
+  }
+
+  /// `Andorran`
+  String get andorran {
+    return Intl.message('Andorran', name: 'andorran', desc: '', args: []);
+  }
+
+  /// `Angolan`
+  String get angolan {
+    return Intl.message('Angolan', name: 'angolan', desc: '', args: []);
+  }
+
+  /// `Antiguans`
+  String get antiguans {
+    return Intl.message('Antiguans', name: 'antiguans', desc: '', args: []);
+  }
+
+  /// `Argentinean`
+  String get argentinean {
+    return Intl.message('Argentinean', name: 'argentinean', desc: '', args: []);
+  }
+
+  /// `Armenian`
+  String get armenian {
+    return Intl.message('Armenian', name: 'armenian', desc: '', args: []);
+  }
+
+  /// `Australian`
+  String get australian {
+    return Intl.message('Australian', name: 'australian', desc: '', args: []);
+  }
+
+  /// `Austrian`
+  String get austrian {
+    return Intl.message('Austrian', name: 'austrian', desc: '', args: []);
+  }
+
+  /// `Azerbaijani`
+  String get azerbaijani {
+    return Intl.message('Azerbaijani', name: 'azerbaijani', desc: '', args: []);
+  }
+
+  /// `Bahamian`
+  String get bahamian {
+    return Intl.message('Bahamian', name: 'bahamian', desc: '', args: []);
+  }
+
+  /// `Bahraini`
+  String get bahraini {
+    return Intl.message('Bahraini', name: 'bahraini', desc: '', args: []);
+  }
+
+  /// `Bangladeshi`
+  String get bangladeshi {
+    return Intl.message('Bangladeshi', name: 'bangladeshi', desc: '', args: []);
+  }
+
+  /// `Barbadian`
+  String get barbadian {
+    return Intl.message('Barbadian', name: 'barbadian', desc: '', args: []);
+  }
+
+  /// `Barbudans`
+  String get barbudans {
+    return Intl.message('Barbudans', name: 'barbudans', desc: '', args: []);
+  }
+
+  /// `Batswana`
+  String get batswana {
+    return Intl.message('Batswana', name: 'batswana', desc: '', args: []);
+  }
+
+  /// `Belarusian`
+  String get belarusian {
+    return Intl.message('Belarusian', name: 'belarusian', desc: '', args: []);
+  }
+
+  /// `Belgian`
+  String get belgian {
+    return Intl.message('Belgian', name: 'belgian', desc: '', args: []);
+  }
+
+  /// `Belizean`
+  String get belizean {
+    return Intl.message('Belizean', name: 'belizean', desc: '', args: []);
+  }
+
+  /// `Beninese`
+  String get beninese {
+    return Intl.message('Beninese', name: 'beninese', desc: '', args: []);
+  }
+
+  /// `Bhutanese`
+  String get bhutanese {
+    return Intl.message('Bhutanese', name: 'bhutanese', desc: '', args: []);
+  }
+
+  /// `Bolivian`
+  String get bolivian {
+    return Intl.message('Bolivian', name: 'bolivian', desc: '', args: []);
+  }
+
+  /// `Bosnian`
+  String get bosnian {
+    return Intl.message('Bosnian', name: 'bosnian', desc: '', args: []);
+  }
+
+  /// `Brazilian`
+  String get brazilian {
+    return Intl.message('Brazilian', name: 'brazilian', desc: '', args: []);
+  }
+
+  /// `British`
+  String get british {
+    return Intl.message('British', name: 'british', desc: '', args: []);
+  }
+
+  /// `Bruneian`
+  String get bruneian {
+    return Intl.message('Bruneian', name: 'bruneian', desc: '', args: []);
+  }
+
+  /// `Bulgarian`
+  String get bulgarian {
+    return Intl.message('Bulgarian', name: 'bulgarian', desc: '', args: []);
+  }
+
+  /// `Burkinabe`
+  String get burkinabe {
+    return Intl.message('Burkinabe', name: 'burkinabe', desc: '', args: []);
+  }
+
+  /// `Burmese`
+  String get burmese {
+    return Intl.message('Burmese', name: 'burmese', desc: '', args: []);
+  }
+
+  /// `Burundian`
+  String get burundian {
+    return Intl.message('Burundian', name: 'burundian', desc: '', args: []);
+  }
+
+  /// `Cambodian`
+  String get cambodian {
+    return Intl.message('Cambodian', name: 'cambodian', desc: '', args: []);
+  }
+
+  /// `Cameroonian`
+  String get cameroonian {
+    return Intl.message('Cameroonian', name: 'cameroonian', desc: '', args: []);
+  }
+
+  /// `Canadian`
+  String get canadian {
+    return Intl.message('Canadian', name: 'canadian', desc: '', args: []);
+  }
+
+  /// `Cape Verdean`
+  String get capeVerdean {
+    return Intl.message(
+      'Cape Verdean',
+      name: 'capeVerdean',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Central African`
+  String get centralAfrican {
+    return Intl.message(
+      'Central African',
+      name: 'centralAfrican',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Chadian`
+  String get chadian {
+    return Intl.message('Chadian', name: 'chadian', desc: '', args: []);
+  }
+
+  /// `Chilean`
+  String get chilean {
+    return Intl.message('Chilean', name: 'chilean', desc: '', args: []);
+  }
+
+  /// `Chinese`
+  String get chinese {
+    return Intl.message('Chinese', name: 'chinese', desc: '', args: []);
+  }
+
+  /// `Colombian`
+  String get colombian {
+    return Intl.message('Colombian', name: 'colombian', desc: '', args: []);
+  }
+
+  /// `Comoran`
+  String get comoran {
+    return Intl.message('Comoran', name: 'comoran', desc: '', args: []);
+  }
+
+  /// `Congolese`
+  String get congolese {
+    return Intl.message('Congolese', name: 'congolese', desc: '', args: []);
+  }
+
+  /// `Costa Rican`
+  String get costaRican {
+    return Intl.message('Costa Rican', name: 'costaRican', desc: '', args: []);
+  }
+
+  /// `Croatian`
+  String get croatian {
+    return Intl.message('Croatian', name: 'croatian', desc: '', args: []);
+  }
+
+  /// `Cuban`
+  String get cuban {
+    return Intl.message('Cuban', name: 'cuban', desc: '', args: []);
+  }
+
+  /// `Cypriot`
+  String get cypriot {
+    return Intl.message('Cypriot', name: 'cypriot', desc: '', args: []);
+  }
+
+  /// `Czech`
+  String get czech {
+    return Intl.message('Czech', name: 'czech', desc: '', args: []);
+  }
+
+  /// `Danish`
+  String get danish {
+    return Intl.message('Danish', name: 'danish', desc: '', args: []);
+  }
+
+  /// `Djibouti`
+  String get djibouti {
+    return Intl.message('Djibouti', name: 'djibouti', desc: '', args: []);
+  }
+
+  /// `Dominican`
+  String get dominican {
+    return Intl.message('Dominican', name: 'dominican', desc: '', args: []);
+  }
+
+  /// `Dutch`
+  String get dutch {
+    return Intl.message('Dutch', name: 'dutch', desc: '', args: []);
+  }
+
+  /// `East Timorese`
+  String get eastTimorese {
+    return Intl.message(
+      'East Timorese',
+      name: 'eastTimorese',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ecuadorean`
+  String get ecuadorean {
+    return Intl.message('Ecuadorean', name: 'ecuadorean', desc: '', args: []);
+  }
+
+  /// `Egyptian`
+  String get egyptian {
+    return Intl.message('Egyptian', name: 'egyptian', desc: '', args: []);
+  }
+
+  /// `Emirian`
+  String get emirian {
+    return Intl.message('Emirian', name: 'emirian', desc: '', args: []);
+  }
+
+  /// `Equatorial Guinean`
+  String get equatorialGuinean {
+    return Intl.message(
+      'Equatorial Guinean',
+      name: 'equatorialGuinean',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Eritrean`
+  String get eritrean {
+    return Intl.message('Eritrean', name: 'eritrean', desc: '', args: []);
+  }
+
+  /// `Estonian`
+  String get estonian {
+    return Intl.message('Estonian', name: 'estonian', desc: '', args: []);
+  }
+
+  /// `Ethiopian`
+  String get ethiopian {
+    return Intl.message('Ethiopian', name: 'ethiopian', desc: '', args: []);
+  }
+
+  /// `Fijian`
+  String get fijian {
+    return Intl.message('Fijian', name: 'fijian', desc: '', args: []);
+  }
+
+  /// `Filipino`
+  String get filipino {
+    return Intl.message('Filipino', name: 'filipino', desc: '', args: []);
+  }
+
+  /// `Finnish`
+  String get finnish {
+    return Intl.message('Finnish', name: 'finnish', desc: '', args: []);
+  }
+
+  /// `French`
+  String get french {
+    return Intl.message('French', name: 'french', desc: '', args: []);
+  }
+
+  /// `Gabonese`
+  String get gabonese {
+    return Intl.message('Gabonese', name: 'gabonese', desc: '', args: []);
+  }
+
+  /// `Gambian`
+  String get gambian {
+    return Intl.message('Gambian', name: 'gambian', desc: '', args: []);
+  }
+
+  /// `Georgian`
+  String get georgian {
+    return Intl.message('Georgian', name: 'georgian', desc: '', args: []);
+  }
+
+  /// `German`
+  String get german {
+    return Intl.message('German', name: 'german', desc: '', args: []);
+  }
+
+  /// `Ghanaian`
+  String get ghanaian {
+    return Intl.message('Ghanaian', name: 'ghanaian', desc: '', args: []);
+  }
+
+  /// `Greek`
+  String get greek {
+    return Intl.message('Greek', name: 'greek', desc: '', args: []);
+  }
+
+  /// `Grenadian`
+  String get grenadian {
+    return Intl.message('Grenadian', name: 'grenadian', desc: '', args: []);
+  }
+
+  /// `Guatemalan`
+  String get guatemalan {
+    return Intl.message('Guatemalan', name: 'guatemalan', desc: '', args: []);
+  }
+
+  /// `Guinea-Bissauan`
+  String get guineaBissauan {
+    return Intl.message(
+      'Guinea-Bissauan',
+      name: 'guineaBissauan',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Guinean`
+  String get guinean {
+    return Intl.message('Guinean', name: 'guinean', desc: '', args: []);
+  }
+
+  /// `Guyanese`
+  String get guyanese {
+    return Intl.message('Guyanese', name: 'guyanese', desc: '', args: []);
+  }
+
+  /// `Haitian`
+  String get haitian {
+    return Intl.message('Haitian', name: 'haitian', desc: '', args: []);
+  }
+
+  /// `Herzegovinian`
+  String get herzegovinian {
+    return Intl.message(
+      'Herzegovinian',
+      name: 'herzegovinian',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Honduran`
+  String get honduran {
+    return Intl.message('Honduran', name: 'honduran', desc: '', args: []);
+  }
+
+  /// `Hungarian`
+  String get hungarian {
+    return Intl.message('Hungarian', name: 'hungarian', desc: '', args: []);
+  }
+
+  /// `I-Kiribati`
+  String get iKiribati {
+    return Intl.message('I-Kiribati', name: 'iKiribati', desc: '', args: []);
+  }
+
+  /// `Icelander`
+  String get icelander {
+    return Intl.message('Icelander', name: 'icelander', desc: '', args: []);
+  }
+
+  /// `Indian`
+  String get indian {
+    return Intl.message('Indian', name: 'indian', desc: '', args: []);
+  }
+
+  /// `Indonesian`
+  String get indonesian {
+    return Intl.message('Indonesian', name: 'indonesian', desc: '', args: []);
+  }
+
+  /// `Iranian`
+  String get iranian {
+    return Intl.message('Iranian', name: 'iranian', desc: '', args: []);
+  }
+
+  /// `Iraqi`
+  String get iraqi {
+    return Intl.message('Iraqi', name: 'iraqi', desc: '', args: []);
+  }
+
+  /// `Irish`
+  String get irish {
+    return Intl.message('Irish', name: 'irish', desc: '', args: []);
+  }
+
+  /// `Israeli`
+  String get israeli {
+    return Intl.message('Israeli', name: 'israeli', desc: '', args: []);
+  }
+
+  /// `Italian`
+  String get italian {
+    return Intl.message('Italian', name: 'italian', desc: '', args: []);
+  }
+
+  /// `Ivorian`
+  String get ivorian {
+    return Intl.message('Ivorian', name: 'ivorian', desc: '', args: []);
+  }
+
+  /// `Jamaican`
+  String get jamaican {
+    return Intl.message('Jamaican', name: 'jamaican', desc: '', args: []);
+  }
+
+  /// `Japanese`
+  String get japanese {
+    return Intl.message('Japanese', name: 'japanese', desc: '', args: []);
+  }
+
+  /// `Jordanian`
+  String get jordanian {
+    return Intl.message('Jordanian', name: 'jordanian', desc: '', args: []);
+  }
+
+  /// `Kazakhstani`
+  String get kazakhstani {
+    return Intl.message('Kazakhstani', name: 'kazakhstani', desc: '', args: []);
+  }
+
+  /// `Kenyan`
+  String get kenyan {
+    return Intl.message('Kenyan', name: 'kenyan', desc: '', args: []);
+  }
+
+  /// `Kittian and Nevisian`
+  String get kittianAndNevisian {
+    return Intl.message(
+      'Kittian and Nevisian',
+      name: 'kittianAndNevisian',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Kuwaiti`
+  String get kuwaiti {
+    return Intl.message('Kuwaiti', name: 'kuwaiti', desc: '', args: []);
+  }
+
+  /// `Kyrgyz`
+  String get kyrgyz {
+    return Intl.message('Kyrgyz', name: 'kyrgyz', desc: '', args: []);
+  }
+
+  /// `Laotian`
+  String get laotian {
+    return Intl.message('Laotian', name: 'laotian', desc: '', args: []);
+  }
+
+  /// `Latvian`
+  String get latvian {
+    return Intl.message('Latvian', name: 'latvian', desc: '', args: []);
+  }
+
+  /// `Lebanese`
+  String get lebanese {
+    return Intl.message('Lebanese', name: 'lebanese', desc: '', args: []);
+  }
+
+  /// `Liberian`
+  String get liberian {
+    return Intl.message('Liberian', name: 'liberian', desc: '', args: []);
+  }
+
+  /// `Libyan`
+  String get libyan {
+    return Intl.message('Libyan', name: 'libyan', desc: '', args: []);
+  }
+
+  /// `Liechtensteiner`
+  String get liechtensteiner {
+    return Intl.message(
+      'Liechtensteiner',
+      name: 'liechtensteiner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Lithuanian`
+  String get lithuanian {
+    return Intl.message('Lithuanian', name: 'lithuanian', desc: '', args: []);
+  }
+
+  /// `Luxembourger`
+  String get luxembourger {
+    return Intl.message(
+      'Luxembourger',
+      name: 'luxembourger',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Macedonian`
+  String get macedonian {
+    return Intl.message('Macedonian', name: 'macedonian', desc: '', args: []);
+  }
+
+  /// `Malagasy`
+  String get malagasy {
+    return Intl.message('Malagasy', name: 'malagasy', desc: '', args: []);
+  }
+
+  /// `Malawian`
+  String get malawian {
+    return Intl.message('Malawian', name: 'malawian', desc: '', args: []);
+  }
+
+  /// `Malaysian`
+  String get malaysian {
+    return Intl.message('Malaysian', name: 'malaysian', desc: '', args: []);
+  }
+
+  /// `Maldivan`
+  String get maldivan {
+    return Intl.message('Maldivan', name: 'maldivan', desc: '', args: []);
+  }
+
+  /// `Malian`
+  String get malian {
+    return Intl.message('Malian', name: 'malian', desc: '', args: []);
+  }
+
+  /// `Maltese`
+  String get maltese {
+    return Intl.message('Maltese', name: 'maltese', desc: '', args: []);
+  }
+
+  /// `Marshallese`
+  String get marshallese {
+    return Intl.message('Marshallese', name: 'marshallese', desc: '', args: []);
+  }
+
+  /// `Mauritanian`
+  String get mauritanian {
+    return Intl.message('Mauritanian', name: 'mauritanian', desc: '', args: []);
+  }
+
+  /// `Mauritian`
+  String get mauritian {
+    return Intl.message('Mauritian', name: 'mauritian', desc: '', args: []);
+  }
+
+  /// `Mexican`
+  String get mexican {
+    return Intl.message('Mexican', name: 'mexican', desc: '', args: []);
+  }
+
+  /// `Micronesian`
+  String get micronesian {
+    return Intl.message('Micronesian', name: 'micronesian', desc: '', args: []);
+  }
+
+  /// `Moldovan`
+  String get moldovan {
+    return Intl.message('Moldovan', name: 'moldovan', desc: '', args: []);
+  }
+
+  /// `Monacan`
+  String get monacan {
+    return Intl.message('Monacan', name: 'monacan', desc: '', args: []);
+  }
+
+  /// `Mongolian`
+  String get mongolian {
+    return Intl.message('Mongolian', name: 'mongolian', desc: '', args: []);
+  }
+
+  /// `Moroccan`
+  String get moroccan {
+    return Intl.message('Moroccan', name: 'moroccan', desc: '', args: []);
+  }
+
+  /// `Mosotho`
+  String get mosotho {
+    return Intl.message('Mosotho', name: 'mosotho', desc: '', args: []);
+  }
+
+  /// `Motswana`
+  String get motswana {
+    return Intl.message('Motswana', name: 'motswana', desc: '', args: []);
+  }
+
+  /// `Mozambican`
+  String get mozambican {
+    return Intl.message('Mozambican', name: 'mozambican', desc: '', args: []);
+  }
+
+  /// `Namibian`
+  String get namibian {
+    return Intl.message('Namibian', name: 'namibian', desc: '', args: []);
+  }
+
+  /// `Nauruan`
+  String get nauruan {
+    return Intl.message('Nauruan', name: 'nauruan', desc: '', args: []);
+  }
+
+  /// `Nepalese`
+  String get nepalese {
+    return Intl.message('Nepalese', name: 'nepalese', desc: '', args: []);
+  }
+
+  /// `New Zealander`
+  String get newZealander {
+    return Intl.message(
+      'New Zealander',
+      name: 'newZealander',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nicaraguan`
+  String get nicaraguan {
+    return Intl.message('Nicaraguan', name: 'nicaraguan', desc: '', args: []);
+  }
+
+  /// `Nigerian`
+  String get nigerian {
+    return Intl.message('Nigerian', name: 'nigerian', desc: '', args: []);
+  }
+
+  /// `Nigerien`
+  String get nigerien {
+    return Intl.message('Nigerien', name: 'nigerien', desc: '', args: []);
+  }
+
+  /// `North Korean`
+  String get northKorean {
+    return Intl.message(
+      'North Korean',
+      name: 'northKorean',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Northern Irish`
+  String get northernIrish {
+    return Intl.message(
+      'Northern Irish',
+      name: 'northernIrish',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Norwegian`
+  String get norwegian {
+    return Intl.message('Norwegian', name: 'norwegian', desc: '', args: []);
+  }
+
+  /// `Omani`
+  String get omani {
+    return Intl.message('Omani', name: 'omani', desc: '', args: []);
+  }
+
+  /// `Pakistani`
+  String get pakistani {
+    return Intl.message('Pakistani', name: 'pakistani', desc: '', args: []);
+  }
+
+  /// `Palauan`
+  String get palauan {
+    return Intl.message('Palauan', name: 'palauan', desc: '', args: []);
+  }
+
+  /// `Panamanian`
+  String get panamanian {
+    return Intl.message('Panamanian', name: 'panamanian', desc: '', args: []);
+  }
+
+  /// `Papua New Guinean`
+  String get papuaNewGuinean {
+    return Intl.message(
+      'Papua New Guinean',
+      name: 'papuaNewGuinean',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Paraguayan`
+  String get paraguayan {
+    return Intl.message('Paraguayan', name: 'paraguayan', desc: '', args: []);
+  }
+
+  /// `Peruvian`
+  String get peruvian {
+    return Intl.message('Peruvian', name: 'peruvian', desc: '', args: []);
+  }
+
+  /// `Polish`
+  String get polish {
+    return Intl.message('Polish', name: 'polish', desc: '', args: []);
+  }
+
+  /// `Portuguese`
+  String get portuguese {
+    return Intl.message('Portuguese', name: 'portuguese', desc: '', args: []);
+  }
+
+  /// `Qatari`
+  String get qatari {
+    return Intl.message('Qatari', name: 'qatari', desc: '', args: []);
+  }
+
+  /// `Romanian`
+  String get romanian {
+    return Intl.message('Romanian', name: 'romanian', desc: '', args: []);
+  }
+
+  /// `Russian`
+  String get russian {
+    return Intl.message('Russian', name: 'russian', desc: '', args: []);
+  }
+
+  /// `Rwandan`
+  String get rwandan {
+    return Intl.message('Rwandan', name: 'rwandan', desc: '', args: []);
+  }
+
+  /// `Saint Lucian`
+  String get saintLucian {
+    return Intl.message(
+      'Saint Lucian',
+      name: 'saintLucian',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Salvadoran`
+  String get salvadoran {
+    return Intl.message('Salvadoran', name: 'salvadoran', desc: '', args: []);
+  }
+
+  /// `Samoan`
+  String get samoan {
+    return Intl.message('Samoan', name: 'samoan', desc: '', args: []);
+  }
+
+  /// `San Marinese`
+  String get sanMarinese {
+    return Intl.message(
+      'San Marinese',
+      name: 'sanMarinese',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sao Tomean`
+  String get saoTomean {
+    return Intl.message('Sao Tomean', name: 'saoTomean', desc: '', args: []);
+  }
+
+  /// `Saudi`
+  String get saudi {
+    return Intl.message('Saudi', name: 'saudi', desc: '', args: []);
+  }
+
+  /// `Scottish`
+  String get scottish {
+    return Intl.message('Scottish', name: 'scottish', desc: '', args: []);
+  }
+
+  /// `Senegalese`
+  String get senegalese {
+    return Intl.message('Senegalese', name: 'senegalese', desc: '', args: []);
+  }
+
+  /// `Serbian`
+  String get serbian {
+    return Intl.message('Serbian', name: 'serbian', desc: '', args: []);
+  }
+
+  /// `Seychellois`
+  String get seychellois {
+    return Intl.message('Seychellois', name: 'seychellois', desc: '', args: []);
+  }
+
+  /// `Sierra Leonean`
+  String get sierraLeonean {
+    return Intl.message(
+      'Sierra Leonean',
+      name: 'sierraLeonean',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Singaporean`
+  String get singaporean {
+    return Intl.message('Singaporean', name: 'singaporean', desc: '', args: []);
+  }
+
+  /// `Slovakian`
+  String get slovakian {
+    return Intl.message('Slovakian', name: 'slovakian', desc: '', args: []);
+  }
+
+  /// `Slovenian`
+  String get slovenian {
+    return Intl.message('Slovenian', name: 'slovenian', desc: '', args: []);
+  }
+
+  /// `Solomon Islander`
+  String get solomonIslander {
+    return Intl.message(
+      'Solomon Islander',
+      name: 'solomonIslander',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Somali`
+  String get somali {
+    return Intl.message('Somali', name: 'somali', desc: '', args: []);
+  }
+
+  /// `South African`
+  String get southAfrican {
+    return Intl.message(
+      'South African',
+      name: 'southAfrican',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `South Korean`
+  String get southKorean {
+    return Intl.message(
+      'South Korean',
+      name: 'southKorean',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `South Sudanese`
+  String get southSudanese {
+    return Intl.message(
+      'South Sudanese',
+      name: 'southSudanese',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Spanish`
+  String get spanish {
+    return Intl.message('Spanish', name: 'spanish', desc: '', args: []);
+  }
+
+  /// `Sri Lankan`
+  String get sriLankan {
+    return Intl.message('Sri Lankan', name: 'sriLankan', desc: '', args: []);
+  }
+
+  /// `Sudanese`
+  String get sudanese {
+    return Intl.message('Sudanese', name: 'sudanese', desc: '', args: []);
+  }
+
+  /// `Surinamer`
+  String get surinamer {
+    return Intl.message('Surinamer', name: 'surinamer', desc: '', args: []);
+  }
+
+  /// `Swazi`
+  String get swazi {
+    return Intl.message('Swazi', name: 'swazi', desc: '', args: []);
+  }
+
+  /// `Swedish`
+  String get swedish {
+    return Intl.message('Swedish', name: 'swedish', desc: '', args: []);
+  }
+
+  /// `Swiss`
+  String get swiss {
+    return Intl.message('Swiss', name: 'swiss', desc: '', args: []);
+  }
+
+  /// `Syrian`
+  String get syrian {
+    return Intl.message('Syrian', name: 'syrian', desc: '', args: []);
+  }
+
+  /// `Taiwanese`
+  String get taiwanese {
+    return Intl.message('Taiwanese', name: 'taiwanese', desc: '', args: []);
+  }
+
+  /// `Tajik`
+  String get tajik {
+    return Intl.message('Tajik', name: 'tajik', desc: '', args: []);
+  }
+
+  /// `Tanzanian`
+  String get tanzanian {
+    return Intl.message('Tanzanian', name: 'tanzanian', desc: '', args: []);
+  }
+
+  /// `Thai`
+  String get thai {
+    return Intl.message('Thai', name: 'thai', desc: '', args: []);
+  }
+
+  /// `Togolese`
+  String get togolese {
+    return Intl.message('Togolese', name: 'togolese', desc: '', args: []);
+  }
+
+  /// `Tongan`
+  String get tongan {
+    return Intl.message('Tongan', name: 'tongan', desc: '', args: []);
+  }
+
+  /// `Trinidadian or Tobagonian`
+  String get trinidadianOrTobagonian {
+    return Intl.message(
+      'Trinidadian or Tobagonian',
+      name: 'trinidadianOrTobagonian',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tunisian`
+  String get tunisian {
+    return Intl.message('Tunisian', name: 'tunisian', desc: '', args: []);
+  }
+
+  /// `Turkish`
+  String get turkish {
+    return Intl.message('Turkish', name: 'turkish', desc: '', args: []);
+  }
+
+  /// `Tuvaluan`
+  String get tuvaluan {
+    return Intl.message('Tuvaluan', name: 'tuvaluan', desc: '', args: []);
+  }
+
+  /// `Ugandan`
+  String get ugandan {
+    return Intl.message('Ugandan', name: 'ugandan', desc: '', args: []);
+  }
+
+  /// `Ukrainian`
+  String get ukrainian {
+    return Intl.message('Ukrainian', name: 'ukrainian', desc: '', args: []);
+  }
+
+  /// `Uruguayan`
+  String get uruguayan {
+    return Intl.message('Uruguayan', name: 'uruguayan', desc: '', args: []);
+  }
+
+  /// `Uzbekistani`
+  String get uzbekistani {
+    return Intl.message('Uzbekistani', name: 'uzbekistani', desc: '', args: []);
+  }
+
+  /// `Venezuelan`
+  String get venezuelan {
+    return Intl.message('Venezuelan', name: 'venezuelan', desc: '', args: []);
+  }
+
+  /// `Vietnamese`
+  String get vietnamese {
+    return Intl.message('Vietnamese', name: 'vietnamese', desc: '', args: []);
+  }
+
+  /// `Welsh`
+  String get welsh {
+    return Intl.message('Welsh', name: 'welsh', desc: '', args: []);
+  }
+
+  /// `Yemenite`
+  String get yemenite {
+    return Intl.message('Yemenite', name: 'yemenite', desc: '', args: []);
+  }
+
+  /// `Zambian`
+  String get zambian {
+    return Intl.message('Zambian', name: 'zambian', desc: '', args: []);
+  }
+
+  /// `Zimbabwean`
+  String get zimbabwean {
+    return Intl.message('Zimbabwean', name: 'zimbabwean', desc: '', args: []);
+  }
+
+  /// `Set Date`
+  String get setDate {
+    return Intl.message('Set Date', name: 'setDate', desc: '', args: []);
+  }
+
+  /// `Choose here`
+  String get chooseHere2 {
+    return Intl.message('Choose here', name: 'chooseHere2', desc: '', args: []);
+  }
+
+  /// `GrcResponsivePage`
+  String get grcresponsivepage {
+    return Intl.message(
+      'GrcResponsivePage',
+      name: 'grcresponsivepage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `FormResponsivePage`
+  String get formresponsivepage {
+    return Intl.message(
+      'FormResponsivePage',
+      name: 'formresponsivepage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `TrackerPageResponsivePageRefactor`
+  String get trackerpageresponsivepagerefactor {
+    return Intl.message(
+      'TrackerPageResponsivePageRefactor',
+      name: 'trackerpageresponsivepagerefactor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `TasksResponsivePage`
+  String get tasksresponsivepage {
+    return Intl.message(
+      'TasksResponsivePage',
+      name: 'tasksresponsivepage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Marketing Team`
+  String get marketingTeam {
+    return Intl.message(
+      'Marketing Team',
+      name: 'marketingTeam',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Development Team`
+  String get developmentTeam {
+    return Intl.message(
+      'Development Team',
+      name: 'developmentTeam',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Media Team`
+  String get mediaTeam {
+    return Intl.message('Media Team', name: 'mediaTeam', desc: '', args: []);
+  }
+
+  /// `Tech Team`
+  String get techTeam {
+    return Intl.message('Tech Team', name: 'techTeam', desc: '', args: []);
+  }
+
+  /// `1 H Before`
+  String get k1HBefore {
+    return Intl.message('1 H Before', name: 'k1HBefore', desc: '', args: []);
+  }
+
+  /// `2 H Before`
+  String get k2HBefore {
+    return Intl.message('2 H Before', name: 'k2HBefore', desc: '', args: []);
+  }
+
+  /// `Set Time`
+  String get setTime {
+    return Intl.message('Set Time', name: 'setTime', desc: '', args: []);
+  }
+
+  /// `Today`
+  String get today {
+    return Intl.message('Today', name: 'today', desc: '', args: []);
+  }
+
+  /// `1h`
+  String get k1h {
+    return Intl.message('1h', name: 'k1h', desc: '', args: []);
+  }
+
+  /// `Reschedule`
+  String get reschedule {
+    return Intl.message('Reschedule', name: 'reschedule', desc: '', args: []);
+  }
+
+  /// `Begins in 30m`
+  String get beginsIn30m {
+    return Intl.message(
+      'Begins in 30m',
+      name: 'beginsIn30m',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reset Personal Branding`
+  String get resetPersonalBranding {
+    return Intl.message(
+      'Reset Personal Branding',
+      name: 'resetPersonalBranding',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Reset Your Personal Branding To Company Defaults?`
+  String get areYouSureYouWantToResetYourPersonalBrandingToCo {
+    return Intl.message(
+      'Are You Sure You Want To Reset Your Personal Branding To Company Defaults?',
+      name: 'areYouSureYouWantToResetYourPersonalBrandingToCo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Personal Branding`
+  String get personalBranding {
+    return Intl.message(
+      'Personal Branding',
+      name: 'personalBranding',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reset to Company Defaults`
+  String get resetToCompanyDefaults {
+    return Intl.message(
+      'Reset to Company Defaults',
+      name: 'resetToCompanyDefaults',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Customize your personal branding. These settings will override company branding for your account only.`
+  String get customizeYourPersonalBrandingTheseSettingsWillOv {
+    return Intl.message(
+      'Customize your personal branding. These settings will override company branding for your account only.',
+      name: 'customizeYourPersonalBrandingTheseSettingsWillOv',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Personal Logo`
+  String get personalLogo {
+    return Intl.message(
+      'Personal Logo',
+      name: 'personalLogo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Colors`
+  String get colors {
+    return Intl.message('Colors', name: 'colors', desc: '', args: []);
+  }
+
+  /// `Fonts`
+  String get fonts {
+    return Intl.message('Fonts', name: 'fonts', desc: '', args: []);
+  }
+
+  /// `Select English Font`
+  String get selectEnglishFont {
+    return Intl.message(
+      'Select English Font',
+      name: 'selectEnglishFont',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Arabic Font`
+  String get selectArabicFont {
+    return Intl.message(
+      'Select Arabic Font',
+      name: 'selectArabicFont',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save Personal Branding`
+  String get savePersonalBranding {
+    return Intl.message(
+      'Save Personal Branding',
+      name: 'savePersonalBranding',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Employee`
+  String get addEmployee {
+    return Intl.message(
+      'Add Employee',
+      name: 'addEmployee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Employee Profile`
+  String get employeeProfile {
+    return Intl.message(
+      'Employee Profile',
+      name: 'employeeProfile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Permission`
+  String get permission {
+    return Intl.message('Permission', name: 'permission', desc: '', args: []);
+  }
+
+  /// `Employees Attendance`
+  String get employeesAttendance {
+    return Intl.message(
+      'Employees Attendance',
+      name: 'employeesAttendance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pending Projects`
+  String get pendingProjects {
+    return Intl.message(
+      'Pending Projects',
+      name: 'pendingProjects',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `In Progress Projects`
+  String get inProgressProjects {
+    return Intl.message(
+      'In Progress Projects',
+      name: 'inProgressProjects',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Done Projects`
+  String get doneProjects {
+    return Intl.message(
+      'Done Projects',
+      name: 'doneProjects',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Project Performance`
+  String get projectPerformance {
+    return Intl.message(
+      'Project Performance',
+      name: 'projectPerformance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create Task from Home Page`
+  String get createTaskFromHomePage {
+    return Intl.message(
+      'Create Task from Home Page',
+      name: 'createTaskFromHomePage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create Meeting from Home Page`
+  String get createMeetingFromHomePage {
+    return Intl.message(
+      'Create Meeting from Home Page',
+      name: 'createMeetingFromHomePage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Task Reminder`
+  String get taskReminder {
+    return Intl.message(
+      'Task Reminder',
+      name: 'taskReminder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Task Details`
+  String get taskDetails {
+    return Intl.message(
+      'Task Details',
+      name: 'taskDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Custom Table`
+  String get customTable {
+    return Intl.message(
+      'Custom Table',
+      name: 'customTable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `See More`
+  String get seeMore {
+    return Intl.message('See More', name: 'seeMore', desc: '', args: []);
+  }
+
+  /// `Add Member`
+  String get addMember {
+    return Intl.message('Add Member', name: 'addMember', desc: '', args: []);
+  }
+
+  /// `Remove Member`
+  String get removeMember {
+    return Intl.message(
+      'Remove Member',
+      name: 'removeMember',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create Board`
+  String get createBoard {
+    return Intl.message(
+      'Create Board',
+      name: 'createBoard',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create Meeting`
+  String get createMeeting {
+    return Intl.message(
+      'Create Meeting',
+      name: 'createMeeting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Meeting`
+  String get editMeeting {
+    return Intl.message(
+      'Edit Meeting',
+      name: 'editMeeting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reschedule Meeting`
+  String get rescheduleMeeting {
+    return Intl.message(
+      'Reschedule Meeting',
+      name: 'rescheduleMeeting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel Meeting`
+  String get cancelMeeting {
+    return Intl.message(
+      'Cancel Meeting',
+      name: 'cancelMeeting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `My Profile`
+  String get myProfile {
+    return Intl.message('My Profile', name: 'myProfile', desc: '', args: []);
+  }
+
+  /// `Company Information`
+  String get companyInformation {
+    return Intl.message(
+      'Company Information',
+      name: 'companyInformation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Subscription`
+  String get subscription {
+    return Intl.message(
+      'Subscription',
+      name: 'subscription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Male`
+  String get male {
+    return Intl.message('Male', name: 'male', desc: '', args: []);
+  }
+
+  /// `Female`
+  String get female {
+    return Intl.message('Female', name: 'female', desc: '', args: []);
+  }
+
+  /// `On Site`
+  String get onSite {
+    return Intl.message('On Site', name: 'onSite', desc: '', args: []);
+  }
+
+  /// `Hybrid`
+  String get hybrid2 {
+    return Intl.message('Hybrid', name: 'hybrid2', desc: '', args: []);
+  }
+
+  /// `Full-time`
+  String get fullTime {
+    return Intl.message('Full-time', name: 'fullTime', desc: '', args: []);
+  }
+
+  /// `Part-time`
+  String get partTime {
+    return Intl.message('Part-time', name: 'partTime', desc: '', args: []);
+  }
+
+  /// `Contract`
+  String get contract {
+    return Intl.message('Contract', name: 'contract', desc: '', args: []);
+  }
+
+  /// `Employees Added`
+  String get employeesAdded {
+    return Intl.message(
+      'Employees Added',
+      name: 'employeesAdded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Employees Terminated`
+  String get employeesTerminated {
+    return Intl.message(
+      'Employees Terminated',
+      name: 'employeesTerminated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Photo`
+  String get addPhoto {
+    return Intl.message('Add Photo', name: 'addPhoto', desc: '', args: []);
+  }
+
+  /// `Add New Employees`
+  String get addNewEmployees {
+    return Intl.message(
+      'Add New Employees',
+      name: 'addNewEmployees',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Yearly`
+  String get yearly {
+    return Intl.message('Yearly', name: 'yearly', desc: '', args: []);
+  }
+
+  /// `Org Chart`
+  String get orgChart {
+    return Intl.message('Org Chart', name: 'orgChart', desc: '', args: []);
+  }
+
+  /// `Team Departments`
+  String get teamDepartments {
+    return Intl.message(
+      'Team Departments',
+      name: 'teamDepartments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `On Time`
+  String get onTime {
+    return Intl.message('On Time', name: 'onTime', desc: '', args: []);
+  }
+
+  /// `Less than 30 minutes`
+  String get lessThan30Minutes {
+    return Intl.message(
+      'Less than 30 minutes',
+      name: 'lessThan30Minutes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `More than 30 minutes`
+  String get moreThan30Minutes {
+    return Intl.message(
+      'More than 30 minutes',
+      name: 'moreThan30Minutes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid Email`
+  String get invalidEmail {
+    return Intl.message(
+      'Invalid Email',
+      name: 'invalidEmail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid Date`
+  String get invalidDate {
+    return Intl.message(
+      'Invalid Date',
+      name: 'invalidDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid Phone Number`
+  String get invalidPhoneNumber {
+    return Intl.message(
+      'Invalid Phone Number',
+      name: 'invalidPhoneNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid Postal Code`
+  String get invalidPostalCode {
+    return Intl.message(
+      'Invalid Postal Code',
+      name: 'invalidPostalCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Why you want to leave..?`
+  String get whyYouWantToLeave {
+    return Intl.message(
+      'Why you want to leave..?',
+      name: 'whyYouWantToLeave',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fields`
+  String get fields {
+    return Intl.message('Fields', name: 'fields', desc: '', args: []);
+  }
+
+  /// `Personal Data`
+  String get personalData {
+    return Intl.message(
+      'Personal Data',
+      name: 'personalData',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Contact Information`
+  String get contactInformation {
+    return Intl.message(
+      'Contact Information',
+      name: 'contactInformation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Location Information`
+  String get locationInformation {
+    return Intl.message(
+      'Location Information',
+      name: 'locationInformation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Emergency Contact Information`
+  String get emergencyContactInformation {
+    return Intl.message(
+      'Emergency Contact Information',
+      name: 'emergencyContactInformation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Additional Information`
+  String get additionalInformation {
+    return Intl.message(
+      'Additional Information',
+      name: 'additionalInformation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'current' key
+
+  /// `Escalates`
+  String get escalates {
+    return Intl.message('Escalates', name: 'escalates', desc: '', args: []);
+  }
+
+  /// `Send`
+  String get send {
+    return Intl.message('Send', name: 'send', desc: '', args: []);
+  }
+
+  /// `A password reset link has been sent to your email`
+  String get passwordResetLinkSent {
+    return Intl.message(
+      'A password reset link has been sent to your email',
+      name: 'passwordResetLinkSent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Thank You`
+  String get thankYou {
+    return Intl.message('Thank You', name: 'thankYou', desc: '', args: []);
+  }
+
+  /// `We'd love to hear more about your service`
+  String get weDLoveToHearMoreAboutYourService {
+    return Intl.message(
+      'We\'d love to hear more about your service',
+      name: 'weDLoveToHearMoreAboutYourService',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Log Out`
+  String get logOut {
+    return Intl.message('Log Out', name: 'logOut', desc: '', args: []);
+  }
+
+  /// `This module is not available`
+  String get thisModuleIsNotAvailable {
+    return Intl.message(
+      'This module is not available',
+      name: 'thisModuleIsNotAvailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Can't Connect .. Check Internet`
+  String get canTConnectCheckInternet {
+    return Intl.message(
+      'Can\'t Connect .. Check Internet',
+      name: 'canTConnectCheckInternet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Upcoming Schedule`
+  String get upcomingSchedule {
+    return Intl.message(
+      'Upcoming Schedule',
+      name: 'upcomingSchedule',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Quick Actions`
+  String get quickActions {
+    return Intl.message(
+      'Quick Actions',
+      name: 'quickActions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `System Managements`
+  String get systemManagements {
+    return Intl.message(
+      'System Managements',
+      name: 'systemManagements',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `+1K`
+  String get k1k {
+    return Intl.message('+1K', name: 'k1k', desc: '', args: []);
+  }
+
+  /// `Add`
+  String get add {
+    return Intl.message('Add', name: 'add', desc: '', args: []);
+  }
+
+  /// `View Submissions`
+  String get viewSubmissions {
+    return Intl.message(
+      'View Submissions',
+      name: 'viewSubmissions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remind All`
+  String get remindAll {
+    return Intl.message('Remind All', name: 'remindAll', desc: '', args: []);
+  }
+
+  /// `Forms`
+  String get forms {
+    return Intl.message('Forms', name: 'forms', desc: '', args: []);
+  }
+
+  /// `Create Form`
+  String get createForm {
+    return Intl.message('Create Form', name: 'createForm', desc: '', args: []);
+  }
+
+  /// `Order`
+  String get order {
+    return Intl.message('Order', name: 'order', desc: '', args: []);
+  }
+
+  /// `Asset`
+  String get asset {
+    return Intl.message('Asset', name: 'asset', desc: '', args: []);
+  }
+
+  /// `Consumable`
+  String get consumable {
+    return Intl.message('Consumable', name: 'consumable', desc: '', args: []);
+  }
+
+  /// `Total Product`
+  String get totalProduct {
+    return Intl.message(
+      'Total Product',
+      name: 'totalProduct',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total Damaged`
+  String get totalDamaged {
+    return Intl.message(
+      'Total Damaged',
+      name: 'totalDamaged',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total Missing`
+  String get totalMissing {
+    return Intl.message(
+      'Total Missing',
+      name: 'totalMissing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total Salon`
+  String get totalSalon {
+    return Intl.message('Total Salon', name: 'totalSalon', desc: '', args: []);
+  }
+
+  /// `Stocks`
+  String get stocks {
+    return Intl.message('Stocks', name: 'stocks', desc: '', args: []);
+  }
+
+  /// `Error loading data`
+  String get errorLoadingData {
+    return Intl.message(
+      'Error loading data',
+      name: 'errorLoadingData',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View Dashboard`
+  String get viewDashboard {
+    return Intl.message(
+      'View Dashboard',
+      name: 'viewDashboard',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Near Breached SLA`
+  String get nearBreachedSLA {
+    return Intl.message(
+      'Near Breached SLA',
+      name: 'nearBreachedSLA',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No near breached SLA services`
+  String get noNearBreachedSLAServices {
+    return Intl.message(
+      'No near breached SLA services',
+      name: 'noNearBreachedSLAServices',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `SLA`
+  String get sla {
+    return Intl.message('SLA', name: 'sla', desc: '', args: []);
+  }
+
+  /// `In Progress`
+  String get inProgress {
+    return Intl.message('In Progress', name: 'inProgress', desc: '', args: []);
+  }
+
+  /// `Services Status`
+  String get servicesStatus {
+    return Intl.message(
+      'Services Status',
+      name: 'servicesStatus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error loading tasks`
+  String get errorLoadingTasks {
+    return Intl.message(
+      'Error loading tasks',
+      name: 'errorLoadingTasks',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No active tasks`
+  String get noActiveTasks {
+    return Intl.message(
+      'No active tasks',
+      name: 'noActiveTasks',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Untitled Task`
+  String get untitledTask {
+    return Intl.message(
+      'Untitled Task',
+      name: 'untitledTask',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign Out`
+  String get signOut {
+    return Intl.message('Sign Out', name: 'signOut', desc: '', args: []);
+  }
+
+  /// `Delete starred messages`
+  String get deleteStarredMessages {
+    return Intl.message(
+      'Delete starred messages',
+      name: 'deleteStarredMessages',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `HomePageHelper`
+  String get homepagehelper {
+    return Intl.message(
+      'HomePageHelper',
+      name: 'homepagehelper',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Authentication Error`
+  String get authenticationError {
+    return Intl.message(
+      'Authentication Error',
+      name: 'authenticationError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `An error occurred during login. Please try again.`
+  String get anErrorOccurredDuringLoginPleaseTryAgain {
+    return Intl.message(
+      'An error occurred during login. Please try again.',
+      name: 'anErrorOccurredDuringLoginPleaseTryAgain',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Authentication Failed`
+  String get authenticationFailed {
+    return Intl.message(
+      'Authentication Failed',
+      name: 'authenticationFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid credentials. Please verify and try again.`
+  String get invalidCredentialsPleaseVerifyAndTryAgain {
+    return Intl.message(
+      'Invalid credentials. Please verify and try again.',
+      name: 'invalidCredentialsPleaseVerifyAndTryAgain',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Account Locked`
+  String get accountLocked {
+    return Intl.message(
+      'Account Locked',
+      name: 'accountLocked',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Knowticed Plus`
+  String get demoAppPlus {
+    return Intl.message(
+      'Knowticed Plus',
+      name: 'demoAppPlus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Navigate the Digital Frontier with Ease`
+  String get navigateTheDigitalFrontierWithEase {
+    return Intl.message(
+      'Navigate the Digital Frontier with Ease',
+      name: 'navigateTheDigitalFrontierWithEase',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Forgot Password?`
+  String get forgotPassword {
+    return Intl.message(
+      'Forgot Password?',
+      name: 'forgotPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign In`
+  String get signIn {
+    return Intl.message('Sign In', name: 'signIn', desc: '', args: []);
+  }
+
+  /// `Please Check Your Internet Connection`
+  String get pleaseCheckYourInternetConnection {
+    return Intl.message(
+      'Please Check Your Internet Connection',
+      name: 'pleaseCheckYourInternetConnection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Missing Information`
+  String get missingInformation {
+    return Intl.message(
+      'Missing Information',
+      name: 'missingInformation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter both email and password to sign in`
+  String get pleaseEnterBothEmailAndPasswordToSignIn {
+    return Intl.message(
+      'Please enter both email and password to sign in',
+      name: 'pleaseEnterBothEmailAndPasswordToSignIn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reset Password`
+  String get resetPassword {
+    return Intl.message(
+      'Reset Password',
+      name: 'resetPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New Password`
+  String get newPassword {
+    return Intl.message(
+      'New Password',
+      name: 'newPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm Password`
+  String get confirmPassword {
+    return Intl.message(
+      'Confirm Password',
+      name: 'confirmPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Passwords do not match`
+  String get passwordsDoNotMatch {
+    return Intl.message(
+      'Passwords do not match',
+      name: 'passwordsDoNotMatch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign Up is not available in demo mode.`
+  String get signUpIsNotAvailableInDemoMode {
+    return Intl.message(
+      'Sign Up is not available in demo mode.',
+      name: 'signUpIsNotAvailableInDemoMode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Effortless Task Management`
+  String get effortlessTaskManagement {
+    return Intl.message(
+      'Effortless Task Management',
+      name: 'effortlessTaskManagement',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Streamlined Requests`
+  String get streamlinedRequests {
+    return Intl.message(
+      'Streamlined Requests',
+      name: 'streamlinedRequests',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Comprehensive Service Management`
+  String get comprehensiveServiceManagement {
+    return Intl.message(
+      'Comprehensive Service Management',
+      name: 'comprehensiveServiceManagement',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Efficient Event Management`
+  String get efficientEventManagement {
+    return Intl.message(
+      'Efficient Event Management',
+      name: 'efficientEventManagement',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Flexible Role Management`
+  String get flexibleRoleManagement {
+    return Intl.message(
+      'Flexible Role Management',
+      name: 'flexibleRoleManagement',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Personalized To-Do Lists`
+  String get personalizedToDoLists {
+    return Intl.message(
+      'Personalized To-Do Lists',
+      name: 'personalizedToDoLists',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Real-Time Team Chat`
+  String get realTimeTeamChat {
+    return Intl.message(
+      'Real-Time Team Chat',
+      name: 'realTimeTeamChat',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Clear Organization Chart`
+  String get clearOrganizationChart {
+    return Intl.message(
+      'Clear Organization Chart',
+      name: 'clearOrganizationChart',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Get Start`
+  String get getStart {
+    return Intl.message('Get Start', name: 'getStart', desc: '', args: []);
+  }
+
+  /// `Skip`
+  String get skip {
+    return Intl.message('Skip', name: 'skip', desc: '', args: []);
+  }
+
+  /// `Forgot Password`
+  String get forgotPassword2 {
+    return Intl.message(
+      'Forgot Password',
+      name: 'forgotPassword2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Submit Request`
+  String get submitRequest {
+    return Intl.message(
+      'Submit Request',
+      name: 'submitRequest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Attention`
+  String get attention {
+    return Intl.message('Attention', name: 'attention', desc: '', args: []);
+  }
+
+  /// `This Email Not Found`
+  String get thisEmailNotFound {
+    return Intl.message(
+      'This Email Not Found',
+      name: 'thisEmailNotFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Deactivating User Account`
+  String get deactivatingUserAccount {
+    return Intl.message(
+      'Deactivating User Account',
+      name: 'deactivatingUserAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Deactivate This Account?`
+  String get areYouSureYouWantToDeactivateThisAccount {
+    return Intl.message(
+      'Are You Sure You Want To Deactivate This Account?',
+      name: 'areYouSureYouWantToDeactivateThisAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Activating User Account`
+  String get activatingUserAccount {
+    return Intl.message(
+      'Activating User Account',
+      name: 'activatingUserAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Activate This Account?`
+  String get areYouSureYouWantToActivateThisAccount {
+    return Intl.message(
+      'Are You Sure You Want To Activate This Account?',
+      name: 'areYouSureYouWantToActivateThisAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `First Login`
+  String get firstLogin {
+    return Intl.message('First Login', name: 'firstLogin', desc: '', args: []);
+  }
+
+  /// `Expiration Time of Password`
+  String get expirationTimeOfPassword {
+    return Intl.message(
+      'Expiration Time of Password',
+      name: 'expirationTimeOfPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Expiration Time`
+  String get enterExpirationTime {
+    return Intl.message(
+      'Enter Expiration Time',
+      name: 'enterExpirationTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Requested To Reset Password ?`
+  String get requestedToResetPassword {
+    return Intl.message(
+      'Requested To Reset Password ?',
+      name: 'requestedToResetPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unlock Account`
+  String get unlockAccount {
+    return Intl.message(
+      'Unlock Account',
+      name: 'unlockAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Schedule for Activate`
+  String get scheduleForActivate {
+    return Intl.message(
+      'Schedule for Activate',
+      name: 'scheduleForActivate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please select a date`
+  String get pleaseSelectADate {
+    return Intl.message(
+      'Please select a date',
+      name: 'pleaseSelectADate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Schedule for Deactivation`
+  String get scheduleForDeactivation {
+    return Intl.message(
+      'Schedule for Deactivation',
+      name: 'scheduleForDeactivation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `CSV Import`
+  String get csvImport {
+    return Intl.message('CSV Import', name: 'csvImport', desc: '', args: []);
+  }
+
+  /// `Edit Role`
+  String get editRole {
+    return Intl.message('Edit Role', name: 'editRole', desc: '', args: []);
+  }
+
+  /// `Adding New Role Permissions`
+  String get addingNewRolePermissions {
+    return Intl.message(
+      'Adding New Role Permissions',
+      name: 'addingNewRolePermissions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No modules granted`
+  String get noModulesGranted {
+    return Intl.message(
+      'No modules granted',
+      name: 'noModulesGranted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Platform Roles`
+  String get platformRoles {
+    return Intl.message(
+      'Platform Roles',
+      name: 'platformRoles',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Role`
+  String get role {
+    return Intl.message('Role', name: 'role', desc: '', args: []);
+  }
+
+  /// `OK`
+  String get ok2 {
+    return Intl.message('OK', name: 'ok2', desc: '', args: []);
+  }
+
+  /// `Downloading File`
+  String get downloadingFile {
+    return Intl.message(
+      'Downloading File',
+      name: 'downloadingFile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Adding New Access`
+  String get addingNewAccess {
+    return Intl.message(
+      'Adding New Access',
+      name: 'addingNewAccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Access`
+  String get addAccess {
+    return Intl.message('Add Access', name: 'addAccess', desc: '', args: []);
+  }
+
+  /// `User Access Details`
+  String get userAccessDetails {
+    return Intl.message(
+      'User Access Details',
+      name: 'userAccessDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to remove this access?`
+  String get areYouSureYouWantToRemoveThisAccess {
+    return Intl.message(
+      'Are you sure you want to remove this access?',
+      name: 'areYouSureYouWantToRemoveThisAccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Access`
+  String get access {
+    return Intl.message('Access', name: 'access', desc: '', args: []);
+  }
+
+  /// `Access Details`
+  String get accessDetails {
+    return Intl.message(
+      'Access Details',
+      name: 'accessDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Access Granted`
+  String get selectAccessGranted {
+    return Intl.message(
+      'Select Access Granted',
+      name: 'selectAccessGranted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Access Revoked`
+  String get selectAccessRevoked {
+    return Intl.message(
+      'Select Access Revoked',
+      name: 'selectAccessRevoked',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total Employees`
+  String get totalEmployees {
+    return Intl.message(
+      'Total Employees',
+      name: 'totalEmployees',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total Departments`
+  String get totalDepartments {
+    return Intl.message(
+      'Total Departments',
+      name: 'totalDepartments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Role`
+  String get noRole {
+    return Intl.message('No Role', name: 'noRole', desc: '', args: []);
+  }
+
+  /// `Access Updated`
+  String get accessUpdated {
+    return Intl.message(
+      'Access Updated',
+      name: 'accessUpdated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No permissions found`
+  String get noPermissionsFound {
+    return Intl.message(
+      'No permissions found',
+      name: 'noPermissionsFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Chat`
+  String get chat {
+    return Intl.message('Chat', name: 'chat', desc: '', args: []);
+  }
+
+  /// `Not Available`
+  String get notAvailable {
+    return Intl.message(
+      'Not Available',
+      name: 'notAvailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `About This App`
+  String get aboutThisApp {
+    return Intl.message(
+      'About This App',
+      name: 'aboutThisApp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Comments And Feedbacks`
+  String get commentsAndFeedbacks {
+    return Intl.message(
+      'Comments And Feedbacks',
+      name: 'commentsAndFeedbacks',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Report Bugs`
+  String get reportBugs {
+    return Intl.message('Report Bugs', name: 'reportBugs', desc: '', args: []);
+  }
+
+  /// `Comments And Feedback`
+  String get commentsAndFeedback {
+    return Intl.message(
+      'Comments And Feedback',
+      name: 'commentsAndFeedback',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request New Feature`
+  String get requestNewFeature {
+    return Intl.message(
+      'Request New Feature',
+      name: 'requestNewFeature',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Thanks for sharing your feedback`
+  String get thanksForSharingYourFeedback {
+    return Intl.message(
+      'Thanks for sharing your feedback',
+      name: 'thanksForSharingYourFeedback',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We value our customers and strive to exceed their expectations`
+  String get weValueOurCustomersAndStriveToExceedTheirExpecta {
+    return Intl.message(
+      'We value our customers and strive to exceed their expectations',
+      name: 'weValueOurCustomersAndStriveToExceedTheirExpecta',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Single`
+  String get single {
+    return Intl.message('Single', name: 'single', desc: '', args: []);
+  }
+
+  /// `Married`
+  String get married {
+    return Intl.message('Married', name: 'married', desc: '', args: []);
+  }
+
+  /// `Divorced`
+  String get divorced {
+    return Intl.message('Divorced', name: 'divorced', desc: '', args: []);
+  }
+
+  /// `Widowed`
+  String get widowed {
+    return Intl.message('Widowed', name: 'widowed', desc: '', args: []);
+  }
+
+  /// `Please fill in all required fields`
+  String get pleaseFillInAllRequiredFields {
+    return Intl.message(
+      'Please fill in all required fields',
+      name: 'pleaseFillInAllRequiredFields',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You haven't made any changes to submit`
+  String get youHavenTMadeAnyChangesToSubmit {
+    return Intl.message(
+      'You haven\'t made any changes to submit',
+      name: 'youHavenTMadeAnyChangesToSubmit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Your First Name`
+  String get enterYourFirstName {
+    return Intl.message(
+      'Enter Your First Name',
+      name: 'enterYourFirstName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Your Middle Name`
+  String get enterYourMiddleName {
+    return Intl.message(
+      'Enter Your Middle Name',
+      name: 'enterYourMiddleName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Your Last Name`
+  String get enterYourLastName {
+    return Intl.message(
+      'Enter Your Last Name',
+      name: 'enterYourLastName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Your Email`
+  String get enterYourEmail {
+    return Intl.message(
+      'Enter Your Email',
+      name: 'enterYourEmail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter The Phone Number`
+  String get enterThePhoneNumber {
+    return Intl.message(
+      'Enter The Phone Number',
+      name: 'enterThePhoneNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Your Country`
+  String get enterYourCountry {
+    return Intl.message(
+      'Enter Your Country',
+      name: 'enterYourCountry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Your State Or Province`
+  String get enterYourStateOrProvince {
+    return Intl.message(
+      'Enter Your State Or Province',
+      name: 'enterYourStateOrProvince',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Your City`
+  String get enterYourCity {
+    return Intl.message(
+      'Enter Your City',
+      name: 'enterYourCity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Your Street Address`
+  String get enterYourStreetAddress {
+    return Intl.message(
+      'Enter Your Street Address',
+      name: 'enterYourStreetAddress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request to Change`
+  String get requestToChange {
+    return Intl.message(
+      'Request to Change',
+      name: 'requestToChange',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Terms And Conditions`
+  String get termsAndConditions2 {
+    return Intl.message(
+      'Terms And Conditions',
+      name: 'termsAndConditions2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Haptic Feedback`
+  String get hapticFeedback {
+    return Intl.message(
+      'Haptic Feedback',
+      name: 'hapticFeedback',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Biometrics`
+  String get biometrics {
+    return Intl.message('Biometrics', name: 'biometrics', desc: '', args: []);
+  }
+
+  /// `Dark Mode`
+  String get darkMode {
+    return Intl.message('Dark Mode', name: 'darkMode', desc: '', args: []);
+  }
+
+  /// `Animation`
+  String get animation {
+    return Intl.message('Animation', name: 'animation', desc: '', args: []);
+  }
+
+  /// `Notification`
+  String get notification {
+    return Intl.message(
+      'Notification',
+      name: 'notification',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Update Social Information`
+  String get updateSocialInformation {
+    return Intl.message(
+      'Update Social Information',
+      name: 'updateSocialInformation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Primary Color`
+  String get primaryColor {
+    return Intl.message(
+      'Primary Color',
+      name: 'primaryColor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Secondary Color`
+  String get secondaryColor {
+    return Intl.message(
+      'Secondary Color',
+      name: 'secondaryColor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reset Branding`
+  String get resetBranding {
+    return Intl.message(
+      'Reset Branding',
+      name: 'resetBranding',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Reset The Company Branding?`
+  String get areYouSureYouWantToResetTheCompanyBranding {
+    return Intl.message(
+      'Are You Sure You Want To Reset The Company Branding?',
+      name: 'areYouSureYouWantToResetTheCompanyBranding',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Company Name`
+  String get companyName {
+    return Intl.message(
+      'Company Name',
+      name: 'companyName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Industry`
+  String get industry {
+    return Intl.message('Industry', name: 'industry', desc: '', args: []);
+  }
+
+  /// `Company Size`
+  String get companySize {
+    return Intl.message(
+      'Company Size',
+      name: 'companySize',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Company Name`
+  String get enterCompanyName {
+    return Intl.message(
+      'Enter Company Name',
+      name: 'enterCompanyName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Tax Number`
+  String get enterTaxNumber {
+    return Intl.message(
+      'Enter Tax Number',
+      name: 'enterTaxNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Street Address`
+  String get enterStreetAddress {
+    return Intl.message(
+      'Enter Street Address',
+      name: 'enterStreetAddress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter City`
+  String get enterCity {
+    return Intl.message('Enter City', name: 'enterCity', desc: '', args: []);
+  }
+
+  /// `Zip Code or Postal Code`
+  String get zipCodeOrPostalCode {
+    return Intl.message(
+      'Zip Code or Postal Code',
+      name: 'zipCodeOrPostalCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter State Or Province`
+  String get enterStateOrProvince {
+    return Intl.message(
+      'Enter State Or Province',
+      name: 'enterStateOrProvince',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Country`
+  String get enterCountry {
+    return Intl.message(
+      'Enter Country',
+      name: 'enterCountry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enters Country`
+  String get entersCountry {
+    return Intl.message(
+      'Enters Country',
+      name: 'entersCountry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Company Industry`
+  String get companyIndustry {
+    return Intl.message(
+      'Company Industry',
+      name: 'companyIndustry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Email`
+  String get enterEmail {
+    return Intl.message('Enter Email', name: 'enterEmail', desc: '', args: []);
+  }
+
+  /// `Enter Your Mobile Number`
+  String get enterYourMobileNumber {
+    return Intl.message(
+      'Enter Your Mobile Number',
+      name: 'enterYourMobileNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter New Email`
+  String get enterNewEmail {
+    return Intl.message(
+      'Enter New Email',
+      name: 'enterNewEmail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Country`
+  String get selectCountry {
+    return Intl.message(
+      'Select Country',
+      name: 'selectCountry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Search country...`
+  String get searchCountry {
+    return Intl.message(
+      'Search country...',
+      name: 'searchCountry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No countries found`
+  String get noCountriesFound {
+    return Intl.message(
+      'No countries found',
+      name: 'noCountriesFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Contact Relation`
+  String get enterContactRelation {
+    return Intl.message(
+      'Enter Contact Relation',
+      name: 'enterContactRelation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Your Mobile Phone`
+  String get enterYourMobilePhone {
+    return Intl.message(
+      'Enter Your Mobile Phone',
+      name: 'enterYourMobilePhone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Insurance Name`
+  String get enterInsuranceName {
+    return Intl.message(
+      'Enter Insurance Name',
+      name: 'enterInsuranceName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Policy Number`
+  String get enterPolicyNumber {
+    return Intl.message(
+      'Enter Policy Number',
+      name: 'enterPolicyNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter First Name`
+  String get enterFirstName {
+    return Intl.message(
+      'Enter First Name',
+      name: 'enterFirstName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Middle Name`
+  String get enterMiddleName {
+    return Intl.message(
+      'Enter Middle Name',
+      name: 'enterMiddleName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Last Name`
+  String get enterLastName {
+    return Intl.message(
+      'Enter Last Name',
+      name: 'enterLastName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Postal Code`
+  String get enterPostalCode {
+    return Intl.message(
+      'Enter Postal Code',
+      name: 'enterPostalCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Insurance Police Number`
+  String get enterInsurancePoliceNumber {
+    return Intl.message(
+      'Enter Insurance Police Number',
+      name: 'enterInsurancePoliceNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Gender`
+  String get selectGender {
+    return Intl.message(
+      'Select Gender',
+      name: 'selectGender',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rather Not Say`
+  String get ratherNotSay {
+    return Intl.message(
+      'Rather Not Say',
+      name: 'ratherNotSay',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Separated`
+  String get separated {
+    return Intl.message('Separated', name: 'separated', desc: '', args: []);
+  }
+
+  /// `Engaged`
+  String get engaged {
+    return Intl.message('Engaged', name: 'engaged', desc: '', args: []);
+  }
+
+  /// `Nationality`
+  String get nationality {
+    return Intl.message('Nationality', name: 'nationality', desc: '', args: []);
+  }
+
+  /// `Bio`
+  String get bio {
+    return Intl.message('Bio', name: 'bio', desc: '', args: []);
+  }
+
+  /// `Share Something About Yourself`
+  String get shareSomethingAboutYourself {
+    return Intl.message(
+      'Share Something About Yourself',
+      name: 'shareSomethingAboutYourself',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hobbies`
+  String get hobbies {
+    return Intl.message('Hobbies', name: 'hobbies', desc: '', args: []);
+  }
+
+  /// `Enter Hobby`
+  String get enterHobby {
+    return Intl.message('Enter Hobby', name: 'enterHobby', desc: '', args: []);
+  }
+
+  /// `Company Services`
+  String get companyServices {
+    return Intl.message(
+      'Company Services',
+      name: 'companyServices',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Why`
+  String get why {
+    return Intl.message('Why', name: 'why', desc: '', args: []);
+  }
+
+  /// `Meeting`
+  String get meeting {
+    return Intl.message('Meeting', name: 'meeting', desc: '', args: []);
+  }
+
+  /// `And`
+  String get and {
+    return Intl.message('And', name: 'and', desc: '', args: []);
+  }
+
+  /// `Rescheduled`
+  String get rescheduled {
+    return Intl.message('Rescheduled', name: 'rescheduled', desc: '', args: []);
+  }
+
+  /// `From`
+  String get from {
+    return Intl.message('From', name: 'from', desc: '', args: []);
+  }
+
+  /// `M`
+  String get m {
+    return Intl.message('M', name: 'm', desc: '', args: []);
+  }
+
+  /// `K`
+  String get k {
+    return Intl.message('K', name: 'k', desc: '', args: []);
+  }
+
+  /// `Seconds Ago`
+  String get secondsAgo {
+    return Intl.message('Seconds Ago', name: 'secondsAgo', desc: '', args: []);
+  }
+
+  /// `Minutes Ago`
+  String get minutesAgo {
+    return Intl.message('Minutes Ago', name: 'minutesAgo', desc: '', args: []);
+  }
+
+  /// `Hours Ago`
+  String get hoursAgo {
+    return Intl.message('Hours Ago', name: 'hoursAgo', desc: '', args: []);
+  }
+
+  /// `Days Ago`
+  String get daysAgo {
+    return Intl.message('Days Ago', name: 'daysAgo', desc: '', args: []);
+  }
+
+  /// `Weeks Ago`
+  String get weeksAgo {
+    return Intl.message('Weeks Ago', name: 'weeksAgo', desc: '', args: []);
+  }
+
+  /// `Months Ago`
+  String get monthsAgo {
+    return Intl.message('Months Ago', name: 'monthsAgo', desc: '', args: []);
+  }
+
+  /// `Years Ago`
+  String get yearsAgo {
+    return Intl.message('Years Ago', name: 'yearsAgo', desc: '', args: []);
+  }
+
+  /// `is not available`
+  String get isNotAvailable {
+    return Intl.message(
+      'is not available',
+      name: 'isNotAvailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Good Morning`
+  String get goodMorning {
+    return Intl.message(
+      'Good Morning',
+      name: 'goodMorning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Good Afternoon`
+  String get goodAfternoon {
+    return Intl.message(
+      'Good Afternoon',
+      name: 'goodAfternoon',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Good Evening`
+  String get goodEvening {
+    return Intl.message(
+      'Good Evening',
+      name: 'goodEvening',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Due Date`
+  String get dueDate {
+    return Intl.message('Due Date', name: 'dueDate', desc: '', args: []);
+  }
+
+  /// `Copyright`
+  String get copyright {
+    return Intl.message('Copyright', name: 'copyright', desc: '', args: []);
+  }
+
+  /// `ALL RIGHTS RESERVED`
+  String get allRIGHTSRESERVED {
+    return Intl.message(
+      'ALL RIGHTS RESERVED',
+      name: 'allRIGHTSRESERVED',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Version:`
+  String get version {
+    return Intl.message('Version:', name: 'version', desc: '', args: []);
+  }
+
+  /// `Inactive For Now`
+  String get inactiveForNow {
+    return Intl.message(
+      'Inactive For Now',
+      name: 'inactiveForNow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Active For Now`
+  String get activeForNow {
+    return Intl.message(
+      'Active For Now',
+      name: 'activeForNow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Deactivated For Now`
+  String get deactivatedForNow {
+    return Intl.message(
+      'Deactivated For Now',
+      name: 'deactivatedForNow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Will Be Reactivated At`
+  String get willBeReactivatedAt {
+    return Intl.message(
+      'Will Be Reactivated At',
+      name: 'willBeReactivatedAt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Role Type`
+  String get roleType {
+    return Intl.message('Role Type', name: 'roleType', desc: '', args: []);
+  }
+
+  /// `Current`
+  String get currentLabel {
+    return Intl.message('Current', name: 'currentLabel', desc: '', args: []);
+  }
+
+  /// `Yesterday`
+  String get yesterday {
+    return Intl.message('Yesterday', name: 'yesterday', desc: '', args: []);
+  }
+
+  /// `Please enter a valid email address for communication`
+  String get pleaseEnterAValidEmailAddressForCommunication {
+    return Intl.message(
+      'Please enter a valid email address for communication',
+      name: 'pleaseEnterAValidEmailAddressForCommunication',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The email must follow the format user@domain.com`
+  String get theEmailMustFollowTheFormatUserDomainCom {
+    return Intl.message(
+      'The email must follow the format user@domain.com',
+      name: 'theEmailMustFollowTheFormatUserDomainCom',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Email Required`
+  String get emailRequired2 {
+    return Intl.message(
+      'Email Required',
+      name: 'emailRequired2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Kindly enter the employee’s first name. This field is mandatory for identification`
+  String get kindlyEnterTheEmployeeSFirstNameThisFieldIsMandatoryFor {
+    return Intl.message(
+      'Kindly enter the employee’s first name. This field is mandatory for identification',
+      name: 'kindlyEnterTheEmployeeSFirstNameThisFieldIsMandatoryFor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This field accepts English only. Please provide your entry in English script; entries in any other language cannot be accepted.`
+  String get thisFieldAcceptsEnglishOnlyPleaseProvideYourEntryInEngl {
+    return Intl.message(
+      'This field accepts English only. Please provide your entry in English script; entries in any other language cannot be accepted.',
+      name: 'thisFieldAcceptsEnglishOnlyPleaseProvideYourEntryInEngl',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid First Name`
+  String get invalidFirstName {
+    return Intl.message(
+      'Invalid First Name',
+      name: 'invalidFirstName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `First Name Missing`
+  String get firstNameMissing {
+    return Intl.message(
+      'First Name Missing',
+      name: 'firstNameMissing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `English Language Mandatory`
+  String get englishLanguageMandatory {
+    return Intl.message(
+      'English Language Mandatory',
+      name: 'englishLanguageMandatory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Kindly enter the employee’s middle name. This field is mandatory for identification`
+  String get kindlyEnterTheEmployeeSMiddleNameThisFieldIsMandatoryFo {
+    return Intl.message(
+      'Kindly enter the employee’s middle name. This field is mandatory for identification',
+      name: 'kindlyEnterTheEmployeeSMiddleNameThisFieldIsMandatoryFo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid Middle Name`
+  String get invalidMiddleName {
+    return Intl.message(
+      'Invalid Middle Name',
+      name: 'invalidMiddleName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Middle Name Missing`
+  String get middleNameMissing {
+    return Intl.message(
+      'Middle Name Missing',
+      name: 'middleNameMissing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Kindly enter the employee’s last name. This field is mandatory for identification`
+  String get kindlyEnterTheEmployeeSLastNameThisFieldIsMandatoryForI {
+    return Intl.message(
+      'Kindly enter the employee’s last name. This field is mandatory for identification',
+      name: 'kindlyEnterTheEmployeeSLastNameThisFieldIsMandatoryForI',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid Last Name`
+  String get invalidLastName {
+    return Intl.message(
+      'Invalid Last Name',
+      name: 'invalidLastName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Last Name Missing`
+  String get lastNameMissing {
+    return Intl.message(
+      'Last Name Missing',
+      name: 'lastNameMissing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter the first name in Arabic. This is a required field for localization purposes.`
+  String get pleaseEnterTheFirstNameInArabicThisIsARequiredFieldForL {
+    return Intl.message(
+      'Please enter the first name in Arabic. This is a required field for localization purposes.',
+      name: 'pleaseEnterTheFirstNameInArabicThisIsARequiredFieldForL',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This field accepts Arabic only. Please provide your entry in Arabic script; entries in any other language cannot be accepted.`
+  String get thisFieldAcceptsArabicOnlyPleaseProvideYourEntryInArabi {
+    return Intl.message(
+      'This field accepts Arabic only. Please provide your entry in Arabic script; entries in any other language cannot be accepted.',
+      name: 'thisFieldAcceptsArabicOnlyPleaseProvideYourEntryInArabi',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Arabic First Name Missing`
+  String get arabicFirstNameMissing {
+    return Intl.message(
+      'Arabic First Name Missing',
+      name: 'arabicFirstNameMissing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Arabic Language Mandatory`
+  String get arabicLanguageMandatory {
+    return Intl.message(
+      'Arabic Language Mandatory',
+      name: 'arabicLanguageMandatory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter the middle name in Arabic. This is a required field for localization purposes.`
+  String get pleaseEnterTheMiddleNameInArabicThisIsARequiredFieldFor {
+    return Intl.message(
+      'Please enter the middle name in Arabic. This is a required field for localization purposes.',
+      name: 'pleaseEnterTheMiddleNameInArabicThisIsARequiredFieldFor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Arabic Middle Name Missing`
+  String get arabicMiddleNameMissing {
+    return Intl.message(
+      'Arabic Middle Name Missing',
+      name: 'arabicMiddleNameMissing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter the last name in Arabic. This is a required field for localization purposes.`
+  String get pleaseEnterTheLastNameInArabicThisIsARequiredFieldForLo {
+    return Intl.message(
+      'Please enter the last name in Arabic. This is a required field for localization purposes.',
+      name: 'pleaseEnterTheLastNameInArabicThisIsARequiredFieldForLo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Arabic Last Name Missing`
+  String get arabicLastNameMissing {
+    return Intl.message(
+      'Arabic Last Name Missing',
+      name: 'arabicLastNameMissing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please provide a valid department ID. This field is mandatory for organizational structure.`
+  String get pleaseProvideAValidDepartmentIDThisFieldIsMandatoryForO {
+    return Intl.message(
+      'Please provide a valid department ID. This field is mandatory for organizational structure.',
+      name: 'pleaseProvideAValidDepartmentIDThisFieldIsMandatoryForO',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The Department ID must be numeric and contain no letters`
+  String get theDepartmentIDMustBeNumericAndContainNoLetters {
+    return Intl.message(
+      'The Department ID must be numeric and contain no letters',
+      name: 'theDepartmentIDMustBeNumericAndContainNoLetters',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Missing Department ID`
+  String get missingDepartmentID {
+    return Intl.message(
+      'Missing Department ID',
+      name: 'missingDepartmentID',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid Department ID Format`
+  String get invalidDepartmentIDFormat {
+    return Intl.message(
+      'Invalid Department ID Format',
+      name: 'invalidDepartmentIDFormat',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter a valid date in DD/MM/YYYY format.`
+  String get pleaseEnterAValidDateInDDMMYYYYFormat {
+    return Intl.message(
+      'Please enter a valid date in DD/MM/YYYY format.',
+      name: 'pleaseEnterAValidDateInDDMMYYYYFormat',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please select a date later than today for the National ID expiration.`
+  String get pleaseSelectADateLaterThanTodayForTheNationalIDExpirati {
+    return Intl.message(
+      'Please select a date later than today for the National ID expiration.',
+      name: 'pleaseSelectADateLaterThanTodayForTheNationalIDExpirati',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid Expiry Date`
+  String get invalidExpiryDate {
+    return Intl.message(
+      'Invalid Expiry Date',
+      name: 'invalidExpiryDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Expiry Date Must Be in the Future`
+  String get expiryDateMustBeInTheFuture {
+    return Intl.message(
+      'Expiry Date Must Be in the Future',
+      name: 'expiryDateMustBeInTheFuture',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter a valid date of birth. Future dates are not allowed`
+  String get pleaseEnterAValidDateOfBirthFutureDatesAreNotAllowed {
+    return Intl.message(
+      'Please enter a valid date of birth. Future dates are not allowed',
+      name: 'pleaseEnterAValidDateOfBirthFutureDatesAreNotAllowed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid Birth Date`
+  String get invalidBirthDate {
+    return Intl.message(
+      'Invalid Birth Date',
+      name: 'invalidBirthDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter the office extension number`
+  String get pleaseEnterTheOfficeExtensionNumber {
+    return Intl.message(
+      'Please enter the office extension number',
+      name: 'pleaseEnterTheOfficeExtensionNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Only digits are permitted in the extension field`
+  String get onlyDigitsArePermittedInTheExtensionField {
+    return Intl.message(
+      'Only digits are permitted in the extension field',
+      name: 'onlyDigitsArePermittedInTheExtensionField',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Extension Required`
+  String get extensionRequired {
+    return Intl.message(
+      'Extension Required',
+      name: 'extensionRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter a valid phone number in the format +[Country Code][Number]`
+  String get pleaseEnterAValidPhoneNumberInTheFormatCountryCodeNumbe {
+    return Intl.message(
+      'Please enter a valid phone number in the format +[Country Code][Number]',
+      name: 'pleaseEnterAValidPhoneNumberInTheFormatCountryCodeNumbe',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The phone number must be between 8 and 15 digit`
+  String get thePhoneNumberMustBeBetween8And15Digit {
+    return Intl.message(
+      'The phone number must be between 8 and 15 digit',
+      name: 'thePhoneNumberMustBeBetween8And15Digit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Phone Required`
+  String get phoneRequired {
+    return Intl.message(
+      'Phone Required',
+      name: 'phoneRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid Phone Format`
+  String get invalidPhoneFormat {
+    return Intl.message(
+      'Invalid Phone Format',
+      name: 'invalidPhoneFormat',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Only digits are allowed. Please remove any letters or symbols.`
+  String get onlyDigitsAreAllowedPleaseRemoveAnyLettersOrSymbols {
+    return Intl.message(
+      'Only digits are allowed. Please remove any letters or symbols.',
+      name: 'onlyDigitsAreAllowedPleaseRemoveAnyLettersOrSymbols',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `National ID must be exactly 14 digits long.`
+  String get nationalIDMustBeExactly14DigitsLong {
+    return Intl.message(
+      'National ID must be exactly 14 digits long.',
+      name: 'nationalIDMustBeExactly14DigitsLong',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Non-Numeric Characters in National ID`
+  String get nonNumericCharactersInNationalID {
+    return Intl.message(
+      'Non-Numeric Characters in National ID',
+      name: 'nonNumericCharactersInNationalID',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid National ID`
+  String get invalidNationalID {
+    return Intl.message(
+      'Invalid National ID',
+      name: 'invalidNationalID',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unsupported Characters in Passport Number`
+  String get unsupportedCharactersInPassportNumber {
+    return Intl.message(
+      'Unsupported Characters in Passport Number',
+      name: 'unsupportedCharactersInPassportNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid Passport Number`
+  String get invalidPassportNumber {
+    return Intl.message(
+      'Invalid Passport Number',
+      name: 'invalidPassportNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Gender field must be either 'male', 'female', or 'other'.`
+  String get genderFieldMustBeEitherMaleFemaleOrOther {
+    return Intl.message(
+      'Gender field must be either \'male\', \'female\', or \'other\'.',
+      name: 'genderFieldMustBeEitherMaleFemaleOrOther',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid Gender`
+  String get invalidGender {
+    return Intl.message(
+      'Invalid Gender',
+      name: 'invalidGender',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please provide a valid postal code. It must match the city and province.`
+  String get pleaseProvideAValidPostalCodeItMustMatchTheCityAndProvi {
+    return Intl.message(
+      'Please provide a valid postal code. It must match the city and province.',
+      name: 'pleaseProvideAValidPostalCodeItMustMatchTheCityAndProvi',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error Occured, Please try again`
+  String get errorOccuredPleaseTryAgain {
+    return Intl.message(
+      'Error Occured, Please try again',
+      name: 'errorOccuredPleaseTryAgain',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enable microphone service!`
+  String get pleaseEnableMicrophoneService {
+    return Intl.message(
+      'Please enable microphone service!',
+      name: 'pleaseEnableMicrophoneService',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Forward to`
+  String get forwardTo {
+    return Intl.message('Forward to', name: 'forwardTo', desc: '', args: []);
+  }
+
+  /// `Frequently Contacted`
+  String get frequentlyContacted {
+    return Intl.message(
+      'Frequently Contacted',
+      name: 'frequentlyContacted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recently Contacted`
+  String get recentlyContacted {
+    return Intl.message(
+      'Recently Contacted',
+      name: 'recentlyContacted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edited`
+  String get edited {
+    return Intl.message('Edited', name: 'edited', desc: '', args: []);
+  }
+
+  /// `You deleted this message`
+  String get youDeletedThisMessage {
+    return Intl.message(
+      'You deleted this message',
+      name: 'youDeletedThisMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Caption`
+  String get addCaption {
+    return Intl.message('Add Caption', name: 'addCaption', desc: '', args: []);
+  }
+
+  /// `Contact Info`
+  String get contactInfo {
+    return Intl.message(
+      'Contact Info',
+      name: 'contactInfo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No common groups`
+  String get noCommonGroups {
+    return Intl.message(
+      'No common groups',
+      name: 'noCommonGroups',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No starred messages`
+  String get noStarredMessages {
+    return Intl.message(
+      'No starred messages',
+      name: 'noStarredMessages',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You`
+  String get you {
+    return Intl.message('You', name: 'you', desc: '', args: []);
+  }
+
+  /// `Audio`
+  String get audio {
+    return Intl.message('Audio', name: 'audio', desc: '', args: []);
+  }
+
+  /// `Schedule a message`
+  String get scheduleAMessage {
+    return Intl.message(
+      'Schedule a message',
+      name: 'scheduleAMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total Picked Files`
+  String get totalPickedFiles {
+    return Intl.message(
+      'Total Picked Files',
+      name: 'totalPickedFiles',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pages`
+  String get pages {
+    return Intl.message('Pages', name: 'pages', desc: '', args: []);
+  }
+
+  /// `Reply`
+  String get reply {
+    return Intl.message('Reply', name: 'reply', desc: '', args: []);
+  }
+
+  /// `Copy`
+  String get copy {
+    return Intl.message('Copy', name: 'copy', desc: '', args: []);
+  }
+
+  /// `Poll Details`
+  String get pollDetails {
+    return Intl.message(
+      'Poll Details',
+      name: 'pollDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `of`
+  String get ofLabel {
+    return Intl.message('of', name: 'ofLabel', desc: '', args: []);
+  }
+
+  /// `members voted`
+  String get membersVoted {
+    return Intl.message(
+      'members voted',
+      name: 'membersVoted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create Poll`
+  String get createPoll {
+    return Intl.message('Create Poll', name: 'createPoll', desc: '', args: []);
+  }
+
+  /// `Question`
+  String get question {
+    return Intl.message('Question', name: 'question', desc: '', args: []);
+  }
+
+  /// `Ask a Question`
+  String get askAQuestion {
+    return Intl.message(
+      'Ask a Question',
+      name: 'askAQuestion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Options`
+  String get options {
+    return Intl.message('Options', name: 'options', desc: '', args: []);
+  }
+
+  /// `Option`
+  String get option {
+    return Intl.message('Option', name: 'option', desc: '', args: []);
+  }
+
+  /// `Add option`
+  String get addOption {
+    return Intl.message('Add option', name: 'addOption', desc: '', args: []);
+  }
+
+  /// `Allow Multiple Answers`
+  String get allowMultipleAnswers {
+    return Intl.message(
+      'Allow Multiple Answers',
+      name: 'allowMultipleAnswers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Type your Message...`
+  String get typeYourMessage {
+    return Intl.message(
+      'Type your Message...',
+      name: 'typeYourMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Typing...`
+  String get typing {
+    return Intl.message('Typing...', name: 'typing', desc: '', args: []);
+  }
+
+  /// `Deleted Message`
+  String get deletedMessage {
+    return Intl.message(
+      'Deleted Message',
+      name: 'deletedMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Leader`
+  String get leader {
+    return Intl.message('Leader', name: 'leader', desc: '', args: []);
+  }
+
+  /// `Starred Messages`
+  String get starredMessages {
+    return Intl.message(
+      'Starred Messages',
+      name: 'starredMessages',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No groups in common`
+  String get noGroupsInCommon {
+    return Intl.message(
+      'No groups in common',
+      name: 'noGroupsInCommon',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Groups in common`
+  String get groupsInCommon {
+    return Intl.message(
+      'Groups in common',
+      name: 'groupsInCommon',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create a new group with`
+  String get createANewGroupWith {
+    return Intl.message(
+      'Create a new group with',
+      name: 'createANewGroupWith',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You,`
+  String get you2 {
+    return Intl.message('You,', name: 'you2', desc: '', args: []);
+  }
+
+  /// `Expansion`
+  String get expansion {
+    return Intl.message('Expansion', name: 'expansion', desc: '', args: []);
+  }
+
+  /// `Direct Message`
+  String get directMessage {
+    return Intl.message(
+      'Direct Message',
+      name: 'directMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Also delete media received in this chat from the device gallery`
+  String get alsoDeleteMediaReceivedInThisChatFromTheDeviceGallery {
+    return Intl.message(
+      'Also delete media received in this chat from the device gallery',
+      name: 'alsoDeleteMediaReceivedInThisChatFromTheDeviceGallery',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Member`
+  String get member {
+    return Intl.message('Member', name: 'member', desc: '', args: []);
+  }
+
+  /// `About`
+  String get about {
+    return Intl.message('About', name: 'about', desc: '', args: []);
+  }
+
+  /// `View Contact`
+  String get viewContact {
+    return Intl.message(
+      'View Contact',
+      name: 'viewContact',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View Group`
+  String get viewGroup {
+    return Intl.message('View Group', name: 'viewGroup', desc: '', args: []);
+  }
+
+  /// `Media, links, and docs`
+  String get mediaLinksAndDocs {
+    return Intl.message(
+      'Media, links, and docs',
+      name: 'mediaLinksAndDocs',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Message removed from starred messages!`
+  String get messageRemovedFromStarredMessages {
+    return Intl.message(
+      'Message removed from starred messages!',
+      name: 'messageRemovedFromStarredMessages',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Message added to starred messages!`
+  String get messageAddedToStarredMessages {
+    return Intl.message(
+      'Message added to starred messages!',
+      name: 'messageAddedToStarredMessages',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enable location services!`
+  String get pleaseEnableLocationServices {
+    return Intl.message(
+      'Please enable location services!',
+      name: 'pleaseEnableLocationServices',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please add a question`
+  String get pleaseAddAQuestion {
+    return Intl.message(
+      'Please add a question',
+      name: 'pleaseAddAQuestion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fill at least two options`
+  String get fillAtLeastTwoOptions {
+    return Intl.message(
+      'Fill at least two options',
+      name: 'fillAtLeastTwoOptions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Options must be unique`
+  String get optionsMustBeUnique {
+    return Intl.message(
+      'Options must be unique',
+      name: 'optionsMustBeUnique',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Swipe Left To Cancel`
+  String get swipeLeftToCancel {
+    return Intl.message(
+      'Swipe Left To Cancel',
+      name: 'swipeLeftToCancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tap and hold on a message to star it, and it will show up here.`
+  String get tapAndHoldOnAMessageToStarItAndItWillShowUpHere {
+    return Intl.message(
+      'Tap and hold on a message to star it, and it will show up here.',
+      name: 'tapAndHoldOnAMessageToStarItAndItWillShowUpHere',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Make Private`
+  String get makePrivate {
+    return Intl.message(
+      'Make Private',
+      name: 'makePrivate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `It can view or Join with invite`
+  String get itCanViewOrJoinWithInvite {
+    return Intl.message(
+      'It can view or Join with invite',
+      name: 'itCanViewOrJoinWithInvite',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Admin Only`
+  String get adminOnly {
+    return Intl.message('Admin Only', name: 'adminOnly', desc: '', args: []);
+  }
+
+  /// `Only Admins can share content`
+  String get onlyAdminsCanShareContent {
+    return Intl.message(
+      'Only Admins can share content',
+      name: 'onlyAdminsCanShareContent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Media`
+  String get media {
+    return Intl.message('Media', name: 'media', desc: '', args: []);
+  }
+
+  /// `No Media`
+  String get noMedia {
+    return Intl.message('No Media', name: 'noMedia', desc: '', args: []);
+  }
+
+  /// `Links`
+  String get links {
+    return Intl.message('Links', name: 'links', desc: '', args: []);
+  }
+
+  /// `No Links`
+  String get noLinks {
+    return Intl.message('No Links', name: 'noLinks', desc: '', args: []);
+  }
+
+  /// `No Docs`
+  String get noDocs {
+    return Intl.message('No Docs', name: 'noDocs', desc: '', args: []);
+  }
+
+  /// `Pick a location`
+  String get pickALocation {
+    return Intl.message(
+      'Pick a location',
+      name: 'pickALocation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ID`
+  String get iD {
+    return Intl.message('ID', name: 'iD', desc: '', args: []);
+  }
+
+  /// `Friend`
+  String get friend {
+    return Intl.message('Friend', name: 'friend', desc: '', args: []);
+  }
+
+  /// `Family`
+  String get family {
+    return Intl.message('Family', name: 'family', desc: '', args: []);
+  }
+
+  /// `Education Certificate`
+  String get educationCertificate {
+    return Intl.message(
+      'Education Certificate',
+      name: 'educationCertificate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ID Photo`
+  String get iDPhoto {
+    return Intl.message('ID Photo', name: 'iDPhoto', desc: '', args: []);
+  }
+
+  /// `Enter The First Name`
+  String get enterTheFirstName {
+    return Intl.message(
+      'Enter The First Name',
+      name: 'enterTheFirstName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter The Middle Name`
+  String get enterTheMiddleName {
+    return Intl.message(
+      'Enter The Middle Name',
+      name: 'enterTheMiddleName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter The Last Name`
+  String get enterTheLastName {
+    return Intl.message(
+      'Enter The Last Name',
+      name: 'enterTheLastName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter The Arabic First Name`
+  String get enterTheArabicFirstName {
+    return Intl.message(
+      'Enter The Arabic First Name',
+      name: 'enterTheArabicFirstName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter The Arabic Middle Name`
+  String get enterTheArabicMiddleName {
+    return Intl.message(
+      'Enter The Arabic Middle Name',
+      name: 'enterTheArabicMiddleName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter The Arabic Last Name`
+  String get enterTheArabicLastName {
+    return Intl.message(
+      'Enter The Arabic Last Name',
+      name: 'enterTheArabicLastName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter The National ID`
+  String get enterTheNationalID {
+    return Intl.message(
+      'Enter The National ID',
+      name: 'enterTheNationalID',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter The National ID Expiration Date`
+  String get enterTheNationalIDExpirationDate {
+    return Intl.message(
+      'Enter The National ID Expiration Date',
+      name: 'enterTheNationalIDExpirationDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter The Email`
+  String get enterTheEmail {
+    return Intl.message(
+      'Enter The Email',
+      name: 'enterTheEmail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter The Country`
+  String get enterTheCountry {
+    return Intl.message(
+      'Enter The Country',
+      name: 'enterTheCountry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter The City`
+  String get enterTheCity {
+    return Intl.message(
+      'Enter The City',
+      name: 'enterTheCity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter The State Or Province`
+  String get enterTheStateOrProvince {
+    return Intl.message(
+      'Enter The State Or Province',
+      name: 'enterTheStateOrProvince',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter The Postal Code`
+  String get enterThePostalCode {
+    return Intl.message(
+      'Enter The Postal Code',
+      name: 'enterThePostalCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Arabic`
+  String get arabic {
+    return Intl.message('Arabic', name: 'arabic', desc: '', args: []);
+  }
+
+  /// `Mandarin Chinese`
+  String get mandarinChinese {
+    return Intl.message(
+      'Mandarin Chinese',
+      name: 'mandarinChinese',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hindi`
+  String get hindi {
+    return Intl.message('Hindi', name: 'hindi', desc: '', args: []);
+  }
+
+  /// `Martial Service Proof`
+  String get martialServiceProof {
+    return Intl.message(
+      'Martial Service Proof',
+      name: 'martialServiceProof',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Driving License`
+  String get drivingLicense {
+    return Intl.message(
+      'Driving License',
+      name: 'drivingLicense',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Marital Certificate`
+  String get maritalCertificate {
+    return Intl.message(
+      'Marital Certificate',
+      name: 'maritalCertificate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Life Insurance Card`
+  String get lifeInsuranceCard {
+    return Intl.message(
+      'Life Insurance Card',
+      name: 'lifeInsuranceCard',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Saturday`
+  String get saturday {
+    return Intl.message('Saturday', name: 'saturday', desc: '', args: []);
+  }
+
+  /// `Sunday`
+  String get sunday {
+    return Intl.message('Sunday', name: 'sunday', desc: '', args: []);
+  }
+
+  /// `Monday`
+  String get monday {
+    return Intl.message('Monday', name: 'monday', desc: '', args: []);
+  }
+
+  /// `Tuesday`
+  String get tuesday {
+    return Intl.message('Tuesday', name: 'tuesday', desc: '', args: []);
+  }
+
+  /// `Wednesday`
+  String get wednesday {
+    return Intl.message('Wednesday', name: 'wednesday', desc: '', args: []);
+  }
+
+  /// `Thursday`
+  String get thursday {
+    return Intl.message('Thursday', name: 'thursday', desc: '', args: []);
+  }
+
+  /// `Friday`
+  String get friday {
+    return Intl.message('Friday', name: 'friday', desc: '', args: []);
+  }
+
+  /// `CEO`
+  String get cEO {
+    return Intl.message('CEO', name: 'cEO', desc: '', args: []);
+  }
+
+  /// `General Manager`
+  String get generalManager {
+    return Intl.message(
+      'General Manager',
+      name: 'generalManager',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Team Lead`
+  String get teamLead {
+    return Intl.message('Team Lead', name: 'teamLead', desc: '', args: []);
+  }
+
+  /// `Title In Arabic`
+  String get titleInArabic {
+    return Intl.message(
+      'Title In Arabic',
+      name: 'titleInArabic',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Job Type`
+  String get jobType {
+    return Intl.message('Job Type', name: 'jobType', desc: '', args: []);
+  }
+
+  /// `Fixed`
+  String get fixed {
+    return Intl.message('Fixed', name: 'fixed', desc: '', args: []);
+  }
+
+  /// `Hourly`
+  String get hourly {
+    return Intl.message('Hourly', name: 'hourly', desc: '', args: []);
+  }
+
+  /// `Fixed + Bonus`
+  String get fixedBonus {
+    return Intl.message(
+      'Fixed + Bonus',
+      name: 'fixedBonus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Compensation`
+  String get compensation {
+    return Intl.message(
+      'Compensation',
+      name: 'compensation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `USD`
+  String get uSD {
+    return Intl.message('USD', name: 'uSD', desc: '', args: []);
+  }
+
+  /// `EGP`
+  String get eGP {
+    return Intl.message('EGP', name: 'eGP', desc: '', args: []);
+  }
+
+  /// `EUR`
+  String get eUR {
+    return Intl.message('EUR', name: 'eUR', desc: '', args: []);
+  }
+
+  /// `Enter The Work Days`
+  String get enterTheWorkDays {
+    return Intl.message(
+      'Enter The Work Days',
+      name: 'enterTheWorkDays',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid Employee ID`
+  String get invalidEmployeeID {
+    return Intl.message(
+      'Invalid Employee ID',
+      name: 'invalidEmployeeID',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid Country Name`
+  String get invalidCountryName {
+    return Intl.message(
+      'Invalid Country Name',
+      name: 'invalidCountryName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid Province`
+  String get invalidProvince {
+    return Intl.message(
+      'Invalid Province',
+      name: 'invalidProvince',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid City`
+  String get invalidCity {
+    return Intl.message(
+      'Invalid City',
+      name: 'invalidCity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid Street`
+  String get invalidStreet {
+    return Intl.message(
+      'Invalid Street',
+      name: 'invalidStreet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid Language`
+  String get invalidLanguage {
+    return Intl.message(
+      'Invalid Language',
+      name: 'invalidLanguage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Kindly enter the name of the department to complete the assignment.`
+  String get kindlyEnterTheNameOfTheDepartmentToCompleteTheAssignmen {
+    return Intl.message(
+      'Kindly enter the name of the department to complete the assignment.',
+      name: 'kindlyEnterTheNameOfTheDepartmentToCompleteTheAssignmen',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please provide the department name in Arabic for bilingual consistency.`
+  String get pleaseProvideTheDepartmentNameInArabicForBilingualConsi {
+    return Intl.message(
+      'Please provide the department name in Arabic for bilingual consistency.',
+      name: 'pleaseProvideTheDepartmentNameInArabicForBilingualConsi',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This field accepts Arabic only. Please provide your entry in Arabic script; entries in any other language cannot be accepted`
+  String get thisFieldAcceptsArabicOnlyPleaseProvideYourEntryInArabi2 {
+    return Intl.message(
+      'This field accepts Arabic only. Please provide your entry in Arabic script; entries in any other language cannot be accepted',
+      name: 'thisFieldAcceptsArabicOnlyPleaseProvideYourEntryInArabi2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Kindly assign a role to the employee. This is a required field for access permissions.`
+  String get kindlyAssignARoleToTheEmployeeThisIsARequiredFieldForAc {
+    return Intl.message(
+      'Kindly assign a role to the employee. This is a required field for access permissions.',
+      name: 'kindlyAssignARoleToTheEmployeeThisIsARequiredFieldForAc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter the employee's job title. It is essential for internal designation`
+  String get pleaseEnterTheEmployeeSJobTitleItIsEssentialForInternal {
+    return Intl.message(
+      'Please enter the employee\'s job title. It is essential for internal designation',
+      name: 'pleaseEnterTheEmployeeSJobTitleItIsEssentialForInternal',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Kindly provide the Arabic translation of the job title for bilingual records`
+  String get kindlyProvideTheArabicTranslationOfTheJobTitleForBiling {
+    return Intl.message(
+      'Kindly provide the Arabic translation of the job title for bilingual records',
+      name: 'kindlyProvideTheArabicTranslationOfTheJobTitleForBiling',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid Work Location`
+  String get invalidWorkLocation {
+    return Intl.message(
+      'Invalid Work Location',
+      name: 'invalidWorkLocation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Department Name Required.`
+  String get departmentNameRequired {
+    return Intl.message(
+      'Department Name Required.',
+      name: 'departmentNameRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Arabic Department Name Missing`
+  String get arabicDepartmentNameMissing {
+    return Intl.message(
+      'Arabic Department Name Missing',
+      name: 'arabicDepartmentNameMissing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Role Not Assigned`
+  String get roleNotAssigned {
+    return Intl.message(
+      'Role Not Assigned',
+      name: 'roleNotAssigned',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Job Title Missing`
+  String get jobTitleMissing {
+    return Intl.message(
+      'Job Title Missing',
+      name: 'jobTitleMissing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Arabic Job Title Required`
+  String get arabicJobTitleRequired {
+    return Intl.message(
+      'Arabic Job Title Required',
+      name: 'arabicJobTitleRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You have unsaved changes. Do you want to save them?`
+  String get youHaveUnsavedChangesDoYouWantToSaveThem {
+    return Intl.message(
+      'You have unsaved changes. Do you want to save them?',
+      name: 'youHaveUnsavedChangesDoYouWantToSaveThem',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Data has been saved successfully`
+  String get dataHasBeenSavedSuccessfully {
+    return Intl.message(
+      'Data has been saved successfully',
+      name: 'dataHasBeenSavedSuccessfully',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Un Successful`
+  String get unSuccessful {
+    return Intl.message(
+      'Un Successful',
+      name: 'unSuccessful',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Clear Filter`
+  String get clearFilter {
+    return Intl.message(
+      'Clear Filter',
+      name: 'clearFilter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export Details`
+  String get exportDetails {
+    return Intl.message(
+      'Export Details',
+      name: 'exportDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `matches`
+  String get matches {
+    return Intl.message('matches', name: 'matches', desc: '', args: []);
+  }
+
+  /// `Matches`
+  String get matches2 {
+    return Intl.message('Matches', name: 'matches2', desc: '', args: []);
+  }
+
+  /// `Search employee...`
+  String get searchEmployee {
+    return Intl.message(
+      'Search employee...',
+      name: 'searchEmployee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No matches found`
+  String get noMatchesFound {
+    return Intl.message(
+      'No matches found',
+      name: 'noMatchesFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose which backup you want to restore`
+  String get chooseWhichBackupYouWantToRestore {
+    return Intl.message(
+      'Choose which backup you want to restore',
+      name: 'chooseWhichBackupYouWantToRestore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Second Backup`
+  String get secondBackup {
+    return Intl.message(
+      'Second Backup',
+      name: 'secondBackup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `First Backup`
+  String get firstBackup {
+    return Intl.message(
+      'First Backup',
+      name: 'firstBackup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Removing Employee`
+  String get removingEmployee {
+    return Intl.message(
+      'Removing Employee',
+      name: 'removingEmployee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Remove This Employee?`
+  String get areYouSureYouWantToRemoveThisEmployee {
+    return Intl.message(
+      'Are You Sure You Want To Remove This Employee?',
+      name: 'areYouSureYouWantToRemoveThisEmployee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Employee Removed`
+  String get employeeRemoved {
+    return Intl.message(
+      'Employee Removed',
+      name: 'employeeRemoved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Successfully Removed Employee`
+  String get youSuccessfullyRemovedEmployee {
+    return Intl.message(
+      'You Successfully Removed Employee',
+      name: 'youSuccessfullyRemovedEmployee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The data for this field is empty.`
+  String get theDataForThisFieldIsEmpty {
+    return Intl.message(
+      'The data for this field is empty.',
+      name: 'theDataForThisFieldIsEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No system logs found`
+  String get noSystemLogsFound {
+    return Intl.message(
+      'No system logs found',
+      name: 'noSystemLogsFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Document Rejected`
+  String get documentFileRejected {
+    return Intl.message(
+      'Document Rejected',
+      name: 'documentFileRejected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The document has been rejected successfully`
+  String get documentRemoveSuccess {
+    return Intl.message(
+      'The document has been rejected successfully',
+      name: 'documentRemoveSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Knowledge Hub Permissions`
+  String get knowledgeHubPermissions {
+    return Intl.message(
+      'Knowledge Hub Permissions',
+      name: 'knowledgeHubPermissions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Approval`
+  String get approval {
+    return Intl.message('Approval', name: 'approval', desc: '', args: []);
+  }
+
+  /// `Create Knowledge Hub`
+  String get createKnowledgeHub {
+    return Intl.message(
+      'Create Knowledge Hub',
+      name: 'createKnowledgeHub',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Owning Department`
+  String get selectOwningDepartment {
+    return Intl.message(
+      'Select Owning Department',
+      name: 'selectOwningDepartment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Download Documents`
+  String get downloadDocuments {
+    return Intl.message(
+      'Download Documents',
+      name: 'downloadDocuments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View Documents`
+  String get viewDocuments {
+    return Intl.message(
+      'View Documents',
+      name: 'viewDocuments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Allows Removing Documents Owned By Anyone`
+  String get allowsRemovingDocumentsOwnedByAnyone {
+    return Intl.message(
+      'Allows Removing Documents Owned By Anyone',
+      name: 'allowsRemovingDocumentsOwnedByAnyone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Document With Approval`
+  String get editDocumentWithApproval {
+    return Intl.message(
+      'Edit Document With Approval',
+      name: 'editDocumentWithApproval',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Document Without Approval`
+  String get editDocumentWithoutApproval {
+    return Intl.message(
+      'Edit Document Without Approval',
+      name: 'editDocumentWithoutApproval',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove Documents`
+  String get removeDocuments {
+    return Intl.message(
+      'Remove Documents',
+      name: 'removeDocuments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export Statistics Table`
+  String get exportStatisticsTable {
+    return Intl.message(
+      'Export Statistics Table',
+      name: 'exportStatisticsTable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Action Failed`
+  String get actionFailed {
+    return Intl.message(
+      'Action Failed',
+      name: 'actionFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Activate Policies`
+  String get activatePolicies {
+    return Intl.message(
+      'Activate Policies',
+      name: 'activatePolicies',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add at least one row`
+  String get addAtLeastOneRow {
+    return Intl.message(
+      'Add at least one row',
+      name: 'addAtLeastOneRow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Champion`
+  String get addChampion {
+    return Intl.message(
+      'Add Champion',
+      name: 'addChampion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Control`
+  String get addControl {
+    return Intl.message('Add Control', name: 'addControl', desc: '', args: []);
+  }
+
+  /// `Add Control Champion`
+  String get addControlChampion {
+    return Intl.message(
+      'Add Control Champion',
+      name: 'addControlChampion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Control Owner`
+  String get addControlOwner {
+    return Intl.message(
+      'Add Control Owner',
+      name: 'addControlOwner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Controller`
+  String get addController {
+    return Intl.message(
+      'Add Controller',
+      name: 'addController',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Owner`
+  String get addOwner {
+    return Intl.message('Add Owner', name: 'addOwner', desc: '', args: []);
+  }
+
+  /// `Adding New Control Champion`
+  String get addingNewControlChampion {
+    return Intl.message(
+      'Adding New Control Champion',
+      name: 'addingNewControlChampion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Adding New Control Owner`
+  String get addingNewControlOwner {
+    return Intl.message(
+      'Adding New Control Owner',
+      name: 'addingNewControlOwner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Apply Changes`
+  String get applyChanges {
+    return Intl.message(
+      'Apply Changes',
+      name: 'applyChanges',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Approve Evidence`
+  String get approveEvidence {
+    return Intl.message(
+      'Approve Evidence',
+      name: 'approveEvidence',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to activate these assignments?`
+  String get areYouSureYouWantToActivateTheseAssignments {
+    return Intl.message(
+      'Are you sure you want to activate these assignments?',
+      name: 'areYouSureYouWantToActivateTheseAssignments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to activate these policies?`
+  String get areYouSureYouWantToActivateThesePolicies {
+    return Intl.message(
+      'Are you sure you want to activate these policies?',
+      name: 'areYouSureYouWantToActivateThesePolicies',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to add this control champion?`
+  String get areYouSureYouWantToAddThisControlChampion {
+    return Intl.message(
+      'Are you sure you want to add this control champion?',
+      name: 'areYouSureYouWantToAddThisControlChampion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to add this control owner?`
+  String get areYouSureYouWantToAddThisControlOwner {
+    return Intl.message(
+      'Are you sure you want to add this control owner?',
+      name: 'areYouSureYouWantToAddThisControlOwner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to approve this evidence?`
+  String get areYouSureYouWantToApproveThisEvidence {
+    return Intl.message(
+      'Are you sure you want to approve this evidence?',
+      name: 'areYouSureYouWantToApproveThisEvidence',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to change the status of this module?`
+  String get areYouSureYouWantToChangeTheStatusOfThisModule {
+    return Intl.message(
+      'Are you sure you want to change the status of this module?',
+      name: 'areYouSureYouWantToChangeTheStatusOfThisModule',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to create this module?`
+  String get areYouSureYouWantToCreateThisModule {
+    return Intl.message(
+      'Are you sure you want to create this module?',
+      name: 'areYouSureYouWantToCreateThisModule',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to delete this GRC module?`
+  String get areYouSureYouWantToDeleteThisGrcModule {
+    return Intl.message(
+      'Are you sure you want to delete this GRC module?',
+      name: 'areYouSureYouWantToDeleteThisGrcModule',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to discard this policy?`
+  String get areYouSureYouWantToDiscardThisPolicy {
+    return Intl.message(
+      'Are you sure you want to discard this policy?',
+      name: 'areYouSureYouWantToDiscardThisPolicy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to edit controls weight?`
+  String get areYouSureYouWantToEditControlsWeight {
+    return Intl.message(
+      'Are you sure you want to edit controls weight?',
+      name: 'areYouSureYouWantToEditControlsWeight',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to edit policies weight?`
+  String get areYouSureYouWantToEditPoliciesWeight {
+    return Intl.message(
+      'Are you sure you want to edit policies weight?',
+      name: 'areYouSureYouWantToEditPoliciesWeight',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to edit this module?`
+  String get areYouSureYouWantToEditThisModule {
+    return Intl.message(
+      'Are you sure you want to edit this module?',
+      name: 'areYouSureYouWantToEditThisModule',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to edit this policy?`
+  String get areYouSureYouWantToEditThisPolicy {
+    return Intl.message(
+      'Are you sure you want to edit this policy?',
+      name: 'areYouSureYouWantToEditThisPolicy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to publish this policy?`
+  String get areYouSureYouWantToPublishThisPolicy {
+    return Intl.message(
+      'Are you sure you want to publish this policy?',
+      name: 'areYouSureYouWantToPublishThisPolicy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to reject this document?`
+  String get areYouSureYouWantToRejectThisDocument {
+    return Intl.message(
+      'Are you sure you want to reject this document?',
+      name: 'areYouSureYouWantToRejectThisDocument',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to reject this evidence?`
+  String get areYouSureYouWantToRejectThisEvidence {
+    return Intl.message(
+      'Are you sure you want to reject this evidence?',
+      name: 'areYouSureYouWantToRejectThisEvidence',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to remove this control champion?`
+  String get areYouSureYouWantToRemoveThisControlChampion {
+    return Intl.message(
+      'Are you sure you want to remove this control champion?',
+      name: 'areYouSureYouWantToRemoveThisControlChampion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to remove this control owner?`
+  String get areYouSureYouWantToRemoveThisControlOwner {
+    return Intl.message(
+      'Are you sure you want to remove this control owner?',
+      name: 'areYouSureYouWantToRemoveThisControlOwner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to restore this module?`
+  String get areYouSureYouWantToRestoreThisModule {
+    return Intl.message(
+      'Are you sure you want to restore this module?',
+      name: 'areYouSureYouWantToRestoreThisModule',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to save these changes?`
+  String get areYouSureYouWantToSaveTheseChanges {
+    return Intl.message(
+      'Are you sure you want to save these changes?',
+      name: 'areYouSureYouWantToSaveTheseChanges',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to save this control as a draft?`
+  String get areYouSureYouWantToSaveThisControlAsADraft {
+    return Intl.message(
+      'Are you sure you want to save this control as a draft?',
+      name: 'areYouSureYouWantToSaveThisControlAsADraft',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to save this policy as a draft?`
+  String get areYouSureYouWantToSaveThisPolicyAsADraft {
+    return Intl.message(
+      'Are you sure you want to save this policy as a draft?',
+      name: 'areYouSureYouWantToSaveThisPolicyAsADraft',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to submit this evidence?`
+  String get areYouSureYouWantToSubmitThisEvidence {
+    return Intl.message(
+      'Are you sure you want to submit this evidence?',
+      name: 'areYouSureYouWantToSubmitThisEvidence',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to submit this reassignment request?`
+  String get areYouSureYouWantToSubmitThisReassignmentRequest {
+    return Intl.message(
+      'Are you sure you want to submit this reassignment request?',
+      name: 'areYouSureYouWantToSubmitThisReassignmentRequest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Assigned Controls`
+  String get assignedControls {
+    return Intl.message(
+      'Assigned Controls',
+      name: 'assignedControls',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Assignees Created`
+  String get assigneesCreated {
+    return Intl.message(
+      'Assignees Created',
+      name: 'assigneesCreated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Assigning Control`
+  String get assigningControl {
+    return Intl.message(
+      'Assigning Control',
+      name: 'assigningControl',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Assigning Controls`
+  String get assigningControls {
+    return Intl.message(
+      'Assigning Controls',
+      name: 'assigningControls',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Assignment Controls`
+  String get assignmentControls {
+    return Intl.message(
+      'Assignment Controls',
+      name: 'assignmentControls',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bulk Upload Preview`
+  String get bulkUploadPreview {
+    return Intl.message(
+      'Bulk Upload Preview',
+      name: 'bulkUploadPreview',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose the date`
+  String get chooseTheDate {
+    return Intl.message(
+      'Choose the date',
+      name: 'chooseTheDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Contact Manager`
+  String get contactManager {
+    return Intl.message(
+      'Contact Manager',
+      name: 'contactManager',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Control Bulk Upload`
+  String get controlBulkUpload {
+    return Intl.message(
+      'Control Bulk Upload',
+      name: 'controlBulkUpload',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Control Bulk Upload Preview`
+  String get controlBulkUploadPreview {
+    return Intl.message(
+      'Control Bulk Upload Preview',
+      name: 'controlBulkUploadPreview',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Control Champion`
+  String get controlChampion {
+    return Intl.message(
+      'Control Champion',
+      name: 'controlChampion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Control Champion Added`
+  String get controlChampionAdded {
+    return Intl.message(
+      'Control Champion Added',
+      name: 'controlChampionAdded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Control Champion Removed`
+  String get controlChampionRemoved {
+    return Intl.message(
+      'Control Champion Removed',
+      name: 'controlChampionRemoved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Control champion removed successfully`
+  String get controlChampionRemovedSuccessfully {
+    return Intl.message(
+      'Control champion removed successfully',
+      name: 'controlChampionRemovedSuccessfully',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Control Created`
+  String get controlCreated {
+    return Intl.message(
+      'Control Created',
+      name: 'controlCreated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Control Deleted`
+  String get controlDeleted {
+    return Intl.message(
+      'Control Deleted',
+      name: 'controlDeleted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Control description must be written in Arabic`
+  String get controlDescriptionMustBeWrittenInArabic {
+    return Intl.message(
+      'Control description must be written in Arabic',
+      name: 'controlDescriptionMustBeWrittenInArabic',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Control description must be written in English`
+  String get controlDescriptionMustBeWrittenInEnglish {
+    return Intl.message(
+      'Control description must be written in English',
+      name: 'controlDescriptionMustBeWrittenInEnglish',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Control Details`
+  String get controlDetails {
+    return Intl.message(
+      'Control Details',
+      name: 'controlDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Control Document (Arabic)`
+  String get controlDocumentAr {
+    return Intl.message(
+      'Control Document (Arabic)',
+      name: 'controlDocumentAr',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Control Document (English)`
+  String get controlDocumentEng {
+    return Intl.message(
+      'Control Document (English)',
+      name: 'controlDocumentEng',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Control name must be written in Arabic`
+  String get controlNameMustBeWrittenInArabic {
+    return Intl.message(
+      'Control name must be written in Arabic',
+      name: 'controlNameMustBeWrittenInArabic',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Control name must be written in English`
+  String get controlNameMustBeWrittenInEnglish {
+    return Intl.message(
+      'Control name must be written in English',
+      name: 'controlNameMustBeWrittenInEnglish',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Control number must be written in Arabic`
+  String get controlNumberMustBeWrittenInArabic {
+    return Intl.message(
+      'Control number must be written in Arabic',
+      name: 'controlNumberMustBeWrittenInArabic',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Control number must be written in English`
+  String get controlNumberMustBeWrittenInEnglish {
+    return Intl.message(
+      'Control number must be written in English',
+      name: 'controlNumberMustBeWrittenInEnglish',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Control Owner Added`
+  String get controlOwnerAdded {
+    return Intl.message(
+      'Control Owner Added',
+      name: 'controlOwnerAdded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Control Owner Removed`
+  String get controlOwnerRemoved {
+    return Intl.message(
+      'Control Owner Removed',
+      name: 'controlOwnerRemoved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Control owner removed successfully`
+  String get controlOwnerRemovedSuccessfully {
+    return Intl.message(
+      'Control owner removed successfully',
+      name: 'controlOwnerRemovedSuccessfully',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Control(s) Created`
+  String get controlSCreated {
+    return Intl.message(
+      'Control(s) Created',
+      name: 'controlSCreated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Control saved as draft successfully`
+  String get controlSavedAsDraftSuccessfully {
+    return Intl.message(
+      'Control saved as draft successfully',
+      name: 'controlSavedAsDraftSuccessfully',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Control Updated`
+  String get controlUpdated {
+    return Intl.message(
+      'Control Updated',
+      name: 'controlUpdated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Control weight cannot be more than 100`
+  String get controlWeightCannotBeMoreThan100 {
+    return Intl.message(
+      'Control weight cannot be more than 100',
+      name: 'controlWeightCannotBeMoreThan100',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Control Weight Issue`
+  String get controlWeightIssue {
+    return Intl.message(
+      'Control Weight Issue',
+      name: 'controlWeightIssue',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Control weight must be a positive number`
+  String get controlWeightMustBeAPositiveNumber {
+    return Intl.message(
+      'Control weight must be a positive number',
+      name: 'controlWeightMustBeAPositiveNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Control weight must be a valid number`
+  String get controlWeightMustBeAValidNumber {
+    return Intl.message(
+      'Control weight must be a valid number',
+      name: 'controlWeightMustBeAValidNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Controls Updated`
+  String get controlsUpdated {
+    return Intl.message(
+      'Controls Updated',
+      name: 'controlsUpdated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Controls updated successfully`
+  String get controlsUpdatedSuccessfully {
+    return Intl.message(
+      'Controls updated successfully',
+      name: 'controlsUpdatedSuccessfully',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not read the selected file. Please try again.`
+  String get couldNotReadTheSelectedFilePleaseTryAgain {
+    return Intl.message(
+      'Could not read the selected file. Please try again.',
+      name: 'couldNotReadTheSelectedFilePleaseTryAgain',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Current Control Champion`
+  String get currentControlChampion {
+    return Intl.message(
+      'Current Control Champion',
+      name: 'currentControlChampion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Current Control Owner`
+  String get currentControlOwner {
+    return Intl.message(
+      'Current Control Owner',
+      name: 'currentControlOwner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Department Manager`
+  String get departmentManager {
+    return Intl.message(
+      'Department Manager',
+      name: 'departmentManager',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Description is required`
+  String get descriptionIsRequired {
+    return Intl.message(
+      'Description is required',
+      name: 'descriptionIsRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Description must be written in Arabic`
+  String get descriptionMustBeWrittenInArabic {
+    return Intl.message(
+      'Description must be written in Arabic',
+      name: 'descriptionMustBeWrittenInArabic',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Discard Policy`
+  String get discardPolicy {
+    return Intl.message(
+      'Discard Policy',
+      name: 'discardPolicy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Document Title`
+  String get documentTitle {
+    return Intl.message(
+      'Document Title',
+      name: 'documentTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Does each department carry a distinct weighting?`
+  String get doesEachDepartmentCarryADistinctWeighting {
+    return Intl.message(
+      'Does each department carry a distinct weighting?',
+      name: 'doesEachDepartmentCarryADistinctWeighting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Controls`
+  String get editControls {
+    return Intl.message(
+      'Edit Controls',
+      name: 'editControls',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Editing Controls Weight`
+  String get editingControlsWeight {
+    return Intl.message(
+      'Editing Controls Weight',
+      name: 'editingControlsWeight',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Editing Policies Weight`
+  String get editingPoliciesWeight {
+    return Intl.message(
+      'Editing Policies Weight',
+      name: 'editingPoliciesWeight',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Editing Policy`
+  String get editingPolicy {
+    return Intl.message(
+      'Editing Policy',
+      name: 'editingPolicy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `End date cannot be after the policy end date`
+  String get endDateCannotBeAfterThePolicyEndDate {
+    return Intl.message(
+      'End date cannot be after the policy end date',
+      name: 'endDateCannotBeAfterThePolicyEndDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `End date cannot be before start date`
+  String get endDateCannotBeBeforeStartDate {
+    return Intl.message(
+      'End date cannot be before start date',
+      name: 'endDateCannotBeBeforeStartDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `End date cannot be before the policy start date`
+  String get endDateCannotBeBeforeThePolicyStartDate {
+    return Intl.message(
+      'End date cannot be before the policy start date',
+      name: 'endDateCannotBeBeforeThePolicyStartDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Equal Policy Weight`
+  String get equalPolicyWeight {
+    return Intl.message(
+      'Equal Policy Weight',
+      name: 'equalPolicyWeight',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Equal Weights`
+  String get equalWeights {
+    return Intl.message(
+      'Equal Weights',
+      name: 'equalWeights',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Evidence Submitted`
+  String get evidenceSubmitted {
+    return Intl.message(
+      'Evidence Submitted',
+      name: 'evidenceSubmitted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Give a Score`
+  String get giveAScore {
+    return Intl.message('Give a Score', name: 'giveAScore', desc: '', args: []);
+  }
+
+  /// `GRC module name is required`
+  String get grcModuleNameIsRequired {
+    return Intl.message(
+      'GRC module name is required',
+      name: 'grcModuleNameIsRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `GRC module name must be written in Arabic`
+  String get grcModuleNameMustBeWrittenInArabic {
+    return Intl.message(
+      'GRC module name must be written in Arabic',
+      name: 'grcModuleNameMustBeWrittenInArabic',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `GRC Policy Number`
+  String get grcPolicyNumber {
+    return Intl.message(
+      'GRC Policy Number',
+      name: 'grcPolicyNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `History of Control Owners`
+  String get historyOfControlOwners {
+    return Intl.message(
+      'History of Control Owners',
+      name: 'historyOfControlOwners',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Inquiries`
+  String get inquires {
+    return Intl.message('Inquiries', name: 'inquires', desc: '', args: []);
+  }
+
+  /// `Inquiries coming soon`
+  String get inquiriesComingSoon {
+    return Intl.message(
+      'Inquiries coming soon',
+      name: 'inquiriesComingSoon',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `My Audit`
+  String get myAudit {
+    return Intl.message('My Audit', name: 'myAudit', desc: '', args: []);
+  }
+
+  /// `My Audits`
+  String get myAudits {
+    return Intl.message('My Audits', name: 'myAudits', desc: '', args: []);
+  }
+
+  /// `New champion cannot be the current champion`
+  String get newChampionCannotBeTheCurrentChampion {
+    return Intl.message(
+      'New champion cannot be the current champion',
+      name: 'newChampionCannotBeTheCurrentChampion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New Control Champion`
+  String get newControlChampion {
+    return Intl.message(
+      'New Control Champion',
+      name: 'newControlChampion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New Control Owner`
+  String get newControlOwner {
+    return Intl.message(
+      'New Control Owner',
+      name: 'newControlOwner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New owner cannot be the current owner`
+  String get newOwnerCannotBeTheCurrentOwner {
+    return Intl.message(
+      'New owner cannot be the current owner',
+      name: 'newOwnerCannotBeTheCurrentOwner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No approvals in this status`
+  String get noApprovalsInThisStatus {
+    return Intl.message(
+      'No approvals in this status',
+      name: 'noApprovalsInThisStatus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No audits in this status`
+  String get noAuditsInThisStatus {
+    return Intl.message(
+      'No audits in this status',
+      name: 'noAuditsInThisStatus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No control champions found`
+  String get noControlChampionsFound {
+    return Intl.message(
+      'No control champions found',
+      name: 'noControlChampionsFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No control owners found`
+  String get noControlOwnersFound {
+    return Intl.message(
+      'No control owners found',
+      name: 'noControlOwnersFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No controls assigned`
+  String get noControlsAssigned {
+    return Intl.message(
+      'No controls assigned',
+      name: 'noControlsAssigned',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No controls in this status`
+  String get noControlsInThisStatus {
+    return Intl.message(
+      'No controls in this status',
+      name: 'noControlsInThisStatus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No data rows found in the Excel file`
+  String get noDataRowsFoundInTheExcelFile {
+    return Intl.message(
+      'No data rows found in the Excel file',
+      name: 'noDataRowsFoundInTheExcelFile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No GRC modules found`
+  String get noGrcModulesFound {
+    return Intl.message(
+      'No GRC modules found',
+      name: 'noGrcModulesFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No owners assigned`
+  String get noOwnersAssigned {
+    return Intl.message(
+      'No owners assigned',
+      name: 'noOwnersAssigned',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No people found`
+  String get noPeopleFound {
+    return Intl.message(
+      'No people found',
+      name: 'noPeopleFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No policies found`
+  String get noPoliciesFound {
+    return Intl.message(
+      'No policies found',
+      name: 'noPoliciesFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No previous control owners`
+  String get noPreviousControlOwners {
+    return Intl.message(
+      'No previous control owners',
+      name: 'noPreviousControlOwners',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No previous module owners`
+  String get noPreviousModuleOwners {
+    return Intl.message(
+      'No previous module owners',
+      name: 'noPreviousModuleOwners',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No submission was made before the deadline`
+  String get noSubmissionWasMadeBeforeTheDeadline {
+    return Intl.message(
+      'No submission was made before the deadline',
+      name: 'noSubmissionWasMadeBeforeTheDeadline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No weight changes`
+  String get noWeightChanges {
+    return Intl.message(
+      'No weight changes',
+      name: 'noWeightChanges',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Number`
+  String get numberLabel {
+    return Intl.message('Number', name: 'numberLabel', desc: '', args: []);
+  }
+
+  /// `Please assign at least one control`
+  String get pleaseAssignAtLeastOneControl {
+    return Intl.message(
+      'Please assign at least one control',
+      name: 'pleaseAssignAtLeastOneControl',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please choose a start date`
+  String get pleaseChooseAStartDate {
+    return Intl.message(
+      'Please choose a start date',
+      name: 'pleaseChooseAStartDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please drop an Excel file (.xlsx or .xls)`
+  String get pleaseDropAnExcelFileXlsxOrXls {
+    return Intl.message(
+      'Please drop an Excel file (.xlsx or .xls)',
+      name: 'pleaseDropAnExcelFileXlsxOrXls',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please fix the highlighted errors before continuing`
+  String get pleaseFixTheHighlightedErrorsBeforeContinuing {
+    return Intl.message(
+      'Please fix the highlighted errors before continuing',
+      name: 'pleaseFixTheHighlightedErrorsBeforeContinuing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please select a control champion`
+  String get pleaseSelectAControlChampion {
+    return Intl.message(
+      'Please select a control champion',
+      name: 'pleaseSelectAControlChampion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please select a control owner`
+  String get pleaseSelectAControlOwner {
+    return Intl.message(
+      'Please select a control owner',
+      name: 'pleaseSelectAControlOwner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please select a new control champion`
+  String get pleaseSelectANewControlChampion {
+    return Intl.message(
+      'Please select a new control champion',
+      name: 'pleaseSelectANewControlChampion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please select a new control owner`
+  String get pleaseSelectANewControlOwner {
+    return Intl.message(
+      'Please select a new control owner',
+      name: 'pleaseSelectANewControlOwner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Policy(ies) Created`
+  String get policYIesCreated {
+    return Intl.message(
+      'Policy(ies) Created',
+      name: 'policYIesCreated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Policy Bulk Upload`
+  String get policyBulkUpload {
+    return Intl.message(
+      'Policy Bulk Upload',
+      name: 'policyBulkUpload',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Policy Bulk Upload Preview`
+  String get policyBulkUploadPreview {
+    return Intl.message(
+      'Policy Bulk Upload Preview',
+      name: 'policyBulkUploadPreview',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Policy Created`
+  String get policyCreated {
+    return Intl.message(
+      'Policy Created',
+      name: 'policyCreated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Policy Deleted`
+  String get policyDeleted {
+    return Intl.message(
+      'Policy Deleted',
+      name: 'policyDeleted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Policy description must be written in English`
+  String get policyDescriptionMustBeWrittenInEnglish {
+    return Intl.message(
+      'Policy description must be written in English',
+      name: 'policyDescriptionMustBeWrittenInEnglish',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Policy Document (Arabic)`
+  String get policyDocumentAr {
+    return Intl.message(
+      'Policy Document (Arabic)',
+      name: 'policyDocumentAr',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Policy Document (English)`
+  String get policyDocumentEng {
+    return Intl.message(
+      'Policy Document (English)',
+      name: 'policyDocumentEng',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Policy number must be written in English`
+  String get policyNumberMustBeWrittenInEnglish {
+    return Intl.message(
+      'Policy number must be written in English',
+      name: 'policyNumberMustBeWrittenInEnglish',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Policy saved as draft successfully`
+  String get policySavedAsDraftSuccessfully {
+    return Intl.message(
+      'Policy saved as draft successfully',
+      name: 'policySavedAsDraftSuccessfully',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Policy saved, but one or more controls failed to save`
+  String get policySavedButOneOrMoreControlsFailedToSave {
+    return Intl.message(
+      'Policy saved, but one or more controls failed to save',
+      name: 'policySavedButOneOrMoreControlsFailedToSave',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Policy Updated`
+  String get policyUpdated {
+    return Intl.message(
+      'Policy Updated',
+      name: 'policyUpdated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Policy weight cannot be more than 100`
+  String get policyWeightCannotBeMoreThan100 {
+    return Intl.message(
+      'Policy weight cannot be more than 100',
+      name: 'policyWeightCannotBeMoreThan100',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Policy weight must be a positive number`
+  String get policyWeightMustBeAPositiveNumber {
+    return Intl.message(
+      'Policy weight must be a positive number',
+      name: 'policyWeightMustBeAPositiveNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Policy weight must be a valid number`
+  String get policyWeightMustBeAValidNumber {
+    return Intl.message(
+      'Policy weight must be a valid number',
+      name: 'policyWeightMustBeAValidNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Previous Module Owners`
+  String get previousModuleOwners {
+    return Intl.message(
+      'Previous Module Owners',
+      name: 'previousModuleOwners',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Publish Policy`
+  String get publishPolicy {
+    return Intl.message(
+      'Publish Policy',
+      name: 'publishPolicy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reasons of Rejection`
+  String get reasonsOfRejectionTitle {
+    return Intl.message(
+      'Reasons of Rejection',
+      name: 'reasonsOfRejectionTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reassign Champion`
+  String get reassignChampion {
+    return Intl.message(
+      'Reassign Champion',
+      name: 'reassignChampion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reassign Control Champion Request`
+  String get reassignControlChampionRequest {
+    return Intl.message(
+      'Reassign Control Champion Request',
+      name: 'reassignControlChampionRequest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reassign Control Owner Request`
+  String get reassignControlOwnerRequest {
+    return Intl.message(
+      'Reassign Control Owner Request',
+      name: 'reassignControlOwnerRequest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reassign Owner`
+  String get reassignOwner {
+    return Intl.message(
+      'Reassign Owner',
+      name: 'reassignOwner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reject Document`
+  String get rejectDocument {
+    return Intl.message(
+      'Reject Document',
+      name: 'rejectDocument',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reject Evidence`
+  String get rejectEvidence {
+    return Intl.message(
+      'Reject Evidence',
+      name: 'rejectEvidence',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove Control Champion`
+  String get removeControlChampion {
+    return Intl.message(
+      'Remove Control Champion',
+      name: 'removeControlChampion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove Control Owner`
+  String get removeControlOwner {
+    return Intl.message(
+      'Remove Control Owner',
+      name: 'removeControlOwner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request Updated`
+  String get requestUpdated {
+    return Intl.message(
+      'Request Updated',
+      name: 'requestUpdated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request Details`
+  String get requestsDetails {
+    return Intl.message(
+      'Request Details',
+      name: 'requestsDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restored Modules`
+  String get restoredModules {
+    return Intl.message(
+      'Restored Modules',
+      name: 'restoredModules',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save as Draft`
+  String get saveAsDraft {
+    return Intl.message(
+      'Save as Draft',
+      name: 'saveAsDraft',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Saved as Draft`
+  String get savedAsDraft {
+    return Intl.message(
+      'Saved as Draft',
+      name: 'savedAsDraft',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Saving...`
+  String get saving {
+    return Intl.message('Saving...', name: 'saving', desc: '', args: []);
+  }
+
+  /// `Select at least one row`
+  String get selectAtLeastOneRow {
+    return Intl.message(
+      'Select at least one row',
+      name: 'selectAtLeastOneRow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select exactly one row to duplicate`
+  String get selectExactlyOneRowToDuplicate {
+    return Intl.message(
+      'Select exactly one row to duplicate',
+      name: 'selectExactlyOneRowToDuplicate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Some champion/owner assignments couldn't be saved`
+  String get someChampionOwnerAssignmentsCouldnTBeSaved {
+    return Intl.message(
+      'Some champion/owner assignments couldn\'t be saved',
+      name: 'someChampionOwnerAssignmentsCouldnTBeSaved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Start date cannot be after the policy end date`
+  String get startDateCannotBeAfterThePolicyEndDate {
+    return Intl.message(
+      'Start date cannot be after the policy end date',
+      name: 'startDateCannotBeAfterThePolicyEndDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Start date cannot be before the policy start date`
+  String get startDateCannotBeBeforeThePolicyStartDate {
+    return Intl.message(
+      'Start date cannot be before the policy start date',
+      name: 'startDateCannotBeBeforeThePolicyStartDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Submission`
+  String get submission {
+    return Intl.message('Submission', name: 'submission', desc: '', args: []);
+  }
+
+  /// `Submission Note`
+  String get submissionNote {
+    return Intl.message(
+      'Submission Note',
+      name: 'submissionNote',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Submission Notes`
+  String get submissionNotes {
+    return Intl.message(
+      'Submission Notes',
+      name: 'submissionNotes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Submit Evidence`
+  String get submitEvidence {
+    return Intl.message(
+      'Submit Evidence',
+      name: 'submitEvidence',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The request has been updated successfully`
+  String get theRequestHasBeenUpdatedSuccessfully {
+    return Intl.message(
+      'The request has been updated successfully',
+      name: 'theRequestHasBeenUpdatedSuccessfully',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This field is required`
+  String get thisFieldIsRequired {
+    return Intl.message(
+      'This field is required',
+      name: 'thisFieldIsRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This request type is not supported yet`
+  String get thisRequestTypeIsNotSupportedYet {
+    return Intl.message(
+      'This request type is not supported yet',
+      name: 'thisRequestTypeIsNotSupportedYet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total weight should be 100`
+  String get totalWeightShouldBe100 {
+    return Intl.message(
+      'Total weight should be 100',
+      name: 'totalWeightShouldBe100',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unable to read the selected file`
+  String get unableToReadTheSelectedFile {
+    return Intl.message(
+      'Unable to read the selected file',
+      name: 'unableToReadTheSelectedFile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Upload Control Document (Arabic)`
+  String get uploadControlDocumentArabic {
+    return Intl.message(
+      'Upload Control Document (Arabic)',
+      name: 'uploadControlDocumentArabic',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Upload Control Document (English)`
+  String get uploadControlDocumentEnglish {
+    return Intl.message(
+      'Upload Control Document (English)',
+      name: 'uploadControlDocumentEnglish',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Upload Policy Document (Arabic)`
+  String get uploadPolicyDocumentArabic {
+    return Intl.message(
+      'Upload Policy Document (Arabic)',
+      name: 'uploadPolicyDocumentArabic',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Upload Policy Document (English)`
+  String get uploadPolicyDocumentEnglish {
+    return Intl.message(
+      'Upload Policy Document (English)',
+      name: 'uploadPolicyDocumentEnglish',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Write a description`
+  String get writeADescription {
+    return Intl.message(
+      'Write a description',
+      name: 'writeADescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You have successfully edited controls weights`
+  String get youHaveSuccessfullyEditedControlsWeights {
+    return Intl.message(
+      'You have successfully edited controls weights',
+      name: 'youHaveSuccessfullyEditedControlsWeights',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You have successfully edited policies weights`
+  String get youHaveSuccessfullyEditedPoliciesWeights {
+    return Intl.message(
+      'You have successfully edited policies weights',
+      name: 'youHaveSuccessfullyEditedPoliciesWeights',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You successfully added this control champion`
+  String get youSuccessfullyAddedThisControlChampion {
+    return Intl.message(
+      'You successfully added this control champion',
+      name: 'youSuccessfullyAddedThisControlChampion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You successfully added this control owner`
+  String get youSuccessfullyAddedThisControlOwner {
+    return Intl.message(
+      'You successfully added this control owner',
+      name: 'youSuccessfullyAddedThisControlOwner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You successfully approved this evidence`
+  String get youSuccessfullyApprovedThisEvidence {
+    return Intl.message(
+      'You successfully approved this evidence',
+      name: 'youSuccessfullyApprovedThisEvidence',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You successfully created this control`
+  String get youSuccessfullyCreatedThisControl {
+    return Intl.message(
+      'You successfully created this control',
+      name: 'youSuccessfullyCreatedThisControl',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You successfully created this policy`
+  String get youSuccessfullyCreatedThisPolicy {
+    return Intl.message(
+      'You successfully created this policy',
+      name: 'youSuccessfullyCreatedThisPolicy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You successfully deleted this control`
+  String get youSuccessfullyDeletedThisControl {
+    return Intl.message(
+      'You successfully deleted this control',
+      name: 'youSuccessfullyDeletedThisControl',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You successfully deleted this policy`
+  String get youSuccessfullyDeletedThisPolicy {
+    return Intl.message(
+      'You successfully deleted this policy',
+      name: 'youSuccessfullyDeletedThisPolicy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You successfully rejected this evidence`
+  String get youSuccessfullyRejectedThisEvidence {
+    return Intl.message(
+      'You successfully rejected this evidence',
+      name: 'youSuccessfullyRejectedThisEvidence',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You successfully updated this control`
+  String get youSuccessfullyUpdatedThisControl {
+    return Intl.message(
+      'You successfully updated this control',
+      name: 'youSuccessfullyUpdatedThisControl',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You successfully updated this policy`
+  String get youSuccessfullyUpdatedThisPolicy {
+    return Intl.message(
+      'You successfully updated this policy',
+      name: 'youSuccessfullyUpdatedThisPolicy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your evidence was submitted successfully`
+  String get yourEvidenceWasSubmittedSuccessfully {
+    return Intl.message(
+      'Your evidence was submitted successfully',
+      name: 'yourEvidenceWasSubmittedSuccessfully',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your reassign champion request has been submitted`
+  String get yourReassignChampionRequestHasBeenSubmitted {
+    return Intl.message(
+      'Your reassign champion request has been submitted',
+      name: 'yourReassignChampionRequestHasBeenSubmitted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your reassign owner request has been submitted`
+  String get yourReassignOwnerRequestHasBeenSubmitted {
+    return Intl.message(
+      'Your reassign owner request has been submitted',
+      name: 'yourReassignOwnerRequestHasBeenSubmitted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Changed By`
+  String get changedBy {
+    return Intl.message('Changed By', name: 'changedBy', desc: '', args: []);
+  }
+
+  /// `Control Changes`
+  String get controlChanges {
+    return Intl.message(
+      'Control Changes',
+      name: 'controlChanges',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Control Weight Current`
+  String get controlWeightCurrent {
+    return Intl.message(
+      'Control Weight Current',
+      name: 'controlWeightCurrent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Control Weight Previous`
+  String get controlWeightPrevious {
+    return Intl.message(
+      'Control Weight Previous',
+      name: 'controlWeightPrevious',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Date Of Action`
+  String get dateOfAction {
+    return Intl.message(
+      'Date Of Action',
+      name: 'dateOfAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `In Review`
+  String get inReview {
+    return Intl.message('In Review', name: 'inReview', desc: '', args: []);
+  }
+
+  /// `No of Departments`
+  String get noOfDepartments {
+    return Intl.message(
+      'No of Departments',
+      name: 'noOfDepartments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Outstanding`
+  String get outstanding {
+    return Intl.message('Outstanding', name: 'outstanding', desc: '', args: []);
+  }
+
+  /// `Policy Number Ar`
+  String get policyNumberAr {
+    return Intl.message(
+      'Policy Number Ar',
+      name: 'policyNumberAr',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Policy Weight Current`
+  String get policyWeightCurrent {
+    return Intl.message(
+      'Policy Weight Current',
+      name: 'policyWeightCurrent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Policy Weight Previous`
+  String get policyWeightPrevious {
+    return Intl.message(
+      'Policy Weight Previous',
+      name: 'policyWeightPrevious',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Previous Owner`
+  String get previousOwner {
+    return Intl.message(
+      'Previous Owner',
+      name: 'previousOwner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reassign Control Champion`
+  String get reassignControlChampion {
+    return Intl.message(
+      'Reassign Control Champion',
+      name: 'reassignControlChampion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reassign Control Owner`
+  String get reassignControlOwner {
+    return Intl.message(
+      'Reassign Control Owner',
+      name: 'reassignControlOwner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Resubmit Evidence`
+  String get resubmitEvidence {
+    return Intl.message(
+      'Resubmit Evidence',
+      name: 'resubmitEvidence',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Scored`
+  String get scored {
+    return Intl.message('Scored', name: 'scored', desc: '', args: []);
+  }
+
+  /// `Submitted`
+  String get submitted {
+    return Intl.message('Submitted', name: 'submitted', desc: '', args: []);
+  }
+
+  /// `Technician`
+  String get technician {
+    return Intl.message('Technician', name: 'technician', desc: '', args: []);
+  }
+
+  /// `Upload Evidence`
+  String get uploadEvidence {
+    return Intl.message(
+      'Upload Evidence',
+      name: 'uploadEvidence',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to create this control?`
+  String get areYouSureYouWantToCreateThisControl {
+    return Intl.message(
+      'Are you sure you want to create this control?',
+      name: 'areYouSureYouWantToCreateThisControl',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to edit this control?`
+  String get areYouSureYouWantToEditThisControl {
+    return Intl.message(
+      'Are you sure you want to edit this control?',
+      name: 'areYouSureYouWantToEditThisControl',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Editing Control`
+  String get editingControl {
+    return Intl.message(
+      'Editing Control',
+      name: 'editingControl',
+      desc: '',
+      args: [],
+    );
   }
 }
 

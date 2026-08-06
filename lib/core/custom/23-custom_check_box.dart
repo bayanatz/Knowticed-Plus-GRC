@@ -6,8 +6,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:demo_app/core/theme/app_colors.dart';
-import '../theme/app_colors.dart';
+import 'package:grc_module/core/theme/app_colors.dart';
 
 class CustomCheckBox extends StatelessWidget {
   CustomCheckBox(
@@ -21,7 +20,7 @@ class CustomCheckBox extends StatelessWidget {
       width: size ?? 22.sp,
       height: size ?? 22.sp,
       decoration: BoxDecoration(
-        color: isSelected ? AppColors.secondaryPrimary : Colors.transparent,
+        color: isSelected ? AppColors.secondaryPrimary : AppColors.transparent,
         borderRadius: BorderRadius.circular(4.r),
         border: isSelected
             ? null
@@ -30,7 +29,7 @@ class CustomCheckBox extends StatelessWidget {
       child: Center(
         child: Icon(Icons.check_rounded,
             size: (size ?? 22.sp) - 7.sp,
-            color: isSelected ? Colors.white : Colors.transparent),
+            color: isSelected ? AppColors.white : AppColors.transparent),
       ),
     );
   }

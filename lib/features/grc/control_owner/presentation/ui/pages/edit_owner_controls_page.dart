@@ -1,0 +1,271 @@
+import 'package:grc_module/core/custom/5-custom_button.dart';
+import 'package:grc_module/core/theme/app_colors.dart';
+import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:grc_module/core/extension/context_extensions.dart';
+import 'package:grc_module/core/custom/11_custom_confirm_diaolog.dart';
+import 'package:grc_module/features/grc/control/domain/entities/assigning_control.dart';
+import 'package:grc_module/features/grc/control/domain/entities/control_entity.dart';
+import 'package:grc_module/features/grc/control_owner/domain/entities/owner_entity.dart';
+import 'package:grc_module/features/grc/control_owner/presentation/controller/owner_cubit.dart';
+import 'package:grc_module/features/grc/module/domain/entities/grc_module_entity.dart';
+import 'package:grc_module/features/grc/policy/domain/entities/policy_entity.dart';
+import 'package:grc_module/features/grc/shared/helpers/grc_assignment_lookup.dart';
+import 'package:grc_module/features/grc/shared/models/pending_assignment_row.dart';
+import 'package:grc_module/features/grc/shared/widgets/grc_assignment_chip.dart';
+import 'package:grc_module/features/grc/shared/widgets/grc_policy_control_picker_row.dart';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
+import 'package:grc_module/generated/l10n.dart';
+import 'package:grc_module/core/custom/57_custom_dialog_manager.dart';
+
+class EditOwnerControlsPage extends StatefulWidget {
+  final OwnerEntity owner;
+  final GRCModuleEntity module;
+  final List<PolicyEntity> allPolicies;
+  final Map<String, List<ControlEntity>> policyControls;
+
+  const EditOwnerControlsPage({
+    super.key,
+    required this.owner,
+    required this.module,
+    required this.allPolicies,
+    required this.policyControls,
+  });
+
+  @override
+  State<EditOwnerControlsPage> createState() => _EditOwnerControlsPageState();
+}
+
+class _EditOwnerControlsPageState extends State<EditOwnerControlsPage> {
+  late List<AssigningControlEntity> _tempControls;
+
+  // Each row is its own independent Policy + Controls picker. Selections
+  // made here are staging only — they aren't added to _tempControls (and
+  // so don't appear as chips under "Assigned Controls") until Save.
+  final List<PendingAssignmentRow> _pendingRows = [PendingAssignmentRow()];
+
+  @override
+  void initState() {
+    super.initState();
+    _tempControls = List.from(widget.owner.assigningControls);
+  }
+
+  void _removeControl(int index) {
+    setState(() {
+      _tempControls.removeAt(index);
+    });
+  }
+
+  void _addPolicyRow() {
+    setState(() {
+      _pendingRows.add(PendingAssignmentRow());
+    });
+  }
+
+  void _confirmAndSave(BuildContext context) {
+    showConfirmDialog(
+      context: context,
+      title: S.of(context).saveChanges,
+      subtitle: S.of(context).areYouSureYouWantToSaveTheseChanges,
+      cancelLabel: S.of(context).Cancel,
+      confirmLabel: S.of(context).Save,
+      onConfirm: () => _save(context),
+    );
+  }
+
+  void _save(BuildContext context) {
+    setState(() {
+      commitPendingAssignmentRows(
+          pendingRows: _pendingRows, target: _tempControls);
+      _pendingRows
+        ..clear()
+        ..add(PendingAssignmentRow());
+    });
+    // Fire-and-forget: these touch each affected Control document directly
+    // (not the Owner doc this page's own loading/success state tracks),
+    // so they don't need to block the Save button.
+    context.read<OwnerCubit>().recomputeControlStatuses(
+          owner: widget.owner,
+          newControls: _tempControls,
+          moduleId: widget.module.moduleId,
+          policyControls: widget.policyControls,
+        );
+    context.read<OwnerCubit>().updateOwner(
+          ownerEmail: widget.owner.ownerEmail,
+          moduleId: widget.module.moduleId,
+          assigningControls: _tempControls,
+        );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<OwnerCubit, OwnerState>(
+      listener: (context, state) {
+        if (state is OwnerActionSuccess) {
+          showSuccessDialog(
+            context: context,
+            title: S.of(context).controlsUpdated,
+            subtitle: S.of(context).controlsUpdatedSuccessfully,
+          );
+          Navigator.pop(context, state.owner);
+        } else if (state is OwnerFailure) {
+          CustomDialogManager.showMessage(
+            context: context,
+            lottiePath: "assets/lottie_assets/main_lottie_assets/error.json",
+            title: S.of(context).unsuccessful,
+            subtitle: state.message,
+          );
+        }
+      },
+      builder: (context, state) {
+        final isSaving = state is OwnerLoading;
+
+        return Dialog(
+          backgroundColor: AppColors.card,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: 0.6.sh,
+              maxWidth: 800.w,
+            ),
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.all(20.r),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Header
+                    Row(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(10.r),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary,
+                            shape: BoxShape.circle,
+                          ),
+                          child: SvgPicture.asset(
+                            "assets/icons_assets/data_grc_assets/editButton.svg",
+                            height: 24.h,
+                          ),
+                        ),
+                        SizedBox(width: 12.w),
+                        Text(
+                          S.of(context).editControls,
+                          style: StyleText.fontSize20Weight600
+                              .copyWith(color: AppColors.text),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 16.h),
+
+                    // Assigned Controls Section
+                    Text(
+                      S.of(context).assignedControls,
+                      style: StyleText.fontSize16Weight500
+                          .copyWith(color: AppColors.text),
+                    ),
+                    SizedBox(height: 10.h),
+                    _tempControls.isEmpty
+                        ? Text(
+                            S.of(context).noControlsAssigned,
+                            style: StyleText.fontSize14Weight400
+                                .copyWith(color: AppColors.secondaryText),
+                          )
+                        : Wrap(
+                            spacing: 8.w,
+                            runSpacing: 8.h,
+                            children:
+                                List.generate(_tempControls.length, (index) {
+                              final ac = _tempControls[index];
+                              final ctrl =
+                                  findControlInPolicy(widget.policyControls,
+                                      ac.policyId, ac.controlId);
+                              final cName = ctrl != null
+                                  ? (context.isArabic
+                                      ? ctrl.controlsNameAr
+                                      : ctrl.controlsNameEn)
+                                  : ac.controlId;
+                              return GrcAssignmentChip(
+                                label: cName,
+                                onRemove: () => _removeControl(index),
+                              );
+                            }),
+                          ),
+                    SizedBox(height: 16.h),
+
+                    // One Policy + Controls picker row per pending
+                    // assignment. Tapping "+ Add Policy" below appends
+                    // another independent row; nothing here touches
+                    // "Assigned Controls" until Save.
+                    ...List.generate(_pendingRows.length, (i) {
+                      final row = _pendingRows[i];
+                      final availableControlsForPolicy = row.policyId != null
+                          ? (widget.policyControls[row.policyId] ?? [])
+                          : <ControlEntity>[];
+
+                      return Padding(
+                        padding: EdgeInsets.only(bottom: 12.h),
+                        child: GrcPolicyControlPickerRow(
+                          policies: widget.allPolicies,
+                          policyId: row.policyId,
+                          onPolicyChanged: (v) {
+                            setState(() {
+                              row.policyId = v;
+                              row.controlIds = [];
+                            });
+                          },
+                          availableControls: availableControlsForPolicy,
+                          controlsEnabled: row.policyId != null,
+                          controlIds: row.controlIds,
+                          onControlsChanged: (v) =>
+                              setState(() => row.controlIds = v),
+                          controlsLabel: 'Add Controls',
+                          controlsHint: 'Choose Controls',
+                          spacing: 12.w,
+                        ),
+                      );
+                    }),
+                    SizedBox(height: 8.h),
+
+                    // Add Policy Button
+                    customButton(
+                      title: '+ ${S.of(context).addPolicy}',
+                      function: _addPolicyRow,
+                      width: 140.w,
+                      radius: 12,
+                      color: AppColors.blackButton,
+                      textStyle: StyleText.fontSize14Weight500
+                          .copyWith(color: Colors.white),
+                    ),
+                    SizedBox(height: 16.h),
+
+                    // Save Button
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: customButton(
+                        title: isSaving ? S.of(context).saving : S.of(context).Save,
+                        function:
+                            isSaving ? () {} : () => _confirmAndSave(context),
+                        width: 120.w,
+                        radius: 12,
+                        color: AppColors.primary,
+                        textStyle: StyleText.fontSize14Weight500
+                            .copyWith(color: Colors.black),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}

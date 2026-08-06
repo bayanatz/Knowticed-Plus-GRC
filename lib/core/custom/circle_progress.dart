@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:demo_app/core/theme/app_colors.dart';
-
-import 'package:demo_app/core/theme/app_font_size.dart';
+import 'package:grc_module/core/theme/app_colors.dart';
+import 'package:grc_module/core/theme/app_font_size.dart';
 
 // date:April/30/2024
 // by:MohamedFouad
@@ -30,7 +29,7 @@ class CircleProgressMaster extends StatelessWidget {
             : .045.h,
         child: CircularProgressIndicator(
           valueColor: AlwaysStoppedAnimation<Color>(AppColors.lightPrimary),
-          backgroundColor: Colors.white60,
+          backgroundColor: AppColors.white.withOpacity(0.6),
           strokeWidth: 2.0,
         ),
       ),

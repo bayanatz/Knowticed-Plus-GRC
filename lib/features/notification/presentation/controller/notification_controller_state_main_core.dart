@@ -1,4 +1,4 @@
-part of 'notification_controller_cubit_main_core.dart';
+part of './notification_controller_cubit_main_core.dart';
 
 @immutable
 sealed class NotificationControllerState {}

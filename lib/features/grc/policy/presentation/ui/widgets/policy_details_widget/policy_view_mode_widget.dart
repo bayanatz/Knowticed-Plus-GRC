@@ -1,0 +1,586 @@
+/// Module: GRC Policy Management
+/// Description: Read-only "view mode" body of the Policy Details page —
+///              info card, owner section, documents, and the Controls list
+///              with its status filter bar, search box, and add/bulk-upload
+///              menu.
+/// Author: Mohamed Magdy Abdelkhalek
+/// Date: 2026-07-18
+/// Dependencies: Flutter SDK, AppColors, AppTheme, CardStyles, ControlEntity,
+///               GrcOwnerSection, ControlCardWidget, FilterBarItem
+library;
+
+import 'package:grc_module/core/custom/22-custom_uploaded_document_card.dart';
+import 'package:grc_module/core/custom/35-custom_search_widget_custom.dart';
+import 'package:grc_module/core/custom/5-custom_button.dart';
+import 'package:grc_module/core/custom/6_custom_button_with_svg.dart';
+import 'package:grc_module/core/custom/16-custom_card_styles.dart';
+import 'package:grc_module/core/theme/app_colors.dart';
+import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:grc_module/features/grc/control/domain/entities/control_entity.dart';
+import 'package:grc_module/features/grc/control/domain/entities/control_status.dart';
+import 'package:grc_module/features/grc/control/presentation/ui/pages/add_edit_control_page.dart';
+import 'package:grc_module/features/grc/control/presentation/ui/pages/control_details_page.dart';
+import 'package:grc_module/features/grc/control/presentation/ui/pages/control_weight_issue/control_weight_issue_page.dart';
+import 'package:grc_module/features/grc/control_champion/presentation/controller/champion_cubit.dart';
+import 'package:grc_module/features/grc/control_owner/presentation/controller/owner_cubit.dart';
+import 'package:grc_module/features/grc/module/domain/entities/grc_module_entity.dart';
+import 'package:grc_module/features/grc/module/presentation/ui/widgets/grc_details_widget/grc_owner_section.dart';
+import 'package:grc_module/features/grc/policy/domain/entities/policy_entity.dart';
+import 'package:grc_module/features/grc/control/presentation/controller/control_cubit.dart';
+import 'package:grc_module/features/grc/policy/presentation/ui/widgets/grc_policy_widget/control_card_widget.dart';
+import 'package:grc_module/features/grc/policy/domain/entities/policy_document_info.dart';
+import 'package:grc_module/features/grc/policy/presentation/ui/widgets/grc_policy_widget/policy_document_preview_widget.dart';
+import 'package:grc_module/features/grc/policy/presentation/ui/widgets/policy_details_widget/grc_owner_badge.dart';
+import 'package:grc_module/core/custom/filter_bar_item.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get_it/get_it.dart';
+import 'package:intl/intl.dart' hide TextDirection;
+import 'package:grc_module/generated/l10n.dart';
+
+/// class name: [PolicyViewModeWidget]
+///
+/// purpose: renders the "Policy Details" read-only view — info rows, owner
+///          section, documents, and the filterable/searchable Controls
+///          list. Owns the controls-toolbar UI state (status filter, search
+///          text, add/bulk-upload dropdown) since none of it is needed
+///          outside view mode.
+///
+/// authors: Mohamed Magdy Abdelkhalek
+///
+/// created at: 18/7/2026
+class PolicyViewModeWidget extends StatefulWidget {
+  final PolicyEntity policy;
+  final GRCModuleEntity module;
+  final List<ControlEntity> controls;
+  final bool isArabic;
+  final DateFormat dateFormat;
+  final ValueChanged<ControlEntity?> onControlTap;
+  final VoidCallback onBulkUpload;
+  final VoidCallback onControlsChanged;
+
+  const PolicyViewModeWidget({
+    super.key,
+    required this.policy,
+    required this.module,
+    required this.controls,
+    required this.isArabic,
+    required this.dateFormat,
+    required this.onControlTap,
+    required this.onBulkUpload,
+    required this.onControlsChanged,
+  });
+
+  @override
+  State<PolicyViewModeWidget> createState() => _PolicyViewModeWidgetState();
+}
+
+class _PolicyViewModeWidgetState extends State<PolicyViewModeWidget> {
+  String _selectedControlStatusFilter = 'all';
+  final _controlSearchController = TextEditingController();
+  bool _showControlMenu = false;
+
+  @override
+  void dispose() {
+    _controlSearchController.dispose();
+    super.dispose();
+  }
+
+  Widget _infoRow(String label, String value) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 8.h),
+      child: Text.rich(
+        TextSpan(
+          text: '$label ',
+          style: CardStyles.label(14),
+          children: [TextSpan(text: value, style: CardStyles.value(14))],
+        ),
+      ),
+    );
+  }
+
+  ControlStatus? _statusForControlKey(String key) {
+    for (final status in ControlStatus.values) {
+      if (status.value == key) return status;
+    }
+    return null;
+  }
+
+  /// Chip color per [ControlStatus], keyed by the enum itself rather than
+  /// its display string so a renamed display label can't silently drop the
+  /// color mapping.
+  Color _colorForControlStatus(ControlStatus status) {
+    switch (status) {
+      case ControlStatus.active:
+        return AppColors.green;
+      case ControlStatus.inactive:
+        return AppColors.orange;
+      case ControlStatus.scheduled:
+        return AppColors.primary;
+      case ControlStatus.expired:
+        return AppColors.red;
+      case ControlStatus.unassigned:
+        return AppColors.blue;
+      case ControlStatus.draft:
+        return AppColors.colorGrey;
+    }
+  }
+
+  List<ControlEntity> _applyControlStatusFilter(List<ControlEntity> controls) {
+    final status = _statusForControlKey(_selectedControlStatusFilter);
+    if (status == null) return controls;
+    return controls.where((c) => c.status == status).toList();
+  }
+
+  /// Applies both the status chip filter and the search box text on top of
+  /// the raw controls list. Kept as a single entry point so the rest of the
+  /// UI never has to call two filter functions in the right order.
+  ///
+  /// NOTE: this assumes [ControlEntity] exposes `controlNameEn` /
+  /// `controlNameAr`, mirroring the `policyNameEn` / `policyNameAr` naming
+  /// convention used everywhere else in this codebase. If the real field
+  /// names differ, update the two references below.
+  List<ControlEntity> _visibleControls() {
+    final byStatus = _applyControlStatusFilter(widget.controls);
+    final query = _controlSearchController.text.trim().toLowerCase();
+    if (query.isEmpty) return byStatus;
+    return byStatus.where((c) {
+      final nameEn = c.controlsNameEn.toLowerCase();
+      final nameAr = c.controlsNameAr.toLowerCase();
+      return nameEn.contains(query) || nameAr.contains(query);
+    }).toList();
+  }
+
+  Map<String, int> _countControlsByStatus(List<ControlEntity> controls) {
+    return {
+      'all': controls.length,
+      for (final status in ControlStatus.values)
+        status.value: controls.where((c) => c.status == status).length,
+    };
+  }
+
+  List<MapEntry<String, Map<String, dynamic>>> _controlStatusEntries(
+      List<ControlEntity> controls) {
+    final counts = _countControlsByStatus(controls);
+    return [
+      MapEntry('all', {'num': counts['all'] ?? 0, 'color': AppColors.text}),
+      for (final status in ControlStatus.values)
+        MapEntry(status.value, {
+          'num': counts[status.value] ?? 0,
+          'color': _colorForControlStatus(status),
+        }),
+    ];
+  }
+
+  /// Policy Number on the left, Last Edit date on the right — matches the
+  /// top row of the "Policy Details" card in the design.
+  Widget _buildNumberAndLastEditRow() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: _infoRow(
+            '${S.of(context).policyNumber}:',
+            widget.isArabic
+                ? widget.policy.policyNumberAr
+                : widget.policy.policyNumberEn,
+          ),
+        ),
+        _infoRow(
+          '${S.of(context).lastEdit}:',
+          widget.dateFormat.format(widget.policy.lastModifiedDate),
+        ),
+      ],
+    );
+  }
+
+  /// Weight / Start Date / End Date shown together on one row.
+  Widget _buildWeightAndDatesRow() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: _infoRow(
+            '${S.of(context).policyWeight}:',
+            widget.policy.policyWeight.toStringAsFixed(0),
+          ),
+        ),
+        Expanded(
+          child: _infoRow(
+            '${S.of(context).startDate}:',
+            widget.dateFormat.format(widget.policy.startDate),
+          ),
+        ),
+        Expanded(
+          child: _infoRow(
+            '${S.of(context).endDate}:',
+            // Falls back to "-" if the policy has no end date, matching
+            // the design mock.
+            widget.dateFormat.format(widget.policy.endDate),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// English/Arabic policy documents rendered as two side-by-side cards.
+  Widget _buildDocumentsRow() {
+    final hasEn = widget.policy.policyDocumentEn != null;
+    final hasAr = widget.policy.policyDocumentAr != null;
+    if (!hasEn && !hasAr) return const SizedBox.shrink();
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (hasEn)
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppColors.field,
+                borderRadius: BorderRadius.circular(8.r),
+                border: Border.all(color: AppColors.border),
+              ),
+              child: ProductWarrantyCard(
+                title: S.of(context).policyDocumentEng,
+                fileName: widget.policy.policyDocumentEn!.split('/').last,
+                date: widget.dateFormat.format(widget.policy.lastModifiedDate),
+              ),
+            ),
+          ),
+        if (hasEn && hasAr) SizedBox(width: 12.w),
+        if (hasAr)
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppColors.field,
+                borderRadius: BorderRadius.circular(8.r),
+                border: Border.all(color: AppColors.border),
+              ),
+              child: ProductWarrantyCard(
+                title: S.of(context).policyDocumentAr,
+                fileName: widget.policy.policyDocumentAr!.split('/').last,
+                date: widget.dateFormat.format(widget.policy.lastModifiedDate),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  /// Search box + the "Control" button. The button toggles a small dropdown
+  /// with "Add Control" and "Bulk Upload" actions, per the design.
+  Widget _buildControlsToolbar() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: AppSearchTextField(
+            onChanged: (v) {
+              setState(() {
+                _controlSearchController.text = v;
+              });
+            },
+            hintText: S.of(context).search,
+            controller: _controlSearchController,
+          ),
+        ),
+        SizedBox(width: 12.w),
+        _buildControlAddButton(),
+      ],
+    );
+  }
+
+  Widget _buildControlAddButton() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        customButtonWithSvg(
+          colorBorder: AppColors.primary,
+          space: 10.w,
+          radius: 8.r,
+          widthImage: 16.w,
+          heightImage: 16.h,
+          function: () => setState(() => _showControlMenu = !_showControlMenu),
+          title: S.of(context).control,
+          textStyle: StyleText.fontSize14Weight500
+              .copyWith(color: AppColors.textButton),
+          image: 'assets/icons_assets/database_builder_assets/plus_head.svg',
+          color: AppColors.primary,
+          svgColor: AppColors.textButton,
+        ),
+        if (_showControlMenu)
+          Container(
+            margin: EdgeInsets.only(top: 4.h),
+            width: 160.w,
+            decoration: BoxDecoration(
+              color: AppColors.field,
+              borderRadius: BorderRadius.circular(8.r),
+              border: Border.all(color: AppColors.border),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(.08),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _controlMenuItem(
+                  S.of(context).addControl,
+                  () {
+                    setState(() => _showControlMenu = false);
+                    widget.onControlTap(null);
+                  },
+                ),
+                Divider(height: 1, color: AppColors.border),
+                _controlMenuItem(
+                  S.of(context).bulkUpload,
+                  () {
+                    setState(() => _showControlMenu = false);
+                    widget.onBulkUpload();
+                  },
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _controlMenuItem(String label, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+        child: Text(
+          label,
+          style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWeightIssueBanner(List<ControlEntity> controls) {
+    if (!controls.hasControlWeightIssue) return const SizedBox.shrink();
+    return customButton(
+      title: S.of(context).controlWeightIssue,
+      function: () async {
+        await Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (_, __, ___) => ControlWeightIssuePage(
+              module: widget.module,
+              policy: widget.policy,
+            ),
+            transitionsBuilder: (_, animation, __, child) =>
+                FadeTransition(opacity: animation, child: child),
+            transitionDuration: const Duration(milliseconds: 300),
+          ),
+        );
+        widget.onControlsChanged();
+      },
+      height: 38.h,
+      color: AppColors.primary,
+      textStyle:
+          StyleText.fontSize16Weight500.copyWith(color: AppColors.textButton),
+    );
+  }
+
+  Future<void> _openControlDetails(ControlEntity control) async {
+    if (control.status == ControlStatus.draft) {
+      // Flow-start entry point (editing a draft Control straight from the
+      // list, bypassing ControlDetailsPage) — no ancestor page already
+      // holds these cubits, so a fresh set is created here, same as the
+      // "Add Control" entry point in PolicyDetailsPage.
+      await Navigator.push<bool>(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) => MultiBlocProvider(
+            providers: [
+              BlocProvider<ControlCubit>(
+                create: (_) => GetIt.instance<ControlCubit>(),
+              ),
+              BlocProvider<ChampionCubit>(
+                create: (_) => GetIt.instance<ChampionCubit>()
+                  ..getAllChampions(moduleId: widget.module.moduleId),
+              ),
+              BlocProvider<OwnerCubit>(
+                create: (_) => GetIt.instance<OwnerCubit>()
+                  ..getAllOwners(moduleId: widget.module.moduleId),
+              ),
+            ],
+            child: AddEditControlPage(
+              policy: widget.policy,
+              moduleId: widget.module.moduleId,
+              policyId: widget.policy.id,
+              existingControl: control,
+              siblingControls: widget.controls,
+              policyStartDate: widget.policy.startDate,
+              policyEndDate: widget.policy.endDate,
+              policyHasArabic: widget.policy.policyNameAr.trim().isNotEmpty ||
+                  widget.policy.policyNumberAr.trim().isNotEmpty ||
+                  widget.policy.policyDescriptionAr.trim().isNotEmpty,
+            ),
+          ),
+          transitionsBuilder: (_, animation, __, child) =>
+              FadeTransition(opacity: animation, child: child),
+          transitionDuration: const Duration(milliseconds: 300),
+        ),
+      );
+    } else {
+      await Navigator.push<bool>(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) => ControlDetailsPage(
+            module: widget.module,
+            policy: widget.policy,
+            control: control,
+            siblingControls: widget.controls,
+          ),
+          transitionsBuilder: (_, animation, __, child) =>
+              FadeTransition(opacity: animation, child: child),
+          transitionDuration: const Duration(milliseconds: 300),
+        ),
+      );
+    }
+    widget.onControlsChanged();
+  }
+
+  /// Renders the visible controls as a single column on phones, and as a
+  /// 2-column grid on tablets/desktop — matching the design mock.
+  Widget _buildControlsList(List<ControlEntity> controls) {
+    if (controls.isEmpty) {
+      return Padding(
+        padding: EdgeInsets.symmetric(vertical: 16.h),
+        child: Center(
+          child: Text(
+            S.of(context).noControlsFound,
+            style: StyleText.fontSize14Weight500
+                .copyWith(color: AppColors.secondaryText),
+          ),
+        ),
+      );
+    }
+
+    final isWide = MediaQuery.of(context).size.shortestSide >= 600;
+    if (!isWide) {
+      return ListView.separated(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: controls.length,
+        separatorBuilder: (_, __) => SizedBox(height: 10.h),
+        itemBuilder: (_, index) => ControlCardWidget(
+          control: controls[index],
+          onTap: () => _openControlDetails(controls[index]),
+        ),
+      );
+    }
+
+    return Column(
+      children: [
+        for (var i = 0; i < controls.length; i += 2)
+          Padding(
+            padding: EdgeInsets.only(bottom: 10.h),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: ControlCardWidget(
+                    control: controls[i],
+                    onTap: () => _openControlDetails(controls[i]),
+                  ),
+                ),
+                SizedBox(width: 10.w),
+                Expanded(
+                  child: i + 1 < controls.length
+                      ? ControlCardWidget(
+                          control: controls[i + 1],
+                          onTap: () => _openControlDetails(controls[i + 1]),
+                        )
+                      : const SizedBox.shrink(),
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final visibleControls = _visibleControls();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(15.sp),
+          decoration: BoxDecoration(
+            color: AppColors.field,
+            borderRadius: BorderRadius.circular(8.sp),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildNumberAndLastEditRow(),
+              Text(
+                S.of(context).policyDescription,
+                style: StyleText.fontSize14Weight500
+                    .copyWith(color: AppColors.secondaryText),
+              ),
+              Text(
+                widget.isArabic
+                    ? widget.policy.policyDescriptionAr
+                    : widget.policy.policyDescriptionEn,
+                style: StyleText.fontSize12Weight500
+                    .copyWith(color: AppColors.secondaryText),
+              ),
+              SizedBox(height: 10.h),
+              GrcOwnerBadge(
+                ownerEmails: widget.module.moduleOwners,
+                onMessageTap: (owner) {},
+              ),
+              SizedBox(height: 10.h),
+              _buildWeightAndDatesRow(),
+              if (widget.policy.policyDocumentEn != null ||
+                  widget.policy.policyDocumentAr != null)
+                SizedBox(height: 10.h),
+              _buildDocumentsRow(),
+            ],
+          ),
+        ),
+        SizedBox(height: 12.h),
+        ScrollConfiguration(
+          behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              spacing: 24.sp,
+              children: [
+                for (final entry in _controlStatusEntries(widget.controls))
+                  FilterBarItem(
+                    title: entry.key,
+                    numberOfItems: entry.value['num'],
+                    color: entry.value['color'],
+                    isSelected: entry.key == _selectedControlStatusFilter,
+                    onTap: () => setState(
+                        () => _selectedControlStatusFilter = entry.key),
+                  ),
+              ],
+            ),
+          ),
+        ),
+        SizedBox(height: 12.h),
+        _buildControlsToolbar(),
+        SizedBox(height: 12.h),
+        _buildWeightIssueBanner(widget.controls),
+        SizedBox(height: 12.h),
+        _buildControlsList(visibleControls),
+      ],
+    );
+  }
+}

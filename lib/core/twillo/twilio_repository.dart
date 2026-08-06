@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-import 'twilio_constants.dart';
+import './twilio_constants.dart';
 
 class TwilioRepository {
   Future<void> sendOTP(String to, String channel, String locale) async {
