@@ -8,7 +8,6 @@ import 'package:grc_module/features/grc/module/presentation/ui/pages/grc_page.da
 // REMOVED_MODULE: import 'package:grc_module/features/external/database_builder/database_builder_responsive_page.dart';
 import 'package:grc_module/features/home/main_controller/helper/home_layout_helper.dart';
 import 'package:grc_module/features/messaging/m4_messaging_home/presentation/ui/pages/home_layout_helper.dart';
-import 'package:grc_module/features/org_chart_module/presentation/ui/pages/employees_responsive_page.dart';
 // REMOVED_MODULE: import 'package:grc_module/features/services_mangment_module/responsive_services.dart';
 import 'package:grc_module/features/roles/r1_role_management/domain/enums/services/services_permissions_sections.dart';
 
@@ -30,7 +29,6 @@ import 'package:grc_module/features/roles/r1_role_management/domain/enums/servic
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/pages/home_responsive_page.dart';
 import 'package:grc_module/features/home/h2_nav_bar/presentation/ui/pages/more_page.dart';
 import 'package:grc_module/features/notification/presentation/ui/pages/notification_control.dart';
-import 'package:grc_module/features/services_management_module/s1_home_page_services/presentation/ui/pages/responsive_services.dart';
 import 'package:grc_module/features/settings/main_controller/presentation/ui/pages/settings_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grc_module/features/roles/r1_role_management/presentation/ui/pages/role_screen.dart';
@@ -232,7 +230,7 @@ enum Modules {
       case Modules.tasks:
         return TasksResponsivePage();
       case Modules.employees:
-        return EmployeesResponsivePage();
+        return Container();
       case Modules.tracking:
         return TrackerPageResponsivePageRefactor();
       case Modules.inventory:
@@ -260,7 +258,7 @@ enum Modules {
         if (servicesKey == null) {
           servicesKey = GlobalKey();
         }
-        return ServicesResponsivePage();
+        return Container();
 
       case Modules.todo:
         return Container();

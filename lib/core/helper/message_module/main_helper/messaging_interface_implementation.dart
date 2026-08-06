@@ -32,7 +32,6 @@ import 'package:grc_module/core/enums/message_module/permissions/messages_permis
 import 'package:grc_module/core/enums/message_module/permissions/messages_permissions_sections.dart';
 import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
 import 'package:grc_module/core/helper/role/modules_enum.dart';
-import 'package:grc_module/features/org_chart_module/presentation/controller/employee_controller.dart';
 import 'package:grc_module/features/roles/r4_active_directory/data/models/department_model.dart';
 import 'package:grc_module/features/roles/r4_active_directory/data/models/emplyees_model/new_employee_model.dart';
 
@@ -229,8 +228,8 @@ class MessagingInterfaceImplementation {
       return employee.photo!.last!;
     } catch (_) {
       try {
-        return Get.find<OrgChartEmployeeController>()
-            .getEmployeePhoto(employee.email!.last!);
+        // return Get.find<OrgChartEmployeeController>()
+        //     .getEmployeePhoto(employee.email!.last!);
       } catch (_) {
         return null;
       }
