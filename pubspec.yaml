@@ -52,6 +52,8 @@ dependencies:
   local_auth: ^3.0.2
   lottie: ^3.2.0
   multi_dropdown: ^3.2.2
+  # Stays on 9.x until file_picker moves to 12+: package_info_plus 10 needs
+  # win32 6, file_picker 10 needs win32 5. Upgrade both together.
   package_info_plus: ^9.0.1
   page_transition: ^2.2.1
   path_provider: ^2.1.5
@@ -63,10 +65,10 @@ dependencies:
   timeago: ^3.7.0
   url_launcher: ^6.3.1
   vibration: ^3.1.3
-  # UPGRADED 23/9/2026 from ^3.0.1: pulls connectivity_plus 7 (Swift Package
-  # Manager ready) instead of 5.x + network_info_plus 4.x. connectivityBuilder now
-  # receives List<ConnectivityResult>.
-  flutter_offline: ^6.0.0
+  # REPLACED 6/10/2026: flutter_offline 6.0.0 (latest) locks network_info_plus
+  # 7.x, which applies the Kotlin Gradle Plugin. OfflineBuilder now lives in
+  # core/helper/main_helper/offline_builder.dart on connectivity_plus directly.
+  connectivity_plus: ^7.3.1
   cached_network_image: ^4.0.1
   googleapis_auth: ^2.3.4
   animated_toggle_switch: ^0.8.4
@@ -89,6 +91,8 @@ dependencies:
   # NOTE: a Linux build of audioplayers needs the gstreamer dev packages.
   audioplayers: ^6.8.1
   dartz: ^0.10.1
+  # Stays on 12.x until file_picker moves to 12+ (share_plus 13 needs win32 6).
+  # ShareHelper already uses SharePlus.instance.share, so 13 needs no code change.
   share_plus: ^12.0.2
   google_fonts: ^8.2.1
   avatar_stack: ^3.0.0
@@ -126,7 +130,6 @@ dependencies:
   flutter_file_dialog: ^3.0.2
   open_filex: ^4.7.0
   photo_view: ^0.15.0
-  syncfusion_flutter_pdfviewer: ^33.2.13
   riff_switch: ^0.0.4
   flutter_advanced_calendar: ^1.4.3
   loader_overlay: ^5.0.0
@@ -134,7 +137,6 @@ dependencies:
   http: ^1.6.0
   encrypt: ^5.0.3
   dio: ^5.9.2
-  syncfusion_flutter_datepicker: ^33.2.15
   flutter_spinkit: ^5.2.2
   cupertino_icons: ^1.0.8
   excel2003: ^1.0.0

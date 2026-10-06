@@ -42,9 +42,7 @@ abstract class ShareHelper {
     final XFile xfile =
         XFile.fromData(pngBytes, mimeType: mime, name: '${Random()}.png');
 
-    await Share.shareXFiles(
-      [xfile],
-    );
+    await SharePlus.instance.share(ShareParams(files: [xfile]));
   }
 
   static shareFile(File file, {String? text}) async {
@@ -52,17 +50,12 @@ abstract class ShareHelper {
       file.path,
     );
 
-    await Share.shareXFiles(
-      [xfile],
-      text: text,
-    );
+    await SharePlus.instance.share(ShareParams(files: [xfile], text: text));
   }
 
   static shareText(
     String text,
   ) async {
-    await Share.share(
-      text,
-    );
+    await SharePlus.instance.share(ShareParams(text: text));
   }
 }

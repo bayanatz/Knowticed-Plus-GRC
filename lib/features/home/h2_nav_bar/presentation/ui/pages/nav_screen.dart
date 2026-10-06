@@ -17,7 +17,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_offline/flutter_offline.dart';
+import 'package:grc_module/core/helper/main_helper/offline_builder.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:grc_module/core/theme/app_colors.dart';

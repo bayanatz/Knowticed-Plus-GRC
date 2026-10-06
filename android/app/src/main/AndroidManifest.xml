@@ -1,4 +1,5 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <!-- ADDED 23/9/2026. Release permissions. INTERNET was only in the debug
          manifest, so a Play Store build could not reach Firebase at all. -->
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -25,6 +26,15 @@
          Android 10+ uses scoped storage and needs no permission. -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29"/>
+    <!-- ADDED 6/10/2026 — Play policy "Photo and Video Permissions". open_filex
+         declares READ_MEDIA_IMAGES / VIDEO / AUDIO in its own manifest and they
+         were merged into the app. Photos and files are picked with the system
+         pickers (image_picker / file_picker), which need no permission, so the
+         broad media permissions are stripped from the merged manifest. -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" tools:node="remove"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" tools:node="remove"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" tools:node="remove"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" tools:node="remove"/>
 
     <application
         android:label="Knowticed+"

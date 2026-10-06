@@ -15,7 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' hide Transition;
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:flutter_offline/flutter_offline.dart';
+import 'package:grc_module/core/helper/main_helper/offline_builder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
@@ -341,7 +341,7 @@ class MyApp extends StatelessWidget {
                 // banner on top.
                 home: OfflineBuilder(
                   connectivityBuilder: (ctx, connectivity, child) {
-                    // flutter_offline 6 reports a LIST of active interfaces.
+                    // connectivity_plus reports a LIST of active interfaces.
                     final bool connected =
                         !connectivity.contains(ConnectivityResult.none);
                     if (connected) return child;
