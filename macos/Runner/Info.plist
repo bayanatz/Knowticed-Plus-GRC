@@ -22,7 +22,7 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<!-- ADDED 23/9/2026. Mac App Store requirements. -->
 	<key>CFBundleDisplayName</key>
-	<string>Knowticed Plus</string>
+	<string>Knowticed GRC</string>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.business</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
@@ -40,7 +40,7 @@
 	     alongside com.apple.security.device.audio-input in the entitlements —
 	     without this key the app is terminated when it touches the mic. -->
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Knowticed Plus needs the microphone so you can record voice messages in chat.</string>
+	<string>Knowticed GRC needs the microphone so you can record voice messages in chat.</string>
 	<!-- ADDED 9/9/2026. Text of the macOS location prompt, shown the first
 	     time an activity log entry records where it happened.
 
@@ -56,17 +56,17 @@
 	     looks for on newer macOS versions. Declaring one and not the other is
 	     what makes this fail on some machines and not others. -->
 	<key>NSLocationUsageDescription</key>
-	<string>Knowticed Plus records the location of activity log entries, so your organisation can see where an action was performed.</string>
+	<string>Knowticed GRC records the location of activity log entries, so your organisation can see where an action was performed.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Knowticed Plus records the location of activity log entries, so your organisation can see where an action was performed.</string>
+	<string>Knowticed GRC records the location of activity log entries, so your organisation can see where an action was performed.</string>
 	<!-- ADDED 23/9/2026. Remaining prompt texts, for parity with iOS. -->
 	<key>NSCameraUsageDescription</key>
-	<string>Knowticed Plus uses the camera so you can take photos and attach them to messages, comments and forms.</string>
+	<string>Knowticed GRC uses the camera so you can take photos and attach them to messages, comments and forms.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Knowticed Plus needs access to your photos so you can attach images and videos to messages, comments and forms.</string>
+	<string>Knowticed GRC needs access to your photos so you can attach images and videos to messages, comments and forms.</string>
 	<key>NSContactsUsageDescription</key>
-	<string>Knowticed Plus accesses your contacts so you can share a contact in chat.</string>
+	<string>Knowticed GRC accesses your contacts so you can share a contact in chat.</string>
 	<key>NSFaceIDUsageDescription</key>
-	<string>Knowticed Plus uses Touch ID so you can sign in quickly and securely.</string>
+	<string>Knowticed GRC uses Touch ID so you can sign in quickly and securely.</string>
 </dict>
 </plist>
