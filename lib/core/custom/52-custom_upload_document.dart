@@ -21,6 +21,8 @@ import 'package:grc_module/core/custom/32-custom_svg.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/core/custom/44-custom_validated_textfield.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
+import '../theme/haptic_controller.dart';
 
 ///
 /// Usage:
@@ -43,7 +45,7 @@ Future<void> showUploadDialog({
   List<String>? allowedExtensions,
   void Function(PlatformFile file, String titleName)? onSubmit,
 }) {
-  return showDialog(
+  return showAppDialog(
     context: context,
     barrierColor: AppColors.totalBlack.withOpacity(0.4),
     builder: (_) => _UploadDialog(
@@ -471,14 +473,14 @@ class _UploadDialogState extends State<_UploadDialog> {
         Expanded(
           child: _secondaryBtn(
             label: widget.discardLabel,
-            onTap: () => Navigator.of(context).pop(),
+            onTap: withHaptic(() => Navigator.of(context).pop(), HapticLevel.medium)!, // discard
           ),
         ),
         SizedBox(width: 12.w),
         Expanded(
           child: _primaryBtn(
             label: widget.browseLabel,
-            onTap: _pickFile,
+            onTap: withHaptic(_pickFile, HapticLevel.medium)!,
           ),
         ),
       ],
@@ -541,7 +543,7 @@ class _UploadDialogState extends State<_UploadDialog> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               GestureDetector(
-                onTap: _removeFile,
+                onTap: withHaptic(_removeFile, HapticLevel.high),
                 child: Container(
                   width: 18.r,
                   height: 18.r,
@@ -570,7 +572,7 @@ class _UploadDialogState extends State<_UploadDialog> {
   // ─────────────────────────────────────────────
   Widget _buildUploadButton() {
     return GestureDetector(
-      onTap: _pickFile,
+      onTap: withHaptic(_pickFile, HapticLevel.low),
       child: Container(
         width: double.infinity,
         height: 46.h,
@@ -603,14 +605,14 @@ class _UploadDialogState extends State<_UploadDialog> {
         Expanded(
           child: _secondaryBtn(
             label: widget.discardLabel,
-            onTap: () => Navigator.of(context).pop(),
+            onTap: withHaptic(() => Navigator.of(context).pop(), HapticLevel.medium)!, // discard
           ),
         ),
         SizedBox(width: 12.w),
         Expanded(
           child: _primaryBtn(
             label: widget.submitLabel,
-            onTap: _handleSubmit,
+            onTap: withHaptic(_handleSubmit, HapticLevel.medium)!,
           ),
         ),
       ],

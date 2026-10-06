@@ -35,6 +35,8 @@ import 'package:grc_module/core/custom/5-custom_button.dart';
 // widget ended up with a different hint colour from `CustomDropdown`.
 import 'package:grc_module/core/custom/1-custom_dropdown.dart';
 import 'package:grc_module/generated/l10n.dart';
+import '../theme/app_animations.dart';
+import '../theme/haptic_controller.dart';
 
 /// ── Picker dialog geometry ──────────────────────────────────────────────────
 ///
@@ -778,7 +780,7 @@ class _CustomDropdownCalendarState extends State<CustomDropdownCalendar> {
         // `_sized` applies [CustomDropdownCalendar.height] to the trigger and
         // nothing else — see that field.
         _sized(GestureDetector(
-          onTap: _openPicker,
+          onTap: withHaptic(_openPicker, HapticLevel.low),
           child: InputDecorator(
             isFocused: false,
             textAlignVertical:

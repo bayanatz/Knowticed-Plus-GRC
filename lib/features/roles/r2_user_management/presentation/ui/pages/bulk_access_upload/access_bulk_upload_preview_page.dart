@@ -40,6 +40,7 @@ import 'package:grc_module/features/roles/r2_user_management/presentation/ui/pag
 import 'package:grc_module/features/roles/r2_user_management/presentation/ui/widgets/user_access_status_label.dart';
 import 'package:grc_module/features/settings/se1_profile/data/utils/localized_digits.dart';
 import 'package:grc_module/generated/l10n.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 /// Unscaled cell height, shared by every cell so the row reads as one line.
 const double _kCellHeight = 36;
@@ -170,7 +171,7 @@ class _AccessBulkUploadPreviewPageState
     );
 
     if (!mounted || failures.isEmpty) return;
-    await showDialog<void>(
+    await showAppDialog<void>(
       context: context,
       builder: (BuildContext dialogContext) => AlertDialog(
         backgroundColor: AppColors.card,

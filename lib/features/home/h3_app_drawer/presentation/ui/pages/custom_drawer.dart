@@ -55,6 +55,7 @@ import 'package:grc_module/features/home/h3_app_drawer/presentation/controller/a
 import 'package:grc_module/features/home/h3_app_drawer/presentation/ui/widgets/drawer_logo_container.dart';
 import 'package:grc_module/features/home/h3_app_drawer/presentation/ui/widgets/drawer_menu_item.dart';
 import 'package:grc_module/features/settings/se8_watermark/presentation/ui/widgets/watermark_layer.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 class CustomDrawer extends StatefulWidget {
   CustomDrawer({
@@ -383,9 +384,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               controller.selectedIndex != 20 &&
                               controller.selectedIndex != 21)
                             Expanded(
-                              child: IndexedStack(
-                                index: controller.selectedIndex,
-                                children: screens,
+                              // Page components slide in when the module
+                              // changes (state of each module is kept).
+                              child: SlideSwitcher(
+                                triggerValue: controller.selectedIndex,
+                                child: IndexedStack(
+                                  index: controller.selectedIndex,
+                                  children: screens,
+                                ),
                               ),
                             ),
                         ],

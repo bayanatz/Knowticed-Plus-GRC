@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 
 import 'package:grc_module/core/theme/haptic_controller.dart';
 import 'package:grc_module/core/custom/41-custom_button_sizing.dart';
+import '../theme/app_animations.dart';
 
 Widget customButtonWithIcon({
   required String title,
@@ -46,9 +47,14 @@ Widget customButtonWithIcon({
         ],
       );
 
-      return GestureDetector(
+      return appPressFeedback(
+        color: color,
+        child: GestureDetector(
         onTap: () {
-          HapticController.medium(); // action button
+          HapticController.forLabel(title,
+              fallback: isYellowButton(color)
+                  ? HapticLevel.medium
+                  : HapticLevel.low);
           function();
         },
         child: Container(
@@ -67,7 +73,7 @@ Widget customButtonWithIcon({
                 )
               : row,
         ),
-      );
+      ));
     },
   );
 }

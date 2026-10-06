@@ -23,6 +23,7 @@ import 'package:grc_module/core/theme/app_colors.dart';
 // REMOVED_MODULE: import 'package:grc_module/features/external/services_mangment_module/core/new_theme.dart';
 
 import 'package:grc_module/generated/l10n.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 class SettingsHeader extends StatefulWidget {
   final String imagePath;
   final String text;
@@ -237,7 +238,7 @@ void _showSortMenu(BuildContext context, Offset iconPosition) async {
   if (selectedOption != null) {
     switch (selectedOption!) {
       case StatusWant.credit:
-        showDialog(
+        showAppDialog(
             context: context,
             builder: (context) {
               return const CreditCardDialog();
@@ -245,7 +246,7 @@ void _showSortMenu(BuildContext context, Offset iconPosition) async {
 
         break;
       case StatusWant.transfer:
-        showDialog(
+        showAppDialog(
             context: context,
             builder: (context) {
               return const BankTransferDialog();
@@ -253,7 +254,7 @@ void _showSortMenu(BuildContext context, Offset iconPosition) async {
 
         break;
       case StatusWant.partner:
-        showDialog(
+        showAppDialog(
             context: context,
             builder: (context) {
               return const TransactionalPartnerDialog();

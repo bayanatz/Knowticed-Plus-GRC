@@ -30,6 +30,7 @@ import 'package:grc_module/generated/l10n.dart';
 
 import 'edit_champion_controls_page.dart';
 import 'reassign_champion_page.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 class ControlChampionDetailsPage extends StatelessWidget {
   final ChampionEntity champion;
@@ -190,7 +191,7 @@ class _ControlChampionDetailsBodyState
                 context,
                 MaterialPageRoute(builder: (_) => page),
               )
-            : await showDialog<ChampionEntity>(
+            : await showAppDialog<ChampionEntity>(
                 context: context,
                 builder: (_) => page,
               );

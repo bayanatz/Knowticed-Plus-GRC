@@ -10,7 +10,7 @@ part of '../pages/import_page.dart';
 
 extension ImportPageMethods2 on _UploadFileTabletRolesState {
   void _showHeaderErrorDialog(List<String> missingHeaders) {
-    showDialog(
+    showAppDialog(
       context: context,
       barrierDismissible: true,
       builder: (_) => AlertDialog(

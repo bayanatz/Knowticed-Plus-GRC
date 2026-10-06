@@ -21,6 +21,7 @@ import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/core/custom/5-custom_button.dart';
 import 'package:grc_module/generated/l10n.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 abstract class RequestErrorDialog {
   /// Function Name: [show]
@@ -29,7 +30,7 @@ abstract class RequestErrorDialog {
   static Future<void> show(BuildContext context) {
     final bool lightMode = Theme.of(context).brightness == Brightness.light;
 
-    return showDialog<void>(
+    return showAppDialog<void>(
       context: context,
       barrierDismissible: true,
       builder: (BuildContext dialogContext) => Dialog(

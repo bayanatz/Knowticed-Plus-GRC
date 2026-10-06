@@ -217,7 +217,7 @@ extension UploadMethods1 on _UploadFileDetailsTabletRolesState {
 
         // ❌ Reject file if 3+ expected headers are missing
         if (missingHeaders.length >= 3) {
-          showDialog(
+          showAppDialog(
             context: context,
             builder: (_) => AlertDialog(
               title: Text("Warning Invalid Column Title"),
@@ -441,7 +441,8 @@ extension UploadMethods1 on _UploadFileDetailsTabletRolesState {
     });
   }
   void deleteRow(int index) async {
-    bool? confirm = await showDialog(
+    bool? confirm = await showAppDialog(
+      destructive: true,
       context: context,
       builder: (context) => AlertDialog(
         title: Text('Confirm Deletion'),

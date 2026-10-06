@@ -30,6 +30,7 @@ import 'package:grc_module/generated/l10n.dart';
 
 import 'package:grc_module/core/custom/66-circle_progress.dart';
 import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 class UniversalCommentSection extends StatelessWidget {
   final String collectionPath;
@@ -476,7 +477,7 @@ class _UniversalCommentSectionStateImpl
   }
 
   void _showDownloadSuccessDialog(String filePath, String fileName) {
-    showDialog(
+    showAppDialog(
       context: context,
       barrierDismissible: true,
       builder: (context) => Dialog(
@@ -824,7 +825,7 @@ class _UniversalCommentSectionStateImpl
   Future<void> _editCommentText(
       DocumentReference<Map<String, dynamic>> ref, String? current) async {
     final controller = TextEditingController(text: current ?? '');
-    final newText = await showDialog<String>(
+    final newText = await showAppDialog<String>(
       context: context,
       builder: (dCtx) => Dialog(
         backgroundColor: AppColors.card,

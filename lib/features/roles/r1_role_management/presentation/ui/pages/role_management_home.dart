@@ -26,6 +26,7 @@ import 'package:grc_module/features/roles/r1_role_management/presentation/ui/wid
 import 'package:grc_module/features/roles/r1_role_management/presentation/ui/widgets/table_widget.dart';
 import 'package:grc_module/core/di/app_controllers.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 class PlatFormRoleContainer extends StatefulWidget {
   const PlatFormRoleContainer.RoleManagementHome({super.key});
@@ -78,12 +79,12 @@ class _PlatFormRoleContainerState extends State<PlatFormRoleContainer> {
                       isGridView: isGridView,
                       onTableViewTap: () {
                         setState(() {
-                          isGridView = false;
+                          isGridView = withLowHaptic(false);
                         });
                       },
                       onGridViewTap: () {
                         setState(() {
-                          isGridView = true;
+                          isGridView = withLowHaptic(true);
                         });
                       },
                       showExport: true,
@@ -93,7 +94,7 @@ class _PlatFormRoleContainerState extends State<PlatFormRoleContainer> {
                             hapticFeedback: HapticFeedback.heavyImpact
                         );
 
-                        showDialog(
+                        showAppDialog(
                           context: context,
                           barrierDismissible: false,
                           builder: (_) => RoleExportDialog(
@@ -124,12 +125,12 @@ class _PlatFormRoleContainerState extends State<PlatFormRoleContainer> {
                     isGridView: isGridView,
                     onTableViewTap: () {
                       setState(() {
-                        isGridView = false;
+                        isGridView = withLowHaptic(false);
                       });
                     },
                     onGridViewTap: () {
                       setState(() {
-                        isGridView = true;
+                        isGridView = withLowHaptic(true);
                       });
                     },
                     showExport: true,
@@ -139,7 +140,7 @@ class _PlatFormRoleContainerState extends State<PlatFormRoleContainer> {
                           hapticFeedback: HapticFeedback.heavyImpact
                       );
 
-                      showDialog(
+                      showAppDialog(
                         context: context,
                         barrierDismissible: false,
                         builder: (_) => RoleExportDialog(
@@ -183,9 +184,13 @@ class _PlatFormRoleContainerState extends State<PlatFormRoleContainer> {
                     );
                   },
                 )
-                    : isGridView
+                    : BounceSwitcher(
+                  // Bounce when switching list <-> grid view.
+                  triggerValue: isGridView,
+                  child: isGridView
                     ? _buildGridView(controller.filteredRoles)
                     : _buildTableView(controller.filteredRoles),
+                ),
               )
             ],
           );

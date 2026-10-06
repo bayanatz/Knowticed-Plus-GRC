@@ -30,6 +30,7 @@ import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/core/theme/haptic_controller.dart';
 import 'package:grc_module/core/custom/32-custom_svg.dart';
+import '../theme/app_animations.dart';
 
 // ─────────────────────────────────────────────
 //  SHARED HELPERS
@@ -149,7 +150,7 @@ Future<void> showConfirmDialog({
   /// Fallback icon widget if you want to bypass Lottie entirely
   Widget? iconWidget,
 }) {
-  return showDialog(
+  return showAppDialog(
     context: context,
     barrierColor: AppColors.totalBlack.withOpacity(0.4),
     builder: (_) => _ConfirmDialog(
@@ -166,7 +167,12 @@ Future<void> showConfirmDialog({
   );
 }
 
-class _ConfirmDialog extends StatelessWidget {
+class _ConfirmDialog extends StatelessWidget implements DestructiveDialog {
+  /// Delete / remove / log out wording -> shake once; otherwise scale.
+  @override
+  bool get isDestructive =>
+      HapticController.isDestructiveText('$title $subtitle $confirmLabel');
+
   final String title;
   final String subtitle;
   final String confirmLabel;
@@ -285,7 +291,7 @@ Future<void> showSuccessDialog({
   /// Whether the Lottie animation should loop. Defaults to false (plays once).
   bool repeat = false,
 }) {
-  return showDialog(
+  return showAppDialog(
     context: context,
     barrierColor: AppColors.totalBlack.withOpacity(0.4),
     builder: (_) => _SuccessDialog(
@@ -398,7 +404,7 @@ Future<void> showErrorDialog({
   String? lottieAsset,
   bool repeat = false,
 }) {
-  return showDialog(
+  return showAppDialog(
     context: context,
     barrierColor: AppColors.totalBlack.withOpacity(0.4),
     builder: (_) => _MessageDialog(
@@ -525,7 +531,7 @@ Future<void> showCommentDialog({
   String? titleIconAsset,
   void Function(String comment)? onSubmit,
 }) {
-  return showDialog(
+  return showAppDialog(
     context: context,
     barrierColor: AppColors.totalBlack.withOpacity(0.4),
     builder: (_) => _CommentDialog(
@@ -672,7 +678,7 @@ Future<void> showUploadDialog({
   String? successLottieAsset,
   void Function(PlatformFile file, String titleName)? onSubmit,
 }) {
-  return showDialog(
+  return showAppDialog(
     context: context,
     barrierColor: AppColors.totalBlack.withOpacity(0.4),
     builder: (_) => _UploadDialog(

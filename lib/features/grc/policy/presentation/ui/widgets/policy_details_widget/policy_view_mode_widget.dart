@@ -47,6 +47,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 import 'package:grc_module/generated/l10n.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 /// class name: [PolicyViewModeWidget]
 ///
@@ -649,17 +650,24 @@ class _PolicyViewModeWidgetState extends State<PolicyViewModeWidget> {
     // against a stale _isGridView after a resize -- the same guard
     // GrcModulePoliciesTab carries.
     if (!_isGridView && isWide) {
-      return ScrollConfiguration(
+      return BounceSwitcher(
+      // Bounce when switching list <-> grid view.
+      triggerValue: _isGridView,
+      child: ScrollConfiguration(
         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
         child: GrcControlTableView(
           controls: controls,
           onControlTap: _openControlDetails,
         ),
-      );
+      ),
+    );
     }
 
     if (!isWide) {
-      return ListView.separated(
+      return BounceSwitcher(
+      // Bounce when switching list <-> grid view.
+      triggerValue: _isGridView,
+      child: ListView.separated(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemCount: controls.length,
@@ -668,10 +676,14 @@ class _PolicyViewModeWidgetState extends State<PolicyViewModeWidget> {
           control: controls[index],
           onTap: () => _openControlDetails(controls[index]),
         ),
-      );
+      ),
+    );
     }
 
-    return Column(
+    return BounceSwitcher(
+      // Bounce when switching list <-> grid view.
+      triggerValue: _isGridView,
+      child: Column(
       children: [
         for (var i = 0; i < controls.length; i += 2)
           Padding(
@@ -698,6 +710,7 @@ class _PolicyViewModeWidgetState extends State<PolicyViewModeWidget> {
             ),
           ),
       ],
+    ),
     );
   }
 
@@ -786,7 +799,7 @@ class _PolicyViewModeWidgetState extends State<PolicyViewModeWidget> {
               _buildWeightIssueBanner(widget.controls),
               const Spacer(),
               customTableButton(
-                function: () => setState(() => _isGridView = false),
+                function: () => setState(() => _isGridView = withLowHaptic(false)),
                 isSelected: !_isGridView,
                 color: AppColors.card,
                 selectedColor: AppColors.primary,
@@ -797,7 +810,7 @@ class _PolicyViewModeWidgetState extends State<PolicyViewModeWidget> {
               ),
               SizedBox(width: 8.sp),
               customGridButton(
-                function: () => setState(() => _isGridView = true),
+                function: () => setState(() => _isGridView = withLowHaptic(true)),
                 isSelected: _isGridView,
                 color: AppColors.card,
                 selectedColor: AppColors.primary,

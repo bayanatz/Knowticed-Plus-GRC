@@ -18,6 +18,7 @@ import 'package:grc_module/core/custom/5-custom_button.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/generated/l10n.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 /// One choice in the policy filter: the policy id and its display name.
 class ApprovalPolicyOption {
@@ -36,7 +37,7 @@ Future<String?> showApprovalFilterDialog({
   required List<ApprovalPolicyOption> policies,
   required String? selectedPolicyId,
 }) {
-  return showDialog<String>(
+  return showAppDialog<String>(
     context: context,
     barrierColor: AppColors.totalBlack.withOpacity(0.4),
     builder: (_) => _ApprovalFilterDialog(

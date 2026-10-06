@@ -31,6 +31,7 @@ import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/features/notification/data/models/notification_data_model.dart';
 import 'package:grc_module/generated/l10n.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 /// The four values a page keeps, and the predicate that applies them.
 ///
@@ -372,7 +373,7 @@ Future<NotificationFilterSelection?> showNotificationFilterDialog({
   required MainCoreEmployeeController employeeController,
   required NotificationFilterSelection current,
 }) {
-  return showDialog<NotificationFilterSelection>(
+  return showAppDialog<NotificationFilterSelection>(
     context: context,
     builder: (BuildContext dialogContext) => _NotificationFilterDialog(
       notifications: notifications,

@@ -16,6 +16,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/custom/16-custom_card_styles.dart';
 import 'package:grc_module/core/custom/24-custom_chart_card.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 /// One cell: a value, an optional second line, and an optional avatar.
 class TableChartCell {
@@ -172,7 +173,9 @@ class TableChartCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<int> flex = _flex;
 
-    return ChartCard(
+    return AnimatedSizeWrap(
+      // Tables animate their size (rows added / removed / filtered).
+      child: ChartCard(
       title: title,
       trailing: trailing,
       width: width,
@@ -230,6 +233,7 @@ class TableChartCard extends StatelessWidget {
           ],
         ],
       ),
+    ),
     );
   }
 }

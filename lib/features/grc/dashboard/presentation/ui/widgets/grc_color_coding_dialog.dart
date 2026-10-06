@@ -29,6 +29,7 @@ import 'package:grc_module/core/helper/main_helper/localized_number.dart';
 import 'package:grc_module/features/grc/dashboard/domain/entities/grc_color_coding.dart';
 import 'package:grc_module/features/grc/dashboard/domain/entities/grc_dashboard_stats.dart';
 import 'package:grc_module/generated/l10n.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 /// "All policies" row; stored as null on the rule.
 const String _allPolicies = '__all__';
@@ -42,7 +43,7 @@ Future<GrcColorRule?> showGrcColorCodingDialog(
   required GrcDashboardData data,
   required Map<GrcColorCategory, GrcColorRule> current,
 }) {
-  return showDialog<GrcColorRule>(
+  return showAppDialog<GrcColorRule>(
     context: context,
     builder: (_) => _GrcColorCodingDialog(data: data, current: current),
   );

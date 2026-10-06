@@ -22,11 +22,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grc_module/core/helper/main_helper/countries.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/generated/l10n.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 // REMOVED_MODULE: import 'package:grc_module/features/external/services_mangment_module/core/new_theme.dart';
 
 /// Shows a dialog to select a country with search functionality
 Future<Country?> showCountryPickerDialog(BuildContext context) async {
-  return await showDialog<Country?>(
+  return await showAppDialog<Country?>(
     context: context,
     barrierDismissible: true,
     builder: (BuildContext dialogContext) => const CountryPickerDialog(),

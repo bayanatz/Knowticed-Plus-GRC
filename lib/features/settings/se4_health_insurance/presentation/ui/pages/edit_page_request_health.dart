@@ -54,6 +54,7 @@ import 'package:grc_module/features/settings/se4_health_insurance/presentation/u
 import 'package:grc_module/core/custom/5-custom_button.dart';
 import 'package:grc_module/features/settings/main_controller/presentation/controller/employee_controller.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 class EditPageRequestHealth extends StatefulWidget {
   const EditPageRequestHealth({super.key});
 
@@ -550,7 +551,7 @@ class _EditPageRequestHealthState extends State<EditPageRequestHealth> {
 
       // Check if there are any changes
       if (changes.isEmpty) {
-        showDialog(
+        showAppDialog(
           context: context,
           barrierDismissible: true,
           builder: (BuildContext context) {

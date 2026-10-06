@@ -46,6 +46,7 @@ import 'package:grc_module/core/extensions/context_extensions.dart';
 // layout — the editor previews the real home page, so it shows the real widget.
 import 'package:grc_module/features/calendar/c1_calendar/presentation/ui/pages/home_calendar_page.dart';
 import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 class EditHomePage extends StatelessWidget {
   EditHomePage({super.key});
   late bool isTablet;
@@ -323,7 +324,7 @@ class EditHomePage extends StatelessWidget {
                                                                     hapticFeedback:
                                                                     HapticFeedback
                                                                         .lightImpact);
-                                                                showDialog(
+                                                                showAppDialog(
                                                                   context: context,
                                                                   builder: (dialogContext) =>
                                                                       IconSelectorDialog(

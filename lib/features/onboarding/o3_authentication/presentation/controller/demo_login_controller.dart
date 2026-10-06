@@ -41,6 +41,7 @@ import 'package:grc_module/features/settings/main_controller/presentation/contro
 // ADDED 26/8/2026 — raising the unlock request. See
 // [handleLockedAccountSignIn].
 import 'package:grc_module/features/roles/r3_user_access/data/repository/user_access_repository.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 class DemoLoginController {
   final DemoLoginRepository demoLoginRepository = DemoLoginRepository();
   SystemLogsController systemLogsController = Get.find<SystemLogsController>();
@@ -114,7 +115,9 @@ class DemoLoginController {
           'Error". Raw message: $errorMessage',
         );
       }
-      await showDialog(
+      await showAppDialog(
+      // Login error -> shake once.
+      destructive: true,
           context: Get.context!,
           barrierDismissible: true,
           builder: (context) {
@@ -167,7 +170,9 @@ class DemoLoginController {
   }
 
   handleEmailNotFound() async {
-    await showDialog(
+    await showAppDialog(
+      // Login error -> shake once.
+      destructive: true,
         context: Get.context!,
         barrierDismissible: true,
         builder: (context) {
@@ -208,7 +213,9 @@ class DemoLoginController {
 
     final int remaining = LoginAttemptStore.maxAttempts - attempts;
 
-    await showDialog(
+    await showAppDialog(
+      // Login error -> shake once.
+      destructive: true,
         context: Get.context!,
         barrierDismissible: true,
         builder: (context) {
@@ -241,7 +248,9 @@ class DemoLoginController {
   }
 
   handleWrongActivationPassword() async {
-    await showDialog(
+    await showAppDialog(
+      // Login error -> shake once.
+      destructive: true,
         context: Get.context!,
         barrierDismissible: true,
         builder: (context) {
@@ -254,7 +263,9 @@ class DemoLoginController {
   }
 
   handleNotFoundInCompanyDatabase() async {
-    await showDialog(
+    await showAppDialog(
+      // Login error -> shake once.
+      destructive: true,
         context: Get.context!,
         barrierDismissible: true,
         builder: (context) {
@@ -267,7 +278,9 @@ class DemoLoginController {
   }
 
   handleDemoCancelled() async {
-    await showDialog(
+    await showAppDialog(
+      // Login error -> shake once.
+      destructive: true,
         context: Get.context!,
         barrierDismissible: true,
         builder: (context) {
@@ -280,7 +293,7 @@ class DemoLoginController {
   }
 
   handleBeforeActivationDate() async {
-    await showDialog(
+    await showAppDialog(
         context: Get.context!,
         barrierDismissible: true,
         builder: (context) {
@@ -293,7 +306,9 @@ class DemoLoginController {
   }
 
   handleSubscriptionExpired() async {
-    await showDialog(
+    await showAppDialog(
+      // Login error -> shake once.
+      destructive: true,
         context: Get.context!,
         barrierDismissible: true,
         builder: (context) {
@@ -306,7 +321,9 @@ class DemoLoginController {
   }
 
   handleNoPermission() async {
-    await showDialog(
+    await showAppDialog(
+      // Login error -> shake once.
+      destructive: true,
         context: Get.context!,
         barrierDismissible: true,
         builder: (context) {
@@ -319,7 +336,7 @@ class DemoLoginController {
   }
 
   handleTooManyUsers() async {
-    await showDialog(
+    await showAppDialog(
         context: Get.context!,
         barrierDismissible: true,
         builder: (context) {
@@ -333,7 +350,7 @@ class DemoLoginController {
 
   // ✅ NEW: Handle module user limit reached error dialog
   handleModuleUserLimitReached() async {
-    await showDialog(
+    await showAppDialog(
         context: Get.context!,
         barrierDismissible: true,
         builder: (context) {
@@ -350,7 +367,9 @@ class DemoLoginController {
       FailureAuthenticationType failureType = FailureAuthenticationType.values
           .firstWhere((element) => element.dialogBoxMessage == errorMessage);
 
-      await showDialog(
+      await showAppDialog(
+      // Login error -> shake once.
+      destructive: true,
           context: Get.context!,
           barrierDismissible: true,
           builder: (context) {
@@ -361,7 +380,9 @@ class DemoLoginController {
             );
           });
     } catch (e) {
-      await showDialog(
+      await showAppDialog(
+      // Login error -> shake once.
+      destructive: true,
           context: Get.context!,
           barrierDismissible: true,
           builder: (context) {
@@ -420,7 +441,9 @@ class DemoLoginController {
 
     if (Get.context == null) return;
 
-    await showDialog(
+    await showAppDialog(
+      // Login error -> shake once.
+      destructive: true,
         context: Get.context!,
         barrierDismissible: true,
         builder: (context) {
@@ -473,7 +496,9 @@ class DemoLoginController {
           userName: userName,
         );
 
-        await showDialog(
+        await showAppDialog(
+      // Login error -> shake once.
+      destructive: true,
             context: Get.context!,
             barrierDismissible: true,
             builder: (context) {

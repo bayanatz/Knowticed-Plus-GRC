@@ -23,6 +23,7 @@ import 'package:lottie/lottie.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/generated/l10n.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 class SocialSavedDialog extends StatefulWidget {
   const SocialSavedDialog({super.key});
@@ -34,7 +35,7 @@ class SocialSavedDialog extends StatefulWidget {
   ///
   /// Purpose: Present the confirmation over [context].
   static Future<void> show(BuildContext context) {
-    return showDialog<void>(
+    return showAppDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (_) => const SocialSavedDialog(),

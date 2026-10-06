@@ -29,6 +29,7 @@ import './filter_widget.dart';
 import 'package:grc_module/features/roles/r3_user_access/domain/enums/sort_option_role.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 class SearchAndFilter extends StatefulWidget {
   const SearchAndFilter({super.key});
@@ -137,7 +138,7 @@ class _SearchAndFilterState extends State<SearchAndFilter> {
 
     return GestureDetector(
       onTap: () {
-        showDialog(
+        showAppDialog(
           context: context,
           builder: (BuildContext context) {
             return Dialog(

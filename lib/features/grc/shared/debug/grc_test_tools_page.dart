@@ -23,6 +23,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:grc_module/features/grc/shared/debug/grc_test_tools.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 class GrcTestToolsPage extends StatefulWidget {
   const GrcTestToolsPage({super.key});
@@ -92,7 +93,7 @@ class _GrcTestToolsPageState extends State<GrcTestToolsPage> {
   }
 
   Future<bool> _confirm(String message) async {
-    final bool? ok = await showDialog<bool>(
+    final bool? ok = await showAppDialog<bool>(
       context: context,
       builder: (BuildContext ctx) => AlertDialog(
         title: const Text('GRC Test Tools'),

@@ -39,6 +39,7 @@ import 'package:grc_module/features/roles/r1_role_management/domain/enums/roles/
 // ADDED 30/8/2026: the restore dialog draws one column per field, and the
 // field list — with its English/Arabic header names — is this enum.
 import 'package:grc_module/features/roles/r4_active_directory/domain/enums/employee_data.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 
 part '../widgets/csv_table_builders1.dart';
@@ -91,7 +92,9 @@ class CustomCsvTable extends StatelessWidget {
     bool isVertical =
         MediaQuery.of(context).orientation == Orientation.portrait;
 
-    return BlocBuilder<ActiveDirectoryController, ActiveDirectoryState>(
+    return AnimatedSizeWrap(
+      // Tables animate their size (rows added / removed / filtered).
+      child: BlocBuilder<ActiveDirectoryController, ActiveDirectoryState>(
         bloc: AppControllers.activeDirectory,
         builder: (context, state) {
       final controller = AppControllers.activeDirectory;
@@ -111,6 +114,7 @@ class CustomCsvTable extends StatelessWidget {
                     ],
                   ),
           );
-    });
+    }),
+    );
   }
 }

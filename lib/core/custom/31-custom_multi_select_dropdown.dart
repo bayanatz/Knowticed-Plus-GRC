@@ -13,6 +13,8 @@ import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/core/custom/23-custom_check_box.dart';
 import 'package:grc_module/core/custom/32-custom_svg.dart';
+import '../theme/app_animations.dart';
+import '../theme/haptic_controller.dart';
 
 /// A multi-select dropdown item model
 class MultiSelectDropdownItem<T> {
@@ -249,7 +251,7 @@ class _CustomMultiSelectDropdownState<T>
       link: _layerLink,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: _toggleDropdown,
+        onTap: withHaptic(_toggleDropdown, HapticLevel.low),
         child: Container(
           key: _triggerKey,
           height: widget.height!.sp,
@@ -531,7 +533,7 @@ class _CustomMultiSelectDropdownState<T>
           CompositedTransformTarget(
             link: _layerLink,
             child: GestureDetector(
-              onTap: _toggleDropdown,
+              onTap: withHaptic(_toggleDropdown, HapticLevel.low),
               child: InputDecorator(
                   key: _triggerKey,
                   isFocused: false,

@@ -27,6 +27,7 @@ import 'package:grc_module/features/grc/policy/domain/entities/policy_status.dar
 import 'package:grc_module/features/grc/shared/helpers/grc_assignment_lookup.dart';
 import 'package:grc_module/features/grc/shared/helpers/grc_l10n.dart';
 import 'package:grc_module/features/grc/shared/helpers/grc_table_columns.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 import 'package:grc_module/features/grc/shared/widgets/grc_person_profile_card.dart'
     show GrcAvatarName;
 
@@ -97,7 +98,9 @@ class _DepartmentTable extends StatelessWidget {
       isArabic: isArabic,
       cellPadding: _cellPadding,
     );
-    return ScrollConfiguration(
+    return AnimatedSizeWrap(
+      // Tables animate their size (rows added / removed / filtered).
+      child: ScrollConfiguration(
       behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -150,6 +153,7 @@ class _DepartmentTable extends StatelessWidget {
           ),
         ),
       ),
+    ),
     );
   }
 }
@@ -181,7 +185,9 @@ class DepartmentPoliciesTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool ar = context.isArabic;
-    return _DepartmentTable(
+    return AnimatedSizeWrap(
+      // Tables animate their size (rows added / removed / filtered).
+      child: _DepartmentTable(
       columns: [
         GrcTableColumn('NO', 60.w),
         GrcTableColumn('Policy Number', 110.w),
@@ -229,6 +235,7 @@ class DepartmentPoliciesTable extends StatelessWidget {
           ),
         ];
       },
+    ),
     );
   }
 }
@@ -251,7 +258,9 @@ class DepartmentControlsTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool ar = context.isArabic;
-    return _DepartmentTable(
+    return AnimatedSizeWrap(
+      // Tables animate their size (rows added / removed / filtered).
+      child: _DepartmentTable(
       columns: [
         GrcTableColumn('NO', 60.w),
         GrcTableColumn('Control Name', 150.w),
@@ -289,6 +298,7 @@ class DepartmentControlsTable extends StatelessWidget {
           _textCell(grcTr(context, c.frequency), maxLines: 1),
         ];
       },
+    ),
     );
   }
 }

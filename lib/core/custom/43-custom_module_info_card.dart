@@ -14,6 +14,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/custom/16-custom_card_styles.dart';
+import '../theme/app_animations.dart';
+import '../theme/haptic_controller.dart';
 
 /// Module info card: leading icon box + title + info rows + yellow
 /// compliance-score chip (bottom start) + last-update footer (bottom end)
@@ -113,7 +115,7 @@ class ModuleInfoCard extends StatelessWidget {
       alignment: Alignment.topRight,
       children: [
         InkWell(
-          onTap: onTap,
+          onTap: withHaptic(onTap, HapticLevel.low),
           borderRadius: CardStyles.radius(4),
           child: Container(
             width: width ?? 324.w,
@@ -213,7 +215,7 @@ class ModuleInfoCard extends StatelessWidget {
             top: 2.sp,
             child: InkWell(
               key: menuButtonKey,
-              onTap: onMenuTap,
+              onTap: withHaptic(onMenuTap, HapticLevel.low),
               borderRadius: CardStyles.radius(4),
               child: Padding(
                 padding: EdgeInsets.all(2.r),
@@ -267,7 +269,7 @@ class RemovableAvatarChip extends StatelessWidget {
             top: 0,
             end: 0,
             child: InkWell(
-              onTap: onRemove,
+              onTap: withHaptic(onRemove, HapticLevel.high),
               customBorder: const CircleBorder(),
               child: Container(
                 width: 14.r,

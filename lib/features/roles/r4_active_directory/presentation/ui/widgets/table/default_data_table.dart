@@ -14,6 +14,7 @@ import 'package:grc_module/core/theme/app_colors.dart';
 
 import 'package:grc_module/core/theme/theme_controller.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 
 //Youssef Ashraf , mohammed Ashraf
@@ -59,7 +60,9 @@ class DefaultDataTable extends StatelessWidget {
     // reason the table cannot size itself to the screen. Out here it is the
     // real width the parent is offering. The vertical scroll view below only
     // unbounds the HEIGHT, so it passes this width straight through.
-    return LayoutBuilder(
+    return AnimatedSizeWrap(
+      // Tables animate their size (rows added / removed / filtered).
+      child: LayoutBuilder(
       builder: (context, constraints) {
         final Widget table = ClipRRect(
           borderRadius: BorderRadius.only(
@@ -112,6 +115,7 @@ class DefaultDataTable extends StatelessWidget {
           ),
         );
       },
+    ),
     );
   }
 }

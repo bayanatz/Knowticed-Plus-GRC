@@ -37,6 +37,7 @@ import 'package:grc_module/features/roles/r5_system_logs/domain/constants/system
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
 import 'package:grc_module/core/di/app_controllers.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 /// Was a StatefulWidget carrying three mutable public fields
 /// (`isFilterDataShow`, `delayValue`, `roleValue`) that `build` reassigned
@@ -121,7 +122,7 @@ class _SystemLogsAppBarState extends State<SystemLogsAppBar> {
                 // whole tab instead of this table, so nothing here is
                 // reachable there.
                 function: () async {
-                  await showDialog(
+                  await showAppDialog(
                     context: context,
                     builder: (context) => const SystemLogsDownloadDialog(),
                   );

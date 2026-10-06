@@ -56,6 +56,7 @@ import 'package:grc_module/core/custom/32-custom_svg.dart';
 import 'package:grc_module/core/custom/5-custom_button.dart';
 import 'package:grc_module/core/helper/main_helper/extensions.dart';
 import 'package:grc_module/core/helper/main_helper/location_data_service.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 class EditPageRequest extends StatefulWidget {
   const EditPageRequest({super.key});
@@ -534,7 +535,7 @@ class _EditPageRequestState extends State<EditPageRequest> {
   }
 
   void _showValidationErrorDialog(String errorMessage) {
-    showDialog(
+    showAppDialog(
       context: context,
       barrierDismissible: true,
       builder: (BuildContext dialogContext) {

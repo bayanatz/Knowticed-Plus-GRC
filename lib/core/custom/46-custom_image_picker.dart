@@ -29,6 +29,8 @@ import 'package:grc_module/core/custom/32-custom_svg.dart';
 // the low-level `vg.loadPicture` API used to rasterize an SVG into a ui.Image.
 // ignore: depend_on_referenced_packages
 import 'package:vector_graphics/vector_graphics.dart' as vg_lib;
+import '../theme/app_animations.dart';
+import '../theme/haptic_controller.dart';
 class CustomImagePicker extends StatefulWidget {
   /// Externally controlled picked file (takes priority over internal state).
   final File? imageFile;
@@ -214,7 +216,7 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
         // rather than disabling a control that still looks tappable.
         if (!widget.readOnly)
           GestureDetector(
-            onTap: _pick,
+            onTap: withHaptic(_pick, HapticLevel.low),
             child: CircleAvatar(
               radius: badgeRadius,
               backgroundColor: AppColors.primary,

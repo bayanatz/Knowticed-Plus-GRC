@@ -54,6 +54,7 @@ import 'package:grc_module/features/grc/policy/domain/entities/policy_status.dar
 import 'package:grc_module/features/grc/shared/helpers/grc_export.dart';
 import 'package:grc_module/features/grc/shared/helpers/grc_l10n.dart';
 import 'package:grc_module/generated/l10n.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 /// class name: [DepartmentDashboardTab]
 ///
@@ -245,7 +246,7 @@ class _DepartmentDashboardBodyState extends State<_DepartmentDashboardBody> {
               if (v != PolicyStatus.removed) v.value,
           ]
         : [for (final v in ControlStatus.values) v.value];
-    final String? picked = await showDialog<String>(
+    final String? picked = await showAppDialog<String>(
       context: context,
       barrierColor: AppColors.totalBlack.withOpacity(0.4),
       builder: (_) => _StatusFilterDialog(

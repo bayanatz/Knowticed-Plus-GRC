@@ -10,9 +10,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:grc_module/core/helper/main_helper/haptic_feedback_helper.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
+import '../theme/app_animations.dart';
+import '../theme/haptic_controller.dart';
 
 class CustomButton extends StatefulWidget {
   CustomButton(
@@ -43,12 +44,14 @@ class CustomButton extends StatefulWidget {
 class _CustomButtonState extends State<CustomButton> {
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return appPressFeedback(
+      color: widget.buttonColor,
+      child: InkWell(
       onTap: () {
-        HapticFeedbackHelper.triggerHapticFeedback(
-          vibration: VibrateType.mediumImpact,
-          hapticFeedback: HapticFeedback.mediumImpact,
-        );
+        HapticController.forLabel(widget.buttonText,
+            fallback: isYellowButton(widget.buttonColor)
+                ? HapticLevel.medium
+                : HapticLevel.low);
         widget.onTap();
       },
       splashColor: Colors.transparent,
@@ -74,6 +77,6 @@ class _CustomButtonState extends State<CustomButton> {
           ),
         ),
       ),
-    );
+    ));
   }
 }

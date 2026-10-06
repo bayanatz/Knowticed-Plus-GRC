@@ -21,6 +21,7 @@ import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:flutter/material.dart' hide Border, BorderStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grc_module/generated/l10n.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 /// function name: [showControlBulkWeightDialog]
 ///
@@ -33,7 +34,7 @@ import 'package:grc_module/generated/l10n.dart';
 ///
 /// return type: [Future<bool>] - true = equal split (answered No), false = distinct weights (answered Yes)
 Future<bool> showControlBulkWeightDialog(BuildContext context) async {
-  final result = await showDialog<bool>(
+  final result = await showAppDialog<bool>(
     context: context,
     barrierDismissible: false,
     barrierColor: AppColors.totalBlack.withOpacity(0.4),

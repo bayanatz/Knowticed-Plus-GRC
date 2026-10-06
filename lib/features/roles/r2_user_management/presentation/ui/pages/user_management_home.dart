@@ -81,6 +81,7 @@ import 'package:grc_module/core/custom/6-custom_button_with_svg.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
 import 'package:grc_module/core/di/app_controllers.dart';
 import 'package:collection/collection.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 part '../widgets/user_management_home_methods1.dart';
 
 class UserManagementHome extends StatefulWidget {
@@ -428,8 +429,8 @@ class _UserManagementHomeState extends State<UserManagementHome> {
                   ),
                   ViewToggleButtons(
                     isGridView: isGridView,
-                    onTableViewTap: () => setState(() => isGridView = false),
-                    onGridViewTap: () => setState(() => isGridView = true),
+                    onTableViewTap: () => setState(() => isGridView = withLowHaptic(false)),
+                    onGridViewTap: () => setState(() => isGridView = withLowHaptic(true)),
                     showExport: true,
                     // ADDED 21/9/2026 — bug report p.1 / Figma 4717:33513.
                     // Behind the role's `Import_Users_Data` switch, like the
@@ -446,7 +447,7 @@ class _UserManagementHomeState extends State<UserManagementHome> {
                             ))
                         : null,
                     onExportTap: () {
-                      showDialog(
+                      showAppDialog(
                         context: context,
                         builder: (context) => UserManagementExportDialog(
                           userPermissions: visiblePermissions,
@@ -474,7 +475,10 @@ class _UserManagementHomeState extends State<UserManagementHome> {
                     ],
                   ),
                 )
-                    : isGridView
+                    : BounceSwitcher(
+                  // Bounce when switching list <-> grid view.
+                  triggerValue: isGridView,
+                  child: isGridView
                     ? GridView.builder(
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: CrossAxisCountHelper
@@ -497,6 +501,7 @@ class _UserManagementHomeState extends State<UserManagementHome> {
                     userPermissions: visiblePermissions,
                     locale: context.languageCode,
                   ),
+                ),
                 ),
               ),
             ],

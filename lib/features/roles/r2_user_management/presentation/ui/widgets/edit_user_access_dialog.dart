@@ -26,6 +26,7 @@ import 'dart:ui' as ui;
 
 import 'package:grc_module/core/custom/5-custom_button.dart';
 import 'package:grc_module/core/custom/32-custom_svg.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 /// Shows the Edit User Access Dialog
 /// Returns Map<String, dynamic> with 'role', 'accessGranted', 'accessRevoked' on success
 /// Returns null on discard
@@ -33,7 +34,7 @@ Future<dynamic> showEditUserAccessDialog({
   required BuildContext context,
   required UserPermissionEntity userPermission,
 }) {
-  return showDialog(
+  return showAppDialog(
     context: context,
     barrierDismissible: true,
     builder: (dialogContext) => MultiBlocProvider(

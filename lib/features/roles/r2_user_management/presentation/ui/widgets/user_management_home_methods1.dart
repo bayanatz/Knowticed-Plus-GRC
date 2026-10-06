@@ -92,7 +92,7 @@ extension UserManagementHomeMethods1 on _UserManagementHomeState {
   }
 // ✅ SIMPLE: Test limit check with normal strings
   Future<void> _testLimitCheck(BuildContext context) async {
-    showDialog(
+    showAppDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(

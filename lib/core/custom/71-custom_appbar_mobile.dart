@@ -33,6 +33,7 @@ import 'package:grc_module/features/home/h2_nav_bar/presentation/controller/nav_
 import 'package:grc_module/features/notification/presentation/ui/pages/notification_page.dart';
 import 'package:grc_module/core/helper/role/modules_enum.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../theme/app_animations.dart';
 
 
 //Date:April/3/2023
@@ -139,8 +140,11 @@ class _CustomAppBarMobileState extends State<CustomAppBarMobile> {
                       if (widget.showIcon)
                         GestureDetector(
                           behavior: HitTestBehavior.opaque,
-                          onTap: widget.onIconPressed ??
-                              () => Navigator.of(context).maybePop(),
+                          onTap: () {
+                            HapticController.low(); // top-of-page navigation
+                            (widget.onIconPressed ??
+                                () => Navigator.of(context).maybePop())();
+                          },
                           child: Padding(
                             padding: EdgeInsets.symmetric(
                                 horizontal: 4.w, vertical: 4.h),
@@ -169,7 +173,12 @@ class _CustomAppBarMobileState extends State<CustomAppBarMobile> {
                       if (widget.showMoreIcon == true)
                         GestureDetector(
                           behavior: HitTestBehavior.opaque,
-                          onTap: widget.onPressed,
+                          onTap: widget.onPressed == null
+                              ? null
+                              : () {
+                                  HapticController.low();
+                                  widget.onPressed!();
+                                },
                           onTapUp: widget.onTapUp,
                           child: Padding(
                             padding: EdgeInsets.symmetric(
@@ -262,6 +271,7 @@ class _CustomAppBarMobileState extends State<CustomAppBarMobile> {
                       //   ),
                       GestureDetector(
                         onTap: () {
+                          HapticController.low(); // top-of-page navigation
                           // CHANGED 8/9/2026 — was `withNavBar: false`, which
                           // pushes on the ROOT navigator and so hid the bottom
                           // nav bar for the whole settings module. `true`

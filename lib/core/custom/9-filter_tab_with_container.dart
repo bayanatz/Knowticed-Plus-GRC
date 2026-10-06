@@ -11,6 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
+import '../theme/app_animations.dart';
+import '../theme/haptic_controller.dart';
 /// A customizable segmented tabs widget that can be reused throughout the app
 ///
 /// Example usage:
@@ -131,7 +133,10 @@ class CustomSegmentedTabs extends StatelessWidget {
     required VoidCallback onTap,
   }) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () {
+        HapticController.low(); // tab switch
+        onTap();
+      },
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(4),

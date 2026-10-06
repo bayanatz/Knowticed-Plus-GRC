@@ -8,45 +8,41 @@
 
 import 'package:flutter/material.dart';
 
-void navigateTo(context, widget) => Navigator.push(
-  context,
-  PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => widget,
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      return FadeTransition(
-        opacity: animation,
-        child: child,
-      );
-    },
-    transitionDuration: const Duration(milliseconds: 300),
-  ),
-);
+import '../theme/haptic_controller.dart';
 
-/// Same transition as [navigateTo], but returns the route's Future so the
-/// caller can await the pop and refresh itself.
-///
-/// [navigateTo] returns void, so a list screen that pushes a detail screen has
-/// no way to know when the user comes back — it keeps showing whatever it
-/// fetched in initState. Use this when the pushed screen can change the data
-/// behind the caller (approve / reject / cancel a request, for example).
-Future<T?> navigateToAsync<T>(BuildContext context, Widget widget) =>
-    Navigator.push<T>(
-      context,
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => widget,
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(
-            opacity: animation,
-            child: child,
-          );
-        },
-        transitionDuration: const Duration(milliseconds: 300),
-      ),
+/// Page route used by every navigation helper: the new page's components
+/// SLIDE in (from the reading-direction end) while fading in, with a LOW
+/// haptic for the navigation (cards / top-of-page navigation).
+Route<T> appSlideRoute<T>(Widget widget) => PageRouteBuilder<T>(
+      pageBuilder: (context, animation, secondaryAnimation) => widget,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        final bool rtl = Directionality.of(context) == TextDirection.rtl;
+        final curved =
+            CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
+        return SlideTransition(
+          position: Tween<Offset>(
+            begin: Offset(rtl ? -0.15 : 0.15, 0),
+            end: Offset.zero,
+          ).animate(curved),
+          child: FadeTransition(opacity: curved, child: child),
+        );
+      },
+      transitionDuration: const Duration(milliseconds: 300),
+      reverseTransitionDuration: const Duration(milliseconds: 250),
     );
 
-//=======================================================================================================================================================
+void navigateTo(context, widget) {
+  HapticController.low();
+  Navigator.push(context, appSlideRoute(widget));
+}
 
-void navigateAndFinish(context, widget) => Navigator.pushAndRemoveUntil(
-    context, MaterialPageRoute(builder: (context) => widget), (route) => false);
+Future<T?> navigateToAsync<T>(BuildContext context, Widget widget) {
+  HapticController.low();
+  return Navigator.push<T>(context, appSlideRoute<T>(widget));
+}
 
-//=======================================================================================================================================================
+void navigateAndFinish(context, widget) {
+  HapticController.low();
+  Navigator.pushAndRemoveUntil(
+      context, appSlideRoute(widget), (route) => false);
+}

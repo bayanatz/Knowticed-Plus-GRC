@@ -29,6 +29,7 @@ import 'package:grc_module/core/custom/5-custom_button.dart';
 import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
 import 'package:grc_module/core/constants/firebase_collections.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 // REMOVED_MODULE: import '../../../../../external/services_mangment_module/Category/presentation/ui/services_admin/Widget/W3_Frame_Screen_tablet.dart';
 
 class PrivacyStatementPage extends StatefulWidget {
@@ -294,7 +295,7 @@ class _PrivacyStatementPageState extends State<PrivacyStatementPage> {
 
   void _showSuccessDialog(
       BuildContext context, String locale, String filePath) {
-    showDialog(
+    showAppDialog(
       context: context,
       barrierDismissible: true,
       builder: (BuildContext context) {

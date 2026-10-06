@@ -14,6 +14,8 @@ import 'package:grc_module/core/helper/main_helper/format_title.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/custom/23-custom_check_box.dart';
 import 'package:grc_module/core/custom/16-custom_card_styles.dart';
+import '../theme/app_animations.dart';
+import '../theme/haptic_controller.dart';
 
 /// Small person chip: avatar + name + up to two subtitle lines + trailing.
 ///
@@ -74,7 +76,7 @@ class PersonChipCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap,
+      onTap: withHaptic(onTap, HapticLevel.low),
       borderRadius: CardStyles.radius(),
       child: Container(
         width: width ?? 265.w,

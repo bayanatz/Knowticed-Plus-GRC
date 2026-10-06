@@ -35,6 +35,7 @@ import 'package:grc_module/features/roles/r4_active_directory/domain/entities/em
 import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
 import 'package:grc_module/core/di/app_controllers.dart';
 import 'package:collection/collection.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 class UserManagementTableWidget extends StatelessWidget {
   final List<UserPermissionEntity> userPermissions;
@@ -457,7 +458,9 @@ class UserManagementTableWidget extends StatelessWidget {
       12: FixedColumnWidth(_calculateAccessDateWidth(context)),
     };
 
-    return Directionality(
+    return AnimatedSizeWrap(
+      // Tables animate their size (rows added / removed / filtered).
+      child: Directionality(
       textDirection: _isArabic ? ui.TextDirection.rtl : ui.TextDirection.ltr,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -532,6 +535,7 @@ class UserManagementTableWidget extends StatelessWidget {
           ),
         ),
       ),
+    ),
     );
   }
 }

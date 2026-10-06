@@ -14,6 +14,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/generated/l10n.dart';
+import '../theme/app_animations.dart';
+import '../theme/haptic_controller.dart';
 
 class ExpandedContent extends StatefulWidget {
   ExpandedContent({required this.content, required this.title});
@@ -45,6 +47,7 @@ class _ExpandedContentState extends State<ExpandedContent> {
               splashColor: Colors.transparent,
               hoverColor: Colors.transparent,
               onTap: () {
+                HapticController.low();
                 isHide = !isHide;
                 setState(() {});
               },
@@ -70,7 +73,8 @@ class _ExpandedContentState extends State<ExpandedContent> {
             )
           ],
         ),
-        if (!isHide) widget.content,
+        // Implicit animation: the content expands / collapses smoothly.
+        ImplicitExpand(expanded: !isHide, child: widget.content),
       ],
     );
   }

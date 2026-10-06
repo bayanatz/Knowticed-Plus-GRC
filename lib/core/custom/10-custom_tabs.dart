@@ -20,6 +20,8 @@ import 'package:get/get.dart';
 
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
+import '../theme/app_animations.dart';
+import '../theme/haptic_controller.dart';
 
 /// ```dart
 /// CustomTabs(
@@ -80,7 +82,10 @@ class CustomTabs extends StatelessWidget {
             if (i > 0) SizedBox(width: spacing ?? 32.sp),
             GestureDetector(
               onTap: () {
-                if (selectedValue != tabValues[i]) onChanged(tabValues[i]);
+                if (selectedValue != tabValues[i]) {
+                  HapticController.low(); // tab switch
+                  onChanged(tabValues[i]);
+                }
               },
               child: IntrinsicWidth(
                 child: Column(

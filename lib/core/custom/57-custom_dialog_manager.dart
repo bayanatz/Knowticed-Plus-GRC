@@ -29,6 +29,8 @@ import 'package:grc_module/core/custom/5-custom_button.dart';
 import 'package:grc_module/core/custom/44-custom_validated_textfield.dart';
 import 'package:grc_module/core/custom/2-custom_textfield.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
+import '../theme/haptic_controller.dart';
 
 class CustomDialogManager {
   /// Shows a blocking loading indicator while [task] runs, then closes it.
@@ -129,10 +131,14 @@ class CustomDialogManager {
     // ✅ CREATE A COMPLETER TO TRACK WHEN EVERYTHING IS DONE
     final completer = Completer<void>();
 
-    await showDialog(
+    await showAppDialog(
       context: context,
       barrierDismissible: true,
       useRootNavigator: true,
+      // Delete / remove / log out "are you sure" -> shake once + high haptic;
+      // every other confirm scales in.
+      destructive: HapticController.isDestructiveText(
+          '$confirmTitle $confirmSubtitle $confirmYesText'),
       builder: (dlgCtx) {
         final isMobile = ContextExtension(dlgCtx).isPhone;
         return Dialog(
@@ -330,7 +336,7 @@ class CustomDialogManager {
         }
       });
     }
-    return showDialog(
+    return showAppDialog(
       context: context,
       barrierDismissible: true,
       useRootNavigator: true,
@@ -446,7 +452,7 @@ class CustomDialogManager {
     /// 500, so every existing call site is unchanged.
     double? width,
   }) {
-    return showDialog(
+    return showAppDialog(
       context: context,
       barrierDismissible: true,
       useRootNavigator: true,
@@ -555,7 +561,7 @@ class CustomDialogManager {
     final bool isMobile = ContextExtension(context).isPhone;
     final bool isLight = Theme.of(context).brightness == Brightness.light;
 
-    await showDialog(
+    await showAppDialog(
       context: context,
       barrierDismissible: true,
       useRootNavigator: true,
@@ -707,7 +713,7 @@ class CustomDialogManager {
   }) {
     final bool isLight = Theme.of(context).brightness == Brightness.light;
 
-    return showDialog<T>(
+    return showAppDialog<T>(
       context: context,
       barrierDismissible: barrierDismissible,
       useRootNavigator: true,
@@ -749,7 +755,7 @@ class CustomDialogManager {
     final TextEditingController fileNameController =
         TextEditingController(text: initialFileName ?? '');
 
-    await showDialog(
+    await showAppDialog(
       context: context,
       barrierDismissible: true,
       useRootNavigator: true,
@@ -898,7 +904,7 @@ class CustomDialogManager {
     // approving twice and notifying the next approver twice.
     bool isSubmitting = false;
 
-    final result = await showDialog<bool>(
+    final result = await showAppDialog<bool>(
 
       context: context,
       barrierDismissible: !isRequired,
@@ -1079,7 +1085,7 @@ class CustomDialogManager {
     BuildContext? dialogCtx; // capture the dialog's own context
 
     // IMPORTANT: barrierDismissible=false so users can't dismiss before auto-close
-    await showDialog(
+    await showAppDialog(
       context: context,
       barrierDismissible: true,
       useRootNavigator: true,

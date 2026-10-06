@@ -49,6 +49,7 @@ import 'package:grc_module/core/custom/95-custom_pie_chart_card.dart';
 import 'package:grc_module/core/custom/96-custom_radial_bar_chart_card.dart';
 import 'package:grc_module/core/custom/97-custom_table_chart_card.dart';
 import 'package:grc_module/generated/l10n.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 /// One grid column — Pie Chart and Donut Chart.
 const double kHomeChartNarrowWidth = 125;
@@ -189,7 +190,9 @@ class HomeTableChart extends StatelessWidget {
       TableChartCell(text: l.rejected, textColor: AppColors.red),
     ];
 
-    return _ChartCell(
+    return AnimatedSizeWrap(
+      // Tables animate their size (rows added / removed / filtered).
+      child: _ChartCell(
       width: kHomeChartWideWidth,
       child: TableChartCard(
         title: l.tableChart,
@@ -222,6 +225,7 @@ class HomeTableChart extends StatelessWidget {
             ),
         ],
       ),
+    ),
     );
   }
 }

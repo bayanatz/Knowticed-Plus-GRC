@@ -51,6 +51,7 @@ import 'package:grc_module/features/onboarding/o3_authentication/presentation/ui
 import 'package:grc_module/features/roles/r4_active_directory/data/models/employees_model/new_employee_model.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/main.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 class ResetPassword extends StatefulWidget {
   const ResetPassword({
@@ -521,7 +522,7 @@ class _ResetPasswordState extends State<ResetPassword> {
     result.fold(
       (failure) => _showMessage(failure.errMessage),
       (_) {
-        showDialog(
+        showAppDialog(
           context: context,
           builder: (_) => ResponseDialog(
             title: S.of(context).successful,

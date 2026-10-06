@@ -25,6 +25,7 @@ import 'package:grc_module/core/custom/5-custom_button.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/features/grc/action_center/domain/entities/grc_action_issue.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 /// Recommendation text colour (Figma dark yellow).
 const Color kGrcRecommendationColor = Color(0xFFC9A000);
@@ -139,7 +140,9 @@ class GrcActionCenterTable extends StatelessWidget {
     final base = _baseWidths;
     final double minWidth = base.fold(0, (s, w) => s + w);
 
-    return Directionality(
+    return AnimatedSizeWrap(
+      // Tables animate their size (rows added / removed / filtered).
+      child: Directionality(
       textDirection: isArabic ? ui.TextDirection.rtl : ui.TextDirection.ltr,
       child: LayoutBuilder(
         builder: (context, constraints) {
@@ -205,6 +208,7 @@ class GrcActionCenterTable extends StatelessWidget {
           );
         },
       ),
+    ),
     );
   }
 }

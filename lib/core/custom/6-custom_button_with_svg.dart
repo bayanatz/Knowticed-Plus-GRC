@@ -14,6 +14,7 @@ import 'package:grc_module/core/theme/haptic_controller.dart';
 import 'package:grc_module/core/custom/41-custom_button_sizing.dart';
 
 import 'package:grc_module/core/custom/32-custom_svg.dart';
+import '../theme/app_animations.dart';
 
 Widget customButtonWithSvg({
   required String title,
@@ -110,9 +111,14 @@ Widget customButtonWithSvg({
             : inner;
       }
 
-      return GestureDetector(
+      return appPressFeedback(
+        color: color,
+        child: GestureDetector(
         onTap: () {
-          HapticController.medium(); // action button
+          HapticController.forLabel(title,
+              fallback: isYellowButton(color)
+                  ? HapticLevel.medium
+                  : HapticLevel.low);
           function();
         },
         child: Container(
@@ -126,7 +132,7 @@ Widget customButtonWithSvg({
           ),
           child: content,
         ),
-      );
+      ));
     },
   );
 }

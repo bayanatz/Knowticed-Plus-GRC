@@ -46,6 +46,7 @@ import 'package:grc_module/features/settings/main_controller/presentation/ui/pag
 import 'package:grc_module/core/custom/32-custom_svg.dart';
 import 'package:grc_module/core/custom/5-custom_button.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 class PreviewHealthInsuranceChangesPage extends StatefulWidget {
   final Map<String, dynamic> changes;
 
@@ -1077,7 +1078,7 @@ class _PreviewHealthInsuranceChangesPageState extends State<PreviewHealthInsuran
     required VoidCallback onConfirm,
   }) async {
     var isMobile = ContextExtension(context).isPhone;
-    return showDialog(
+    return showAppDialog(
       context: context,
       barrierDismissible: true,
       builder: (context) => Dialog(

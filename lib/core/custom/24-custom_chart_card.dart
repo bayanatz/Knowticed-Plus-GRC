@@ -16,6 +16,8 @@ import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
 import 'package:grc_module/core/custom/32-custom_svg.dart';
 import 'package:grc_module/core/custom/16-custom_card_styles.dart';
+import '../theme/app_animations.dart';
+import '../theme/haptic_controller.dart';
 
 /// SVG icon assets used by the chart widgets.
 /// All paths point to existing, pubspec-declared assets in assets/icons_assets.
@@ -275,7 +277,7 @@ class ChartTabPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap,
+      onTap: withHaptic(onTap, HapticLevel.low),
       borderRadius: BorderRadius.circular(20.r),
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),

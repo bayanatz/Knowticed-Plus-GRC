@@ -29,6 +29,7 @@ import 'package:grc_module/generated/l10n.dart';
 
 import 'edit_owner_controls_page.dart';
 import 'reassign_owner_page.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 class ControlOwnerDetailsPage extends StatelessWidget {
   final OwnerEntity owner;
@@ -189,7 +190,7 @@ class _ControlOwnerDetailsBodyState
                 context,
                 MaterialPageRoute(builder: (_) => page),
               )
-            : await showDialog<OwnerEntity>(
+            : await showAppDialog<OwnerEntity>(
                 context: context,
                 builder: (_) => page,
               );

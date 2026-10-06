@@ -11,6 +11,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 
 import 'package:grc_module/core/theme/app_colors.dart';
+import '../theme/app_animations.dart';
+import '../theme/haptic_controller.dart';
 
 
 class DefaultSwitchButton extends StatelessWidget {
@@ -39,7 +41,10 @@ class DefaultSwitchButton extends StatelessWidget {
         activeColor: AppColors.secondaryPrimary,
         inactiveColor: Colors.grey.withOpacity(.16),
         value: value,
-        onToggle: onChanged,
+        onToggle: (v) {
+          HapticController.low();
+          onChanged(v);
+        },
       ),
     );
   }

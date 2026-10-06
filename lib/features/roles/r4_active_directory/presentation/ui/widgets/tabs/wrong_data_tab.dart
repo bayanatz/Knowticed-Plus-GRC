@@ -31,6 +31,7 @@ import 'package:grc_module/core/theme/theme_controller.dart';
 import 'package:grc_module/features/roles/r4_active_directory/presentation/ui/widgets/table/default_data_table.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/core/di/app_controllers.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 /// Was `extends GetView<ActiveDirectoryController>`, whose inherited
 /// `controller` getter is a GetX service-locator lookup. Now a plain
@@ -137,7 +138,8 @@ class WrongData extends StatelessWidget {
                                 controller.refresh();
                               } else {
                                 // Remove row confirmation
-                                showDialog(
+                                showAppDialog(
+      destructive: true,
                                   context: context,
                                   builder: (_) => _RemoveConfirmDialog(
                                     onConfirm: () async {
@@ -145,7 +147,7 @@ class WrongData extends StatelessWidget {
                                       await controller
                                           .removeInvalidEmployee(row);
                                       if (context.mounted) {
-                                        showDialog(
+                                        showAppDialog(
                                           context: context,
                                           builder: (_) =>
                                           const _SuccessRemoveDialog(),

@@ -21,6 +21,9 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import 'app_colors.dart';
+import 'haptic_controller.dart';
+
 // ============================================================================
 // 1. SLIDE  ->  PAGE COMPONENTS
 // ----------------------------------------------------------------------------
@@ -407,6 +410,8 @@ class AnimatedSizeWrap extends StatelessWidget {
       duration: duration,
       curve: curve,
       alignment: alignment,
+      // Do not cut card shadows / borders around the table.
+      clipBehavior: Clip.none,
       child: child,
     );
   }
@@ -498,4 +503,144 @@ class ImplicitExpand extends StatelessWidget {
       ),
     );
   }
+}
+
+// ============================================================================
+// 8. DIALOG HELPER  ->  SCALE (normal dialogs) / SHAKE ONCE (destructive)
+// ----------------------------------------------------------------------------
+// Drop-in for showDialog. Normal dialogs scale in; "are you sure" dialogs
+// (delete / remove / log out) shake ONCE and give a HIGH haptic instead.
+// A dialog widget is destructive when it implements [DestructiveDialog] or
+// when `destructive: true` is passed.
+// ============================================================================
+
+/// Marker for "are you sure" dialogs (delete / remove / log out). Dialogs
+/// that implement it shake once (no scale) when shown with [showAppDialog].
+abstract class DestructiveDialog {
+  bool get isDestructive;
+}
+
+Future<T?> showAppDialog<T>({
+  required BuildContext context,
+  required WidgetBuilder builder,
+  bool barrierDismissible = true,
+  Color? barrierColor,
+  String? barrierLabel,
+  bool useSafeArea = true,
+  bool useRootNavigator = true,
+  RouteSettings? routeSettings,
+  Offset? anchorPoint,
+  bool? destructive,
+}) {
+  bool hapticDone = false;
+  return showDialog<T>(
+    context: context,
+    barrierDismissible: barrierDismissible,
+    barrierColor: barrierColor,
+    barrierLabel: barrierLabel,
+    useSafeArea: useSafeArea,
+    useRootNavigator: useRootNavigator,
+    routeSettings: routeSettings,
+    anchorPoint: anchorPoint,
+    builder: (ctx) {
+      final Widget child = builder(ctx);
+      final bool isDestructive =
+          destructive ??
+              (child is DestructiveDialog
+                  ? (child as DestructiveDialog).isDestructive
+                  : child is ShakeOnce);
+      if (isDestructive && !hapticDone) {
+        hapticDone = true;
+        HapticController.high();
+      }
+      if (child is ShakeOnce || child is ScaleInContent) return child;
+      return isDestructive
+          ? ShakeOnce(child: child)
+          : ScaleInContent(child: child);
+    },
+  );
+}
+
+// ============================================================================
+// 9. BUTTON STANDARD  ->  yellow buttons shrink while pressed
+// ============================================================================
+
+/// True when [color] is the app's yellow (primary) button colour.
+bool isYellowButton(Color? color) =>
+    color == null || color == AppColors.primary || color == AppColors.yellow;
+
+/// Wraps a button so that, when it is yellow, it gets smaller while pressed.
+Widget appPressFeedback({required Color? color, required Widget child}) =>
+    isYellowButton(color) ? ShrinkOnTap(child: child) : child;
+
+/// Gives a LOW haptic and returns [value] — used for widget toggles such as
+/// the list / grid switch: `isGridView = withLowHaptic(true)`.
+T withLowHaptic<T>(T value) {
+  HapticController.low();
+  return value;
+}
+
+/// SLIDE for page components that switch in place (e.g. the module shown
+/// next to the drawer): whenever [triggerValue] changes, the child slides in
+/// again — without being re-created, so the page keeps its state.
+class SlideSwitcher extends StatefulWidget {
+  final Widget child;
+  final Object? triggerValue;
+  final Duration duration;
+  final double offset;
+
+  const SlideSwitcher({
+    Key? key,
+    required this.child,
+    required this.triggerValue,
+    this.duration = const Duration(milliseconds: 350),
+    this.offset = 0.06,
+  }) : super(key: key);
+
+  @override
+  State<SlideSwitcher> createState() => _SlideSwitcherState();
+}
+
+class _SlideSwitcherState extends State<SlideSwitcher>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller =
+      AnimationController(duration: widget.duration, vsync: this)..value = 1;
+  late final Animation<double> _curve =
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic);
+
+  @override
+  void didUpdateWidget(covariant SlideSwitcher oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.triggerValue != widget.triggerValue) {
+      _controller.forward(from: 0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SlideTransition(
+      position: Tween<Offset>(
+        begin: Offset(0, widget.offset),
+        end: Offset.zero,
+      ).animate(_curve),
+      child: FadeTransition(opacity: _curve, child: widget.child),
+    );
+  }
+}
+
+/// Wraps a tap callback with a standard haptic (default LOW: widgets/cards).
+/// Returns null when [callback] is null so disabled widgets stay disabled.
+void Function()? withHaptic(void Function()? callback,
+    [HapticLevel level = HapticLevel.low]) {
+  if (callback == null) return null;
+  return () {
+    HapticController.level(level);
+    callback();
+  };
 }

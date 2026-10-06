@@ -22,6 +22,7 @@ import 'package:grc_module/features/roles/r1_role_management/presentation/contro
 import 'package:grc_module/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
 import 'package:grc_module/features/roles/r1_role_management/presentation/ui/widgets/permission_label.dart';
 import 'package:grc_module/generated/l10n.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 class RoleTableView extends StatelessWidget {
   final List<RoleHistoryModel> roles;
   final String locale;
@@ -357,7 +358,9 @@ class RoleTableView extends StatelessWidget {
       }
     }
 
-    return Directionality(
+    return AnimatedSizeWrap(
+      // Tables animate their size (rows added / removed / filtered).
+      child: Directionality(
       textDirection:
       _isArabic ? ui.TextDirection.rtl : ui.TextDirection.ltr,
       child: SingleChildScrollView(
@@ -492,6 +495,7 @@ class RoleTableView extends StatelessWidget {
           ),
         ),
       ),
+    ),
     );
   }
 }

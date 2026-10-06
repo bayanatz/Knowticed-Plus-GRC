@@ -54,6 +54,7 @@ import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/generated/l10n.dart';
 
 import 'package:grc_module/features/roles/shared_mobile_export/mobile_export_person.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // GEOMETRY
@@ -943,7 +944,7 @@ class MobileExportFileNameDialog extends StatefulWidget {
     required String defaultFileName,
     required Future<Either<String, String>> Function(String fileName) onExport,
   }) async {
-    final bool? exported = await showDialog<bool>(
+    final bool? exported = await showAppDialog<bool>(
       context: context,
       useRootNavigator: true,
       barrierDismissible: true,

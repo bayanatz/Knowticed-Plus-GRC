@@ -26,6 +26,7 @@ import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/mo
 
 import 'package:grc_module/core/custom/32-custom_svg.dart';
 import 'package:grc_module/core/custom/5-custom_button.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 class AddComponentWrapper extends StatelessWidget {
   AddComponentWrapper(
       {required this.component, required this.model, super.key});
@@ -35,7 +36,7 @@ class AddComponentWrapper extends StatelessWidget {
   void _showSLADialog(BuildContext context) {
     final TextEditingController textController = TextEditingController();
 
-    showDialog(
+    showAppDialog(
       context: context,
       builder: (BuildContext dialogContext) {
         return Dialog(

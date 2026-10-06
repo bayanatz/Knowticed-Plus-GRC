@@ -17,13 +17,15 @@ import 'package:grc_module/core/custom/5-custom_button.dart';
 import 'package:grc_module/core/custom/6-custom_button_with_svg.dart';
 import 'package:grc_module/core/helper/role/validator.dart';
 import 'package:grc_module/generated/l10n.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 abstract class CrmControlDialogs {
   static Future<bool> showBlacklistConfirmationDialog({
     required BuildContext context,
     required bool isRemoval,
   }) async {
-    final bool? confirmed = await showDialog<bool>(
+    final bool? confirmed = await showAppDialog<bool>(
+      destructive: true,
       context: context,
       barrierDismissible: true,
       builder: (BuildContext dialogContext) => Dialog(
@@ -105,7 +107,7 @@ abstract class CrmControlDialogs {
   }) async {
     final TextEditingController controller = TextEditingController();
     String? errorText;
-    final String? reason = await showDialog<String>(
+    final String? reason = await showAppDialog<String>(
       context: context,
       barrierDismissible: true,
       builder: (BuildContext dialogContext) => StatefulBuilder(
@@ -203,7 +205,7 @@ abstract class CrmControlDialogs {
     VoidCallback? onComplete,
   }) async {
     BuildContext? dialogContext;
-    showDialog(
+    showAppDialog(
       context: context,
       barrierDismissible: true,
       builder: (ctx) {
@@ -266,7 +268,7 @@ abstract class CrmControlDialogs {
     required String title,
     required String subtitle,
   }) async {
-    return showDialog(
+    return showAppDialog(
       context: context,
       barrierDismissible: true,
       builder: (BuildContext ctx) {
@@ -330,7 +332,8 @@ abstract class CrmControlDialogs {
     required String subtitle,
     required VoidCallback onConfirm,
   }) async {
-    showDialog(
+    showAppDialog(
+      destructive: true,
       context: context,
       barrierDismissible: true,
       builder: (ctx) {
@@ -428,7 +431,7 @@ abstract class CrmControlDialogs {
     required String subtitle,
     required FutureOr<void> Function() onConfirm,
   }) async {
-    await showDialog(
+    await showAppDialog(
       context: context,
       barrierDismissible: true,
       builder: (ctx) {
@@ -518,7 +521,7 @@ abstract class CrmControlDialogs {
     required BuildContext context,
     required Future<void> Function() onConfirm,
   }) async {
-    await showDialog(
+    await showAppDialog(
       context: context,
       barrierDismissible: true,
       builder: (ctx) {
@@ -617,7 +620,7 @@ abstract class CrmControlDialogs {
     final TextEditingController nameEnController = TextEditingController();
     final TextEditingController nameArController = TextEditingController();
 
-    await showDialog(
+    await showAppDialog(
       context: context,
       barrierDismissible: true,
       builder: (ctx) {
@@ -811,7 +814,7 @@ abstract class CrmControlDialogs {
     final TextEditingController nameArController =
         TextEditingController(text: nameAr);
 
-    await showDialog(
+    await showAppDialog(
       context: context,
       barrierDismissible: true,
       builder: (ctx) {

@@ -45,6 +45,7 @@ import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
 import 'package:grc_module/core/helper/role/modules_enum.dart';
 import 'package:grc_module/features/roles/r1_role_management/domain/enums/notification/notification_permissions_enum.dart';
 import 'package:grc_module/features/roles/r1_role_management/domain/enums/notification/notification_sections_enum.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 class NotificationEditPage extends StatefulWidget {
   final NotificationItem notificationItem;
@@ -267,7 +268,7 @@ class _NotificationEditPageState extends State<NotificationEditPage> {
   void _showPreviewDialog(BuildContext context) {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
-    showDialog(
+    showAppDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(isArabic ? "معاينة الإشعار" : "Notification Preview"),

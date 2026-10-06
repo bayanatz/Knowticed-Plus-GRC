@@ -63,7 +63,7 @@ const double _kRestoreCellWidth = 170;
 /// Parameters:
 /// - [context]: The page context, used for both dialogs.
 Future<void> _showRestoreBackupDialog(BuildContext context) async {
-  final String? backupVersion = await showDialog<String>(
+  final String? backupVersion = await showAppDialog<String>(
     context: context,
     barrierDismissible: true,
     useRootNavigator: true,

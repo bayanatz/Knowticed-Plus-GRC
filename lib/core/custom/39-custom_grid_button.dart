@@ -13,6 +13,7 @@ import 'package:grc_module/core/theme/haptic_controller.dart';
 import 'package:grc_module/core/custom/41-custom_button_sizing.dart';
 
 import 'package:grc_module/core/custom/32-custom_svg.dart';
+import '../theme/app_animations.dart';
 
 Widget customGridButton({
   required VoidCallback function,
@@ -28,10 +29,13 @@ Widget customGridButton({
 }) {
   return GestureDetector(
     onTap: () {
-      HapticController.medium(); // action button
+      HapticController.low(); // list / grid view switch
       function();
     },
-    child: Container(
+    child: BounceSwitcher(
+      // Bounce when switching between list and grid views.
+      triggerValue: isSelected,
+      child: Container(
       width: ButtonSizing.iconButtonSize, // 38.sp × 38.sp on all devices
       height: ButtonSizing.iconButtonSize,
       alignment: Alignment.center,
@@ -50,7 +54,7 @@ Widget customGridButton({
             : (svgColor ?? AppColors.text),
         fit: BoxFit.scaleDown,
       ),
-    ),
+    )),
   );
 }
 

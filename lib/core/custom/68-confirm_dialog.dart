@@ -17,6 +17,8 @@ import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/core/custom/5-custom_button.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
+import '../theme/haptic_controller.dart';
 
 class ConfirmDialog {
   show(
@@ -29,8 +31,11 @@ class ConfirmDialog {
     String? onConfirmText,
     String? onCancelText,
   }) {
-    return showDialog(
+    return showAppDialog(
       context: context,
+      // Delete / remove / log out -> shake once + high haptic; else scale.
+      destructive: HapticController.isDestructiveText(
+          '$title $subtitle ${onConfirmText ?? ''}'),
       // false = user must tap button, true = tap outside dialog
       builder: (BuildContext dialogContext) {
         return Dialog(

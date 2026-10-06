@@ -47,6 +47,7 @@ import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
 
 import 'package:grc_module/core/custom/5-custom_button.dart';
 import 'package:grc_module/core/custom/6-custom_button_with_svg.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 part '../widgets/upload_methods1.dart';
 part '../widgets/upload_methods2.dart';
 part '../widgets/upload_customexceltextfield.dart';

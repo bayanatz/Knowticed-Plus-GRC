@@ -110,6 +110,7 @@ import './85-module_page_stubs.dart' as stubs;
 import './86-removed_module_placeholder.dart';
 import './87-responsive_card_grid.dart';
 import './88-stacked_avatars.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 ///*************************** FILE INFO ****************************///
 /// File Name: preview_all_custom.dart
@@ -875,7 +876,7 @@ class _PreviewAllCustomPageState extends State<PreviewAllCustomPage> {
           _section('64 · ResponseDialog',
               customButton(
                 title: 'Show response dialog',
-                function: () => showDialog(
+                function: () => showAppDialog(
                   context: context,
                   builder: (_) => const ResponseDialog(
                     title: 'Done',

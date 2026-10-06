@@ -13,6 +13,7 @@ import 'package:lottie/lottie.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/generated/l10n.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 /// Success/result dialog.
 ///
@@ -36,7 +37,7 @@ class SuccessDialog extends StatelessWidget {
   final String lottieAsset;
 
   static void show(BuildContext context, {String? message}) {
-    showDialog(
+    showAppDialog(
       context: context,
       builder: (_) => AlertDialog(
         title: Text(S.current.success),

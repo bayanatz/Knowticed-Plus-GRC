@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 
 import 'package:grc_module/core/extensions/calendar_package/src/models/calendar_date_picker2_config.dart';
 import 'package:grc_module/core/extensions/calendar_package/src/widgets/calendar_date_picker2_with_action_buttons.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 Future<List<DateTime?>?> showCalendarDatePicker2Dialog({
   required BuildContext context,
@@ -53,7 +54,7 @@ Future<List<DateTime?>?> showCalendarDatePicker2Dialog({
     ),
   );
 
-  return showDialog<List<DateTime?>>(
+  return showAppDialog<List<DateTime?>>(
     context: context,
     useRootNavigator: useRootNavigator,
     routeSettings: routeSettings,

@@ -17,6 +17,7 @@ import 'package:grc_module/core/custom/5-custom_button.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/generated/l10n.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 /// A single colour field that opens the flex_color_picker dialog on tap.
 ///
@@ -76,7 +77,7 @@ class CustomColorPickerField extends StatelessWidget {
     // `onColorChanged`; nothing is handed back to the caller until Save.
     Color working = start;
 
-    final bool? saved = await showDialog<bool>(
+    final bool? saved = await showAppDialog<bool>(
       context: context,
       builder: (BuildContext dialogContext) {
         return AlertDialog(

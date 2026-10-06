@@ -24,7 +24,13 @@ import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/core/custom/5-custom_button.dart';
 
 import 'package:grc_module/core/custom/33-custom_haptic.dart';
-class CustomLogOutDialogBox extends StatelessWidget {
+import '../theme/app_animations.dart';
+class CustomLogOutDialogBox extends StatelessWidget
+    implements DestructiveDialog {
+  /// Log out / delete "are you sure" -> shake once + high haptic.
+  @override
+  bool get isDestructive => showButtons;
+
   final String title;
   final String subtitle;
   final String imagePath;
@@ -126,10 +132,6 @@ class CustomLogOutDialogBox extends StatelessWidget {
                       child: customButton(
                         title: S.of(context).Cancel,
                         function: () {
-                          hapticController.triggerHapticFeedback(
-                            vibration: VibrateType.lightImpact,
-                            hapticFeedback: HapticFeedback.lightImpact,
-                          );
                           Navigator.pop(context, false);
                         },
                         // Was a raw `Colors.black`, which disappears against

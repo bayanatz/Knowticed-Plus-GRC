@@ -12,6 +12,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/custom/16-custom_card_styles.dart';
+import '../theme/app_animations.dart';
+import '../theme/haptic_controller.dart';
 
 /// Compact card: leading icon box + title + info rows + footer date.
 ///
@@ -50,7 +52,7 @@ class ServiceSummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap,
+      onTap: withHaptic(onTap, HapticLevel.low),
       borderRadius: CardStyles.radius(),
       child: Container(
         width: width ?? 325.w,

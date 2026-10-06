@@ -61,6 +61,7 @@ import 'package:grc_module/core/di/app_controllers.dart';
 import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
 import 'package:grc_module/features/roles/r5_system_logs/presentation/ui/pages/logs_mobile_export_details_page.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 class SystemLogsTable extends StatefulWidget {
   const SystemLogsTable({super.key});
@@ -148,7 +149,9 @@ class _SystemLogsTableState extends State<SystemLogsTable> {
     // that `DefaultDataTable` now measures for itself.
     bool isPortrait =
         MediaQuery.of(context).orientation == Orientation.portrait;
-    return Scaffold(
+    return AnimatedSizeWrap(
+      // Tables animate their size (rows added / removed / filtered).
+      child: Scaffold(
       // BlocConsumer, not BlocBuilder: the cubit no longer opens dialogs or
       // toggles the loading overlay itself (§16), so this page presents the
       // outcomes it publishes.
@@ -208,6 +211,7 @@ class _SystemLogsTableState extends State<SystemLogsTable> {
           ],
         );
       }),
+    ),
     );
   }
 

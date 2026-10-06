@@ -218,7 +218,7 @@ void _showFilterPanel(BuildContext context) {
       ..sort();
   }
 
-  showDialog(
+  showAppDialog(
     context: context,
     builder: (_) => _ActiveDirectoryFilterDialog(
       // Pre-populate current selections so re-opening shows previous state

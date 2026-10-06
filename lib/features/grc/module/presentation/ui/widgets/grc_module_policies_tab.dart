@@ -40,6 +40,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/features/grc/shared/helpers/grc_l10n.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 /// class name: [GrcModulePoliciesTab]
 ///
@@ -486,7 +487,7 @@ class _GrcModulePoliciesTabState extends State<GrcModulePoliciesTab> {
                 // 375px, so phones stay on cards (also what roles does).
                 if (screenSizeOf(context) != ScreenSize.mobile) ...[
                   customTableButton(
-                    function: () => setState(() => _isGridView = false),
+                    function: () => setState(() => _isGridView = withLowHaptic(false)),
                     isSelected: !_isGridView,
                     color: AppColors.card,
                     selectedColor: AppColors.primary,
@@ -497,7 +498,7 @@ class _GrcModulePoliciesTabState extends State<GrcModulePoliciesTab> {
                   ),
                   SizedBox(width: 8.sp),
                   customGridButton(
-                    function: () => setState(() => _isGridView = true),
+                    function: () => setState(() => _isGridView = withLowHaptic(true)),
                     isSelected: _isGridView,
                     color: AppColors.card,
                     selectedColor: AppColors.primary,
@@ -526,19 +527,27 @@ class _GrcModulePoliciesTabState extends State<GrcModulePoliciesTab> {
     List<PolicyEntity> policies,
   ) {
     if (state is PolicyLoading) {
-      return Center(
+      return BounceSwitcher(
+      // Bounce when switching list <-> grid view.
+      triggerValue: _isGridView,
+      child: Center(
         child: const CircleProgressMaster(),
-      );
+      ),
+    );
     }
 
     if (state is PolicyFailure) {
-      return Center(
+      return BounceSwitcher(
+      // Bounce when switching list <-> grid view.
+      triggerValue: _isGridView,
+      child: Center(
         child: Text(
           state.message,
           style: StyleText.fontSize14Weight500.copyWith(color: AppColors.red),
           textAlign: TextAlign.center,
         ),
-      );
+      ),
+    );
     }
 
     // The app's one empty state: the lottie_empty animation, centred, no
@@ -554,7 +563,10 @@ class _GrcModulePoliciesTabState extends State<GrcModulePoliciesTab> {
       // No SingleChildScrollView here: GrcPolicyTableView already owns both
       // scrollers (horizontal outside, vertical inside), and wrapping it in a
       // second vertical one would hand its inner viewport an unbounded height.
-      return ScrollConfiguration(
+      return BounceSwitcher(
+      // Bounce when switching list <-> grid view.
+      triggerValue: _isGridView,
+      child: ScrollConfiguration(
         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
         child: GrcPolicyTableView(
           policies: policies,
@@ -562,7 +574,8 @@ class _GrcModulePoliciesTabState extends State<GrcModulePoliciesTab> {
           onPolicyTap: (policy) =>
               openGrcPolicy(context, policy, widget.module),
         ),
-      );
+      ),
+    );
     }
 
     // Controls count + departments for each policy. Empty until PolicyCubit's
@@ -572,7 +585,10 @@ class _GrcModulePoliciesTabState extends State<GrcModulePoliciesTab> {
             ? state.controlsSummary
             : const <String, PolicyControlsSummary>{};
 
-    return ScrollConfiguration(
+    return BounceSwitcher(
+      // Bounce when switching list <-> grid view.
+      triggerValue: _isGridView,
+      child: ScrollConfiguration(
       behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
       child: ListView.separated(
         itemCount: policies.length,
@@ -589,6 +605,7 @@ class _GrcModulePoliciesTabState extends State<GrcModulePoliciesTab> {
           );
         },
       ),
+    ),
     );
   }
 }

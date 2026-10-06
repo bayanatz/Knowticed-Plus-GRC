@@ -42,6 +42,7 @@ import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/features/roles/r3_user_access/domain/entities/user_access_entity.dart';
 import 'package:grc_module/features/roles/r3_user_access/presentation/controller/user_access_cubit.dart';
 import 'package:grc_module/generated/l10n.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 /// Copy used by the User Access flows that has no generated l10n key yet.
 ///
@@ -134,7 +135,7 @@ class UserAccessDialogs {
     int amount = int.tryParse(entity.expirationTimeOfPassword) ?? 1;
     String unit = entity.expirationTimeUnit;
 
-    final bool saved = await showDialog<bool>(
+    final bool saved = await showAppDialog<bool>(
           context: context,
           barrierDismissible: true,
           useRootNavigator: true,
@@ -238,7 +239,7 @@ class UserAccessDialogs {
             ? UserAccessStrings.scheduledForReactivate(context)
             : UserAccessStrings.scheduledForActivate(context));
 
-    final bool saved = await showDialog<bool>(
+    final bool saved = await showAppDialog<bool>(
           context: context,
           barrierDismissible: true,
           useRootNavigator: true,

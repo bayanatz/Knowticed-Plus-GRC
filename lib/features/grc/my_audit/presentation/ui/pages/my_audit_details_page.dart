@@ -37,6 +37,7 @@ import 'package:grc_module/core/helper/main_helper/pagination_app_bar.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/features/grc/shared/helpers/grc_l10n.dart';
 import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 final DateFormat _cardDateFormat = DateFormat('d MMM yyyy');
 final DateFormat _cardTimeFormat = DateFormat('h:mm a');
@@ -134,7 +135,7 @@ class _MyAuditDetailsPageState extends State<MyAuditDetailsPage> {
         text: widget.item.audit?.controlScore?.toString() ?? '');
     final justificationController = TextEditingController(
         text: widget.item.audit?.controlOwnerJustification ?? '');
-    showDialog(
+    showAppDialog(
       context: context,
       barrierColor: AppColors.totalBlack.withValues(alpha: 0.4),
       builder: (dialogContext) => Dialog(

@@ -29,6 +29,7 @@ import 'package:desktop_drop/desktop_drop.dart'; // Add this dependency
 import 'package:grc_module/generated/l10n.dart';
 
 import 'package:grc_module/core/custom/5-custom_button.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 part '../widgets/import_page_methods1.dart';
 part '../widgets/import_page_methods2.dart';
 

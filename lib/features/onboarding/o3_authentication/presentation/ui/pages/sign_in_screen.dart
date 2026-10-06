@@ -56,6 +56,7 @@ import 'package:grc_module/features/onboarding/o3_authentication/presentation/co
 import 'package:grc_module/features/onboarding/o3_authentication/presentation/ui/widgets/forgot_password_dialog.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/main.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 /// Hero artwork shared by the portrait header and the landscape side panel —
 /// the same file Knowticed uses.
@@ -248,7 +249,7 @@ class _SignInScreenState extends State<SignInScreen> {
     hapticController.triggerHapticFeedback(
         vibration: VibrateType.mediumImpact,
         hapticFeedback: HapticFeedback.mediumImpact);
-    showDialog(
+    showAppDialog(
       context: context,
       builder: (_) => const ForgotPasswordDialog(),
     );
@@ -265,7 +266,9 @@ class _SignInScreenState extends State<SignInScreen> {
     final String password = loginController.passcontroller.text;
 
     if (email.isEmpty || password.isEmpty) {
-      showDialog(
+      showAppDialog(
+      // Login error -> shake once.
+      destructive: true,
         context: context,
         builder: (_) => ResponseDialog(
           title: S.of(context).missingInformation,
@@ -299,7 +302,7 @@ class _SignInScreenState extends State<SignInScreen> {
       loginController.login(context, email, password);
     } else {
       if (!mounted) return;
-      showDialog(
+      showAppDialog(
         context: context,
         builder: (_) => ResponseDialog(
           title: S.of(context).error,

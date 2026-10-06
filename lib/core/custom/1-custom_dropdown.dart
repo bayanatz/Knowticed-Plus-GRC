@@ -13,6 +13,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/core/custom/32-custom_svg.dart';
+import '../theme/app_animations.dart';
+import '../theme/haptic_controller.dart';
 
 /// The one placeholder colour every dropdown in the app uses.
 ///
@@ -456,7 +458,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>>
     final Widget trigger = _sized(CompositedTransformTarget(
       link: _layerLink,
       child: GestureDetector(
-        onTap: _toggleDropdown,
+        onTap: withHaptic(_toggleDropdown, HapticLevel.low),
         // InputDecorator asserts it must have a bounded width. When this
         // dropdown is placed in a parent that provides an unbounded width
         // (e.g. a Row/Column without Expanded/Flexible/SizedBox), fall back

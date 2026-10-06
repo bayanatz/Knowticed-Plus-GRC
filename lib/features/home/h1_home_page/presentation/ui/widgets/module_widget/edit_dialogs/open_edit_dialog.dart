@@ -15,11 +15,12 @@ import 'package:grc_module/features/home/h1_home_page/presentation/controller/ho
 
 import 'package:grc_module/features/home/h1_home_page/domain/enums/home_components.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 class OpenEditDialog {
   show({required BuildContext context, required HomeComponentModel model}) {
     bool isTablet = MediaQuery.of(context).size.width >= 600;
-    return showDialog(
+    return showAppDialog(
         context: context,
         builder: (dialogContext) {
           return BlocProvider<AppHomeCubit>.value(

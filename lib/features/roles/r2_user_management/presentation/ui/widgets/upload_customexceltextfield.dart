@@ -75,7 +75,7 @@ class CustomExcelTextField extends StatelessWidget {
                   GestureDetector(
                     onTap: () {
                       if (errorText != null) {
-                        showDialog(
+                        showAppDialog(
                           context: context,
                           builder: (context) => AlertDialog(
                             contentPadding: EdgeInsets.symmetric(vertical: 24.sp, horizontal: 16.sp),

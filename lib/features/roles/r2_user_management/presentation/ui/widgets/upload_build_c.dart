@@ -33,7 +33,7 @@ extension UploadBuildC on _UploadFileDetailsTabletRolesState {
                     title: S.of(context).activate,
                     function: () {
                       if (getTotalErrorCount() > 0) {
-                        showDialog(
+                        showAppDialog(
                           context: context,
                           barrierDismissible: true,
                           builder: (context) => AlertDialog(
@@ -64,7 +64,7 @@ extension UploadBuildC on _UploadFileDetailsTabletRolesState {
                       }
                       else
                       {
-                        showDialog(
+                        showAppDialog(
                           context: context,
                           barrierDismissible: true,
                           builder: (context) => AlertDialog(
@@ -138,7 +138,7 @@ extension UploadBuildC on _UploadFileDetailsTabletRolesState {
                                               final widgetContext = context;
 
                                               if (getTotalErrorCount() > 0) {
-                                                showDialog(
+                                                showAppDialog(
                                                   context: widgetContext,
                                                   barrierDismissible: true,
                                                   builder: (context) => AlertDialog(
@@ -169,7 +169,7 @@ extension UploadBuildC on _UploadFileDetailsTabletRolesState {
                                               }
                                               else
                                               {
-                                                showDialog(
+                                                showAppDialog(
                                                   context: widgetContext,
                                                   barrierDismissible: true,
                                                   builder: (dialogContext) => AlertDialog(
@@ -233,7 +233,7 @@ extension UploadBuildC on _UploadFileDetailsTabletRolesState {
                                                                   if (!mounted) return;
 
                                                                   // ✅ Use widgetContext (not dialogContext or scaffoldContext)
-                                                                  showDialog(
+                                                                  showAppDialog(
                                                                       context: widgetContext,
                                                                       barrierDismissible: true,
                                                                       builder: (context) => AlertDialog(

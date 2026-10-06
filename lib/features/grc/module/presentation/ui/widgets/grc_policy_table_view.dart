@@ -45,6 +45,7 @@ import 'package:grc_module/features/grc/policy/domain/entities/policy_entity.dar
 import 'package:grc_module/features/grc/policy/domain/entities/policy_status.dart';
 import 'package:grc_module/features/grc/shared/helpers/grc_l10n.dart';
 import 'package:grc_module/features/grc/shared/helpers/grc_table_columns.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 class GrcPolicyTableView extends StatelessWidget {
   const GrcPolicyTableView({
@@ -151,7 +152,9 @@ class GrcPolicyTableView extends StatelessWidget {
       for (int i = 0; i < widths.length; i++) i: FixedColumnWidth(widths[i]),
     };
 
-    return Directionality(
+    return AnimatedSizeWrap(
+      // Tables animate their size (rows added / removed / filtered).
+      child: Directionality(
       textDirection: isArabic ? ui.TextDirection.rtl : ui.TextDirection.ltr,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -170,6 +173,7 @@ class GrcPolicyTableView extends StatelessWidget {
           ),
         ),
       ),
+    ),
     );
   }
 

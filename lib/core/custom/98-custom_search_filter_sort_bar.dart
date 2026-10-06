@@ -10,6 +10,8 @@ import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
+import '../theme/haptic_controller.dart';
 
 /// An isolated toolbar for list pages.
 ///
@@ -185,7 +187,7 @@ class CustomSearchFilterSortBar<TFilter, TSort> extends StatelessWidget {
 
   void _handleFilterTap(BuildContext context) {
     if (filterDialogBuilder != null) {
-      showDialog<void>(context: context, builder: filterDialogBuilder!);
+      showAppDialog<void>(context: context, builder: filterDialogBuilder!);
       return;
     }
     onFilterTap?.call();
@@ -352,7 +354,7 @@ class _ToolbarActionButton extends StatelessWidget {
     final Color defaultBg = fillColor ?? AppColors.card;
 
     return GestureDetector(
-      onTap: onTap,
+      onTap: withHaptic(onTap, HapticLevel.low),
       child: Container(
         width: isPhone ? height : 100.sp,
         height: height,

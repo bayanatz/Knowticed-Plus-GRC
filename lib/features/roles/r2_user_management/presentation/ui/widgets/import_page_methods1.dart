@@ -207,7 +207,7 @@ extension ImportPageMethods1 on _UploadFileTabletRolesState {
 
     // Show loading with a key to track it
     final dialogKey = GlobalKey();
-    showDialog(
+    showAppDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
@@ -371,7 +371,7 @@ extension ImportPageMethods1 on _UploadFileTabletRolesState {
   }
   // REMOVED 12/8/2026: dead code (analyzer: unused member, 0 call sites).
   void _showErrorDialog(String message) {
-    showDialog(
+    showAppDialog(
       context: context,
       barrierDismissible: true,
       builder: (context) => AlertDialog(

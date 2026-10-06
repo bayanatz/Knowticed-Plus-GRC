@@ -15,6 +15,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/core/helper/main_helper/extensions.dart' hide ContextExtension;
+import '../theme/app_animations.dart';
+import '../theme/haptic_controller.dart';
 
 class FilterBarItem extends StatelessWidget {
   FilterBarItem(
@@ -38,7 +40,12 @@ class FilterBarItem extends StatelessWidget {
       hoverColor: Colors.transparent,
       highlightColor: Colors.transparent,
       focusColor: Colors.transparent,
-      onTap: onTap,
+      onTap: onTap == null
+          ? null
+          : () {
+              HapticController.low(); // filter widget
+              onTap!();
+            },
       child: Row(
         spacing: 16.sp,
         crossAxisAlignment: CrossAxisAlignment.center,

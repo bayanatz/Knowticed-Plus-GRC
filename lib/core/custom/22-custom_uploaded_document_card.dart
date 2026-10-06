@@ -16,6 +16,8 @@ import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/custom/16-custom_card_styles.dart';
 
 import 'package:grc_module/core/custom/52-custom_upload_document.dart';
+import '../theme/app_animations.dart';
+import '../theme/haptic_controller.dart';
 
 /// Attachment card: title + file row (thumbnail, name, size, remove badge)
 /// + trailing date.
@@ -89,7 +91,7 @@ class ProductWarrantyCard extends StatelessWidget {
           Text(title, style: CardStyles.label(12)),
           SizedBox(height: 6.h),
           InkWell(
-            onTap: onTapFile,
+            onTap: withHaptic(onTapFile, HapticLevel.low),
             borderRadius: CardStyles.radius(),
             child: Container(
               width: double.infinity,
@@ -150,7 +152,7 @@ class ProductWarrantyCard extends StatelessWidget {
                       if (onRemove != null) ...[
                         SizedBox(height: 2.h),
                         InkWell(
-                          onTap: onRemove,
+                          onTap: withHaptic(onRemove, HapticLevel.high),
                           customBorder: const CircleBorder(),
                           child: SizedBox(
                             width: 15.r,

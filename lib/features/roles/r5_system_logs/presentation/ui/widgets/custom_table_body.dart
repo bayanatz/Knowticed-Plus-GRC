@@ -30,6 +30,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 /// Was a StatefulWidget with no mutable state and a non-const constructor
 /// missing `key` (§17/§18); the unused `flutter/services.dart` import went too.
@@ -43,7 +44,9 @@ class CustomTableBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool lightMode = Theme.of(context).brightness == Brightness.light;
 
-    return SizedBox(
+    return AnimatedSizeWrap(
+      // Tables animate their size (rows added / removed / filtered).
+      child: SizedBox(
       height: 38.h,
       // CHANGED 30/8/2026: centred, and 12.sp.
       //
@@ -69,6 +72,7 @@ class CustomTableBody extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
         ),
       ),
+    ),
     );
   }
 }

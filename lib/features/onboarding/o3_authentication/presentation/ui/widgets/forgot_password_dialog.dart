@@ -31,6 +31,7 @@ import 'package:grc_module/core/theme/app_font_size.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/core/theme/haptic_controller.dart';
 import 'package:grc_module/generated/l10n.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 class ForgotPasswordDialog extends StatefulWidget {
   const ForgotPasswordDialog({super.key, this.onSubmit});
@@ -89,7 +90,7 @@ class _ForgotPasswordDialogState extends State<ForgotPasswordDialog> {
 
     if (!mounted) return;
     navigator.pop();
-    showDialog(
+    showAppDialog(
       context: navigator.context,
       builder: (dialogContext) => ResponseDialog(
         title: S.of(dialogContext).resetPassword,

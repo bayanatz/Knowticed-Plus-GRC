@@ -50,6 +50,7 @@ import 'package:grc_module/core/custom/32-custom_svg.dart';
 import 'package:grc_module/core/custom/5-custom_button.dart';
 import 'package:grc_module/core/custom/46-custom_image_picker.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 class PreviewChangesPage extends StatefulWidget {
   final Map<String, dynamic> changes;
   final File? selectedImage;
@@ -1160,7 +1161,7 @@ class _PreviewChangesPageState extends State<PreviewChangesPage> {
     required VoidCallback onConfirm,
   }) async {
     var isPhone = ContextExtension(context).isPhone;
-    return showDialog(
+    return showAppDialog(
       context: context,
       barrierDismissible: true,
       builder: (context) => Dialog(
@@ -1252,7 +1253,7 @@ class _PreviewChangesPageState extends State<PreviewChangesPage> {
     required String title,
     required String subtitle,
   }) async {
-    return showDialog(
+    return showAppDialog(
       context: context,
       barrierDismissible: true,
       builder: (context) => Dialog(

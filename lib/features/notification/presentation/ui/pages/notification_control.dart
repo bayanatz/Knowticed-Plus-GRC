@@ -54,6 +54,7 @@ import 'package:get/get.dart';
 import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
 import 'package:grc_module/features/roles/r1_role_management/domain/enums/notification/notification_permissions_enum.dart';
 import 'package:grc_module/features/roles/r1_role_management/domain/enums/notification/notification_sections_enum.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 /// Tabs of the Notification Control screen.
 ///
@@ -554,7 +555,7 @@ class _NotificationControlPageState extends State<NotificationControlPage> {
 
     final String moduleLabel = module.label(isArabic: isRTL);
 
-    final bool? confirmed = await showDialog<bool>(
+    final bool? confirmed = await showAppDialog<bool>(
       context: context,
       builder: (BuildContext dialogContext) => AlertDialog(
         title: Text(
@@ -663,7 +664,7 @@ class _NotificationControlPageState extends State<NotificationControlPage> {
   void _showPreviewDialog(BuildContext context) {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
-    showDialog(
+    showAppDialog(
       context: context,
       // FIXED 22/8/2026 — the preview rendered as unreadable grey-on-grey.
       //

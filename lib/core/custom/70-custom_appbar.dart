@@ -132,9 +132,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
 
               GestureDetector(
                 onTap: () {
-                  hapticController.triggerHapticFeedback(
-                      vibration: VibrateType.mediumImpact,
-                      hapticFeedback: HapticFeedback.mediumImpact);
+                  HapticController.low(); // top-of-page navigation
 
                   // Update the drawer to show notifications instead of navigating
                   drawerController.updateSelectedIndex(19);

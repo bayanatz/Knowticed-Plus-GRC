@@ -25,6 +25,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart' show ImageSource;
 
 import 'package:grc_module/core/services/media_picker_service.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 /// State class
 class ImagePickerState {
@@ -150,7 +151,7 @@ class ImagePickerCubit extends Cubit<ImagePickerState> {
     String? title,
     TextStyle? titleStyle,
   }) async {
-    await showDialog(
+    await showAppDialog(
       context: context,
       builder: (BuildContext dialogContext) {
         return AlertDialog(

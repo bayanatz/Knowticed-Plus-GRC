@@ -21,10 +21,16 @@ import 'package:grc_module/core/theme/app_font_weights.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/core/custom/84-messaging_custom_button.dart';
 import 'package:grc_module/generated/l10n.dart';
+import '../theme/app_animations.dart';
+import '../theme/haptic_controller.dart';
 
 //Youssef Ashraf,mohamed mohy
 ///Default Result Dialog after specific Action has been performed
-class DefaultDialog extends StatelessWidget {
+class DefaultDialog extends StatelessWidget implements DestructiveDialog {
+  @override
+  bool get isDestructive => HapticController.isDestructiveText(
+      '${title ?? ''} ${subTitle ?? ''} ${okButtonText ?? ''}');
+
   final dynamic Function()? onConfirm;
   final String? lottieAsset, svgAsset;
   final String? title;
