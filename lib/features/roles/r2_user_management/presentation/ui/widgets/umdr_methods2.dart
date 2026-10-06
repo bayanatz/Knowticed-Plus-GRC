@@ -181,7 +181,7 @@ extension UmdrMethods2 on _UserManagementDetailsRequestSettingsState {
       return Center(
         child: Padding(
           padding: EdgeInsets.all(50.sp),
-          child: CircularProgressIndicator(),
+          child: CircleProgressMaster.inline(),
         ),
       );
     }

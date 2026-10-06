@@ -215,7 +215,7 @@ extension ImportPageMethods1 on _UploadFileTabletRolesState {
         content: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            CircularProgressIndicator(),
+            CircleProgressMaster.inline(),
             SizedBox(width: 20),
             Text("Processing file..."),
           ],

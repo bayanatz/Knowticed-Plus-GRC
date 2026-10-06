@@ -41,6 +41,7 @@ import 'package:grc_module/core/helper/main_helper/localized_number.dart';
 import 'package:grc_module/core/helper/main_helper/format_title.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'dart:ui' as ui;
+import 'package:grc_module/core/custom/66-circle_progress.dart';
 
 
 class GrcPreviousModuleOwnersPage extends StatelessWidget {
@@ -127,7 +128,7 @@ class _GrcPreviousModuleOwnersBody extends StatelessWidget {
     if (state is GrcPreviousOwnersLoading) {
       // No vertical padding of its own any more: build() centres this in the
       // viewport, and the old 60.h only shifted it off that centre.
-      return CircularProgressIndicator(color: AppColors.primary);
+      return CircleProgressMaster.inline(color: AppColors.primary);
     }
 
     if (state is GrcPreviousOwnersFailure) {

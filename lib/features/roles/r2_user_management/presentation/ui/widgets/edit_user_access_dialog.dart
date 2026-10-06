@@ -27,6 +27,7 @@ import 'dart:ui' as ui;
 import 'package:grc_module/core/custom/5-custom_button.dart';
 import 'package:grc_module/core/custom/32-custom_svg.dart';
 import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:grc_module/core/custom/66-circle_progress.dart';
 /// Shows the Edit User Access Dialog
 /// Returns Map<String, dynamic> with 'role', 'accessGranted', 'accessRevoked' on success
 /// Returns null on discard
@@ -342,7 +343,7 @@ class _EditUserAccessDialogContentState
                         SizedBox(
                           width: 38.h,
                           height: 38.h,
-                          child: CircularProgressIndicator(
+                          child: CircleProgressMaster.inline(
                             color: AppColors.primary,
                             strokeWidth: 2.5,
                           ),

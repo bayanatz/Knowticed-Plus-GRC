@@ -23,6 +23,7 @@ import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/features/home/h1_home_page/data/models/home_component_model.dart';
 import 'package:grc_module/features/home/main_controller/helper/todo_new_module/tasks_stub.dart';
 import 'package:grc_module/generated/l10n.dart';
+import 'package:grc_module/core/custom/66-circle_progress.dart';
 
 class MyTodoCheckBox extends StatelessWidget {
   MyTodoCheckBox({required this.model, super.key});
@@ -180,7 +181,7 @@ class MyTodoCheckBox extends StatelessWidget {
           child: SizedBox(
             width: 20,
             height: 20,
-            child: CircularProgressIndicator(strokeWidth: 2),
+            child: CircleProgressMaster.inline(strokeWidth: 2),
           ),
         ),
       ],

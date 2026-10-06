@@ -43,6 +43,7 @@ import 'package:grc_module/features/settings/se8_watermark/presentation/ui/widge
 import 'package:grc_module/features/settings/se8_watermark/presentation/ui/widgets/watermark_panel.dart';
 import 'package:grc_module/features/settings/se8_watermark/presentation/ui/widgets/watermark_preview.dart';
 import 'package:grc_module/generated/l10n.dart';
+import 'package:grc_module/core/custom/66-circle_progress.dart';
 
 /// Width below which the screen switches to a single column.
 const double kWatermarkPhoneBreakpoint = 600;
@@ -510,7 +511,7 @@ class _ActionButton extends StatelessWidget {
             ? SizedBox(
                 width: 16,
                 height: 16,
-                child: CircularProgressIndicator(
+                child: CircleProgressMaster.inline(
                   strokeWidth: 2,
                   valueColor: AlwaysStoppedAnimation<Color>(AppColors.black),
                 ),

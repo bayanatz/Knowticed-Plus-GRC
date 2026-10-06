@@ -31,6 +31,7 @@ import 'package:grc_module/core/custom/2-custom_textfield.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
 import 'package:grc_module/core/theme/app_animations.dart';
 import '../theme/haptic_controller.dart';
+import 'package:grc_module/core/custom/66-circle_progress.dart';
 
 class CustomDialogManager {
   /// Shows a blocking loading indicator while [task] runs, then closes it.
@@ -60,7 +61,7 @@ class CustomDialogManager {
               child: SizedBox(
                 width: 70,
                 height: 70,
-                child: CircularProgressIndicator(
+                child: CircleProgressMaster.inline(
                   valueColor:
                       AlwaysStoppedAnimation<Color>(AppColors.lightPrimary),
                   backgroundColor: AppColors.white.withOpacity(0.6),

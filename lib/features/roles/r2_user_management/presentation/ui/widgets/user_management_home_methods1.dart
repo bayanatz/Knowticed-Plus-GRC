@@ -104,7 +104,7 @@ extension UserManagementHomeMethods1 on _UserManagementHomeState {
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  CircularProgressIndicator(),
+                  CircleProgressMaster.inline(),
                   SizedBox(height: 20),
                   Text('Testing limit check for "super admin" role...'),
                 ],

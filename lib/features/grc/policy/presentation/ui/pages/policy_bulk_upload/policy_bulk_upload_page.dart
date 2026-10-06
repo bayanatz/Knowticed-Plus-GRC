@@ -28,6 +28,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:grc_module/generated/l10n.dart';
+import 'package:grc_module/core/custom/66-circle_progress.dart';
 
 /// ************************* FILE INFO *************************** ///
 /// File Name: policy_bulk_upload_page.dart
@@ -208,7 +209,7 @@ class _PolicyBulkUploadPageState extends State<PolicyBulkUploadPage> {
                       ),
                       child: Center(
                         child: _isProcessing
-                            ? CircularProgressIndicator(color: AppColors.primary)
+                            ? CircleProgressMaster.inline(color: AppColors.primary)
                             : Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [

@@ -36,6 +36,7 @@ import 'package:grc_module/core/custom/5-custom_button.dart';
 import 'package:grc_module/core/custom/35-custom_search_widget_custom.dart';
 import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
+import 'package:grc_module/core/custom/66-circle_progress.dart';
 
 class NewMessageTablet extends StatelessWidget {
   const NewMessageTablet({super.key});
@@ -426,7 +427,7 @@ class NewMessageTablet extends StatelessWidget {
                           child: SizedBox(
                             width: 20.sp,
                             height: 20.sp,
-                            child: CircularProgressIndicator(
+                            child: CircleProgressMaster.inline(
                               strokeWidth: 2,
                               color: AppColors.primary,
                             ),

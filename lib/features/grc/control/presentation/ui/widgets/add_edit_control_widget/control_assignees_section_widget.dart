@@ -32,6 +32,7 @@ import 'package:grc_module/features/grc/module/presentation/ui/widgets/grc_detai
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:grc_module/core/custom/66-circle_progress.dart';
 
 /// class name: [ControlAssigneesSectionWidget]
 ///
@@ -82,7 +83,7 @@ class ControlAssigneesSectionWidget extends StatelessWidget {
           builder: (context, state) {
             if (state is! ChampionListLoaded) {
               return Center(
-                child: CircularProgressIndicator(color: AppColors.primary),
+                child: CircleProgressMaster.inline(color: AppColors.primary),
               );
             }
             return GrcOwnerSection(
@@ -105,7 +106,7 @@ class ControlAssigneesSectionWidget extends StatelessWidget {
           builder: (context, state) {
             if (state is! OwnerListLoaded) {
               return Center(
-                child: CircularProgressIndicator(color: AppColors.primary),
+                child: CircleProgressMaster.inline(color: AppColors.primary),
               );
             }
             return GrcOwnerSection(

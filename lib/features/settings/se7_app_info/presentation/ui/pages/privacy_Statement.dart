@@ -30,6 +30,7 @@ import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
 import 'package:grc_module/core/constants/firebase_collections.dart';
 import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:grc_module/core/custom/66-circle_progress.dart';
 // REMOVED_MODULE: import '../../../../../external/services_mangment_module/Category/presentation/ui/services_admin/Widget/W3_Frame_Screen_tablet.dart';
 
 class PrivacyStatementPage extends StatefulWidget {
@@ -365,7 +366,7 @@ class _PrivacyStatementPageState extends State<PrivacyStatementPage> {
   Widget _buildContent() {
     if (_isLoading) {
       return Center(
-          child: CircularProgressIndicator(color: AppColors.primary));
+          child: CircleProgressMaster.inline(color: AppColors.primary));
     }
 
     if (_error != null || _description == null) {
@@ -454,7 +455,7 @@ class _PrivacyStatementPageState extends State<PrivacyStatementPage> {
               SizedBox(
                 width: 16.w,
                 height: 16.h,
-                child: CircularProgressIndicator(
+                child: CircleProgressMaster.inline(
                     strokeWidth: 2,
                     color: AppColors.secondaryPrimary),
               )

@@ -29,6 +29,7 @@ import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/features/settings/se7_app_info/domain/entities/app_feedback.dart';
 import 'package:grc_module/features/settings/se7_app_info/presentation/ui/widgets/feedback_display.dart';
 import 'package:grc_module/generated/l10n.dart';
+import 'package:grc_module/core/custom/66-circle_progress.dart';
 
 class FeedbackAttachmentsGrid extends StatelessWidget {
   const FeedbackAttachmentsGrid({
@@ -237,7 +238,7 @@ class _AddButton extends StatelessWidget {
                 SizedBox(
                   width: 16.sp,
                   height: 16.sp,
-                  child: CircularProgressIndicator(
+                  child: CircleProgressMaster.inline(
                     strokeWidth: 2,
                     valueColor:
                         AlwaysStoppedAnimation<Color>(AppColors.textButton),

@@ -204,7 +204,7 @@ class _ControlWeightIssueBodyState extends State<_ControlWeightIssueBody> {
           return Padding(
             padding: EdgeInsets.symmetric(vertical: 60.h),
             child: Center(
-                child: CircularProgressIndicator(color: AppColors.primary)),
+                child: CircleProgressMaster.inline(color: AppColors.primary)),
           );
         }
 

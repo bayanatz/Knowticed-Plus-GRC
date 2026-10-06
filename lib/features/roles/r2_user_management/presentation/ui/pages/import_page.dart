@@ -30,6 +30,7 @@ import 'package:grc_module/generated/l10n.dart';
 
 import 'package:grc_module/core/custom/5-custom_button.dart';
 import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:grc_module/core/custom/66-circle_progress.dart';
 part '../widgets/import_page_methods1.dart';
 part '../widgets/import_page_methods2.dart';
 

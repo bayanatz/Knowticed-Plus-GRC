@@ -23,6 +23,7 @@ import 'package:grc_module/features/roles/r1_role_management/presentation/contro
 import 'package:grc_module/features/roles/r1_role_management/presentation/ui/widgets/permission_label.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:grc_module/core/custom/66-circle_progress.dart';
 class RoleTableView extends StatelessWidget {
   final List<RoleHistoryModel> roles;
   final String locale;
@@ -233,7 +234,7 @@ class RoleTableView extends StatelessWidget {
             return SizedBox(
               height: 20.sp,
               width: 20.sp,
-              child: CircularProgressIndicator(strokeWidth: 2),
+              child: CircleProgressMaster.inline(strokeWidth: 2),
             );
           }
 

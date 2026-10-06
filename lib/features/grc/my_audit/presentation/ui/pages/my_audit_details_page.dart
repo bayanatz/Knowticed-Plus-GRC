@@ -38,6 +38,7 @@ import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/features/grc/shared/helpers/grc_l10n.dart';
 import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
 import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:grc_module/core/custom/66-circle_progress.dart';
 
 final DateFormat _cardDateFormat = DateFormat('d MMM yyyy');
 final DateFormat _cardTimeFormat = DateFormat('h:mm a');
@@ -492,7 +493,7 @@ class _MyAuditDetailsPageState extends State<MyAuditDetailsPage> {
                                             padding: EdgeInsets.symmetric(
                                                 vertical: 24.h),
                                             child: Center(
-                                              child: CircularProgressIndicator(
+                                              child: CircleProgressMaster.inline(
                                                   color: AppColors.primary),
                                             ),
                                           );

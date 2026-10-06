@@ -24,6 +24,7 @@ import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/features/home/h1_home_page/data/data_source/demo_accounts_seeder.dart';
 import 'package:grc_module/generated/l10n.dart';
+import 'package:grc_module/core/custom/66-circle_progress.dart';
 
 class ApplyAllModulesButton extends StatefulWidget {
   const ApplyAllModulesButton({super.key, this.onApplied});
@@ -146,7 +147,7 @@ class _ApplyAllModulesButtonState extends State<ApplyAllModulesButton> {
                   ? SizedBox(
                       width: 22.sp,
                       height: 22.sp,
-                      child: CircularProgressIndicator(
+                      child: CircleProgressMaster.inline(
                         strokeWidth: 2.5,
                         color: AppColors.textButton,
                       ),

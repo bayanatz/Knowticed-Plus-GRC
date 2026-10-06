@@ -23,6 +23,7 @@ import 'package:grc_module/features/roles/r4_active_directory/presentation/ui/wi
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/core/di/app_controllers.dart';
 import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:grc_module/core/custom/66-circle_progress.dart';
 
 
 
@@ -358,7 +359,7 @@ class _RemoveConfirmDialogState extends State<_RemoveConfirmDialog> {
               ? SizedBox(
             width: 18.w,
             height: 18.w,
-            child: CircularProgressIndicator(
+            child: CircleProgressMaster.inline(
               strokeWidth: 2,
               color: AppColors.white,
             ),

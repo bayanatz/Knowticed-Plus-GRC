@@ -36,6 +36,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:grc_module/generated/l10n.dart';
+import 'package:grc_module/core/custom/66-circle_progress.dart';
 
 class ControlBulkUploadPage extends StatefulWidget {
   final String moduleId;
@@ -218,7 +219,7 @@ class _ControlBulkUploadPageState extends State<ControlBulkUploadPage> {
                     ),
                     child: Center(
                       child: _isProcessing
-                          ? CircularProgressIndicator(color: AppColors.primary)
+                          ? CircleProgressMaster.inline(color: AppColors.primary)
                           : Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [

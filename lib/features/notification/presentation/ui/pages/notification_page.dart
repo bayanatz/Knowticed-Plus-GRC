@@ -49,6 +49,7 @@ import 'package:grc_module/core/custom/32-custom_svg.dart';
 
 import 'package:grc_module/core/custom/6-custom_button_with_svg.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
+import 'package:grc_module/core/custom/66-circle_progress.dart';
 final List<Map<String, String>> NotificationTypeList = [
   {'key': 'approval_requests', 'value': 'Approval Requests'},
   {'key': 'approvals_updates', 'value': 'Approvals Updates'},
@@ -235,7 +236,7 @@ class _NotificationLandPageState extends State<NotificationLandPage> {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
-                child: CircularProgressIndicator(color: AppColors.primary),
+                child: CircleProgressMaster.inline(color: AppColors.primary),
               );
             }
 

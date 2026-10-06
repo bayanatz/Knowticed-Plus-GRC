@@ -31,6 +31,7 @@ import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/mo
 import 'package:grc_module/features/home/main_controller/helper/form_builder/form_builder_shortcut_stub.dart';
 import 'package:grc_module/core/constants/app_assets.dart';
 import 'package:grc_module/features/notification/presentation/ui/widgets/notification_routing.dart';
+import 'package:grc_module/core/custom/66-circle_progress.dart';
 
 /// Placeholder employee name shown in the preview rows.
 const String _kSampleEmployee = 'Moataz Handousa';
@@ -266,7 +267,7 @@ class _FormsSubmissionState extends State<FormsSubmission>
                 child: Stack(
                   alignment: Alignment.center,
                   children: <Widget>[
-                    CircularProgressIndicator(
+                    CircleProgressMaster.inline(
                       value: _loading ? null : completion,
                       strokeWidth: 4,
                       backgroundColor: AppColors.background,

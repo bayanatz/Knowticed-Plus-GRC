@@ -34,10 +34,55 @@ import 'package:grc_module/core/theme/app_font_size.dart';
 // This class is used to create a circular progress indicator with a light primary color.
 // It is used to indicate that an operation is in progress.
 class CircleProgressMaster extends StatelessWidget {
-  const CircleProgressMaster({super.key});
+  /// The app's standard loader: centred, sized for the screen.
+  const CircleProgressMaster({super.key})
+      : _inline = false,
+        value = null,
+        color = null,
+        valueColor = null,
+        backgroundColor = null,
+        strokeWidth = null;
+
+  /// The SAME spinner, drawn in place of a `CircularProgressIndicator`: it
+  /// fills whatever box its parent gives it (buttons, small slots, upload
+  /// progress). Takes the same arguments as `CircularProgressIndicator`;
+  /// anything left out falls back to the app's standard look.
+  ///
+  /// Every circle progress in the app goes through this file — do not use
+  /// `CircularProgressIndicator` directly.
+  const CircleProgressMaster.inline({
+    super.key,
+    this.value,
+    this.color,
+    this.valueColor,
+    this.backgroundColor,
+    this.strokeWidth,
+  }) : _inline = true;
+
+  final bool _inline;
+
+  /// Null = spinning; 0..1 = determinate progress (e.g. an upload).
+  final double? value;
+  final Color? color;
+  final Animation<Color?>? valueColor;
+  final Color? backgroundColor;
+  final double? strokeWidth;
+
+  Widget _indicator() {
+    final bool customColor = color != null || valueColor != null;
+    return CircularProgressIndicator(
+      value: value,
+      color: valueColor == null ? (color ?? AppColors.lightPrimary) : null,
+      valueColor: valueColor,
+      backgroundColor: backgroundColor ??
+          (customColor ? null : AppColors.white.withOpacity(0.6)),
+      strokeWidth: strokeWidth ?? 2.0,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (_inline) return _indicator();
     bool isTablet = MediaQuery.of(context).size.shortestSide > 600;
     bool orientation =
         MediaQuery.of(context).orientation == Orientation.portrait;
@@ -53,11 +98,7 @@ class CircleProgressMaster extends StatelessWidget {
                 ? .045.h
                 : .06.h
             : .045.h,
-        child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(AppColors.lightPrimary),
-          backgroundColor: AppColors.white.withOpacity(0.6),
-          strokeWidth: 2.0,
-        ),
+        child: _indicator(),
       ),
     );
   }
@@ -78,11 +119,7 @@ Future showLoadingIndicator() {
         child: SizedBox(
           width: size,
           height: size,
-          child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(AppColors.lightPrimary),
-            backgroundColor: AppColors.white.withOpacity(0.6),
-            strokeWidth: 2.0,
-          ),
+          child: const CircleProgressMaster.inline(),
         ),
       ),
     ),

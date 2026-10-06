@@ -53,6 +53,7 @@ import 'package:intl/intl.dart';
 import 'package:grc_module/core/helper/main_helper/localized_number.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/features/grc/shared/helpers/grc_l10n.dart';
+import 'package:grc_module/core/custom/66-circle_progress.dart';
 
 /// class name: [GrcResponsivePageLayout]
 ///
@@ -755,7 +756,7 @@ class _GovernanceRiskAndCompliancePageState
   ) {
     if (state is GRCModuleLoading) {
       return Center(
-        child: CircularProgressIndicator(color: AppColors.primary),
+        child: CircleProgressMaster.inline(color: AppColors.primary),
       );
     }
 

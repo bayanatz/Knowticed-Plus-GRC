@@ -37,6 +37,7 @@ import 'package:grc_module/core/helper/main_helper/pagination_app_bar.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/features/grc/shared/helpers/grc_l10n.dart';
 import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
+import 'package:grc_module/core/custom/66-circle_progress.dart';
 
 final DateFormat _cardDateFormat = DateFormat('d MMM yyyy');
 final DateFormat _cardTimeFormat = DateFormat('h:mm a');
@@ -138,7 +139,7 @@ class _AssignmentControlDetailsPageState
           child: SizedBox(
             width: 20.w,
             height: 20.w,
-            child: CircularProgressIndicator(
+            child: CircleProgressMaster.inline(
               strokeWidth: 2,
               color: AppColors.primary,
             ),
@@ -409,7 +410,7 @@ class _AssignmentControlDetailsPageState
                                       padding:
                                           EdgeInsets.symmetric(vertical: 24.h),
                                       child: Center(
-                                        child: CircularProgressIndicator(
+                                        child: CircleProgressMaster.inline(
                                             color: AppColors.primary),
                                       ),
                                     );

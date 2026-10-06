@@ -21,6 +21,7 @@ import '../../controller/message_controller.dart';
 import '../../../data/models/location_message_model.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/core/custom/5-custom_button.dart';
+import 'package:grc_module/core/custom/66-circle_progress.dart';
 
 class MapsView extends StatelessWidget {
   final bool isSelecting;
@@ -43,7 +44,7 @@ class MapsView extends StatelessWidget {
               title: isSelecting ? S.of(context).pickALocation : S.of(context).location,
               centerTitle: false,
             ),
-            body: const Center(child: CircularProgressIndicator()),
+            body: const Center(child: CircleProgressMaster.inline()),
           );
         }
 

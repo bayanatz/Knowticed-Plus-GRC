@@ -19,6 +19,7 @@ import 'package:grc_module/features/grc/shared/helpers/grc_assignment_lookup.dar
 import 'package:grc_module/core/custom/79-filter_bar_item.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/features/grc/shared/helpers/grc_l10n.dart';
+import 'package:grc_module/core/custom/66-circle_progress.dart';
 
 /// The 7 tabs shown on the list page, in the order the design calls for.
 /// `null` represents "All" (every item regardless of tab).
@@ -111,7 +112,7 @@ class _AssignmentControlsListBodyState
                       return Center(child: Text(state.message));
                     }
                     if (state is! AssignmentControlListLoaded) {
-                      return const Center(child: CircularProgressIndicator());
+                      return const Center(child: CircleProgressMaster.inline());
                     }
                     final allItems = state.items;
                     final filtered = _filter(allItems, isArabic);

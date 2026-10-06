@@ -47,6 +47,7 @@ import 'package:grc_module/core/services/geolocator/geolocator_repository.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/features/roles/r1_role_management/data/repository/role_repository.dart';
+import 'package:grc_module/core/custom/66-circle_progress.dart';
 
 enum RestrictedLocationStatus {
   /// No restriction applies, or the device is in an allowed country.
@@ -253,7 +254,7 @@ class _BlockScreen extends StatelessWidget {
                     SizedBox(
                       width: 48,
                       height: 48,
-                      child: CircularProgressIndicator(
+                      child: CircleProgressMaster.inline(
                         valueColor: AlwaysStoppedAnimation<Color>(
                             AppColors.lightPrimary),
                         strokeWidth: 2,

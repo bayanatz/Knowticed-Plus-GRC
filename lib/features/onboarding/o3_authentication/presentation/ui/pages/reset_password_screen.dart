@@ -306,7 +306,7 @@ class _ResetPasswordState extends State<ResetPassword> {
               ? SizedBox(
                   width: 18.sp,
                   height: 18.sp,
-                  child: CircularProgressIndicator(
+                  child: CircleProgressMaster.inline(
                     strokeWidth: 2,
                     color: textColor,
                   ),

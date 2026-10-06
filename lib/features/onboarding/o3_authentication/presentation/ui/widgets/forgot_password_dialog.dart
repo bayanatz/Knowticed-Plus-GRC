@@ -32,6 +32,7 @@ import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/core/theme/haptic_controller.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:grc_module/core/custom/66-circle_progress.dart';
 
 class ForgotPasswordDialog extends StatefulWidget {
   const ForgotPasswordDialog({super.key, this.onSubmit});
@@ -170,7 +171,7 @@ class _ForgotPasswordDialogState extends State<ForgotPasswordDialog> {
                         ? SizedBox(
                             width: 18.sp,
                             height: 18.sp,
-                            child: CircularProgressIndicator(
+                            child: CircleProgressMaster.inline(
                               strokeWidth: 2,
                               color: AppColors.textButton,
                             ),

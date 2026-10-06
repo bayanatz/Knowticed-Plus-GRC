@@ -33,6 +33,7 @@ import 'package:grc_module/main.dart';
 import 'package:grc_module/features/home/h2_nav_bar/persistent_nav_bar.dart';
 import 'package:grc_module/core/custom/33-custom_haptic.dart';
 import 'package:grc_module/core/helper/main_helper/role_access.dart';
+import 'package:grc_module/core/custom/66-circle_progress.dart';
 
 class NavScreen extends StatefulWidget {
   const NavScreen({super.key});
@@ -124,7 +125,7 @@ class _NavScreenState extends State<NavScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      CircularProgressIndicator(
+                      CircleProgressMaster.inline(
                         color: AppColors.primary,
                       ),
                       SizedBox(height: 24),

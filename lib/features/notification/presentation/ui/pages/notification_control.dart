@@ -874,7 +874,7 @@ class _NotificationControlPageState extends State<NotificationControlPage> {
                           ? SizedBox(
                               width: 16.w,
                               height: 16.w,
-                              child: const CircularProgressIndicator(
+                              child: const CircleProgressMaster.inline(
                                 strokeWidth: 2,
                               ),
                             )
@@ -1484,7 +1484,7 @@ class _NotificationControlPageState extends State<NotificationControlPage> {
                             Expanded(
                               child: isLoadingTemplates
                                   ? Center(
-                                child: CircularProgressIndicator(
+                                child: CircleProgressMaster.inline(
                                   color: AppColors.primary,
                                 ),
                               )

@@ -18,6 +18,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:grc_module/core/custom/66-circle_progress.dart';
 
 class SupportVoicePlayer extends StatefulWidget {
   const SupportVoicePlayer({super.key, required this.url, this.color});
@@ -156,7 +157,7 @@ class _SupportVoicePlayerState extends State<SupportVoicePlayer> {
               child: _loading
                   ? Padding(
                       padding: EdgeInsets.all(7.sp),
-                      child: CircularProgressIndicator(
+                      child: CircleProgressMaster.inline(
                           strokeWidth: 2, color: color),
                     )
                   : Icon(

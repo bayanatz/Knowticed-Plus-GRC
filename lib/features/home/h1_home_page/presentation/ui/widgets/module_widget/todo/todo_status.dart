@@ -24,6 +24,7 @@ import 'package:grc_module/core/theme/app_theme.dart';
 // REMOVED_MODULE: import 'package:grc_module/features/todo_new_module/external/tasks_module/core/enums/task_status_enum.dart';
 import 'package:grc_module/features/home/h1_home_page/data/models/home_component_model.dart';
 import 'package:grc_module/features/home/main_controller/helper/todo_new_module/tasks_stub.dart';
+import 'package:grc_module/core/custom/66-circle_progress.dart';
 
 
 class MyTodoStatus extends StatelessWidget {
@@ -187,7 +188,7 @@ class MyTodoStatus extends StatelessWidget {
           child: SizedBox(
             width: 20,
             height: 20,
-            child: CircularProgressIndicator(strokeWidth: 2),
+            child: CircleProgressMaster.inline(strokeWidth: 2),
           ),
         ),
       ],

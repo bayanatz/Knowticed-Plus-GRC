@@ -19,6 +19,7 @@ import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/features/home/h1_home_page/data/models/home_component_model.dart';
 import 'package:grc_module/features/home/main_controller/helper/todo_new_module/tasks_stub.dart';
 import 'package:grc_module/generated/l10n.dart';
+import 'package:grc_module/core/custom/66-circle_progress.dart';
 
 
 class MyTodo extends StatelessWidget {
@@ -171,7 +172,7 @@ class MyTodo extends StatelessWidget {
         ),
         const SizedBox.shrink(),
         const Center(
-          child: CircularProgressIndicator(),
+          child: CircleProgressMaster.inline(),
         ),
       ],
     );

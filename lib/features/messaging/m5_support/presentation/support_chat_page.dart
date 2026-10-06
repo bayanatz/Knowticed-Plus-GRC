@@ -25,6 +25,7 @@ import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/features/messaging/m2_connections/presentation/controller/connections_controller.dart';
 import '../data/support_chat_repository.dart';
 import 'support_voice_player.dart';
+import 'package:grc_module/core/custom/66-circle_progress.dart';
 
 /// Strings of this feature (the generated l10n needs a regeneration step, so
 /// the two languages are kept here).
@@ -218,7 +219,7 @@ class _SupportChatPageState extends State<SupportChatPage> {
               ),
               Expanded(
                 child: _loading && all.isEmpty
-                    ? const Center(child: CircularProgressIndicator())
+                    ? const Center(child: CircleProgressMaster.inline())
                     : all.isEmpty
                         ? Center(
                             child: Text(
@@ -275,7 +276,7 @@ class _SupportChatPageState extends State<SupportChatPage> {
                             height: 40.sp,
                             child: const Padding(
                               padding: EdgeInsets.all(8),
-                              child: CircularProgressIndicator(strokeWidth: 2),
+                              child: CircleProgressMaster.inline(strokeWidth: 2),
                             ),
                           )
                         : InkWell(

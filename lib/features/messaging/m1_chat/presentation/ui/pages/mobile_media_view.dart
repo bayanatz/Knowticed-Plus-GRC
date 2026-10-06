@@ -21,6 +21,7 @@ import '../../controller/media_controller.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
 import 'package:grc_module/core/custom/82-image_grid_card.dart';
+import 'package:grc_module/core/custom/66-circle_progress.dart';
 
 part '../widgets/media/media_tabbar.dart';
 part '../widgets/media/cards/link_card.dart';
@@ -53,7 +54,7 @@ class MobileMediaView extends StatelessWidget {
           child: BlocBuilder<MediaCubit, MediaState>(
             builder: (context, state) {
               if (state is! MediaLoaded) {
-                return const Center(child: CircularProgressIndicator());
+                return const Center(child: CircleProgressMaster.inline());
               }
 
               final mediaCubit = context.read<MediaCubit>();

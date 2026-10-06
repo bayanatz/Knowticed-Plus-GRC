@@ -39,6 +39,7 @@ import 'package:grc_module/core/helper/role/modules_enum.dart';
 
 
 import 'package:grc_module/core/extensions/context_extensions.dart';
+import 'package:grc_module/core/custom/66-circle_progress.dart';
 // ✅ PINNED NOTIFICATIONS PAGE - Shows only isPinned == true
 class PinNotificationLandPage extends StatefulWidget {
   const PinNotificationLandPage({super.key});
@@ -126,7 +127,7 @@ class _PinNotificationLandPageState extends State<PinNotificationLandPage> {
           stream: _notificationService.streamNotificationsForUser(_currentUserEmail!),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator(color: AppColors.primary));
+              return Center(child: CircleProgressMaster.inline(color: AppColors.primary));
             }
 
             if (snapshot.hasError) {

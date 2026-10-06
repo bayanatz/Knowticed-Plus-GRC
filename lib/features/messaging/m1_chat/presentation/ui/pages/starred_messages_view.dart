@@ -17,6 +17,7 @@ import '../../controller/message_controller.dart';
 import '../widgets/starred_message_card.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
+import 'package:grc_module/core/custom/66-circle_progress.dart';
 
 class StarredMessagesView extends StatelessWidget {
   final String title;
@@ -40,7 +41,7 @@ class StarredMessagesView extends StatelessWidget {
             appBar: CustomAppBar(
               title: S.of(context).starredMessages,
             ),
-            body: const Center(child: CircularProgressIndicator()),
+            body: const Center(child: CircleProgressMaster.inline()),
           );
         }
 

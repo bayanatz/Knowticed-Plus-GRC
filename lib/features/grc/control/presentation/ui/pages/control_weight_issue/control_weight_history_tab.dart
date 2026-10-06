@@ -22,6 +22,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/features/grc/shared/helpers/grc_l10n.dart';
+import 'package:grc_module/core/custom/66-circle_progress.dart';
 
 /// class name: [ControlWeightHistoryTab]
 ///
@@ -42,7 +43,7 @@ class ControlWeightHistoryTab extends StatelessWidget {
         if (state is ControlWeightHistoryLoading || state is ControlWeightHistoryInitial) {
           return Padding(
             padding: EdgeInsets.symmetric(vertical: 60.h),
-            child: Center(child: CircularProgressIndicator(color: AppColors.primary)),
+            child: Center(child: CircleProgressMaster.inline(color: AppColors.primary)),
           );
         }
 
