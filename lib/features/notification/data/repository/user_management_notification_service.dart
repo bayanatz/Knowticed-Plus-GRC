@@ -44,13 +44,14 @@
 /// rather than silently sending Arabic. Pass the RECEIVER's saved
 /// preference where you have it. Admin fan-outs send one language to the
 /// whole batch.
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:grc_module/core/enums/template_variable.dart';
 import 'package:grc_module/core/network/get_base_url.dart';
-import 'package:grc_module/features/notification/domain/enums/role_module/user_management_module/user_management_events.dart';
-import 'package:grc_module/features/notification/domain/enums/role_module/user_management_module/user_management_notification_pages.dart';
-import 'package:grc_module/features/notification/services/app_notification_sender.dart';
+import 'package:grc_module/features/notification/domain/enums/roles/user_management_module/user_management_events.dart';
+import 'package:grc_module/features/notification/domain/enums/roles/user_management_module/user_management_notification_pages.dart';
+import 'package:grc_module/features/notification/helpers/services/app_notification_sender.dart';
 
 class UserManagementNotificationService {
   UserManagementNotificationService._();
@@ -73,7 +74,7 @@ class UserManagementNotificationService {
 
       final emails = <String>[];
       for (final doc in snapshot.docs) {
-        final data = doc.data() as Map<String, dynamic>;
+        final data = doc.data();
 
         final roles = data['Role'];
         if (roles is! List || roles.isEmpty) continue;

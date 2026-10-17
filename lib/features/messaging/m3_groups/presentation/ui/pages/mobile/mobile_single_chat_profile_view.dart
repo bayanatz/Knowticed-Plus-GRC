@@ -4,30 +4,30 @@
 /// Purpose: Mobile single chat profile view — messaging Groups sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+library;
 
 // Date: 5/9/2024
 // By: Youssef Ashraf
 // Last update: 5/9/2024
 // Objectives: This file is responsible for providing a chat profile view used in the message feature to show the single chat profile.
 
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
 import 'package:grc_module/features/messaging/m1_chat/presentation/controller/message_controller.dart';
 
-
-import 'package:grc_module/core/network/message_module/routes/app_routes.dart';
-import 'package:grc_module/core/constants/message_module/app_assets.dart';
-import 'package:grc_module/core/helper/main_helper/spacing_helper.dart';
+import 'package:grc_module/core/routes/app_routes.dart';
+import 'package:grc_module/features/messaging/helpers/constants/messaging_assets.dart';
+import 'package:grc_module/features/messaging/helpers/spacing_helper.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
-import '../../../../../m1_chat/presentation/ui/widgets/chat_profile_header.dart';
-import '../../widgets/list_view/common_groups_list_view.dart';
-import '../../../../../m1_chat/presentation/ui/widgets/media_section.dart';
+import 'package:grc_module/features/messaging/m1_chat/presentation/ui/widgets/chat_profile_header.dart';
+import 'package:grc_module/features/messaging/m3_groups/presentation/ui/widgets/list_view/common_groups_list_view.dart';
+import 'package:grc_module/features/messaging/m1_chat/presentation/ui/widgets/media_section.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
 class MobileSingleChatProfileView extends StatelessWidget {
   const MobileSingleChatProfileView({super.key});
@@ -42,9 +42,8 @@ class MobileSingleChatProfileView extends StatelessWidget {
         child: BlocBuilder<MessageCubit, MessageState>(
           builder: (context, state) {
             final cubit = context.read<MessageCubit>();
-            final chatModel = state is MessageLoaded
-                ? state.chatModel
-                : cubit.chatModel;
+            final chatModel =
+                state is MessageLoaded ? state.chatModel : cubit.chatModel;
 
             // Return empty scaffold if chat model is null
             if (chatModel == null || chatModel.otherUser == null) {
@@ -74,8 +73,8 @@ class MobileSingleChatProfileView extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            SvgPicture.asset(
-                              AppAssets.star,
+                            CustomSvgImage.natural(
+                              assetPath: AppAssets.star,
                               width: 24.w,
                               height: 24.h,
                               color: AppColors.text,
@@ -85,6 +84,8 @@ class MobileSingleChatProfileView extends StatelessWidget {
                             ),
                             GestureDetector(
                               onTap: () {
+                                HapticController
+                                    .low(); // list row: on the tap (X-117)
                                 Navigator.of(context).pushNamed(
                                   Routes.starredMessages,
                                   arguments: {
@@ -96,16 +97,20 @@ class MobileSingleChatProfileView extends StatelessWidget {
                               child: Text(
                                 S.of(context).starredMessages,
                                 style: ContextExtension(context).isTablett
-                                    ? StyleText.fontSize19Weight500.copyWith(color: AppColors.darkGrey)
-                                    : StyleText.fontSize16Weight500.copyWith(color: AppColors.darkGrey),
+                                    ? StyleText.fontSize19Weight500
+                                        .copyWith(color: AppColors.darkGrey)
+                                    : StyleText.fontSize16Weight500
+                                        .copyWith(color: AppColors.darkGrey),
                               ),
                             ),
                             const Spacer(),
                             Text(
                               chatModel.starredMessagesCount.toString(),
                               style: ContextExtension(context).isTablett
-                                  ? StyleText.fontSize19Weight500.copyWith(color: AppColors.darkGrey)
-                                  : StyleText.fontSize16Weight500.copyWith(color: AppColors.darkGrey),
+                                  ? StyleText.fontSize19Weight500
+                                      .copyWith(color: AppColors.darkGrey)
+                                  : StyleText.fontSize16Weight500
+                                      .copyWith(color: AppColors.darkGrey),
                             ),
                           ],
                         ),
@@ -114,6 +119,8 @@ class MobileSingleChatProfileView extends StatelessWidget {
                         ),
                         GestureDetector(
                           onTap: () {
+                            HapticController
+                                .low(); // list row: on the tap (X-117)
                             cubit.menuSelectAndNavigate(
                               S.of(context).disappearingMessages,
                               chatModel.otherUser!.firstName,
@@ -132,8 +139,10 @@ class MobileSingleChatProfileView extends StatelessWidget {
                               Text(
                                 S.of(context).disappearingMessages,
                                 style: ContextExtension(context).isTablett
-                                    ? StyleText.fontSize19Weight500.copyWith(color: AppColors.darkGrey)
-                                    : StyleText.fontSize16Weight500.copyWith(color: AppColors.darkGrey),
+                                    ? StyleText.fontSize19Weight500
+                                        .copyWith(color: AppColors.darkGrey)
+                                    : StyleText.fontSize16Weight500
+                                        .copyWith(color: AppColors.darkGrey),
                               ),
                             ],
                           ),
@@ -143,6 +152,8 @@ class MobileSingleChatProfileView extends StatelessWidget {
                         ),
                         GestureDetector(
                           onTap: () {
+                            HapticController
+                                .low(); // list row: on the tap (X-117)
                             cubit.menuSelectAndNavigate(
                               S.of(context).muteNotifications,
                               chatModel.otherUser!.firstName,
@@ -151,8 +162,8 @@ class MobileSingleChatProfileView extends StatelessWidget {
                           },
                           child: Row(
                             children: [
-                              SvgPicture.asset(
-                                AppAssets.emptyNotification,
+                              CustomSvgImage.natural(
+                                assetPath: AppAssets.emptyNotification,
                                 color: AppColors.black,
                               ),
                               SizedBox(
@@ -161,8 +172,10 @@ class MobileSingleChatProfileView extends StatelessWidget {
                               Text(
                                 S.of(context).muteNotifications,
                                 style: ContextExtension(context).isTablett
-                                    ? StyleText.fontSize19Weight500.copyWith(color: AppColors.darkGrey)
-                                    : StyleText.fontSize16Weight500.copyWith(color: AppColors.darkGrey),
+                                    ? StyleText.fontSize19Weight500
+                                        .copyWith(color: AppColors.darkGrey)
+                                    : StyleText.fontSize16Weight500
+                                        .copyWith(color: AppColors.darkGrey),
                               ),
                             ],
                           ),
@@ -172,29 +185,34 @@ class MobileSingleChatProfileView extends StatelessWidget {
                           chatModel.otherUser!.groupsInCommon.isEmpty
                               ? S.of(context).noGroupsInCommon
                               : '${chatModel.otherUser!.groupsInCommon.length} ${S.of(context).groupsInCommon}',
-                          style: StyleText.fontSize16Weight500.copyWith(color: AppColors.inputColor),
+                          style: StyleText.fontSize16Weight500
+                              .copyWith(color: AppColors.greyDark),
                         ),
                         verticalSpace(16),
                         ListTile(
                           contentPadding: EdgeInsets.zero,
                           title: Text(
-                            '${S.of(context).createANewGroupWith} ${chatModel.otherUser!.firstName}',
-                            style: StyleText.fontSize12Weight400),
+                              '${S.of(context).createANewGroupWith} ${chatModel.otherUser!.firstName}',
+                              style: StyleText.fontSize12Weight400),
                           subtitle: Text(
                             '${S.of(context).you2} ${chatModel.otherUser!.firstName}, ....',
                             overflow: TextOverflow.ellipsis,
                             style: isTablet
-                                ? StyleText.fontSize16Weight400.copyWith(color: AppColors.lightGrey)
-                                : StyleText.fontSize12Weight400.copyWith(color: AppColors.lightGrey),
+                                ? StyleText.fontSize16Weight400
+                                    .copyWith(color: AppColors.lightGrey)
+                                : StyleText.fontSize12Weight400
+                                    .copyWith(color: AppColors.lightGrey),
                           ),
                           leading: CircleAvatar(
                             backgroundColor: AppColors.primary,
-                            child: SvgPicture.asset(
-                              AppAssets.group,
+                            child: CustomSvgImage.natural(
+                              assetPath: AppAssets.group,
                             ),
                           ),
                           onTap: () {
-                            Navigator.of(context).pushNamed(Routes.createGroupPageMobile);
+                            HapticController.medium();
+                            Navigator.of(context)
+                                .pushNamed(Routes.createGroupPageMobile);
                           },
                         ),
                         CommonGroupsListView(

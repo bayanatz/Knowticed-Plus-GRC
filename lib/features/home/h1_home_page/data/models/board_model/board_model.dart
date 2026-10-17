@@ -9,6 +9,7 @@
 ///          `card_model/card_model.dart` for why that module was empty of
 ///          everything except models.
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'package:grc_module/features/home/h1_home_page/data/models/board_model/board_department.dart';
 import 'package:grc_module/features/home/h1_home_page/data/models/board_model/board_name.dart';

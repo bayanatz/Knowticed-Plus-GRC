@@ -2,32 +2,30 @@
 ///
 ///*********************** FILE INFO ****************************///
 /// File Name: edit_home_page.dart
-/// Purpose: UI for editing home page components
+/// Description: UI for editing home page components
 /// Author: Amr Mesbah
 /// Created at: 21/9/2025
 /// Updated: 11/8/2026 - Added the BlocListener that surfaces HomeError. The
 ///          cubit had been emitting HomeError with no listener anywhere in the
 ///          app, so a failed layout save looked like a success to the user.
+library;
 
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:grc_module/core/custom/50-custom_side_frame_master.dart';
+import 'package:grc_module/core/custom/navigation/custom_side_frame_master.dart';
 import 'package:grc_module/features/home/h1_home_page/data/models/home_component_model.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/controller/home_cubit.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/pages/adding_widget_page.dart';
 import 'package:flutter/services.dart';
 
 import 'package:grc_module/core/theme/haptic_controller.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/features/home/h3_app_drawer/presentation/controller/app_drawer_cubit.dart';
-import 'package:grc_module/features/home/h3_app_drawer/presentation/ui/pages/custom_drawer.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/ui/pages/settings_screen.dart';
-import 'package:grc_module/features/home/h1_home_page/data/utils/home_constants.dart';
+import 'package:grc_module/features/home/helpers/constants/home_constants.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/controller/home_state.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/add_component_widget.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/app_bar_date.dart';
@@ -38,25 +36,25 @@ import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/ic
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/remove_component_wrapper.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/home_card_metrics.dart';
 
-import 'package:grc_module/core/custom/32-custom_svg.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 
-import 'package:grc_module/core/custom/33-custom_haptic.dart';
+import 'package:grc_module/core/custom/helpers/custom_haptic.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
 // The same calendar column HomeScreen renders on the right of its tablet
 // layout — the editor previews the real home page, so it shows the real widget.
-import 'package:grc_module/features/calendar/c1_calendar/presentation/ui/pages/home_calendar_page.dart';
-import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
+import 'package:grc_module/features/calendar/presentation/ui/pages/home_calendar_page.dart';
+import 'package:grc_module/core/helper/access/main_core_employee_controller.dart';
 import 'package:grc_module/core/theme/app_animations.dart';
+
 class EditHomePage extends StatelessWidget {
-  EditHomePage({super.key});
-  late bool isTablet;
+  const EditHomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     var isMobile = ContextExtension(context).isPhone;
-    isTablet = MediaQuery.of(context).size.shortestSide >= 600;
+    final bool isTablet = !kpIsPhoneLayout(context);
     AppHomeCubit homeCubit = context.read<AppHomeCubit>();
-    var lightMode = Theme.of(context).brightness == Brightness.light;
+    Theme.of(context).brightness == Brightness.light;
 
     // Same condition HomeScreen._tabletLayout uses for its calendar column, so
     // the editor splits left/right exactly when the real home page does.
@@ -79,8 +77,9 @@ class EditHomePage extends StatelessWidget {
               behavior: SnackBarBehavior.floating,
               content: Text(
                 state.message,
-                style: StyleText.fontSize16Weight400
-                    .copyWith(color: AppColors.white),
+                style: StyleText.fontSize16Weight400.copyWith(
+                  color: AppColors.white,
+                ),
               ),
             ),
           );
@@ -101,329 +100,348 @@ class EditHomePage extends StatelessWidget {
           onFirstTap: () => Navigator.of(context).maybePop(),
           secondTitle: S.of(context).homeLayout,
           child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (Get.isRegistered<AppDrawerCubit>())
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      BlocBuilder<AppDrawerCubit, AppDrawerState>(
-                          bloc: Get.find<AppDrawerCubit>(),
-                          builder: (BuildContext context,
-                              AppDrawerState drawerState) {
-                            final AppDrawerCubit drawerCubit =
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (Get.isRegistered<AppDrawerCubit>())
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    BlocBuilder<AppDrawerCubit, AppDrawerState>(
+                      bloc: Get.find<AppDrawerCubit>(),
+                      builder:
+                          (BuildContext context, AppDrawerState drawerState) {
+                        final AppDrawerCubit drawerCubit =
                             Get.find<AppDrawerCubit>();
-                            final bool isReorderingActive =
-                                drawerCubit.isReorderingActive;
-                            return GestureDetector(
-                              onTap: () {
-                                hapticController.triggerHapticFeedback(
-                                    vibration: VibrateType.mediumImpact,
-                                    hapticFeedback:
-                                    HapticFeedback.mediumImpact);
+                        final bool isReorderingActive =
+                            drawerCubit.isReorderingActive;
+                        return GestureDetector(
+                          onTap: () {
+                            hapticController.triggerHapticFeedback(
+                              vibration: VibrateType.mediumImpact,
+                              hapticFeedback: HapticFeedback.mediumImpact,
+                            );
 
-                                drawerCubit.toggleReorderingActive();
-                              },
-                              child: Container(
-                                width: 300.w,
-                                height: 36,
-                                decoration: BoxDecoration(
-                                  color: AppColors.primary,
-                                  borderRadius:
-                                  BorderRadius.circular(8.sp),
-                                  border: Border.all(
-                                    color: AppColors.primary,
-                                    width: 1.5,
+                            drawerCubit.toggleReorderingActive();
+                          },
+                          child: Container(
+                            width: 300.w,
+                            height: 36,
+                            decoration: BoxDecoration(
+                              color: AppColors.primary,
+                              borderRadius: BorderRadius.circular(8.sp),
+                              border: Border.all(
+                                color: AppColors.primary,
+                                width: 1.5,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  isReorderingActive
+                                      ? Icons.check_circle
+                                      : Icons.reorder,
+                                  color: AppColors.textButton,
+                                  size: 15.sp,
+                                ),
+                                SizedBox(width: 8.sp),
+                                Text(
+                                  isReorderingActive
+                                      ? S.of(context).reorderingActive
+                                      : S.of(context).enableDrawerReordering,
+                                  style: StyleText.fontSize12Weight500.copyWith(
+                                    color: AppColors.textButton,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      isReorderingActive
-                                          ? Icons.check_circle
-                                          : Icons.reorder,
-                                      color: AppColors.textButton,
-                                      size: 15.sp,
-                                    ),
-                                    SizedBox(width: 8.sp),
-                                    Text(
-                                      isReorderingActive
-                                          ? S.of(context).reorderingActive
-                                          : S
-                                          .of(context)
-                                          .enableDrawerReordering,
-                                      style: StyleText.fontSize12Weight500
-                                          .copyWith(
-                                        color: AppColors.textButton,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          }),
-                    ],
-                  ),
-                SizedBox(height: 20.sp),
-                _expandOnTablet(
-                  isMobile: isMobile,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Left — the editor itself. flex 5 against the calendar's
-                      // flex 3 is HomeScreen's split, so the widgets are laid
-                      // out at the width they will actually get on the home
-                      // page. Without the calendar it takes the row whole.
-                      Expanded(
-                        flex: showSideCalendar ? 5 : 1,
-                        child: ScrollConfiguration(
-                    behavior:
-                    const ScrollBehavior().copyWith(scrollbars: false),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          // Drawer reordering toggle.
-                          //
-                          // The flag used to be a module-global RxBool declared
-                          // in h3's custom_drawer.dart; it is now AppDrawerCubit
-                          // state. The cubit only exists on layouts that show a
-                          // drawer (it is deleted on mobile), so the toggle is
-                          // hidden when it is not registered — previously it
-                          // rendered there and flipped a flag nothing read.
-
-                          // SizedBox(height: 20.sp),
-                          Row(
-                            spacing: 10.sp,
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              SizedBox(height: 20.sp),
+              _expandOnTablet(
+                isMobile: isMobile,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Left — the editor itself. flex 5 against the calendar's
+                    // flex 3 is HomeScreen's split, so the widgets are laid
+                    // out at the width they will actually get on the home
+                    // page. Without the calendar it takes the row whole.
+                    Expanded(
+                      flex: showSideCalendar ? 5 : 1,
+                      child: ScrollConfiguration(
+                        behavior: const ScrollBehavior().copyWith(
+                          scrollbars: false,
+                        ),
+                        child: SingleChildScrollView(
+                          child: Column(
                             children: [
-                              Expanded(
-                                child: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    spacing: 15.sp,
-                                    children: [
-                                      // ✅ FIX: Wrapped in LayoutBuilder to prevent Row overflow.
-                                      // The icons row now uses Flexible so it won't overflow
-                                      // when 3 icons are added.
-                                      Row(
-                                        spacing: 10.sp,
-                                        children: [
-                                          Container(
-                                              padding:
-                                              EdgeInsets.all(10.sp),
+                              // Drawer reordering toggle.
+                              //
+                              // The flag used to be a module-global RxBool declared
+                              // in h3's custom_drawer.dart; it is now AppDrawerCubit
+                              // state. The cubit only exists on layouts that show a
+                              // drawer (it is deleted on mobile), so the toggle is
+                              // hidden when it is not registered — previously it
+                              // rendered there and flipped a flag nothing read.
+
+                              // SizedBox(height: 20.sp),
+                              Row(
+                                spacing: 10.sp,
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      spacing: 15.sp,
+                                      children: [
+                                        // ✅ FIX: Wrapped in LayoutBuilder to prevent Row overflow.
+                                        // The icons row now uses Flexible so it won't overflow
+                                        // when 3 icons are added.
+                                        Row(
+                                          spacing: 10.sp,
+                                          children: [
+                                            Container(
+                                              padding: EdgeInsets.all(10.sp),
                                               decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                      color:
-                                                      AppColors.primary),
-                                                  borderRadius:
-                                                  BorderRadius.circular(
-                                                      8.sp)),
-                                              child: AppBarDate()),
-                                          Spacer(),
+                                                border: Border.all(
+                                                  color: AppColors.primary,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(8.sp),
+                                              ),
+                                              child: AppBarDate(),
+                                            ),
+                                            Spacer(),
 
-                                          // ✅ FIX: Wrapped icons row in Flexible to prevent
-                                          // overflow when multiple icons are displayed.
-                                          Flexible(
-                                            child: BlocBuilder<AppHomeCubit,
-                                                HomeState>(
-                                              builder: (context, state) {
-                                                return SingleChildScrollView(
-                                                  scrollDirection:
-                                                  Axis.horizontal,
-                                                  child: Row(
-                                                    spacing: 4.sp,
-                                                    children: [
-                                                      for (int i = 0;
-                                                      i <
-                                                          homeCubit
-                                                              .selectedHeaderIcons
-                                                              .length;
-                                                      i++)
-                                                        Padding(
-                                                          padding: EdgeInsets
-                                                              .symmetric(
-                                                              horizontal:
-                                                              2.sp,
-                                                              vertical:
-                                                              4.sp),
-                                                          child: InkWell(
-                                                            onTap: () {
-                                                              Navigator.of(
-                                                                  context)
-                                                                  .push(
-                                                                MaterialPageRoute(
-                                                                  builder:
-                                                                      (context) =>
-                                                                      homeCubit
-                                                                          .selectedHeaderIcons[i]
-                                                                          .navigateTo(context),
-                                                                ),
-                                                              );
-                                                            },
-                                                            child:
-                                                            DashedIconContainer(
-                                                              svgAssetPath: homeCubit
-                                                                  .selectedHeaderIcons[
-                                                              i]
-                                                                  .svgPath,
-                                                              onMinusTap: () {
+                                            // ✅ FIX: Wrapped icons row in Flexible to prevent
+                                            // overflow when multiple icons are displayed.
+                                            Flexible(
+                                              child: BlocBuilder<AppHomeCubit,
+                                                  HomeState>(
+                                                builder: (context, state) {
+                                                  return SingleChildScrollView(
+                                                    scrollDirection:
+                                                        Axis.horizontal,
+                                                    child: Row(
+                                                      spacing: 4.sp,
+                                                      children: [
+                                                        for (int i = 0;
+                                                            i <
                                                                 homeCubit
-                                                                    .removeHeaderIcon(
-                                                                    i);
-                                                              },
-                                                              dashColor:
-                                                              AppColors
-                                                                  .primary,
-                                                              backgroundColor:
-                                                              AppColors
-                                                                  .primary,
-                                                              width: 48.sp,
-                                                              height: 48.sp,
+                                                                    .selectedHeaderIcons
+                                                                    .length;
+                                                            i++)
+                                                          Padding(
+                                                            padding: EdgeInsets
+                                                                .symmetric(
+                                                              horizontal: 2.sp,
+                                                              vertical: 4.sp,
                                                             ),
-                                                          ),
-                                                        ),
-
-                                                      // MOVED 24/8/2026 (again): the add button is now the
-                                                      // last child of the ICON STRIP, not a sibling of it.
-                                                      //
-                                                      // As a sibling it left dead space at the end of the
-                                                      // row: `Row.spacing` inserted a gap on each side of
-                                                      // it and the SizedBox added 8 more, and once three
-                                                      // icons were chosen the button collapsed to
-                                                      // SizedBox.shrink() while all that padding stayed —
-                                                      // so the strip stopped short of the column edge with
-                                                      // nothing visible in the gap.
-                                                      //
-                                                      // Inside the strip there is nothing after the last
-                                                      // icon, so the row now ends exactly where its content
-                                                      // does, and the button still follows the icons.
-                                                      // MOVED 24/8/2026: the add button used to be the FIRST child of
-                                                      // this row, so it sat to the LEFT of the icons already chosen and
-                                                      // the row grew away from it. It belongs after them — new icons
-                                                      // appear where the button is, not on the far side of the strip.
-                                                      //
-                                                      // Order, not alignment: in Arabic the Row mirrors with the rest of
-                                                      // the UI, so "after the icons" stays correct in both directions.
-                                                      BlocBuilder<AppHomeCubit,
-                                                          HomeState>(
-                                                        builder: (context, state) {
-                                                          if (homeCubit
-                                                              .selectedHeaderIcons
-                                                              .length <
-                                                              3) {
-                                                            return InkWell(
+                                                            child: InkWell(
                                                               onTap: () {
-                                                                hapticController
-                                                                    .triggerHapticFeedback(
-                                                                    vibration:
-                                                                    VibrateType
-                                                                        .lightImpact,
-                                                                    hapticFeedback:
-                                                                    HapticFeedback
-                                                                        .lightImpact);
-                                                                showAppDialog(
-                                                                  context: context,
-                                                                  builder: (dialogContext) =>
-                                                                      IconSelectorDialog(
-                                                                        onIconSelected:
-                                                                            (icon) {
-                                                                          homeCubit
-                                                                              .addHeaderIcon(
-                                                                              icon);
-                                                                        },
-                                                                      ),
+                                                                Navigator.of(
+                                                                  context,
+                                                                ).push(
+                                                                  MaterialPageRoute(
+                                                                    builder: (context) => homeCubit
+                                                                        .selectedHeaderIcons[
+                                                                            i]
+                                                                        .navigateTo(
+                                                                      context,
+                                                                    ),
+                                                                  ),
                                                                 );
                                                               },
-                                                              child: Container(
-                                                                width: 25.sp,
-                                                                height: 25.sp,
-                                                                decoration: BoxDecoration(
-                                                                    color:
-                                                                    AppColors.primary,
-                                                                    borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                        4.r)),
-                                                                child: SizedBox(
-                                                                  child: CustomSvgImage(
-                                                                    assetPath:
-                                                                    "assets/icons_assets/main_icons_assets/plus.svg",
-                                                                    width: 12.w,
-                                                                    height: 12.h,
+                                                              child:
+                                                                  DashedIconContainer(
+                                                                svgAssetPath:
+                                                                    homeCubit
+                                                                        .selectedHeaderIcons[
+                                                                            i]
+                                                                        .svgPath,
+                                                                onMinusTap: () {
+                                                                  homeCubit
+                                                                      .removeHeaderIcon(
+                                                                    i,
+                                                                  );
+                                                                },
+                                                                dashColor:
+                                                                    AppColors
+                                                                        .primary,
+                                                                backgroundColor:
+                                                                    AppColors
+                                                                        .primary,
+                                                                width: 48.sp,
+                                                                height: 48.sp,
+                                                              ),
+                                                            ),
+                                                          ),
+
+                                                        // MOVED 24/8/2026 (again): the add button is now the
+                                                        // last child of the ICON STRIP, not a sibling of it.
+                                                        //
+                                                        // As a sibling it left dead space at the end of the
+                                                        // row: `Row.spacing` inserted a gap on each side of
+                                                        // it and the SizedBox added 8 more, and once three
+                                                        // icons were chosen the button collapsed to
+                                                        // SizedBox.shrink() while all that padding stayed —
+                                                        // so the strip stopped short of the column edge with
+                                                        // nothing visible in the gap.
+                                                        //
+                                                        // Inside the strip there is nothing after the last
+                                                        // icon, so the row now ends exactly where its content
+                                                        // does, and the button still follows the icons.
+                                                        // MOVED 24/8/2026: the add button used to be the FIRST child of
+                                                        // this row, so it sat to the LEFT of the icons already chosen and
+                                                        // the row grew away from it. It belongs after them — new icons
+                                                        // appear where the button is, not on the far side of the strip.
+                                                        //
+                                                        // Order, not alignment: in Arabic the Row mirrors with the rest of
+                                                        // the UI, so "after the icons" stays correct in both directions.
+                                                        BlocBuilder<
+                                                            AppHomeCubit,
+                                                            HomeState>(
+                                                          builder:
+                                                              (context, state) {
+                                                            if (homeCubit
+                                                                    .selectedHeaderIcons
+                                                                    .length <
+                                                                3) {
+                                                              return InkWell(
+                                                                onTap: () {
+                                                                  hapticController
+                                                                      .triggerHapticFeedback(
+                                                                    vibration:
+                                                                        VibrateType
+                                                                            .lightImpact,
+                                                                    hapticFeedback:
+                                                                        HapticFeedback
+                                                                            .lightImpact,
+                                                                  );
+                                                                  showAppDialog(
+                                                                    context:
+                                                                        context,
+                                                                    builder:
+                                                                        (dialogContext) =>
+                                                                            IconSelectorDialog(
+                                                                      onIconSelected:
+                                                                          (icon) {
+                                                                        homeCubit
+                                                                            .addHeaderIcon(
+                                                                          icon,
+                                                                        );
+                                                                      },
+                                                                    ),
+                                                                  );
+                                                                },
+                                                                child:
+                                                                    Container(
+                                                                  width: 25.sp,
+                                                                  height: 25.sp,
+                                                                  decoration:
+                                                                      BoxDecoration(
                                                                     color: AppColors
-                                                                        .textButton,
-                                                                    fit: BoxFit.scaleDown,
+                                                                        .primary,
+                                                                    borderRadius:
+                                                                        BorderRadius
+                                                                            .circular(
+                                                                      4.r,
+                                                                    ),
+                                                                  ),
+                                                                  child:
+                                                                      SizedBox(
+                                                                    child:
+                                                                        CustomSvgImage(
+                                                                      assetPath:
+                                                                          "assets/icons_assets/main_icons_assets/ic_action_plus.svg",
+                                                                      width:
+                                                                          12.w,
+                                                                      height:
+                                                                          12.h,
+                                                                      color: AppColors
+                                                                          .textButton,
+                                                                      fit: BoxFit
+                                                                          .scaleDown,
+                                                                    ),
                                                                   ),
                                                                 ),
-                                                              ),
-                                                            );
-                                                          } else {
-                                                            return SizedBox.shrink();
-                                                          }
-                                                        },
-                                                      ),
-                                                    ],
-                                                  ),
-                                                );
-                                              },
+                                                              );
+                                                            } else {
+                                                              return SizedBox
+                                                                  .shrink();
+                                                            }
+                                                          },
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Container(
+                                          padding: EdgeInsets.all(10.sp),
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                              color: AppColors.primary,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              8.sp,
                                             ),
                                           ),
-
-                                        ],
-                                      ),
-                                      Container(
-                                        padding: EdgeInsets.all(10.sp),
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                color: AppColors.primary),
-                                            borderRadius:
-                                            BorderRadius.circular(8.sp)),
-                                        child: const AppBarGreetings(),
-                                      ),
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            child: Container(
+                                          child: const AppBarGreetings(),
+                                        ),
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: Container(
                                                 height: 80.sp,
-                                                padding:
-                                                EdgeInsets.all(10.sp),
+                                                padding: EdgeInsets.all(10.sp),
                                                 decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        color:
-                                                        AppColors.primary),
-                                                    borderRadius:
-                                                    BorderRadius.circular(
-                                                        8.sp)),
+                                                  border: Border.all(
+                                                    color: AppColors.primary,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                    8.sp,
+                                                  ),
+                                                ),
                                                 child: Text(
-                                                    context
-                                                        .read<AppHomeCubit>()
-                                                        .quote
-                                                        ,
-                                                    style: StyleText.fontSize16Weight500
-                                                        .copyWith(
-                                                        fontWeight:
-                                                        FontWeight.w700,
-                                                        color: AppColors
-                                                            .text))),
-                                          ),
-                                        ],
-                                      ),
+                                                  context
+                                                      .read<AppHomeCubit>()
+                                                      .quote,
+                                                  style: StyleText
+                                                      .fontSize16Weight500
+                                                      .copyWith(
+                                                    fontWeight: FontWeight.w700,
+                                                    color: AppColors.text,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
 
-                                      BlocBuilder<AppHomeCubit, HomeState>(
+                                        BlocBuilder<AppHomeCubit, HomeState>(
                                           builder: (_, state) {
                                             return Column(
                                               spacing: 15.sp,
                                               crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 for (int rowIndex = 1;
-                                                rowIndex <=
-                                                    HomeConstants
-                                                        .NUMBER_OF_ROWS;
-                                                rowIndex++)
+                                                    rowIndex <=
+                                                        HomeConstants
+                                                            .kNumberOfRows;
+                                                    rowIndex++)
                                                   // The grid is always
                                                   // NUMBER_OF_COLUMNS (4) wide —
                                                   // the count is fixed by the
@@ -494,8 +512,11 @@ class EditHomePage extends StatelessWidget {
                                                   // still offers the full grid,
                                                   // reachable by scrolling.
                                                   LayoutBuilder(
-                                                    builder: (BuildContext context,
-                                                        BoxConstraints constraints) {
+                                                    builder: (
+                                                      BuildContext context,
+                                                      BoxConstraints
+                                                          constraints,
+                                                    ) {
                                                       final double slot =
                                                           AddComponentWidget
                                                               .slotWidth;
@@ -509,9 +530,9 @@ class EditHomePage extends StatelessWidget {
                                                       final int columnsCount =
                                                           fitCount <
                                                                   HomeConstants
-                                                                      .NUMBER_OF_COLUMNS
+                                                                      .kNumberOfColumns
                                                               ? HomeConstants
-                                                                  .NUMBER_OF_COLUMNS
+                                                                  .kNumberOfColumns
                                                               : fitCount;
 
                                                       return SingleChildScrollView(
@@ -523,83 +544,87 @@ class EditHomePage extends StatelessWidget {
                                                                   .start,
                                                           spacing: gap,
                                                           children: [
-                                                            for (int columnIndex = 1;
+                                                            for (int columnIndex =
+                                                                    1;
                                                                 columnIndex <=
                                                                     columnsCount;
                                                                 columnIndex++)
                                                               item(
-                                                                  columnIndex:
-                                                                      columnIndex,
-                                                                  rowIndex:
-                                                                      rowIndex,
-                                                                  cubit:
-                                                                      homeCubit)
+                                                                columnIndex:
+                                                                    columnIndex,
+                                                                rowIndex:
+                                                                    rowIndex,
+                                                                cubit:
+                                                                    homeCubit,
+                                                              ),
                                                           ],
                                                         ),
                                                       );
                                                     },
-                                                  )
+                                                  ),
                                               ],
                                             );
-                                          })
-                                    ]),
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  // ✅ FIX: Removed the fixed-width Container(355.sp) that was
+                                  // causing a large empty space on the left in RTL (Arabic) mode.
+                                  // In RTL layouts, a trailing spacer becomes a leading spacer,
+                                  // pushing all content away from the drawer side.
+                                ],
                               ),
-                              // ✅ FIX: Removed the fixed-width Container(355.sp) that was
-                              // causing a large empty space on the left in RTL (Arabic) mode.
-                              // In RTL layouts, a trailing spacer becomes a leading spacer,
-                              // pushing all content away from the drawer side.
+                              SizedBox(height: 20.sp),
+                              // Phone: the real Home page shows the month calendar
+                              // at the end of its scroll (HomeScreen._mobileCalendar),
+                              // so the editor shows it in the same place. Month grid
+                              // only — the day timeline sits in an Expanded and this
+                              // column has unbounded height.
+                              if (isMobile) ...[
+                                HomeCalendarWidget(
+                                  showDayTimeline: false,
+                                  currentUserEmail:
+                                      Get.find<MainCoreEmployeeController>()
+                                              .employeeEntity
+                                              ?.email ??
+                                          '',
+                                ),
+                                SizedBox(height: 20.sp),
+                              ],
+                              SizedBox(height: 10.sp),
+                              EditHomePageCustomButton(),
+                              SizedBox(height: 20.sp),
                             ],
                           ),
-                          SizedBox(height: 20.sp),
-                          // Phone: the real Home page shows the month calendar
-                          // at the end of its scroll (HomeScreen._mobileCalendar),
-                          // so the editor shows it in the same place. Month grid
-                          // only — the day timeline sits in an Expanded and this
-                          // column has unbounded height.
-                          if (isMobile) ...[
-                            HomeCalendarWidget(
-                              showDayTimeline: false,
-                              currentUserEmail:
-                                  Get.find<MainCoreEmployeeController>()
-                                          .employeeEntity
-                                          ?.email ??
-                                      '',
-                            ),
-                            SizedBox(height: 20.sp),
-                          ],
-                          SizedBox(height: 10.sp),
-                          EditHomePageCustomButton(),
-                          SizedBox(height: 20.sp)
-                        ],
+                        ),
                       ),
                     ),
-                        ),
-                      ),
 
-                      // Right — the calendar column, landscape tablet only,
-                      // matching HomeScreen. No `onDateSelected`: this page has
-                      // no upcoming-schedule list to filter, it only shows
-                      // where the calendar sits on the real home page.
-                      if (showSideCalendar)
-                        Expanded(
-                          flex: 3,
-                          child: Padding(
-                            padding: EdgeInsets.only(top: 0.sp, bottom: 15.sp),
-                            child: HomeCalendarWidget(
-                              currentUserEmail:
-                                  Get.find<MainCoreEmployeeController>()
-                                          .employeeEntity
-                                          ?.email ??
-                                      '',
-                            ),
+                    // Right — the calendar column, landscape tablet only,
+                    // matching HomeScreen. No `onDateSelected`: this page has
+                    // no upcoming-schedule list to filter, it only shows
+                    // where the calendar sits on the real home page.
+                    if (showSideCalendar)
+                      Expanded(
+                        flex: 3,
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 0.sp, bottom: 15.sp),
+                          child: HomeCalendarWidget(
+                            currentUserEmail:
+                                Get.find<MainCoreEmployeeController>()
+                                        .employeeEntity
+                                        ?.email ??
+                                    '',
                           ),
                         ),
-                    ],
-                  ),
+                      ),
+                  ],
                 ),
-                SizedBox(height: 20.sp)
-              ],
-            ),
+              ),
+              SizedBox(height: 20.sp),
+            ],
+          ),
         ),
       ),
     );
@@ -611,18 +636,18 @@ class EditHomePage extends StatelessWidget {
   /// child sits inside the frame's own SingleChildScrollView — so an Expanded
   /// there throws. On tablet the frame wraps the child in an Expanded itself,
   /// and the pinned layout keeps working unchanged.
-  Widget _expandOnTablet({
-    required bool isMobile,
-    required Widget child,
-  }) =>
+  Widget _expandOnTablet({required bool isMobile, required Widget child}) =>
       isMobile ? child : Expanded(child: child);
 
-  Widget item(
-      {required int columnIndex,
-        required int rowIndex,
-        required AppHomeCubit cubit}) {
-    HomeComponentModel? model =
-    cubit.getEditedComponent(columnIndex: columnIndex, rowIndex: rowIndex);
+  Widget item({
+    required int columnIndex,
+    required int rowIndex,
+    required AppHomeCubit cubit,
+  }) {
+    HomeComponentModel? model = cubit.getEditedComponent(
+      columnIndex: columnIndex,
+      rowIndex: rowIndex,
+    );
 
     return Builder(
       builder: (BuildContext context) {
@@ -631,16 +656,26 @@ class EditHomePage extends StatelessWidget {
             hoverColor: AppColors.transparent,
             highlightColor: AppColors.transparent,
             splashColor: AppColors.transparent,
+            onTapDown: (_) => HapticController.low(),
             onTap: () {
               cubit.selectComponentToEdit(
-                  rowIndex: rowIndex, columnIndex: columnIndex);
+                rowIndex: rowIndex,
+                columnIndex: columnIndex,
+              );
 
-              Navigator.of(context).push(MaterialPageRoute(
+              Navigator.of(context).push(
+                MaterialPageRoute(
                   builder: (context) => BlocProvider<AppHomeCubit>.value(
-                      value: cubit, child: AddingWidgetPage())));
+                    value: cubit,
+                    child: AddingWidgetPage(),
+                  ),
+                ),
+              );
             },
             child: AddComponentWidget(
-                columnIndex: columnIndex, rowIndex: rowIndex),
+              columnIndex: columnIndex,
+              rowIndex: rowIndex,
+            ),
           );
         } else {
           // ✅ CHANGED 31/8/2026: heightBox, not box — HEIGHT is pinned to
@@ -648,10 +683,13 @@ class EditHomePage extends StatelessWidget {
           // the card's own. Forcing a shared width here squeezed cards that
           // need more and padded out cards that need less.
           return RemoveComponentWrapper(
-              model: model,
-              component: HomeCardMetrics.heightBox(
-                child: model.component.widget(model) ?? Container(),
-              ));
+            model: model,
+            component: HomeCardMetrics.heightBox(
+              // SizedBox.shrink, not Container(): heightBox now bounds the
+              // width (7/10/2026), and a bare Container would expand to it.
+              child: model.component.widget(model) ?? const SizedBox.shrink(),
+            ),
+          );
         }
       },
     );

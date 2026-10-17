@@ -17,24 +17,24 @@
 /// `AppSearchTextField` returns an `Expanded` itself, so it is a DIRECT child of
 /// the Row here — wrapping it in another `Expanded`, as the old
 /// `CustomTextField` needed, would throw.
+library;
 
+import 'package:grc_module/core/extensions/context_extensions.dart'
+    show kpIsPhoneLayout;
+import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:get/get.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:grc_module/core/custom/6-custom_button_with_svg.dart';
-import 'package:grc_module/core/custom/35-custom_search_widget_custom.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
+import 'package:grc_module/core/custom/buttons/custom_button_with_svg.dart';
+import 'package:grc_module/core/custom/inputs/custom_search_widget_custom.dart';
 // REMOVED_MODULE: import 'package:grc_module/features/external/services_mangment_module/core/new_theme.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
 
 import 'package:grc_module/core/theme/haptic_controller.dart';
-import 'package:grc_module/core/custom/5-custom_button.dart';
-import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
+import 'package:grc_module/core/helper/access/modules_enum.dart';
 import 'package:grc_module/features/roles/r1_role_management/domain/enums/roles/role_management_permission.dart';
 import 'package:grc_module/features/roles/r1_role_management/domain/enums/roles/roles_permissions_sections.dart';
 import 'package:grc_module/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
@@ -69,13 +69,13 @@ class _PlatformRolesHeaderState extends State<PlatformRolesHeader> {
   @override
   Widget build(BuildContext context) {
     final HapticController hapticController = AppControllers.haptic;
-    var lightMode = Theme.of(context).brightness == Brightness.light;
+    Theme.of(context).brightness == Brightness.light;
     controller = context.read<RoleCubit>();
-    bool isTablet = MediaQuery.of(context).size.width >= 600;
+    bool isTablet = !kpIsPhoneLayout(context);
 
     return BlocBuilder<RoleCubit, RoleState>(
       buildWhen: (previous, current) =>
-      current is RoleFetched ||
+          current is RoleFetched ||
           current is RoleFiltered ||
           current is RoleAdded ||
           current is RoleUpdated ||
@@ -91,9 +91,8 @@ class _PlatformRolesHeaderState extends State<PlatformRolesHeader> {
             if (!context.isPhone) ...[
               Text(
                 S.of(context).platformRoles,
-                style: StyleText.fontSize16Weight500.copyWith(
-                    color: AppColors.text
-                ),
+                style: StyleText.fontSize16Weight500
+                    .copyWith(color: AppColors.text),
               ),
               SizedBox(height: 8.sp),
             ],
@@ -102,7 +101,9 @@ class _PlatformRolesHeaderState extends State<PlatformRolesHeader> {
                 module: Modules.roles,
                 section: RolePermissionsSections.roleManagement,
                 permission: RoleManagement.createRoleManagement,
-              ) ? 15 : 0.sp,
+              )
+                  ? 15
+                  : 0.sp,
               children: [
                 // Already an Expanded — do NOT wrap it in another one.
                 // Hint, magnifier, height, padding and radius all come from the
@@ -115,6 +116,7 @@ class _PlatformRolesHeaderState extends State<PlatformRolesHeader> {
                       ? IconButton(
                           icon: const Icon(Icons.clear),
                           onPressed: () {
+                            HapticController.low();
                             controller.searchController.clear();
                             controller.filterRoles();
                           },
@@ -127,35 +129,30 @@ class _PlatformRolesHeaderState extends State<PlatformRolesHeader> {
                   permission: RoleManagement.createRoleManagement,
                 )
                     ? customButtonWithSvg(
-                  image: 'assets/icons_assets/watermark/role.svg',
-                  svgColor: AppColors.textButton,
-                  color: AppColors.primary,
-                  widthImage: 14.sp,
-                  space: context.isPhone ? 0.sp : 8.sp,
-                  heightImage: 22.sp,
-                  colorBorder: Colors.transparent,
-                  width: isTablet ? 100 : 38,
-                  textStyle: StyleText.fontSize16Weight500.copyWith(
-                      color: AppColors.textButton
-                  ),
-                  title: context.isPhone ? "" : S.of(context).role,
-                  function: () {
-                    hapticController.triggerHapticFeedback(
-                        vibration: VibrateType.mediumImpact,
-                        hapticFeedback: HapticFeedback.mediumImpact
-                    );
+                        image: 'assets/icons_assets/roles_assets/ic_role.svg',
+                        svgColor: AppColors.textButton,
+                        color: AppColors.primary,
+                        widthImage: 14.sp,
+                        space: context.isPhone ? 0.sp : 8.sp,
+                        heightImage: 22.sp,
+                        colorBorder: Colors.transparent,
+                        width: isTablet ? 100 : 38,
+                        textStyle: StyleText.fontSize16Weight500
+                            .copyWith(color: AppColors.textButton),
+                        title: context.isPhone ? "" : S.of(context).role,
+                        function: () {
+                          hapticController.triggerHapticFeedback(
+                              vibration: VibrateType.mediumImpact,
+                              hapticFeedback: HapticFeedback.mediumImpact);
 
-                    context.read<RoleCubit>().initAddingRoleController();
-                    Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (_) => BlocProvider<RoleCubit>.value(
-                              value: controller,
-                              child: AddingNewRole(),
-                            )
-                        )
-                    );
-                  },
-                )
+                          context.read<RoleCubit>().initAddingRoleController();
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (_) => BlocProvider<RoleCubit>.value(
+                                    value: controller,
+                                    child: AddingNewRole(),
+                                  )));
+                        },
+                      )
                     : SizedBox()
               ],
             )

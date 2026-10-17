@@ -12,6 +12,7 @@
 /// repository's fabricated-success bug detonated. The `!` is gone: a model with
 /// no employee id now yields an empty string rather than throwing during a
 /// mapping step.
+library;
 
 import 'package:grc_module/features/settings/se4_health_insurance/data/models/health_insurance_model.dart';
 import 'package:grc_module/features/settings/se4_health_insurance/domain/entities/request_health_insurance_entity.dart';

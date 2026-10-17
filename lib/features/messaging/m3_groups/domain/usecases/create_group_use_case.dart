@@ -1,20 +1,22 @@
 /// Module: messaging / groups / domain/use_cases/create_group_use_case.dart
 /// ************************* FILE INFO *************************** ///
 /// File Name: create_group_use_case.dart
-/// Purpose: Create group use case — messaging Groups sub-feature.
-/// Author: Knowticed Team
-/// Created At: 11/10/2025
+/// Description: Create group use case — messaging Groups sub-feature.
+/// Author: Amr Mesbah
+/// Created at: 11/10/2025
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 
-import 'package:grc_module/core/network/message_module/services/error_handler.dart';
-import 'package:grc_module/core/helper/main_helper/single_value_tracking_model.dart';
-import '../../data/models/group_admin_model.dart';
-import '../../data/models/group_members.dart';
-import '../../data/models/group_model.dart';
-import '../entities/member_entity.dart';
-import '../base_repository/base_group_repository.dart';
+import 'package:grc_module/core/network/failure_model.dart';
+import 'package:grc_module/core/helper/single_value_tracking_model.dart';
+
+import 'package:grc_module/features/messaging/m3_groups/data/models/group_admin_model.dart';
+import 'package:grc_module/features/messaging/m3_groups/data/models/group_members.dart';
+import 'package:grc_module/features/messaging/m3_groups/data/models/group_model.dart';
+import 'package:grc_module/features/messaging/m3_groups/domain/entities/member_entity.dart';
+import 'package:grc_module/features/messaging/m3_groups/domain/base_repository/base_group_repository.dart';
 
 class CreateGroupUseCase {
   final BaseGroupsRepository groupRepository;
@@ -70,10 +72,12 @@ class CreateGroupUseCase {
     String groupId = '${createdBy}_${Timestamp.now().millisecondsSinceEpoch}';
     Timestamp creationTime = Timestamp.now();
     Map<String, GroupMember> members = {};
-    groupMembers.forEach((member) {
-      members[member.memberId] =
-          member.toMemberModel(time: creationTime, status: true);
-    });
+    for (var member in groupMembers) {
+      members[member.memberId] = member.toMemberModel(
+        time: creationTime,
+        status: true,
+      );
+    }
     Map<String, GroupAdminModel> admins = {};
     for (var admin in groupAdmins) {
       admins[admin.adminId] = admin;
@@ -88,9 +92,9 @@ class CreateGroupUseCase {
       ),
       groupNameAr: groupNameAr != null // ✅ only set if provided
           ? SingleValueTrackingModel<String>(
-        values: [groupNameAr],
-        timestamps: [creationTime],
-      )
+              values: [groupNameAr],
+              timestamps: [creationTime],
+            )
           : null,
       groupDescription: SingleValueTrackingModel<String>(
         values: [groupDescription],
@@ -98,9 +102,9 @@ class CreateGroupUseCase {
       ),
       groupDescriptionAr: groupDescriptionAr != null // ✅ only set if provided
           ? SingleValueTrackingModel<String>(
-        values: [groupDescriptionAr],
-        timestamps: [creationTime],
-      )
+              values: [groupDescriptionAr],
+              timestamps: [creationTime],
+            )
           : null,
       groupImage: SingleValueTrackingModel<String>(
         values: (groupImage != null) ? [groupImage] : [],

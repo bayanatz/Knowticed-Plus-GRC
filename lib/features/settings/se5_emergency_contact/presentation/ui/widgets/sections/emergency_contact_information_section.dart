@@ -11,16 +11,17 @@
 ///          constructor argument, resolved once by the caller — and the
 ///          14-line commented-out print block is deleted.
 ///          Earlier: added support for both contacts from the history model.
+library;
 
 import 'package:flutter/material.dart';
-import 'package:grc_module/core/custom/2-custom_textfield.dart';
+import 'package:grc_module/core/custom/inputs/custom_textfield.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:grc_module/core/theme/app_font_size.dart';
+import 'package:grc_module/core/extensions/screen_fraction_extension.dart';
 import 'package:grc_module/features/roles/r4_active_directory/data/models/employees_model/new_employee_model.dart';
 import 'package:grc_module/generated/l10n.dart';
 
-import 'package:grc_module/features/settings/main_controller/presentation/ui/widgets/settings_header.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
+import 'package:grc_module/features/settings/presentation/ui/widgets/settings_header.dart';
+import 'package:grc_module/core/helper/format_title.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
 
 class EmergencyContactInformationSection extends StatelessWidget {
@@ -41,7 +42,7 @@ class EmergencyContactInformationSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var isMobile = ContextExtension(context).isPhone;
-    bool isTablet = MediaQuery.of(context).size.shortestSide > 600;
+    bool isTablet = !kpIsPhoneLayout(context);
 
     final NewEmployeeModelHistory? currentEmployeeHistory = employeeHistory;
     // Initialize variables for contact data
@@ -163,15 +164,22 @@ class EmergencyContactInformationSection extends StatelessWidget {
         : S.of(context).secondEmergencyContact;
 
     return Padding(
-      padding: EdgeInsets.only(right: 15.sp,left: 15.sp,top: context.isPhone ? 0.sp : 15.sp,bottom: 15.sp),
+      padding: EdgeInsets.only(
+          right: 15.sp,
+          left: 15.sp,
+          top: context.isPhone ? 0.sp : 15.sp,
+          bottom: 15.sp),
       child: Column(
         children: [
-          SizedBox(height: 15.sp,),
+          SizedBox(
+            height: 15.sp,
+          ),
           SettingsHeader(
             // 0: the Padding wrapping this section already applies 15.sp on
             // each side, so SettingsHeader must not add its own on top.
             horizontalPadding: 0,
-            imagePath: 'assets/icons_assets/main_icons_assets/emergency_contact_person.svg',
+            imagePath:
+                'assets/icons_assets/main_icons_assets/ic_user_emergency_contact.svg',
             text: headerText,
           ),
           // Mobile only: 15.sp after a section title.
@@ -181,176 +189,175 @@ class EmergencyContactInformationSection extends StatelessWidget {
           // First Row/Column: First Name, Last Name, Relationship
           isMobile
               ? Column(
-            children: [
-              CustomTextField(
-                label: S.of(context).firstName,
-                hint: '-',
-                controller: firstNameController,
-                enabled: false,
-              ),
-              isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 16),
-              CustomTextField(
-                label: S.of(context).lastName,
-                hint: '-',
-                controller: lastNameController,
-                enabled: false,
-              ),
-             isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 16),
-              CustomTextField(
-                label: S.of(context).relationship,
-                hint: '-',
-                controller: relationshipController,
-                enabled: false,
-              ),
-            ],
-          )
+                  children: [
+                    CustomTextField(
+                      label: S.of(context).firstName,
+                      hint: '-',
+                      controller: firstNameController,
+                      enabled: false,
+                    ),
+                    isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 16),
+                    CustomTextField(
+                      label: S.of(context).lastName,
+                      hint: '-',
+                      controller: lastNameController,
+                      enabled: false,
+                    ),
+                    isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 16),
+                    CustomTextField(
+                      label: S.of(context).relationship,
+                      hint: '-',
+                      controller: relationshipController,
+                      enabled: false,
+                    ),
+                  ],
+                )
               : Row(
-            children: [
-              Expanded(
-                child: CustomTextField(
-                  label: S.of(context).firstName,
-                  hint: '-',
-                  controller: firstNameController,
-                  enabled: false,
+                  children: [
+                    Expanded(
+                      child: CustomTextField(
+                        label: S.of(context).firstName,
+                        hint: '-',
+                        controller: firstNameController,
+                        enabled: false,
+                      ),
+                    ),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: CustomTextField(
+                        label: S.of(context).lastName,
+                        hint: '-',
+                        controller: lastNameController,
+                        enabled: false,
+                      ),
+                    ),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: CustomTextField(
+                        label: S.of(context).relationship,
+                        hint: '-',
+                        controller: relationshipController,
+                        enabled: false,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              SizedBox(width: 12),
-              Expanded(
-                child: CustomTextField(
-                  label: S.of(context).lastName,
-                  hint: '-',
-                  controller: lastNameController,
-                  enabled: false,
-                ),
-              ),
-              SizedBox(width: 12),
-              Expanded(
-                child: CustomTextField(
-                  label: S.of(context).relationship,
-                  hint: '-',
-                  controller: relationshipController,
-                  enabled: false,
-                ),
-              ),
-            ],
-          ),
 
           isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 15.sp),
           // Second Row/Column: Email, Mobile Phone, Language
           isMobile
               ? Column(
-            children: [
-              CustomTextField(
-                label: S.of(context).email,
-                hint: '-',
-                controller: emailController,
-                enabled: false,
-              ),
-              isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 16),
-              CustomTextField(
-                label: S.of(context).phoneNumber,
-                hint: '-',
-                controller: mobilePhoneController,
-                enabled: false,
-              ),
-              isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 16),
-              CustomTextField(
-                label: S.of(context).language,
-                hint: '-',
-                controller: languageController,
-                enabled: false,
-              ),
-            ],
-          )
+                  children: [
+                    CustomTextField(
+                      label: S.of(context).email,
+                      hint: '-',
+                      controller: emailController,
+                      enabled: false,
+                    ),
+                    isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 16),
+                    CustomTextField(
+                      label: S.of(context).phoneNumber,
+                      hint: '-',
+                      controller: mobilePhoneController,
+                      enabled: false,
+                    ),
+                    isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 16),
+                    CustomTextField(
+                      label: S.of(context).language,
+                      hint: '-',
+                      controller: languageController,
+                      enabled: false,
+                    ),
+                  ],
+                )
               : Row(
-            children: [
-              Expanded(
-                child: CustomTextField(
-                  label: S.of(context).email,
-                  hint: "-",
-                  controller: emailController,
-                  enabled: false,
+                  children: [
+                    Expanded(
+                      child: CustomTextField(
+                        label: S.of(context).email,
+                        hint: "-",
+                        controller: emailController,
+                        enabled: false,
+                      ),
+                    ),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: CustomTextField(
+                        label: S.of(context).phoneNumber,
+                        hint: '-',
+                        controller: mobilePhoneController,
+                        enabled: false,
+                      ),
+                    ),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: CustomTextField(
+                        label: S.of(context).language,
+                        hint: '-',
+                        controller: languageController,
+                        enabled: false,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              SizedBox(width: 12),
-              Expanded(
-                child: CustomTextField(
-                  label: S.of(context).phoneNumber,
-                  hint: '-',
-                  controller: mobilePhoneController,
-                  enabled: false,
-                ),
-              ),
-              SizedBox(width: 12),
-              Expanded(
-                child: CustomTextField(
-                  label: S.of(context).language,
-                  hint: '-',
-                  controller: languageController,
-                  enabled: false,
-                ),
-              ),
-            ],
-          ),
           isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 15.sp),
-
 
           // Third Row/Column: Country, Province, City
           isMobile
               ? Column(
-            children: [
-              CustomTextField(
-                label: S.of(context).country,
-                hint: '-',
-                controller: countryController,
-                enabled: false,
-              ),
-              isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 16),
-              CustomTextField(
-                label: S.of(context).province,
-                hint: '-',
-                controller: provinceController,
-                enabled: false,
-              ),
-              isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 16),
-              CustomTextField(
-                label: S.of(context).city,
-                hint: '-',
-                controller: cityController,
-                enabled: false,
-              ),
-            ],
-          )
+                  children: [
+                    CustomTextField(
+                      label: S.of(context).country,
+                      hint: '-',
+                      controller: countryController,
+                      enabled: false,
+                    ),
+                    isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 16),
+                    CustomTextField(
+                      label: S.of(context).province,
+                      hint: '-',
+                      controller: provinceController,
+                      enabled: false,
+                    ),
+                    isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 16),
+                    CustomTextField(
+                      label: S.of(context).city,
+                      hint: '-',
+                      controller: cityController,
+                      enabled: false,
+                    ),
+                  ],
+                )
               : Row(
-            children: [
-              Expanded(
-                child: CustomTextField(
-                  label: S.of(context).country,
-                  hint: '-',
-                  controller: countryController,
-                  enabled: false,
+                  children: [
+                    Expanded(
+                      child: CustomTextField(
+                        label: S.of(context).country,
+                        hint: '-',
+                        controller: countryController,
+                        enabled: false,
+                      ),
+                    ),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: CustomTextField(
+                        label: S.of(context).province,
+                        hint: '-',
+                        controller: provinceController,
+                        enabled: false,
+                      ),
+                    ),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: CustomTextField(
+                        label: S.of(context).city,
+                        hint: '-',
+                        controller: cityController,
+                        enabled: false,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              SizedBox(width: 12),
-              Expanded(
-                child: CustomTextField(
-                  label: S.of(context).province,
-                  hint: '-',
-                  controller: provinceController,
-                  enabled: false,
-                ),
-              ),
-              SizedBox(width: 12),
-              Expanded(
-                child: CustomTextField(
-                  label: S.of(context).city,
-                  hint: '-',
-                  controller: cityController,
-                  enabled: false,
-                ),
-              ),
-            ],
-          ),
 
           isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 15.sp),
 

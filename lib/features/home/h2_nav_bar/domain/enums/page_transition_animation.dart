@@ -10,11 +10,9 @@
 /// `_SinglePageRoute` and `getPageRoute` all stay in ONE file on purpose:
 /// the builders are library-private top-level functions, so splitting them
 /// further would put them out of reach of the code that calls them.
-
-import 'dart:ui';
+library;
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
 enum PageTransitionAnimation {
   cupertino,

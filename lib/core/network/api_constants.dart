@@ -2,14 +2,16 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: api_constants.dart
-/// Purpose: Declares `ApiConstants`.
-/// Author: Knowticed Plus team
+/// Description: Declares `ApiConstants`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 class ApiConstants {
   // Private constants
   static String baseUri = "";
- // static const String _employeesProfile = "/Employees";
+  // static const String _employeesProfile = "/Employees";
   static const String employeeInfo = "Employees_Info";
 
   // Raw Firestore collection names (merged from the old
@@ -23,8 +25,9 @@ class ApiConstants {
   static const String _employeesDirectory = "/Employees_Directory";
   static const String _departments = "/Departments";
   static const String _departmentDocumentKey = "Departments";
-  static const String _insurance = "/Insurance";
-  static const String _emergencyContacts = "/Emergency Contacts";
+  static const String _insurance = "/Modules/settings/Insurance";
+  static const String _emergencyContacts =
+      "/Modules/settings/Emergency Contacts";
   static const String _roles = "/Roles";
   static const String _userAccess = "/Users Access";
   static const String _rolesNames = "/Access Types";
@@ -33,9 +36,8 @@ class ApiConstants {
   static const String _demoRequests = 'Demo_Requests';
   static const String _demoUsersAccounts = 'Demo_Users_Accounts';
   static const String _company = "/Companys";
-  static const String _department = "/Departments";
   static const String _systemLogs = "System Logs";
-  static const String _homeLayout = "/Home Layout";
+  static const String _homeLayout = "/Modules/settings/Home Layout";
   // Public getters
   static String get employeesProfile => '$baseUri/$employeeInfo';
   static String get employeesProfileBackUpOne =>
@@ -53,8 +55,8 @@ class ApiConstants {
   static String get rolesNames => '$baseUri$_rolesNames';
   static String get roleImages => '$baseUri$_roleImages';
   static String get wrongEmployees => '$baseUri$_wrongEmployees';
-  static String get demoRequests => '$_demoRequests';
-  static String get demoUsersAccounts => '$_demoUsersAccounts';
+  static String get demoRequests => _demoRequests;
+  static String get demoUsersAccounts => _demoUsersAccounts;
   static String get company => '$baseUri$_company';
   static String get systemLogs => '$baseUri/$_systemLogs';
   static String get homeLayout => '$baseUri$_homeLayout';
@@ -100,12 +102,21 @@ abstract class FirebaseCollections {
   /// Top-level departments collection (lowercase legacy key).
   static const String departments = 'departments';
 
+  /// Department directory collection (capital D) the Knowledge Hub reads
+  /// department names and managers from. Not the lowercase [departments].
+  static const String departmentDirectory = 'Departments';
+
+  /// Knowledge Hub module root. Used with getBaseUrl(...) for Storage paths:
+  /// `${getBaseUrl(FirebaseCollections.knowledgeHubRoot)}/knowledge_images/...`.
+  static const String knowledgeHubRoot = 'Modules/knowledge_hub';
+
   // Knowledge Hub module collections. Used ONLY with getBaseUrl(...), which
   // prepends "Demo/{companyId}". All knowledge-hub data now lives under the
   // module root `Demo/{companyId}/Modules/knowledge_hub/...`, mirroring how the
   // services module uses `Modules/services/...` (see FirestoreCollections).
   // Resolves to: Demo/{companyId}/Modules/knowledge_hub/Create_Knowledge
-  static const String createKnowledge = 'Modules/knowledge_hub/Create_Knowledge';
+  static const String createKnowledge =
+      'Modules/knowledge_hub/Create_Knowledge';
   // Resolves to: Demo/{companyId}/Modules/knowledge_hub/Approvals
   static const String knowledgeApprovals = 'Modules/knowledge_hub/Approvals';
   // Resolves to: Demo/{companyId}/Modules/knowledge_hub/Document_Utilization
@@ -116,6 +127,10 @@ abstract class FirebaseCollections {
   // as a subcollection under a knowledge doc (doc(id).collection('Comments'))
   // are unaffected — they move with their parent document.
   static const String knowledgeComments = 'Modules/knowledge_hub/Comments';
+
+  /// The employee directory the Knowledge Hub reads authors and commenters
+  /// from (capital E).
+  static const String employeeDirectory = 'Employees';
 
   // ADDED 1/9/2026 — dedup log for the module's time-driven notifications
   // (expiry warning, archival, review reminder). One marker document per
@@ -137,7 +152,7 @@ class FirestoreCollections {
   // Bare collection names. Keep these for NESTED subcollection references
   // (e.g. CreateServices/{doc}/RequestServices) which must NOT be moved.
   static const createServices = "CreateServices";
-   static const requestServices = "RequestServices";
+  static const requestServices = "RequestServices";
 
   // Top-level (tenant root) service collections now live under Modules/services.
   // Use these ONLY with getBaseUrl(...) which prepends "Demo/{companyId}".
@@ -154,7 +169,8 @@ class FirestoreCollections {
   // Demo/{companyId}/Modules/services/services_images/...
   static const servicesImagesStorage = "Modules/services/services_images";
   // Demo/{companyId}/Modules/services/comments_attachments/...
-  static const commentsAttachmentsStorage = "Modules/services/comments_attachments";
+  static const commentsAttachmentsStorage =
+      "Modules/services/comments_attachments";
   // static const allServices = "myCreateRequests";
   static const accessEmployee = "User_Management";
   static const employeeInfo = "Employees_Info";
@@ -162,8 +178,6 @@ class FirestoreCollections {
   static const requestedServices = "RequestedServices";
   static const users = "users";
 }
-
-
 
 //class FirestoreCollections {
 //   static const createServices = "Create Services";

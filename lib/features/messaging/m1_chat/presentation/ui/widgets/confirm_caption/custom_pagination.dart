@@ -30,10 +30,12 @@ class CustomPagination extends StatelessWidget {
               final mimeType = lookupMimeType(files[index].path!);
               bool isVideo = mimeType?.startsWith('video/') ?? false;
               if (isVideo) {
-                final model =
-                    VideoMessageModel(videoFilePath: files[index].path!,);
+                final model = VideoMessageModel(
+                  videoFilePath: files[index].path!,
+                );
                 return GestureDetector(
                   onTap: () {
+                    HapticController.low(); // list row: on the tap (X-117)
                     if (index != config.activeIndex) {
                       controller.swiperController.move(index);
                     }
@@ -57,6 +59,7 @@ class CustomPagination extends StatelessWidget {
               } else {
                 return GestureDetector(
                   onTap: () {
+                    HapticController.low(); // list row: on the tap (X-117)
                     if (index != config.activeIndex) {
                       controller.swiperController.move(index);
                     }

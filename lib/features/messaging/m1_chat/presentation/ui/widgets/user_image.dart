@@ -5,12 +5,13 @@
 ///
 /// Lives in the messaging feature rather than lib/core because it depends on
 /// MemberEntity, a messaging domain type.
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:grc_module/core/custom/46-custom_image_picker.dart';
+import 'package:grc_module/core/custom/pickers/custom_image_picker.dart';
 
-import '../../../../m3_groups/domain/entities/member_entity.dart';
+import 'package:grc_module/features/messaging/m3_groups/domain/entities/member_entity.dart';
 
 class UserImage extends StatelessWidget {
   final MemberEntity member;

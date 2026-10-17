@@ -6,6 +6,7 @@
 /// Author: Knowticed Plus team
 /// Created at: 2026
 /// Updated: 12/8/2026 - Added the standard header (Docs).
+library;
 
 ///******************************** FILE INFO *******************************///
 /// File Name: demo_details.dart
@@ -14,8 +15,8 @@
 /// Created At: 31/12/2024
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
-import 'package:grc_module/core/helper/main_helper/single_value_model.dart';
+import 'package:grc_module/core/helper/access/modules_enum.dart';
+import 'package:grc_module/core/helper/single_value_model.dart';
 
 class DemoDetails {
   String? reasonOfRejection;
@@ -39,57 +40,54 @@ class DemoDetails {
     this.modules,
   });
 
-  static const String REASON_OF_REJECTION = 'Reason_Of_Rejection';
-  static const String NUMBER_OF_USERS = 'Number_Of_Users';
-  static const String ACCESS_BEGIN = 'Access_Begin';
-  static const String ACCESS = 'Access_End';
-  static const String USER_NAME = 'User_Name';
-  static const String TEMPORARY_PASSWORD = 'Temporary_Password';
-  static const String RESPONSE_TIME = 'Response_Time';
-  static const String UPDATED_BY = 'Updated_By';
-  static const String MODULES = 'Modules';
+  static const String kReasonOfRejection = 'Reason_Of_Rejection';
+  static const String kNumberOfUsers = 'Number_Of_Users';
+  static const String kAccessBegin = 'Access_Begin';
+  static const String kAccess = 'Access_End';
+  static const String kUserName = 'User_Name';
+  static const String kTemporaryPassword = 'Temporary_Password';
+  static const String kResponseTime = 'Response_Time';
+  static const String kUpdatedBy = 'Updated_By';
+  static const String kModules = 'Modules';
 
   Map<String, dynamic> toMap() {
     return {
-      REASON_OF_REJECTION: reasonOfRejection,
-      NUMBER_OF_USERS: numberOfUsers?.toMap(),
-      ACCESS_BEGIN: accessBegin?.toMap(),
-      ACCESS: accessEnd?.toMap(),
-      USER_NAME: userName?.toMap(),
-      TEMPORARY_PASSWORD: temporaryPassword?.toMap(),
-      RESPONSE_TIME: responseTime,
-      UPDATED_BY: updatedBy.toMap(),
-      MODULES: modules == null
-          ? null
-          : modules!.map((key, value) => MapEntry(key.name, value.toMap())),
+      kReasonOfRejection: reasonOfRejection,
+      kNumberOfUsers: numberOfUsers?.toMap(),
+      kAccessBegin: accessBegin?.toMap(),
+      kAccess: accessEnd?.toMap(),
+      kUserName: userName?.toMap(),
+      kTemporaryPassword: temporaryPassword?.toMap(),
+      kResponseTime: responseTime,
+      kUpdatedBy: updatedBy.toMap(),
+      kModules: modules?.map((key, value) => MapEntry(key.name, value.toMap())),
     };
   }
 
   factory DemoDetails.fromMap(Map<String, dynamic> map) {
     return DemoDetails(
-      reasonOfRejection: map[REASON_OF_REJECTION],
-      numberOfUsers: map[NUMBER_OF_USERS] == null
+      reasonOfRejection: map[kReasonOfRejection],
+      numberOfUsers: map[kNumberOfUsers] == null
           ? null
-          : SingleValueModel.fromMap(map[NUMBER_OF_USERS]),
-      accessBegin: map[ACCESS_BEGIN] == null
+          : SingleValueModel.fromMap(map[kNumberOfUsers]),
+      accessBegin: map[kAccessBegin] == null
           ? null
-          : SingleValueModel.fromMap(map[ACCESS_BEGIN]),
-      accessEnd: map[ACCESS] == null
+          : SingleValueModel.fromMap(map[kAccessBegin]),
+      accessEnd:
+          map[kAccess] == null ? null : SingleValueModel.fromMap(map[kAccess]),
+      userName: map[kUserName] == null
           ? null
-          : SingleValueModel.fromMap(map[ACCESS]),
-      userName: map[USER_NAME] == null
+          : SingleValueModel.fromMap(map[kUserName]),
+      temporaryPassword: map[kTemporaryPassword] == null
           ? null
-          : SingleValueModel.fromMap(map[USER_NAME]),
-      temporaryPassword: map[TEMPORARY_PASSWORD] == null
-          ? null
-          : SingleValueModel.fromMap(map[TEMPORARY_PASSWORD]),
-      responseTime: map[RESPONSE_TIME],
-      updatedBy: SingleValueModel.fromMap(map[UPDATED_BY]),
-      modules: map[MODULES]?.map<Modules, SingleValueModel<bool>>(
-              (key, value) => MapEntry(
-                  Modules.values.firstWhere((element) => element.name == key),
-                  SingleValueModel<bool>.fromMap(value)),
-            ),
+          : SingleValueModel.fromMap(map[kTemporaryPassword]),
+      responseTime: map[kResponseTime],
+      updatedBy: SingleValueModel.fromMap(map[kUpdatedBy]),
+      modules: map[kModules]?.map<Modules, SingleValueModel<bool>>(
+        (key, value) => MapEntry(
+            Modules.values.firstWhere((element) => element.name == key),
+            SingleValueModel<bool>.fromMap(value)),
+      ),
     );
   }
 }

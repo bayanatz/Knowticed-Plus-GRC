@@ -8,6 +8,7 @@
 ///
 /// Added for CR-SKEL-SE6-N03. A change was a bare `Map<String, dynamic>` with
 /// three string keys, built and re-read by index in four different files.
+library;
 
 import 'package:flutter/foundation.dart';
 

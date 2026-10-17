@@ -11,16 +11,16 @@
 ///          and never removed; the unused `isDesktop` / `isPortrait` /
 ///          `lightMode` locals and the commented REMOVED_MODULE imports are
 ///          gone.
-import 'dart:ui' as ui;
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:grc_module/core/extensions/context_extensions.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
+import 'package:grc_module/core/helper/format_title.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/custom/2-custom_textfield.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/ui/widgets/settings_header.dart';
+import 'package:grc_module/core/custom/inputs/custom_textfield.dart';
+import 'package:grc_module/features/settings/presentation/ui/widgets/settings_header.dart';
 import 'package:grc_module/generated/l10n.dart';
 
 class Bio extends StatefulWidget {
@@ -59,7 +59,8 @@ class _BioState extends State<Bio> {
     super.didUpdateWidget(oldWidget);
     // Only re-seed when the *stored* value changed — i.e. after a save. Doing
     // it on every rebuild would fight the user's cursor.
-    if (oldWidget.bio != widget.bio && _controller.text.trim() != widget.bio.trim()) {
+    if (oldWidget.bio != widget.bio &&
+        _controller.text.trim() != widget.bio.trim()) {
       _controller.text = _seed(widget.bio);
     }
   }
@@ -73,7 +74,7 @@ class _BioState extends State<Bio> {
   @override
   Widget build(BuildContext context) {
     final bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
-    final bool isTablet = MediaQuery.of(context).size.width > 600;
+    final bool isTablet = !kpIsPhoneLayout(context);
     final bool isMobile = ContextExtension(context).isPhone;
 
     return Container(
@@ -96,14 +97,12 @@ class _BioState extends State<Bio> {
       child: Column(
         children: <Widget>[
           SettingsHeader(
-            imagePath:
-                'assets/icons_assets/settings_assets/bio_person_spotlight.svg',
+            imagePath: 'assets/icons_assets/settings_assets/ic_hr_bio.svg',
             text: FormatHelper.capitalize(S.of(context).bio),
           ),
           SizedBox(height: isMobile ? 15.sp : 15.h),
           Padding(
-            padding:
-                EdgeInsets.symmetric(horizontal: isMobile ? 15.sp : 0.sp),
+            padding: EdgeInsets.symmetric(horizontal: isMobile ? 15.sp : 0.sp),
             child: CustomTextField(
               hint: FormatHelper.capitalize(
                   S.of(context).shareSomethingAboutYourself),
@@ -111,7 +110,7 @@ class _BioState extends State<Bio> {
               maxLines: 3,
               maxLength: 500,
               enabled: true,
-              textDirection: isArabic ? ui.TextDirection.rtl : ui.TextDirection.ltr,
+              textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
               textAlign: TextAlign.start,
               onChanged: widget.onChanged,
             ),

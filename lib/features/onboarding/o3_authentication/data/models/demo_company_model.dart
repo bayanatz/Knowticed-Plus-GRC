@@ -6,6 +6,7 @@
 /// Author: Knowticed Plus team
 /// Created at: 2026
 /// Updated: 12/8/2026 - Added the standard header (Docs).
+library;
 
 ///*************************** FILE INFO ****************************///
 /// File Name: demo_company_model.dart
@@ -14,9 +15,9 @@
 /// Created At: 31/12/2024
 
 import 'package:grc_module/features/onboarding/o3_authentication/domain/enums/approval_status.dart';
-import './company_information_model.dart';
-import './contact_information_model.dart';
-import './demo_details.dart';
+import 'package:grc_module/features/onboarding/o3_authentication/data/models/company_information_model.dart';
+import 'package:grc_module/features/onboarding/o3_authentication/data/models/contact_information_model.dart';
+import 'package:grc_module/features/onboarding/o3_authentication/data/models/demo_details.dart';
 
 class DemoCompanyModel {
   String requestId;
@@ -33,37 +34,37 @@ class DemoCompanyModel {
       required this.contactInformation,
       required this.answers,
       required this.requestStatus});
-  static const String REQUEST_ID = 'Request_Id';
-  static const String COMPANY_INFORMATION = 'Company_Information';
-  static const String DEMO_DETAILS = 'Demo_Details';
-  static const String CONTACT_INFORMATION = 'Contact_Information';
-  static const String ANSWERS = 'Answers';
-  static const String REQUEST_STATUS = 'Request_Status';
+  static const String kRequestId = 'Request_Id';
+  static const String kCompanyInformation = 'Company_Information';
+  static const String kDemoDetails = 'Demo_Details';
+  static const String kContactInformation = 'Contact_Information';
+  static const String kAnswers = 'Answers';
+  static const String kRequestStatus = 'Request_Status';
 
   Map<String, dynamic> toMap() {
     return {
-      REQUEST_ID: requestId,
-      COMPANY_INFORMATION: companyInformation.toMap(),
-      DEMO_DETAILS: demoDetails?.toMap(),
-      CONTACT_INFORMATION: contactInformation.toMap(),
-      REQUEST_STATUS: requestStatus.name,
-      ANSWERS: answers,
+      kRequestId: requestId,
+      kCompanyInformation: companyInformation.toMap(),
+      kDemoDetails: demoDetails?.toMap(),
+      kContactInformation: contactInformation.toMap(),
+      kRequestStatus: requestStatus.name,
+      kAnswers: answers,
     };
   }
 
   factory DemoCompanyModel.fromMap(Map<String, dynamic> map) {
     return DemoCompanyModel(
-      requestId: map[REQUEST_ID],
+      requestId: map[kRequestId],
       companyInformation:
-          CompanyInformationModel.fromMap(map[COMPANY_INFORMATION]),
-      demoDetails: map[DEMO_DETAILS] == null
+          CompanyInformationModel.fromMap(map[kCompanyInformation]),
+      demoDetails: map[kDemoDetails] == null
           ? null
-          : DemoDetails.fromMap(map[DEMO_DETAILS]),
+          : DemoDetails.fromMap(map[kDemoDetails]),
       contactInformation:
-          ContactInformationModel.fromMap(map[CONTACT_INFORMATION]),
+          ContactInformationModel.fromMap(map[kContactInformation]),
       requestStatus: ApprovalStatus.values
-          .firstWhere((element) => element.name == map[REQUEST_STATUS]),
-      answers: List<String>.from(map[ANSWERS]),
+          .firstWhere((element) => element.name == map[kRequestStatus]),
+      answers: List<String>.from(map[kAnswers]),
     );
   }
 }

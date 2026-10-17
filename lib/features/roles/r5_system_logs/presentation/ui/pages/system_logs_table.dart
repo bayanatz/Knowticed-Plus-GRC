@@ -2,9 +2,11 @@
 ///
 /// *************************** FILE INFO ******************** ///
 /// FILE NAME: system_logs_table.dart
-/// PURPOSE: this file contains the system logs tab content.
+/// Description: this file contains the system logs tab content.
 /// Author: Amr Mesbah
 /// Created At: 2/2/2025
+/// Updated: 9/10/2026 - Time Tracker phase 6: the Module column shows the
+///          module's display name ("Time Tracker"), not its enum id.
 /// Updated: 30/8/2026 - The table is now r4's `DefaultDataTable`, assembled
 ///          exactly the way `UserData` (r4_active_directory/.../tabs/
 ///          user_data_tab.dart) assembles it: `Expanded` > `ClipRRect(10.sp)`
@@ -31,14 +33,16 @@
 ///          squeezed into 375 points. `initState` still loads the logs and
 ///          builds the filter lists, because that form's dropdowns are built
 ///          from them; only the body below changes.
-import 'package:grc_module/core/theme/theme_controller.dart';
+library;
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:grc_module/core/theme/app_theme.dart';
 
-import 'package:grc_module/core/theme/app_font_size.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
+import 'package:grc_module/core/extensions/screen_fraction_extension.dart';
+import 'package:grc_module/core/custom/feedback/circle_progress.dart';
 
 import 'package:grc_module/features/roles/r5_system_logs/presentation/controller/system_logs_controller.dart';
 import 'package:grc_module/features/roles/r5_system_logs/presentation/ui/widgets/custom_table_body.dart';
@@ -51,14 +55,16 @@ import 'package:grc_module/features/roles/r5_system_logs/presentation/ui/widgets
 import 'package:grc_module/features/roles/r4_active_directory/presentation/ui/widgets/table/default_data_table.dart';
 
 import 'package:grc_module/features/roles/r5_system_logs/data/models/system_logs_model.dart';
-import 'package:grc_module/features/roles/r5_system_logs/domain/constants/system_logs_constants.dart';
+import 'package:grc_module/features/roles/helpers/constants/system_logs_constants.dart';
 // ADDED 30/8/2026 for the Module column's casing — see `_cellText`.
 import 'package:grc_module/features/roles/r5_system_logs/domain/enums/system_logs_items.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/controller/employee_controller.dart';
+import 'package:grc_module/core/helper/format_title.dart';
+// ADDED 9/10/2026 — the Module column shows `Modules.getModuleName`.
+import 'package:grc_module/core/helper/access/modules_enum.dart';
+import 'package:grc_module/features/settings/presentation/controller/employee_controller.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/core/di/app_controllers.dart';
-import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
+import 'package:grc_module/core/custom/dialogs/custom_dialog_manager.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
 import 'package:grc_module/features/roles/r5_system_logs/presentation/ui/pages/logs_mobile_export_details_page.dart';
 import 'package:grc_module/core/theme/app_animations.dart';
@@ -82,12 +88,13 @@ class _SystemLogsTableState extends State<SystemLogsTable> {
     super.initState();
   }
 
-
   /// Presents the outcomes the cubit publishes.
   ///
   /// These used to run inside `SystemLogsController` against `Get.context!`.
   Future<void> _handleSystemLogsState(
-      BuildContext context, SystemLogsState state) async {
+    BuildContext context,
+    SystemLogsState state,
+  ) async {
     if (state is SystemLogsExporting) {
       showLoadingIndicator();
       return;
@@ -100,7 +107,8 @@ class _SystemLogsTableState extends State<SystemLogsTable> {
         // TODO(knowticed, 12/8/2026): needs an ARB key; kept as the original
         // literal rather than inventing generated-l10n entries by hand.
         subtitle: 'Please select at least one filter.',
-        lottiePath: 'assets/lottie_assets/main_lottie_assets/error.json',
+        lottiePath:
+            'assets/lottie_assets/main_lottie_assets/lot_status_error.json',
       );
       return;
     }
@@ -119,7 +127,8 @@ class _SystemLogsTableState extends State<SystemLogsTable> {
       if (state.succeeded) {
         await CustomDialogManager.showSuccess(
           context: context,
-          lottiePath: 'assets/lottie_assets/main_lottie_assets/approved.json',
+          lottiePath:
+              'assets/lottie_assets/main_lottie_assets/lot_status_success.json',
           title: S.of(context).success,
           // TODO(knowticed, 12/8/2026): needs an ARB key.
           subtitle: 'Your data has been saved to the Download folder.',
@@ -133,7 +142,8 @@ class _SystemLogsTableState extends State<SystemLogsTable> {
         title: S.of(context).error,
         // TODO(knowticed, 12/8/2026): needs an ARB key.
         subtitle: 'Could not save the file.',
-        lottiePath: 'assets/lottie_assets/main_lottie_assets/error.json',
+        lottiePath:
+            'assets/lottie_assets/main_lottie_assets/lot_status_error.json',
       );
     }
   }
@@ -152,10 +162,10 @@ class _SystemLogsTableState extends State<SystemLogsTable> {
     return AnimatedSizeWrap(
       // Tables animate their size (rows added / removed / filtered).
       child: Scaffold(
-      // BlocConsumer, not BlocBuilder: the cubit no longer opens dialogs or
-      // toggles the loading overlay itself (§16), so this page presents the
-      // outcomes it publishes.
-      body: BlocConsumer<SystemLogsController, SystemLogsState>(
+        // BlocConsumer, not BlocBuilder: the cubit no longer opens dialogs or
+        // toggles the loading overlay itself (§16), so this page presents the
+        // outcomes it publishes.
+        body: BlocConsumer<SystemLogsController, SystemLogsState>(
           bloc: AppControllers.systemLogs,
           listenWhen: (_, current) =>
               current is SystemLogsNoFilterSelected ||
@@ -163,55 +173,58 @@ class _SystemLogsTableState extends State<SystemLogsTable> {
               current is SystemLogsExportFinished,
           listener: (context, state) => _handleSystemLogsState(context, state),
           builder: (context, state) {
-        final controller = AppControllers.systemLogs;
+            final controller = AppControllers.systemLogs;
 
-        // Phone: the Figma tab body. It reads `systemLogsData`, `accessNames`,
-        // `actions`, `countries` and `cities` off this same controller, all of
-        // which `initState` above has already asked for, and it rebuilds with
-        // this BlocConsumer as they arrive.
-        if (context.isPhone) {
-          return const LogsMobileExportDetailsPage();
-        }
+            // Phone: the Figma tab body. It reads `systemLogsData`, `accessNames`,
+            // `actions`, `countries` and `cities` off this same controller, all of
+            // which `initState` above has already asked for, and it rebuilds with
+            // this BlocConsumer as they arrive.
+            if (context.isPhone) {
+              return const LogsMobileExportDetailsPage();
+            }
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SystemLogsAppBar(),
-            SizedBox(height: 20.h),
-            controller.systemLogsData.isEmpty
-                ? controller.logsLoaded
-                    ? Expanded(
-                        child: Center(
-                          child: Text(
-                            S.of(context).noSystemLogsFound,
-                            style: AppFontStyle.cairoRegularStyle.copyWith(
-                              color: AppColors.secondaryText,
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SystemLogsAppBar(),
+                SizedBox(height: 20.h),
+                controller.systemLogsData.isEmpty
+                    ? controller.logsLoaded
+                        ? Expanded(
+                            child: Center(
+                              child: Text(
+                                S.of(context).noSystemLogsFound,
+                                style: StyleText.fontSize16Weight400
+                                    .copyWith(color: AppColors.secondaryText),
+                              ),
+                            ),
+                          )
+                        : Center(
+                            child: Padding(
+                              padding: EdgeInsets.only(top: .26.h),
+                              child: SizedBox(
+                                height: isPortrait ? 0.055.h : 0.07.h,
+                                child: const CircleProgressMaster(),
+                              ),
+                            ),
+                          )
+                    : Expanded(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10.sp),
+                          child: DefaultDataTable(
+                            columns: SystemLogsTableHeader.columns(),
+                            rows: _tableRows(
+                              context,
+                              controller.finalSystemLogsList,
                             ),
                           ),
                         ),
-                      )
-                    : Center(
-                        child: Padding(
-                          padding: EdgeInsets.only(top: .26.h),
-                          child: SizedBox(
-                              height: isPortrait ? 0.055.h : 0.07.h,
-                              child: const CircleProgressMaster()),
-                        ),
-                      )
-                : Expanded(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10.sp),
-                      child: DefaultDataTable(
-                        columns: SystemLogsTableHeader.columns(),
-                        rows:
-                            _tableRows(context, controller.finalSystemLogsList),
                       ),
-                    ),
-                  )
-          ],
-        );
-      }),
-    ),
+              ],
+            );
+          },
+        ),
+      ),
     );
   }
 
@@ -227,7 +240,9 @@ class _SystemLogsTableState extends State<SystemLogsTable> {
   /// `DataTable` paints the row itself, and a nested coloured box would sit
   /// inside the cell padding instead of behind the whole row.
   List<DataRow> _tableRows(
-      BuildContext context, List<SystemLogsModel> systemLogs) {
+    BuildContext context,
+    List<SystemLogsModel> systemLogs,
+  ) {
     final bool isLightMode = Theme.of(context).brightness == Brightness.light;
     final bool isArabic = context.isArabic;
 
@@ -273,13 +288,16 @@ class _SystemLogsTableState extends State<SystemLogsTable> {
   /// Applied HERE and not in `SystemLogsItems.itemValue`, which also feeds the
   /// CSV export — an export is data, and its Module column should keep the
   /// stored identifier.
-  String _cellText(
-    SystemLogsModel log,
-    SystemLogsItems item,
-    bool isArabic,
-  ) {
+  String _cellText(SystemLogsModel log, SystemLogsItems item, bool isArabic) {
     final String value = item.itemValue(log, isArabic: isArabic);
 
+    // CHANGED 9/10/2026 (Time Tracker phase 6): the module's display name
+    // ("Time Tracker", "Knowledge Hub") instead of its capitalised enum id
+    // ("TimeTracker", "KnowledgeHub"); an unknown module keeps the old text.
+    final Modules? module = log.module;
+    if (item == SystemLogsItems.module && module != null) {
+      return module.getModuleName;
+    }
     return item == SystemLogsItems.module
         ? FormatHelper.capitalize(value)
         : value;

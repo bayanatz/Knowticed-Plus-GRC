@@ -1,4 +1,6 @@
 /// Module: messaging / chat / data/models/sub_models/pin_model.dart
+library;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// ****************** FILE INFO ****************************

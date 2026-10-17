@@ -13,6 +13,7 @@
 ///
 /// Shape mirrors `bio_model.dart` — a parallel list of values and the
 /// timestamps at which each was written.
+library;
 
 import 'dart:convert';
 

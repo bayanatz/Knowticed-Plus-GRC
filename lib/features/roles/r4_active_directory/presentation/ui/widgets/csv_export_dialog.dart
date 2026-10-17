@@ -27,6 +27,10 @@ class _ExportDialog extends StatefulWidget {
 }
 
 class _ExportDialogState extends State<_ExportDialog> {
+  /// Lets this screen's builder/logic extensions refresh it (setState
+  /// itself may only be called inside the State class).
+  void rebuild(VoidCallback fn) => setState(fn);
+
   // ── Selections ────────────────────────────────────────────────────────────
   String? _department;
   String? _role;
@@ -40,13 +44,20 @@ class _ExportDialogState extends State<_ExportDialog> {
 
   bool _showPreview = false;
   String _searchQuery = '';
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   // ── Static option codes ───────────────────────────────────────────────────
   // Stable, locale-independent values. The user-facing label is resolved at
   // build time from `S`, so switching the app language relabels the options
   // without orphaning the current selection.
   static const List<String> _fileFormatCodes = ['csv', 'xlsx', 'pdf'];
-  static const List<String> _languageCodes   = ['en', 'ar', 'both'];
+  static const List<String> _languageCodes = ['en', 'ar', 'both'];
 
   String _fileFormatLabel(BuildContext context, String code) {
     switch (code) {
@@ -86,8 +97,8 @@ class _ExportDialogState extends State<_ExportDialog> {
     if (columnIndex < 0) return [];
     return _ctrl.usersData
         .map((row) => row.length > columnIndex
-        ? (row[columnIndex]?.toString().trim() ?? '')
-        : '')
+            ? (row[columnIndex]?.toString().trim() ?? '')
+            : '')
         .where((v) => v.isNotEmpty)
         .toSet()
         .toList()
@@ -109,36 +120,39 @@ class _ExportDialogState extends State<_ExportDialog> {
     _ctrl = AppControllers.activeDirectory;
 
     // Build dropdown options once from real usersData
-    _departments   = _extractColumn(_ColumnIndex.department);
-    _roles         = _extractColumn(_ColumnIndex.role);
-    _titles        = _extractColumn(_ColumnIndex.title);
+    _departments = _extractColumn(_ColumnIndex.department);
+    _roles = _extractColumn(_ColumnIndex.role);
+    _titles = _extractColumn(_ColumnIndex.title);
     _workLocations = _extractColumn(_ColumnIndex.workLocation);
-    _supervisors   = _extractColumn(_ColumnIndex.supervisor);
-    _genders       = _extractColumn(_ColumnIndex.gender);
-    _countries     = _extractColumn(_ColumnIndex.country);
+    _supervisors = _extractColumn(_ColumnIndex.supervisor);
+    _genders = _extractColumn(_ColumnIndex.gender);
+    _countries = _extractColumn(_ColumnIndex.country);
   }
 
   // ── Filtering ─────────────────────────────────────────────────────────────
 
   /// Returns rows from usersData that match all active dropdown selections.
   List<List<dynamic>> get _matchingRows {
-    return _ctrl.usersData.where((row) {
-      bool _match(String? filter, int col) {
-        if (filter == null || filter.isEmpty) return true;
-        if (row.length <= col) return false;
-        return row[col]?.toString().trim().toLowerCase() ==
-            filter.trim().toLowerCase();
-      }
+    return _ctrl.usersData
+        .where((row) {
+          bool match(String? filter, int col) {
+            if (filter == null || filter.isEmpty) return true;
+            if (row.length <= col) return false;
+            return row[col]?.toString().trim().toLowerCase() ==
+                filter.trim().toLowerCase();
+          }
 
-      if (!_match(_department,   _ColumnIndex.department))   return false;
-      if (!_match(_role,         _ColumnIndex.role))         return false;
-      if (!_match(_title,        _ColumnIndex.title))        return false;
-      if (!_match(_workLocation, _ColumnIndex.workLocation)) return false;
-      if (!_match(_supervisor,   _ColumnIndex.supervisor))   return false;
-      if (!_match(_gender,       _ColumnIndex.gender))       return false;
-      if (!_match(_country,      _ColumnIndex.country))      return false;
-      return true;
-    }).cast<List<dynamic>>().toList();
+          if (!match(_department, _ColumnIndex.department)) return false;
+          if (!match(_role, _ColumnIndex.role)) return false;
+          if (!match(_title, _ColumnIndex.title)) return false;
+          if (!match(_workLocation, _ColumnIndex.workLocation)) return false;
+          if (!match(_supervisor, _ColumnIndex.supervisor)) return false;
+          if (!match(_gender, _ColumnIndex.gender)) return false;
+          if (!match(_country, _ColumnIndex.country)) return false;
+          return true;
+        })
+        .cast<List<dynamic>>()
+        .toList();
   }
 
   /// [_matchingRows] further filtered by the preview search box.
@@ -146,8 +160,8 @@ class _ExportDialogState extends State<_ExportDialog> {
     final q = _searchQuery.trim().toLowerCase();
     if (q.isEmpty) return _matchingRows;
     return _matchingRows
-        .where((row) =>
-        row.any((cell) => cell?.toString().toLowerCase().contains(q) ?? false))
+        .where((row) => row
+            .any((cell) => cell?.toString().toLowerCase().contains(q) ?? false))
         .toList();
   }
 
@@ -157,12 +171,8 @@ class _ExportDialogState extends State<_ExportDialog> {
   /// Returns a display name for a row: firstName + lastName columns.
   String _rowName(List<dynamic> row) {
     // firstName is at index 1, lastName is at index 3 (from the column comment at top)
-    final first = row.length > 1
-        ? (row[1]?.toString().trim() ?? '')
-        : '';
-    final last = row.length > 3
-        ? (row[3]?.toString().trim() ?? '')
-        : '';
+    final first = row.length > 1 ? (row[1]?.toString().trim() ?? '') : '';
+    final last = row.length > 3 ? (row[3]?.toString().trim() ?? '') : '';
     return '$first $last'.trim();
   }
 
@@ -171,24 +181,23 @@ class _ExportDialogState extends State<_ExportDialog> {
           ? (row[_ColumnIndex.department]?.toString().trim() ?? '')
           : '';
 
-  String _rowTitle(List<dynamic> row) =>
-      row.length > _ColumnIndex.title
-          ? (row[_ColumnIndex.title]?.toString().trim() ?? '')
-          : '';
+  String _rowTitle(List<dynamic> row) => row.length > _ColumnIndex.title
+      ? (row[_ColumnIndex.title]?.toString().trim() ?? '')
+      : '';
 
   void _clearFilter() {
     setState(() {
-      _department   = null;
-      _role         = null;
-      _title        = null;
+      _department = null;
+      _role = null;
+      _title = null;
       _workLocation = null;
-      _supervisor   = null;
-      _gender       = null;
-      _country      = null;
-      _fileFormat   = null;
-      _language     = null;
-      _showPreview  = false;
-      _searchQuery  = '';
+      _supervisor = null;
+      _gender = null;
+      _country = null;
+      _fileFormat = null;
+      _language = null;
+      _showPreview = false;
+      _searchQuery = '';
     });
   }
 
@@ -235,8 +244,8 @@ class _ExportDialogState extends State<_ExportDialog> {
               children: [
                 Text(
                   S.of(context).exportDetails,
-                  style: AppFontStyle.cairoRegularStyle.copyWith(
-                    fontSize: FontConstants.fontSize018.w,
+                  style: StyleText.fontSize16Weight400.copyWith(
+                    fontSize: 10.sp,
                     fontWeight: FontWeight.w700,
                     color: AppColors.text,
                   ),
@@ -245,16 +254,16 @@ class _ExportDialogState extends State<_ExportDialog> {
                 // Live match count badge
                 Container(
                   padding:
-                  EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
+                      EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.15),
+                    color: AppColors.primary.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
                     '${_localizedCount(context, _matchingRows.length)} '
-                        '${S.of(context).matches}',
-                    style: AppFontStyle.cairoRegularStyle.copyWith(
-                      fontSize: FontConstants.fontSize012.w,
+                    '${S.of(context).matches}',
+                    style: StyleText.fontSize16Weight400.copyWith(
+                      fontSize: 10.sp,
                       fontWeight: FontWeight.w600,
                       color: AppColors.primary,
                     ),
@@ -280,9 +289,9 @@ class _ExportDialogState extends State<_ExportDialog> {
 
   Widget _buildDesktopDropdownGrid() {
     final items = _dropdownItems();
-    final rows  = <Widget>[];
+    final rows = <Widget>[];
     for (int i = 0; i < items.length; i += 2) {
-      final left  = items[i];
+      final left = items[i];
       final right = i + 1 < items.length ? items[i + 1] : null;
       rows.add(
         Padding(
@@ -306,9 +315,9 @@ class _ExportDialogState extends State<_ExportDialog> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: _dropdownItems()
           .map((item) => Padding(
-        padding: EdgeInsets.only(bottom: 14.h),
-        child: item,
-      ))
+                padding: EdgeInsets.only(bottom: 14.h),
+                child: item,
+              ))
           .toList(),
     );
   }
@@ -325,49 +334,70 @@ class _ExportDialogState extends State<_ExportDialog> {
         hint: s.selectDepartments,
         options: _optionsOf(_departments),
         value: _department,
-        onChanged: (v) => setState(() { _department = v; _showPreview = false; }),
+        onChanged: (v) => setState(() {
+          _department = v;
+          _showPreview = false;
+        }),
       ),
       _labeledDropdown(
         label: s.role,
         hint: s.selectRole,
         options: _optionsOf(_roles),
         value: _role,
-        onChanged: (v) => setState(() { _role = v; _showPreview = false; }),
+        onChanged: (v) => setState(() {
+          _role = v;
+          _showPreview = false;
+        }),
       ),
       _labeledDropdown(
         label: s.title,
         hint: s.selectTitle,
         options: _optionsOf(_titles),
         value: _title,
-        onChanged: (v) => setState(() { _title = v; _showPreview = false; }),
+        onChanged: (v) => setState(() {
+          _title = v;
+          _showPreview = false;
+        }),
       ),
       _labeledDropdown(
         label: s.workLocation,
         hint: s.selectWorkLocation,
         options: _optionsOf(_workLocations),
         value: _workLocation,
-        onChanged: (v) => setState(() { _workLocation = v; _showPreview = false; }),
+        onChanged: (v) => setState(() {
+          _workLocation = v;
+          _showPreview = false;
+        }),
       ),
       _labeledDropdown(
         label: s.supervisor,
         hint: s.selectSupervisor,
         options: _optionsOf(_supervisors),
         value: _supervisor,
-        onChanged: (v) => setState(() { _supervisor = v; _showPreview = false; }),
+        onChanged: (v) => setState(() {
+          _supervisor = v;
+          _showPreview = false;
+        }),
       ),
       _labeledDropdown(
         label: s.gender,
         hint: s.selectGender,
         options: _optionsOf(_genders),
         value: _gender,
-        onChanged: (v) => setState(() { _gender = v; _showPreview = false; }),
+        onChanged: (v) => setState(() {
+          _gender = v;
+          _showPreview = false;
+        }),
       ),
       _labeledDropdown(
         label: s.country,
         hint: s.selectCountry,
         options: _optionsOf(_countries),
         value: _country,
-        onChanged: (v) => setState(() { _country = v; _showPreview = false; }),
+        onChanged: (v) => setState(() {
+          _country = v;
+          _showPreview = false;
+        }),
       ),
       // These two are app-defined choices, so their options are translated too.
       _labeledDropdown(
@@ -411,7 +441,7 @@ class _ExportDialogState extends State<_ExportDialog> {
       value: value,
       onChanged: onChanged,
       borderRadius: BorderRadius.circular(4.r),
-      fillColor: AppColors.field,
+      fillColor: AppColors.card,
     );
   }
 
@@ -426,6 +456,7 @@ class _ExportDialogState extends State<_ExportDialog> {
         children: [
           Expanded(
             child: InkWell(
+              onTapDown: hapticDown(_clearFilter, HapticLevel.low),
               onTap: _clearFilter,
               borderRadius: BorderRadius.circular(8),
               child: Container(
@@ -438,8 +469,8 @@ class _ExportDialogState extends State<_ExportDialog> {
                 child: Center(
                   child: Text(
                     S.of(context).clearFilter,
-                    style: AppFontStyle.cairoRegularStyle.copyWith(
-                      fontSize: FontConstants.fontSize013.w,
+                    style: StyleText.fontSize16Weight400.copyWith(
+                      fontSize: 10.sp,
                       fontWeight: FontWeight.w600,
                       color: AppColors.text,
                     ),
@@ -451,6 +482,8 @@ class _ExportDialogState extends State<_ExportDialog> {
           SizedBox(width: 12.w),
           Expanded(
             child: InkWell(
+              onTapDown:
+                  _matchingRows.isEmpty ? null : (_) => HapticController.low(),
               onTap: _matchingRows.isEmpty
                   ? null
                   : () => setState(() => _showPreview = true),
@@ -466,12 +499,14 @@ class _ExportDialogState extends State<_ExportDialog> {
                 child: Center(
                   child: Text(
                     S.of(context).previewMatches(
-                      _localizedCount(context, _matchingRows.length),
-                    ),
-                    style: AppFontStyle.cairoRegularStyle.copyWith(
-                      fontSize: FontConstants.fontSize013.w,
+                          _localizedCount(context, _matchingRows.length),
+                        ),
+                    style: StyleText.fontSize16Weight400.copyWith(
+                      fontSize: 10.sp,
                       fontWeight: FontWeight.w600,
-                      color: _matchingRows.isEmpty ? AppColors.white : AppColors.black,
+                      color: _matchingRows.isEmpty
+                          ? AppColors.white
+                          : AppColors.black,
                     ),
                   ),
                 ),

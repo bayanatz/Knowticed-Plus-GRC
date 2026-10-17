@@ -23,10 +23,11 @@
 /// wanted: priority is optional, the field starts empty, and the way to clear
 /// it is to untick the box, which drops the whole entry in the screen's
 /// `_priorities` map.
+library;
 
 import 'package:flutter/material.dart';
 
-import 'package:grc_module/core/custom/1-custom_dropdown.dart';
+import 'package:grc_module/core/custom/dropdowns/custom_dropdown.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/features/settings/se7_app_info/domain/entities/app_feedback.dart';
 import 'package:grc_module/features/settings/se7_app_info/presentation/ui/widgets/feedback_display.dart';

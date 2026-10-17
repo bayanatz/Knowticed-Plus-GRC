@@ -7,19 +7,19 @@
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
 /// Updated: 25/8/2026 - Avatar falls back to the gender SVG (AssetImage could
 ///                      never render it).
+library;
 
 import 'package:grc_module/core/constants/app_assets.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/custom/23-custom_check_box.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
+import 'package:grc_module/core/custom/inputs/custom_check_box.dart';
 import 'package:flutter/material.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 // REMOVED_MODULE: import 'package:grc_module/core/helper/data_grc_module/core/extensions/extensions.dart';
 // REMOVED_MODULE: import 'package:grc_module/features/external/services_app_module/core/widgets/custom_check_box.dart';
 
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
-import 'package:grc_module/core/custom/75-custom_title_value_widget.dart';
+import 'package:grc_module/core/helper/format_title.dart';
+import 'package:grc_module/core/custom/cards/custom_title_value_widget.dart';
 // REMOVED_MODULE: import '../../../../../../external/services_app_module/core/constants/app_assets.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
@@ -27,9 +27,11 @@ import 'package:grc_module/features/roles/r2_user_management/domain/entities/use
 import 'package:grc_module/generated/l10n.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grc_module/features/roles/r4_active_directory/presentation/controller/main_core_department_cubit.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
 class PersonStateView extends StatelessWidget {
-  PersonStateView(
+  const PersonStateView(
       {required this.person,
       required this.onTap,
       this.isEdit = false,
@@ -37,12 +39,12 @@ class PersonStateView extends StatelessWidget {
       this.showAccessDates = false,
       super.key,
       this.color});
-  UserPermissionEntity person;
-  var onTap;
-  Color? color;
-  bool isEdit;
-  bool isSelected;
-  bool showAccessDates;
+  final UserPermissionEntity person;
+  final void Function()? onTap;
+  final Color? color;
+  final bool isEdit;
+  final bool isSelected;
+  final bool showAccessDates;
 
   /// The person's photo, or the gender avatar when they have none.
   ///
@@ -75,10 +77,10 @@ class PersonStateView extends StatelessWidget {
       radius: 20.sp,
       backgroundColor: Colors.transparent,
       child: ClipOval(
-        child: SvgPicture.asset(
-          person.gender == 'male'
-              ? 'assets/icons_assets/main_icons_assets/male_avatar.svg'
-              : 'assets/icons_assets/main_icons_assets/female_avatar.svg',
+        child: CustomSvgImage.natural(
+          assetPath: person.gender == 'male'
+              ? 'assets/icons_assets/main_icons_assets/ic_user_avatar_male.png'
+              : 'assets/icons_assets/main_icons_assets/ic_user_avatar_female.png',
           fit: BoxFit.cover,
           width: 40.sp,
           height: 40.sp,
@@ -90,7 +92,7 @@ class PersonStateView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap ?? () {},
+      onTap: withHaptic(onTap ?? () {}, HapticLevel.high),
       child: Container(
         decoration: BoxDecoration(
           color: color ?? AppColors.card,
@@ -133,29 +135,27 @@ class PersonStateView extends StatelessWidget {
                               : person.englishName),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: StyleText.fontSize14Weight500.copyWith(
-                            color: AppColors.text
-                          ),
+                          style: StyleText.fontSize14Weight500
+                              .copyWith(color: AppColors.text),
                         ),
                         Text(
-                          FormatHelper.capitalize(
-                              person.departmentName(
-                                  context.isArabic,
-                                  context.read<MainCoreDepartmentCubit>())),
+                          FormatHelper.capitalize(person.departmentName(
+                              context.isArabic,
+                              context.read<MainCoreDepartmentCubit>())),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: StyleText.fontSize12Weight500.copyWith(color: AppColors.spanText).copyWith(
-                              color: AppColors.secondaryText
-                          ),
+                          style: StyleText.fontSize12Weight500
+                              .copyWith(color: AppColors.spanText)
+                              .copyWith(color: AppColors.secondaryText),
                         ),
                         Text(
                           FormatHelper.capitalize(
                               person.jobTitle(context.isArabic)),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: StyleText.fontSize12Weight500.copyWith(color: AppColors.spanText).copyWith(
-                              color: AppColors.secondaryText
-                          ),
+                          style: StyleText.fontSize12Weight500
+                              .copyWith(color: AppColors.spanText)
+                              .copyWith(color: AppColors.secondaryText),
                         ),
                       ],
                     ),
@@ -178,9 +178,11 @@ class PersonStateView extends StatelessWidget {
                   FittedBox(
                     child: CustomTitleValueWidget(
                         title: S.of(context).access_granted,
-                        titleStyle: StyleText.fontSize12Weight400.copyWith(color: AppColors.secondaryBlack)
+                        titleStyle: StyleText.fontSize12Weight400
+                            .copyWith(color: AppColors.secondaryBlack)
                             .copyWith(fontSize: 10.sp),
-                        valueStyle: StyleText.fontSize12Weight400.copyWith(color: AppColors.secondaryBlack)
+                        valueStyle: StyleText.fontSize12Weight400
+                            .copyWith(color: AppColors.secondaryBlack)
                             .copyWith(fontSize: 10.sp, color: AppColors.text),
                         value: person.startDate ?? '-'),
                   ),
@@ -188,9 +190,11 @@ class PersonStateView extends StatelessWidget {
                   FittedBox(
                     child: CustomTitleValueWidget(
                         title: S.of(context).access_revoked,
-                        titleStyle: StyleText.fontSize12Weight400.copyWith(color: AppColors.secondaryBlack)
+                        titleStyle: StyleText.fontSize12Weight400
+                            .copyWith(color: AppColors.secondaryBlack)
                             .copyWith(fontSize: 10.sp),
-                        valueStyle: StyleText.fontSize12Weight400.copyWith(color: AppColors.secondaryBlack)
+                        valueStyle: StyleText.fontSize12Weight400
+                            .copyWith(color: AppColors.secondaryBlack)
                             .copyWith(fontSize: 10.sp, color: AppColors.text),
                         value: person.endDate ?? '-'),
                   ),

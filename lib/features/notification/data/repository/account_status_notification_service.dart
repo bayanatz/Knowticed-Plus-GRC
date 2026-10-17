@@ -6,6 +6,7 @@
 /// Author: Knowticed Plus team
 /// Created at: 2026
 /// Updated: 12/8/2026 - Added the standard header (Docs).
+library;
 
 /// ************************* FILE INFO ************************* ///
 /// File Name: account_status_notification_service.dart
@@ -44,9 +45,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:grc_module/core/enums/template_variable.dart';
 import 'package:grc_module/core/network/get_base_url.dart';
-import 'package:grc_module/features/notification/domain/enums/role_module/user_access_module/user_access_events.dart';
-import 'package:grc_module/features/notification/domain/enums/role_module/user_access_module/user_access_notification_pages.dart';
-import 'package:grc_module/features/notification/services/app_notification_sender.dart';
+import 'package:grc_module/features/notification/domain/enums/roles/user_access_module/user_access_events.dart';
+import 'package:grc_module/features/notification/domain/enums/roles/user_access_module/user_access_notification_pages.dart';
+import 'package:grc_module/features/notification/helpers/services/app_notification_sender.dart';
 
 class AccountStatusNotificationService {
   AccountStatusNotificationService._();
@@ -71,7 +72,7 @@ class AccountStatusNotificationService {
 
       final emails = <String>[];
       for (final doc in snapshot.docs) {
-        final data = doc.data() as Map<String, dynamic>;
+        final data = doc.data();
 
         final roles = data['Role'];
         if (roles is! List || roles.isEmpty) continue;

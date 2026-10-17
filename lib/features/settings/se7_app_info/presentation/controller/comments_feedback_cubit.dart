@@ -11,6 +11,7 @@
 /// Shaped after `MyRequestCubit`: one loaded state carrying both the full list
 /// and the filtered one, so the widget never filters and the chip counts can
 /// never disagree with the cards below them.
+library;
 
 import 'dart:typed_data';
 
@@ -23,7 +24,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 
 import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/controller/settings_controller.dart';
+import 'package:grc_module/features/settings/presentation/controller/settings_controller.dart';
 import 'package:grc_module/features/settings/se7_app_info/data/repository/feedback_repository.dart';
 import 'package:grc_module/features/settings/se7_app_info/domain/base_repository/feedback_base_repository.dart';
 import 'package:grc_module/features/settings/se7_app_info/domain/entities/app_feedback.dart';
@@ -192,9 +193,8 @@ class CommentsFeedbackCubit extends Cubit<CommentsFeedbackState> {
 
     final CommentsFeedbackLoaded? previous = _lastLoaded;
 
-    final FeedbackStatusFilter status = selectedStatus ??
-        previous?.selectedStatus ??
-        FeedbackStatusFilter.all;
+    final FeedbackStatusFilter status =
+        selectedStatus ?? previous?.selectedStatus ?? FeedbackStatusFilter.all;
     // CHANGED 2/9/2026 — two variables where there used to be one.
     //
     // [sort] is what the user PICKED and may be null (nobody has opened the
@@ -244,7 +244,8 @@ class CommentsFeedbackCubit extends Cubit<CommentsFeedbackState> {
     emit(_lastLoaded!);
   }
 
-  static bool _matchesStatus(FeedbackRequest item, FeedbackStatusFilter filter) {
+  static bool _matchesStatus(
+      FeedbackRequest item, FeedbackStatusFilter filter) {
     switch (filter) {
       case FeedbackStatusFilter.all:
         return true;

@@ -52,7 +52,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:grc_module/core/helper/role/modules_enum.dart';
+import 'package:grc_module/core/helper/access/modules_enum.dart';
 import 'package:grc_module/features/settings/se8_watermark/presentation/controller/watermark_cubit.dart';
 import 'package:grc_module/features/settings/se8_watermark/presentation/ui/widgets/watermark_preview.dart';
 

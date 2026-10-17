@@ -5,11 +5,11 @@
 /// Purpose: Declares `Stocks`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
-import 'package:get/get.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/standard_container.dart';
 
 import 'package:grc_module/core/theme/app_colors.dart';
@@ -18,8 +18,8 @@ import 'package:grc_module/features/home/h1_home_page/data/models/home_component
 import 'package:grc_module/generated/l10n.dart';
 
 class Stocks extends StatelessWidget {
-  Stocks({required this.model, super.key});
-  HomeComponentModel model;
+  const Stocks({required this.model, super.key});
+  final HomeComponentModel model;
 
   @override
   Widget build(BuildContext context) {
@@ -27,46 +27,49 @@ class Stocks extends StatelessWidget {
         width: 130.sp,
         child: StandardContainer(
             child: Column(
-              spacing: 8.sp,
-              crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 8.sp,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      S.of(context).stocks,
-                      style: StyleText.fontSize14Weight500
-                          .copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    SvgPicture.asset(
-                      'assets/icons_assets/roles_assets/inventory_warehouse.svg',
-                      width: 20,
-                      height: 20,
-                      color: AppColors.primary,
-                    )
-                  ],
+                Text(
+                  S.of(context).stocks,
+                  style: StyleText.fontSize14Weight500
+                      .copyWith(fontWeight: FontWeight.bold),
                 ),
-                Container(),
-
-                Column(
-                  spacing: 10.sp,
-                  children: [
-                    item(
-                        color: AppColors.green,
-                        number: '10',
-                        icon: 'assets/icons_assets/home_assets/approved_stamp_green.svg'),
-                    item(
-                        color: AppColors.yellow,
-                        number: '10',
-                        icon: 'assets/icons_assets/home_assets/hourglass_pending.svg'),
-                    item(
-                        color: AppColors.red,
-                        number: '10',
-                        icon: 'assets/icons_assets/home_assets/rejected_ribbon_stamp.svg'),
-                  ],
+                CustomSvgImage.natural(
+                  assetPath:
+                      'assets/icons_assets/main_icons_assets/ic_module_inventory.svg',
+                  width: 20,
+                  height: 20,
+                  color: AppColors.primary,
                 )
               ],
-            )));
+            ),
+            Container(),
+            Column(
+              spacing: 10.sp,
+              children: [
+                item(
+                    color: AppColors.green,
+                    number: '10',
+                    icon:
+                        'assets/icons_assets/home_assets/ic_status_approved_stamp.svg'),
+                item(
+                    color: AppColors.secondaryPrimary,
+                    number: '10',
+                    icon:
+                        'assets/icons_assets/home_assets/ic_status_pending_hourglass.svg'),
+                item(
+                    color: AppColors.red,
+                    number: '10',
+                    icon:
+                        'assets/icons_assets/home_assets/ic_status_rejected_ribbon.svg'),
+              ],
+            )
+          ],
+        )));
   }
 
   Widget item(
@@ -74,8 +77,8 @@ class Stocks extends StatelessWidget {
     return Row(
       spacing: 4.sp,
       children: [
-        SvgPicture.asset(
-          icon,
+        CustomSvgImage.natural(
+          assetPath: icon,
           width: 15,
           height: 15,
           color: color,

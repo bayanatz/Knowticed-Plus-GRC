@@ -20,9 +20,8 @@ class FrowardCheckBox extends StatelessWidget {
         final cubit = context.read<MessageCubit>();
 
         // Extract forward checkboxes from state
-        final forwardCheckBoxes = state is MessageLoaded
-            ? state.forwardCheckBoxes
-            : <bool>[];
+        final forwardCheckBoxes =
+            state is MessageLoaded ? state.forwardCheckBoxes : <bool>[];
 
         // Return empty widget if index is out of bounds
         if (index >= forwardCheckBoxes.length) {

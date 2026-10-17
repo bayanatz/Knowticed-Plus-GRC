@@ -5,6 +5,7 @@
 /// Purpose: Declares `LastUpdate`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -14,9 +15,9 @@ class LastUpdate {
   });
 
   LastUpdate.fromJson(dynamic json) {
-    lastUpdate =
-        json['Last_Update'] != null ? json['Last_Update'].cast<Timestamp>() : [];
-  
+    lastUpdate = json['Last_Update'] != null
+        ? json['Last_Update'].cast<Timestamp>()
+        : [];
   }
 
   List<Timestamp>? lastUpdate;

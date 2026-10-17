@@ -19,59 +19,66 @@ class ReactionWidget extends StatelessWidget {
       width: 240.w,
       height: 32.h,
       decoration: BoxDecoration(
-        color: AppColors.field,
+        color: AppColors.card,
         borderRadius: BorderRadius.circular(40.r),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           GestureDetector(
+              onTapDown: (_) => HapticController.low(),
               onTap: () {
                 context.read<MessageCubit>().reactToMessage(
                     messageIndex: messageIndex, react: Reacts.like);
               },
-              child: SvgPicture.asset(Reacts.like.getReact)),
+              child: CustomSvgImage.natural(assetPath: Reacts.like.getReact)),
           GestureDetector(
+              onTapDown: (_) => HapticController.low(),
               onTap: () {
                 context.read<MessageCubit>().reactToMessage(
                     messageIndex: messageIndex, react: Reacts.love);
               },
-              child: SvgPicture.asset(Reacts.love.getReact)),
+              child: CustomSvgImage.natural(assetPath: Reacts.love.getReact)),
           GestureDetector(
+            onTapDown: (_) => HapticController.low(),
             onTap: () {
-              context.read<MessageCubit>().reactToMessage(
-                  messageIndex: messageIndex, react: Reacts.xd);
+              context
+                  .read<MessageCubit>()
+                  .reactToMessage(messageIndex: messageIndex, react: Reacts.xd);
             },
-            child: SvgPicture.asset(
-              Reacts.xd.getReact,
+            child: CustomSvgImage.natural(
+              assetPath: Reacts.xd.getReact,
             ),
           ),
           GestureDetector(
+            onTapDown: (_) => HapticController.low(),
             onTap: () {
               context.read<MessageCubit>().reactToMessage(
                   messageIndex: messageIndex, react: Reacts.wow);
             },
-            child: SvgPicture.asset(Reacts.wow.getReact),
+            child: CustomSvgImage.natural(assetPath: Reacts.wow.getReact),
           ),
           GestureDetector(
+            onTapDown: (_) => HapticController.low(),
             onTap: () {
               context.read<MessageCubit>().reactToMessage(
                   messageIndex: messageIndex, react: Reacts.sad);
             },
-            child: SvgPicture.asset(Reacts.sad.getReact),
+            child: CustomSvgImage.natural(assetPath: Reacts.sad.getReact),
           ),
           GestureDetector(
+            onTapDown: (_) => HapticController.low(),
             onTap: () {
               context.read<MessageCubit>().reactToMessage(
                   messageIndex: messageIndex, react: Reacts.clap);
             },
-            child: SvgPicture.asset(Reacts.clap.getReact),
+            child: CustomSvgImage.natural(assetPath: Reacts.clap.getReact),
           ),
           CircleAvatar(
             backgroundColor: AppColors.darkWhiteShadow,
             radius: 8.r,
-            child: SvgPicture.asset(
-              AppAssets.add,
+            child: CustomSvgImage.natural(
+              assetPath: AppAssets.add,
               height: 8.h,
               width: 8.w,
               color: AppColors.black,

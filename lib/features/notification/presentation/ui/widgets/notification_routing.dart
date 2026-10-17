@@ -15,17 +15,30 @@
 /// `_getModuleFromString` and their own `context.read<AppDrawerCubit>()`. Both
 /// were wrong, and being wrong in triplicate is why every one of the three
 /// inbox screens showed "Error occurred" on tap. One copy now.
+///
+/// Updated: 7/10/2026 - View on a To-Do notification that carries a
+///          `Request_Id` opens THAT to-do's details (TodoModuleEntry); older
+///          To-Do notifications without one still open the module's list.
+/// Updated: 9/10/2026 - Time Tracker phase 4: `time_tracker` (and the legacy
+///          `tracking`) resolve to `Modules.timeTracker` — the drawer entry
+///          that replaced the legacy stub (phase 2) — and View on a Time
+///          Tracker notification with a `Request_Id` opens that request's
+///          details: the requester's, or the approver's when its page is
+///          `TimeTrackerNotificationPage.approvalDetails`
+///          ([timeTrackerLinkFor], mirrors the To-Do deep link).
 library;
 
+import 'package:grc_module/core/extensions/context_extensions.dart'
+    show kpIsPhoneLayout;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import 'package:grc_module/core/constants/app_constants.dart';
 import 'package:grc_module/core/enums/app_module.dart';
-import 'package:grc_module/features/notification/domain/enums/settings_module/settings_notification_pages.dart';
-import 'package:grc_module/core/helper/message_module/main_helper/messaging_interface_implementation.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
+import 'package:grc_module/features/notification/domain/enums/settings/settings_notification_pages.dart';
+import 'package:grc_module/features/messaging/helpers/messaging_bridge/main_helper/messaging_interface_implementation.dart';
+import 'package:grc_module/core/helper/access/modules_enum.dart';
 import 'package:grc_module/features/home/h2_nav_bar/presentation/controller/nav_bar_cubit.dart';
 import 'package:grc_module/features/home/h3_app_drawer/presentation/controller/app_drawer_cubit.dart';
 // ADDED 12/9/2026 — the deep-link router. These four are the module roots that
@@ -33,7 +46,23 @@ import 'package:grc_module/features/home/h3_app_drawer/presentation/controller/a
 import 'package:grc_module/features/notification/data/models/notification_data_model.dart';
 import 'package:grc_module/features/notification/domain/routing/notification_deep_link.dart';
 import 'package:grc_module/features/roles/r1_role_management/presentation/ui/pages/role_screen.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/ui/pages/settings_screen.dart';
+import 'package:grc_module/features/settings/presentation/ui/pages/settings_screen.dart';
+import 'package:grc_module/features/todo/presentation/ui/pages/todo_module_entry.dart';
+// ADDED 9/10/2026 — Time Tracker deep link (phase 4).
+import 'package:grc_module/features/notification/domain/enums/time_tracker/time_tracker_notification_pages.dart';
+
+/// Which Time Tracker request a notification opens, and as whom. ADDED
+/// 9/10/2026 (phase 4).
+class TimeTrackerNotificationLink {
+  const TimeTrackerNotificationLink(
+      {required this.requestId, required this.asApproval});
+
+  final String requestId;
+
+  /// Open the approver's details (Approve / Reject) instead of the
+  /// requester's.
+  final bool asApproval;
+}
 
 abstract class NotificationRouting {
   /// Function Name: [moduleForStoredKey]
@@ -87,8 +116,10 @@ abstract class NotificationRouting {
           return Modules.todo;
         case AppModule.services:
           return Modules.services;
+        // CHANGED 9/10/2026 — Time Tracker phase 4: the drawer / nav bar
+        // carry `Modules.timeTracker` (phase 2 took the legacy slot).
         case AppModule.timeTracker:
-          return Modules.tracking;
+          return Modules.timeTracker;
         case AppModule.database:
           return Modules.database;
         case AppModule.qiyas:
@@ -103,7 +134,8 @@ abstract class NotificationRouting {
           return Modules.inventory;
         case AppModule.messages:
           return Modules.messages;
-          throw UnimplementedError();
+        case AppModule.formBuilder:
+          return Modules.formBuilder;
       }
     }
 
@@ -122,7 +154,8 @@ abstract class NotificationRouting {
       case 'services_app':
         return Modules.formBuilder;
       case 'tracking':
-        return Modules.tracking;
+        // CHANGED 9/10/2026 — legacy key → the real Time Tracker module.
+        return Modules.timeTracker;
       case 'roles':
         return Modules.roles;
       case 'requests':
@@ -205,19 +238,24 @@ abstract class NotificationRouting {
   // The literals live here, named, instead of being scattered across the three
   // pages and the app bar.
 
-  /// Shell index for the inbox — mirrors `custom_drawer.dart`.
-  static const int inboxShellIndex = 19;
+  // FIXED 17/10/2026: these were 19 / 20 / 21 — real positions in the
+  // drawer's module list. A tenant with 19+ allowed modules (the admin sees
+  // all of them) landed CRM and its neighbours on those numbers, and the shell
+  // then hid the module page and showed nothing. Negative numbers can never
+  // collide with a module position.
+
+  /// Shell index for the inbox — read by `custom_drawer.dart`.
+  static const int inboxShellIndex = -1;
 
   /// Shell index for the cleared list.
-  static const int clearedShellIndex = 20;
+  static const int clearedShellIndex = -2;
 
   /// Shell index for the pinned list.
-  static const int pinnedShellIndex = 21;
+  static const int pinnedShellIndex = -3;
 
   /// The desktop / tablet shell is what renders the sidebar; below this the
   /// app runs NavScreen, which does not. Same breakpoint as main_responsive.
-  static bool _hasShell(BuildContext context) =>
-      MediaQuery.of(context).size.width >= 600;
+  static bool _hasShell(BuildContext context) => !kpIsPhoneLayout(context);
 
   /// Function Name: [openInShell]
   ///
@@ -286,9 +324,10 @@ abstract class NotificationRouting {
   /// this way since 22/8/2026; the other three follow it.
   ///
   /// WHAT IT CANNOT DO. Land on a RECORD — a specific database, document,
-  /// conversation or request. A stored notification carries no target id, so
-  /// a page key naming a detail screen resolves to the list that screen opens
-  /// from. See the header of `notification_deep_link.dart`.
+  /// conversation or request — EXCEPT a to-do: since 7/10/2026 To-Do
+  /// notifications carry `Request_Id` (see [todoIdFor]). For every other
+  /// module a page key naming a detail screen resolves to the list that screen
+  /// opens from. See the header of `notification_deep_link.dart`.
   ///
   /// Parameters:
   /// - [context]: the inbox page's context, used only to pop it afterwards.
@@ -297,6 +336,13 @@ abstract class NotificationRouting {
   /// Returns: nothing. A notification whose module resolves to nothing, or to
   /// a module this user's drawer does not carry, is a silent no-op — the
   /// pre-existing behaviour, snackbars deliberately removed.
+  /// The Time Tracker request details for a Time Tracker request link, or null
+  /// (17/10/2026: its own helper so module-split builds without Time Tracker
+  /// keep the shared routing — the block below is cut out there).
+  static Widget? _timeTrackerRequestPage(TimeTrackerNotificationLink? request) {
+    return null;
+  }
+
   static void openNotification(
     BuildContext context,
     NotificationModelSystem notification,
@@ -316,11 +362,66 @@ abstract class NotificationRouting {
       pageKey: notification.nameOfPage,
     );
 
+    final String? todoId = todoIdFor(notification, targetModule);
+    final TimeTrackerNotificationLink? request =
+        timeTrackerLinkFor(notification, targetModule);
+
     if (_hasShell(context)) {
-      _openInDrawer(context, targetModule, link);
+      _openInDrawer(context, targetModule, link,
+          todoId: todoId, request: request);
     } else {
-      _openOnMobile(context, targetModule, link);
+      _openOnMobile(context, targetModule, link,
+          todoId: todoId, request: request);
     }
+  }
+
+  /// Function Name: [timeTrackerLinkFor]
+  ///
+  /// Purpose: The Time Tracker request a notification should open. ADDED
+  /// 9/10/2026 (phase 4) — Time Tracker notifications store the request's id
+  /// as `Request_Id` and say in `name_of_page` whether View opens the
+  /// requester's details or the approver's.
+  ///
+  /// Parameters:
+  /// - [notification]: the tapped notification.
+  /// - [targetModule]: its resolved drawer module.
+  ///
+  /// Returns: [TimeTrackerNotificationLink?] — null when the module is not
+  /// Time Tracker or no id is stored (→ the module's main page).
+  static TimeTrackerNotificationLink? timeTrackerLinkFor(
+    NotificationModelSystem notification,
+    Modules? targetModule,
+  ) {
+    if (targetModule != Modules.timeTracker) return null;
+    final String id = notification.requestId.trim();
+    if (id.isEmpty) return null;
+    return TimeTrackerNotificationLink(
+      requestId: id,
+      asApproval:
+          TimeTrackerNotificationPage.fromKey(notification.nameOfPage) ==
+              TimeTrackerNotificationPage.approvalDetails,
+    );
+  }
+
+  /// Function Name: [todoIdFor]
+  ///
+  /// Purpose: The to-do a notification should open, or null for "the module's
+  /// list". ADDED 7/10/2026 — the first record-level link: To-Do
+  /// notifications store the to-do's id as `Request_Id`.
+  ///
+  /// Parameters:
+  /// - [notification]: the tapped notification.
+  /// - [targetModule]: its resolved drawer module.
+  ///
+  /// Returns: [String?] — null when the module is not To-Do or no id is
+  /// stored (notifications written before 7/10/2026).
+  static String? todoIdFor(
+    NotificationModelSystem notification,
+    Modules? targetModule,
+  ) {
+    if (targetModule != Modules.todo) return null;
+    final String id = notification.requestId.trim();
+    return id.isEmpty ? null : id;
   }
 
   /// Function Name: [_openInDrawer]
@@ -330,8 +431,10 @@ abstract class NotificationRouting {
   static void _openInDrawer(
     BuildContext context,
     Modules targetModule,
-    NotificationDeepLink link,
-  ) {
+    NotificationDeepLink link, {
+    String? todoId,
+    TimeTrackerNotificationLink? request,
+  }) {
     final AppDrawerCubit appDrawerController = drawerCubit();
     final int moduleIndex =
         appDrawerController.allowedDrawerModules.indexOf(targetModule);
@@ -342,6 +445,11 @@ abstract class NotificationRouting {
     // Armed BEFORE the drawer switches: updateSelectedIndex is what causes the
     // module to be built, and the module reads its hint during that build.
     _armSection(link);
+    // The inbox sits at a sentinel index, so the module IndexedStack is
+    // rebuilt on this switch and TodoModuleEntry reads the hint as its
+    // navigator builds its first routes.
+    if (todoId != null) TodoModuleEntry.pendingTodoId = todoId;
+    // ADDED 9/10/2026 — same one-shot hint for a Time Tracker request.
     appDrawerController.updateSelectedIndex(moduleIndex);
 
     // Guarded, unlike the three copies this replaces, which called
@@ -377,8 +485,10 @@ abstract class NotificationRouting {
   static void _openOnMobile(
     BuildContext context,
     Modules targetModule,
-    NotificationDeepLink link,
-  ) {
+    NotificationDeepLink link, {
+    String? todoId,
+    TimeTrackerNotificationLink? request,
+  }) {
     // Role ∩ licence, as the phone computes it: `navBarModules` is the bottom
     // bar and `moreListModules` is everything else the user may open (see
     // `_getMoreListModules`). Skipped entirely when the cubit is absent or
@@ -396,8 +506,15 @@ abstract class NotificationRouting {
     _armSection(link);
 
     final NavigatorState navigator = Navigator.of(context);
-    final MaterialPageRoute<void> route =
-        MaterialPageRoute<void>(builder: (_) => targetModule.widget);
+    // A To-Do notification with an id opens that to-do's details on top of
+    // the module's list; everything else opens the module as before.
+    // ADDED 9/10/2026 — a Time Tracker request notification opens that
+    // request's details on top of the module's main page.
+    final MaterialPageRoute<void> route = MaterialPageRoute<void>(
+      builder: (_) => todoId != null
+          ? TodoModuleEntry(initialTodoId: todoId)
+          : (_timeTrackerRequestPage(request) ?? targetModule.widget),
+    );
 
     // canPop tells us whether the inbox is a route of ours to replace. It
     // always is on this path today; the push is the safe fallback.
@@ -421,7 +538,6 @@ abstract class NotificationRouting {
     if (link.settingsSection != null) {
       SettingsScreen.pendingInitialIndex = link.settingsSection!.containerIndex;
     }
-    // Knowledge Hub / Services sections: those modules are not in this app.
   }
 
   /// Function Name: [formatTimestamp]

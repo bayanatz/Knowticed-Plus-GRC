@@ -5,6 +5,7 @@
 /// Purpose: Declares `RoleStatus`.
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'package:flutter/material.dart';
 
@@ -19,11 +20,11 @@ enum RoleStatus {
   deleted;
 
   static List<RoleStatus> get filterStatus => [
-    all,
-    active,
-    inactive,
-    draft,
-  ];
+        all,
+        active,
+        inactive,
+        draft,
+      ];
 
   Color get color {
     switch (this) {

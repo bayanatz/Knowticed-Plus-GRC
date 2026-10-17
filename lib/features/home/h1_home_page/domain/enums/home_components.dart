@@ -5,6 +5,8 @@
 /// Purpose: Enum `HomeComponents` used by this feature.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+/// Updated: 9/10/2026 - Time Tracker phase 6: the seven `Time_Tracker_…`
+///          home cards (Figma "Widgets" column).
 
 ///********************** FILE INFO ****************************///
 /// Purpose: Enum for home components determine which component to show and its assigned values
@@ -13,22 +15,18 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
+import 'package:grc_module/core/helper/access/modules_enum.dart';
 import 'package:grc_module/features/home/h1_home_page/data/models/home_component_model.dart';
 
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/home_widgets/home_chart_cards_extra.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/home_widgets/home_extra_widgets.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/home_widgets/home_roles_widgets.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/home_widgets/home_service_widgets.dart';
-import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/module_widget/forms/forms_actions.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/module_widget/inventory/inventory_actions.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/module_widget/inventory/inventory_new_request.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/module_widget/inventory/inventory_overview.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/module_widget/inventory/my_request_inventory.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/module_widget/inventory/stocks.dart';
-import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/module_widget/knowledgehub/approval_knowledge.dart';
-import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/module_widget/knowledgehub/knowledge_hub_actions.dart';
-import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/module_widget/knowledgehub/knowledge_hub_overview.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/module_widget/messages/schedule_message.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/module_widget/qiyas/qiyas_assign_overview.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/module_widget/settings/settings_home_widgets.dart';
@@ -36,7 +34,7 @@ import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/mo
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/module_widget/todo/my_todo.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/module_widget/todo/to_check_box.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/module_widget/todo/todo_status.dart';
-
+// ADDED 9/10/2026 — Time Tracker phase 6 home cards.
 
 enum HomeComponents {
   /// Fallback for component names found in a stored layout that this
@@ -108,8 +106,23 @@ enum HomeComponents {
 
   // ── To-Do ─────────────────────────────────────────────────────────────────
   myTodoList,
-  MyTodoBox,
+  myTodoBox,
   myTodoStatus,
+
+  // ── Time Tracker ──────────────────────────────────────────────────────────
+  // ADDED 9/10/2026 (Time Tracker phase 6). Figma QVFDXSnFPExQVOIycX9ECb
+  // "Widgets" column, in its reading order: Totals 2583:27002 · Presence
+  // 2583:26557 · Tracker Status 2583:26899 · Tracker Approver 2583:26697 ·
+  // My Request 2583:26771 · Quick Requests 2583:26873 · Quick Approvals
+  // 2583:26886. Database names are `Time_Tracker_…` — NEVER rename them
+  // (a stored layout resolves cards by them).
+  timeTrackerTotals,
+  timeTrackerPresence,
+  timeTrackerStatus,
+  timeTrackerApprover,
+  timeTrackerMyRequest,
+  timeTrackerQuickRequests,
+  timeTrackerQuickApprovals,
 
   // ── Settings ──────────────────────────────────────────────────────────────
   // ADDED 25/8/2026. Figma puts these two side by side at y=2229, after the
@@ -204,7 +217,7 @@ enum HomeComponents {
         return 'Knowledge_Hub_Actions';
       case HomeComponents.knowledgeHubOverview:
         return 'Knowledge_Hub_Overview';
-      case HomeComponents.approvalDashboard:  // ✅ NEW CASE
+      case HomeComponents.approvalDashboard: // ✅ NEW CASE
         return 'Approval_Dashboard';
       case HomeComponents.serviceOverview:
         return 'Service_Overview';
@@ -220,8 +233,23 @@ enum HomeComponents {
         return 'My_Todo_List';
       case HomeComponents.myTodoStatus:
         return 'My_Todo_Status';
-      case HomeComponents.MyTodoBox:
+      case HomeComponents.myTodoBox:
         return 'My_Todo_Check_Box';
+      // Time Tracker (9/10/2026) — never rename.
+      case HomeComponents.timeTrackerTotals:
+        return 'Time_Tracker_Totals';
+      case HomeComponents.timeTrackerPresence:
+        return 'Time_Tracker_Presence';
+      case HomeComponents.timeTrackerStatus:
+        return 'Time_Tracker_Status';
+      case HomeComponents.timeTrackerApprover:
+        return 'Time_Tracker_Approver';
+      case HomeComponents.timeTrackerMyRequest:
+        return 'Time_Tracker_My_Request';
+      case HomeComponents.timeTrackerQuickRequests:
+        return 'Time_Tracker_Quick_Requests';
+      case HomeComponents.timeTrackerQuickApprovals:
+        return 'Time_Tracker_Quick_Approvals';
       case HomeComponents.horizontalBarChart:
         return 'Horizontal_Bar_Chart';
       case HomeComponents.baseLineChart:
@@ -328,8 +356,17 @@ enum HomeComponents {
 
       case HomeComponents.myTodoList:
       case HomeComponents.myTodoStatus:
-      case HomeComponents.MyTodoBox:
+      case HomeComponents.myTodoBox:
         return Modules.todo;
+
+      case HomeComponents.timeTrackerTotals:
+      case HomeComponents.timeTrackerPresence:
+      case HomeComponents.timeTrackerStatus:
+      case HomeComponents.timeTrackerApprover:
+      case HomeComponents.timeTrackerMyRequest:
+      case HomeComponents.timeTrackerQuickRequests:
+      case HomeComponents.timeTrackerQuickApprovals:
+        return Modules.timeTracker;
 
       case HomeComponents.requestedService:
       case HomeComponents.serviceActions:
@@ -365,9 +402,9 @@ enum HomeComponents {
       case HomeComponents.scheduleMessages:
         return ScheduleMessage(model: model);
       case HomeComponents.formActions:
-        return FormActions(model: model);
+        return null;
       case HomeComponents.formsSubmission:
-        return FormsSubmission(model: model);
+        return null;
       case HomeComponents.employeeMessages:
         return EmployeeMessagesWidget(model: model);
       case HomeComponents.groupMessages:
@@ -383,7 +420,7 @@ enum HomeComponents {
       case HomeComponents.inventoryNewRequest:
         return InventoryNewRequests(model: model);
       case HomeComponents.knowledgeHubActions:
-        return KnowledgeHubActions(model: model);
+        return null;
       case HomeComponents.serviceStatus:
         return ServicesStatus(model: model);
       case HomeComponents.myServices:
@@ -393,9 +430,9 @@ enum HomeComponents {
       case HomeComponents.inventoryOverview:
         return InventoryOverview(model: model);
       case HomeComponents.knowledgeHubOverview:
-        return KnowledgeHubOverview(model: model);
-      case HomeComponents.approvalDashboard:  // ✅ NEW CASE
-        return ApprovalDashBoardWidget(model: model);
+        return null;
+      case HomeComponents.approvalDashboard: // ✅ NEW CASE
+        return null;
       case HomeComponents.serviceOverview:
         return ServiceOverview(model: model);
       case HomeComponents.myRequestServices:
@@ -406,8 +443,22 @@ enum HomeComponents {
         return MyTodo(model: model);
       case HomeComponents.myTodoStatus:
         return MyTodoStatus(model: model);
-      case HomeComponents.MyTodoBox:
+      case HomeComponents.myTodoBox:
         return MyTodoCheckBox(model: model);
+      case HomeComponents.timeTrackerTotals:
+        return null;
+      case HomeComponents.timeTrackerPresence:
+        return null;
+      case HomeComponents.timeTrackerStatus:
+        return null;
+      case HomeComponents.timeTrackerApprover:
+        return null;
+      case HomeComponents.timeTrackerMyRequest:
+        return null;
+      case HomeComponents.timeTrackerQuickRequests:
+        return null;
+      case HomeComponents.timeTrackerQuickApprovals:
+        return null;
       case HomeComponents.stocks:
         return Stocks(model: model);
       case HomeComponents.qiyasAssignOverview:

@@ -5,8 +5,10 @@
 /// Purpose: Declares `ActiveDirectory`.
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'package:grc_module/features/roles/r1_role_management/domain/entities/module_permissions_sections_permissions.dart';
+
 enum ActiveDirectory implements ModulePermissionsSectionsPermission {
   uploadDocument,
   restoreData,
@@ -42,16 +44,15 @@ enum ActiveDirectory implements ModulePermissionsSectionsPermission {
   String get getUiName {
     switch (this) {
       case uploadDocument:
-        return 'Upload Document';  // ✅ With translation
+        return 'Upload Document'; // ✅ With translation
       case restoreData:
-        return 'Restore Data';  // ✅ With translation
+        return 'Restore Data'; // ✅ With translation
       case exportData:
-        return 'Export Data';  // ✅ With translation
+        return 'Export Data'; // ✅ With translation
       case editUploadedDocument:
-        return 'Edit Uploaded Document';  // ✅ With translation
+        return 'Edit Uploaded Document'; // ✅ With translation
       case removeEmployee:
-        return 'Remove Employee';  // ✅ With translation
+        return 'Remove Employee'; // ✅ With translation
     }
   }
-
 }

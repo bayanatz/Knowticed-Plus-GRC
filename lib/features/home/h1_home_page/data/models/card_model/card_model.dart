@@ -14,6 +14,7 @@
 ///          now live with their only consumers instead of in a feature folder
 ///          with no feature in it.
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'package:grc_module/features/home/h1_home_page/data/models/card_model/card_attachments.dart';
 import 'package:grc_module/features/home/h1_home_page/data/models/card_model/card_checklists.dart';

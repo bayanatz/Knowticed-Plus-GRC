@@ -5,6 +5,7 @@
 /// Purpose: Declares `DepartmentModelPro`.
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -42,6 +43,4 @@ class DepartmentModelPro {
       'Added_By': addedBy,
     };
   }
-
-
 }

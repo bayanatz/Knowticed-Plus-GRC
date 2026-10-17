@@ -25,6 +25,8 @@
 /// the next card starts after them. Once the slots are gone, the remaining
 /// children are collapsed to nothing — the row can never overflow, and it never
 /// needs a sideways scroll to reach a card.
+library;
+
 import 'dart:ui' as ui;
 
 import 'dart:math' as math;
@@ -98,8 +100,7 @@ class _HomeSlotRowDelegate extends MultiChildLayoutDelegate {
   void performLayout(Size size) {
     // One slot's share of the row, with the gaps taken out first so that
     // slotCount slots plus (slotCount - 1) gaps come to exactly the row width.
-    final double unit =
-        (size.width - gap * (slotCount - 1)) / slotCount;
+    final double unit = (size.width - gap * (slotCount - 1)) / slotCount;
 
     // Degenerate width (a zero-width parent during a transition, or a slot
     // count that leaves nothing over). Collapse everything rather than divide
@@ -168,9 +169,7 @@ class _HomeSlotRowDelegate extends MultiChildLayoutDelegate {
 
       // Mirrored for Arabic: the first column is the RIGHTMOST one, and the
       // cursor still walks away from that edge.
-      final double dx = isRtl
-          ? size.width - cursor - occupiedWidth
-          : cursor;
+      final double dx = isRtl ? size.width - cursor - occupiedWidth : cursor;
 
       positionChild(i, Offset(dx, 0));
 

@@ -7,13 +7,13 @@
 /// Purpose: Declares `WrongEmployeeModel`.
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'dart:convert';
 
-
 import 'package:grc_module/features/roles/r4_active_directory/data/models/employees_model/mobile_phone_model.dart';
 import 'package:grc_module/features/roles/r4_active_directory/data/models/employees_model/new_employee_model.dart';
-import 'package:grc_module/core/helper/main_helper/single_value_tracking_model.dart';
+import 'package:grc_module/core/helper/single_value_tracking_model.dart';
 
 /// Date: January/7/2024
 /// By: MohamedFouad
@@ -108,7 +108,8 @@ class WrongEmployeeModel extends NewEmployeeModelHistory {
     }
 
     // Parse the base employee data using parent fromMap
-    NewEmployeeModelHistory baseEmployee = NewEmployeeModelHistory.fromMap(data);
+    NewEmployeeModelHistory baseEmployee =
+        NewEmployeeModelHistory.fromMap(data);
 
     // Create WrongEmployeeModel with additional fields
     return WrongEmployeeModel(
@@ -438,10 +439,9 @@ class WrongEmployeeModel extends NewEmployeeModelHistory {
       lastLogin: updatedBase.lastLogin,
       deactivationDate: updatedBase.deactivationDate,
       activationDate: updatedBase.activationDate,
-      departmentEnglishName: departmentEnglishName ?? this.departmentEnglishName,
+      departmentEnglishName:
+          departmentEnglishName ?? this.departmentEnglishName,
       departmentArabicName: departmentArabicName ?? this.departmentArabicName,
     );
   }
-
-
 }

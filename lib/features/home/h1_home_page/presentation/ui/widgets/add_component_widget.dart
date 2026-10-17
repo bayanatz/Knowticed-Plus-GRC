@@ -5,6 +5,7 @@
 /// Purpose: Declares `AddComponentWidget`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
@@ -13,13 +14,13 @@ import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/home_card_metrics.dart';
 
 class AddComponentWidget extends StatelessWidget {
-  AddComponentWidget(
+  const AddComponentWidget(
       {required this.columnIndex,
       required this.rowIndex,
       this.width,
       super.key});
-  int columnIndex;
-  int rowIndex;
+  final int columnIndex;
+  final int rowIndex;
 
   /// Natural width of one empty slot.
   ///
@@ -46,7 +47,7 @@ class AddComponentWidget extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8.sp),
               border: Border.all(color: AppColors.border, width: 1.sp),
-              color: AppColors.field,
+              color: AppColors.card,
             ),
             // HEIGHT comes from HomeCardMetrics so an empty slot is exactly as
             // tall as a filled one beside it — that is the dimension every card

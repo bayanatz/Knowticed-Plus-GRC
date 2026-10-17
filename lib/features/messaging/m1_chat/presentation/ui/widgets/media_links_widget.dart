@@ -1,31 +1,33 @@
 /// Module: messaging / chat / presentation/ui/widgets/media_links_widget.dart
+library;
+
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart'; // Keep for .tr and context extensions
 import 'package:intl/intl.dart';
-import 'package:grc_module/core/custom/84-messaging_custom_button.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
+import 'package:grc_module/core/custom/buttons/custom_button.dart';
+import 'package:grc_module/core/helper/format_title.dart';
 import 'package:video_player/video_player.dart';
 
-
-import 'package:grc_module/core/network/message_module/routes/app_routes.dart';
-import 'package:grc_module/core/constants/message_module/app_assets.dart';
-import 'package:grc_module/core/enums/message_module/message_types.dart';
-import 'package:grc_module/core/helper/message_module/main_helper/file_handler.dart';
-import 'package:grc_module/core/helper/main_helper/spacing_helper.dart';
+import 'package:grc_module/core/routes/app_routes.dart';
+import 'package:grc_module/features/messaging/helpers/constants/messaging_assets.dart';
+import 'package:grc_module/features/messaging/helpers/enums/message_types.dart';
+import 'package:grc_module/features/messaging/helpers/messaging_bridge/main_helper/file_handler.dart';
+import 'package:grc_module/features/messaging/helpers/spacing_helper.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
-import '../../../domain/entity/message_entity.dart';
-import '../../../domain/enum/chat_actions.dart';
-import '../../../domain/enum/file_types.dart';
-import '../../../domain/enum/media_type.dart';
-import '../../controller/main_controllers/master_chat_cubit.dart';
-import './video_player_view.dart';
-import 'package:grc_module/core/custom/46-custom_image_picker.dart';
+import 'package:grc_module/features/messaging/m1_chat/domain/entity/message_entity.dart';
+import 'package:grc_module/features/messaging/m1_chat/domain/enum/chat_actions.dart';
+import 'package:grc_module/features/messaging/m1_chat/domain/enum/file_types.dart';
+import 'package:grc_module/features/messaging/m1_chat/domain/enum/media_type.dart';
+import 'package:grc_module/features/messaging/m1_chat/presentation/controller/main_controllers/master_chat_cubit.dart';
+import 'package:grc_module/features/messaging/m1_chat/presentation/ui/widgets/video_player_view.dart';
+import 'package:grc_module/core/custom/pickers/custom_image_picker.dart';
 import 'package:grc_module/generated/l10n.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
 class MediaLinksWidget extends StatefulWidget {
   const MediaLinksWidget({super.key});
@@ -63,7 +65,7 @@ class _MediaLinksWidgetState extends State<MediaLinksWidget> {
           ),
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
           decoration: BoxDecoration(
-            color: isTablet ? AppColors.field : AppColors.background,
+            color: isTablet ? AppColors.card : AppColors.background,
             borderRadius: BorderRadius.circular(8.r),
           ),
           width: ContextExtension(context).isTablet ? 269.sp : double.infinity,
@@ -73,16 +75,18 @@ class _MediaLinksWidgetState extends State<MediaLinksWidget> {
               Row(
                 children: [
                   Text(
-                    ChatActionsEnum.mediaLinksAndDocs.getLabel(context.isArabic),
+                    ChatActionsEnum.mediaLinksAndDocs
+                        .getLabel(context.isArabic),
                     style: StyleText.fontSize16Weight500,
                   ),
                   const Spacer(),
                   InkWell(
+                    onTapDown: (_) => HapticController.low(),
                     onTap: () {
                       cubit.toggleMediaState();
                     },
-                    child: SvgPicture.asset(
-                      AppAssets.close,
+                    child: CustomSvgImage.natural(
+                      assetPath: AppAssets.close,
                       width: 20.sp,
                       height: 20.sp,
                       color: AppColors.secondaryBlack,
@@ -94,21 +98,19 @@ class _MediaLinksWidgetState extends State<MediaLinksWidget> {
               Container(
                 padding: EdgeInsets.all(4.sp),
                 decoration: BoxDecoration(
-                  color: isTablet ? AppColors.background : AppColors.field,
+                  color: isTablet ? AppColors.background : AppColors.card,
                   borderRadius: BorderRadius.circular(4.sp),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     for (MediaType type in MediaType.values)
-                      CustomButton(
-                        verticalPadding: 4.sp,
-                        horizontalPadding: 8.sp,
-                        borderRadius: 4.r,
+                      customButton(
+                        contentHorizontalPadding: 8.sp,
                         // Bug report #17: was the raw enum name
                         // ("media"); capitalised via FormatHelper, Arabic
                         // under Arabic.
-                        buttonText: context.isArabic
+                        title: context.isArabic
                             ? _mediaTypeArabic(type)
                             : FormatHelper.capitalize(type.name),
                         textStyle: StyleText.fontSize14Weight500.copyWith(
@@ -116,12 +118,12 @@ class _MediaLinksWidgetState extends State<MediaLinksWidget> {
                               ? AppColors.textButton
                               : AppColors.text,
                         ),
-                        buttonColor: (selectedMediaType == type)
+                        color: (selectedMediaType == type)
                             ? AppColors.primary
                             : isTablet
-                            ? AppColors.background
-                            : AppColors.field,
-                        onTap: () {
+                                ? AppColors.background
+                                : AppColors.card,
+                        function: () {
                           setState(() {
                             selectedMediaType = type;
                           });
@@ -171,7 +173,8 @@ class _MediaLinksWidgetState extends State<MediaLinksWidget> {
         child: Center(
           child: Text(
             _getEmptyMediaLabel(selectedMediaType),
-            style: StyleText.fontSize14Weight500.copyWith(color: AppColors.secondaryBlack),
+            style: StyleText.fontSize14Weight500
+                .copyWith(color: AppColors.secondaryBlack),
           ),
         ),
       );
@@ -189,7 +192,8 @@ class _MediaLinksWidgetState extends State<MediaLinksWidget> {
                 children: [
                   Text(
                     monthKey,
-                    style: StyleText.fontSize14Weight500.copyWith(color: AppColors.secondaryBlack),
+                    style: StyleText.fontSize14Weight500
+                        .copyWith(color: AppColors.secondaryBlack),
                   ),
                   verticalSpace(8),
                   Wrap(
@@ -227,8 +231,10 @@ class _MediaLinksWidgetState extends State<MediaLinksWidget> {
       );
     } else if (media.messageType == MessageTypes.video) {
       return InkWell(
+        onTapDown: (_) => HapticController.low(),
         onTap: () {
-          context.read<MasterChatCubit>()
+          context
+              .read<MasterChatCubit>()
               .imageMessageCubit
               .playVideo(media.videoMessageModel!);
 
@@ -263,6 +269,7 @@ class _MediaLinksWidgetState extends State<MediaLinksWidget> {
 
   Widget _buildDocumentMessage(MessageEntity media) {
     return InkWell(
+      onTapDown: (_) => HapticController.low(),
       onTap: () {
         if (media.messageType == MessageTypes.doc) {
           Get.toNamed(
@@ -275,7 +282,7 @@ class _MediaLinksWidgetState extends State<MediaLinksWidget> {
         padding: EdgeInsets.all(8.sp),
         width: double.infinity,
         decoration: BoxDecoration(
-          color: isTablet ? AppColors.background : AppColors.field,
+          color: isTablet ? AppColors.background : AppColors.card,
           borderRadius: BorderRadius.circular(4.r),
         ),
         child: Row(
@@ -326,14 +333,9 @@ class _MediaLinksWidgetState extends State<MediaLinksWidget> {
                     ],
                   ),
                   Text(
-                    media.docMessageModel!.totalPages.toString() +
-                        S.current.pages +
-                        ' - ' +
-                        (media.docMessageModel!.totalSize! / 1024)
-                            .toStringAsFixed(2) +
-                        ' KB' +
-                        '.${FileHandler.getFileExtension(media.mediaLink!)}',
-                    style: StyleText.fontSize12Weight400.copyWith(color: AppColors.secondaryBlack),
+                    '${media.docMessageModel!.totalPages}${S.current.pages} - ${(media.docMessageModel!.totalSize / 1024).toStringAsFixed(2)} KB.${FileHandler.getFileExtension(media.mediaLink!)}',
+                    style: StyleText.fontSize12Weight400
+                        .copyWith(color: AppColors.secondaryBlack),
                   )
                 ],
               ),
@@ -349,15 +351,15 @@ class _MediaLinksWidgetState extends State<MediaLinksWidget> {
       padding: EdgeInsets.all(8.sp),
       width: double.infinity,
       decoration: BoxDecoration(
-        color: isTablet ? AppColors.background : AppColors.field,
+        color: isTablet ? AppColors.background : AppColors.card,
         borderRadius: BorderRadius.circular(4.r),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 8.sp,
         children: [
-          SvgPicture.asset(
-            AppAssets.link,
+          CustomSvgImage.natural(
+            assetPath: AppAssets.link,
             width: 15.sp,
             height: 15.sp,
           ),

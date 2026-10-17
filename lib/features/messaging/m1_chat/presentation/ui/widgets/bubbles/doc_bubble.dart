@@ -19,7 +19,6 @@ class DocBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var isMe = messageModel.isMe;
     final masterChatCubit = context.read<MasterChatCubit>();
 
     return BlocBuilder<MasterChatCubit, MasterChatState>(
@@ -31,10 +30,11 @@ class DocBubble extends StatelessWidget {
           messageModel: messageModel,
           content: /*messageModel.docMessageModel!.firstPageBytes != null
               ? */
-          Column(
+              Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               InkWell(
+                onTapDown: (_) => HapticController.low(),
                 onTap: () {
                   //   if (messageModel.docMessageModel.messageType == MessageTypes.doc) {
                   Get.toNamed(
@@ -49,7 +49,7 @@ class DocBubble extends StatelessWidget {
                     width: double.infinity,
                     decoration: BoxDecoration(
                       color: /*isTablet ? AppColors.background :*/
-                      AppColors.field,
+                          AppColors.card,
                       borderRadius: BorderRadius.circular(4.r),
                     ),
                     child: Row(
@@ -62,29 +62,29 @@ class DocBubble extends StatelessWidget {
                         CustomSvgImage(
                           assetPath: FileTypes.getFileIcon(
                               messageModel.docMessageModel!.fileName ??
-                                  messageModel.docMessageModel!.docPath!),
+                                  messageModel.docMessageModel!.docPath),
                           width: 40.sp,
                           height: 40.sp,
                           fit: BoxFit.contain,
                         ),
                         Expanded(
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              spacing: 2.sp,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          spacing: 2.sp,
+                          children: [
+                            Row(
                               children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                        child: Text(
-                                          messageModel.docMessageModel!.fileName!,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: StyleText.fontSize14Weight500
-                                              .copyWith(fontWeight: FontWeight.w600),
-                                        )),
-                                  ],
-                                ),
-                                /* Text(
+                                Expanded(
+                                    child: Text(
+                                  messageModel.docMessageModel!.fileName!,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: StyleText.fontSize14Weight500
+                                      .copyWith(fontWeight: FontWeight.w600),
+                                )),
+                              ],
+                            ),
+                            /* Text(
                                 messageModel.docMessageModel!.totalPages.toString() +
                                     ' Pages'.tr +
                                     ' - ' +
@@ -93,12 +93,13 @@ class DocBubble extends StatelessWidget {
                                     ' KB' +
                                     '.${FileHandler.getFileExtension(messageModel.docMessageModel!)}',
                                 style: StyleText.fontSize12Weight400.copyWith(color: AppColors.secondaryBlack))*/
-                              ],
-                            ))
+                          ],
+                        ))
                       ],
                     )),
               )
               /*     GestureDetector(
+                onTapDown: (_) => HapticController.low(),
                 onTap: () {
                   Get.toNamed(
                     Routes.docView,
@@ -126,19 +127,19 @@ class DocBubble extends StatelessWidget {
                 children: [
                   Text(
                     '${messageModel.docMessageModel!.totalPages} ${'pages'.tr} • ',
-                    style: StyleText.fontSize12Weight500.copyWith(color: AppColors.inputColor)
+                    style: StyleText.fontSize12Weight500.copyWith(color: AppColors.greyDark)
                         .copyWith(color: AppTheme.contrastGreyColor()),
                   ),
                   horizontalSpace(2),
                   Text(
                     '${messageModel.docMessageModel!.totalSize.toStringAsFixed(2)} ${'MB'.tr} • ',
-                    style: StyleText.fontSize12Weight500.copyWith(color: AppColors.inputColor)
+                    style: StyleText.fontSize12Weight500.copyWith(color: AppColors.greyDark)
                         .copyWith(color: AppTheme.contrastGreyColor()),
                   ),
                   horizontalSpace(2),
                   Text(
                     messageModel.docMessageModel!.extension,
-                    style: StyleText.fontSize12Weight500.copyWith(color: AppColors.inputColor)
+                    style: StyleText.fontSize12Weight500.copyWith(color: AppColors.greyDark)
                         .copyWith(color: AppTheme.contrastGreyColor()),
                   ),
                 ],
@@ -150,7 +151,7 @@ class DocBubble extends StatelessWidget {
           )
           /*         : LinearProgressIndicator(
                   color: AppColors.base,
-                  backgroundColor: AppColors.inverseBase,
+                  backgroundColor: AppColors.secondaryBlack,
                 )*/
           ,
         );

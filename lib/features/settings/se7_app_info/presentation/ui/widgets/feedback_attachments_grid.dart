@@ -2,10 +2,10 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: feedback_attachments_grid.dart
-/// Purpose: The "Attach Document" control under each box on the comments and
+/// Description: The "Attach Document" control under each box on the comments and
 ///          feedback form — the uploaded files as cards, plus the button that
 ///          adds another.
-/// Author: Knowticed Plus team
+/// Author: Amr Mesbah
 /// Created at: 1/9/2026
 ///
 /// Figma: MESBAH 7628:7681. The design draws two 265-wide "Attach Document"
@@ -18,18 +18,22 @@
 /// (knowledge_hub/main_controller) — icon, name, size, red remove badge — but
 /// is written here rather than imported because that widget hardcodes
 /// `width: 310.w` and would overflow a 265-wide cell.
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:grc_module/core/custom/1-custom_dropdown.dart' show kFieldLabelGap;
-import 'package:grc_module/core/custom/32-custom_svg.dart';
+import 'package:grc_module/core/custom/dropdowns/custom_dropdown.dart'
+    show kFieldLabelGap;
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/features/settings/se7_app_info/domain/entities/app_feedback.dart';
 import 'package:grc_module/features/settings/se7_app_info/presentation/ui/widgets/feedback_display.dart';
 import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
+import 'package:grc_module/core/custom/feedback/circle_progress.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
 class FeedbackAttachmentsGrid extends StatelessWidget {
   const FeedbackAttachmentsGrid({
@@ -167,16 +171,18 @@ class _AttachmentCard extends StatelessWidget {
               children: <Widget>[
                 Text(
                   attachment.name,
-                  style: StyleText.fontSize14Weight500
-                      .copyWith(color: AppColors.text),
+                  style: StyleText.fontSize14Weight500.copyWith(
+                    color: AppColors.text,
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
                 SizedBox(height: 4.h),
                 Text(
                   FeedbackDisplay.readableSize(attachment.sizeInBytes),
-                  style: StyleText.fontSize12Weight500
-                      .copyWith(color: AppColors.secondaryText),
+                  style: StyleText.fontSize12Weight500.copyWith(
+                    color: AppColors.secondaryText,
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -186,17 +192,14 @@ class _AttachmentCard extends StatelessWidget {
           SizedBox(width: 8.w),
           if (onRemove != null)
             GestureDetector(
+              onTapDown: hapticDown(onRemove, HapticLevel.high),
               onTap: onRemove,
               child: Container(
                 decoration: BoxDecoration(
                   color: AppColors.red,
                   shape: BoxShape.circle,
                 ),
-                child: Icon(
-                  Icons.remove,
-                  size: 12.sp,
-                  color: AppColors.white,
-                ),
+                child: Icon(Icons.remove, size: 12.sp, color: AppColors.white),
               ),
             ),
         ],
@@ -222,6 +225,7 @@ class _AddButton extends StatelessWidget {
     return Opacity(
       opacity: isDimmed ? 0.5 : 1.0,
       child: GestureDetector(
+        onTapDown: hapticDown(onTap, HapticLevel.medium),
         onTap: onTap,
         child: Container(
           height: 36.h,
@@ -240,14 +244,15 @@ class _AddButton extends StatelessWidget {
                   height: 16.sp,
                   child: CircleProgressMaster.inline(
                     strokeWidth: 2,
-                    valueColor:
-                        AlwaysStoppedAnimation<Color>(AppColors.textButton),
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      AppColors.textButton,
+                    ),
                   ),
                 )
               else
                 CustomSvgImage(
                   assetPath:
-                      'assets/icons_assets/main_icons_assets/bulk_upload_qiyas.svg',
+                      'assets/icons_assets/main_icons_assets/ic_action_upload.svg',
                   color: AppColors.textButton,
                   height: 16.sp,
                   width: 16.sp,
@@ -258,8 +263,9 @@ class _AddButton extends StatelessWidget {
                   S.of(context).attach_document,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: StyleText.fontSize14Weight500
-                      .copyWith(color: AppColors.textButton),
+                  style: StyleText.fontSize14Weight500.copyWith(
+                    color: AppColors.textButton,
+                  ),
                 ),
               ),
             ],

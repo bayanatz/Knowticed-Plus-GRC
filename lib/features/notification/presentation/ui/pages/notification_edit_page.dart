@@ -2,8 +2,8 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: notification_edit_page.dart
-/// Purpose: Edits one notification template.
-/// Author: Knowticed Plus team
+/// Description: Edits one notification template.
+/// Author: Amr Mesbah
 /// Created at: 2026
 /// Updated: 12/8/2026 - CR-SKEL-NOTIF-N13: the two dead private methods are deleted.
 /// Updated: 2/9/2026 - This screen is where the five Notification Control role
@@ -14,14 +14,17 @@
 ///          everyone and made inert without the matching right, because
 ///          reading a notification's configuration and changing it are
 ///          different things and only the second is gated.
-import 'dart:ui' as ui;
+/// Updated: 9/10/2026 - Time Tracker QA KP-TT-018 (shared module → Amr's
+///          handover): the status row and the Preview / Save row always fit
+///          (`NotificationStatusHeader` / `NotificationEditActions`) — Reset
+///          Default (190.w) overflowed the status row on a phone.
+library;
 
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_switch/flutter_switch.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
-import 'package:grc_module/core/custom/6-custom_button_with_svg.dart';
+import 'package:grc_module/core/custom/feedback/circle_progress.dart';
 // REMOVED_MODULE: import 'package:grc_module/core/helper/inventory_module/core/svg_custom.dart';
 // REMOVED_MODULE: import 'package:grc_module/features/external/services_mangment_module/Category/presentation/ui/services_admin/Widget/W3_Frame_Screen_tablet.dart';
 import 'package:grc_module/features/notification/data/repository/notification_template_service.dart';
@@ -35,17 +38,19 @@ import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/features/notification/data/models/notification_model.dart';
 import 'package:grc_module/features/notification/domain/enums/notification_catalog.dart';
 import 'package:grc_module/features/notification/presentation/ui/pages/notification_control.dart';
+import 'package:grc_module/features/notification/presentation/ui/widgets/notification_edit_layout.dart';
 
-import 'package:grc_module/core/custom/5-custom_button.dart';
-import 'package:grc_module/core/custom/2-custom_textfield.dart';
+import 'package:grc_module/core/custom/buttons/custom_button.dart';
+import 'package:grc_module/core/custom/inputs/custom_textfield.dart';
 // ADDED 2/9/2026 — the Notification Control role permissions. This screen is
 // where all five of them actually bite; see the header note above.
 import 'package:get/get.dart';
-import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
+import 'package:grc_module/core/helper/access/main_core_employee_controller.dart';
+import 'package:grc_module/core/helper/access/modules_enum.dart';
 import 'package:grc_module/features/roles/r1_role_management/domain/enums/notification/notification_permissions_enum.dart';
 import 'package:grc_module/features/roles/r1_role_management/domain/enums/notification/notification_sections_enum.dart';
 import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
 class NotificationEditPage extends StatefulWidget {
   final NotificationItem notificationItem;
@@ -76,7 +81,8 @@ class _NotificationEditPageState extends State<NotificationEditPage> {
   TextEditingController bodyEnController = TextEditingController();
 
   NotificationTemplateModel? currentTemplate;
-  final NotificationTemplateService _templateService = NotificationTemplateService();
+  final NotificationTemplateService _templateService =
+      NotificationTemplateService();
 
   // ADDED 2/9/2026 — Notification Control role permissions.
   //
@@ -118,7 +124,8 @@ class _NotificationEditPageState extends State<NotificationEditPage> {
 
   /// Save writes status, channels and copy in one go, so it is offered when
   /// the member may change ANY of the three — not only the copy.
-  bool get _canSave => _canEditMessages || _canChangeStatus || _canChangeChannel;
+  bool get _canSave =>
+      _canEditMessages || _canChangeStatus || _canChangeChannel;
 
   @override
   void initState() {
@@ -145,8 +152,12 @@ class _NotificationEditPageState extends State<NotificationEditPage> {
     }
 
     _canEditNotification = has(NotificationPermissions.editNotification);
-    _canEditPushMessages = has(NotificationPermissions.editPushNotificationMessages);
-    _canEditEmailMessages = has(NotificationPermissions.editEmailNotificationMessages);
+    _canEditPushMessages = has(
+      NotificationPermissions.editPushNotificationMessages,
+    );
+    _canEditEmailMessages = has(
+      NotificationPermissions.editEmailNotificationMessages,
+    );
     _canChangeStatus = has(NotificationPermissions.changeNotificationStatus);
     _canChangeChannel = has(NotificationPermissions.changeNotificationChannel);
   }
@@ -166,18 +177,18 @@ class _NotificationEditPageState extends State<NotificationEditPage> {
       isLoadingTemplate = true;
     });
 
-
     NotificationTemplateModel? template = await _templateService.getTemplate(
       module: widget.moduleName,
       eventType: widget.notificationItem.eventType,
     );
 
     if (template != null) {
-
       setState(() {
         currentTemplate = template;
         isNotificationEnabled = template.isEnabled;
-        selectedNotificationTypes = List.from(template.selectedNotificationTypes);
+        selectedNotificationTypes = List.from(
+          template.selectedNotificationTypes,
+        );
 
         subjectEn.text = template.subjectEnglish;
         subjectAr.text = template.subjectArabic;
@@ -198,7 +209,6 @@ class _NotificationEditPageState extends State<NotificationEditPage> {
         isLoadingTemplate = false;
       });
     }
-
   }
 
   // ✅ Save template to Firestore
@@ -216,26 +226,27 @@ class _NotificationEditPageState extends State<NotificationEditPage> {
     });
 
     final templateToSave = currentTemplate?.copyWith(
-      subjectEnglish: subjectEn.text.trim(),
-      subjectArabic: subjectAr.text.trim(),
-      bodyEnglish: bodyEnController.text.trim(),
-      bodyArabic: bodyArController.text.trim(),
-      isEnabled: isNotificationEnabled,
-      selectedNotificationTypes: selectedNotificationTypes,
-      updatedAt: DateTime.now(),
-    ) ?? NotificationTemplateModel(
-      id: '${widget.moduleName}_${widget.notificationItem.eventType}',
-      module: widget.moduleName,
-      eventType: widget.notificationItem.eventType,
-      subjectEnglish: subjectEn.text.trim(),
-      subjectArabic: subjectAr.text.trim(),
-      bodyEnglish: bodyEnController.text.trim(),
-      bodyArabic: bodyArController.text.trim(),
-      isEnabled: isNotificationEnabled,
-      selectedNotificationTypes: selectedNotificationTypes,
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-    );
+          subjectEnglish: subjectEn.text.trim(),
+          subjectArabic: subjectAr.text.trim(),
+          bodyEnglish: bodyEnController.text.trim(),
+          bodyArabic: bodyArController.text.trim(),
+          isEnabled: isNotificationEnabled,
+          selectedNotificationTypes: selectedNotificationTypes,
+          updatedAt: DateTime.now(),
+        ) ??
+        NotificationTemplateModel(
+          id: '${widget.moduleName}_${widget.notificationItem.eventType}',
+          module: widget.moduleName,
+          eventType: widget.notificationItem.eventType,
+          subjectEnglish: subjectEn.text.trim(),
+          subjectArabic: subjectAr.text.trim(),
+          bodyEnglish: bodyEnController.text.trim(),
+          bodyArabic: bodyArController.text.trim(),
+          isEnabled: isNotificationEnabled,
+          selectedNotificationTypes: selectedNotificationTypes,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
 
     final success = await _templateService.saveTemplate(templateToSave);
 
@@ -246,6 +257,7 @@ class _NotificationEditPageState extends State<NotificationEditPage> {
     // Snackbars removed. On success the page closes, which is the feedback;
     // a failure now leaves the user on the editor with their input intact.
     if (success) {
+      if (!mounted) return;
       Navigator.pop(context);
     }
   }
@@ -307,7 +319,7 @@ class _NotificationEditPageState extends State<NotificationEditPage> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(ctx),
+            onPressed: withHaptic(() => Navigator.pop(ctx), HapticLevel.low),
             child: Text(isArabic ? "إغلاق" : "Close"),
           ),
         ],
@@ -333,7 +345,9 @@ class _NotificationEditPageState extends State<NotificationEditPage> {
           ? "لا توجد متغيرات لهذا الإشعار"
           : "This notification has no variables";
     }
-    return isRTL ? "المتغيرات المتاحة: $tokens" : "Available variables: $tokens";
+    return isRTL
+        ? "المتغيرات المتاحة: $tokens"
+        : "Available variables: $tokens";
   }
 
   // ✅ Helper method to get display text for selected items
@@ -342,8 +356,7 @@ class _NotificationEditPageState extends State<NotificationEditPage> {
 
   @override
   Widget build(BuildContext context) {
-    final isRTL = Directionality.of(context) == ui.TextDirection.rtl;
-    final lightMode = Theme.of(context).brightness == Brightness.light;
+    final isRTL = Directionality.of(context) == TextDirection.rtl;
 
     return Scaffold(
       backgroundColor: AppColors.white,
@@ -357,322 +370,373 @@ class _NotificationEditPageState extends State<NotificationEditPage> {
                 children: [
                   IconButton(
                     icon: const Icon(Icons.arrow_back),
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: withHaptic(
+                        () => Navigator.pop(context), HapticLevel.low),
                   ),
-                  Text(S.of(context).notificationControl,
-                      style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600)),
+                  Text(
+                    S.of(context).notificationControl,
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                   const Spacer(),
-                  Text(widget.notificationItem.title,
-                      style: TextStyle(fontSize: 14.sp, color: AppColors.secondaryText)),
+                  Text(
+                    widget.notificationItem.title,
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      color: AppColors.secondaryText,
+                    ),
+                  ),
                 ],
               ),
             ),
             Expanded(
               child: isLoadingTemplate
-              ? Center(child: CircleProgressMaster())
-              : ScrollConfiguration(
-            behavior: const ScrollBehavior().copyWith(scrollbars: false),
-            child: SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(
-                parent: BouncingScrollPhysics(),
-              ),
-              child: Column(
-                children: [
-                  // Status & Notification Type Container
-                  Container(
-                    padding: EdgeInsets.all(15.r),
-                    decoration: BoxDecoration(
-                      color: AppColors.card,
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Status Row
-                        Row(
-                          children: [
-                            SvgPicture.asset(
-                              "assets/icons_assets/main_icons_assets/status_pulse_line.svg",
-                              width: 16.w,
-                              height: 16.h,
-                              fit: BoxFit.fill,
-                              colorFilter: ColorFilter.mode(AppColors.secondaryText, BlendMode.srcIn),
-                            ),
-                            SizedBox(width: 8.w),
-                            Text(
-                              isRTL ? "حالة الإشعار" : "Notification Status",
-                              style: StyleText.fontSize18Weight500.copyWith(
-                                color: AppColors.text,
-                              ),
-                            ),
-                            SizedBox(width: 8.w),
-                            // GATED 2/9/2026 — NotificationPermissions
-                            // .changeNotificationStatus.
-                            //
-                            // Shown but inert without the right, not hidden:
-                            // whether a notification is on or off is
-                            // information a reader needs even when they may
-                            // not change it. AbsorbPointer rather than
-                            // FlutterSwitch's own disabled flag so the
-                            // behaviour does not depend on the package
-                            // version.
-                            AbsorbPointer(
-                              absorbing: !_canChangeStatus,
-                              child: Opacity(
-                                opacity: _canChangeStatus ? 1.0 : 0.5,
-                                child: FlutterSwitch(
-                                  activeColor: AppColors.secondaryPrimary,
-                                  height: 22.sp,
-                                  width: 38.sp,
-                                  padding: 3.sp,
-                                  borderRadius: 20.sp,
-                                  toggleSize: 16.sp,
-                                  toggleColor: AppColors.white,
-                                  inactiveColor: AppColors.switchTrackOff.withOpacity(0.16),
-                                  value: isNotificationEnabled,
-                                  onToggle: (newValue) {
-                                    setState(() {
-                                      isNotificationEnabled = newValue;
-                                    });
-                                  },
-                                ),
-                              ),
-                            ),
-                            Spacer(),
-                            // GATED 2/9/2026 — Reset Default overwrites the
-                            // whole template (status, channels and copy), so
-                            // it needs every right Save needs. Hidden rather
-                            // than disabled: a button that cannot be pressed
-                            // is worse than no button.
-                            if (_canSave)
-                              customButton(
-                                title: isRTL ? "إعادة تعيين الافتراضي" : "Reset Default",
-                                function: _resetToDefault,
-                                color: AppColors.primary,
-                                radius: 4.r,
-                                width: 190.w,
-                                height: 30.h,
-                                textStyle: StyleText.fontSize14Weight500.copyWith(
-                                  color: AppColors.textButton,
-                                ),
-                              ),
-                          ],
+                  ? Center(child: CircleProgressMaster())
+                  : ScrollConfiguration(
+                      behavior: const ScrollBehavior().copyWith(
+                        scrollbars: false,
+                      ),
+                      child: SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(
+                          parent: BouncingScrollPhysics(),
                         ),
-
-                        SizedBox(height: 15.h),
-
-                        // Notification Type Dropdown
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Column(
                           children: [
-                            Padding(
-                              padding: EdgeInsets.only(bottom: 8.h),
-                              child: Text(
-                                isRTL ? "نوع الإشعار" : "Notification Type",
-                                style: StyleText.fontSize12Weight400.copyWith(
-                                  color: AppColors.secondaryText,
-                                ),
+                            // Status & Notification Type Container
+                            Container(
+                              padding: EdgeInsets.all(15.r),
+                              decoration: BoxDecoration(
+                                color: AppColors.card,
+                                borderRadius: BorderRadius.circular(8.r),
                               ),
-                            ),
-                            // Multi-select: Email and Push
-                            Column(
-                              children: ['email', 'push'].map((key) {
-                                final label = key == 'email'
-                                    ? (isRTL ? 'البريد الإلكتروني' : 'Email')
-                                    : (isRTL ? 'إشعار الهاتف' : 'Push Notification');
-                                // GATED 2/9/2026 — NotificationPermissions
-                                // .changeNotificationChannel. A null
-                                // `onChanged` is how Flutter renders a
-                                // checkbox as disabled, so the member still
-                                // sees WHICH channels this notification goes
-                                // out on without being able to move it.
-                                return CheckboxListTile(
-                                  dense: true,
-                                  contentPadding: EdgeInsets.zero,
-                                  title: Text(label, style: StyleText.fontSize12Weight400.copyWith(color: AppColors.text)),
-                                  value: selectedNotificationTypes.contains(key),
-                                  activeColor: AppColors.secondaryPrimary,
-                                  onChanged: !_canChangeChannel
-                                      ? null
-                                      : (checked) {
-                                          setState(() {
-                                            if (checked == true) {
-                                              selectedNotificationTypes.add(key);
-                                            } else {
-                                              selectedNotificationTypes.remove(key);
-                                            }
-                                          });
-                                        },
-                                );
-                              }).toList(),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  SizedBox(height: 15.h),
-
-                  // Form Fields Container
-                  Container(
-                    padding: EdgeInsets.all(15.r),
-                    decoration: BoxDecoration(
-                      color: AppColors.card,
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // GATED 2/9/2026 — the four copy fields below are
-                        // read-only unless `_canEditMessages`, which folds
-                        // `editNotification` together with the push/email
-                        // rights for the channels THIS notification uses. See
-                        // the getter for why the channel matters.
-                        //
-                        // `readOnly` rather than `enabled: false`: the text
-                        // stays selectable and legible, which is the point —
-                        // someone who may not rewrite the copy usually still
-                        // needs to read it.
-                        // Subject Fields
-                        CustomTextField(
-        label: "Subject",
-        hint: "Text Here",
-        maxLines: 1,
-        height: 36,
-        readOnly: !_canEditMessages,
-        textDirection: ui.TextDirection.ltr,
-        controller: subjectEn,
-        onChanged: (_) => setState(() {}),
-      ),
-
-                        SizedBox(height: 15.h),
-
-                        CustomTextField(
-        label: "عنوان",
-        hint: "اكتب هنا",
-        maxLines: 1,
-        height: 36,
-        readOnly: !_canEditMessages,
-        textDirection: ui.TextDirection.rtl,
-        controller: subjectAr,
-        onChanged: (_) => setState(() {}),
-      ),
-
-                        SizedBox(height: 15.h),
-
-                        // Helper text for variables
-                        Container(
-                          padding: EdgeInsets.all(8.r),
-                          decoration: BoxDecoration(
-                            color: AppColors.blue.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(4.r),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.info_outline,
-                                size: 16.sp,
-                                color: AppColors.blue,
-                              ),
-                              SizedBox(width: 8.w),
-                              Expanded(
-                                child: Text(
-                                  _getVariablesHintText(isRTL),
-                                  style: StyleText.fontSize12Weight400.copyWith(
-                                    color: AppColors.blue,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // Status Row — QA KP-TT-018 (9/10/2026): Reset
+                                  // Default moves to its own line when it does not fit
+                                  // beside the title (it overflowed on a phone).
+                                  NotificationStatusHeader(
+                                    icon: CustomSvgImage.natural(
+                                      assetPath:
+                                          "assets/icons_assets/main_icons_assets/ic_status.svg",
+                                      width: 16.w,
+                                      height: 16.h,
+                                      fit: BoxFit.fill,
+                                      colorFilter: ColorFilter.mode(
+                                        AppColors.secondaryText,
+                                        BlendMode.srcIn,
+                                      ),
+                                    ),
+                                    title: Text(
+                                      isRTL
+                                          ? "حالة الإشعار"
+                                          : "Notification Status",
+                                      style: StyleText.fontSize18Weight500
+                                          .copyWith(color: AppColors.text),
+                                    ),
+                                    toggle:
+                                        // GATED 2/9/2026 — NotificationPermissions
+                                        // .changeNotificationStatus.
+                                        //
+                                        // Shown but inert without the right, not hidden:
+                                        // whether a notification is on or off is
+                                        // information a reader needs even when they may
+                                        // not change it. AbsorbPointer rather than
+                                        // FlutterSwitch's own disabled flag so the
+                                        // behaviour does not depend on the package
+                                        // version.
+                                        AbsorbPointer(
+                                      absorbing: !_canChangeStatus,
+                                      child: Opacity(
+                                        opacity: _canChangeStatus ? 1.0 : 0.5,
+                                        child: FlutterSwitch(
+                                          activeColor:
+                                              AppColors.secondaryPrimary,
+                                          height: 22.sp,
+                                          width: 38.sp,
+                                          padding: 3.sp,
+                                          borderRadius: 20.sp,
+                                          toggleSize: 16.sp,
+                                          toggleColor: AppColors.white,
+                                          inactiveColor: AppColors
+                                              .switchTrackOff
+                                              .withValues(alpha: 0.16),
+                                          value: isNotificationEnabled,
+                                          onToggle: (newValue) {
+                                            setState(() {
+                                              isNotificationEnabled = newValue;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                    // GATED 2/9/2026 — Reset Default overwrites the
+                                    // whole template (status, channels and copy), so
+                                    // it needs every right Save needs. Hidden rather
+                                    // than disabled: a button that cannot be pressed
+                                    // is worse than no button.
+                                    trailing: !_canSave
+                                        ? null
+                                        : customButton(
+                                            title: isRTL
+                                                ? "إعادة تعيين الافتراضي"
+                                                : "Reset Default",
+                                            function: _resetToDefault,
+                                            color: AppColors.primary,
+                                            radius: 4.r,
+                                            width: 190.w,
+                                            height: 30.h,
+                                            textStyle: StyleText
+                                                .fontSize14Weight500
+                                                .copyWith(
+                                              color: AppColors.textButton,
+                                            ),
+                                          ),
                                   ),
-                                ),
+
+                                  SizedBox(height: 15.h),
+
+                                  // Notification Type Dropdown
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.only(bottom: 8.h),
+                                        child: Text(
+                                          isRTL
+                                              ? "نوع الإشعار"
+                                              : "Notification Type",
+                                          style: StyleText.fontSize12Weight400
+                                              .copyWith(
+                                            color: AppColors.secondaryText,
+                                          ),
+                                        ),
+                                      ),
+                                      // Multi-select: Email and Push
+                                      Column(
+                                        children: ['email', 'push'].map((key) {
+                                          final label = key == 'email'
+                                              ? (isRTL
+                                                  ? 'البريد الإلكتروني'
+                                                  : 'Email')
+                                              : (isRTL
+                                                  ? 'إشعار الهاتف'
+                                                  : 'Push Notification');
+                                          // GATED 2/9/2026 — NotificationPermissions
+                                          // .changeNotificationChannel. A null
+                                          // `onChanged` is how Flutter renders a
+                                          // checkbox as disabled, so the member still
+                                          // sees WHICH channels this notification goes
+                                          // out on without being able to move it.
+                                          return CheckboxListTile(
+                                            dense: true,
+                                            contentPadding: EdgeInsets.zero,
+                                            title: Text(
+                                              label,
+                                              style: StyleText
+                                                  .fontSize12Weight400
+                                                  .copyWith(
+                                                color: AppColors.text,
+                                              ),
+                                            ),
+                                            value: selectedNotificationTypes
+                                                .contains(key),
+                                            activeColor:
+                                                AppColors.secondaryPrimary,
+                                            onChanged: !_canChangeChannel
+                                                ? null
+                                                : (checked) {
+                                                    setState(() {
+                                                      if (checked == true) {
+                                                        selectedNotificationTypes
+                                                            .add(key);
+                                                      } else {
+                                                        selectedNotificationTypes
+                                                            .remove(key);
+                                                      }
+                                                    });
+                                                  },
+                                          );
+                                        }).toList(),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ),
-
-                        SizedBox(height: 15.h),
-
-                        // Body Field EN
-                        CustomTextField(
-        label: "Body",
-        hint: "Text Here",
-        maxLines: 7,
-        minLines: 7,
-        height: 150.h,
-        maxLength: 500,
-        showCharCount: true,
-        readOnly: !_canEditMessages,
-        textDirection: ui.TextDirection.ltr,
-        controller: bodyEnController,
-        onChanged: (_) => setState(() {}),
-      ),
-
-                        SizedBox(height: 15.h),
-
-                        // Body Field AR
-                        CustomTextField(
-        label: "نص الرسالة",
-        hint: "اكتب هنا",
-        maxLines: 7,
-        minLines: 7,
-        height: 150.h,
-        maxLength: 500,
-        showCharCount: true,
-        readOnly: !_canEditMessages,
-        textDirection: ui.TextDirection.rtl,
-        controller: bodyArController,
-        onChanged: (_) => setState(() {}),
-      ),
-
-                        SizedBox(height: 15.h),
-
-                        // Bottom Buttons Row
-                        Row(
-                          children: [
-                            customButton(
-                              title: S.of(context).preview,
-                              textStyle: StyleText.fontSize16Weight500.copyWith(
-                                color: lightMode ? AppColors.colorBlack : AppColors.white,
-                              ),
-                              function: () {
-                                _showPreviewDialog(context);
-                              },
-                              height: 38.h,
-                              width: 150.w,
-                              color: lightMode ? AppColors.grey : AppColors.darkGrey,
-                              radius: 8.r,
                             ),
-                            Spacer(),
-                            // GATED 2/9/2026 — Save writes status, channels
-                            // and copy together, so it is offered whenever the
-                            // member may change any one of the three. Preview
-                            // above stays ungated: it only renders what is
-                            // already on screen.
-                            if (_canSave)
-                              customButton(
-                                title: isSaving
-                                    ? (isRTL ? "جاري الحفظ..." : "Saving...")
-                                    : S.of(context).save,
-                                textStyle: StyleText.fontSize16Weight500.copyWith(
-                                  color: AppColors.textButton,
-                                ),
-                                function: () {
-                                  if (!isSaving) {
-                                    _saveTemplate();
-                                  }
-                                },
-                                height: 38.h,
-                                width: 150.w,
-                                color: AppColors.primary,
-                                radius: 8.r,
+
+                            SizedBox(height: 15.h),
+
+                            // Form Fields Container
+                            Container(
+                              padding: EdgeInsets.all(15.r),
+                              decoration: BoxDecoration(
+                                color: AppColors.card,
+                                borderRadius: BorderRadius.circular(8.r),
                               ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // GATED 2/9/2026 — the four copy fields below are
+                                  // read-only unless `_canEditMessages`, which folds
+                                  // `editNotification` together with the push/email
+                                  // rights for the channels THIS notification uses. See
+                                  // the getter for why the channel matters.
+                                  //
+                                  // `readOnly` rather than `enabled: false`: the text
+                                  // stays selectable and legible, which is the point —
+                                  // someone who may not rewrite the copy usually still
+                                  // needs to read it.
+                                  // Subject Fields
+                                  CustomTextField(
+                                    label: "Subject",
+                                    hint: "Text Here",
+                                    maxLines: 1,
+                                    height: 36,
+                                    readOnly: !_canEditMessages,
+                                    textDirection: TextDirection.ltr,
+                                    controller: subjectEn,
+                                    onChanged: (_) => setState(() {}),
+                                  ),
+
+                                  SizedBox(height: 15.h),
+
+                                  CustomTextField(
+                                    label: "عنوان",
+                                    hint: "اكتب هنا",
+                                    maxLines: 1,
+                                    height: 36,
+                                    readOnly: !_canEditMessages,
+                                    textDirection: TextDirection.rtl,
+                                    controller: subjectAr,
+                                    onChanged: (_) => setState(() {}),
+                                  ),
+
+                                  SizedBox(height: 15.h),
+
+                                  // Helper text for variables
+                                  Container(
+                                    padding: EdgeInsets.all(8.r),
+                                    decoration: BoxDecoration(
+                                      color:
+                                          AppColors.blue.withValues(alpha: 0.1),
+                                      borderRadius: BorderRadius.circular(4.r),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.info_outline,
+                                          size: 16.sp,
+                                          color: AppColors.blue,
+                                        ),
+                                        SizedBox(width: 8.w),
+                                        Expanded(
+                                          child: Text(
+                                            _getVariablesHintText(isRTL),
+                                            style: StyleText.fontSize12Weight400
+                                                .copyWith(
+                                              color: AppColors.blue,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+
+                                  SizedBox(height: 15.h),
+
+                                  // Body Field EN
+                                  CustomTextField(
+                                    label: "Body",
+                                    hint: "Text Here",
+                                    maxLines: 7,
+                                    minLines: 7,
+                                    height: 150.h,
+                                    maxLength: 500,
+                                    showCharCount: true,
+                                    readOnly: !_canEditMessages,
+                                    textDirection: TextDirection.ltr,
+                                    controller: bodyEnController,
+                                    onChanged: (_) => setState(() {}),
+                                  ),
+
+                                  SizedBox(height: 15.h),
+
+                                  // Body Field AR
+                                  CustomTextField(
+                                    label: "نص الرسالة",
+                                    hint: "اكتب هنا",
+                                    maxLines: 7,
+                                    minLines: 7,
+                                    height: 150.h,
+                                    maxLength: 500,
+                                    showCharCount: true,
+                                    readOnly: !_canEditMessages,
+                                    textDirection: TextDirection.rtl,
+                                    controller: bodyArController,
+                                    onChanged: (_) => setState(() {}),
+                                  ),
+
+                                  SizedBox(height: 15.h),
+
+                                  // Bottom Buttons Row — QA KP-TT-018 (9/10/2026):
+                                  // always fits (spread → shared → stacked).
+                                  NotificationEditActions(
+                                    start: <NotificationEditAction>[
+                                      NotificationEditAction(
+                                        key: const ValueKey<String>(
+                                          'notificationEditPagePreview',
+                                        ),
+                                        title: S.of(context).preview,
+                                        textStyle: StyleText.fontSize16Weight500
+                                            .copyWith(
+                                          color: AppColors.text,
+                                        ),
+                                        onTap: () {
+                                          _showPreviewDialog(context);
+                                        },
+                                        color: AppColors.darkGrey,
+                                      ),
+                                    ],
+                                    // GATED 2/9/2026 — Save writes status, channels
+                                    // and copy together, so it is offered whenever the
+                                    // member may change any one of the three. Preview
+                                    // above stays ungated: it only renders what is
+                                    // already on screen.
+                                    end: !_canSave
+                                        ? null
+                                        : NotificationEditAction(
+                                            key: const ValueKey<String>(
+                                              'notificationEditPageSave',
+                                            ),
+                                            title: isSaving
+                                                ? (isRTL
+                                                    ? "جاري الحفظ..."
+                                                    : "Saving...")
+                                                : S.of(context).save,
+                                            textStyle: StyleText
+                                                .fontSize16Weight500
+                                                .copyWith(
+                                              color: AppColors.textButton,
+                                            ),
+                                            onTap: () {
+                                              if (!isSaving) {
+                                                _saveTemplate();
+                                              }
+                                            },
+                                            color: AppColors.primary,
+                                          ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-              ),
             ),
           ],
         ),

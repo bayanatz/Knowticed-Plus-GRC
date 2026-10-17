@@ -8,14 +8,16 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../../../core/custom/32-custom_svg.dart';
-import '../../../../../../../core/custom/57-custom_dialog_manager.dart';
-import '../../../../../../../core/custom/58-default_switch_button.dart';
-import '../../../../../../../core/theme/app_colors.dart';
-import '../../../../../../../core/theme/app_theme.dart';
-import '../../../../domain/entity/new_message_content_entity.dart';
-import '../../../controller/main_controllers/master_chat_cubit.dart';
-import 'chat_dialog_widgets.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
+import 'package:grc_module/core/custom/dialogs/custom_dialog_manager.dart';
+import 'package:grc_module/core/custom/inputs/default_switch_button.dart';
+import 'package:grc_module/core/theme/app_colors.dart';
+import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:grc_module/features/messaging/m1_chat/domain/entity/new_message_content_entity.dart';
+import 'package:grc_module/features/messaging/m1_chat/presentation/controller/main_controllers/master_chat_cubit.dart';
+import 'package:grc_module/features/messaging/m1_chat/presentation/ui/widgets/dialogs/chat_dialog_widgets.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
 const int _maxOptions = 10;
 
@@ -142,7 +144,7 @@ class _PollDialogState extends State<_PollDialog> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             ChatDialogBadgeHeader(
-              icon: 'assets/icons_assets/messaging_assets/poll_bars.svg',
+              icon: 'assets/icons_assets/messaging_assets/ic_comms_poll.svg',
               title: isAr ? 'استطلاع' : 'Poll',
             ),
             SizedBox(height: 16.h),
@@ -169,7 +171,8 @@ class _PollDialogState extends State<_PollDialog> {
                     if (_options.length > 2)
                       IconButton(
                         visualDensity: VisualDensity.compact,
-                        onPressed: () => _removeOption(i),
+                        onPressed: withHaptic(
+                            () => _removeOption(i), HapticLevel.high),
                         icon: Icon(Icons.close,
                             size: 16.r, color: AppColors.secondaryBlack),
                       ),
@@ -180,6 +183,7 @@ class _PollDialogState extends State<_PollDialog> {
               Align(
                 alignment: AlignmentDirectional.centerStart,
                 child: InkWell(
+                  onTapDown: hapticDown(_addOption, HapticLevel.medium),
                   onTap: _addOption,
                   borderRadius: BorderRadius.circular(4.r),
                   child: Container(
@@ -194,16 +198,16 @@ class _PollDialogState extends State<_PollDialog> {
                       children: [
                         CustomSvgImage(
                           assetPath:
-                              'assets/icons_assets/main_icons_assets/plus.svg',
+                              'assets/icons_assets/main_icons_assets/ic_action_plus.svg',
                           width: 12.r,
                           height: 12.r,
                           fit: BoxFit.contain,
-                          color: AppColors.field,
+                          color: AppColors.card,
                         ),
                         SizedBox(width: 4.w),
                         Text(isAr ? 'خيار' : 'Option',
                             style: StyleText.fontSize12Weight400
-                                .copyWith(color: AppColors.field)),
+                                .copyWith(color: AppColors.card)),
                       ],
                     ),
                   ),

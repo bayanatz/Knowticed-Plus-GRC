@@ -6,16 +6,15 @@
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
 /// Updated: 25/8/2026 - Sort menu now lists SortOptionRole.selectable.
+library;
 
 import 'package:grc_module/core/constants/app_assets.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:grc_module/core/custom/1-custom_dropdown.dart';
+import 'package:grc_module/core/custom/dropdowns/custom_dropdown.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/features/roles/r3_user_access/domain/enums/sort_option_role.dart';
@@ -68,22 +67,20 @@ class SortDropdownWidgetRole extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: isPortrait ? 38.h : 100.sp,
-
       child: CustomDropdown<SortOptionRole>(
         height: 38,
-        triggerPadding: EdgeInsets.symmetric(vertical: 14.sp,horizontal: 8.sp),
+        triggerPadding: EdgeInsets.symmetric(vertical: 14.sp, horizontal: 8.sp),
         value: selectedSortOptionRole,
         // Keep the "Sort" hint on the trigger even after a choice is made — the
         // selected option must never replace the label. The active state is
         // shown only by the button style (fill + icon), not by the text.
         alwaysShowHint: true,
-        fillColor: selectedSortOptionRole != null
-            ? AppColors.primary
-            : AppColors.field,
+        fillColor:
+            selectedSortOptionRole != null ? AppColors.primary : AppColors.card,
         borderRadius: BorderRadius.circular(8.r),
         hint: S.of(context).Sort,
         hintStyle: StyleText.fontSize16Weight500.copyWith(
-          color: AppColors.secondaryText.withOpacity(.5),
+          color: AppColors.secondaryText.withValues(alpha: .5),
           fontWeight: selectedSortOptionRole != null
               ? FontWeight.w700
               : FontWeight.w500,

@@ -17,6 +17,7 @@
 /// spot, which is the point.
 ///
 /// Nothing here touches the wire values — see the note on [FeedbackKind].
+library;
 
 import 'package:flutter/material.dart';
 
@@ -45,11 +46,11 @@ abstract final class FeedbackDisplay {
   static String kindIcon(FeedbackKind kind) {
     switch (kind) {
       case FeedbackKind.bug:
-        return 'assets/icons_assets/main_icons_assets/warning_exclamation_circle.svg';
+        return 'assets/icons_assets/main_icons_assets/ic_warning_exclamation_circle.svg';
       case FeedbackKind.comment:
-        return 'assets/icons_assets/main_icons_assets/edit_pencil_square.svg';
+        return 'assets/icons_assets/main_icons_assets/ic_action_edit.svg';
       case FeedbackKind.featureRequest:
-        return 'assets/icons_assets/main_icons_assets/vectors_add.svg';
+        return 'assets/icons_assets/main_icons_assets/ic_action_plus.svg';
     }
   }
 
@@ -294,17 +295,17 @@ abstract final class FeedbackDisplay {
   static String fileIcon(String extension) {
     switch (extension.toLowerCase().replaceAll('.', '')) {
       case 'pdf':
-        return 'assets/icons_assets/main_icons_assets/svg_pdf_icon.svg';
+        return 'assets/icons_assets/main_icons_assets/ic_file_pdf.svg';
       case 'ppt':
       case 'pptx':
-        return 'assets/icons_assets/main_icons_assets/ppt_attachment_icon.svg';
+        return 'assets/icons_assets/main_icons_assets/ic_file_powerpoint.svg';
       case 'doc':
       case 'docx':
-        return 'assets/icons_assets/main_icons_assets/doc_icon.svg';
+        return 'assets/icons_assets/main_icons_assets/ic_file_doc.svg';
       case 'png':
       case 'jpg':
       case 'jpeg':
-        return 'assets/icons_assets/main_icons_assets/svg_image_icon.svg';
+        return 'assets/icons_assets/main_icons_assets/ic_media_image_placeholder.svg';
       case 'mp4':
       case 'avi':
       case 'mov':
@@ -312,14 +313,14 @@ abstract final class FeedbackDisplay {
       case 'flv':
       case 'mkv':
       case 'webm':
-        return 'assets/icons_assets/main_icons_assets/knowledgeVideo.svg';
+        return 'assets/icons_assets/main_icons_assets/ic_file_video.svg';
       case 'xlsx':
       case 'xls':
       case 'xlsm':
       case 'csv':
-        return 'assets/icons_assets/main_icons_assets/excell.svg';
+        return 'assets/icons_assets/main_icons_assets/ic_file_excel_grid.svg';
       default:
-        return 'assets/icons_assets/main_icons_assets/svg_image_icon.svg';
+        return 'assets/icons_assets/main_icons_assets/ic_media_image_placeholder.svg';
     }
   }
 

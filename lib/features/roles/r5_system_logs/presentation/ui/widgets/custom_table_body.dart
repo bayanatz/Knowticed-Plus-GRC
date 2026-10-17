@@ -2,9 +2,9 @@
 ///
 /// ************************ FILE INFO ******************** ///
 /// FILE NAME: custom_table_body.dart
-/// PURPOSE: this file contains the custom table body.
+/// Description: this file contains the custom table body.
 /// Author: Amr Mesbah
-/// Created At: 2/2/2025
+/// Created at: 2/2/2025
 /// Updated: 30/8/2026 - Now the read-mode half of `UserText`
 ///          (r4_active_directory/.../user_data_widgets/text_widget.dart),
 ///          so a system logs cell and an Active Directory cell are the same
@@ -15,7 +15,7 @@
 ///              which is why the logs table had huge columns and needed a
 ///              hand-guessed scroll width. `DataTable` measures columns now.
 ///            * the text style is `StyleText.fontSize16Weight600`
-///              instead of `AppFontStyle.cairoRegularStyle` at a
+///              instead of `StyleText.fontSize16Weight400` at a
 ///              fraction-of-screen size.
 ///            * alignment is `centerStart`, not centred, and an empty value
 ///              renders as `-` rather than a blank cell.
@@ -24,6 +24,7 @@
 ///          46.h either way.
 /// Updated: 30/8/2026 - Values are centred under their heading and set at
 ///          12.sp (headings are 14.sp), replacing start-aligned 16.sp text.
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -42,37 +43,34 @@ class CustomTableBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool lightMode = Theme.of(context).brightness == Brightness.light;
-
     return AnimatedSizeWrap(
       // Tables animate their size (rows added / removed / filtered).
       child: SizedBox(
-      height: 38.h,
-      // CHANGED 30/8/2026: centred, and 12.sp.
-      //
-      // `Align` fills the width `DataTable` hands the cell (its width factor is
-      // left null on purpose), so `Alignment.center` sets the value under the
-      // middle of its heading, which is centred too now. `Alignment`, not
-      // `AlignmentDirectional`: dead centre is the same point in both text
-      // directions, and the direction-aware variant would only suggest the
-      // sides matter here.
-      child: Align(
-        alignment: Alignment.center,
-        child: Text(
-          text.isEmpty ? '-' : text,
-          // 12.sp against the heading's 14.sp. Was
-          // `font16BlackSemiBoldCairo` — a value two steps LARGER than the
-          // heading above it.
-          style: StyleText.fontSize12Weight600.copyWith(
-            color: textColor ??
-                (lightMode ? AppColors.black : AppColors.white),
+        height: 38.h,
+        // CHANGED 30/8/2026: centred, and 12.sp.
+        //
+        // `Align` fills the width `DataTable` hands the cell (its width factor is
+        // left null on purpose), so `Alignment.center` sets the value under the
+        // middle of its heading, which is centred too now. `Alignment`, not
+        // `AlignmentDirectional`: dead centre is the same point in both text
+        // directions, and the direction-aware variant would only suggest the
+        // sides matter here.
+        child: Align(
+          alignment: Alignment.center,
+          child: Text(
+            text.isEmpty ? '-' : text,
+            // 12.sp against the heading's 14.sp. Was
+            // `font16BlackSemiBoldCairo` — a value two steps LARGER than the
+            // heading above it.
+            style: StyleText.fontSize12Weight600.copyWith(
+              color: textColor ?? AppColors.text,
+            ),
+            maxLines: 1,
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
           ),
-          maxLines: 1,
-          textAlign: TextAlign.center,
-          overflow: TextOverflow.ellipsis,
         ),
       ),
-    ),
     );
   }
 }

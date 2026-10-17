@@ -4,6 +4,7 @@
 /// Purpose: Community mobile layout — messaging Connections sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+library;
 
 // Date: 16/9/2024
 // By: Youssef Ashraf
@@ -15,13 +16,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grc_module/features/messaging/m4_messaging_home/domain/enums/sort_enum.dart';
 import 'package:grc_module/features/messaging/m4_messaging_home/presentation/controller/messaging_home_controller.dart';
 
-import 'package:grc_module/core/custom/35-custom_search_widget_custom.dart';
+import 'package:grc_module/core/custom/inputs/custom_search_widget_custom.dart';
+import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/features/messaging/m2_connections/presentation/ui/widgets/layouts/widgets/tablet_chats_list.dart';
-import 'package:grc_module/core/constants/message_module/app_assets.dart';
-import 'package:grc_module/core/helper/main_helper/spacing_helper.dart';
+import 'package:grc_module/features/messaging/helpers/constants/messaging_assets.dart';
+import 'package:grc_module/features/messaging/helpers/spacing_helper.dart';
 
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/custom/47-custom_sort_button.dart';
+import 'package:grc_module/core/custom/buttons/custom_sort_button.dart';
 
 class CommunityMobileLayout extends StatelessWidget {
   const CommunityMobileLayout({super.key});
@@ -40,7 +41,6 @@ class CommunityMobileLayout extends StatelessWidget {
                 Row(
                   spacing: 10.sp,
                   children: [
-
                     // search
                     AppSearchTextField(
                       controller: controller.searchController,
@@ -48,21 +48,19 @@ class CommunityMobileLayout extends StatelessWidget {
                         controller.filterAllChats();
                       },
                     ),
-                    SizedBox(
-                      width: 36.h,
-                      height: 36,
-                      child: CustomSortButton<SortEnum>(
-                        value: controller.sort,
-                        items: SortEnum.values,
-                        labelBuilder: (sort) => sort.label(context),
-                        title: 'Sort',
-                        showTitle: false,
-                        svgPath: AppAssets.sort,
-                        width: double.infinity,
-                        height: 36,
-                        yOffset: 94,
-                        onChanged: controller.sortChats,
-                      ),
+                    // CHANGED 17/10/2026 (Moataz: "the sort … has to be a
+                    // perfect square … aligned by the search bar … the
+                    // selection is far away"): the To-Do sort as is — the
+                    // custom's own 38 x 38 square and menu right under it.
+                    // The 36.h x 36 box and the 94 drop are gone.
+                    CustomSortButton<SortEnum>(
+                      value: controller.sort,
+                      items: SortEnum.values,
+                      labelBuilder: (sort) => sort.label(context),
+                      title: S.of(context).sort,
+                      showTitle: false,
+                      svgPath: AppAssets.sort,
+                      onChanged: controller.sortChats,
                     ),
                   ],
                 ),

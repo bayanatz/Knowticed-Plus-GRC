@@ -47,8 +47,8 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:grc_module/core/helper/main_helper/localized_number.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
+import 'package:grc_module/core/helper/localized_number.dart';
+import 'package:grc_module/core/helper/access/modules_enum.dart';
 import 'package:grc_module/features/home/h1_home_page/data/models/home_component_model.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/controller/roles_home_stats_cubit.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/controller/roles_home_stats_state.dart';
@@ -77,8 +77,8 @@ class _RolesStatCard extends StatelessWidget {
   /// while loading — [_RolesStatCard] passes the placeholder through
   /// [countOf] rather than swapping the whole card for a spinner, so the
   /// layout does not jump when the figures land.
-  final List<HomeStatTile> Function(BuildContext context, String Function(int) format)
-      tiles;
+  final List<HomeStatTile> Function(
+      BuildContext context, String Function(int) format) tiles;
 
   const _RolesStatCard({
     required this.title,
@@ -113,8 +113,6 @@ class _RolesStatCard extends StatelessWidget {
     );
   }
 }
-
-
 
 /// Figma 7488:10062 — "Role Management", two grid columns.
 class RoleManagementWidget extends StatelessWidget {

@@ -26,12 +26,13 @@
 /// GetX-shaped because `login_controller.dart:954` calls `getAllRequests` during
 /// the login bootstrap. Converting them means touching onboarding, which is
 /// outside this feature's scope — the migration is staged, not finished.
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
 import 'package:grc_module/features/settings/se6_requests/data/models/request_model.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/controller/employee_controller.dart';
+import 'package:grc_module/features/settings/presentation/controller/employee_controller.dart';
 import 'package:grc_module/core/constants/firebase_collections.dart';
 
 class RequestController extends GetxController with StateMixin {
@@ -47,7 +48,8 @@ class RequestController extends GetxController with StateMixin {
       String userEmail, String section, bool isPending) async {
     // Update the controller state.
 
-    final CollectionReference requestsCollection = db.collection(FirebaseCollections.requests);
+    final CollectionReference requestsCollection =
+        db.collection(FirebaseCollections.requests);
 
     // Fetch all documents from the 'User_Requests' sub-collection for the specified user.
     QuerySnapshot querySnapshot = isPending
@@ -93,14 +95,14 @@ class RequestController extends GetxController with StateMixin {
     // list has necessarily loaded, and the force-unwrap threw there.
     for (final employee in addEmployeeController.allEmployees ?? []) {
       for (int i = 0; i < sections.length; i++) {
-        List<RequestsModel> requests = await getuserRequests(
-            employee.email.last!, sections[i], isPending);
+        List<RequestsModel> requests =
+            await getuserRequests(employee.email.last!, sections[i], isPending);
         if (requests.isNotEmpty) {
           isPending
-              ? pendingRequests[
-                  '${employee.email.last!}_${sections[i]}'] = requests
-              : reviewRequests[
-                  '${employee.email.last!}_${sections[i]}'] = requests;
+              ? pendingRequests['${employee.email.last!}_${sections[i]}'] =
+                  requests
+              : reviewRequests['${employee.email.last!}_${sections[i]}'] =
+                  requests;
         }
       }
 

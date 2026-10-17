@@ -25,7 +25,10 @@
 ///
 /// The `arDocumentUrl` / `engDocumentUrl` fields are still in Firestore; this
 /// page simply no longer offers them as downloads.
+library;
 
+import 'package:grc_module/core/extensions/context_extensions.dart'
+    show kpIsPhoneLayout;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
@@ -34,12 +37,11 @@ import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:grc_module/core/constants/firebase_collections.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/custom/50-custom_side_frame_master.dart';
-import 'package:grc_module/core/custom/5-custom_button.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
+import 'package:grc_module/core/custom/navigation/custom_side_frame_master.dart';
+import 'package:grc_module/core/custom/buttons/custom_button.dart';
+import 'package:grc_module/core/custom/feedback/circle_progress.dart';
+import 'package:grc_module/core/helper/format_title.dart';
 import 'package:grc_module/core/network/api_constants.dart'
     hide FirebaseCollections;
 import 'package:grc_module/core/theme/app_colors.dart';
@@ -54,7 +56,8 @@ class AboutThisAppScreen extends StatefulWidget {
 }
 
 class _AboutThisAppScreenState extends State<AboutThisAppScreen> {
-  static const String _icon = 'assets/icons_assets/main_icons_assets/about.svg';
+  static const String _icon =
+      'assets/icons_assets/settings_assets/ic_module_about.svg';
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -173,7 +176,7 @@ class _AboutThisAppScreenState extends State<AboutThisAppScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isTablet = MediaQuery.of(context).size.shortestSide > 600;
+    final bool isTablet = !kpIsPhoneLayout(context);
 
     if (!isTablet) {
       // Phones push this as its own route, so it owns a Scaffold — the same
@@ -226,8 +229,7 @@ class _AboutThisAppScreenState extends State<AboutThisAppScreen> {
   /// page scrolls, and being a little tall is impossible to hit.
   double _phoneContentHeight(BuildContext context) {
     final MediaQueryData mq = MediaQuery.of(context);
-    final double usable =
-        mq.size.height - mq.padding.top - mq.padding.bottom;
+    final double usable = mq.size.height - mq.padding.top - mq.padding.bottom;
     return usable * 0.72;
   }
 
@@ -255,10 +257,10 @@ class _AboutThisAppScreenState extends State<AboutThisAppScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 // Same asset choice as privacy_Statement.dart's pane.
-                SvgPicture.asset(
-                  !lightMode
-                      ? 'assets/icons_assets/main_icons_assets/light_app_icon.svg'
-                      : 'assets/icons_assets/main_icons_assets/logo_app.svg',
+                CustomSvgImage.natural(
+                  assetPath: !lightMode
+                      ? 'assets/icons_assets/main_icons_assets/logo_knowticed_badge_light.svg'
+                      : 'assets/icons_assets/main_icons_assets/logo_knowticed.svg',
                   width: 50.w,
                   height: 50.h,
                   fit: BoxFit.fill,

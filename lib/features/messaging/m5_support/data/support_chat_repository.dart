@@ -23,6 +23,7 @@
 /// {emailKey} = the user's email trimmed and lower-cased — the messaging
 /// module identifies users by email. The admin dashboard reads the same
 /// paths (knowticed_admin › messages/data/feedback_chat_source.dart).
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -61,7 +62,8 @@ class SupportMessage {
 }
 
 class SupportChatSummary {
-  const SupportChatSummary({this.lastText = '', this.lastTime, this.unread = 0});
+  const SupportChatSummary(
+      {this.lastText = '', this.lastTime, this.unread = 0});
 
   final String lastText;
   final DateTime? lastTime;

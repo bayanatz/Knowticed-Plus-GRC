@@ -6,6 +6,7 @@
 ///          to an abstraction instead of the concrete data-layer class.
 /// Author: Amr Mesbah
 /// Created at: 11/8/2026
+library;
 
 import 'package:dartz/dartz.dart';
 

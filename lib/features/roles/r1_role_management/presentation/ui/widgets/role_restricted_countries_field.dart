@@ -25,8 +25,8 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:grc_module/core/custom/49-custom_view_multi_select_dropdown.dart';
-import 'package:grc_module/core/helper/main_helper/countries.dart';
+import 'package:grc_module/core/custom/dropdowns/custom_view_multi_select_dropdown.dart';
+import 'package:grc_module/core/constants/countries_list.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
@@ -64,7 +64,7 @@ class RoleRestrictedCountriesField extends StatelessWidget {
                 .copyWith(color: AppColors.secondaryBlack),
           ),
           SizedBox(height: 8.sp),
-          AppMultiSelectDropdownMaster(
+          CustomMultiSelectField(
             width: double.infinity,
             items:
                 options.map((_CountryOption option) => option.label).toList(),

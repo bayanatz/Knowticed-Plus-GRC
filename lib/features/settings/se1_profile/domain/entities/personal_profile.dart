@@ -13,6 +13,7 @@
 /// receive this entity: every field is a plain, already-resolved `String`, and
 /// an unloaded employee is a well-defined empty profile rather than a null
 /// dereference.
+library;
 
 import 'package:flutter/foundation.dart';
 

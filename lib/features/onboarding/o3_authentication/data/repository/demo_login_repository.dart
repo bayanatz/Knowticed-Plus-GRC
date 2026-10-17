@@ -2,8 +2,8 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: demo_login_repository.dart
-/// Purpose: Validates a demo login and the account's access window.
-/// Author: Knowticed Plus team
+/// Description: Validates a demo login and the account's access window.
+/// Author: Amr Mesbah
 /// Created at: 2026
 /// Updated: 12/8/2026 - Round 3 removed the `?? defaultPassword` acceptance and the `84763782`
 ///          authorization backdoor; this pass adds the header.
@@ -12,12 +12,15 @@
 ///          Password column of User Access). The company-wide temporary
 ///          password is accepted only for an account that has no default of its
 ///          own, and for the demo admin.
+/// Updated: 9/10/2026 - DEBUG-ONLY `debugListTestEmployees` /
+///          `debugSignInAsTestEmployee` for the "Switch to test employee"
+///          sign-in: the normal checks without the password comparison and
+///          without the lockout counter; refused outside a debug build.
+library;
 
 /// ************************* FILE INFO ************************* ///
 /// File Name: demo_login_repository.dart
-/// Purpose: Contains the repository for demo login feature.
-/// Author: Amr Mesbah
-/// Created At: 4/1/2025
+/// Description: Contains the repository for demo login feature.
 /// Updated: Migrated to NewEmployeeModelHistory model
 /// ✅ UPDATED: Added case-insensitive email handling
 
@@ -26,22 +29,31 @@ import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:grc_module/core/network/api_constants.dart';
-import 'package:grc_module/features/onboarding/o3_authentication/data/data_source/remote_data_source/demo_remote_data_source.dart' hide Right;
+import 'package:grc_module/features/onboarding/o3_authentication/data/data_source/remote_data_source/demo_remote_data_source.dart';
 import 'package:grc_module/features/onboarding/o3_authentication/data/models/demo_company_model.dart';
 import 'package:grc_module/features/onboarding/o3_authentication/data/models/demo_user_account_overview.dart';
 import 'package:grc_module/features/onboarding/o3_authentication/data/repository/demo_initialization_repository.dart';
 import 'package:grc_module/features/onboarding/o3_authentication/domain/enums/success_authentication_type.dart';
-import 'package:grc_module/features/onboarding/o3_authentication/data/constants.dart';
+import 'package:grc_module/features/onboarding/helpers/constants/auth_constants.dart';
 import 'package:grc_module/features/roles/r4_active_directory/data/models/employees_model/new_employee_model.dart';
-import 'package:grc_module/features/roles/r1_role_management/data/models/role_access_model.dart';
 
 import 'package:grc_module/features/onboarding/o3_authentication/domain/enums/approval_status.dart';
 import 'package:grc_module/core/network/failure_model.dart';
 import 'package:grc_module/features/onboarding/o3_authentication/domain/enums/employee_status_enum.dart';
 import 'package:grc_module/features/onboarding/o3_authentication/domain/enums/failure_authentication_type.dart';
+// ADDED 9/10/2026 — DEBUG-ONLY "Switch to test employee".
+import 'package:grc_module/features/onboarding/o3_authentication/data/models/debug_test_employee.dart';
+import 'package:grc_module/features/onboarding/o3_authentication/data/utils/debug_test_employee_switch.dart';
+import 'package:grc_module/features/roles/r4_active_directory/data/models/department_model.dart';
 
 class DemoLoginRepository {
-  DemoRemoteDataSource demoRemoteDataSource = DemoRemoteDataSource();
+  /// ADDED 9/10/2026 (for the DEBUG-ONLY test-employee switch tests): [remote]
+  /// lets a unit test inject a fake data source. Every production call site
+  /// passes nothing and gets the real one, exactly as before.
+  DemoLoginRepository({DemoRemoteDataSource? remote})
+      : demoRemoteDataSource = remote ?? DemoRemoteDataSource();
+
+  DemoRemoteDataSource demoRemoteDataSource;
 
   /// Persists a new password chosen on the first-login reset screen.
   ///
@@ -101,25 +113,27 @@ class DemoLoginRepository {
     }
   }
 
-
   /// function name: loginWithEmailAndPassword
   /// function purpose: login with email and password and check if the account is active or inactive.
   /// ✅ UPDATED: Added case-insensitive email handling
-  /// return type: Future<Either<Failure, dynamic>> - Either of Failure class contains error message or data.
-  loginWithEmailAndPassword({
+  /// return type: Future`<Either<Failure, dynamic>`> - Either of Failure class contains error message or data.
+  Future<Either<Failure, dynamic>> loginWithEmailAndPassword({
     required String email,
-    required String password
-  }) async
-  {
+    required String password,
+  }) async {
     // ✅ Normalize email to lowercase for case-insensitive comparison
     String normalizedEmail = email.trim().toLowerCase();
 
-    Either<Failure, dynamic> result = await _checkIfAccountExists(email: normalizedEmail);
+    Either<Failure, dynamic> result = await _checkIfAccountExists(
+      email: normalizedEmail,
+    );
     if (result.isLeft()) return result;
 
     DemoUserAccountOverview accountOverview = result.getOrElse(() => null);
 
-    result = await _getValidCompanyDemoRequest(companyId: accountOverview.companyId);
+    result = await _getValidCompanyDemoRequest(
+      companyId: accountOverview.companyId,
+    );
     if (result.isLeft()) return result;
 
     DemoCompanyModel companyModel = result.getOrElse(() => null);
@@ -131,9 +145,10 @@ class DemoLoginRepository {
 
     if (accountOverview.isActivated) {
       result = await validateActiveAccount(
-          companyModel: companyModel,
-          accountOverview: accountOverview,
-          password: password);
+        companyModel: companyModel,
+        accountOverview: accountOverview,
+        password: password,
+      );
       if (result.isLeft()) return result;
 
       NewEmployeeModelHistory employeeModel = result.getOrElse(() => null);
@@ -145,9 +160,10 @@ class DemoLoginRepository {
       result = Right(successAuthenticationData);
     } else {
       result = await validateInactiveAccount(
-          companyModel: companyModel,
-          accountOverview: accountOverview,
-          password: password);
+        companyModel: companyModel,
+        accountOverview: accountOverview,
+        password: password,
+      );
       if (result.isLeft()) return result;
 
       successAuthenticationData[AuthenticationConstants.successTypeKey] =
@@ -162,11 +178,11 @@ class DemoLoginRepository {
   /// function name: _checkIfAccountExists
   /// function purpose: check if the account exists in the database.
   /// ✅ UPDATED: Email is already normalized by caller
-  /// return type: Future<Either<Failure, dynamic>> - Either of Failure class contains error message or data.
+  /// return type: Future`<Either<Failure, dynamic>`> - Either of Failure class contains error message or data.
   /// parameters: email - String - the email of the account (already normalized to lowercase).
-  _checkIfAccountExists({required String email}) async {
+  Future<Either<Failure, dynamic>> _checkIfAccountExists({required String email}) async {
     Either<Failure, dynamic> result =
-    await demoRemoteDataSource.getDemoAccountOverview(email: email);
+        await demoRemoteDataSource.getDemoAccountOverview(email: email);
 
     if (result.isLeft()) return result;
 
@@ -175,11 +191,15 @@ class DemoLoginRepository {
     // ✅ Specific error for email not found
     if (accountOverview == null) {
       return Left(
-          FirebaseFailure(FailureAuthenticationType.emailNotFound.dialogBoxMessage));
+        FirebaseFailure(
+          FailureAuthenticationType.emailNotFound.dialogBoxMessage,
+        ),
+      );
     }
 
-    DemoUserAccountOverview demo =
-    DemoUserAccountOverview.fromMap(accountOverview);
+    DemoUserAccountOverview demo = DemoUserAccountOverview.fromMap(
+      accountOverview,
+    );
     ApiConstants.baseUri = "Demo/${demo.companyId}";
 
     return result = Right(DemoUserAccountOverview.fromMap(accountOverview));
@@ -190,10 +210,10 @@ class DemoLoginRepository {
   /// parameters:
   ///            companyId - String - the name of the company.
   /// return type:
-  ///             Future<Either<Failure, dynamic>> - Either of Failure class contains error message or data.
-  _getValidCompanyDemoRequest({required String companyId}) async {
+  ///             Future`<Either<Failure, dynamic>`> - Either of Failure class contains error message or data.
+  Future<Either<Failure, dynamic>> _getValidCompanyDemoRequest({required String companyId}) async {
     Either<Failure, dynamic> result =
-    await demoRemoteDataSource.getCompanyDemoRequest(companyId: companyId);
+        await demoRemoteDataSource.getCompanyDemoRequest(companyId: companyId);
 
     if (result.isLeft()) return result;
 
@@ -207,13 +227,18 @@ class DemoLoginRepository {
     Map<String, dynamic>? demoRequest = result.getOrElse(() => null);
 
     if (demoRequest == null || demoRequest.isEmpty) {
-      return Left(FirebaseFailure(
-          FailureAuthenticationType.notFoundInCompanyDatabase.dialogBoxMessage));
+      return Left(
+        FirebaseFailure(
+          FailureAuthenticationType.notFoundInCompanyDatabase.dialogBoxMessage,
+        ),
+      );
     }
 
     DemoCompanyModel companyModel = DemoCompanyModel.fromMap(demoRequest);
 
-    result = await _checkIfDemoIsApprovedAndInDuration(companyModel: companyModel);
+    result = _checkIfDemoIsApprovedAndInDuration(
+      companyModel: companyModel,
+    );
     if (result.isLeft()) return result;
 
     return result = Right(companyModel);
@@ -224,29 +249,37 @@ class DemoLoginRepository {
   /// parameters:
   ///            companyModel - CompanyModel - the company model to get values to check.
   /// return type:
-  ///            Either<Failure, dynamic> - Either of Failure class contains error message or data.
-  _checkIfDemoIsApprovedAndInDuration({
-    required DemoCompanyModel companyModel
+  ///            Either`<Failure, dynamic>` - Either of Failure class contains error message or data.
+  Either<Failure, dynamic> _checkIfDemoIsApprovedAndInDuration({
+    required DemoCompanyModel companyModel,
   }) {
-    Either<Failure, dynamic> result;
     bool isValidDemo = true;
 
     isValidDemo &= companyModel.requestStatus == ApprovalStatus.approved;
     if (!isValidDemo) {
       if (companyModel.requestStatus == ApprovalStatus.canceled) {
-        return result = Left(FirebaseFailure(
-            FailureAuthenticationType.demoCancelled.dialogBoxMessage));
+        return Left(
+          FirebaseFailure(
+            FailureAuthenticationType.demoCancelled.dialogBoxMessage,
+          ),
+        );
       }
-      return result = Left(FirebaseFailure(
-          FailureAuthenticationType.subscriptionError.dialogBoxMessage));
+      return Left(
+        FirebaseFailure(
+          FailureAuthenticationType.subscriptionError.dialogBoxMessage,
+        ),
+      );
     }
 
     isValidDemo &= companyModel.demoDetails!.accessBegin!.values.last
         .toDate()
         .isBefore(DateTime.now());
     if (!isValidDemo) {
-      return result = Left(FirebaseFailure(
-          FailureAuthenticationType.beforActivationDate.dialogBoxMessage));
+      return Left(
+        FirebaseFailure(
+          FailureAuthenticationType.beforActivationDate.dialogBoxMessage,
+        ),
+      );
     }
 
     isValidDemo &= companyModel.demoDetails!.accessEnd!.values.last
@@ -254,11 +287,14 @@ class DemoLoginRepository {
         .isAfter(DateTime.now());
 
     if (!isValidDemo) {
-      return result = Left(FirebaseFailure(
-          FailureAuthenticationType.subscriptionExpired.dialogBoxMessage));
+      return Left(
+        FirebaseFailure(
+          FailureAuthenticationType.subscriptionExpired.dialogBoxMessage,
+        ),
+      );
     }
 
-    return result = Right(companyModel);
+    return Right(companyModel);
   }
 
   /// function name: validateInactiveAccount
@@ -295,7 +331,7 @@ class DemoLoginRepository {
   Future<Either<Failure, dynamic>> validateInactiveAccount({
     required DemoCompanyModel companyModel,
     required String password,
-    required DemoUserAccountOverview accountOverview
+    required DemoUserAccountOverview accountOverview,
   }) async {
     final String companyTemporaryPassword =
         companyModel.demoDetails!.temporaryPassword!.values.last;
@@ -308,11 +344,15 @@ class DemoLoginRepository {
     if (normalizedAccountEmail == normalizedCompanyEmail) {
       // Demo admin — only the company temporary password activates the tenant.
       if (password != companyTemporaryPassword) {
-        return Left(FirebaseFailure(
-            FailureAuthenticationType.wrongActivationPassword.dialogBoxMessage));
+        return Left(
+          FirebaseFailure(
+            FailureAuthenticationType.wrongActivationPassword.dialogBoxMessage,
+          ),
+        );
       }
-      return await DemoInitializationRepository()
-          .startDemoAdminData(companyModel: companyModel);
+      return await DemoInitializationRepository().startDemoAdminData(
+        companyModel: companyModel,
+      );
     }
 
     // Regular user — get the existing employee first, so their per-account
@@ -325,16 +365,19 @@ class DemoLoginRepository {
 
     // ✅ Specific error for employee not found in company database
     if (employeeAccount.isEmpty) {
-      return Left(FirebaseFailure(
-          FailureAuthenticationType.notFoundInCompanyDatabase.dialogBoxMessage));
+      return Left(
+        FirebaseFailure(
+          FailureAuthenticationType.notFoundInCompanyDatabase.dialogBoxMessage,
+        ),
+      );
     }
 
     final NewEmployeeModelHistory employeeModel =
         NewEmployeeModelHistory.fromMap(employeeAccount.first);
 
     final String? employeeDefaultPassword = employeeModel.defaultPassword;
-    final bool hasOwnDefault = employeeDefaultPassword != null &&
-        employeeDefaultPassword.isNotEmpty;
+    final bool hasOwnDefault =
+        employeeDefaultPassword != null && employeeDefaultPassword.isNotEmpty;
 
     // TIGHTENED 29/8/2026 — the employee's OWN default is the only key, when
     // they have one.
@@ -359,8 +402,11 @@ class DemoLoginRepository {
         hasOwnDefault ? employeeDefaultPassword : companyTemporaryPassword;
 
     if (password != expectedPassword) {
-      return Left(FirebaseFailure(
-          FailureAuthenticationType.wrongActivationPassword.dialogBoxMessage));
+      return Left(
+        FirebaseFailure(
+          FailureAuthenticationType.wrongActivationPassword.dialogBoxMessage,
+        ),
+      );
     }
 
     return Right(employeeModel);
@@ -376,7 +422,7 @@ class DemoLoginRepository {
   Future<Either<Failure, dynamic>> validateActiveAccount({
     required DemoCompanyModel companyModel,
     required DemoUserAccountOverview accountOverview,
-    required String password
+    required String password,
   }) async {
     Either<Failure, dynamic> result = await demoRemoteDataSource
         .getEmployeeAccount(email: accountOverview.email);
@@ -387,13 +433,16 @@ class DemoLoginRepository {
 
     // ✅ Specific error for employee not found in company database
     if (employeeAccount.isEmpty) {
-      return Left(FirebaseFailure(FailureAuthenticationType
-          .notFoundInCompanyDatabase.dialogBoxMessage));
+      return Left(
+        FirebaseFailure(
+          FailureAuthenticationType.notFoundInCompanyDatabase.dialogBoxMessage,
+        ),
+      );
     }
 
-    NewEmployeeModelHistory employeeModel =
-    NewEmployeeModelHistory.fromMap(employeeAccount.first);
-
+    NewEmployeeModelHistory employeeModel = NewEmployeeModelHistory.fromMap(
+      employeeAccount.first,
+    );
 
     // FIXED 29/8/2026 — an EMPTY chosen password used to shadow the default.
     //
@@ -424,14 +473,15 @@ class DemoLoginRepository {
 
     // ✅ Specific error for wrong password
     if (storedPassword != password) {
-      return Left(FirebaseFailure(
-          FailureAuthenticationType.wrongPassword.dialogBoxMessage));
+      return Left(
+        FirebaseFailure(
+          FailureAuthenticationType.wrongPassword.dialogBoxMessage,
+        ),
+      );
     }
-
 
     result = await _checkEmployeePermission(employeeModel: employeeModel);
     if (result.isLeft()) return result;
-
 
     return Right(employeeModel);
   }
@@ -441,12 +491,11 @@ class DemoLoginRepository {
   /// parameters:
   ///            employeeModel - NewEmployeeModelHistory - the employee model to get values to check.
   /// return type:
-  ///             Either<Failure, dynamic> - Either of Failure class contains error message or data.
+  ///             Either`<Failure, dynamic>` - Either of Failure class contains error message or data.
   /// ✅ UPDATED: Handles correct field names (From_Date/To_Date) and active status bypass
   Future<Either<Failure, dynamic>> _checkEmployeePermission({
-    required NewEmployeeModelHistory employeeModel
+    required NewEmployeeModelHistory employeeModel,
   }) async {
-
     // SECURITY: a hardcoded branch used to short-circuit this entire
     // permission check whenever the tenant's baseUri contained one specific
     // company id, granting unconditional access to every employee of that
@@ -460,14 +509,11 @@ class DemoLoginRepository {
     // handed — `'active '` with a trailing space compared unequal to
     // `'active'` and denied a perfectly valid account, with the same message
     // an expired date range produces.
-    String currentRole = employeeModel.role.isNotEmpty
-        ? employeeModel.role.last.trim()
-        : '';
+    String currentRole =
+        employeeModel.role.isNotEmpty ? employeeModel.role.last.trim() : '';
 
-    String currentStatus = employeeModel.status.isNotEmpty
-        ? employeeModel.status.last.trim()
-        : '';
-
+    String currentStatus =
+        employeeModel.status.isNotEmpty ? employeeModel.status.last.trim() : '';
 
     // ✅ Master Admin - always allow
     if (currentRole.toLowerCase() == 'master admin') {
@@ -489,13 +535,11 @@ class DemoLoginRepository {
       // ⚠️ The status compared here is `Employees_Info.Status.last` — the LAST
       // entry of the history list, NOT the first, and not whatever a screen
       // happens to display.
-      debugPrint(
-        '[login] DENIED (status) ${employeeModel.email.isNotEmpty ? employeeModel.email.last : '?'} '
-        '— Employees_Info.Status.last is "$currentStatus", expected "active". '
-        'Full status history: ${employeeModel.status}',
+      return Left(
+        FirebaseFailure(
+          FailureAuthenticationType.dontHavePermission.dialogBoxMessage,
+        ),
       );
-      return Left(FirebaseFailure(
-          FailureAuthenticationType.dontHavePermission.dialogBoxMessage));
     }
 
     // ✅ For active employees, check permission record (optional)
@@ -513,7 +557,6 @@ class DemoLoginRepository {
       return Right<Failure, dynamic>(null);
     }
 
-
     try {
       // ✅ Extract dates from the correct field names (From_Date/To_Date)
       Map<String, dynamic>? fromDateMap = employeePermission['From_Date'];
@@ -528,15 +571,16 @@ class DemoLoginRepository {
       List<dynamic>? fromValues = fromDateMap['Values'];
       List<dynamic>? toValues = toDateMap['Values'];
 
-      if (fromValues == null || fromValues.isEmpty ||
-          toValues == null || toValues.isEmpty) {
+      if (fromValues == null ||
+          fromValues.isEmpty ||
+          toValues == null ||
+          toValues.isEmpty) {
         // If date values are empty but employee is active, allow access
         return Right<Failure, dynamic>(null);
       }
 
       String fromDateStr = fromValues.last.toString();
       String toDateStr = toValues.last.toString();
-
 
       // ✅ Parse dates using the format in your database
       DateTime from;
@@ -568,7 +612,6 @@ class DemoLoginRepository {
       bool isFromValid = from.isBefore(now) || from.isAtSameMomentAs(now);
       bool isToValid = to.isAfter(now) || to.isAtSameMomentAs(now);
 
-
       if (!isFromValid || !isToValid) {
         // See the diagnostics note on the status gate above. This is the OTHER
         // way to reach the same "Access Denied" dialog, and by far the more
@@ -580,28 +623,20 @@ class DemoLoginRepository {
         // on the line immediately above this one. It is `Users_Access`, NOT
         // `User_Management` — the two hold the same From_Date / To_Date shape
         // and only the former gates sign-in.
-        debugPrint(
-          '[login] DENIED (date window) — the Users_Access record for '
-          'employeeId "${employeeModel.id}" does not cover now. '
-          'From_Date "$fromDateStr" (valid: $isFromValid), '
-          'To_Date "$toDateStr" (valid: $isToValid), now $now.',
+        return Left(
+          FirebaseFailure(
+            FailureAuthenticationType.dontHavePermission.dialogBoxMessage,
+          ),
         );
-        return Left(FirebaseFailure(
-            FailureAuthenticationType.dontHavePermission.dialogBoxMessage));
       }
 
       return Right<Failure, dynamic>(employeePermission);
-
-    } catch (e, stackTrace) {
+    } catch (e) {
       // If there's an error but employee is active, allow access.
       //
       // The swallow is deliberate — a malformed permission record must not
       // lock out an active employee — but it was silent, so a record this
       // code could not read looked exactly like a record that said yes.
-      debugPrint(
-        '[login] permission record unreadable, allowing active employee '
-        'through — $e\n$stackTrace',
-      );
       return Right<Failure, dynamic>(null);
     }
   }
@@ -614,17 +649,16 @@ class DemoLoginRepository {
   ///             SuccessAuthenticationType - the type of authentication.
   /// ✅ UPDATED: Uses NewEmployeeModelHistory with array-based status
   SuccessAuthenticationType _checkEmployeeStatus({
-    required NewEmployeeModelHistory employee
+    required NewEmployeeModelHistory employee,
   }) {
     // ✅ Get last status from array (current status)
-    String currentStatus = employee.status.isNotEmpty
-        ? employee.status.last
-        : 'active';
+    String currentStatus =
+        employee.status.isNotEmpty ? employee.status.last : 'active';
 
     // ✅ Find matching enum with safe fallback
     EmployeeStatusEnum status = EmployeeStatusEnum.values.firstWhere(
-            (element) => element.name == currentStatus,
-        orElse: () => EmployeeStatusEnum.active
+      (element) => element.name == currentStatus,
+      orElse: () => EmployeeStatusEnum.active,
     );
 
     // Map status to authentication type
@@ -643,11 +677,377 @@ class DemoLoginRepository {
     }
   }
 
+  // ══════════════════════════════════════════════════════════════════════
+  // DEBUG-ONLY 9/10/2026 — "Switch to test employee" (owner-approved option B)
+  // ══════════════════════════════════════════════════════════════════════
+
+  /// Function Name: [debugLastUsedCompanyId]
+  ///
+  /// Purpose: DEBUG-ONLY 9/10/2026 — the company to prefill in the picker:
+  /// the one in `ApiConstants.baseUri` (`Demo/{cid}`, set by any sign-in in
+  /// this run), else `Demo_Users_Accounts/{savedEmail}.Company_Id` (the last
+  /// account that signed in on this device), else
+  /// [kDebugDefaultTestCompanyId]. Read only.
+  ///
+  /// Parameters:
+  /// - [savedEmail]: GetStorage `email` of the last sign-in, if any.
+  ///
+  /// Returns: [Future<String>]
+  Future<String> debugLastUsedCompanyId({String? savedEmail}) async {
+    if (!isDebugTestEmployeeSwitchEnabled()) return '';
+    const String prefix = 'Demo/';
+    final String base = ApiConstants.baseUri.trim();
+    if (base.startsWith(prefix) && base.length > prefix.length) {
+      return base.substring(prefix.length).split('/').first;
+    }
+    final String email = savedEmail?.trim().toLowerCase() ?? '';
+    if (email.isNotEmpty) {
+      final Either<Failure, dynamic> result =
+          await demoRemoteDataSource.getDemoAccountOverview(email: email);
+      final dynamic overview = result.getOrElse(() => null);
+      if (overview is Map) {
+        final dynamic companyId =
+            overview[DemoUserAccountOverview.companyIdField];
+        if (companyId is String && companyId.trim().isNotEmpty) {
+          return companyId.trim();
+        }
+      }
+    }
+    return kDebugDefaultTestCompanyId;
+  }
+
+  /// Function Name: [debugListTestEmployees]
+  ///
+  /// Purpose: DEBUG-ONLY 9/10/2026 — the test accounts of [companyId] for the
+  /// picker: `Employees_Info` documents whose email ends with a test domain,
+  /// minus the company admin (demo-request contact). Read only.
+  ///
+  /// `Password` and `Default_Password` are REMOVED from each raw document
+  /// before it is parsed, so no credential reaches the picker.
+  ///
+  /// Parameters:
+  /// - [companyId]: the company typed in the picker.
+  ///
+  /// Returns: [Future<Either<Failure, List<DebugTestEmployee>>>] sorted by
+  /// English name.
+  Future<Either<Failure, List<DebugTestEmployee>>> debugListTestEmployees({
+    required String companyId,
+  }) async {
+    if (!isDebugTestEmployeeSwitchEnabled()) {
+      return const Left(FeatureFailure('debug-only'));
+    }
+    final String cid = companyId.trim();
+    if (cid.isEmpty) {
+      return Left(
+        FirebaseFailure(
+          FailureAuthenticationType.notFoundInCompanyDatabase.dialogBoxMessage,
+        ),
+      );
+    }
+
+    // The company must exist; its contact email is the admin to exclude.
+    final Either<Failure, dynamic> companyResult =
+        await demoRemoteDataSource.getCompanyDemoRequest(companyId: cid);
+    if (companyResult.isLeft()) {
+      return Left(companyResult.fold((Failure f) => f, (_) => null)!);
+    }
+    final dynamic companyMap = companyResult.getOrElse(() => null);
+    if (companyMap is! Map<String, dynamic> || companyMap.isEmpty) {
+      return Left(
+        FirebaseFailure(
+          FailureAuthenticationType.notFoundInCompanyDatabase.dialogBoxMessage,
+        ),
+      );
+    }
+    // Fail CLOSED: without the admin email the admin could not be excluded,
+    // so an unreadable company lists nobody.
+    final String adminEmail;
+    try {
+      adminEmail = DemoCompanyModel.fromMap(companyMap)
+          .contactInformation
+          .email
+          .values
+          .last
+          .trim()
+          .toLowerCase();
+    } catch (e) {
+      debugPrint('$kDebugSwitchLogTag company $cid unreadable: $e');
+      return Left(
+        FirebaseFailure(
+          FailureAuthenticationType.notFoundInCompanyDatabase.dialogBoxMessage,
+        ),
+      );
+    }
+    if (adminEmail.isEmpty) {
+      return Left(
+        FirebaseFailure(
+          FailureAuthenticationType.notFoundInCompanyDatabase.dialogBoxMessage,
+        ),
+      );
+    }
+
+    final Either<Failure, dynamic> employeesResult =
+        await demoRemoteDataSource.debugGetCompanyEmployees(companyId: cid);
+    if (employeesResult.isLeft()) {
+      return Left(employeesResult.fold((Failure f) => f, (_) => null)!);
+    }
+    final Either<Failure, dynamic> departmentsResult =
+        await demoRemoteDataSource.debugGetCompanyDepartments(companyId: cid);
+
+    // Department id → (EN, AR). A failed read only costs the names.
+    final Map<String, (String, String)> departmentNames =
+        <String, (String, String)>{};
+    for (final dynamic raw
+        in departmentsResult.getOrElse(() => <dynamic>[]) as List<dynamic>) {
+      if (raw is! Map) continue;
+      final DepartmentModelPro department = DepartmentModelPro.fromMap(
+        Map<String, dynamic>.from(raw),
+      );
+      final String id = department.departmentID?.trim() ?? '';
+      if (id.isEmpty) continue;
+      departmentNames[id] = (
+        department.departmentName ?? '',
+        department.departmentNameInArabic ?? '',
+      );
+    }
+
+    final List<DebugTestEmployee> employees = <DebugTestEmployee>[];
+    for (final dynamic raw
+        in employeesResult.getOrElse(() => <dynamic>[]) as List<dynamic>) {
+      if (raw is! Map) continue;
+      // Credentials never leave this line.
+      final Map<String, dynamic> withoutCredentials =
+          Map<String, dynamic>.from(raw)
+            ..remove('Password')
+            ..remove('Default_Password');
+      final NewEmployeeModelHistory model = NewEmployeeModelHistory.fromMap(
+        withoutCredentials,
+      );
+      final String email =
+          model.email.isEmpty ? '' : model.email.last.trim().toLowerCase();
+      if (debugTestEmployeeRefusal(
+            email: email,
+            selectedCompanyId: cid,
+            companyAdminEmail: adminEmail,
+          ) !=
+          null) {
+        continue;
+      }
+
+      String joined(List<String> first, List<String> last) => <String>[
+            first.isEmpty ? '' : first.last.trim(),
+            last.isEmpty ? '' : last.last.trim(),
+          ].where((String part) => part.isNotEmpty).join(' ');
+
+      final String departmentId =
+          model.departmentId.isEmpty ? '' : model.departmentId.last.trim();
+      final (String, String) department =
+          departmentNames[departmentId] ?? (departmentId, departmentId);
+
+      employees.add(
+        DebugTestEmployee(
+          email: email,
+          nameEn: joined(model.firstName, model.lastName),
+          nameAr: joined(model.firstNameInArabic, model.lastNameInArabic),
+          role: model.role.isEmpty ? '' : model.role.last.trim(),
+          departmentEn: department.$1,
+          departmentAr: department.$2,
+          status: model.status.isEmpty ? '' : model.status.last.trim(),
+        ),
+      );
+    }
+    employees.sort(
+      (DebugTestEmployee a, DebugTestEmployee b) => a
+          .name(arabic: false)
+          .toLowerCase()
+          .compareTo(b.name(arabic: false).toLowerCase()),
+    );
+
+    // CHANGED 9/10/2026 — DEBUG-ONLY: each row's Is_Activated, for the grey
+    // "not activated" note. Read only; a failed read leaves it unknown.
+    final List<bool?> activated = await Future.wait(
+      employees.map((DebugTestEmployee e) async {
+        final Either<Failure, dynamic> overview =
+            await demoRemoteDataSource.getDemoAccountOverview(email: e.email);
+        final dynamic map = overview.getOrElse(() => null);
+        final dynamic flag =
+            map is Map ? map[DemoUserAccountOverview.isActivatedField] : null;
+        return flag is bool ? flag : null;
+      }),
+    );
+    return Right(<DebugTestEmployee>[
+      for (int i = 0; i < employees.length; i++)
+        DebugTestEmployee(
+          email: employees[i].email,
+          nameEn: employees[i].nameEn,
+          nameAr: employees[i].nameAr,
+          role: employees[i].role,
+          departmentEn: employees[i].departmentEn,
+          departmentAr: employees[i].departmentAr,
+          status: employees[i].status,
+          isActivated: activated[i],
+        ),
+    ]);
+  }
+
+  /// Function Name: [debugSignInAsTestEmployee]
+  ///
+  /// Purpose: DEBUG-ONLY 9/10/2026 — the same checks
+  /// [loginWithEmailAndPassword] runs for an activated account, minus the
+  /// password comparison. Composes the existing private steps; it does not
+  /// copy them:
+  ///   [_checkIfAccountExists] (sets `ApiConstants.baseUri`) →
+  ///   [_getValidCompanyDemoRequest] (approved + access window) →
+  ///   [checkNumberOfUsersIsValid] (seat limit) →
+  ///   `getEmployeeAccount` → [_checkEmployeePermission] (status +
+  ///   `Users_Access` dates) → [_checkEmployeeStatus].
+  /// Added on top: the test-domain / company-admin / same-company /
+  /// `Is_Activated` rule ([debugTestEmployeeRefusal]); a non-`login` status
+  /// (locked, deactivated, reset…) is refused instead of routed — no unlock
+  /// request is raised and nothing is written.
+  ///
+  /// Never reads, compares or returns a password, and touches no lockout
+  /// counter. On any refusal the previous `ApiConstants.baseUri` is restored.
+  ///
+  /// Parameters:
+  /// - [companyId]: the company chosen in the picker.
+  /// - [email]: the test account.
+  ///
+  /// Returns: [Future<Either<Object, NewEmployeeModelHistory>>] — the Left is
+  /// a [DebugSwitchFailure] (debug rule) or a [Failure] whose message is one
+  /// of the normal sign-in failures (so the normal dialog can be shown).
+  Future<Either<Object, NewEmployeeModelHistory>> debugSignInAsTestEmployee({
+    required String companyId,
+    required String email,
+  }) async {
+    final String cid = companyId.trim();
+    final String normalizedEmail = email.trim().toLowerCase();
+
+    // The domain is checked at the end, once the company admin is known
+    // (CHANGED 16/10/2026: the admin may be chosen too).
+    final DebugSwitchRefusal? early = debugTestEmployeeRefusal(
+      email: normalizedEmail,
+      selectedCompanyId: cid,
+      checkDomain: false,
+    );
+    if (early != null) return Left(DebugSwitchFailure(early));
+
+    final String previousBaseUri = ApiConstants.baseUri;
+    Either<Object, NewEmployeeModelHistory> refuse(Object reason) {
+      ApiConstants.baseUri = previousBaseUri;
+      return Left(reason);
+    }
+
+    // An unreadable document (the model parsers throw on a malformed map)
+    // becomes a Left with the previous tenant restored, not an uncaught error
+    // under the loading indicator.
+    try {
+      return await _debugSignInChecks(cid, normalizedEmail, refuse);
+    } catch (e) {
+      debugPrint('$kDebugSwitchLogTag checks failed for $normalizedEmail: $e');
+      return refuse(FirebaseFailure(e.toString()));
+    }
+  }
+
+  /// DEBUG-ONLY 9/10/2026 — the body of [debugSignInAsTestEmployee] (see its
+  /// documentation); [refuse] restores the previous tenant on every Left.
+  Future<Either<Object, NewEmployeeModelHistory>> _debugSignInChecks(
+    String cid,
+    String normalizedEmail,
+    Either<Object, NewEmployeeModelHistory> Function(Object reason) refuse,
+  ) async {
+    Either<Failure, dynamic> result = await _checkIfAccountExists(
+      email: normalizedEmail,
+    );
+    if (result.isLeft()) return refuse(result.fold((f) => f, (_) => ''));
+    final DemoUserAccountOverview account = result.getOrElse(() => null);
+
+    final DebugSwitchRefusal? otherCompany = debugTestEmployeeRefusal(
+      email: normalizedEmail,
+      selectedCompanyId: cid,
+      accountCompanyId: account.companyId,
+      checkDomain: false,
+    );
+    if (otherCompany != null) {
+      return refuse(
+        DebugSwitchFailure(otherCompany, detail: account.companyId),
+      );
+    }
+
+    result = await _getValidCompanyDemoRequest(companyId: account.companyId);
+    if (result.isLeft()) return refuse(result.fold((f) => f, (_) => ''));
+    final DemoCompanyModel companyModel = result.getOrElse(() => null);
+
+    final DebugSwitchRefusal? accountRefusal = debugTestEmployeeRefusal(
+      email: normalizedEmail,
+      selectedCompanyId: cid,
+      accountCompanyId: account.companyId,
+      companyAdminEmail: companyModel.contactInformation.email.values.last,
+      isActivated: account.isActivated,
+    );
+    if (accountRefusal != null) {
+      return refuse(DebugSwitchFailure(accountRefusal));
+    }
+    // CHANGED 9/10/2026 — DEBUG-ONLY: a not-activated TEST account continues
+    // as if activated. Nothing is written: Is_Activated stays false.
+    if (!account.isActivated) {
+      debugPrint(
+        '$kDebugSwitchLogTag $normalizedEmail is not activated — '
+        'signing in as activated (debug, test account; nothing written)',
+      );
+    }
+
+    result = await checkNumberOfUsersIsValid(companyModel, normalizedEmail);
+    if (result.isLeft()) return refuse(result.fold((f) => f, (_) => ''));
+
+    result = await demoRemoteDataSource.getEmployeeAccount(
+      email: account.email,
+    );
+    if (result.isLeft()) return refuse(result.fold((f) => f, (_) => ''));
+    final List<Map<String, dynamic>> employeeAccount = result.getOrElse(
+      () => null,
+    );
+    if (employeeAccount.isEmpty) {
+      return refuse(
+        FirebaseFailure(
+          FailureAuthenticationType.notFoundInCompanyDatabase.dialogBoxMessage,
+        ),
+      );
+    }
+    // Parsed exactly as validateActiveAccount does, so the session receives
+    // the same model a password sign-in would. The password fields on it are
+    // never read here.
+    final NewEmployeeModelHistory employeeModel =
+        NewEmployeeModelHistory.fromMap(employeeAccount.first);
+
+    // Status first, then the permission record: an account passes only if
+    // both pass (same set as a password sign-in), but a locked / deactivated
+    // account now gets "status is X" instead of the generic Access Denied.
+    final SuccessAuthenticationType successType = _checkEmployeeStatus(
+      employee: employeeModel,
+    );
+    if (successType != SuccessAuthenticationType.login) {
+      return refuse(
+        DebugSwitchFailure(
+          DebugSwitchRefusal.statusBlocked,
+          detail: employeeModel.status.isEmpty
+              ? successType.name
+              : employeeModel.status.last,
+        ),
+      );
+    }
+
+    result = await _checkEmployeePermission(employeeModel: employeeModel);
+    if (result.isLeft()) return refuse(result.fold((f) => f, (_) => ''));
+
+    return Right(employeeModel);
+  }
+
   /// function name: getEmployee
   /// function purpose: get employee by email
   /// parameters: email - String - the employee email
-  /// return type: Future<Either<Failure, dynamic>>
-  getEmployee({required String email}) async {
+  /// return type: Future`<Either<Failure, dynamic>`>
+  Future<dynamic> getEmployee({required String email}) async {
     return await demoRemoteDataSource.getEmployeeAccount(email: email);
   }
 
@@ -656,33 +1056,36 @@ class DemoLoginRepository {
   /// parameters:
   ///            companyModel - DemoCompanyModel - company configuration
   ///            email - String - user email to check
-  /// return type: Future<Either<Failure, dynamic>>
-  checkNumberOfUsersIsValid(DemoCompanyModel companyModel, String email) async {
+  /// return type: Future`<Either<Failure, dynamic>`>
+  Future<Either<Failure, dynamic>> checkNumberOfUsersIsValid(DemoCompanyModel companyModel, String email) async {
     Either<Failure, dynamic> result;
 
     // ✅ CRITICAL: Compare normalized emails (both should be lowercase)
     String normalizedEmail = email.toLowerCase();
-    String normalizedCompanyEmail = companyModel.contactInformation.email.values.last.toLowerCase();
+    String normalizedCompanyEmail =
+        companyModel.contactInformation.email.values.last.toLowerCase();
 
     // Skip validation for demo admin (company contact)
     if (normalizedEmail == normalizedCompanyEmail) {
       return result = Right(null);
     }
 
-
     // Get actual number of users in the company
     result = await demoRemoteDataSource.getCompanyActualNumberOfUsers(
-        companyId: companyModel.requestId);
+      companyId: companyModel.requestId,
+    );
     if (result.isLeft()) return result;
 
     int actualNumberOfUsers = result.getOrElse(() => 0);
     int allowedUsers = companyModel.demoDetails!.numberOfUsers!.values.last;
 
-
     // Check if we've exceeded the user limit
     if (actualNumberOfUsers > allowedUsers) {
-      return result = Left(FirebaseFailure(
-          FailureAuthenticationType.tooManyUsers.dialogBoxMessage));
+      return result = Left(
+        FirebaseFailure(
+          FailureAuthenticationType.tooManyUsers.dialogBoxMessage,
+        ),
+      );
     }
 
     return result = Right(null);

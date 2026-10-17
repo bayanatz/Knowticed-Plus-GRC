@@ -2,7 +2,7 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: icon_selector_dialog_widget.dart
-/// Purpose: Dialog that lets the user pick which icons are pinned to the home
+/// Description: Dialog that lets the user pick which icons are pinned to the home
 ///          app bar, plus the catalog of selectable icons.
 /// Author: Amr Mesbah
 /// Created at: 20/9/2025
@@ -37,15 +37,15 @@
 ///          Hub / 2 Settings...) do not sum to its own total, so they are
 ///          placeholders. Counts here are derived from the catalog, and the
 ///          chips are the modules the catalog actually uses.
+library;
 
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:grc_module/core/custom/86-removed_module_placeholder.dart';
+import 'package:grc_module/core/custom/feedback/removed_module_placeholder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:grc_module/core/custom/8-custom_filter_app.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
+import 'package:grc_module/core/custom/navigation/custom_filter_app.dart';
+import 'package:grc_module/core/helper/access/modules_enum.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -55,14 +55,15 @@ import 'package:grc_module/core/constants/app_constants.dart';
 import 'package:grc_module/core/di/app_controllers.dart';
 import 'package:grc_module/features/roles/r1_role_management/presentation/ui/pages/role_screen.dart';
 
-import 'package:grc_module/core/custom/32-custom_svg.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
 import 'package:grc_module/features/home/h1_home_page/data/models/header_icon_item.dart';
+import 'package:grc_module/features/todo/presentation/ui/pages/todo_module_entry.dart';
+// ADDED 9/10/2026 — Time Tracker phase 6 (Check In / Out header icon).
+import 'package:grc_module/core/theme/theme_controller.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
-/// Folder the Figma-exported picker glyphs live in. They are all in
-/// `home_assets/`, which pubspec already declares as an asset directory, so
-/// adding them needed no pubspec change.
-const String _pickerAssets = 'assets/icons_assets/home_assets';
 
 // ── Roles module tabs ────────────────────────────────────────────────────────
 // Indices as `RoleScreen._buildVisibleTabs` assigns them.
@@ -151,7 +152,8 @@ List<HeaderIconCatalogEntry> headerIconCatalogEntries(BuildContext context) {
     HeaderIconCatalogEntry(
       module: Modules.employees,
       item: HeaderIconItem(
-        svgPath: '$_pickerAssets/picker_user_management.svg',
+        svgPath:
+            'assets/icons_assets/home_assets/ic_module_user_management.svg',
         getTitle: (ctx) => S.of(ctx).userManagement,
         // The roles module with its User Management tab selected, NOT
         // `UserManagementHome()` on its own — see [_rolesModuleAt].
@@ -161,7 +163,7 @@ List<HeaderIconCatalogEntry> headerIconCatalogEntries(BuildContext context) {
     HeaderIconCatalogEntry(
       module: Modules.settings,
       item: HeaderIconItem(
-        svgPath: '$_pickerAssets/picker_english.svg',
+        svgPath: 'assets/icons_assets/home_assets/ic_module_language_en.svg',
         getTitle: (ctx) => S.of(ctx).english,
         navigateTo: (context) => const Placeholder(),
         // An action, not a page (23/8/2026).
@@ -171,7 +173,8 @@ List<HeaderIconCatalogEntry> headerIconCatalogEntries(BuildContext context) {
     HeaderIconCatalogEntry(
       module: Modules.roles,
       item: HeaderIconItem(
-        svgPath: '$_pickerAssets/picker_roles.svg',
+        svgPath:
+            'assets/icons_assets/main_icons_assets/ic_module_service_approvals.svg',
         getTitle: (ctx) => S.of(ctx).roles,
         navigateTo: (context) => _rolesModuleAt(_roleManagementTab),
       ),
@@ -179,7 +182,7 @@ List<HeaderIconCatalogEntry> headerIconCatalogEntries(BuildContext context) {
     HeaderIconCatalogEntry(
       module: Modules.roles,
       item: HeaderIconItem(
-        svgPath: '$_pickerAssets/picker_user_access.svg',
+        svgPath: 'assets/icons_assets/home_assets/ic_module_user_access.svg',
         getTitle: (ctx) => S.of(ctx).userAccess,
         navigateTo: (context) => _rolesModuleAt(_userAccessTab),
       ),
@@ -187,7 +190,7 @@ List<HeaderIconCatalogEntry> headerIconCatalogEntries(BuildContext context) {
     HeaderIconCatalogEntry(
       module: Modules.settings,
       item: HeaderIconItem(
-        svgPath: '$_pickerAssets/picker_dark_mode.svg',
+        svgPath: 'assets/icons_assets/home_assets/ic_module_dark_mode.svg',
         getTitle: (ctx) => S.of(ctx).lightDarkMode,
         navigateTo: (context) => const Placeholder(),
         // An action, not a page (23/8/2026). One toggle serves both the dark
@@ -201,7 +204,7 @@ List<HeaderIconCatalogEntry> headerIconCatalogEntries(BuildContext context) {
         // The design labels this one "AR" — the Arabic counterpart of the
         // "English" tile. There is no `arabic` key in intl_en.arb (only
         // `english`), so the label is a literal until one is added.
-        svgPath: '$_pickerAssets/picker_ar.svg',
+        svgPath: 'assets/icons_assets/home_assets/ic_module_language_ar.svg',
         getTitle: (ctx) => 'AR',
         navigateTo: (context) => const Placeholder(),
         onTap: (context) => _applyLanguage(const Locale('ar', 'SA')),
@@ -210,7 +213,8 @@ List<HeaderIconCatalogEntry> headerIconCatalogEntries(BuildContext context) {
     HeaderIconCatalogEntry(
       module: Modules.services,
       item: HeaderIconItem(
-        svgPath: '$_pickerAssets/picker_service_dashboard.svg',
+        svgPath:
+            'assets/icons_assets/main_icons_assets/ic_comms_customer_service.svg',
         getTitle: (ctx) => S.of(ctx).serviceDashboard,
         navigateTo: (context) =>
             RemovedModulePage(moduleName: S.of(context).services),
@@ -219,7 +223,8 @@ List<HeaderIconCatalogEntry> headerIconCatalogEntries(BuildContext context) {
     HeaderIconCatalogEntry(
       module: Modules.services,
       item: HeaderIconItem(
-        svgPath: '$_pickerAssets/picker_requested_services.svg',
+        svgPath:
+            'assets/icons_assets/home_assets/ic_module_requested_services.svg',
         getTitle: (ctx) => S.of(ctx).requestedServices,
         navigateTo: (context) =>
             RemovedModulePage(moduleName: S.of(context).services),
@@ -228,7 +233,8 @@ List<HeaderIconCatalogEntry> headerIconCatalogEntries(BuildContext context) {
     HeaderIconCatalogEntry(
       module: Modules.services,
       item: HeaderIconItem(
-        svgPath: '$_pickerAssets/picker_service_approvals.svg',
+        svgPath:
+            'assets/icons_assets/main_icons_assets/ic_module_service_approvals.svg',
         getTitle: (ctx) => S.of(ctx).serviceApprovals,
         navigateTo: (context) =>
             RemovedModulePage(moduleName: S.of(context).services),
@@ -237,7 +243,8 @@ List<HeaderIconCatalogEntry> headerIconCatalogEntries(BuildContext context) {
     HeaderIconCatalogEntry(
       module: Modules.inventory,
       item: HeaderIconItem(
-        svgPath: '$_pickerAssets/picker_inventory_dashboard.svg',
+        svgPath:
+            'assets/icons_assets/home_assets/ic_module_inventory_dashboard.svg',
         getTitle: (ctx) => S.of(ctx).inventoryDashboard,
         navigateTo: (context) =>
             RemovedModulePage(moduleName: S.of(context).inventory),
@@ -246,48 +253,26 @@ List<HeaderIconCatalogEntry> headerIconCatalogEntries(BuildContext context) {
     HeaderIconCatalogEntry(
       module: Modules.qiyas,
       item: HeaderIconItem(
-        svgPath: '$_pickerAssets/picker_qiyas_dashboard.svg',
+        svgPath: 'assets/icons_assets/home_assets/ic_module_grc_qiyas.svg',
         getTitle: (ctx) => S.of(ctx).qiyasDashboard,
         navigateTo: (context) => const Placeholder(),
       ),
     ),
     HeaderIconCatalogEntry(
-      module: Modules.knowledgeHub,
-      item: HeaderIconItem(
-        // No `hubApproval` key exists in intl_en.arb — literal until one is
-        // added. Every other label here resolves through S.of(ctx).
-        svgPath: '$_pickerAssets/picker_hub_approval.svg',
-        getTitle: (ctx) => 'Hub Approval',
-        // WIRED 23/8/2026 — the page exists (knowledge_hub/k6_approvals) and
-        // was simply never connected here. It reads `ApprovalsCubit` from the
-        // tree, which normally comes from `KnowledgeHubPage`'s MultiBlocProvider
-        // — opened on its own it has to bring its own, or it throws
-        // ProviderNotFoundException the moment it builds.
-        navigateTo: (context) =>
-            RemovedModulePage(moduleName: S.of(context).knowledgeHub),
-      ),
-    ),
-    HeaderIconCatalogEntry(
       module: Modules.todo,
       item: HeaderIconItem(
-        svgPath: '$_pickerAssets/picker_create_todo.svg',
+        svgPath: 'assets/icons_assets/main_icons_assets/ic_module_create_todo.svg',
         getTitle: (ctx) => S.of(ctx).createToDo,
-        navigateTo: (context) => const Placeholder(),
+        // WIRED 7/10/2026 — opens the To-Do module straight on the create
+        // form (back lands on the list). TodoModuleEntry provides its cubits.
+        navigateTo: (context) => const TodoModuleEntry(startInCreate: true),
       ),
     ),
     HeaderIconCatalogEntry(
       module: Modules.tasks,
       item: HeaderIconItem(
-        svgPath: '$_pickerAssets/picker_create_task.svg',
+        svgPath: 'assets/icons_assets/home_assets/ic_module_create_task.svg',
         getTitle: (ctx) => S.of(ctx).createTask,
-        navigateTo: (context) => const Placeholder(),
-      ),
-    ),
-    HeaderIconCatalogEntry(
-      module: Modules.tracking,
-      item: HeaderIconItem(
-        svgPath: '$_pickerAssets/picker_check_in_out.svg',
-        getTitle: (ctx) => S.of(ctx).checkInOut,
         navigateTo: (context) => const Placeholder(),
       ),
     ),
@@ -327,8 +312,9 @@ List<HeaderIconItem> headerIconCatalog(BuildContext context) =>
 HeaderIconItem? headerIconForSvgPath(BuildContext context, String svgPath) {
   final String canonical = HeaderIconItem.canonicalSvgPath(svgPath);
 
-  for (final HeaderIconCatalogEntry entry
-      in headerIconCatalogEntries(context)) {
+  for (final HeaderIconCatalogEntry entry in headerIconCatalogEntries(
+    context,
+  )) {
     if (entry.item.svgPath == canonical) return entry.item;
   }
   return null;
@@ -340,10 +326,7 @@ HeaderIconItem? headerIconForSvgPath(BuildContext context, String svgPath) {
 class IconSelectorDialog extends StatefulWidget {
   final Function(HeaderIconItem) onIconSelected;
 
-  const IconSelectorDialog({
-    super.key,
-    required this.onIconSelected,
-  });
+  const IconSelectorDialog({super.key, required this.onIconSelected});
 
   @override
   State<IconSelectorDialog> createState() => _IconSelectorDialogState();
@@ -370,7 +353,6 @@ class _IconSelectorDialogState extends State<IconSelectorDialog> {
   static const double _actionWidth = 135;
   static const double _actionHeight = 38;
   static const double _actionRadius = 8;
-  static const double _actionGap = 30;
 
   // ── Filtering ──────────────────────────────────────────────────────────────
 
@@ -378,7 +360,9 @@ class _IconSelectorDialogState extends State<IconSelectorDialog> {
     final List<HeaderIconCatalogEntry> all = headerIconCatalogEntries(context);
     if (_selectedModuleKey == _allKey) return all;
     return all
-        .where((HeaderIconCatalogEntry e) => e.module.name == _selectedModuleKey)
+        .where(
+          (HeaderIconCatalogEntry e) => e.module.name == _selectedModuleKey,
+        )
         .toList();
   }
 
@@ -397,8 +381,7 @@ class _IconSelectorDialogState extends State<IconSelectorDialog> {
       // is meant to scroll rather than wrap.
       child: StatusChipFilter(
         selectedKey: _selectedModuleKey,
-        onSelected: (String key) =>
-            setState(() => _selectedModuleKey = key),
+        onSelected: (String key) => setState(() => _selectedModuleKey = key),
         items: <StatusChipItem>[
           StatusChipItem(
             key: _allKey,
@@ -424,6 +407,7 @@ class _IconSelectorDialogState extends State<IconSelectorDialog> {
 
     return InkWell(
       borderRadius: BorderRadius.circular(_tileRadius.r),
+      onTapDown: (_) => HapticController.low(),
       onTap: () => setState(() => selectedItem = isSelected ? null : icon),
       child: Container(
         width: _tileWidth.w,
@@ -432,9 +416,8 @@ class _IconSelectorDialogState extends State<IconSelectorDialog> {
         decoration: BoxDecoration(
           color: AppColors.primary,
           borderRadius: BorderRadius.circular(_tileRadius.r),
-          border: isSelected
-              ? Border.all(color: AppColors.text, width: 2)
-              : null,
+          border:
+              isSelected ? Border.all(color: AppColors.text, width: 2) : null,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -473,6 +456,7 @@ class _IconSelectorDialogState extends State<IconSelectorDialog> {
   }) {
     return InkWell(
       borderRadius: BorderRadius.circular(_actionRadius.r),
+      onTapDown: hapticDown(onTap, HapticLevel.low),
       onTap: onTap,
       child: Container(
         width: expand ? double.infinity : _actionWidth.w,
@@ -507,9 +491,7 @@ class _IconSelectorDialogState extends State<IconSelectorDialog> {
     final List<HeaderIconCatalogEntry> visible = _visibleEntries;
 
     return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8.r),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
       // Settings bug report p.12: on a phone the dialog grew to the full screen
       // height and Save / Discard were pushed past the bottom edge. The inset
       // keeps a margin round the dialog, and the max height below makes the
@@ -545,7 +527,8 @@ class _IconSelectorDialogState extends State<IconSelectorDialog> {
                   ),
                   child: Center(
                     child: CustomSvgImage(
-                      assetPath: '$_pickerAssets/picker_grid.svg',
+                      assetPath:
+                          'assets/icons_assets/main_icons_assets/ic_nav_grid.svg',
                       width: 14.sp,
                       height: 14.sp,
                       fit: BoxFit.scaleDown,
@@ -586,9 +569,7 @@ class _IconSelectorDialogState extends State<IconSelectorDialog> {
                       // of the available width instead of being forced — 4 on
                       // the tablet dialog, fewer on a phone.
                       SizedBox(
-                        width: isMobile
-                            ? double.infinity
-                            : _tileWidth.w,
+                        width: isMobile ? double.infinity : _tileWidth.w,
                         child: _iconTile(entry.item),
                       ),
                   ],
@@ -623,15 +604,15 @@ class _IconSelectorDialogState extends State<IconSelectorDialog> {
                 _wrapAction(
                   isMobile,
                   _actionButton(
-                  expand: isMobile,
-                  label: l.save,
-                  color: AppColors.primary,
-                  textColor: AppColors.textButton,
-                  onTap: () {
-                    if (selectedItem == null) return;
-                    widget.onIconSelected(selectedItem!);
-                    Navigator.of(context).pop();
-                  },
+                    expand: isMobile,
+                    label: l.save,
+                    color: AppColors.primary,
+                    textColor: AppColors.textButton,
+                    onTap: () {
+                      if (selectedItem == null) return;
+                      widget.onIconSelected(selectedItem!);
+                      Navigator.of(context).pop();
+                    },
                   ),
                 ),
               ],

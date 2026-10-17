@@ -2,233 +2,99 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: my_todo.dart
-/// Purpose: Declares `MyTodo`.
+/// Purpose: Declares `MyTodo` — home To-Do card 1: Total, then Done /
+///          Overdue / Scheduled counts.
 /// Author: Knowticed Plus team
-/// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+/// Updated: 7/10/2026 - Reads the new To-Do module through `TodoHomeCubit`
+///          (was the removed tasks_module stub, always 0).
+/// Updated: 7/10/2026 - Owner round 3: each status is icon + label + count
+///          (readable in dark mode); grid narrow width; shared card height.
+///
+/// Figma: To-Do widget node 130:8096, first card. Counts use
+/// `TodoEntity.matchesTab`, so each number equals the list tab it names.
+library;
 
-import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/standard_container.dart';
 
+import 'package:grc_module/core/helper/localized_number.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
-// REMOVED_MODULE: import 'package:grc_module/features/todo_new_module/external/tasks_module/category/data/models/task_model_updates_with_field_history.dart';
-// REMOVED_MODULE: import 'package:grc_module/features/todo_new_module/external/tasks_module/category/domain/services/task_services.dart';
 import 'package:grc_module/features/home/h1_home_page/data/models/home_component_model.dart';
-import 'package:grc_module/features/home/main_controller/helper/todo_new_module/tasks_stub.dart';
+import 'package:grc_module/features/home/h1_home_page/presentation/controller/todo_home_cubit.dart';
+import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/module_widget/todo/todo_home_card_parts.dart';
+import 'package:grc_module/features/todo/domain/enums/todo_list_filters.dart';
 import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
-
 
 class MyTodo extends StatelessWidget {
-  MyTodo({required this.model, super.key});
+  const MyTodo({required this.model, super.key});
+
   final HomeComponentModel model;
-  final TaskFirebaseService _taskService = TaskFirebaseService();
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 130.sp,
-      child: StandardContainer(
-        child: StreamBuilder<List<TaskModel>>(
-          stream: _taskService.getAllTasks(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return _buildLoadingState();
-            }
-
-            if (snapshot.hasError) {
-              return _buildErrorState();
-            }
-
-            final allTasks = snapshot.data ?? [];
-
-            // Calculate statistics
-            final stats = _calculateTaskStats(allTasks);
-
-            return Column(
-              spacing: 8.sp,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      S.of(context).homeScreenToDoListTitle,
-                      style: StyleText.fontSize14Weight500
-                          .copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    SvgPicture.asset(
-                      'assets/icons_assets/home_assets/todo_checklist_clipboard.svg',
-                      width: 20,
-                      height: 20,
-                      color: AppColors.primary,
-                    )
-                  ],
-                ),
-                const SizedBox.shrink(),
-                Text(
-                  '${S.of(context).total}: ${stats['total']}',
-                  style: StyleText.fontSize14Weight600
-                      .copyWith(color: AppColors.secondaryText),
-                ),
-                Column(
-                  spacing: 10.sp,
-                  children: [
-                    item(
-                      color: AppColors.green,
-                      number: '${stats['done']}',
-                      icon: 'assets/icons_assets/home_assets/todo_done_stamp.svg',
-                    ),
-                    item(
-                      color: AppColors.yellow,
-                      number: '${stats['scheduled']}',
-                      icon: 'assets/icons_assets/home_assets/todo_scheduled_calendar.svg',
-                    ),
-                    item(
-                      color: AppColors.red,
-                      number: '${stats['overdue']}',
-                      icon: 'assets/icons_assets/home_assets/todo_overdue_stopwatch.svg',
-                    ),
-                  ],
-                )
-              ],
-            );
-          },
+    return TodoHomeCardScope(
+      width: TodoHomeCardMetrics.narrowWidth,
+      builder: (BuildContext context, TodoHomeState state) =>
+          SingleChildScrollView(
+        child: Column(
+          spacing: 4.sp,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Text(
+              '${S.of(context).total} '
+              '${LocalizedNumber.of(context, state.countFor(TodoStatusTab.all))}',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: StyleText.fontSize12Weight600.copyWith(
+                color: AppColors.secondaryText,
+                height: TodoHomeCardMetrics.lineHeight,
+              ),
+            ),
+            for (final _StatusLine line in _lines)
+              TodoHomeCountRow(
+                iconPath: line.iconPath,
+                color: line.color,
+                label: line.tab.label(context),
+                count: state.countFor(line.tab),
+              ),
+          ],
         ),
       ),
     );
   }
 
-  Map<String, int> _calculateTaskStats(List<TaskModel> tasks) {
-    final now = DateTime.now();
-
-    // Filter out deleted tasks
-    final activeTasks = tasks.where(
-          (task) => task.taskStatus.current != 'deleted',
-    ).toList();
-
-    int doneCount = 0;
-    int scheduledCount = 0;
-    int overdueCount = 0;
-
-    for (var task in activeTasks) {
-      final status = task.taskStatus.current;
-
-      // Count done tasks
-      if (status == 'done') {
-        doneCount++;
-        continue;
-      }
-
-      // Count scheduled tasks (future tasks)
-      if (status == 'scheduled') {
-        final scheduled = task.currentScheduled;
-        if (scheduled != null) {
-          final taskStartDate = scheduled.taskStartDate;
-          if (taskStartDate.isAfter(now)) {
-            scheduledCount++;
-            continue;
-          }
-        }
-      }
-
-      // Count overdue tasks
-      if (_taskService.isTaskOverdue(task, now)) {
-        overdueCount++;
-      }
-    }
-
-    return {
-      'total': activeTasks.length,
-      'done': doneCount,
-      'scheduled': scheduledCount,
-      'overdue': overdueCount,
-    };
-  }
-
-  Widget _buildLoadingState() {
-    return Column(
-      spacing: 8.sp,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              S.current.homeScreenToDoListTitle,
-              style: StyleText.fontSize14Weight500
-                  .copyWith(fontWeight: FontWeight.bold),
-            ),
-            SvgPicture.asset(
-              'assets/icons_assets/home_assets/todo_checklist_clipboard.svg',
-              width: 20,
-              height: 20,
-              color: AppColors.primary,
-            )
-          ],
+  /// Done · Overdue · Scheduled, in the Figma order.
+  static List<_StatusLine> get _lines => <_StatusLine>[
+        _StatusLine(
+          tab: TodoStatusTab.done,
+          iconPath: 'assets/icons_assets/home_assets/ic_status_todo_done.svg',
+          color: AppColors.green,
         ),
-        const SizedBox.shrink(),
-        const Center(
-          child: CircleProgressMaster.inline(),
+        _StatusLine(
+          tab: TodoStatusTab.overdue,
+          iconPath:
+              'assets/icons_assets/home_assets/ic_status_todo_overdue.svg',
+          color: AppColors.red,
         ),
-      ],
-    );
-  }
+        _StatusLine(
+          tab: TodoStatusTab.scheduled,
+          iconPath:
+              'assets/icons_assets/main_icons_assets/ic_status_todo_scheduled.svg',
+          color: AppColors.orange,
+        ),
+      ];
+}
 
-  Widget _buildErrorState() {
-    return Column(
-      spacing: 8.sp,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              S.current.homeScreenToDoListTitle,
-              style: StyleText.fontSize14Weight500
-                  .copyWith(fontWeight: FontWeight.bold),
-            ),
-            SvgPicture.asset(
-              'assets/icons_assets/home_assets/todo_checklist_clipboard.svg',
-              width: 20,
-              height: 20,
-              color: AppColors.primary,
-            )
-          ],
-        ),
-        const SizedBox.shrink(),
-        Text(
-          S.current.errorLoadingTasks,
-          style: StyleText.fontSize12Weight400
-              .copyWith(color: AppColors.red),
-        ),
-      ],
-    );
-  }
+/// One status row's tab, glyph and colour.
+class _StatusLine {
+  const _StatusLine({
+    required this.tab,
+    required this.iconPath,
+    required this.color,
+  });
 
-  Widget item({
-    required Color color,
-    required String number,
-    required String icon,
-  }) {
-    return Row(
-      spacing: 4.sp,
-      children: [
-        SvgPicture.asset(
-          icon,
-          width: 15,
-          height: 15,
-          color: color,
-        ),
-        Text(
-          number,
-          style: StyleText.fontSize12Weight400
-              .copyWith(fontWeight: FontWeight.bold, color: color),
-        )
-      ],
-    );
-  }
+  final TodoStatusTab tab;
+  final String iconPath;
+  final Color color;
 }

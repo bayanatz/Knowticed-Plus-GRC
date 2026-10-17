@@ -11,9 +11,10 @@
 ///          page is read-only, so nothing needed them. `initPersonalInformation`
 ///          (which only copied employee values into those controllers) went
 ///          with them; [profile] replaces it. Explicit return types added.
+library;
 
-import 'package:grc_module/core/helper/main_helper/phone_number.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/controller/settings_controller.dart';
+import 'package:grc_module/core/helper/phone_number.dart';
+import 'package:grc_module/features/settings/presentation/controller/settings_controller.dart';
 import 'package:grc_module/features/settings/se1_profile/domain/entities/personal_profile.dart';
 import 'package:grc_module/features/settings/se1_profile/domain/use_cases/build_personal_profile.dart';
 

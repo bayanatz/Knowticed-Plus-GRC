@@ -1,19 +1,18 @@
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
-
-import 'package:grc_module/core/network/message_module/routes/app_routes.dart';
-import 'package:grc_module/core/constants/message_module/app_assets.dart';
+import 'package:grc_module/core/routes/app_routes.dart';
+import 'package:grc_module/features/messaging/helpers/constants/messaging_assets.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
-import '../../../../m2_connections/presentation/controller/community_controller.dart';
-import '../../controller/message_controller.dart';
-import '../../../data/models/media/media_model.dart';
+import 'package:grc_module/features/messaging/m2_connections/presentation/controller/community_controller.dart';
+import 'package:grc_module/features/messaging/m1_chat/data/models/media/media_model.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
 //Youssef Ashraf
 ///Part of chat profile view .. contains the whole media section
@@ -38,6 +37,7 @@ class MediaSection extends StatelessWidget {
               children: [
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,
+                  onTapDown: (_) => HapticController.low(),
                   onTap: () {
                     if (ContextExtension(context).isTablett) {
                       // Use BLoC instead of GetX
@@ -77,18 +77,26 @@ class MediaSection extends StatelessWidget {
                         width: 8.w,
                       ),
                       Get.locale.toString().contains('en')
-                          ? SvgPicture.asset(
-                        AppAssets.arrowForward,
-                        color: AppColors.text,
-                        width: ContextExtension(context).isTablett ? 24.w : 16.w,
-                        height: ContextExtension(context).isTablett ? 24.h : 16.h,
-                      )
-                          : SvgPicture.asset(
-                        AppAssets.mobileArrowBack,
-                        color: AppColors.text,
-                        width: ContextExtension(context).isTablett ? 24.w : 16.w,
-                        height: ContextExtension(context).isTablett ? 24.h : 16.h,
-                      ),
+                          ? CustomSvgImage.natural(
+                              assetPath: AppAssets.arrowForward,
+                              color: AppColors.text,
+                              width: ContextExtension(context).isTablett
+                                  ? 24.w
+                                  : 16.w,
+                              height: ContextExtension(context).isTablett
+                                  ? 24.h
+                                  : 16.h,
+                            )
+                          : CustomSvgImage.natural(
+                              assetPath: AppAssets.mobileArrowBack,
+                              color: AppColors.text,
+                              width: ContextExtension(context).isTablett
+                                  ? 24.w
+                                  : 16.w,
+                              height: ContextExtension(context).isTablett
+                                  ? 24.h
+                                  : 16.h,
+                            ),
                     ],
                   ),
                 ),
@@ -100,29 +108,29 @@ class MediaSection extends StatelessWidget {
             mediaModel.images == null
                 ? const SizedBox()
                 : SizedBox(
-              height: 76.h,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                separatorBuilder: (context, index) => SizedBox(
-                  width: 8.w,
-                ),
-                itemCount: (mediaModel.images!.length / 2).floor(),
-                itemBuilder: (context, index) => Container(
-                  clipBehavior: Clip.antiAlias,
-                  height: 76.h,
-                  width: 76.w,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(
-                      8.r,
+                    height: 76.h,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      separatorBuilder: (context, index) => SizedBox(
+                        width: 8.w,
+                      ),
+                      itemCount: (mediaModel.images!.length / 2).floor(),
+                      itemBuilder: (context, index) => Container(
+                        clipBehavior: Clip.antiAlias,
+                        height: 76.h,
+                        width: 76.w,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(
+                            8.r,
+                          ),
+                        ),
+                        child: Image.asset(
+                          mediaModel.images![index].img,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
                   ),
-                  child: Image.asset(
-                    mediaModel.images![index].img,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ),
           ],
         )
       ],

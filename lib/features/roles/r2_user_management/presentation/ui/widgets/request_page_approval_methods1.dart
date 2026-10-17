@@ -2,13 +2,13 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: request_page_approval_methods1.dart
-/// Purpose: Declares `RequestPageApprovalMethods1`.
+/// Purpose: Declares `_RequestPageApprovalMethods1`.
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
 
 part of '../pages/request_page_approval.dart';
 
-extension RequestPageApprovalMethods1 on _RequestPageApprovalState {
+extension _RequestPageApprovalMethods1 on _RequestPageApprovalState {
   // REMOVED 24/8/2026: `_updateRequestStatus` — dead code, and the kind that
   // would have been a bug the moment anyone wired it up.
   //
@@ -46,7 +46,8 @@ extension RequestPageApprovalMethods1 on _RequestPageApprovalState {
     // nothing under an Arabic locale.
     if (selectStatus != kAll) {
       filtered = filtered
-          .where((request) => _normalizeStatus(request['status']) == selectStatus)
+          .where(
+              (request) => _normalizeStatus(request['status']) == selectStatus)
           .toList();
     }
 
@@ -64,10 +65,12 @@ extension RequestPageApprovalMethods1 on _RequestPageApprovalState {
     filtered.sort((a, b) {
       final int aDate = (a['dateRequested'] ?? 0) as int;
       final int bDate = (b['dateRequested'] ?? 0) as int;
-      return sortMostRecentFirst ? bDate.compareTo(aDate) : aDate.compareTo(bDate);
+      return sortMostRecentFirst
+          ? bDate.compareTo(aDate)
+          : aDate.compareTo(bDate);
     });
 
-    setState(() {
+    rebuild(() {
       filteredRequests = filtered;
     });
   }
@@ -137,7 +140,7 @@ extension RequestPageApprovalMethods1 on _RequestPageApprovalState {
       // sort (back to the default order, newest first) — the same rule as the
       // User Access sort.
       final bool clearing = sortSelected && sortMostRecentFirst == selected;
-      setState(() {
+      rebuild(() {
         sortSelected = !clearing;
         sortMostRecentFirst = clearing ? true : selected;
       });
@@ -206,12 +209,13 @@ extension RequestPageApprovalMethods1 on _RequestPageApprovalState {
     final date = DateTime.fromMillisecondsSinceEpoch(timestamp);
     return DateFormat('dd MMM yyyy').format(date);
   }
+
   Color _getStatusColor(String status) {
     switch (_normalizeStatus(status)) {
       case kApproved:
         return AppColors.green;
       case kPending:
-        // EDIT 29/8/2026: statusPending (0xFFFF814A), not AppColors.yellow —
+        // EDIT 29/8/2026: statusPending (0xFFFF814A), not AppColors.secondaryPrimary —
         // matches `se6_requests/request_page.dart`, which is the same request
         // in the employee's own view. Pending is the orange in the status
         // palette; the yellow reads as the brand primary, which this screen
@@ -226,6 +230,7 @@ extension RequestPageApprovalMethods1 on _RequestPageApprovalState {
         return AppColors.secondaryText;
     }
   }
+
   String _getStatusLabel(String status) {
     switch (_normalizeStatus(status)) {
       case kApproved:
@@ -240,6 +245,7 @@ extension RequestPageApprovalMethods1 on _RequestPageApprovalState {
         return status;
     }
   }
+
   // ─── Reusable info row ───────────────────────────────────────────────────────
   Widget _infoRow({
     required String icon,
@@ -260,27 +266,26 @@ extension RequestPageApprovalMethods1 on _RequestPageApprovalState {
         SizedBox(width: 4.w),
         Text(
           label,
-          style: StyleText.fontSize12Weight400.copyWith(
-              color:
-              AppColors.text),
+          style: StyleText.fontSize12Weight400.copyWith(color: AppColors.text),
         ),
         ellipsis
             ? Expanded(
-          child: Text(
-            value,
-            style: StyleText.fontSize12Weight400.copyWith(
-                color: AppColors.text),
-            overflow: TextOverflow.ellipsis,
-          ),
-        )
+                child: Text(
+                  value,
+                  style: StyleText.fontSize12Weight400
+                      .copyWith(color: AppColors.text),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              )
             : Text(
-          value,
-          style: StyleText.fontSize12Weight400.copyWith(
-              color: AppColors.text),
-        ),
+                value,
+                style: StyleText.fontSize12Weight400
+                    .copyWith(color: AppColors.text),
+              ),
       ],
     );
   }
+
   Widget filterSection() {
     final s = S.of(context);
 
@@ -288,32 +293,27 @@ extension RequestPageApprovalMethods1 on _RequestPageApprovalState {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          _statusChip("$totalRequests", s.all,
-              isSelected: selectStatus == kAll,
+          _statusChip("$totalRequests", s.all, isSelected: selectStatus == kAll,
               onTap: () {
-                setState(() {
-                  selectStatus = kAll;
-                  _filterRequests();
-                });
-              },
-              labelColor: AppColors.text),
+            rebuild(() {
+              selectStatus = kAll;
+              _filterRequests();
+            });
+          }, labelColor: AppColors.text),
           _statusChip("$approvedCount", s.Approved,
-              isSelected: selectStatus == kApproved,
-              onTap: () {
-                setState(() {
-                  selectStatus = kApproved;
-                  _filterRequests();
-                });
-              },
-              labelColor: AppColors.green),
+              isSelected: selectStatus == kApproved, onTap: () {
+            rebuild(() {
+              selectStatus = kApproved;
+              _filterRequests();
+            });
+          }, labelColor: AppColors.green),
           _statusChip("$pendingCount", s.pending,
-              isSelected: selectStatus == kPending,
-              onTap: () {
-                setState(() {
-                  selectStatus = kPending;
-                  _filterRequests();
-                });
-              },
+              isSelected: selectStatus == kPending, onTap: () {
+            rebuild(() {
+              selectStatus = kPending;
+              _filterRequests();
+            });
+          },
               // EDIT 29/8/2026: statusPending, not AppColors.primary. This is
               // the chip the pending colour is actually read from — the card's
               // status text goes through `_getStatusColor`, which was fixed
@@ -323,35 +323,33 @@ extension RequestPageApprovalMethods1 on _RequestPageApprovalState {
               // Matches `se6_requests/request_page.dart`.
               labelColor: AppColors.statusPending),
           _statusChip("$rejectedCount", s.rejected,
-              isSelected: selectStatus == kRejected,
-              onTap: () {
-                setState(() {
-                  selectStatus = kRejected;
-                  _filterRequests();
-                });
-              },
-              labelColor: AppColors.red),
+              isSelected: selectStatus == kRejected, onTap: () {
+            rebuild(() {
+              selectStatus = kRejected;
+              _filterRequests();
+            });
+          }, labelColor: AppColors.red),
           _statusChip("$cancelledCount", s.canceled,
-              isSelected: selectStatus == kCancelled,
-              onTap: () {
-                setState(() {
-                  selectStatus = kCancelled;
-                  _filterRequests();
-                });
-              },
-              labelColor: AppColors.red),
+              isSelected: selectStatus == kCancelled, onTap: () {
+            rebuild(() {
+              selectStatus = kCancelled;
+              _filterRequests();
+            });
+          }, labelColor: AppColors.red),
         ],
       ),
     );
   }
+
   Widget _statusChip(String count, String label,
       {required bool isSelected,
-        required Color labelColor,
-        required VoidCallback onTap}) {
+      required Color labelColor,
+      required VoidCallback onTap}) {
     var light = Theme.of(context).brightness == Brightness.light;
     var isMobile = ContextExtension(context).isPhone;
 
     return GestureDetector(
+      onTapDown: hapticDown(onTap, HapticLevel.low),
       onTap: onTap,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -362,11 +360,11 @@ extension RequestPageApprovalMethods1 on _RequestPageApprovalState {
             decoration: BoxDecoration(
               color: light
                   ? isSelected
-                  ? AppColors.primary
-                  : AppColors.white
+                      ? AppColors.primary
+                      : AppColors.white
                   : isSelected
-                  ? AppColors.primary
-                  : AppColors.card,
+                      ? AppColors.primary
+                      : AppColors.card,
               borderRadius: BorderRadius.circular(4.r),
             ),
             child: Center(
@@ -374,23 +372,23 @@ extension RequestPageApprovalMethods1 on _RequestPageApprovalState {
                 count,
                 style: isMobile
                     ? StyleText.fontSize14Weight400.copyWith(
-                  color: light
-                      ? isSelected
-                      ? AppColors.textButton
-                      : AppColors.secondaryText
-                      : isSelected
-                      ? AppColors.textButton
-                      : AppColors.text,
-                )
+                        color: light
+                            ? isSelected
+                                ? AppColors.textButton
+                                : AppColors.secondaryText
+                            : isSelected
+                                ? AppColors.textButton
+                                : AppColors.text,
+                      )
                     : StyleText.fontSize20Weight500.copyWith(
-                  color: light
-                      ? isSelected
-                      ? AppColors.textButton
-                      : AppColors.secondaryText
-                      : isSelected
-                      ? AppColors.textButton
-                      : AppColors.text,
-                ),
+                        color: light
+                            ? isSelected
+                                ? AppColors.textButton
+                                : AppColors.secondaryText
+                            : isSelected
+                                ? AppColors.textButton
+                                : AppColors.text,
+                      ),
               ),
             ),
           ),

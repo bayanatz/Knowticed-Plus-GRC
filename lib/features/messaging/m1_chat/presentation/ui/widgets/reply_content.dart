@@ -65,31 +65,31 @@ class ReplyContent extends StatelessWidget {
                       Flexible(
                         child: model.messageType == MessageTypes.cameraImage
                             ? Stack(
-                          fit: StackFit.expand,
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(8.r),
-                              child: Image.network(
-                                model.mediaLink!,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            Container()
-                          ],
-                        )
+                                fit: StackFit.expand,
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(8.r),
+                                    child: Image.network(
+                                      model.mediaLink!,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  Container()
+                                ],
+                              )
                             : Padding(
-                          padding: EdgeInsetsDirectional.only(
-                            start: 8.w,
-                            top: 4.h,
-                          ),
-                          child: Text(
-                            _getDecryptedContent(context),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: maxLines,
-                            style: StyleText.fontSize14Weight400
-                                .copyWith(color: AppColors.text),
-                          ),
-                        ),
+                                padding: EdgeInsetsDirectional.only(
+                                  start: 8.w,
+                                  top: 4.h,
+                                ),
+                                child: Text(
+                                  _getDecryptedContent(context),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: maxLines,
+                                  style: StyleText.fontSize14Weight400
+                                      .copyWith(color: AppColors.text),
+                                ),
+                              ),
                       ),
                     ],
                   ),

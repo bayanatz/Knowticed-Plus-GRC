@@ -2,9 +2,11 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: nav_bar_cubit.dart
-/// Purpose: Declares `NavBarCubit`.
-/// Author: Knowticed Plus team
+/// Description: Declares `NavBarCubit`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
@@ -13,17 +15,17 @@ import 'package:grc_module/features/home/h2_nav_bar/data/repository/nav_bar_repo
 import 'package:grc_module/features/home/h2_nav_bar/domain/base_repository/nav_bar_base_repository.dart';
 import 'package:grc_module/features/home/h2_nav_bar/persistent_nav_bar.dart';
 import 'package:grc_module/features/roles/r1_role_management/data/models/role_model.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
+import 'package:grc_module/features/roles/r1_role_management/domain/enums/module_name_aliases.dart';
+import 'package:grc_module/core/helper/access/modules_enum.dart';
 
-import '../../../../../core/network/api_constants.dart';
-import '../../../../../generated/l10n.dart';
-import 'package:grc_module/features/roles/r1_role_management/presentation/controller/modules_cubit.dart';
+import 'package:grc_module/core/network/api_constants.dart';
+
 import 'package:grc_module/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
 
-import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
+import 'package:grc_module/core/helper/access/main_core_employee_controller.dart';
 import 'package:grc_module/features/home/h3_app_drawer/presentation/controller/app_drawer_cubit.dart';
 
-part './nav_bar_state.dart';
+part 'nav_bar_state.dart';
 
 class NavBarCubit extends Cubit<NavBarState> {
   /// Kicks off [_init] immediately, mirroring the GetxController onInit()
@@ -64,12 +66,9 @@ class NavBarCubit extends Cubit<NavBarState> {
       navBarModules.map((module) => module.iconPath).toList();
   bool get isAppBarEventAllowed =>
       _allAllowedModules.contains(Modules.events) &&
-          !navBarModules.contains(Modules.events);
-
+      !navBarModules.contains(Modules.events);
 
   Future<void> _init() async {
-
-
     isLoadingModules = true;
 
     // ✅ CRITICAL: Initialize with minimum viable navbar IMMEDIATELY
@@ -77,7 +76,8 @@ class NavBarCubit extends Cubit<NavBarState> {
     navBarModules = [Modules.home, Modules.more];
     _publish();
 
-    final currentEmployee = Get.find<MainCoreEmployeeController>().employeeEntity;
+    final currentEmployee =
+        Get.find<MainCoreEmployeeController>().employeeEntity;
 
     if (currentEmployee == null) {
       _allAllowedModules = [];
@@ -131,10 +131,14 @@ class NavBarCubit extends Cubit<NavBarState> {
     }
 
     _log('companyId = $companyId');
-    _log('licensed map (${_companyLicensedModules.length} keys) = '
-        '$_companyLicensedModules');
-    _log("licensed['grc'] = ${_companyLicensedModules['grc']}  "
-        "(key present: ${_companyLicensedModules.containsKey('grc')})");
+    _log(
+      'licensed map (${_companyLicensedModules.length} keys) = '
+      '$_companyLicensedModules',
+    );
+    _log(
+      "licensed['grc'] = ${_companyLicensedModules['grc']}  "
+      "(key present: ${_companyLicensedModules.containsKey('grc')})",
+    );
 
     String? employeeRoleName = _getEmployeeRoleName(currentEmployee);
 
@@ -142,8 +146,10 @@ class NavBarCubit extends Cubit<NavBarState> {
         ? 'n/a'
         : _isAdminRole(employeeRoleName).toString();
     _log('role name = "$employeeRoleName"   isAdminRole = $adminFlag');
-    _log('employee id = "${currentEmployee.id}"   '
-        'isSubscriptionAdmin = $isSubscriptionAdmin');
+    _log(
+      'employee id = "${currentEmployee.id}"   '
+      'isSubscriptionAdmin = $isSubscriptionAdmin',
+    );
 
     if (employeeRoleName == null || employeeRoleName.isEmpty) {
       _log('ABORT: role name null/empty -> _allAllowedModules = []');
@@ -154,17 +160,20 @@ class NavBarCubit extends Cubit<NavBarState> {
       return;
     }
 
-
     try {
       roleHistory = roleController.roles.firstWhereOrNull(
-            (element) => element.currentRoleName.toLowerCase() == employeeRoleName.toLowerCase(),
+        (element) =>
+            element.currentRoleName.toLowerCase() ==
+            employeeRoleName.toLowerCase(),
       );
 
       if (roleHistory == null) {
-
         if (isSubscriptionAdmin || _isAdminRole(employeeRoleName)) {
-          _allAllowedModules =
-              Modules.values.where((m) => m != Modules.more).toList();
+          // CHANGED 16/10/2026: legacy `tracking` is left out — Time Tracker
+          // replaced it (owner decision 17); it opened a developer stub page.
+          _allAllowedModules = Modules.values
+              .where((m) => m != Modules.more && m != Modules.tracking)
+              .toList();
         } else {
           _allAllowedModules = [];
         }
@@ -174,11 +183,12 @@ class NavBarCubit extends Cubit<NavBarState> {
         return;
       }
 
-
       _log('roleHistory found = ${roleHistory != null}');
       if (roleHistory != null) {
-        _log('  currentSelectedModules = '
-            '${roleHistory!.currentSelectedModules}');
+        _log(
+          '  currentSelectedModules = '
+          '${roleHistory!.currentSelectedModules}',
+        );
       }
 
       if (isSubscriptionAdmin || _isAdminRole(employeeRoleName)) {
@@ -197,8 +207,9 @@ class NavBarCubit extends Cubit<NavBarState> {
         // Role gate only. Every consumer below still runs the module through
         // _isModuleLicensed, so a company that is not licensed for a module
         // does not get it here.
-        _allAllowedModules =
-            Modules.values.where((m) => m != Modules.more).toList();
+        _allAllowedModules = Modules.values
+            .where((m) => m != Modules.more && m != Modules.tracking)
+            .toList();
       } else {
         List<String> activeModuleNames = roleHistory!.currentSelectedModules;
         _allAllowedModules = _convertModuleNamesToEnums(activeModuleNames);
@@ -206,11 +217,9 @@ class NavBarCubit extends Cubit<NavBarState> {
 
       _getNavBarModules();
 
-
       isLoadingModules = false;
       _publish();
-
-    } catch (e, stackTrace) {
+    } catch (e) {
       _allAllowedModules = [];
       _getNavBarModules();
       isLoadingModules = false;
@@ -220,11 +229,8 @@ class NavBarCubit extends Cubit<NavBarState> {
 
   // ✅ ADD: Extract company ID (same as AppDrawerCubit)
   String? _getCompanyId(dynamic currentEmployee) {
-
     if (ApiConstants.baseUri.isNotEmpty) {
-
       if (ApiConstants.baseUri.contains('/')) {
-
         List<String> parts = ApiConstants.baseUri.split('/');
 
         if (parts.length >= 2) {
@@ -248,8 +254,9 @@ class NavBarCubit extends Cubit<NavBarState> {
   /// Parameters:
   /// - [companyId]: Document id of the company's demo-request record.
   Future<void> _loadCompanyLicensedModules(String companyId) async {
-    _companyLicensedModules =
-        await _navBarRepository.getCompanyLicensedModules(companyId);
+    _companyLicensedModules = await _navBarRepository.getCompanyLicensedModules(
+      companyId,
+    );
   }
 
   // ✅ ADD: Check if module is licensed (same as AppDrawerCubit)
@@ -257,7 +264,8 @@ class NavBarCubit extends Cubit<NavBarState> {
     // ✅ FIX: System modules are always allowed (including roles_module for admin/HR)
     if (module == Modules.home ||
         module == Modules.settings ||
-        module == Modules.roles) {  // ✅ Roles is also a system module
+        module == Modules.roles) {
+      // ✅ Roles is also a system module
       return true;
     }
 
@@ -278,14 +286,23 @@ class NavBarCubit extends Cubit<NavBarState> {
       moduleName = 'grc';
     }
     if (module == Modules.qiyas) {
-      moduleName = _companyLicensedModules.containsKey('qiyas') ? 'qiyas' : 'grc';
+      moduleName =
+          _companyLicensedModules.containsKey('qiyas') ? 'qiyas' : 'grc';
+    }
+
+    // 8/10/2026 — Time Tracker: `Modules.timeTracker.name` lower-cases to
+    // 'timetracker', but the licence is stored as `time_tracker` (spec) or
+    // `tracking` (Knowticed Admin today, owner decision 17). Any spelling
+    // from `ModuleNameAliases` that is licensed counts.
+    if (module == Modules.timeTracker) {
+      return ModuleNameAliases.spellingsOf('time_tracker')
+          .any((String key) => _companyLicensedModules[key] == true);
     }
 
     final isLicensed = _companyLicensedModules[moduleName] ?? false;
 
     if (isLicensed) {
-    } else {
-    }
+    } else {}
 
     return isLicensed;
   }
@@ -325,10 +342,11 @@ class NavBarCubit extends Cubit<NavBarState> {
 
     for (String moduleName in moduleNames) {
       Modules? moduleEnum = _getModuleEnum(moduleName);
-      if (moduleEnum != null) {
+      // `!contains` (8/10/2026): `time_tracker` and legacy `tracking` both
+      // map to Modules.timeTracker — list it once.
+      if (moduleEnum != null && !moduleEnums.contains(moduleEnum)) {
         moduleEnums.add(moduleEnum);
-      } else {
-      }
+      } else {}
     }
 
     return moduleEnums;
@@ -369,9 +387,12 @@ class NavBarCubit extends Cubit<NavBarState> {
       case 'grc':
       case 'كامل':
         return Modules.grc;
+      // 8/10/2026 — owner decision 17: legacy `tracking` IS Time Tracker.
+      case 'time_tracker':
+      case 'timetracker':
       case 'tracking':
       case 'التتبع':
-        return Modules.tracking;
+        return Modules.timeTracker;
       case 'inventory':
       case 'المخزون':
         return Modules.inventory;
@@ -402,7 +423,8 @@ class NavBarCubit extends Cubit<NavBarState> {
   }
 
   void _getNavBarModules() {
-    final currentEmployee = Get.find<MainCoreEmployeeController>().employeeEntity;
+    final currentEmployee =
+        Get.find<MainCoreEmployeeController>().employeeEntity;
 
     if (currentEmployee == null) {
       return;
@@ -417,8 +439,6 @@ class NavBarCubit extends Cubit<NavBarState> {
     // AppDrawerCubit.isOwner = _isAdminRole(employeeRoleName);
     // AppDrawerCubit.isHr = employeeRoleName.toLowerCase() == 'hr';
     //
-    // print('🔧 NavBar: Role: $employeeRoleName');
-    // print('🔧 NavBar: AppDrawerCubit.isOwner: ${AppDrawerCubit.isOwner}, AppDrawerCubit.isHr: ${AppDrawerCubit.isHr}');
 
     // Always add home
     if (!_allAllowedModules.contains(Modules.home)) {
@@ -430,16 +450,19 @@ class NavBarCubit extends Cubit<NavBarState> {
 
     if (AppDrawerCubit.isOwner) {
       _getNavBarModulesFromReference(
-          referenceModulesList: NavBarConstantModules.defaultAdminNavBarModules);
+        referenceModulesList: NavBarConstantModules.defaultAdminNavBarModules,
+      );
     } else if (AppDrawerCubit.isHr) {
       if (!_allAllowedModules.contains(Modules.roles)) {
         _allAllowedModules.add(Modules.roles);
       }
       _getNavBarModulesFromReference(
-          referenceModulesList: NavBarConstantModules.defaultHRNavBarModules);
+        referenceModulesList: NavBarConstantModules.defaultHRNavBarModules,
+      );
     } else {
       _getNavBarModulesFromReference(
-          referenceModulesList: NavBarConstantModules.defaultUserNavBarModules);
+        referenceModulesList: NavBarConstantModules.defaultUserNavBarModules,
+      );
     }
 
     _addSecondaryModulesIfNeeded();
@@ -458,7 +481,7 @@ class NavBarCubit extends Cubit<NavBarState> {
   // Tagged so they can be filtered:  flutter logs | grep NAVBAR
   // Remove once the GRC-on-mobile question is settled.
 
-  void _log(String message) => debugPrint('[NAVBAR] $message');
+  void _log(String message) {}
 
   /// Walks GRC through every gate that can drop it, and prints the result of
   /// each one. Whichever line reads false is the reason it is missing.
@@ -471,16 +494,22 @@ class NavBarCubit extends Cubit<NavBarState> {
     final bool inMoreList = moreListModules.contains(grc);
 
     _log('--- GRC verdict -------------------------------------------');
-    _log('  AppDrawerCubit.isOwner = ${AppDrawerCubit.isOwner}  '
-        'isHr = ${AppDrawerCubit.isHr}');
+    _log(
+      '  AppDrawerCubit.isOwner = ${AppDrawerCubit.isOwner}  '
+      'isHr = ${AppDrawerCubit.isHr}',
+    );
     _log('  in _allAllowedModules  = $inAllAllowed   <- role gate');
     _log('  _isModuleLicensed      = $licensed   <- company license gate');
     _log('  in navBarModules       = $inNavBar');
-    _log('  in moreListModules     = $inMoreList   <- what the More page shows');
+    _log(
+      '  in moreListModules     = $inMoreList   <- what the More page shows',
+    );
     _log('  navBarModules  = ${navBarModules.map((m) => m.name).toList()}');
     _log('  moreListModules = ${moreListModules.map((m) => m.name).toList()}');
-    _log('  _allAllowedModules = '
-        '${_allAllowedModules.map((m) => m.name).toList()}');
+    _log(
+      '  _allAllowedModules = '
+      '${_allAllowedModules.map((m) => m.name).toList()}',
+    );
     _log('-----------------------------------------------------------');
   }
 
@@ -488,27 +517,23 @@ class NavBarCubit extends Cubit<NavBarState> {
   void _getNavBarModulesFromReference({
     required List<Modules> referenceModulesList,
   }) {
-
     for (Modules module in referenceModulesList) {
       bool isAllowed = _allAllowedModules.contains(module);
       bool notInNavBar = !navBarModules.contains(module);
       bool isLicensed = _isModuleLicensed(module); // ✅ ADD LICENSE CHECK
 
-
       // ✅ MODIFIED: Only add if licensed
       if (isAllowed && notInNavBar && isLicensed) {
         navBarModules.add(module);
-      } else if (!isLicensed && isAllowed) {
-      }
+      } else if (!isLicensed && isAllowed) {}
     }
   }
 
   void _addSecondaryModulesIfNeeded() {
-
     for (int i = 0;
-    i < NavBarConstantModules.secondaryNavBarItems.length &&
-        navBarModules.length < 4;
-    i++) {
+        i < NavBarConstantModules.secondaryNavBarItems.length &&
+            navBarModules.length < 4;
+        i++) {
       Modules module = NavBarConstantModules.secondaryNavBarItems[i];
 
       // ✅ ADD: Check license before adding
@@ -524,12 +549,12 @@ class NavBarCubit extends Cubit<NavBarState> {
 
   // ✅ MODIFIED: Updated to include ALL allowed modules
   void _getMoreListModules() {
-
     // First add modules from secondaryNavBarItems (maintains order)
     for (Modules module in NavBarConstantModules.secondaryNavBarItems) {
       if (!navBarModules.contains(module) &&
           _allAllowedModules.contains(module) &&
-          _isModuleLicensed(module)) { // ✅ ADD LICENSE CHECK
+          _isModuleLicensed(module)) {
+        // ✅ ADD LICENSE CHECK
         moreListModules.add(module);
       }
     }
@@ -540,21 +565,23 @@ class NavBarCubit extends Cubit<NavBarState> {
           !moreListModules.contains(module) &&
           module != Modules.more &&
           module != Modules.home &&
-          _isModuleLicensed(module)) { // ✅ ADD LICENSE CHECK
+          _isModuleLicensed(module)) {
+        // ✅ ADD LICENSE CHECK
         moreListModules.add(module);
       }
     }
-
   }
 
   /// Emits the current field snapshot so BlocBuilder rebuilds. Replaces the
   /// GetxController `update()` call the original used.
   void _publish() {
     if (isClosed) return;
-    emit(NavBarLoaded(
-      navBarModules: List.unmodifiable(navBarModules),
-      moreListModules: List.unmodifiable(moreListModules),
-      isLoadingModules: isLoadingModules,
-    ));
+    emit(
+      NavBarLoaded(
+        navBarModules: List.unmodifiable(navBarModules),
+        moreListModules: List.unmodifiable(moreListModules),
+        isLoadingModules: isLoadingModules,
+      ),
+    );
   }
 }

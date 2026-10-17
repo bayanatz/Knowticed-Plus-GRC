@@ -2,8 +2,8 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: home_chart_cards_extra.dart
-/// Purpose: All eleven cards on the Adding Widget "Chart & Graph" tab.
-/// Author: Knowticed Plus team
+/// Description: All eleven cards on the Adding Widget "Chart & Graph" tab.
+/// Author: Amr Mesbah
 /// Created at: 23/8/2026
 ///
 /// Source of truth: Figma file BuJXLizpGcK5eHVBqQomXc, page "ROLE MANAGEMENT",
@@ -36,18 +36,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/custom/24-custom_chart_card.dart';
-import 'package:grc_module/core/custom/26-custom_bar_chart_card.dart';
-import 'package:grc_module/core/custom/27-custom_donut_chart_card.dart';
-import 'package:grc_module/core/custom/28-custom_horizontal_bar_chart_card.dart';
-import 'package:grc_module/core/custom/29-custom_grouped_bar_chart_card.dart';
-import 'package:grc_module/core/custom/91-custom_chart_extras.dart';
-import 'package:grc_module/core/custom/92-custom_stacked_bar_chart_card.dart';
-import 'package:grc_module/core/custom/93-custom_horizontal_stacked_bar_chart_card.dart';
-import 'package:grc_module/core/custom/94-custom_base_line_chart_card.dart';
-import 'package:grc_module/core/custom/95-custom_pie_chart_card.dart';
-import 'package:grc_module/core/custom/96-custom_radial_bar_chart_card.dart';
-import 'package:grc_module/core/custom/97-custom_table_chart_card.dart';
+import 'package:grc_module/core/custom/charts/custom_chart_card.dart';
+import 'package:grc_module/core/custom/charts/custom_bar_chart_card.dart';
+import 'package:grc_module/core/custom/charts/custom_donut_chart_card.dart';
+import 'package:grc_module/core/custom/charts/custom_horizontal_bar_chart_card.dart';
+import 'package:grc_module/core/custom/charts/custom_grouped_bar_chart_card.dart';
+import 'package:grc_module/core/custom/charts/custom_chart_extras.dart';
+import 'package:grc_module/core/custom/charts/custom_stacked_bar_chart_card.dart';
+import 'package:grc_module/core/custom/charts/custom_horizontal_stacked_bar_chart_card.dart';
+import 'package:grc_module/core/custom/charts/custom_base_line_chart_card.dart';
+import 'package:grc_module/core/custom/charts/custom_pie_chart_card.dart';
+import 'package:grc_module/core/custom/charts/custom_radial_bar_chart_card.dart';
+import 'package:grc_module/core/custom/charts/custom_table_chart_card.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/core/theme/app_animations.dart';
 
@@ -94,11 +94,7 @@ class _ChartCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: width.w,
-      height: kHomeChartHeight.h,
-      child: child,
-    );
+    return SizedBox(width: width.w, height: kHomeChartHeight.h, child: child);
   }
 }
 
@@ -193,39 +189,39 @@ class HomeTableChart extends StatelessWidget {
     return AnimatedSizeWrap(
       // Tables animate their size (rows added / removed / filtered).
       child: _ChartCell(
-      width: kHomeChartWideWidth,
-      child: TableChartCard(
-        title: l.tableChart,
-        padding: _cardPadding,
-        height: kHomeChartHeight.h,
-        trailing: const _RangeRow(),
-        rowSpacing: 1,
-        columns: <String>[
-          l.service,
-          l.serviceRequester,
-          l.serviceProvider,
-          l.status,
-        ],
-        columnFlex: const <int>[3, 4, 4, 3],
-        rows: <TableChartRowData>[
-          for (final TableChartCell status in statuses)
-            TableChartRowData(
-              cells: <TableChartCell>[
-                TableChartCell(text: l.serviceName),
-                TableChartCell(
-                  text: 'Ahmed Abd el Rahman',
-                  subtitle: l.department,
-                ),
-                TableChartCell(
-                  text: 'Ahmed Abd el Rahman',
-                  subtitle: l.department,
-                ),
-                status,
-              ],
-            ),
-        ],
+        width: kHomeChartWideWidth,
+        child: TableChartCard(
+          title: l.tableChart,
+          padding: _cardPadding,
+          height: kHomeChartHeight.h,
+          trailing: const _RangeRow(),
+          rowSpacing: 1,
+          columns: <String>[
+            l.service,
+            l.serviceRequester,
+            l.serviceProvider,
+            l.status,
+          ],
+          columnFlex: const <int>[3, 4, 4, 3],
+          rows: <TableChartRowData>[
+            for (final TableChartCell status in statuses)
+              TableChartRowData(
+                cells: <TableChartCell>[
+                  TableChartCell(text: l.serviceName),
+                  TableChartCell(
+                    text: 'Ahmed Abd el Rahman',
+                    subtitle: l.department,
+                  ),
+                  TableChartCell(
+                    text: 'Ahmed Abd el Rahman',
+                    subtitle: l.department,
+                  ),
+                  status,
+                ],
+              ),
+          ],
+        ),
       ),
-    ),
     );
   }
 }
@@ -314,17 +310,29 @@ class HomeGroupedBarChart extends StatelessWidget {
           ChartData(label: '${l.label} 1', value: 0, color: AppColors.primary),
           ChartData(label: '${l.label} 2', value: 0, color: AppColors.grey),
           ChartData(
-              label: '${l.label} 3', value: 0, color: AppColors.lightGrey),
+            label: '${l.label} 3',
+            value: 0,
+            color: AppColors.lightGrey,
+          ),
           ChartData(
-              label: '${l.label} 4', value: 0, color: AppColors.totalBlack),
+            label: '${l.label} 4',
+            value: 0,
+            color: AppColors.totalBlack,
+          ),
         ],
         groups: const <GroupedBarData>[
           GroupedBarData(
-              label: 'Prod', values: <double>[24000, 18000, 12000, 8000]),
+            label: 'Prod',
+            values: <double>[24000, 18000, 12000, 8000],
+          ),
           GroupedBarData(
-              label: 'Mai', values: <double>[21000, 16000, 11000, 7000]),
+            label: 'Mai',
+            values: <double>[21000, 16000, 11000, 7000],
+          ),
           GroupedBarData(
-              label: 'Dev', values: <double>[26000, 19000, 13000, 9000]),
+            label: 'Dev',
+            values: <double>[26000, 19000, 13000, 9000],
+          ),
         ],
       ),
     );
@@ -379,12 +387,16 @@ class HomeHorizontalStackedBarChart extends StatelessWidget {
         series: <ChartData>[
           ChartData(label: '${l.label} 1', value: 0, color: AppColors.primary),
           ChartData(
-              label: '${l.label} 2',
-              value: 0,
-              color: AppColors.secondaryPrimary),
+            label: '${l.label} 2',
+            value: 0,
+            color: AppColors.secondaryPrimary,
+          ),
           ChartData(label: '${l.label} 3', value: 0, color: AppColors.grey),
           ChartData(
-              label: '${l.label} 4', value: 0, color: AppColors.lightGrey),
+            label: '${l.label} 4',
+            value: 0,
+            color: AppColors.lightGrey,
+          ),
         ],
         bars: <StackedChartData>[
           for (int i = 1; i <= 4; i++)

@@ -5,23 +5,22 @@
 /// Purpose: Declares `HomeChartDescriptor`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/custom/24-custom_chart_card.dart';
-import 'package:grc_module/core/custom/26-custom_bar_chart_card.dart';
-import 'package:grc_module/core/custom/28-custom_horizontal_bar_chart_card.dart';
+import 'package:grc_module/core/custom/charts/custom_chart_card.dart';
+import 'package:grc_module/core/custom/charts/custom_bar_chart_card.dart';
+import 'package:grc_module/core/custom/charts/custom_horizontal_bar_chart_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
 import 'package:grc_module/features/roles/r4_active_directory/domain/entities/employee_entity.dart';
 // REMOVED_MODULE: import 'package:grc_module/features/external/services_mangment_module/core/new_theme.dart';
 
 import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
+import 'package:grc_module/core/helper/access/main_core_employee_controller.dart';
 
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
+import 'package:grc_module/core/helper/access/modules_enum.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 
 /// Which module a chart belongs to, so the Adding Widget page can filter the
@@ -67,7 +66,6 @@ class HomeLayoutChartWidget extends StatefulWidget {
 }
 
 class _HomeLayoutChartWidgetState extends State<HomeLayoutChartWidget> {
-
   EmployeeEntityPro get employeeFunctionHelper {
     final controller = Get.find<MainCoreEmployeeController>();
     if (controller.employeeEntity == null) {
@@ -79,10 +77,51 @@ class _HomeLayoutChartWidgetState extends State<HomeLayoutChartWidget> {
   // ── Convert labels to Arabic if needed ────────────────
   List<String> _formatLabels(List<String> labels, bool isArabic) {
     if (!isArabic) return labels;
-    const english = ['0','1','2','3','4','5','6','7','8','9',
-      'S','s','A','a','B','b','C','c','D','d'];
-    const arabic  = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩',
-      'س','س','أ','أ','ب','ب','ج','ج','د','د'];
+    const english = [
+      '0',
+      '1',
+      '2',
+      '3',
+      '4',
+      '5',
+      '6',
+      '7',
+      '8',
+      '9',
+      'S',
+      's',
+      'A',
+      'a',
+      'B',
+      'b',
+      'C',
+      'c',
+      'D',
+      'd'
+    ];
+    // D-145: digits stay Western in Arabic; only the letters are mapped.
+    const arabic = [
+      '0',
+      '1',
+      '2',
+      '3',
+      '4',
+      '5',
+      '6',
+      '7',
+      '8',
+      '9',
+      'س',
+      'س',
+      'أ',
+      'أ',
+      'ب',
+      'ب',
+      'ج',
+      'ج',
+      'د',
+      'د'
+    ];
     return labels.map((label) {
       String result = label;
       for (int i = 0; i < english.length; i++) {
@@ -91,7 +130,6 @@ class _HomeLayoutChartWidgetState extends State<HomeLayoutChartWidget> {
       return result;
     }).toList();
   }
-
 
   /// Default orientation per chart id.
   ///
@@ -107,8 +145,6 @@ class _HomeLayoutChartWidgetState extends State<HomeLayoutChartWidget> {
         return ChartOrientation.vertical;
     }
   }
-
-
 
   Widget _buildChart({
     required String chartId,
@@ -172,8 +208,8 @@ class _HomeLayoutChartWidgetState extends State<HomeLayoutChartWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final isArabic  = Localizations.localeOf(context).languageCode == 'ar';
-    final l         = S.of(context);
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final l = S.of(context);
 
     final visible = widget.moduleFilter == null
         ? kHomeCharts

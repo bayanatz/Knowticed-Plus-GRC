@@ -9,6 +9,7 @@
 # packages, and plugins designed to encourage good coding practices.
 analyzer:
   exclude:
+    - packages/**
     - build/**
     - android/**
     - ios/**
@@ -16,6 +17,9 @@ analyzer:
     - windows/**
     - macos/**
     - linux/**
+    # Written by intl_utils (`dart run intl_utils:generate`) and overwritten
+    # on every run; hand fixes would not survive. Our own code is not excluded.
+    - lib/generated/**
 include: package:flutter_lints/flutter.yaml
 
 linter:

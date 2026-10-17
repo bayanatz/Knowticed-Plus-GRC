@@ -9,6 +9,7 @@
 /// Added for CR-SKEL-SE3-N02 / N21. Every method returns an `Either` so a
 /// failure is a value the cubit must handle, rather than the previous mix of
 /// `rethrow`, `null` and `false`.
+library;
 
 import 'package:dartz/dartz.dart';
 

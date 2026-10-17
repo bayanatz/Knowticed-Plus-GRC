@@ -5,9 +5,7 @@
 /// Purpose: Declares `UserPermissionHistoryModel`.
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'dart:convert';
+library;
 
 import 'package:grc_module/features/roles/r1_role_management/data/models/role_access_model.dart';
 
@@ -29,50 +27,55 @@ class UserPermissionHistoryModel {
   });
 
   // Constants for database keys
-  static const String EMPLOYEE_ID = "Employee_Id";
-  static const String TIMESTAMPS = "Timestamps";
-  static const String ROLE = "Role";
-  static const String FROM_DATE = "From_Date";
-  static const String TO_DATE = "To_Date";
-  static const String EDIT_BY = "Edit_By";
+  static const String kEmployeeId = "Employee_Id";
+  static const String kTimestamps = "Timestamps";
+  static const String kRole = "Role";
+  static const String kFromDate = "From_Date";
+  static const String kToDate = "To_Date";
+  static const String kEditBy = "Edit_By";
 
   // Helper getters for current (latest) values
   String get currentRole => role.isNotEmpty ? role.last : '';
   String get currentFromDate => fromDate.isNotEmpty ? fromDate.last : '';
   String get currentToDate => toDate.isNotEmpty ? toDate.last : '';
   String get currentEditBy => editBy.isNotEmpty ? editBy.last : '';
-  int get currentTimestamp => timestamps.isNotEmpty ? timestamps.last : DateTime.now().millisecondsSinceEpoch;
+  int get currentTimestamp => timestamps.isNotEmpty
+      ? timestamps.last
+      : DateTime.now().millisecondsSinceEpoch;
 
   // Get value at specific index
   String? getRoleAt(int index) => index < role.length ? role[index] : null;
-  String? getFromDateAt(int index) => index < fromDate.length ? fromDate[index] : null;
-  String? getToDateAt(int index) => index < toDate.length ? toDate[index] : null;
-  String? getEditByAt(int index) => index < editBy.length ? editBy[index] : null;
-  int? getTimestampAt(int index) => index < timestamps.length ? timestamps[index] : null;
+  String? getFromDateAt(int index) =>
+      index < fromDate.length ? fromDate[index] : null;
+  String? getToDateAt(int index) =>
+      index < toDate.length ? toDate[index] : null;
+  String? getEditByAt(int index) =>
+      index < editBy.length ? editBy[index] : null;
+  int? getTimestampAt(int index) =>
+      index < timestamps.length ? timestamps[index] : null;
 
   Map<String, dynamic> toMap() {
     return {
-      EMPLOYEE_ID: employeeId,
-      TIMESTAMPS: timestamps,
-      ROLE: role,
-      FROM_DATE: fromDate,
-      TO_DATE: toDate,
-      EDIT_BY: editBy,
+      kEmployeeId: employeeId,
+      kTimestamps: timestamps,
+      kRole: role,
+      kFromDate: fromDate,
+      kToDate: toDate,
+      kEditBy: editBy,
     };
   }
 
   factory UserPermissionHistoryModel.fromMap(Map<String, dynamic> map) {
     try {
-
       return UserPermissionHistoryModel(
-        employeeId: map[EMPLOYEE_ID] ?? '',
-        timestamps: _parseIntList(map[TIMESTAMPS]),
-        role: _parseStringList(map[ROLE]),
-        fromDate: _parseStringList(map[FROM_DATE]),
-        toDate: _parseStringList(map[TO_DATE]),
-        editBy: _parseStringList(map[EDIT_BY]),
+        employeeId: map[kEmployeeId] ?? '',
+        timestamps: _parseIntList(map[kTimestamps]),
+        role: _parseStringList(map[kRole]),
+        fromDate: _parseStringList(map[kFromDate]),
+        toDate: _parseStringList(map[kToDate]),
+        editBy: _parseStringList(map[kEditBy]),
       );
-    } catch (e, stack) {
+    } catch (e) {
       rethrow;
     }
   }
@@ -126,7 +129,8 @@ class UserPermissionHistoryModel {
       // Add new role or repeat current
       role: List<String>.from(this.role)..add(role ?? currentRole),
       // Add new fromDate or repeat current
-      fromDate: List<String>.from(this.fromDate)..add(fromDate ?? currentFromDate),
+      fromDate: List<String>.from(this.fromDate)
+        ..add(fromDate ?? currentFromDate),
       // Add new toDate or repeat current
       toDate: List<String>.from(this.toDate)..add(toDate ?? currentToDate),
       // Add new editBy or repeat current
@@ -137,10 +141,13 @@ class UserPermissionHistoryModel {
   }
 
   // Convert from old UserPermissionModel (for migration)
-  factory UserPermissionHistoryModel.fromOldModel(UserPermissionModel oldModel) {
+  factory UserPermissionHistoryModel.fromOldModel(
+      UserPermissionModel oldModel) {
     return UserPermissionHistoryModel(
       employeeId: oldModel.employeeId,
-      timestamps: oldModel.role.timestamps.map((t) => t.millisecondsSinceEpoch).toList(),
+      timestamps: oldModel.role.timestamps
+          .map((t) => t.millisecondsSinceEpoch)
+          .toList(),
       role: oldModel.role.values,
       fromDate: oldModel.fromDate.values,
       toDate: oldModel.toDate.values,

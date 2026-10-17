@@ -2,8 +2,8 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: watermark_screen.dart
-/// Purpose: Declares `WatermarkScreen` — Settings › Home Layout › Watermark.
-/// Author: Knowticed Plus team
+/// Description: Declares `WatermarkScreen` — Settings › Home Layout › Watermark.
+/// Author: Amr Mesbah
 /// Created at: 25/8/2026
 ///
 /// Source: Figma BuJXLizpGcK5eHVBqQomXc, ROLE MANAGEMENT > Watermark >
@@ -33,8 +33,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
-import 'package:grc_module/core/custom/50-custom_side_frame_master.dart';
+import 'package:grc_module/core/custom/dialogs/custom_dialog_manager.dart';
+import 'package:grc_module/core/custom/navigation/custom_side_frame_master.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/features/settings/se8_watermark/domain/entities/watermark_settings.dart';
@@ -43,7 +43,9 @@ import 'package:grc_module/features/settings/se8_watermark/presentation/ui/widge
 import 'package:grc_module/features/settings/se8_watermark/presentation/ui/widgets/watermark_panel.dart';
 import 'package:grc_module/features/settings/se8_watermark/presentation/ui/widgets/watermark_preview.dart';
 import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
+import 'package:grc_module/core/custom/feedback/circle_progress.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
 /// Width below which the screen switches to a single column.
 const double kWatermarkPhoneBreakpoint = 600;
@@ -128,7 +130,8 @@ class _WatermarkView extends StatelessWidget {
         if (message == null) return;
         CustomDialogManager.showMessage(
           context: context,
-          lottiePath: 'assets/lottie_assets/main_lottie_assets/error.json',
+          lottiePath:
+              'assets/lottie_assets/main_lottie_assets/lot_status_error.json',
           title: S.of(context).error,
           subtitle: message,
         );
@@ -212,14 +215,14 @@ class _WatermarkView extends StatelessWidget {
     await CustomDialogManager.showDialogFlow(
       context: context,
       confirmLottie:
-          'assets/lottie_assets/main_lottie_assets/lottie_confirmation.json',
+          'assets/lottie_assets/main_lottie_assets/lot_status_confirmation.json',
       confirmTitle: l.saveChanges,
       confirmSubtitle: l.watermarkSaveConfirm,
       confirmYesText: l.confirm,
       confirmNoText: l.cancel,
       onConfirm: cubit.save,
       successLottie:
-          'assets/lottie_assets/main_lottie_assets/lottie_successful.json',
+          'assets/lottie_assets/main_lottie_assets/lot_status_success.json',
       successTitle: l.Successful,
       successSubtitle: l.watermarkSaved,
     );
@@ -233,7 +236,7 @@ class _WatermarkView extends StatelessWidget {
   ///
   /// FIXED 25/8/2026 — this column was `SizedBox(width: panelWidth.w)`, which
   /// overflowed the row by ~451,000 pixels and pushed the preview off screen
-  /// entirely. `FontConstants.fontSize014` in this codebase is `0.014`, i.e.
+  /// entirely. `12.sp` in this codebase is `0.014`, i.e.
   /// the scale extensions here are applied to FRACTIONS of the screen, not to
   /// design-pixel counts — so `280.w` does not mean "280 logical pixels", it
   /// means 280 screen-widths. Figma's numbers are already logical pixels, so
@@ -336,7 +339,7 @@ class _WatermarkView extends StatelessWidget {
     final S l = S.of(context);
     final WatermarkCubit cubit = context.read<WatermarkCubit>();
 
-    final Widget reset = _ActionButton(
+    _ActionButton(
       label: l.resetToDefault,
       onTap: state.busy ? null : cubit.resetToDefault,
       fullWidth: isPhone,
@@ -355,9 +358,8 @@ class _WatermarkView extends StatelessWidget {
       label: l.save,
       primary: true,
       busy: state.busy,
-      onTap: (state.busy || !state.isDirty)
-          ? null
-          : () => _confirmSave(context),
+      onTap:
+          (state.busy || !state.isDirty) ? null : () => _confirmSave(context),
       fullWidth: isPhone,
     );
 
@@ -384,26 +386,23 @@ class _WatermarkView extends StatelessWidget {
           // Desktop/tablet: Figma stacks Reset above Discard on the left and
           // pins Save to the right.
           : Column(
-            children: [
-              SizedBox(height: 12.sp),
-              Row(
+              children: [
+                SizedBox(height: 12.sp),
+                Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-
-                        discard,
-                      ],
+                      children: <Widget>[discard],
                     ),
                     const Spacer(),
                     save,
                   ],
                 ),
-              SizedBox(height: 12.sp),
-            ],
-          ),
+                SizedBox(height: 12.sp),
+              ],
+            ),
     );
   }
 }
@@ -448,8 +447,10 @@ class _PreviewCard extends StatelessWidget {
                     Container(
                       width: 8,
                       height: 8,
-                      decoration:
-                          BoxDecoration(color: dot, shape: BoxShape.circle),
+                      decoration: BoxDecoration(
+                        color: dot,
+                        shape: BoxShape.circle,
+                      ),
                     ),
                     SizedBox(width: 5),
                   ],
@@ -494,9 +495,10 @@ class _ActionButton extends StatelessWidget {
         : AppColors.darkGrey;
     final Color foreground = primary
         ? AppColors.black
-        : AppColors.white.withOpacity(enabled ? 1 : .5);
+        : AppColors.white.withValues(alpha: enabled ? 1 : .5);
 
     return InkWell(
+      onTapDown: hapticDown(onTap, HapticLevel.low),
       onTap: onTap,
       borderRadius: BorderRadius.circular(8),
       child: Container(

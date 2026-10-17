@@ -2,10 +2,15 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: success_dialog.dart
-/// Purpose: Declares `SuccessDialog`.
-/// Author: Knowticed Plus team
+/// Description: Declares `SuccessDialog`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
+import 'package:grc_module/core/extensions/context_extensions.dart'
+    show kpIsPhoneLayout;
+import 'package:grc_module/core/custom/dialogs/custom_dialog_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
@@ -13,7 +18,6 @@ import 'package:lottie/lottie.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/core/theme/app_animations.dart';
 
 /// Success/result dialog.
 ///
@@ -37,40 +41,36 @@ class SuccessDialog extends StatelessWidget {
   final String lottieAsset;
 
   static void show(BuildContext context, {String? message}) {
-    showAppDialog(
+    CustomDialogManager.showMessage(
       context: context,
-      builder: (_) => AlertDialog(
-        title: Text(S.current.success),
-        content: message != null ? Text(message) : null,
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(S.current.ok2),
-          ),
-        ],
-      ),
+      lottiePath:
+          'assets/lottie_assets/main_lottie_assets/lot_status_success.json',
+      title: S.current.success,
+      subtitle: message ?? '',
+      closeAfter: const Duration(seconds: 5),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final bool isTablet = MediaQuery.of(context).size.shortestSide > 600;
+    final bool isTablet = !kpIsPhoneLayout(context);
     final bool isPortrait =
         MediaQuery.of(context).orientation == Orientation.portrait;
 
     return Dialog(
       insetPadding: EdgeInsets.symmetric(
-          horizontal: isTablet
-              ? isPortrait
-                  ? 150.w
-                  : 310.w
-              : 40.w),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
+        horizontal: isTablet
+            ? isPortrait
+                ? 150.w
+                : 310.w
+            : 40.w,
       ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       child: Container(
         decoration: BoxDecoration(
-            color: AppColors.field, borderRadius: BorderRadius.circular(8)),
+          color: AppColors.card,
+          borderRadius: BorderRadius.circular(8),
+        ),
         width: 500.w,
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -94,20 +94,26 @@ class SuccessDialog extends StatelessWidget {
                   fit: BoxFit.fitHeight,
                 ),
               ),
-              Text(title,
-                  textAlign: TextAlign.center,
-                  style: StyleText.fontSize18Weight500),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: StyleText.fontSize18Weight500,
+              ),
               SizedBox(
-                  height: isTablet
-                      ? isPortrait
-                          ? 20.h
-                          : 10.h
-                      : 10.h),
-              Text(subtitle,
-                  textAlign: TextAlign.center,
-                  style: StyleText.fontSize16Weight500.copyWith(color: AppColors.secondaryBlack)
-                      .copyWith(height: 1.4)),
-              SizedBox(height: 20.h)
+                height: isTablet
+                    ? isPortrait
+                        ? 20.h
+                        : 10.h
+                    : 10.h,
+              ),
+              Text(
+                subtitle,
+                textAlign: TextAlign.center,
+                style: StyleText.fontSize16Weight500
+                    .copyWith(color: AppColors.secondaryBlack)
+                    .copyWith(height: 1.4),
+              ),
+              SizedBox(height: 20.h),
             ],
           ),
         ),

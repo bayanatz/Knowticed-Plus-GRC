@@ -6,6 +6,7 @@
 /// Author: Amr Mesbah
 /// Created at: 20/11/2024
 /// Updated: 11/8/2026 - Added the standard header (Docs).
+library;
 
 // ******************* FILE INFO *******************
 // File Name: employees_health_insurance_cubit.dart

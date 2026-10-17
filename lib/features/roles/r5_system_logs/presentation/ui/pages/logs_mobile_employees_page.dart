@@ -25,26 +25,26 @@
 /// what the log itself holds when an actor is no longer in the directory
 /// (someone who has since left still appears in the logs and must still be
 /// exportable).
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:grc_module/core/constants/app_assets.dart';
-import 'package:grc_module/core/custom/35-custom_search_widget_custom.dart';
-import 'package:grc_module/core/custom/50-custom_side_frame_master.dart';
-import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
+import 'package:grc_module/core/custom/inputs/custom_search_widget_custom.dart';
+import 'package:grc_module/core/custom/navigation/custom_side_frame_master.dart';
 import 'package:grc_module/core/di/app_controllers.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
-import 'package:grc_module/core/helper/main_helper/csv_helper.dart';
+import 'package:grc_module/core/helper/csv_helper.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/features/roles/r4_active_directory/domain/entities/employee_entity.dart';
 import 'package:grc_module/features/roles/r4_active_directory/presentation/controller/main_core_department_cubit.dart';
 import 'package:grc_module/features/roles/r5_system_logs/data/models/system_logs_model.dart';
 import 'package:grc_module/features/roles/r5_system_logs/domain/enums/system_logs_items.dart';
-import 'package:grc_module/features/roles/shared_mobile_export/mobile_export_person.dart';
-import 'package:grc_module/features/roles/shared_mobile_export/mobile_export_widgets.dart';
+import 'package:grc_module/features/roles/presentation/ui/widgets/shared_mobile_export/mobile_export_person.dart';
+import 'package:grc_module/features/roles/presentation/ui/widgets/shared_mobile_export/mobile_export_widgets.dart';
 import 'package:grc_module/generated/l10n.dart';
 
 class LogsMobileEmployeesPage extends StatefulWidget {
@@ -91,7 +91,9 @@ class _LogsMobileEmployeesPageState extends State<LogsMobileEmployeesPage> {
     super.initState();
     _logsByPerson = <String, List<SystemLogsModel>>{};
     for (final SystemLogsModel log in widget.logs) {
-      _logsByPerson.putIfAbsent(_keyOf(log), () => <SystemLogsModel>[]).add(log);
+      _logsByPerson
+          .putIfAbsent(_keyOf(log), () => <SystemLogsModel>[])
+          .add(log);
     }
     // Everyone starts ticked: the previous step already narrowed the set, so
     // the default is "export what I just filtered" and the ticks are there to
@@ -179,9 +181,7 @@ class _LogsMobileEmployeesPageState extends State<LogsMobileEmployeesPage> {
   List<MobileExportPerson> get _visible {
     final String q = _query.trim().toLowerCase();
     if (q.isEmpty) return _people;
-    return _people
-        .where((person) => person.searchIndex.contains(q))
-        .toList();
+    return _people.where((person) => person.searchIndex.contains(q)).toList();
   }
 
   /// Select All ticks everything currently listed; tapping it again once they

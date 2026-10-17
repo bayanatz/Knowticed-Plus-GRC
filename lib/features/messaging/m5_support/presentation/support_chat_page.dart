@@ -2,7 +2,7 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: support_chat_page.dart
-/// Purpose: "Knowticed Support" — the tile at the top of Messages and the
+/// Description: "Knowticed Support" — the tile at the top of Messages and the
 ///          conversation page behind it.
 /// Author: Amr Mesbah
 /// Created at: 23/9/2026
@@ -11,6 +11,7 @@
 /// the first messages of this conversation; the Knowticed team replies from
 /// the admin dashboard and the user can answer here. See
 /// support_chat_repository.dart for the Firestore layout.
+library;
 
 import 'dart:async';
 
@@ -19,13 +20,17 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-import 'package:grc_module/core/helper/main_helper/custom_app_bar.dart';
+import 'package:grc_module/features/messaging/helpers/messaging_app_bar.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/features/messaging/m2_connections/presentation/controller/connections_controller.dart';
-import '../data/support_chat_repository.dart';
-import 'support_voice_player.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
+
+import 'package:grc_module/features/messaging/m5_support/data/support_chat_repository.dart';
+import 'package:grc_module/features/messaging/m5_support/presentation/support_voice_player.dart';
+
+import 'package:grc_module/core/custom/feedback/circle_progress.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
 /// Strings of this feature (the generated l10n needs a regeneration step, so
 /// the two languages are kept here).
@@ -71,10 +76,13 @@ class SupportChatTile extends StatelessWidget {
         final s = snap.data ?? const SupportChatSummary();
         return InkWell(
           borderRadius: BorderRadius.circular(8.r),
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(
-            builder: (_) =>
-                SupportChatPage(email: user.email, name: user.name),
-          )),
+          onTapDown: (_) => HapticController.low(),
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) =>
+                  SupportChatPage(email: user.email, name: user.name),
+            ),
+          ),
           child: Container(
             margin: EdgeInsets.only(bottom: 10.h),
             padding: EdgeInsets.all(10.sp),
@@ -87,43 +95,57 @@ class SupportChatTile extends StatelessWidget {
                 CircleAvatar(
                   radius: 20.r,
                   backgroundColor: AppColors.secondaryPrimary,
-                  child: Icon(Icons.support_agent_rounded,
-                      color: AppColors.white, size: 22.sp),
+                  child: Icon(
+                    Icons.support_agent_rounded,
+                    color: AppColors.white,
+                    size: 22.sp,
+                  ),
                 ),
                 SizedBox(width: 10.w),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(_t(context, 'Knowticed Support', 'دعم Knowticed'),
-                          style: StyleText.fontSize14Weight500
-                              .copyWith(color: AppColors.text)),
+                      Text(
+                        _t(context, 'Knowticed Support', 'دعم Knowticed'),
+                        style: StyleText.fontSize14Weight500.copyWith(
+                          color: AppColors.text,
+                        ),
+                      ),
                       SizedBox(height: 2.h),
                       Text(
                         s.lastText.isEmpty
-                            ? _t(context,
+                            ? _t(
+                                context,
                                 'Your comments and feedback, and our replies',
-                                'تعليقاتك وملاحظاتك وردودنا عليها')
+                                'تعليقاتك وملاحظاتك وردودنا عليها',
+                              )
                             : s.lastText,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: StyleText.fontSize12Weight400
-                            .copyWith(color: AppColors.secondaryText),
+                        style: StyleText.fontSize12Weight400.copyWith(
+                          color: AppColors.secondaryText,
+                        ),
                       ),
                     ],
                   ),
                 ),
                 if (s.unread > 0)
                   Container(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 7.w, vertical: 2.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 7.w,
+                      vertical: 2.h,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.secondaryPrimary,
                       borderRadius: BorderRadius.circular(10.r),
                     ),
-                    child: Text('${s.unread}',
-                        style: StyleText.fontSize12Weight500
-                            .copyWith(color: AppColors.white)),
+                    child: Text(
+                      '${s.unread}',
+                      style: StyleText.fontSize12Weight500.copyWith(
+                        color: AppColors.white,
+                      ),
+                    ),
                   ),
               ],
             ),
@@ -159,16 +181,19 @@ class _SupportChatPageState extends State<SupportChatPage> {
   @override
   void initState() {
     super.initState();
-    _msgSub = _repo.watchMessages(widget.email).listen((l) {
-      if (!mounted) return;
-      setState(() {
-        _messages = l;
-        _loading = false;
-      });
-      _repo.markRead(widget.email);
-    }, onError: (_) {
-      if (mounted) setState(() => _loading = false);
-    });
+    _msgSub = _repo.watchMessages(widget.email).listen(
+      (l) {
+        if (!mounted) return;
+        setState(() {
+          _messages = l;
+          _loading = false;
+        });
+        _repo.markRead(widget.email);
+      },
+      onError: (_) {
+        if (mounted) setState(() => _loading = false);
+      },
+    );
     _fbSub = _repo.watchFeedback(widget.email).listen((l) {
       if (mounted) setState(() => _feedback = l);
     }, onError: (_) {});
@@ -192,9 +217,17 @@ class _SupportChatPageState extends State<SupportChatPage> {
       _input.clear();
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(_t(context, 'Message not sent, try again',
-                'لم يتم إرسال الرسالة، حاول مرة أخرى'))));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              _t(
+                context,
+                'Message not sent, try again',
+                'لم يتم إرسال الرسالة، حاول مرة أخرى',
+              ),
+            ),
+          ),
+        );
       }
     }
     if (mounted) setState(() => _sending = false);
@@ -202,9 +235,10 @@ class _SupportChatPageState extends State<SupportChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    final all = [..._feedback, ..._messages]
-      ..sort((a, b) => (a.time ?? DateTime.now())
-          .compareTo(b.time ?? DateTime.now()));
+    final all = [..._feedback, ..._messages]..sort(
+        (a, b) =>
+            (a.time ?? DateTime.now()).compareTo(b.time ?? DateTime.now()),
+      );
     final reversed = all.reversed.toList();
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -224,12 +258,14 @@ class _SupportChatPageState extends State<SupportChatPage> {
                         ? Center(
                             child: Text(
                               _t(
-                                  context,
-                                  'Send comments and feedback from Settings › App Info and our team will reply here.',
-                                  'أرسل تعليقاتك وملاحظاتك من الإعدادات › معلومات التطبيق وسيرد فريقنا هنا.'),
+                                context,
+                                'Send comments and feedback from Settings › App Info and our team will reply here.',
+                                'أرسل تعليقاتك وملاحظاتك من الإعدادات › معلومات التطبيق وسيرد فريقنا هنا.',
+                              ),
                               textAlign: TextAlign.center,
-                              style: StyleText.fontSize14Weight400
-                                  .copyWith(color: AppColors.secondaryText),
+                              style: StyleText.fontSize14Weight400.copyWith(
+                                color: AppColors.secondaryText,
+                              ),
                             ),
                           )
                         : ListView.builder(
@@ -257,14 +293,19 @@ class _SupportChatPageState extends State<SupportChatPage> {
                           maxLines: 4,
                           textInputAction: TextInputAction.send,
                           onSubmitted: (_) => _send(),
-                          style: StyleText.fontSize14Weight400
-                              .copyWith(color: AppColors.text),
+                          style: StyleText.fontSize14Weight400.copyWith(
+                            color: AppColors.text,
+                          ),
                           decoration: InputDecoration(
                             border: InputBorder.none,
-                            hintText: _t(context, 'Type your message',
-                                'اكتب رسالتك'),
-                            hintStyle: StyleText.fontSize14Weight400
-                                .copyWith(color: AppColors.secondaryText),
+                            hintText: _t(
+                              context,
+                              'Type your message',
+                              'اكتب رسالتك',
+                            ),
+                            hintStyle: StyleText.fontSize14Weight400.copyWith(
+                              color: AppColors.secondaryText,
+                            ),
                           ),
                         ),
                       ),
@@ -276,17 +317,23 @@ class _SupportChatPageState extends State<SupportChatPage> {
                             height: 40.sp,
                             child: const Padding(
                               padding: EdgeInsets.all(8),
-                              child: CircleProgressMaster.inline(strokeWidth: 2),
+                              child: CircleProgressMaster.inline(
+                                strokeWidth: 2,
+                              ),
                             ),
                           )
                         : InkWell(
+                            onTapDown: hapticDown(_send, HapticLevel.medium),
                             onTap: _send,
                             customBorder: const CircleBorder(),
                             child: CircleAvatar(
                               radius: 20.r,
                               backgroundColor: AppColors.secondaryPrimary,
-                              child: Icon(Icons.send_rounded,
-                                  size: 20.sp, color: AppColors.white),
+                              child: Icon(
+                                Icons.send_rounded,
+                                size: 20.sp,
+                                color: AppColors.white,
+                              ),
                             ),
                           ),
                   ],
@@ -312,15 +359,16 @@ class _SupportBubble extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 5.h),
       child: Align(
-        alignment:
-            mine ? AlignmentDirectional.centerEnd : AlignmentDirectional.centerStart,
+        alignment: mine
+            ? AlignmentDirectional.centerEnd
+            : AlignmentDirectional.centerStart,
         child: ConstrainedBox(
           constraints: BoxConstraints(maxWidth: 0.75.sw),
           child: Container(
             padding: EdgeInsets.all(10.sp),
             decoration: BoxDecoration(
               color: mine
-                  ? AppColors.secondaryPrimary.withOpacity(0.18)
+                  ? AppColors.secondaryPrimary.withValues(alpha: 0.18)
                   : AppColors.card,
               borderRadius: BorderRadius.circular(8.r),
             ),
@@ -332,21 +380,29 @@ class _SupportBubble extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.only(bottom: 4.h),
                     child: Text(
-                        _t(context, 'Knowticed Support', 'دعم Knowticed'),
-                        style: StyleText.fontSize12Weight500
-                            .copyWith(color: AppColors.secondaryPrimary)),
+                      _t(context, 'Knowticed Support', 'دعم Knowticed'),
+                      style: StyleText.fontSize12Weight500.copyWith(
+                        color: AppColors.secondaryPrimary,
+                      ),
+                    ),
                   ),
                 if (message.feedbackKind != null)
                   Padding(
                     padding: EdgeInsets.only(bottom: 4.h),
-                    child: Text(_kind(context, message.feedbackKind),
-                        style: StyleText.fontSize12Weight500
-                            .copyWith(color: AppColors.secondaryPrimary)),
+                    child: Text(
+                      _kind(context, message.feedbackKind),
+                      style: StyleText.fontSize12Weight500.copyWith(
+                        color: AppColors.secondaryPrimary,
+                      ),
+                    ),
                   ),
                 if (message.text.isNotEmpty)
-                  Text(message.text,
-                      style: StyleText.fontSize14Weight400
-                          .copyWith(color: AppColors.text)),
+                  Text(
+                    message.text,
+                    style: StyleText.fontSize14Weight400.copyWith(
+                      color: AppColors.text,
+                    ),
+                  ),
                 if (message.mediaUrl.isNotEmpty && message.isVoice) ...[
                   // 24/9/2026 — voice note from Knowticed Support.
                   SizedBox(height: 4.h),
@@ -358,22 +414,29 @@ class _SupportBubble extends StatelessWidget {
                           message.fileName.toLowerCase().endsWith('.jpeg')
                       ? ClipRRect(
                           borderRadius: BorderRadius.circular(4.r),
-                          child: Image.network(message.mediaUrl,
-                              width: 200.w, fit: BoxFit.cover),
+                          child: Image.network(
+                            message.mediaUrl,
+                            width: 200.w,
+                            fit: BoxFit.cover,
+                          ),
                         )
                       : Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.attach_file_rounded,
-                                size: 16.sp, color: AppColors.text),
+                            Icon(
+                              Icons.attach_file_rounded,
+                              size: 16.sp,
+                              color: AppColors.text,
+                            ),
                             SizedBox(width: 4.w),
                             Flexible(
                               child: Text(
                                 message.fileName.isEmpty
                                     ? _t(context, 'Attachment', 'مرفق')
                                     : message.fileName,
-                                style: StyleText.fontSize12Weight400
-                                    .copyWith(color: AppColors.text),
+                                style: StyleText.fontSize12Weight400.copyWith(
+                                  color: AppColors.text,
+                                ),
                               ),
                             ),
                           ],
@@ -381,9 +444,12 @@ class _SupportBubble extends StatelessWidget {
                 ],
                 if (message.time != null) ...[
                   SizedBox(height: 4.h),
-                  Text(DateFormat('d MMM, h:mm a').format(message.time!),
-                      style: StyleText.fontSize12Weight400
-                          .copyWith(color: AppColors.secondaryText)),
+                  Text(
+                    DateFormat('d MMM, h:mm a').format(message.time!),
+                    style: StyleText.fontSize12Weight400.copyWith(
+                      color: AppColors.secondaryText,
+                    ),
+                  ),
                 ],
               ],
             ),

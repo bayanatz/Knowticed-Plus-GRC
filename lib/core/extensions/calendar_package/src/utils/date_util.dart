@@ -5,6 +5,7 @@
 /// Purpose: Shared calendar widget.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 int getMonthFirstDayOffset(int year, int month, int firstDayOfWeekIndex) {
   // 0-based day of week for the month and year, with 0 representing Monday.

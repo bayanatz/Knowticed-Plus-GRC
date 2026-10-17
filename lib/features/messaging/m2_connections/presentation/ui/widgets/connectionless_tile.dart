@@ -4,6 +4,7 @@
 /// Purpose: Connectionless tile — messaging Connections sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+library;
 
 // Date: 1/9/2024
 // By: Nada Mohammed
@@ -13,18 +14,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 
-
-import 'package:grc_module/core/helper/main_helper/date_time_helper.dart';
-import 'package:grc_module/core/helper/message_module/main_helper/localized_text_helper.dart';
-import 'package:grc_module/core/helper/main_helper/spacing_helper.dart';
+import 'package:grc_module/core/helper/date_time_helper.dart';
+import 'package:grc_module/features/messaging/helpers/messaging_bridge/main_helper/localized_text_helper.dart';
+import 'package:grc_module/features/messaging/helpers/spacing_helper.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
-import '../../../domain/entities/single_connection_entity.dart';
-import '../../controller/connections_controller.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
+import 'package:grc_module/features/messaging/m2_connections/domain/entities/single_connection_entity.dart';
+import 'package:grc_module/features/messaging/m2_connections/presentation/controller/connections_controller.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
 class ConnectionlessTile extends StatelessWidget {
   final SingleConnectionEntity chatModel;
@@ -36,22 +36,25 @@ class ConnectionlessTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var isTablet = ContextExtension(context).isTablett;
+    ContextExtension(context).isTablett;
 
     return GestureDetector(
       onTap: () async {
+        HapticController.low(); // list row: on the tap (X-117)
         // DI via Bloc (team decision) — read the cubit from the widget tree
         // instead of GetX service-location (§3/§17).
         final connectionsCubit = context.read<ConnectionsCubit>();
         await connectionsCubit.createNewConnection(
             currentUser: connectionsCubit.currentUser,
             newConnectionUser: chatModel.toBaseMessagingInterface());
+        if (!context.mounted) return;
         connectionsCubit.selectConnection(chatModel, context);
       },
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.field,
-          borderRadius: BorderRadius.circular(4.r), // bug report #3: cards use 4.r
+          color: AppColors.card,
+          borderRadius:
+              BorderRadius.circular(4.r), // bug report #3: cards use 4.r
         ),
         padding: EdgeInsetsDirectional.all(8.sp),
         child: Column(
@@ -62,7 +65,8 @@ class ConnectionlessTile extends StatelessWidget {
                 Text(
                   DateTimeHelper.formatTime(
                       chatModel.lastMessageTime!.toDate()),
-                  style: StyleText.fontSize12Weight500.copyWith(color: AppColors.inputColor)
+                  style: StyleText.fontSize12Weight500
+                      .copyWith(color: AppColors.greyDark)
                       .copyWith(fontSize: 10.sp, height: 1.3),
                 ),
               ],
@@ -81,7 +85,7 @@ class ConnectionlessTile extends StatelessWidget {
                           height: 40.r,
                           errorBuilder: (_, __, ___) => CustomSvgImage(
                             assetPath:
-                                "assets/icons_assets/main_icons_assets/assets_male.svg",
+                                "assets/icons_assets/main_icons_assets/ic_user_avatar_male.png",
                             width: 40.r,
                             height: 40.r,
                             fit: BoxFit.fill,
@@ -89,7 +93,7 @@ class ConnectionlessTile extends StatelessWidget {
                         )
                       : CustomSvgImage(
                           assetPath:
-                              "assets/icons_assets/main_icons_assets/assets_male.svg",
+                              "assets/icons_assets/main_icons_assets/ic_user_avatar_male.png",
                           width: 40.r,
                           height: 40.r,
                           fit: BoxFit.fill,
@@ -122,7 +126,8 @@ class ConnectionlessTile extends StatelessWidget {
                               )
                             : '-',
                         overflow: TextOverflow.ellipsis,
-                        style: StyleText.fontSize12Weight400.copyWith(color: AppColors.secondaryBlack),
+                        style: StyleText.fontSize12Weight400
+                            .copyWith(color: AppColors.secondaryBlack),
                       ),
                     ],
                   ),

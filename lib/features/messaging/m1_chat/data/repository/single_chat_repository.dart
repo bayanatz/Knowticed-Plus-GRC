@@ -1,27 +1,36 @@
+/// Module: messaging/m1_chat
+///
+///*************************** FILE INFO ****************************///
+/// File Name: single_chat_repository.dart
+/// Description: `SingleChatRepository` repository.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
+library;
+
 /// Module: messaging / chat / data/repository/single_chat_repository.dart
+import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
-import 'package:flutter/foundation.dart';
 
-import 'package:grc_module/core/network/message_module/services/error_handler.dart';
-import 'package:grc_module/core/constants/message_module/api_constants.dart';
-import 'package:grc_module/core/enums/message_module/message_types.dart';
-import '../../../../../core/helper/message_module/interface/entity/base_messaging_interface_parameters.dart';
-import '../../../m2_connections/data/models/user_connection_last_message_info_model.dart';
-import '../../../m2_connections/data/models/users_connection_model.dart';
-import '../../../m2_connections/domain/entities/single_connection_entity.dart';
-import '../../../m4_messaging_home/domain/entities/chat_type_entity.dart';
-import '../../domain/entity/new_message_content_entity.dart';
-import '../../domain/repository/chat_repository/base_chat_repository.dart';
-import '../../domain/enum/reacts.dart';
-import 'react_writer.dart';
-import '../data_source/single_chat_remote_data_source.dart';
-import '../models/single_chat_message_model.dart';
-import '../models/sub_models/pin_model.dart';
+import 'package:grc_module/core/network/failure_model.dart';
+import 'package:grc_module/features/messaging/helpers/constants/messaging_api_constants.dart';
+import 'package:grc_module/features/messaging/helpers/enums/message_types.dart';
+
+import 'package:grc_module/features/messaging/helpers/messaging_bridge/interface/entity/base_messaging_interface_parameters.dart';
+import 'package:grc_module/features/messaging/m2_connections/data/models/user_connection_last_message_info_model.dart';
+import 'package:grc_module/features/messaging/m2_connections/domain/entities/single_connection_entity.dart';
+import 'package:grc_module/features/messaging/m4_messaging_home/domain/entities/chat_type_entity.dart';
+import 'package:grc_module/features/messaging/m1_chat/domain/entity/new_message_content_entity.dart';
+import 'package:grc_module/features/messaging/m1_chat/domain/repository/chat_repository/base_chat_repository.dart';
+import 'package:grc_module/features/messaging/m1_chat/domain/enum/reacts.dart';
+import 'package:grc_module/features/messaging/m1_chat/data/repository/react_writer.dart';
+import 'package:grc_module/features/messaging/m1_chat/data/data_source/single_chat_remote_data_source.dart';
+import 'package:grc_module/features/messaging/m1_chat/data/models/single_chat_message_model.dart';
+import 'package:grc_module/features/messaging/m1_chat/data/models/sub_models/pin_model.dart';
 
 class SingleChatRepository implements BaseChatRepository {
   final SingleChatRemoteDataSource chatRemoteDataSource =
-  SingleChatRemoteDataSource();
+      SingleChatRemoteDataSource();
 
   Timestamp _messageTime = Timestamp.now();
 
@@ -43,7 +52,7 @@ class SingleChatRepository implements BaseChatRepository {
   @override
   Stream<Either<Failure, dynamic>> getChatMessages(String chatId) async* {
     Stream<Either<Failure, List<Map<String, dynamic>>>> stream =
-    chatRemoteDataSource.getChatMessages(chatId: chatId);
+        chatRemoteDataSource.getChatMessages(chatId: chatId);
     await for (final chatMessage in stream) {
       if (chatMessage.isLeft()) {
         yield chatMessage;
@@ -59,7 +68,7 @@ class SingleChatRepository implements BaseChatRepository {
         try {
           messageEntities.add(SingleChatMessageModel.fromMap(message));
         } catch (e) {
-          debugPrint('⚠️ skipped malformed single chat message ($e): $message');
+          debugPrint('Ignored error: $e');
         }
       }
       yield Right(messageEntities);
@@ -73,9 +82,10 @@ class SingleChatRepository implements BaseChatRepository {
     required int newValue,
   }) async {
     return await chatRemoteDataSource.updateMyNumOfUnreadMessages(
-        currentUserId: currentUserId,
-        otherUserId: otherUserId,
-        newValue: newValue);
+      currentUserId: currentUserId,
+      otherUserId: otherUserId,
+      newValue: newValue,
+    );
   }
 
   @override
@@ -85,7 +95,9 @@ class SingleChatRepository implements BaseChatRepository {
     String? currentUserId,
   }) async {
     return await chatRemoteDataSource.updateMessagesAsSeen(
-        unSeenMessagesIds: unSeenMessagesIds, chatId: chatId);
+      unSeenMessagesIds: unSeenMessagesIds,
+      chatId: chatId,
+    );
   }
 
   @override
@@ -129,13 +141,19 @@ class SingleChatRepository implements BaseChatRepository {
     otherConnectionSide as SingleConnectionEntity;
     _messageTime = Timestamp.now();
 
-    SingleChatMessageModel messageModel = await _createMessageModel(
-        otherUser: otherConnectionSide,
-        messageContent: messageContent,
-        currentUser: currentUser);
+    SingleChatMessageModel? messageModel = await _createMessageModel(
+      otherUser: otherConnectionSide,
+      messageContent: messageContent,
+      currentUser: currentUser,
+    );
+    // An upload that failed used to come back as null here and crash on the
+    // non-nullable assignment; report it the way the group chat does.
+    if (messageModel == null) {
+      return Left(FirebaseFailure("Failed to create message model"));
+    }
 
     UserConnectionLastMessageInfoModel senderConnectionModel =
-    _createSenderConnectionModel(
+        _createSenderConnectionModel(
       otherUser: otherConnectionSide,
       messageContent: messageContent,
       otherUnreadMessagesCount: otherConnectionSide.otherNumUnreadMessage,
@@ -143,11 +161,12 @@ class SingleChatRepository implements BaseChatRepository {
     );
 
     UserConnectionLastMessageInfoModel receiverConnectionModel =
-    _createReceiverConnectionModel(
-        currentUser: currentUser,
-        messageContent: messageContent,
-        unreadMessagesCount: otherConnectionSide.otherNumUnreadMessage,
-        messageId: messageModel.messageId);
+        _createReceiverConnectionModel(
+      currentUser: currentUser,
+      messageContent: messageContent,
+      unreadMessagesCount: otherConnectionSide.otherNumUnreadMessage,
+      messageId: messageModel.messageId,
+    );
 
     return await sendMessage(
       messageModel: messageModel,
@@ -169,29 +188,32 @@ class SingleChatRepository implements BaseChatRepository {
     );
 
     if (result is Left) {
-      return;
+      return null;
     }
 
     final raw = (result as Either).getOrElse(() => null);
 
     if (raw == null) {
-      return;
+      return null;
     }
 
-    SingleChatMessageModel messageModel =
-    SingleChatMessageModel.fromMap(raw as Map<String, dynamic>);
+    SingleChatMessageModel messageModel = SingleChatMessageModel.fromMap(
+      raw as Map<String, dynamic>,
+    );
 
     // §10 — pinModel is final; seed it via copyWith when absent, then mutate
     // the PinModel's own lists (that's the PinModel's state, not this model's).
     if (messageModel.pinModel == null) {
       messageModel = messageModel.copyWith(
-          pinModel: PinModel(isPinned: [], userId: [], pinnedAt: []));
+        pinModel: PinModel(isPinned: [], userId: [], pinnedAt: []),
+      );
     }
     messageModel.pinModel!.isPinned.add(state);
     messageModel.pinModel!.userId.add(currentUserId);
     messageModel.pinModel!.pinnedAt.add(Timestamp.now());
 
     await chatRemoteDataSource.updateMessage(messageId, chatId, messageModel);
+    return null;
   }
 
   // ✅ FIXED: use correct Firestore path from ApiConstants
@@ -261,7 +283,7 @@ class SingleChatRepository implements BaseChatRepository {
     );
   }
 
-  _createMessageModel({
+  Future<SingleChatMessageModel?> _createMessageModel({
     required SingleConnectionEntity otherUser,
     required NewMessageContentEntity messageContent,
     required BaseMessagingInterfaceParameters currentUser,
@@ -271,9 +293,10 @@ class SingleChatRepository implements BaseChatRepository {
     if (messageContent.messageType == MessageTypes.cameraImage) {
       messageContent as ImageMessageContentEntity;
       Either<Failure, String> uploadImageResult =
-      await chatRemoteDataSource.uploadImage(
-          documentName: messageContent.filePath.split('/').last,
-          filePath: messageContent.filePath);
+          await chatRemoteDataSource.uploadImage(
+        documentName: messageContent.filePath.split('/').last,
+        filePath: messageContent.filePath,
+      );
       if (uploadImageResult.isLeft()) return null;
       mediaLink = uploadImageResult.getOrElse(() => '');
     }
@@ -318,7 +341,8 @@ class SingleChatRepository implements BaseChatRepository {
           ? (messageContent as VideoMessageContentEntity).video
           : null,
       docMessageModel: (messageContent.messageType == MessageTypes.doc)
-          ? (messageContent as DocumentMessageContentEntity).documentMessageModel
+          ? (messageContent as DocumentMessageContentEntity)
+              .documentMessageModel
           : null,
       isSeen: false,
       isDeleted: false,
@@ -328,7 +352,7 @@ class SingleChatRepository implements BaseChatRepository {
     );
   }
 
-  _getMessageTextContent({required NewMessageContentEntity content}) {
+  String? _getMessageTextContent({required NewMessageContentEntity content}) {
     if (content.messageType == MessageTypes.text) {
       content as TextMessageContentEntity;
       return content.messageContent;

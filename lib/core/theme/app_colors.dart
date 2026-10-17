@@ -5,6 +5,7 @@
 /// Purpose: Declares `AppColors`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 // Date: 29/9/2024
 // By: Youssef Ashraf, Nada Mohammed, Mohammed Ashraf
@@ -13,7 +14,7 @@
 
 import 'package:flutter/material.dart';
 
-import './app_theme.dart';
+import 'package:grc_module/core/theme/app_theme.dart';
 
 abstract class AppColors {
   static Map<String, Color> currentThemeColors = AppTheme.lightThemeColors;
@@ -61,24 +62,25 @@ abstract class AppColors {
   /// Theme-independent on purpose: a Qiyas event must be the same grey in both
   /// themes, because the colour is the module's identity, not decoration.
   static const Color calendarEventQiyas = Color(0xFF9FADAF);
-  static const Color calendarEventKnowledgeHub = Color(0xFF9C27B0);
   static const Color calendarEventServices = Color(0xFFCD7F32);
 
   /// The deep red of a locked account. Was an inline `Color(0xFFB02A37)`
   /// returned from a *domain* enum (§12, CR-SKEL-O3-N31).
   static const Color statusLocked = Color(0xFFB02A37);
 
-
   /// Standard secondary action button (Back, Discard, Save For Later, No,
   /// Cancel). Services mobile QA 30/9/2026 ("Branding"): those buttons were a
   /// mid grey (#858585) with white text while the filters' Reset and the date
   /// picker's Cancel — the approved style — are light grey with dark text.
   /// Every secondary button now reads its colours from here.
-  static Color get secondaryAction => AppTheme.isDark ? mediumGrey : grey;
+  ///
+  /// DARK fill changed 7/10/2026 (owner): #A6A6A6 + white text read faint
+  /// (~2.4:1). #6F6F6F + white is ~5:1 and still stands apart from both the
+  /// dark page (#2D2D2D) and dark cards (#4B4B4B). Light mode unchanged.
+  static Color get secondaryAction => AppTheme.isDark ? colorGreyDark : grey;
   static Color get onSecondaryAction => AppTheme.isDark ? white : black;
 
   // ----------------- Black & White Colors -----------------
-  static Color get pending => currentThemeColors['pending']!;
   static Color get black => currentThemeColors['black']!;
   static Color get blackShadow => currentThemeColors['blackShadow']!;
   static Color get secondaryBlack => currentThemeColors['secondaryBlack']!;
@@ -93,23 +95,18 @@ abstract class AppColors {
 
   static Color get block => currentThemeColors['block']!;
   static Color get darkBackGround => currentThemeColors['darkBackGround']!;
-  static Color get warning => currentThemeColors['warning']!;
   static Color get greyBack => currentThemeColors['greyBack']!;
   static Color get barrierColor {
     final v = currentThemeColors['barrierColor'];
-    if (v == null) {
-    }
+    if (v == null) {}
     return v ?? const Color(0xFFD9D9D9);
   }
-  static Color get unBlock => currentThemeColors['unBlock']!;
-  static Color get delete => currentThemeColors['delete']!;
+
   static Color get expiringSoon => currentThemeColors['expiringSoon']!;
 
   /// Inactive onboarding page-indicator dot (theme-aware).
   static Color get onboardingDotInactive =>
       currentThemeColors['onboardingDotInactive']!;
-  static Color get differentGrey => currentThemeColors['differentGrey']!;
-  static Color get whiteDark => currentThemeColors['whiteDark']!;
   static Color get lightRed => currentThemeColors['lightRed']!;
 
   // ----------------- Primary Colors -----------------
@@ -119,30 +116,21 @@ abstract class AppColors {
   // ----------------- Components Colors -----------------
   static Color get header => currentThemeColors['header']!;
   static Color get text => currentThemeColors['text']!;
-  static Color get inputColor => currentThemeColors['inputColor']!;
-  static Color get button => currentThemeColors['button']!;
-  static Color get textButton => AppTheme.contrastColor();
-  static Color get secondaryPrimaryText => AppTheme.secondaryPrimaryText();
+  static Color get textButton => AppTheme.readableOn(AppColors.primary);
+  static Color get secondaryPrimaryText =>
+      AppTheme.readableOn(AppColors.secondaryPrimary);
   static Color get icon => currentThemeColors['icon']!;
   static Color get card => currentThemeColors['card']!;
-  static Color get field => currentThemeColors['field']!;
-  static Color get appBar => currentThemeColors['appBar']!;
-  static Color get dropShadow => currentThemeColors['dropShadow']!;
   static Color get borderCard => currentThemeColors['borderCard']!;
-  static Color get message => currentThemeColors['message']!;
-  static Color get messageText => currentThemeColors['messageText']!;
   static Color get background => currentThemeColors['background']!;
   static Color get switchOff => currentThemeColors['switchOff']!;
 
   static Color get indicator => currentThemeColors['indicator']!;
-  static Color get starredCard => currentThemeColors['starredCard']!;
   static Color get border => currentThemeColors['border']!;
   static Color get navyBlue => currentThemeColors['navyBlue']!;
 
-  static Color get dialog => currentThemeColors['dialog']!;
   static Color get chatBackground => currentThemeColors['chatBackground']!;
   static Color get chatField => currentThemeColors['chatField']!;
-  static Color get fieldBorder => currentThemeColors['fieldBorder']!;
   static Color get totalBlack => currentThemeColors['totalBlack']!;
   static Color get greyDark => currentThemeColors['greyDark']!;
 
@@ -156,130 +144,53 @@ abstract class AppColors {
   static Color get lighterGrey => currentThemeColors['lighterGrey']!;
   static Color get darkerGrey => currentThemeColors['darkerGrey']!;
   static Color get greyIcon => currentThemeColors['greyIcon']!;
-  static Color get drawerColor => currentThemeColors['drawerColor']!;
   static Color get lightPrimary => currentThemeColors['lightPrimary']!;
 
   // ----------------- Basic Colors -----------------
   static Color get base => currentThemeColors[
       'base']!; // *** anything white and converted to secondary black in dark mode ***
-  static Color get inverseBase => currentThemeColors[
-      'inverseBase']!; // *** anything secondary black and converted to white in dark mode ***
-
-  // ----------------- Secondary Colors -----------------
-  static Color get lightGreen => currentThemeColors['lightGreen']!;
   static Color get green => currentThemeColors['green']!;
   static Color get darkRed => currentThemeColors['darkRed']!;
   static Color get red => currentThemeColors['red']!;
   static Color get blue => currentThemeColors['blue']!;
   static Color get orange => currentThemeColors['orange']!;
-  static Color get yellow => currentThemeColors['yellow']!;
-  static Color get warming => currentThemeColors['warming']!;
   static Color get lightBlue => currentThemeColors['liteBlue']!;
   static Color get secondaryText => currentThemeColors['secondaryText']!;
+  static Color get lightGreen => currentThemeColors['lightGreen']!;
   static Color get spanText => currentThemeColors['spanText']!;
   static Color get secondaryButton => currentThemeColors['secondaryButton']!;
   static Color get borderGrey => currentThemeColors['borderGrey']!;
-  static Color get crimson => currentThemeColors['crimson']!;
 
   static Color get whiteDashboardTable =>
       currentThemeColors['whiteDashboardTable']!;
   static Color get darkDashboardTable =>
       currentThemeColors['darkDashboardTable']!;
 
-  /// Create a list of colors to be used for the chart.
-  static List<Color> colors = [
-    AppColors.primary,
-    AppColors.grey,
-    AppColors.black,
-    AppColors.secondaryPrimary,
-  ];
-
   // ----------------- MyThemeData backward-compat aliases -----------------
   // These allow files that used to import MyThemeData but now import AppColors
   // to compile without changes. Values match MyThemeData exactly.
-
-  /// Brand primary/action color — same as AppColors.signOut / barColor / bubbleColor
-  static Color get signOut => currentThemeColors['primary']!;
-  static Color get barColor => currentThemeColors['primary']!;
-  static Color get bubbleColor => currentThemeColors['primary']!;
-  static Color get mainColor => currentThemeColors['primary']!;
-  static Color get primaryYellow => currentThemeColors['primary']!;
-
-  /// Brand secondary color — same as AppColors.switchSettings / lightPrimary (secondary)
-  static Color get switchSettings => currentThemeColors['secondaryPrimary']!;
 
   /// Fixed neutrals — theme-unaware (same in light and dark)
   static const Color colorBlack = Color(0xFF2D2D2D);
   static const Color colorWhite = Color(0xFFFFFFFF);
   static const Color colorGrey = Color(0xFF9E9E9E);
   static const Color colorGreyDark = Color(0xFF6F6F6F);
-  static const Color mainBlack = Color(0xFF2D2D2D);
   static const Color offWhite = Color(0xFFF5F5F5);
-  static const Color textfieldColor = Color.fromRGBO(246, 246, 246, 1);
-  static const Color darkWhiteShadowDisabled = Color(0x9E9E9E9E);
-
-  /// Theme-aware neutral aliases
-  static Color get fieldBackGround => currentThemeColors['field']!;
-  static Color get lightGreyBg => currentThemeColors['background']!;
 
   /// ThemeData forwarding — files using AppColors.lightTheme / darkTheme
   static ThemeData get lightTheme => AppTheme.lightTheme;
   static ThemeData get darkTheme => AppTheme.darkTheme;
 
   // ----------------- Full MyThemeData aliases (for complete removal) -----------------
-  /// AppColors.action (was int primary/action, now a Color)
-  static Color get action => currentThemeColors['primary']!;
 
   /// AppColors.colorWhiteDark
   static Color get colorWhiteDark => currentThemeColors['whiteDark']!;
 
-  /// AppColors.colorLightGrey
-  static Color get colorLightGrey => currentThemeColors['lightGrey']!;
-
-  /// AppColors.colorRed
-  static Color get colorRed => currentThemeColors['red']!;
-
-  /// AppColors.colorTotalBlack
-  static Color get colorTotalBlack => currentThemeColors['totalBlack']!;
-
-  /// AppColors.colorGreydark (0xFFCCCCCC)
-  static Color get colorGreydark => currentThemeColors['darkerGrey']!;
-
   /// AppColors.colorDarkGrey (0xFF797979)
   static const Color colorDarkGrey = Color(0xFF797979);
 
-  /// Settings input background (dark mode) — 0xFF545454
-  static const Color inputBackgroundDark = Color(0xFF545454);
-
-  /// Invoices table zebra-stripe (light) — 0xFFF1F1F1
-  static const Color tableRowLight = Color(0xFFF1F1F1);
-
   /// Invoices table zebra-stripe (dark) — 0xFF28282B
   static const Color tableRowDark = Color(0xFF28282B);
-
-  /// AppColors.dark (0xFF4B4B4B)
-  static Color get dark => currentThemeColors['greyDark']!;
-
-  /// AppColors.dividerGrey (0xFFDBDCDD)
-  static Color get dividerGrey => currentThemeColors['border']!;
-
-  /// AppColors.dotBlack — colorBlack with 20% opacity
-  static Color get dotBlack => const Color(0xFF2D2D2D).withOpacity(.2);
-
-  /// AppColors.secondaryColor
-  static Color get secondaryColor => currentThemeColors['secondaryPrimary']!;
-
-  /// AppColors.textCal (0xFF19181A ≈ black)
-  static Color get textCal => currentThemeColors['black']!;
-
-  /// AppColors.textGrey (0xFF8D8D8D ≈ grey)
-  static Color get textGrey => currentThemeColors['grey']!;
-
-  /// AppColors.textdeactivecolor (0xFF797979 ≈ darkGrey)
-  static Color get textdeactivecolor => currentThemeColors['darkGrey']!;
-
-  /// AppColors.yellowColor (0xffFFCC00)
-  static Color get yellowColor => currentThemeColors['yellow']!;
 
   // ----------------- Services dashboard palette (moved from ServicesColors) --
   // Named colours used by the services admin-dashboard widgets (§12 — no raw
@@ -303,6 +214,38 @@ abstract class AppColors {
   // Mobile-dashboard chart palette (master mobile).
   static const Color chartGreen = Color(0xFF378309);
   static const Color chartYellow = Color(0xFFFFCC00);
+  // ADDED 17/10/2026 (K-29): moved here from the old Knowledge Hub colour file.
+  // File-type colours are the file formats' own colours, not brand colours.
+  static const Color fileExcel = Color(0xFF107C41);
+  static const Color fileExcelDark = Color(0xFF1D6F42);
+  static const Color filePdf = Color(0xFFD24726);
+  static const Color fileWord = Color(0xFF2B579A);
+  static const Color filePowerpoint = Color(0xFFE67E22);
+  static const Color redSoft = Color(0xFFE74C3C);
+  static const Color redCrimson = Color(0xFFBC1F1F);
+  static const Color redLight = Color(0xFFFF6B6B);
+  static const Color chartPurple = Color(0xFF9B59B6);
+  static const Color chartSlateGrey = Color(0xFF95A5A6);
+  static const Color chartDarkSlate = Color(0xFF34495E);
+
+  /// Department chart colours. Starts with the BRAND colours, so it follows
+  /// Settings › Branding (K-31); the rest are fixed chart colours.
+  static List<Color> get chartPalette => [
+        primary,
+        secondaryPrimary,
+        const Color(0xFFE3D38C),
+        const Color(0xFFA18A2D),
+        const Color(0xFF807B69),
+        greyDark,
+        const Color(0xFFCACACA),
+        const Color(0xFF6B5650),
+        const Color(0xFF795548),
+        const Color(0xFF64B5F6),
+        const Color(0xFF81C784),
+        const Color(0xFFFFB74D),
+        const Color(0xFFBA68C8),
+        const Color(0xFF4DB6AC),
+      ];
   static const Color chartCrimson = Color(0xFF950E0E);
   static const Color chartGoldDeep = Color(0xFFE5C100);
   static const Color chartGoldPale = Color(0xFFE3D38C);

@@ -8,9 +8,9 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../../../core/custom/57-custom_dialog_manager.dart';
-import '../../../controller/main_controllers/master_chat_cubit.dart';
-import 'chat_dialog_widgets.dart';
+import 'package:grc_module/core/custom/dialogs/custom_dialog_manager.dart';
+import 'package:grc_module/features/messaging/m1_chat/presentation/controller/main_controllers/master_chat_cubit.dart';
+import 'package:grc_module/features/messaging/m1_chat/presentation/ui/widgets/dialogs/chat_dialog_widgets.dart';
 
 enum MuteOption { eightHours, oneWeek, always }
 

@@ -23,7 +23,13 @@ import 'package:grc_module/features/roles/r4_active_directory/domain/entities/em
 
 /// Editable cells. The two derived columns (Current Role Type, Status) have no
 /// field — they are computed from the others.
-enum AccessBulkField { employeeId, email, desiredRole, accessGranted, accessRevoked }
+enum AccessBulkField {
+  employeeId,
+  email,
+  desiredRole,
+  accessGranted,
+  accessRevoked
+}
 
 enum AccessBulkError {
   identityRequired,
@@ -69,7 +75,8 @@ class AccessBulkRowForm {
   final TextEditingController employeeIdController;
   final TextEditingController emailController;
   final GlobalKey key = GlobalKey();
-  final Map<AccessBulkField, FocusNode> focusNodes = <AccessBulkField, FocusNode>{
+  final Map<AccessBulkField, FocusNode> focusNodes =
+      <AccessBulkField, FocusNode>{
     for (final AccessBulkField f in AccessBulkField.values) f: FocusNode(),
   };
 
@@ -86,7 +93,8 @@ class AccessBulkRowForm {
   /// Filled by validation.
   EmployeeEntityPro? employee;
   UserPermissionEntity? currentAccess;
-  final Map<AccessBulkField, AccessBulkError> errors = <AccessBulkField, AccessBulkError>{};
+  final Map<AccessBulkField, AccessBulkError> errors =
+      <AccessBulkField, AccessBulkError>{};
 
   AccessBulkRowForm copy() => AccessBulkRowForm(
         employeeId: employeeIdController.text,
@@ -173,14 +181,16 @@ class AccessBulkUploadRows {
     if (id.isNotEmpty) {
       byId = employees.where((EmployeeEntityPro e) => e.id == id).firstOrNull;
       if (byId == null) {
-        row.errors[AccessBulkField.employeeId] = AccessBulkError.employeeNotFound;
+        row.errors[AccessBulkField.employeeId] =
+            AccessBulkError.employeeNotFound;
       }
     }
 
     EmployeeEntityPro? byEmail;
     if (email.isNotEmpty) {
       byEmail = employees
-          .where((EmployeeEntityPro e) => (e.email ?? '').toLowerCase() == email)
+          .where(
+              (EmployeeEntityPro e) => (e.email ?? '').toLowerCase() == email)
           .firstOrNull;
       if (byEmail == null) {
         row.errors[AccessBulkField.email] = AccessBulkError.emailNotFound;
@@ -198,8 +208,9 @@ class AccessBulkUploadRows {
     // Same exclusion as the Add New Access list: nobody edits their own access.
     if ((employee.email ?? '').toLowerCase() ==
         (currentUserEmail ?? '').toLowerCase()) {
-      row.errors[id.isNotEmpty ? AccessBulkField.employeeId : AccessBulkField.email] =
-          AccessBulkError.ownAccess;
+      row.errors[id.isNotEmpty
+          ? AccessBulkField.employeeId
+          : AccessBulkField.email] = AccessBulkError.ownAccess;
       return;
     }
 
@@ -222,7 +233,8 @@ class AccessBulkUploadRows {
           : AccessBulkError.dateInvalid;
     }
 
-    final AccessBulkError? grantedError = check(row.accessGranted, row.rawGranted);
+    final AccessBulkError? grantedError =
+        check(row.accessGranted, row.rawGranted);
     if (grantedError != null) {
       row.errors[AccessBulkField.accessGranted] = grantedError;
     } else if (row.accessGranted!.isBefore(today)) {
@@ -230,7 +242,8 @@ class AccessBulkUploadRows {
       row.errors[AccessBulkField.accessGranted] = AccessBulkError.datePast;
     }
 
-    final AccessBulkError? revokedError = check(row.accessRevoked, row.rawRevoked);
+    final AccessBulkError? revokedError =
+        check(row.accessRevoked, row.rawRevoked);
     if (revokedError != null) {
       row.errors[AccessBulkField.accessRevoked] = revokedError;
     } else if (row.accessGranted != null &&
@@ -253,7 +266,8 @@ class AccessBulkUploadRows {
     for (final List<AccessBulkRowForm> group in groups.values) {
       if (group.length < 2) continue;
       for (final AccessBulkRowForm row in group) {
-        row.errors[AccessBulkField.employeeId] = AccessBulkError.duplicateEmployee;
+        row.errors[AccessBulkField.employeeId] =
+            AccessBulkError.duplicateEmployee;
       }
     }
   }
@@ -269,7 +283,8 @@ class AccessBulkUploadRows {
 
   bool removeSelected() {
     if (selectedRows.isEmpty) return false;
-    final List<int> descending = selectedRows.toList()..sort((a, b) => b.compareTo(a));
+    final List<int> descending = selectedRows.toList()
+      ..sort((a, b) => b.compareTo(a));
     for (final int index in descending) {
       rows[index].dispose();
       rows.removeAt(index);
@@ -294,8 +309,8 @@ class AccessBulkUploadRows {
     revalidateAll();
   }
 
-  int get errorCount =>
-      rows.fold<int>(0, (int sum, AccessBulkRowForm row) => sum + row.errors.length);
+  int get errorCount => rows.fold<int>(
+      0, (int sum, AccessBulkRowForm row) => sum + row.errors.length);
 
   List<(int, AccessBulkField)> get errorLocations => <(int, AccessBulkField)>[
         for (int i = 0; i < rows.length; i++)
@@ -350,7 +365,9 @@ DateTime? parseAccessDate(String raw) {
     }
   }
 
-  return parsed == null ? null : DateTime(parsed.year, parsed.month, parsed.day);
+  return parsed == null
+      ? null
+      : DateTime(parsed.year, parsed.month, parsed.day);
 }
 
 /// Only active roles can be granted — the Add New Access dropdown offers the

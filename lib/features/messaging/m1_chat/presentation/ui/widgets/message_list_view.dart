@@ -23,13 +23,13 @@ class MessageListView extends StatelessWidget {
             ScrollablePositionedList.builder(
               itemScrollController: cubit.chatScrollCubit.scrollController,
               itemPositionsListener:
-              cubit.chatScrollCubit.scrollPositionsListener,
+                  cubit.chatScrollCubit.scrollPositionsListener,
               itemCount: state.messages.length,
               // ✅ Clamp initialScrollIndex to valid range on chat switch
               initialScrollIndex: state.messages.isEmpty
                   ? 0
                   : cubit.chatScrollCubit.initialIndex
-                  .clamp(0, state.messages.length - 1),
+                      .clamp(0, state.messages.length - 1),
               itemBuilder: (context, index) {
                 // ✅ Guard against stale index during chat switch
                 if (index < 0 || index >= state.messages.length) {
@@ -121,6 +121,7 @@ class MessageListView extends StatelessWidget {
                     child: GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: () {
+                        HapticController.low(); // list row: on the tap (X-117)
                         cubit.chatScrollCubit.scrollToLatest(
                           state.messages.length - 1,
                         );
@@ -133,8 +134,8 @@ class MessageListView extends StatelessWidget {
                           color: AppColors.primary,
                           borderRadius: BorderRadius.circular(8.r),
                         ),
-                        child: SvgPicture.asset(
-                          AppAssets.scroll,
+                        child: CustomSvgImage.natural(
+                          assetPath: AppAssets.scroll,
                           height: 16.h,
                           width: 16.w,
                           color: AppColors.icon,

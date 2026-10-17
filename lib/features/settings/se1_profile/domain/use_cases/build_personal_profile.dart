@@ -11,6 +11,7 @@
 /// `employee!.mobilePhone` … — which meant three copies of the same
 /// force-unwrapping and a crash whenever a history list was empty. The
 /// flattening happens once, here, and `lastOrNull` replaces every `!`.
+library;
 
 import 'package:grc_module/features/roles/r4_active_directory/data/models/employees_model/mobile_phone_model.dart';
 import 'package:grc_module/features/roles/r4_active_directory/data/models/employees_model/new_employee_model.dart';

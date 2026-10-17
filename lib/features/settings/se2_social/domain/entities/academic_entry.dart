@@ -10,6 +10,7 @@
 /// record existed only as a `Map<String, TextEditingController>` on the
 /// controller, so "what is a record" was defined by four string keys typed out
 /// in five different places.
+library;
 
 import 'package:flutter/foundation.dart';
 
@@ -23,6 +24,10 @@ class AcademicEntry {
   });
 
   /// Firestore field keys for one record inside `Academic_History`.
+  ///
+  /// NOTE 9/10/2026: the four `*_Status` keys are no longer written (Settings
+  /// schema 9 Oct: never-read twins, dropped). They are kept only to name the
+  /// pre-9/10 layout the reader still recognises.
   static const String fieldDegree = 'Graduate_From';
   static const String fieldDegreeStatus = 'Graduate_From_Status';
   static const String fieldUniversity = 'University';

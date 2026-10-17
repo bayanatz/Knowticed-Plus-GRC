@@ -5,13 +5,17 @@
 /// Purpose: Declares `NoInternetScreen`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
+import 'package:grc_module/core/extensions/context_extensions.dart'
+    show kpIsPhoneLayout;
 import 'package:flutter/material.dart';
+import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 
 import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_font_size.dart';
+import 'package:grc_module/core/extensions/screen_fraction_extension.dart';
 import 'package:grc_module/generated/l10n.dart';
 
 /// Full-screen "no connection" state.
@@ -33,7 +37,7 @@ class NoInternetScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isTablet = MediaQuery.of(context).size.shortestSide > 600;
+    final bool isTablet = !kpIsPhoneLayout(context);
     final bool isPortrait =
         MediaQuery.of(context).orientation == Orientation.portrait;
 
@@ -49,7 +53,7 @@ class NoInternetScreen extends StatelessWidget {
                 Transform.scale(
                   scale: isTablet ? (isPortrait ? 2.5 : 1.5) : 1.2,
                   child: Lottie.asset(
-                    "assets/lottie_assets/main_lottie_assets/internet.json",
+                    "assets/lottie_assets/main_lottie_assets/lot_error_no_internet.json",
                     width: isTablet ? 0.15.w : 0.3.w,
                     fit: BoxFit.fitHeight,
                   ),
@@ -64,12 +68,8 @@ class NoInternetScreen extends StatelessWidget {
                 Text(
                   S.of(context).canTConnectCheckInternet,
                   textAlign: TextAlign.center,
-                  style: AppFontStyle.cairoRegularStyle.copyWith(
-                    fontSize: isTablet
-                        ? (isPortrait
-                            ? FontConstants.fontSize025.h
-                            : FontConstants.fontSize032.h)
-                        : FontConstants.fontSize020.h,
+                  style: StyleText.fontSize16Weight400.copyWith(
+                    fontSize: isTablet ? (isPortrait ? 20.sp : 24.sp) : 16.sp,
                     fontWeight: FontWeight.w600,
                     color: AppColors.text,
                   ),
@@ -111,8 +111,8 @@ class NoInternetBanner extends StatelessWidget {
                 child: Text(
                   S.of(context).canTConnectCheckInternet,
                   textAlign: TextAlign.center,
-                  style: AppFontStyle.cairoRegularStyle.copyWith(
-                    fontSize: FontConstants.fontSize014.h,
+                  style: StyleText.fontSize16Weight400.copyWith(
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
                     color: AppColors.textButton,
                   ),

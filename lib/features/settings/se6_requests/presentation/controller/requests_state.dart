@@ -6,7 +6,7 @@
 /// Author: Knowticed Plus team
 /// Created at: 11/8/2026
 
-part of './requests_cubit.dart';
+part of 'requests_cubit.dart';
 
 enum RequestsStatus { initial, loading, success, failure }
 
@@ -17,6 +17,7 @@ class RequestsState {
     this.requests = const <ChangeRequest>[],
     this.selected,
     this.errorMessage,
+    this.userMessage,
     this.submitted = false,
     this.decided = false,
   });
@@ -32,6 +33,12 @@ class RequestsState {
   /// One-shot. Cleared with [consumed] once a listener has shown it.
   final String? errorMessage;
 
+  /// One-shot, ADDED 9/10/2026: an already-localized (EN/AR) message that is
+  /// safe to show as-is — today only a blocked self-approval
+  /// (`SelfApprovalFailure`). [errorMessage] can be a raw Firestore error, so
+  /// the screens never show that one directly.
+  final String? userMessage;
+
   /// One-shot: a submission completed.
   final bool submitted;
 
@@ -45,6 +52,7 @@ class RequestsState {
     List<ChangeRequest>? requests,
     Object? selected = _unset,
     Object? errorMessage = _unset,
+    Object? userMessage = _unset,
     bool? submitted,
     bool? decided,
   }) {
@@ -57,14 +65,18 @@ class RequestsState {
       errorMessage: identical(errorMessage, _unset)
           ? this.errorMessage
           : errorMessage as String?,
+      userMessage: identical(userMessage, _unset)
+          ? this.userMessage
+          : userMessage as String?,
       submitted: submitted ?? this.submitted,
       decided: decided ?? this.decided,
     );
   }
 
   /// Drops the one-shot flags after a listener has acted on them.
-  RequestsState consumed() =>
-      copyWith(errorMessage: null, submitted: false, decided: false);
+  /// (9/10/2026: [userMessage] too.)
+  RequestsState consumed() => copyWith(
+      errorMessage: null, userMessage: null, submitted: false, decided: false);
 }
 
 /// Sentinel so `copyWith` can tell "leave unchanged" from "set to null".

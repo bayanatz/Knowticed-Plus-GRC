@@ -5,6 +5,7 @@
 /// Purpose: Declares `WorkLocation`.
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'dart:convert';
 

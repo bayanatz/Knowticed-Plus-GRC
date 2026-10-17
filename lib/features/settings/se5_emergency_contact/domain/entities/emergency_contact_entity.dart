@@ -15,6 +15,7 @@
 ///
 /// PORTED into services_app under features/settings.
 /// Source: services_app features/employees/domain/entities/…
+library;
 
 import 'package:flutter/foundation.dart';
 
@@ -109,32 +110,45 @@ class EmergencyContactEntity {
   }) {
     return EmergencyContactEntity(
       employeeId: employeeId ?? this.employeeId,
-      firstContactFirstName: firstContactFirstName ?? this.firstContactFirstName,
-      firstContactMiddleName: firstContactMiddleName ?? this.firstContactMiddleName,
+      firstContactFirstName:
+          firstContactFirstName ?? this.firstContactFirstName,
+      firstContactMiddleName:
+          firstContactMiddleName ?? this.firstContactMiddleName,
       firstContactLastName: firstContactLastName ?? this.firstContactLastName,
-      firstContactRelationShip: firstContactRelationShip ?? this.firstContactRelationShip,
+      firstContactRelationShip:
+          firstContactRelationShip ?? this.firstContactRelationShip,
       firstContactPhone: firstContactPhone ?? this.firstContactPhone,
-      firstContactCountryCode: firstContactCountryCode ?? this.firstContactCountryCode,
+      firstContactCountryCode:
+          firstContactCountryCode ?? this.firstContactCountryCode,
       firstContactEmail: firstContactEmail ?? this.firstContactEmail,
       firstContactCountry: firstContactCountry ?? this.firstContactCountry,
       firstContactProvince: firstContactProvince ?? this.firstContactProvince,
       firstContactCity: firstContactCity ?? this.firstContactCity,
       firstContactStreet: firstContactStreet ?? this.firstContactStreet,
       firstContactLanguage: firstContactLanguage ?? this.firstContactLanguage,
-      secondContactFirstName: secondContactFirstName ?? this.secondContactFirstName,
-      secondContactMiddleName: secondContactMiddleName ?? this.secondContactMiddleName,
-      secondContactLastName: secondContactLastName ?? this.secondContactLastName,
-      secondContactRelationShip: secondContactRelationShip ?? this.secondContactRelationShip,
+      secondContactFirstName:
+          secondContactFirstName ?? this.secondContactFirstName,
+      secondContactMiddleName:
+          secondContactMiddleName ?? this.secondContactMiddleName,
+      secondContactLastName:
+          secondContactLastName ?? this.secondContactLastName,
+      secondContactRelationShip:
+          secondContactRelationShip ?? this.secondContactRelationShip,
       secondContactPhone: secondContactPhone ?? this.secondContactPhone,
-      secondContactCountryCode: secondContactCountryCode ?? this.secondContactCountryCode,
+      secondContactCountryCode:
+          secondContactCountryCode ?? this.secondContactCountryCode,
       secondContactEmail: secondContactEmail ?? this.secondContactEmail,
       secondContactCountry: secondContactCountry ?? this.secondContactCountry,
-      secondContactProvince: secondContactProvince ?? this.secondContactProvince,
+      secondContactProvince:
+          secondContactProvince ?? this.secondContactProvince,
       secondContactCity: secondContactCity ?? this.secondContactCity,
       secondContactStreet: secondContactStreet ?? this.secondContactStreet,
-      secondContactLanguage: secondContactLanguage ?? this.secondContactLanguage,
-      firstContactCountryApp: firstContactCountryApp ?? this.firstContactCountryApp,
-      secondContactCountryApp: secondContactCountryApp ?? this.secondContactCountryApp,
+      secondContactLanguage:
+          secondContactLanguage ?? this.secondContactLanguage,
+      firstContactCountryApp:
+          firstContactCountryApp ?? this.firstContactCountryApp,
+      secondContactCountryApp:
+          secondContactCountryApp ?? this.secondContactCountryApp,
     );
   }
 }

@@ -2,9 +2,11 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: home_screen.dart
-/// Purpose: Declares `HomeScreen`.
-/// Author: Knowticed Plus team
+/// Description: Declares `HomeScreen`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 /// Date Created :12/November/2023
 /// Developer Name : Bassem Mohamed
@@ -17,37 +19,34 @@
 /// lives in one place ([_buildComponentsGrid]); everything else that genuinely
 /// differed (mobile greeting header vs tablet calendar column) is kept as-is.
 
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
+import 'package:grc_module/core/helper/access/main_core_employee_controller.dart';
 
-import 'package:grc_module/core/helper/main_helper/role_access.dart';
+import 'package:grc_module/features/home/helpers/role_access.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_font_size.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/core/theme/haptic_controller.dart';
-import 'package:grc_module/features/calendar/c1_calendar/presentation/ui/pages/home_calendar_page.dart';
+import 'package:grc_module/features/calendar/presentation/ui/pages/home_calendar_page.dart';
 import 'package:grc_module/features/home/h1_home_page/data/models/home_component_model.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/controller/home_cubit.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/controller/home_state.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/controller/skeleton_home_controller.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/gradient_container.dart';
-import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/apply_all_modules_button.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/module_widget/tablet/home_appbar_section.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/upcoming_schedule_listview.dart';
-import 'package:grc_module/features/home/h1_home_page/data/utils/home_constants.dart';
+import 'package:grc_module/features/home/helpers/constants/home_constants.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/home_card_metrics.dart';
 import 'package:grc_module/features/home/h2_nav_bar/presentation/controller/nav_bar_cubit.dart';
 import 'package:grc_module/features/home/h2_nav_bar/persistent_nav_bar.dart';
-import 'package:grc_module/core/custom/71-custom_appbar_mobile.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
+import 'package:grc_module/core/custom/navigation/custom_appbar_mobile.dart';
+import 'package:grc_module/core/helper/access/modules_enum.dart';
 // Provides the app-wide `employee` global used by the greeting below.
-import 'package:grc_module/features/settings/main_controller/presentation/ui/pages/settings_screen.dart';
+import 'package:grc_module/features/settings/presentation/ui/pages/settings_screen.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
 
@@ -68,30 +67,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
   /// Bumped after "Apply all modules" runs, so the calendar widget is rebuilt
   /// with a fresh key and reloads — the seeded entries show straight away.
-  int _calendarReloadKey = 0;
-
-  /// The "Apply all modules" card (demo accounts / debug builds only).
-  List<Widget> _applyAllModules({required double gapAfter}) {
-    if (!ApplyAllModulesButton.isVisible) return const <Widget>[];
-    return <Widget>[
-      ApplyAllModulesButton(
-        onApplied: () {
-          if (mounted) setState(() => _calendarReloadKey++);
-        },
-      ),
-      SizedBox(height: gapAfter),
-    ];
-  }
+  final int _calendarReloadKey = 0;
 
   @override
   Widget build(BuildContext context) {
-    final bool isTablet = MediaQuery.of(context).size.width >= 768.0;
+    // The app's one phone / tablet rule, so Home always matches the shell
+    // around it (was width >= 768: a 600-768 window showed the iPad sidebar
+    // with the PHONE home and its second header inside).
+    final bool isTablet = !kpIsPhoneLayout(context);
 
     return BlocBuilder<AppHomeCubit, HomeState>(
       buildWhen: (_, __) => true,
       builder: (context, state) {
         final homeCubit = context.read<AppHomeCubit>();
-        return isTablet ? _tabletLayout(homeCubit) : _mobileLayout(context, homeCubit);
+        return isTablet
+            ? _tabletLayout(homeCubit)
+            : _mobileLayout(context, homeCubit);
       },
     );
   }
@@ -107,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
       spacing: 10.sp,
       children: [
         for (int rowIndex = 0;
-            rowIndex < HomeConstants.NUMBER_OF_ROWS;
+            rowIndex < HomeConstants.kNumberOfRows;
             rowIndex++)
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -115,9 +106,10 @@ class _HomeScreenState extends State<HomeScreen> {
               spacing: 10.sp,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Same card WIDTH as the widget picker and the layout editor
-                // — see HomeCardMetrics — so the dashboard matches the sizes
-                // the user arranged in the editor.
+                // CHANGED 7/10/2026 (owner): each card keeps its OWN width —
+                // the same width it has in the widget picker and the layout
+                // editor — instead of being forced to a shared 250. fitBox
+                // only caps it at the screen width (see HomeCardMetrics).
                 //
                 // FIXED 13/9/2026 — `box` pins the height and scrolls the
                 // overflow away inside the card, which is what clipped the
@@ -128,8 +120,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 for (HomeComponentModel component
                     in homeCubit.getActiveRowComponents(rowIndex))
                   HomeCardMetrics.fitBox(
-                    child: component.component.widget(component) ?? Container(),
-                  )
+                    // SizedBox.shrink, not Container(): a bare Container
+                    // expands to the width cap, which would paint a blank
+                    // screen-wide slot for a stored-but-unknown component.
+                    child: component.component.widget(component) ??
+                        const SizedBox.shrink(),
+                  ),
               ],
             ),
           ),
@@ -172,9 +168,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         _mobileDateRow(controller),
                         SizedBox(height: 10.h),
                         Text(
-                          "${DateTime.now().hour < 12 ? S.of(context).goodMorning : DateTime.now().hour < 14 ? S.of(context).goodAfternoon : S.of(context).goodEvening} ${context.isEnglish ? employee!.firstName!.last!.capitalize : employee!.firstNameInArabic!.last!.capitalize}",
-                          style: StyleText.fontSize25Weight600
-                              .copyWith(height: 1.4),
+                          "${DateTime.now().hour < 12 ? S.of(context).goodMorning : DateTime.now().hour < 14 ? S.of(context).goodAfternoon : S.of(context).goodEvening} ${context.isEnglish ? employee!.firstName.last.capitalize : employee!.firstNameInArabic.last.capitalize}",
+                          style: StyleText.fontSize25Weight600.copyWith(
+                            height: 1.4,
+                          ),
                         ),
                         SizedBox(height: 15.h),
                         GradientContainer(),
@@ -243,16 +240,18 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         Row(
           children: [
-            SvgPicture.asset(
+            CustomSvgImage.natural(
+              assetPath:
+                  "assets/icons_assets/main_icons_assets/ic_time_calendar.svg",
               width: 22.sp,
               height: 22.sp,
-              "assets/icons_assets/roles_assets/calendar.svg",
               color: AppColors.icon,
             ),
             SizedBox(width: 8.w),
             Text(
               controller.getCurrentDate(isEnglish: context.isEnglish),
-              style: StyleText.fontSize20Weight500.copyWith(color: AppColors.secondaryBlack)
+              style: StyleText.fontSize20Weight500
+                  .copyWith(color: AppColors.secondaryBlack)
                   .copyWith(height: 1.8, color: AppColors.icon),
             ),
           ],
@@ -261,33 +260,40 @@ class _HomeScreenState extends State<HomeScreen> {
             ? GestureDetector(
                 onTap: () {
                   hapticController.triggerHapticFeedback(
-                      vibration: VibrateType.lightImpact,
-                      hapticFeedback: HapticFeedback.lightImpact);
-                  if (Get.find<NavBarCubit>()
-                      .navBarModules
-                      .contains(Modules.employees)) {
-                    RoleAccess.controller.jumpToTab(Get.find<NavBarCubit>()
-                        .navBarModules
-                        .indexOf(Modules.employees));
+                    vibration: VibrateType.lightImpact,
+                    hapticFeedback: HapticFeedback.lightImpact,
+                  );
+                  if (Get.find<NavBarCubit>().navBarModules.contains(
+                        Modules.employees,
+                      )) {
+                    RoleAccess.controller.jumpToTab(
+                      Get.find<NavBarCubit>().navBarModules.indexOf(
+                            Modules.employees,
+                          ),
+                    );
                   } else {
-                    PersistentNavBarNavigator.pushNewScreen(context,
-                        pageTransitionAnimation: PageTransitionAnimation.fade,
-                        withNavBar: true,
-                        screen: Modules.employees.widget);
+                    PersistentNavBarNavigator.pushNewScreen(
+                      context,
+                      pageTransitionAnimation: PageTransitionAnimation.fade,
+                      withNavBar: true,
+                      screen: Modules.employees.widget,
+                    );
                   }
                 },
                 child: Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.signOut,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: EdgeInsets.all(8.h),
-                    child: SvgPicture.asset(
-                      "assets/icons_assets/roles_assets/organization_chart_tree.svg",
-                      color: AppColors.black,
-                    )),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding: EdgeInsets.all(8.h),
+                  child: CustomSvgImage.natural(
+                    assetPath:
+                        "assets/icons_assets/main_icons_assets/ic_module_org_chart.svg",
+                    color: AppColors.black,
+                  ),
+                ),
               )
-            : const SizedBox()
+            : const SizedBox(),
       ],
     );
   }
@@ -297,7 +303,6 @@ class _HomeScreenState extends State<HomeScreen> {
   // ───────────────────────────────────────────────────────────────────────
 
   Widget _tabletLayout(AppHomeCubit homeCubit) {
-    final bool lightMode = Theme.of(context).brightness == Brightness.light;
     final bool isPortrait =
         MediaQuery.of(context).orientation == Orientation.portrait;
 
@@ -334,8 +339,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     end: isPortrait ? 20.w : 10.w,
                   ),
                   child: ScrollConfiguration(
-                    behavior:
-                        const ScrollBehavior().copyWith(scrollbars: false),
+                    behavior: const ScrollBehavior().copyWith(
+                      scrollbars: false,
+                    ),
                     child: SingleChildScrollView(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -353,16 +359,18 @@ class _HomeScreenState extends State<HomeScreen> {
                           // Portrait mode schedule section
                           if (isPortrait) SizedBox(height: 30.h),
                           if (isPortrait)
-                            Text(S.of(context).upcomingSchedule,
-                                style: StyleText.fontSize20Weight500.copyWith(
-                                    color: lightMode
-                                        ? AppColors.red
-                                        : AppColors.white)),
+                            Text(
+                              S.of(context).upcomingSchedule,
+                              // Was red in light mode (leftover).
+                              style: StyleText.fontSize20Weight500
+                                  .copyWith(color: AppColors.text),
+                            ),
                           if (isPortrait)
                             UpcomingScheduleListview(
-                                selectedDate: selectedDate != null
-                                    ? [selectedDate!]
-                                    : [DateTime.now()]),
+                              selectedDate: selectedDate != null
+                                  ? [selectedDate!]
+                                  : [DateTime.now()],
+                            ),
                           if (!isPortrait) SizedBox(height: 20.h),
                         ],
                       ),

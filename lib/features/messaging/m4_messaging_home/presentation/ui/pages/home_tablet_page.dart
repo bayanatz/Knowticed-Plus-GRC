@@ -4,6 +4,7 @@
 /// Purpose: Home tablet page — messaging Home sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+library;
 
 // Date: 1/9/2024
 // By: Youssef Ashraf , Nada Mohammed
@@ -11,16 +12,14 @@
 // Objectives: This file is responsible for providing the home tablet page used in the messaging feature.
 
 import 'package:flutter/material.dart';
-import 'package:grc_module/features/messaging/m5_support/presentation/support_chat_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:grc_module/features/messaging/m2_connections/presentation/ui/pages/community_tablet_layout.dart';
 import 'package:grc_module/features/messaging/m2_connections/presentation/controller/community_controller.dart';
 
 import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/helper/main_helper/custom_app_bar.dart';
-import '../widgets/category_filter.dart';
+import 'package:grc_module/features/messaging/helpers/messaging_app_bar.dart';
+import 'package:grc_module/features/messaging/m4_messaging_home/presentation/ui/widgets/category_filter.dart';
 import 'package:grc_module/generated/l10n.dart';
 
 class HomeTabletPage extends StatefulWidget {
@@ -31,8 +30,6 @@ class HomeTabletPage extends StatefulWidget {
 }
 
 class _HomeTabletPageState extends State<HomeTabletPage> {
-
-
   // home_tablet_page.dart
   @override
   void initState() {
@@ -73,7 +70,7 @@ class _HomeTabletPageState extends State<HomeTabletPage> {
                   // // Knowticed Support: feedback + replies (23/9/2026).
                   // const SupportChatTile(),
                   const CategoryFilter(),
-                   Expanded(child: HomeTabletLayout()),
+                  Expanded(child: HomeTabletLayout()),
                 ],
               ),
             ),

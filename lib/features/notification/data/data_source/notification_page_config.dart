@@ -2,21 +2,22 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: notification_page_config.dart
-/// Purpose: FCM service configuration for the notification sender.
-/// Author: Knowticed Plus team
+/// Description: FCM service configuration for the notification sender.
+/// Author: Amr Mesbah
 /// Created at: 2026
 /// Updated: 12/8/2026 - CR-SKEL-NOTIF-N20: renamed from `notification_page_confg.dart`. The Admin
 ///          private key it used to hold was removed in round 3 — it reads a
 ///          dart-define now.
+library;
 
 import 'dart:convert';
+
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:googleapis_auth/auth_io.dart' as auth;
 import 'package:http/http.dart' as http;
 import 'package:grc_module/core/constants/app_keys.dart';
 
 class NotificationServiceApp {
-
   // ═══════════════════════════════════════════════════════════
   // METHOD 1: Get Access Token
   // ═══════════════════════════════════════════════════════════
@@ -41,8 +42,9 @@ class NotificationServiceApp {
   static bool get _cacheIsUsable {
     final auth.AccessCredentials? credentials = _cachedCredentials;
     if (credentials == null) return false;
-    return credentials.accessToken.expiry
-        .isAfter(DateTime.now().toUtc().add(const Duration(minutes: 1)));
+    return credentials.accessToken.expiry.isAfter(
+      DateTime.now().toUtc().add(const Duration(minutes: 1)),
+    );
   }
 
   static Future<String> getAccessToken() async {
@@ -119,14 +121,13 @@ class NotificationServiceApp {
   /// instead of always to the Services screen. Both are optional; older
   /// callers keep working unchanged.
   static Future<void> sendNotification(
-      String title,
-      String body,
-      String? channel, {  // Can be email or topic name
-      String moduleKey = '',
-      String pageKey = '',
-      }) async
-  {
-
+    String title,
+    String body,
+    String? channel, {
+    // Can be email or topic name
+    String moduleKey = '',
+    String pageKey = '',
+  }) async {
     // Step 1: Get authentication token
     final String accessToken = await getAccessToken();
 
@@ -134,9 +135,8 @@ class NotificationServiceApp {
       return;
     }
 
-
     // ✅ Step 2: Sanitize the channel (convert email to valid topic name)
-    String topicName = "news";  // Default topic
+    String topicName = "news"; // Default topic
 
     if (channel != null && channel.isNotEmpty) {
       // Check if channel looks like an email (contains @)
@@ -146,29 +146,28 @@ class NotificationServiceApp {
         // Already a topic name
         topicName = channel;
       }
-    } else {
-    }
+    } else {}
 
     // Step 3: Define FCM endpoint URL
-    String endpointFCM = 'https://fcm.googleapis.com/v1/projects/knowticed-v2-scheme/messages:send';
+    String endpointFCM =
+        'https://fcm.googleapis.com/v1/projects/knowticed-v2-scheme/messages:send';
 
     // Step 4: Create notification message
     final Map<String, dynamic> message = {
       "message": {
-        "topic": topicName,  // ✅ Use sanitized topic name
+        "topic": topicName, // ✅ Use sanitized topic name
         "notification": {
-          "title": title,  // Notification title
-          "body": body     // Notification content
+          "title": title, // Notification title
+          "body": body, // Notification content
         },
         "data": {
           // Kept for existing handlers; module/page below are the real hint.
           "route": moduleKey.isEmpty ? "serviceScreen" : moduleKey,
           if (moduleKey.isNotEmpty) "module": moduleKey,
           if (pageKey.isNotEmpty) "name_of_page": pageKey,
-        }
-      }
+        },
+      },
     };
-
 
     try {
       // Step 5: Send HTTP POST request to Firebase
@@ -176,9 +175,9 @@ class NotificationServiceApp {
         Uri.parse(endpointFCM),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $accessToken'  // Authenticate with token
+          'Authorization': 'Bearer $accessToken', // Authenticate with token
         },
-        body: jsonEncode(message),  // Convert message to JSON
+        body: jsonEncode(message), // Convert message to JSON
       );
 
       // Step 6: Handle response
@@ -187,16 +186,19 @@ class NotificationServiceApp {
       // rejected push (bad topic, expired key, wrong project) looked exactly
       // like a delivered one. Failures are now logged; the in-app record is
       // unaffected either way.
+      // CHANGED 14/10/2026 — the logging the note above promised.
       if (response.statusCode == 200) {
-        debugPrint('[fcm] push sent to topic "$topicName"'
-            '${moduleKey.isEmpty ? '' : ' (module=$moduleKey)'}');
+        debugPrint('[FCM] delivered to FCM, topic "$topicName"');
       } else {
-        debugPrint('[fcm] push REJECTED for topic "$topicName" — '
-            'HTTP ${response.statusCode}: ${response.body}');
+        debugPrint(
+          '[FCM] REJECTED ${response.statusCode} for topic '
+          '"$topicName": ${response.body}',
+        );
       }
     } catch (e, stackTrace) {
-      debugPrint('[fcm] push FAILED for topic "$topicName" — $e\n$stackTrace');
+      debugPrint(
+        '[FCM] request FAILED for topic "$topicName": $e\n$stackTrace',
+      );
     }
-
   }
 }

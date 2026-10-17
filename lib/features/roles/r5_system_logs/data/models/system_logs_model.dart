@@ -5,11 +5,12 @@
 /// Purpose: to have the model of the system logs.
 /// Author: Amr Mesbah
 /// Created At: 29/1/2025
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:grc_module/core/helper/role/modules_enum.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
+import 'package:grc_module/core/helper/access/modules_enum.dart';
+import 'package:grc_module/core/helper/format_title.dart';
 
 class SystemLogsModel {
   final String? userEmail;
@@ -28,21 +29,21 @@ class SystemLogsModel {
   final Modules? module;
   final Timestamp? timestamp;
 
-  static const String USER_EMAIL = 'User_Email';
-  static const String FIRST_NAME = 'First_Name';
-  static const String MIDDLE_NAME = 'Middle_Name';
-  static const String LAST_NAME = 'Last_Name';
-  static const String FIRST_NAME_ARABIC = 'First_Name_Arabic';
-  static const String MIDDLE_NAME_ARABIC = 'Middle_Name_Arabic';
-  static const String LAST_NAME_ARABIC = 'Last_Name_Arabic';
-  static const String COUNTRY = 'Country';
-  static const String CITY = 'City';
-  static const String ROLE = 'Role';
-  static const String LAT = 'Lat';
-  static const String LONG = 'Long';
-  static const String ACTION = 'Action';
-  static const String TIMESTAMP = 'Timestamp';
-  static const String MODULE = 'Module';
+  static const String kUserEmail = 'User_Email';
+  static const String kFirstName = 'First_Name';
+  static const String kMiddleName = 'Middle_Name';
+  static const String kLastName = 'Last_Name';
+  static const String kFirstNameArabic = 'First_Name_Arabic';
+  static const String kMiddleNameArabic = 'Middle_Name_Arabic';
+  static const String kLastNameArabic = 'Last_Name_Arabic';
+  static const String kCountry = 'Country';
+  static const String kCity = 'City';
+  static const String kRole = 'Role';
+  static const String kLat = 'Lat';
+  static const String kLong = 'Long';
+  static const String kAction = 'Action';
+  static const String kTimestamp = 'Timestamp';
+  static const String kModule = 'Module';
   const SystemLogsModel(
       {this.userEmail,
       this.firstName,
@@ -65,22 +66,22 @@ class SystemLogsModel {
   /// the instance in one shot — same parsing, same output.
   factory SystemLogsModel.fromMap(dynamic json) {
     return SystemLogsModel(
-      userEmail: FormatHelper.capitalize(json[USER_EMAIL]),
-      firstName: FormatHelper.capitalize(json[FIRST_NAME]),
-      middleName: FormatHelper.capitalize(json[MIDDLE_NAME]),
-      lastName: FormatHelper.capitalize(json[LAST_NAME]),
-      firstNameInArabic: json[FIRST_NAME_ARABIC],
-      middleNameInArabic: json[MIDDLE_NAME_ARABIC],
-      lastNameInArabic: json[LAST_NAME_ARABIC],
-      country: FormatHelper.capitalize(json[COUNTRY]),
-      city: FormatHelper.capitalize(json[CITY]),
-      role: FormatHelper.capitalize(json[ROLE]),
-      lat: json[LAT],
-      long: json[LONG],
-      action: FormatHelper.capitalize(json[ACTION]),
-      timestamp: json[TIMESTAMP],
-      module: json[MODULE] != null
-          ? Modules.values.firstWhere((e) => e.name == json[MODULE])
+      userEmail: FormatHelper.capitalize(json[kUserEmail]),
+      firstName: FormatHelper.capitalize(json[kFirstName]),
+      middleName: FormatHelper.capitalize(json[kMiddleName]),
+      lastName: FormatHelper.capitalize(json[kLastName]),
+      firstNameInArabic: json[kFirstNameArabic],
+      middleNameInArabic: json[kMiddleNameArabic],
+      lastNameInArabic: json[kLastNameArabic],
+      country: FormatHelper.capitalize(json[kCountry]),
+      city: FormatHelper.capitalize(json[kCity]),
+      role: FormatHelper.capitalize(json[kRole]),
+      lat: json[kLat],
+      long: json[kLong],
+      action: FormatHelper.capitalize(json[kAction]),
+      timestamp: json[kTimestamp],
+      module: json[kModule] != null
+          ? Modules.values.firstWhere((e) => e.name == json[kModule])
           : null,
     );
   }
@@ -136,21 +137,21 @@ class SystemLogsModel {
   Map<String, dynamic> toMap() {
     final map = <String, dynamic>{};
 
-    map[USER_EMAIL] = userEmail;
-    map[FIRST_NAME] = firstName;
-    map[MIDDLE_NAME] = middleName;
-    map[LAST_NAME] = lastName;
-    map[FIRST_NAME_ARABIC] = firstNameInArabic;
-    map[MIDDLE_NAME_ARABIC] = middleNameInArabic;
-    map[LAST_NAME_ARABIC] = lastNameInArabic;
-    map[COUNTRY] = country;
-    map[CITY] = city;
-    map[ROLE] = role;
-    map[LAT] = lat;
-    map[LONG] = long;
-    map[ACTION] = action;
-    map[TIMESTAMP] = timestamp;
-    map[MODULE] = module?.name;
+    map[kUserEmail] = userEmail;
+    map[kFirstName] = firstName;
+    map[kMiddleName] = middleName;
+    map[kLastName] = lastName;
+    map[kFirstNameArabic] = firstNameInArabic;
+    map[kMiddleNameArabic] = middleNameInArabic;
+    map[kLastNameArabic] = lastNameInArabic;
+    map[kCountry] = country;
+    map[kCity] = city;
+    map[kRole] = role;
+    map[kLat] = lat;
+    map[kLong] = long;
+    map[kAction] = action;
+    map[kTimestamp] = timestamp;
+    map[kModule] = module?.name;
 
     return map;
   }

@@ -5,15 +5,16 @@
 /// Purpose: Contains the ui for user access container roles_module screen.
 /// Author: Amr Mesbah
 /// Refactored at: 28/1/2025
+library;
+
+import 'package:grc_module/core/custom/feedback/custom_empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_font_size.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
+import 'package:grc_module/core/extensions/screen_fraction_extension.dart';
+import 'package:grc_module/core/custom/feedback/circle_progress.dart';
 import 'package:grc_module/features/roles/r3_user_access/presentation/controller/user_access_cubit.dart';
-
-import 'package:lottie/lottie.dart';
 
 import 'package:grc_module/features/roles/r3_user_access/presentation/controller/user_access_state.dart';
 import 'package:grc_module/features/roles/r3_user_access/presentation/ui/widgets/user_access_status_row.dart';
@@ -46,7 +47,8 @@ class _UserAccessHomePageState extends State<UserAccessHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    bool isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    bool isPortrait =
+        MediaQuery.of(context).orientation == Orientation.portrait;
 
     // Was a bare BlocBuilder. `UserAccessError` was emitted by the cubit but
     // nothing in the feature listened for it, so a failed load or a failed
@@ -86,23 +88,25 @@ class _UserAccessHomePageState extends State<UserAccessHomePage> {
             controller.filteredSortedSelectedEntities.isEmpty
                 ? noMembers(isPortrait, context)
                 : Expanded(
-              child: ListView.separated(
-                // ✅ Use ListView.separated instead of SingleChildScrollView + Column
-                itemCount: controller.filteredSortedSelectedEntities.length,
-                padding: EdgeInsets.only(bottom: 20.sp),
-                separatorBuilder: (context, index) => SizedBox(height: 10.sp),
-                itemBuilder: (context, index) {
-                  final entity =
-                      controller.filteredSortedSelectedEntities[index];
-                  return UserAccessCard(
-                    key: ValueKey(entity.employeeId),
-                    entity: entity,
-                    controller: controller,
-                    departments: context.read<MainCoreDepartmentCubit>(),
-                  );
-                },
-              ),
-            ),
+                    child: ListView.separated(
+                      // ✅ Use ListView.separated instead of SingleChildScrollView + Column
+                      itemCount:
+                          controller.filteredSortedSelectedEntities.length,
+                      padding: EdgeInsets.only(bottom: 20.sp),
+                      separatorBuilder: (context, index) =>
+                          SizedBox(height: 10.sp),
+                      itemBuilder: (context, index) {
+                        final entity =
+                            controller.filteredSortedSelectedEntities[index];
+                        return UserAccessCard(
+                          key: ValueKey(entity.employeeId),
+                          entity: entity,
+                          controller: controller,
+                          departments: context.read<MainCoreDepartmentCubit>(),
+                        );
+                      },
+                    ),
+                  ),
           ],
         );
       },
@@ -116,11 +120,11 @@ class _UserAccessHomePageState extends State<UserAccessHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Lottie.asset(
-              "assets/lottie_assets/notification_lottie_assets/empty.json",
-              width: 300.w,
-              height: 300.h,
-              fit: BoxFit.fill,
+            CustomEmptyState(
+              lottiePath:
+                  "assets/lottie_assets/main_lottie_assets/lot_empty_state.json",
+              size: 300,
+              verticalPadding: 0,
             ),
           ],
         ),

@@ -5,21 +5,21 @@
 /// Purpose: Declares `EditableTextWidget`, `Validation`, `CustomPopupMenuItem`.
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:grc_module/core/theme/app_font_size.dart';
+import 'package:grc_module/core/extensions/screen_fraction_extension.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 
-
 import 'package:grc_module/features/roles/r4_active_directory/presentation/ui/widgets/fields/default_csv_field.dart';
 
-import 'package:grc_module/core/custom/33-custom_haptic.dart';
+import 'package:grc_module/core/custom/helpers/custom_haptic.dart';
 import 'package:grc_module/core/theme/haptic_controller.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
+import 'package:grc_module/core/helper/format_title.dart';
 import 'package:grc_module/generated/l10n.dart';
 
 //Youssef Ashraf
@@ -32,17 +32,16 @@ class EditableTextWidget extends StatefulWidget {
   final bool isOptional;
   final Function(String)? onChanged;
   const EditableTextWidget(
-      {Key? key,
+      {super.key,
       required this.text,
       required this.isEditable,
       required this.isOptional,
       required this.onChanged,
       this.validator,
-      this.titleValidator})
-      : super(key: key);
+      this.titleValidator});
 
   @override
-  _EditableTextWidgetState createState() => _EditableTextWidgetState();
+  State<EditableTextWidget> createState() => _EditableTextWidgetState();
 }
 
 class _EditableTextWidgetState extends State<EditableTextWidget> {
@@ -78,14 +77,12 @@ class _EditableTextWidgetState extends State<EditableTextWidget> {
     bool isVertical =
         MediaQuery.of(context).orientation == Orientation.portrait;
 
-    TextStyle tableDataTextStyle = AppFontStyle.cairoRegularStyle.copyWith(
-      fontSize: isVertical
-          ? FontConstants.fontSize019.w
-          : FontConstants.fontSize022.h,
+    TextStyle tableDataTextStyle = StyleText.fontSize16Weight400.copyWith(
+      fontSize: isVertical ? 10.sp : 18.sp,
       color: widget.validator != null &&
               _controller.text.isNotEmpty &&
               widget.validator!(_controller.text) != null
-          ? AppColors.delete
+          ? AppColors.red
           : Theme.of(context).colorScheme.inverseSurface,
       fontWeight: FontWeight.w500,
     );
@@ -138,8 +135,9 @@ class _EditableTextWidgetState extends State<EditableTextWidget> {
                     },
                     child: SizedBox(
                         width: 0.05.w,
-                        child: SvgPicture.asset(
-                          "assets/icons_assets/main_icons_assets/warning_triangle_red.svg",
+                        child: CustomSvgImage.natural(
+                          assetPath:
+                              "assets/icons_assets/main_icons_assets/ic_warning_triangle_red.svg",
                           color: AppColors.red,
                           height: isVertical ? 0.02.h : 0.03.h,
                         ))),
@@ -182,7 +180,7 @@ void _showSortMenu(BuildContext context, Offset iconPosition, String validation,
     shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
         side: BorderSide(
-          color: AppColors.signOut,
+          color: AppColors.primary,
         )),
     items: sortOptions.map((option) {
       return CustomPopupMenuItem<Validation>(
@@ -200,8 +198,9 @@ void _showSortMenu(BuildContext context, Offset iconPosition, String validation,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    '\u2022 ' + FormatHelper.capitalize(validation),
-                    style: StyleText.fontSize14Weight400.copyWith(color: AppColors.secondaryBlack),
+                    '\u2022 ${FormatHelper.capitalize(validation)}',
+                    style: StyleText.fontSize14Weight400
+                        .copyWith(color: AppColors.secondaryBlack),
                   ),
                 ],
               ),
@@ -219,14 +218,14 @@ class CustomPopupMenuItem<T> extends PopupMenuItem<T> {
   final bool last;
 
   const CustomPopupMenuItem({
-    Key? key,
-    required T value,
-    bool enabled = true,
-    required Widget child,
+    super.key,
+    required T super.value,
+    super.enabled,
+    required Widget super.child,
     required this.color,
     this.first = false,
     this.last = false,
-  }) : super(key: key, value: value, enabled: enabled, child: child);
+  });
 
   @override
   // ignore: library_private_types_in_public_api

@@ -2,12 +2,15 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: sign_in_screen.dart
-/// Purpose: The sign-in screen — email/password, biometrics and the language toggle.
-/// Author: Knowticed Plus team
+/// Description: The sign-in screen — email/password, biometrics and the language toggle.
+/// Author: Amr Mesbah
 /// Created at: 2026
 /// Updated: 12/8/2026 - CR-SKEL-O3-N20/N21/N22: the `try/catch` moved to `AppVersionReader`; the two
 ///          hardcoded English hints and the AR/EN toggle are localized; the locale
 ///          comes from the tree; the two raw `Colors.*` route through AppColors.
+/// Updated: 9/10/2026 - DEBUG-ONLY "🧪 Test employee" button under Sign In
+///          (compile-time `kDebugTestEmployeeSwitchBuild`, absent in release).
+library;
 
 /// Date Created :12/November/2023
 /// Developer Name : Bassem Mohamed
@@ -28,6 +31,8 @@
 /// with Knowticed's field styling (8px radius, tinted prefix icon, 0.01.h
 /// content padding) so the two apps render identically.
 
+import 'package:grc_module/core/extensions/context_extensions.dart'
+    show kpIsPhoneLayout;
 import 'dart:io';
 import 'dart:ui';
 
@@ -38,29 +43,32 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:grc_module/core/custom/5-custom_button.dart';
+import 'package:grc_module/core/custom/buttons/custom_button.dart';
 import 'package:grc_module/features/onboarding/o3_authentication/data/utils/app_version_reader.dart';
 import 'package:grc_module/features/onboarding/o3_authentication/data/utils/login_access_probe.dart';
 
-import 'package:grc_module/core/custom/2-custom_textfield.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/custom/76-date_time_in_arabic.dart';
+import 'package:grc_module/core/custom/inputs/custom_textfield.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
+import 'package:grc_module/core/custom/helpers/date_time_in_arabic.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_font_size.dart';
+import 'package:grc_module/core/extensions/screen_fraction_extension.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/core/theme/haptic_controller.dart';
-import 'package:grc_module/core/custom/64-custom_response_dialog.dart';
-import 'package:grc_module/core/helper/main_helper/functions.dart';
+import 'package:grc_module/core/custom/dialogs/custom_response_dialog.dart';
+import 'package:grc_module/features/onboarding/helpers/functions.dart';
 import 'package:grc_module/features/onboarding/o3_authentication/presentation/controller/biometrics_controller.dart';
 import 'package:grc_module/features/onboarding/o3_authentication/presentation/controller/login_controller.dart';
 import 'package:grc_module/features/onboarding/o3_authentication/presentation/ui/widgets/forgot_password_dialog.dart';
+// ADDED 9/10/2026 — DEBUG-ONLY "Switch to test employee" entry point.
+import 'package:grc_module/features/onboarding/o3_authentication/data/utils/debug_test_employee_switch.dart';
+import 'package:grc_module/features/onboarding/o3_authentication/presentation/ui/widgets/debug_test_employee_widgets.dart';
 import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/main.dart';
 import 'package:grc_module/core/theme/app_animations.dart';
 
 /// Hero artwork shared by the portrait header and the landscape side panel —
 /// the same file Knowticed uses.
-const String kSignInHeroImage = 'assets/png_assets/loginPhoto.jpeg';
+const String kSignInHeroImage =
+    'assets/icons_assets/onboarding_assets/img_login_background.jpeg';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -144,17 +152,17 @@ class _SignInScreenState extends State<SignInScreen> {
           _field(
             controller: controller.emailcontroller,
             hint: S.of(context).enterYourEmail,
-            asset: 'assets/icons_assets/main_icons_assets/mail-inbox-app.svg',
+            asset:
+                'assets/icons_assets/onboarding_assets/ic_comms_email_bold.svg',
             keyboardType: TextInputType.emailAddress,
           ),
           SizedBox(height: 10.sp),
           SizedBox(
-
             child: _field(
               controller: controller.passcontroller,
               hint: S.of(context).enterYourPassword,
               asset:
-                  'assets/icons_assets/main_icons_assets/password-protection.svg',
+                  'assets/icons_assets/onboarding_assets/ic_security_password.svg',
 
               obscureText: true, // renders the built-in eye toggle
               // CHANGED 21/9/2026 — '*' (U+002A) is a superscript-height glyph,
@@ -167,8 +175,9 @@ class _SignInScreenState extends State<SignInScreen> {
               // default mask; it lines up with the icons.
               obscuringCharacter: '\u2022',
               onTap: () => hapticController.triggerHapticFeedback(
-                  vibration: VibrateType.lightImpact,
-                  hapticFeedback: HapticFeedback.lightImpact),
+                vibration: VibrateType.lightImpact,
+                hapticFeedback: HapticFeedback.lightImpact,
+              ),
             ),
           ),
           SizedBox(height: 10.sp),
@@ -176,11 +185,13 @@ class _SignInScreenState extends State<SignInScreen> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               GestureDetector(
+                onTapDown:
+                    hapticDown(_onForgotPasswordPressed, HapticLevel.low),
                 onTap: _onForgotPasswordPressed,
                 child: Text(
                   S.of(context).forgotPassword,
                   style: StyleText.fontSize14Weight400.copyWith(
-                    fontSize: FontConstants.fontSize018.h,
+                    fontSize: 14.sp,
                     color: AppColors.text,
                   ),
                 ),
@@ -195,16 +206,21 @@ class _SignInScreenState extends State<SignInScreen> {
           // Password?". Tablet / desktop keep the 300pt centred button.
           customButton(
             color: AppColors.primary,
-            width: MediaQuery.sizeOf(context).shortestSide < 600
-                ? double.infinity
-                : 300.sp,
+            width: kpIsPhoneLayout(context) ? double.infinity : 300.sp,
             height: 38.sp,
             title: S.of(context).signIn,
             function: _onSignInPressed,
             textStyle: StyleText.fontSize16Weight600.copyWith(
               color: AppColors.textButton,
             ),
-          )
+          ),
+          // ADDED 9/10/2026 — DEBUG-ONLY "🧪 Test employee" (owner option B).
+          // `kDebugTestEmployeeSwitchBuild` is a compile-time constant, false
+          // in release/profile, so this button and the picker are tree-shaken.
+          if (kDebugTestEmployeeSwitchBuild) ...<Widget>[
+            SizedBox(height: 12.sp),
+            const DebugTestEmployeeSignInButton(),
+          ],
         ],
       ),
     );
@@ -231,10 +247,12 @@ class _SignInScreenState extends State<SignInScreen> {
       obscuringCharacter: obscuringCharacter,
       onTap: onTap,
       fillColor: AppColors.card,
-      valueStyle: StyleText.fontSize14Weight400
-          .copyWith(color: AppColors.secondaryText),
-      hintStyle: StyleText.fontSize14Weight500
-          .copyWith(color: AppColors.secondaryText),
+      valueStyle: StyleText.fontSize14Weight400.copyWith(
+        color: AppColors.secondaryText,
+      ),
+      hintStyle: StyleText.fontSize14Weight500.copyWith(
+        color: AppColors.secondaryText,
+      ),
       prefixIcon: CustomSvgImage(
         assetPath: asset,
         width: 0.020.h,
@@ -247,8 +265,9 @@ class _SignInScreenState extends State<SignInScreen> {
 
   void _onForgotPasswordPressed() {
     hapticController.triggerHapticFeedback(
-        vibration: VibrateType.mediumImpact,
-        hapticFeedback: HapticFeedback.mediumImpact);
+      vibration: VibrateType.mediumImpact,
+      hapticFeedback: HapticFeedback.mediumImpact,
+    );
     showAppDialog(
       context: context,
       builder: (_) => const ForgotPasswordDialog(),
@@ -257,8 +276,9 @@ class _SignInScreenState extends State<SignInScreen> {
 
   Future<void> _onSignInPressed() async {
     hapticController.triggerHapticFeedback(
-        vibration: VibrateType.mediumImpact,
-        hapticFeedback: HapticFeedback.mediumImpact);
+      vibration: VibrateType.mediumImpact,
+      hapticFeedback: HapticFeedback.mediumImpact,
+    );
 
     // Email is normalised to lower case so sign-in is case-insensitive.
     final String email =
@@ -267,13 +287,14 @@ class _SignInScreenState extends State<SignInScreen> {
 
     if (email.isEmpty || password.isEmpty) {
       showAppDialog(
-      // Login error -> shake once.
-      destructive: true,
+        // Login error -> shake once.
+        destructive: true,
         context: context,
         builder: (_) => ResponseDialog(
           title: S.of(context).missingInformation,
           subtitle: S.of(context).pleaseEnterBothEmailAndPasswordToSignIn,
-          lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
+          lottieAsset:
+              "assets/lottie_assets/main_lottie_assets/lot_status_error.json",
         ),
       );
       return;
@@ -299,6 +320,7 @@ class _SignInScreenState extends State<SignInScreen> {
       // the handling lives inside the probe.
       await LoginAccessProbe.run(email);
 
+      if (!mounted) return;
       loginController.login(context, email, password);
     } else {
       if (!mounted) return;
@@ -307,7 +329,8 @@ class _SignInScreenState extends State<SignInScreen> {
         builder: (_) => ResponseDialog(
           title: S.of(context).error,
           subtitle: S.of(context).pleaseCheckYourInternetConnection,
-          lottieAsset: "assets/lottie_assets/main_lottie_assets/internet.json",
+          lottieAsset:
+              "assets/lottie_assets/main_lottie_assets/lot_error_no_internet.json",
         ),
       );
     }
@@ -321,8 +344,9 @@ class _SignInScreenState extends State<SignInScreen> {
         width: width,
         height: height,
         child: storage.read('logo') == null
-            ? SvgPicture.asset(
-                'assets/icons_assets/main_icons_assets/knowticed_logo.svg',
+            ? CustomSvgImage.natural(
+                assetPath:
+                    'assets/icons_assets/main_icons_assets/logo_knowticed.svg',
                 fit: BoxFit.fill,
               )
             : SvgPicture.network(storage.read('logo'), fit: BoxFit.fill),
@@ -335,14 +359,18 @@ class _SignInScreenState extends State<SignInScreen> {
         children: [
           Text(
             S.of(context).demoAppPlus,
-            style: StyleText.fontSize28Weight500
-                .copyWith(color: AppColors.text, fontWeight: FontWeight.w700),
+            style: StyleText.fontSize28Weight500.copyWith(
+              color: AppColors.text,
+              fontWeight: FontWeight.w700,
+            ),
           ),
           SizedBox(height: isPortrait ? 8 : 10.h),
           Text(
             S.of(context).navigateTheDigitalFrontierWithEase,
-            style: StyleText.fontSize20Weight500
-                .copyWith(color: AppColors.text, fontWeight: FontWeight.w500),
+            style: StyleText.fontSize20Weight500.copyWith(
+              color: AppColors.text,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ],
       );
@@ -350,7 +378,7 @@ class _SignInScreenState extends State<SignInScreen> {
   Widget _copyright() => Text(
         '${S.of(context).copyright}© ${DateTime.now().year} Knowticed. ${S.of(context).allRIGHTSRESERVED}',
         style: StyleText.fontSize14Weight400.copyWith(
-          fontSize: FontConstants.fontSize018.h,
+          fontSize: 14.sp,
           color: AppColors.text,
         ),
         textAlign: TextAlign.center,
@@ -361,7 +389,7 @@ class _SignInScreenState extends State<SignInScreen> {
             ? '${S.of(context).version} ...'
             : '${S.of(context).version} ${localizeNumber(appVersion)}',
         style: StyleText.fontSize14Weight400.copyWith(
-          fontSize: FontConstants.fontSize018.h,
+          fontSize: 14.sp,
           color: AppColors.text,
         ),
         textAlign: TextAlign.center,
@@ -378,8 +406,9 @@ class _SignInScreenState extends State<SignInScreen> {
           Get.updateLocale(locale);
           box.write('LocaleData', locale.toString());
           hapticController.triggerHapticFeedback(
-              vibration: VibrateType.heavyImpact,
-              hapticFeedback: HapticFeedback.heavyImpact);
+            vibration: VibrateType.heavyImpact,
+            hapticFeedback: HapticFeedback.heavyImpact,
+          );
         },
         child: Text(
           // The label names the language you would switch *to*, so it is the
@@ -390,7 +419,7 @@ class _SignInScreenState extends State<SignInScreen> {
               ? S.of(context).arabic
               : S.of(context).english,
           style: StyleText.fontSize20Weight500.copyWith(
-            fontSize: FontConstants.fontSize020.h,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w600,
             color: AppColors.text,
           ),
@@ -425,7 +454,6 @@ class _SignInScreenState extends State<SignInScreen> {
               ),
             ],
           ),
-
           SizedBox(height: 20.sp),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 0.04.w),
@@ -480,7 +508,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     filter: ImageFilter.blur(sigmaX: 0.0, sigmaY: 0.0),
                     child: Container(color: AppColors.transparent),
                   ),
-                  Container(color: AppColors.white.withOpacity(0.19)),
+                  Container(color: AppColors.white.withValues(alpha: 0.19)),
                 ],
               ),
             ),

@@ -11,6 +11,7 @@
 /// `presentation/` and `data/models/` were the only folders, so the approval
 /// flow — a two-document write plus an employee-profile history append — lived
 /// in pages.
+library;
 
 import 'package:dartz/dartz.dart';
 
@@ -38,16 +39,31 @@ abstract class RequestsBaseRepository {
   /// Both steps or neither: if the profile write fails the status is left
   /// alone, so the request stays actionable rather than reading as approved
   /// with nothing written.
+  ///
+  /// [approverEmail] / [approverEmployeeId] (ADDED 9/10/2026): who is
+  /// approving. The STORED request is re-read and checked with
+  /// `SelfApprovalRule` first — the requester can never approve their own
+  /// request, and an unknown approver fails closed with a
+  /// `SelfApprovalFailure`. Nothing is written in either case.
   Future<Either<Failure, void>> approveRequest({
     required ChangeRequest request,
     required String employeeId,
+    required String approverEmail,
+    String approverEmployeeId = '',
     String reason = '',
   });
 
   /// Move a request to [status] without touching the employee profile.
+  ///
+  /// [deciderEmail] / [deciderEmployeeId] (ADDED 9/10/2026): required in
+  /// practice for a decision (approved / rejected) — the same
+  /// `SelfApprovalRule` check as [approveRequest] runs against the stored
+  /// request. Cancelling is the requester's own action and is not checked.
   Future<Either<Failure, void>> setRequestStatus({
     required String requestId,
     required RequestStatus status,
     String reason = '',
+    String deciderEmail = '',
+    String deciderEmployeeId = '',
   });
 }

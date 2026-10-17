@@ -5,6 +5,7 @@
 /// Purpose: Declares `UserAccessState`, `UserAccessInitial`, `UserAccessLoaded` (+2 more).
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 sealed class UserAccessState {}
 

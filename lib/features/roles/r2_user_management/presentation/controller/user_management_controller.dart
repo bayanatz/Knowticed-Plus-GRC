@@ -2,12 +2,13 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: user_management_controller.dart
-/// Purpose: Declares `UserManagementController`.
-/// Author: Knowticed Plus team
+/// Description: Declares `UserManagementController`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'package:bloc/bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -19,20 +20,17 @@ import 'package:grc_module/features/roles/r2_user_management/data/repository/use
 import 'package:grc_module/features/roles/r2_user_management/domain/usecases/update_selected_members_use_case.dart';
 import 'package:grc_module/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
 
-
 import 'package:grc_module/features/roles/r1_role_management/data/models/role_model.dart';
 import 'package:grc_module/features/roles/r2_user_management/domain/entities/user_permission_entity.dart';
 import 'package:grc_module/features/roles/r2_user_management/domain/usecases/delete_user_permission_use_case.dart';
 import 'package:grc_module/features/roles/r2_user_management/domain/usecases/update_user_permission_use_case.dart';
-import 'package:grc_module/core/helper/role/constants.dart';
+import 'package:grc_module/core/helper/access/constants.dart';
 import 'package:grc_module/features/roles/r4_active_directory/domain/entities/employee_entity.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/controller/employee_controller.dart';
-import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
 import 'package:grc_module/core/di/app_controllers.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
 import 'package:collection/collection.dart';
 
-part './user_management_controller_state.dart';
+part 'user_management_controller_state.dart';
+part 'user_management_controller/user_management_controller_methods.dart';
 
 /// App-wide shared UserManagementController instance.
 ///
@@ -63,90 +61,13 @@ class UserManagementController extends Cubit<UserManagementControllerState> {
   List<UserPermissionEntity> usersPermissionEntity = [];
   List<UserPermissionEntity> filteredUsersPermissionEntity = [];
   UserManagementAccessRepository userRoleRepository =
-  UserManagementAccessRepository();
+      UserManagementAccessRepository();
   List<NewEmployeeModelHistory> employeesNotHaveCurrentPermission = [];
   List<NewEmployeeModelHistory> employeesNotHaveCurrentPermissionFiltered = [];
   Map<String, NewEmployeeModelHistory> selectedMembersIds = {};
 
   // Store RoleCubit reference (will be set from outside)
   RoleCubit? _roleCubit;
-
-  // ───────────────────────────────────────────────────────────────────────
-  // REQUEST-DETAILS PRESENTATION LOGIC
-  //
-  // Moved out of umdr_methods1.dart (user_mangement_details_request page) so
-  // that part file only builds widgets. Everything here is pure — no context,
-  // no setState — which is why only these helpers moved; the rest of that file
-  // drives widget state or shows dialogs and stays in the UI layer.
-  // ───────────────────────────────────────────────────────────────────────
-
-  /// Maps an incoming request field name onto the employee-model field path.
-  String mapFieldName(String requestFieldName) {
-    const fieldMappings = {
-      'first_name': 'firstName',
-      'middle_name': 'middleName',
-      'last_name': 'lastName',
-      'first_name_arabic': 'firstNameInArabic',
-      'middle_name_arabic': 'middleNameInArabic',
-      'last_name_arabic': 'lastNameInArabic',
-      'email': 'email',
-      'gender': 'gender',
-      'date_of_birth': 'birthDay',
-      'marital_status': 'maritalStatus',
-      'street': 'street',
-      'city': 'city',
-      'province': 'province',
-      'country': 'country',
-      'postalCode': 'postalCode',
-      'postal_code': 'postalCode',
-      'phone': 'mobilePhone.phones',
-      'Phone': 'mobilePhone.phones',
-      'country_code': 'mobilePhone.countryCode',
-      'Country_Code': 'mobilePhone.countryCode',
-      'country_app': 'mobilePhone.countryApp',
-      'Country_App': 'mobilePhone.countryApp',
-      'insuranceName': 'insuranceName',
-      'insurance_name': 'insuranceName',
-      'Insurance_Name': 'insuranceName',
-      'insurancePolicyNumber': 'insurancePolicyNumber',
-      'insurance_policy_number': 'insurancePolicyNumber',
-      'Insurance_Policy_Number': 'insurancePolicyNumber',
-      'firstContactFirstName': 'firstContactFirstName',
-      'firstContactLastName': 'firstContactLastName',
-      'firstContactRelationship': 'firstContactRelationship',
-      'firstContactEmail': 'firstContactEmail',
-      'firstContactPhone': 'firstContactPhone',
-      'secondContactFirstName': 'secondContactFirstName',
-      'secondContactLastName': 'secondContactLastName',
-      'secondContactRelationship': 'secondContactRelationship',
-      'secondContactEmail': 'secondContactEmail',
-      'secondContact_email': 'secondContactEmail',
-      'secondContactPhone': 'secondContactPhone',
-      // Address / language for both emergency contacts. These were missing,
-      // so approving a request that touched them fell through to the raw key
-      // and NewEmployeeModelHistory threw "Unknown field: secondContact_province".
-      'firstContactLanguage': 'firstContactLanguage',
-      'firstContactCountry': 'firstContactCountry',
-      'firstContactProvince': 'firstContactProvince',
-      'firstContactCity': 'firstContactCity',
-      'firstContactStreet': 'firstContactStreet',
-      'secondContactLanguage': 'secondContactLanguage',
-      'secondContactCountry': 'secondContactCountry',
-      'secondContactProvince': 'secondContactProvince',
-      'secondContactCity': 'secondContactCity',
-      'secondContactStreet': 'secondContactStreet',
-    };
-
-    final direct = fieldMappings[requestFieldName];
-    if (direct != null) return direct;
-
-    // The health-insurance screens write snake_case variants
-    // (secondContact_province), the model uses camelCase
-    // (secondContactProvince). Fold one into the other rather than listing
-    // every spelling twice.
-    final camel = _snakeToCamel(requestFieldName);
-    return fieldMappings[camel] ?? camel;
-  }
 
   /// `secondContact_province` → `secondContactProvince`.
   /// Leaves an already-camelCase key untouched.
@@ -157,44 +78,7 @@ class UserManagementController extends Cubit<UserManagementControllerState> {
     if (parts.isEmpty) return value;
 
     return parts.first +
-        parts
-            .skip(1)
-            .map((p) => p[0].toUpperCase() + p.substring(1))
-            .join();
-  }
-
-  /// Renders date-like values as `dd MMM yyyy`; other values pass through.
-  String formatValueForDisplay(String value, String fieldName) {
-    final bool isDateField = fieldName.toLowerCase().contains('date') ||
-        fieldName.toLowerCase().contains('birth') ||
-        fieldName.toLowerCase().contains('_of_');
-
-    if (!isDateField) return value;
-
-    try {
-      DateTime? dateTime;
-      if (value.contains('T')) {
-        dateTime = DateTime.tryParse(value);
-      } else if (value.contains('-') && value.split('-').length == 3) {
-        dateTime = DateTime.tryParse(value);
-      } else if (value.contains('/')) {
-        final List<String> parts = value.split('/');
-        if (parts.length == 3) {
-          int month = int.tryParse(parts[0]) ?? 0;
-          int day = int.tryParse(parts[1]) ?? 0;
-          int year = int.tryParse(parts[2]) ?? 0;
-          if (year < 100) year += (year <= 30) ? 2000 : 1900;
-          if (month > 0 && day > 0 && year > 0) {
-            dateTime = DateTime(year, month, day);
-          }
-        }
-      } else if (int.tryParse(value) != null) {
-        dateTime = DateTime.fromMillisecondsSinceEpoch(int.parse(value));
-      }
-      if (dateTime != null) return DateFormat('dd MMM yyyy').format(dateTime);
-    } catch (_) {}
-
-    return value;
+        parts.skip(1).map((p) => p[0].toUpperCase() + p.substring(1)).join();
   }
 
   /// Arabic translation for the fixed request section headings.
@@ -248,15 +132,15 @@ class UserManagementController extends Cubit<UserManagementControllerState> {
   String getStatusIcon(String status) {
     switch (normalizeStatus(status)) {
       case 'approved':
-        return 'assets/icons_assets/main_icons_assets/approve_icon.svg';
+        return 'assets/icons_assets/main_icons_assets/ic_status_approved_circle.svg';
       case 'pending':
-        return 'assets/icons_assets/main_icons_assets/status_pending_hourglass_orange.svg';
+        return 'assets/icons_assets/main_icons_assets/ic_status_pending.svg';
       case 'rejected':
-        return 'assets/icons_assets/main_icons_assets/status_rejected_stamp_red.svg';
+        return 'assets/icons_assets/main_icons_assets/ic_status_rejected.svg';
       case 'cancelled':
-        return 'assets/icons_assets/main_icons_assets/status_cancelled_stamp_red.svg';
+        return 'assets/icons_assets/main_icons_assets/ic_status_cancelled.svg';
       default:
-        return 'assets/icons_assets/main_icons_assets/status_rejected_stamp_red.svg';
+        return 'assets/icons_assets/main_icons_assets/ic_status_rejected.svg';
     }
   }
 
@@ -265,9 +149,11 @@ class UserManagementController extends Cubit<UserManagementControllerState> {
     return fieldKey
         .replaceAll('_', ' ')
         .split(' ')
-        .map((word) => word.isNotEmpty
-            ? '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}'
-            : '')
+        .map(
+          (word) => word.isNotEmpty
+              ? '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}'
+              : '',
+        )
         .join(' ');
   }
 
@@ -281,7 +167,8 @@ class UserManagementController extends Cubit<UserManagementControllerState> {
 
   /// Flattens per-row validation errors into an ordered (row, column) list.
   List<MapEntry<int, String>> buildErrorLocations(
-      List<Map<String, String>> validationErrors) {
+    List<Map<String, String>> validationErrors,
+  ) {
     final List<MapEntry<int, String>> locations = [];
     for (int row = 0; row < validationErrors.length; row++) {
       validationErrors[row].forEach((header, _) {
@@ -318,16 +205,19 @@ class UserManagementController extends Cubit<UserManagementControllerState> {
   /// Method Name : [getUsersPermissionsData]
   ///
   /// Purpose : This method is used to get all users permissions data from the database.
-  getUsersPermissionsData() async {
+  Future<void> getUsersPermissionsData() async {
     requestCurrentState = ControllerRequestCurrentState.loading;
     emitSafely(UserManagementControllerLoading());
     filteredUsersPermissionEntity = [];
     Either<Failure, dynamic> result =
-    await userRoleRepository.getUsersPermissionsData();
+        await userRoleRepository.getUsersPermissionsData();
     if (result.isLeft()) {
       requestCurrentState = ControllerRequestCurrentState.error;
-      emitSafely(UserManagementControllerError(
-          result.fold((l) => l.errMessage, (r) => 'Unknown error')));
+      emitSafely(
+        UserManagementControllerError(
+          result.fold((l) => l.errMessage, (r) => 'Unknown error'),
+        ),
+      );
       return;
     }
     if (result.isRight()) {
@@ -347,7 +237,7 @@ class UserManagementController extends Cubit<UserManagementControllerState> {
   ///             searchText : String
   ///
   /// Purpose : This method is used to filter the users permissions data based on the search text.
-  filterUsersPermissionEntity({required String searchText}) {
+  void filterUsersPermissionEntity({required String searchText}) {
     filteredUsersPermissionEntity = [];
     String currentRoleName = _getCurrentRoleName();
 
@@ -375,16 +265,17 @@ class UserManagementController extends Cubit<UserManagementControllerState> {
   ///             permission : [UserPermissionEntity]
   ///
   /// Purpose : This method is used to delete the user permission from the database.
-  delete(UserPermissionEntity permission) async {
+  Future<void> delete(UserPermissionEntity permission) async {
     String currentUserEmail =
-    AppControllers.employeeDirectory.employee!.email!.last!;
+        AppControllers.employeeDirectory.employee!.email.last;
     String employeeEmail = AppControllers.employeeDirectory
         .getEmployeeEmailFromId(permission.employeeEmail);
     Either<Failure, dynamic> result =
-    await DeleteUserPermissionUseCase(userRoleRepository).execute(
-        employeeEmail: employeeEmail,
-        permission: permission,
-        currentUserEmail: currentUserEmail);
+        await DeleteUserPermissionUseCase(userRoleRepository).execute(
+      employeeEmail: employeeEmail,
+      permission: permission,
+      currentUserEmail: currentUserEmail,
+    );
     if (result.isRight()) _updateLocalData(permission);
   }
 
@@ -394,15 +285,15 @@ class UserManagementController extends Cubit<UserManagementControllerState> {
   ///            permission : [UserPermissionEntity]
   ///
   /// Purpose : This method is used to update the local data after deleting the user permission.
-  _updateLocalData(UserPermissionEntity permission) {
+  void _updateLocalData(UserPermissionEntity permission) {
     usersPermissionEntity.remove(permission);
-    NewEmployeeModelHistory? employee = AppControllers.employeeDirectory
-        .allEmployees
+    NewEmployeeModelHistory? employee = AppControllers
+        .employeeDirectory.allEmployees
         ?.firstWhereOrNull((element) => element.id == permission.employeeEmail);
 
     if (employee != null) {
-      employee.role?.add(Constants.removedEmployeePermission);
-      employee.timestamps?.add(DateTime.now().millisecondsSinceEpoch);
+      employee.role.add(Constants.removedEmployeePermission);
+      employee.timestamps.add(DateTime.now().millisecondsSinceEpoch);
     }
     emitSafely(UserManagementMembersUpdated());
   }
@@ -410,15 +301,16 @@ class UserManagementController extends Cubit<UserManagementControllerState> {
   /// Method Name: [updateUserPermission]
   ///
   /// Purpose: Update user permission with new access details
-  updateUserPermission({
+  Future<void> updateUserPermission({
     required String? employeeId,
     required String accessName,
     String? startDate,
     required String endDate,
   }) async {
     accessName = accessName.toLowerCase();
-    UserPermissionEntity? permission = usersPermissionEntity
-        .firstWhereOrNull((element) => element.employeeEmail == employeeId);
+    UserPermissionEntity? permission = usersPermissionEntity.firstWhereOrNull(
+      (element) => element.employeeEmail == employeeId,
+    );
 
     if (permission == null) {
       return;
@@ -426,10 +318,9 @@ class UserManagementController extends Cubit<UserManagementControllerState> {
 
     // NEW: Use the updated signature with named parameters
     Either<Failure, dynamic> result =
-    await UpdateUserPermissionUseCase(userRoleRepository).execute(
+        await UpdateUserPermissionUseCase(userRoleRepository).execute(
       employeeId: permission.employeeId,
-      currentUserEmail:
-      AppControllers.employeeDirectory.employee!.email!.last!,
+      currentUserEmail: AppControllers.employeeDirectory.employee!.email.last,
       accessName: (accessName != permission.accessName) ? accessName : null,
       accessBegin: (startDate != permission.startDate) ? startDate : null,
       accessEnd: (endDate != permission.endDate) ? endDate : null,
@@ -439,13 +330,25 @@ class UserManagementController extends Cubit<UserManagementControllerState> {
       // Was `CustomDialogManager.showMessage(context: Get.context!, ...)`.
       // A cubit must not own a BuildContext or drive dialogs; it publishes the
       // outcome and the listening page decides how to present it.
-      emitSafely(UserManagementPermissionSaved('The Access Has Been Edited Successfully'));
+      emitSafely(
+        UserManagementPermissionSaved(
+          'The Access Has Been Edited Successfully',
+        ),
+      );
       getUsersPermissionsData();
+    } else {
+      // 9/10/2026 — a refusal (e.g. a user limit) was dropped silently.
+      emitSafely(
+        UserManagementControllerError(
+          result.fold((Failure l) => l.errMessage, (_) => ''),
+        ),
+      );
     }
   }
 
   List<NewEmployeeModelHistory> getEmployeesNotHaveCurrentPermission(
-      String? accessName) {
+    String? accessName,
+  ) {
     accessName = accessName?.toLowerCase();
     List<NewEmployeeModelHistory> employees = [];
     List<NewEmployeeModelHistory>? allEmployees =
@@ -454,34 +357,31 @@ class UserManagementController extends Cubit<UserManagementControllerState> {
     if (allEmployees == null) return employees;
 
     for (NewEmployeeModelHistory employee in allEmployees) {
-      String? lastRole = employee.role?.lastOrNull;
+      String? lastRole = employee.role.lastOrNull;
       if ((lastRole == null ||
-          lastRole == Constants.removedEmployeePermission) ||
-          (lastRole != null && lastRole != accessName)) {
+              lastRole == Constants.removedEmployeePermission) ||
+          (lastRole != accessName)) {
         employees.add(employee);
       }
     }
     return employees;
   }
 
-  getFilteredEmployeesNotHavePermission(String? accessName, String searchText) {
+  void getFilteredEmployeesNotHavePermission(String? accessName, String searchText) {
     accessName = accessName?.toLowerCase();
-    employeesNotHaveCurrentPermission =
-        getEmployeesNotHaveCurrentPermission(accessName);
+    employeesNotHaveCurrentPermission = getEmployeesNotHaveCurrentPermission(
+      accessName,
+    );
     employeesNotHaveCurrentPermissionFiltered = [];
 
-    for (NewEmployeeModelHistory employee in employeesNotHaveCurrentPermission) {
+    for (NewEmployeeModelHistory employee
+        in employeesNotHaveCurrentPermission) {
       String searchLower = searchText.toLowerCase();
-      bool matches = employee.firstName?.last
-          ?.toLowerCase()
-          .contains(searchLower) ==
-          true ||
-          employee.lastName?.last
-              ?.toLowerCase()
-              .contains(searchLower) ==
-              true ||
-          employee.email?.last?.toLowerCase().contains(searchLower) ==
-              true;
+      bool matches =
+          employee.firstName.last.toLowerCase().contains(searchLower) == true ||
+              employee.lastName.last.toLowerCase().contains(searchLower) ==
+                  true ||
+              employee.email.last.toLowerCase().contains(searchLower) == true;
 
       if (matches) {
         employeesNotHaveCurrentPermissionFiltered.add(employee);
@@ -489,7 +389,7 @@ class UserManagementController extends Cubit<UserManagementControllerState> {
     }
   }
 
-  selectMember(NewEmployeeModelHistory employee) {
+  void selectMember(NewEmployeeModelHistory employee) {
     if (selectedMembersIds.containsKey(employee.id)) {
       selectedMembersIds.remove(employee.id);
     } else {
@@ -501,7 +401,7 @@ class UserManagementController extends Cubit<UserManagementControllerState> {
   /// Method Name: [addNewUsersPermissions]
   ///
   /// Purpose: Add permissions for multiple selected users
-  addNewUsersPermissions({
+  Future<void> addNewUsersPermissions({
     required String accessName,
     required String startDate,
     required String endDate,
@@ -513,19 +413,20 @@ class UserManagementController extends Cubit<UserManagementControllerState> {
 
     // Convert selected members to EmployeeEntity list
     List<EmployeeEntityPro> selectedEmployeeEntities = selectedMembersIds.values
-        .map((employee) => EmployeeEntityPro(
-      id: employee.id,
-      email: employee.email?.last,
-      firstName: employee.firstName?.last,
-      lastName: employee.lastName?.last,
-      // Add other required fields as needed
-    ))
+        .map(
+          (employee) => EmployeeEntityPro(
+            id: employee.id,
+            email: employee.email.last,
+            firstName: employee.firstName.last,
+            lastName: employee.lastName.last,
+            // Add other required fields as needed
+          ),
+        )
         .toList();
 
     Either<Failure, dynamic> result =
-    await UpdateSelectedMembersUseCase(userRoleRepository).execute(
-      currentUserEmail:
-      AppControllers.employeeDirectory.employee!.email!.last!,
+        await UpdateSelectedMembersUseCase(userRoleRepository).execute(
+      currentUserEmail: AppControllers.employeeDirectory.employee!.email.last,
       accessName: accessName,
       startDate: startDate,
       endDate: endDate,
@@ -536,9 +437,20 @@ class UserManagementController extends Cubit<UserManagementControllerState> {
       // Was `CustomDialogManager.showMessage(context: Get.context!, ...)`.
       // A cubit must not own a BuildContext or drive dialogs; it publishes the
       // outcome and the listening page decides how to present it.
-      emitSafely(UserManagementPermissionSaved('The Access Has Been Created Successfully'));
+      emitSafely(
+        UserManagementPermissionSaved(
+          'The Access Has Been Created Successfully',
+        ),
+      );
       getUsersPermissionsData();
       selectedMembersIds.clear();
+    } else {
+      // 9/10/2026 — a refusal (e.g. a user limit) was dropped silently.
+      emitSafely(
+        UserManagementControllerError(
+          result.fold((Failure l) => l.errMessage, (_) => ''),
+        ),
+      );
     }
   }
 
@@ -546,7 +458,8 @@ class UserManagementController extends Cubit<UserManagementControllerState> {
   ///
   /// Purpose: Get the permission history for a specific user
   Future<List<Map<String, dynamic>>> getUserPermissionHistory(
-      String userId) async {
+    String userId,
+  ) async {
     return await userRoleRepository.getUserPermissionHistory(userId);
   }
 
@@ -588,42 +501,13 @@ class UserManagementController extends Cubit<UserManagementControllerState> {
     final DateTime cutoffDate = now.add(Duration(days: days));
 
     return usersPermissionEntity.where((user) {
-      final DateTime? endDate =
-          userRoleRepository.parseAccessDate(user.endDate, label: 'end');
+      final DateTime? endDate = userRoleRepository.parseAccessDate(
+        user.endDate,
+        label: 'end',
+      );
       if (endDate == null) return false;
       return endDate.isBefore(cutoffDate) && endDate.isAfter(now);
     }).toList();
-  }
-
-  /// Method Name: [bulkAssignRole]
-  ///
-  /// Purpose: Assign role to multiple employees at once
-  Future<void> bulkAssignRole({
-    required List<String> employeeIds,
-    required String roleName,
-    required String startDate,
-    required String endDate,
-  }) async {
-    List<NewEmployeeModelHistory>? allEmployees =
-        AppControllers.employeeDirectory.allEmployees;
-
-    if (allEmployees == null) {
-      return;
-    }
-
-    for (String employeeId in employeeIds) {
-      NewEmployeeModelHistory? employee =
-      allEmployees.firstWhereOrNull((emp) => emp.id == employeeId);
-      if (employee != null) {
-        selectedMembersIds[employeeId] = employee;
-      }
-    }
-
-    await addNewUsersPermissions(
-      accessName: roleName,
-      startDate: startDate,
-      endDate: endDate,
-    );
   }
 
   /// Method Name: [validatePermissionDates]
@@ -634,10 +518,14 @@ class UserManagementController extends Cubit<UserManagementControllerState> {
   /// [getExpiringPermissions] — this returned `false` for every date pair the
   /// app itself had written, so the validation was permanently dead.
   bool validatePermissionDates(String startDate, String endDate) {
-    final DateTime? start =
-        userRoleRepository.parseAccessDate(startDate, label: 'start');
-    final DateTime? end =
-        userRoleRepository.parseAccessDate(endDate, label: 'end');
+    final DateTime? start = userRoleRepository.parseAccessDate(
+      startDate,
+      label: 'start',
+    );
+    final DateTime? end = userRoleRepository.parseAccessDate(
+      endDate,
+      label: 'end',
+    );
     if (start == null || end == null) return false;
 
     return start.isBefore(end) && end.isAfter(DateTime.now());
@@ -648,8 +536,9 @@ class UserManagementController extends Cubit<UserManagementControllerState> {
   /// Purpose: Search users by specific role
   List<UserPermissionEntity> searchUsersByRole(String roleName) {
     return usersPermissionEntity
-        .where((user) =>
-    user.accessName?.toLowerCase() == roleName.toLowerCase())
+        .where(
+          (user) => user.accessName?.toLowerCase() == roleName.toLowerCase(),
+        )
         .toList();
   }
 
@@ -658,19 +547,21 @@ class UserManagementController extends Cubit<UserManagementControllerState> {
   /// Purpose: Export permission data for reporting
   List<Map<String, dynamic>> exportPermissionData() {
     return usersPermissionEntity
-        .map((user) => {
-      'employeeId': user.employeeId,
-      'employeeEmail': user.employeeEmail,
-      'englishName': user.englishName,
-      'arabicName': user.arabicName,
-      'accessName': user.accessName,
-      'startDate': user.startDate,
-      'endDate': user.endDate,
-      'grantorEnglishName': user.grantorEnglishName,
-      'grantorArabicName': user.grantorArabicName,
-      'departmentId': user.departmentId,
-      'jobTitle': user.englishJobTitle,
-    })
+        .map(
+          (user) => {
+            'employeeId': user.employeeId,
+            'employeeEmail': user.employeeEmail,
+            'englishName': user.englishName,
+            'arabicName': user.arabicName,
+            'accessName': user.accessName,
+            'startDate': user.startDate,
+            'endDate': user.endDate,
+            'grantorEnglishName': user.grantorEnglishName,
+            'grantorArabicName': user.grantorArabicName,
+            'departmentId': user.departmentId,
+            'jobTitle': user.englishJobTitle,
+          },
+        )
         .toList();
   }
 
@@ -723,41 +614,18 @@ class UserManagementController extends Cubit<UserManagementControllerState> {
     return roles.toList()..sort();
   }
 
-  /// Method Name: [getRoleFromHistory]
-  ///
-  /// Purpose: Get role details from RoleHistoryModel
-  Map<String, dynamic>? getRoleFromHistory(String roleName) {
-    if (_roleCubit == null) {
-      return null;
-    }
-
-    RoleHistoryModel? role = _roleCubit!.roles.firstWhereOrNull(
-            (r) => r.currentRoleName.toLowerCase() == roleName.toLowerCase());
-
-    if (role == null) return null;
-
-    return {
-      'roleName': role.currentRoleName,
-      'roleNameAr': role.currentRoleNameAr,
-      'roleDescription': role.currentRoleDescription,
-      'roleDescriptionAr': role.currentRoleDescriptionAr,
-      'roleImage': role.currentRoleImage,
-      'status': role.currentStatus.name,
-      'createdAt': role.currentCreatedAt,
-      'createdBy': role.currentCreatedBy,
-      'modules': role.currentSelectedModules,
-    };
-  }
-
   /// Method Name: [getUsersByRoleHistory]
   ///
   /// Purpose: Get users assigned to a specific role from history
   List<UserPermissionEntity> getUsersByRoleHistory(
-      RoleHistoryModel roleHistory) {
+    RoleHistoryModel roleHistory,
+  ) {
     return usersPermissionEntity
-        .where((user) =>
-    user.accessName?.toLowerCase() ==
-        roleHistory.currentRoleName.toLowerCase())
+        .where(
+          (user) =>
+              user.accessName?.toLowerCase() ==
+              roleHistory.currentRoleName.toLowerCase(),
+        )
         .toList();
   }
 
@@ -765,34 +633,9 @@ class UserManagementController extends Cubit<UserManagementControllerState> {
   ///
   /// Purpose: Get role change history for a specific employee
   Future<List<Map<String, dynamic>>> getRoleChangeHistory(
-      String employeeId) async {
+    String employeeId,
+  ) async {
     return await getUserPermissionHistory(employeeId);
-  }
-
-  /// Method Name: [compareRolePermissions]
-  ///
-  /// Purpose: Compare permissions between two roles_module
-  Map<String, dynamic> compareRolePermissions(
-      String roleNameA, String roleNameB) {
-    if (_roleCubit == null) {
-      return {'error': 'RoleCubit not set'};
-    }
-
-    RoleHistoryModel? roleA = _roleCubit!.roles.firstWhereOrNull(
-            (r) => r.currentRoleName.toLowerCase() == roleNameA.toLowerCase());
-    RoleHistoryModel? roleB = _roleCubit!.roles.firstWhereOrNull(
-            (r) => r.currentRoleName.toLowerCase() == roleNameB.toLowerCase());
-
-    if (roleA == null || roleB == null) {
-      return {'error': 'One or both roles_module not found'};
-    }
-
-    return {
-      'roleA': roleA.currentRoleName,
-      'roleB': roleB.currentRoleName,
-      'roleAModules': _getGrantedModules(roleA),
-      'roleBModules': _getGrantedModules(roleB),
-    };
   }
 
   /// Helper method to get granted modules from RoleHistoryModel
@@ -819,32 +662,5 @@ class UserManagementController extends Cubit<UserManagementControllerState> {
         .where((name) => name.isNotEmpty)
         .toList()
       ..sort();
-  }
-
-  /// Method Name: [getRoleDetails]
-  ///
-  /// Purpose: Get detailed information about a role
-  Map<String, dynamic>? getRoleDetails(String roleName) {
-    if (_roleCubit == null) {
-      return null;
-    }
-
-    RoleHistoryModel? role = _roleCubit!.roles.firstWhereOrNull(
-            (r) => r.currentRoleName.toLowerCase() == roleName.toLowerCase());
-
-    if (role == null) return null;
-
-    return {
-      'roleName': role.currentRoleName,
-      'roleNameAr': role.currentRoleNameAr,
-      'description': role.currentRoleDescription,
-      'descriptionAr': role.currentRoleDescriptionAr,
-      'image': role.currentRoleImage,
-      'status': role.currentStatus.name,
-      'createdBy': role.currentCreatedBy,
-      'createdAt': role.currentCreatedAt.toDate(),
-      'grantedModules': _getGrantedModules(role),
-      'userCount': searchUsersByRole(roleName).length,
-    };
   }
 }

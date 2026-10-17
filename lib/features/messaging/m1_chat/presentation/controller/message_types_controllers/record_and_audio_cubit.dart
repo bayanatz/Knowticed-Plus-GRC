@@ -1,24 +1,34 @@
+/// Module: messaging/m1_chat
+///
+///*************************** FILE INFO ****************************///
+/// File Name: record_and_audio_cubit.dart
+/// Description: `RecordAndAudioState` state, `RecordAndAudioCubit` cubit (state management), `speeds` constant.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
+library;
+
 /// Module: messaging / chat / presentation/controller/message_types_controllers/record_and_audio_cubit.dart
 import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:grc_module/core/services/media_picker_service.dart';
+import 'package:grc_module/core/app_services/media_picker_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grc_module/core/helper/main_helper/app_toast.dart';
+import 'package:grc_module/core/helper/app_toast.dart';
 import 'package:grc_module/features/messaging/m1_chat/presentation/controller/message_types_controllers/record_cubit.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import 'package:grc_module/core/services/message_module/audio_record_service.dart';
-import 'package:grc_module/core/helper/main_helper/get_dialog_helper.dart';
-import '../../../data/models/message/audio_message_model.dart';
-import '../../../domain/entity/new_message_content_entity.dart';
-import '../../../domain/repository/chat_repository/base_chat_repository.dart';
-import '../../../../../../core/helper/message_module/main_helper/chat_constants.dart';
-import '../main_controllers/master_chat_cubit.dart';
-import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
-import 'package:grc_module/core/constants/message_module/app_assets.dart';
+import 'package:grc_module/features/messaging/helpers/services/audio_record_service.dart';
+
+import 'package:grc_module/features/messaging/m1_chat/data/models/message/audio_message_model.dart';
+import 'package:grc_module/features/messaging/m1_chat/domain/entity/new_message_content_entity.dart';
+import 'package:grc_module/features/messaging/m1_chat/domain/repository/chat_repository/base_chat_repository.dart';
+import 'package:grc_module/features/messaging/helpers/constants/chat_constants.dart';
+import 'package:grc_module/features/messaging/m1_chat/presentation/controller/main_controllers/master_chat_cubit.dart';
+
+import 'package:grc_module/core/custom/dialogs/custom_dialog_manager.dart';
+import 'package:grc_module/features/messaging/helpers/constants/messaging_assets.dart';
 import 'package:grc_module/generated/l10n.dart';
 
 ///********************** FILE INFO ********************///
@@ -93,7 +103,8 @@ class RecordAndAudioCubit extends Cubit<RecordAndAudioState> {
   /// times had five live listeners, all emitting. Identity set, because two
   /// different notes can compare equal.
   final Set<AudioMessageModel> _wiredModels = Set.identity();
-  final List<StreamSubscription<void>> _modelSubs = <StreamSubscription<void>>[];
+  final List<StreamSubscription<void>> _modelSubs =
+      <StreamSubscription<void>>[];
 
   RecordAndAudioCubit({
     required this.masterChatCubit,
@@ -114,7 +125,9 @@ class RecordAndAudioCubit extends Cubit<RecordAndAudioState> {
 
     // Stop currently playing audio if different
     final current = state.currentlyPlayingAudioModel;
-    if (current != null && !identical(current, model) && current.isCurrentPlaying) {
+    if (current != null &&
+        !identical(current, model) &&
+        current.isCurrentPlaying) {
       await current.pause();
     }
 
@@ -132,9 +145,11 @@ class RecordAndAudioCubit extends Cubit<RecordAndAudioState> {
   /// is why the icon never flipped.
   void _wire(AudioMessageModel model) {
     if (!_wiredModels.add(model)) return;
-    _modelSubs.add(model.stateChanges.listen((_) {
-      if (!isClosed) emit(state.copyWith());
-    }));
+    _modelSubs.add(
+      model.stateChanges.listen((_) {
+        if (!isClosed) emit(state.copyWith());
+      }),
+    );
   }
 
   /// Whether `permission_handler` can answer a microphone question here.
@@ -191,17 +206,19 @@ class RecordAndAudioCubit extends Cubit<RecordAndAudioState> {
     stopwatch.start();
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      emit(state.copyWith(
-        elapsedSeconds: stopwatch.elapsed.inSeconds % 60,
-        elapsedMinutes: stopwatch.elapsed.inMinutes,
-      ));
+      emit(
+        state.copyWith(
+          elapsedSeconds: stopwatch.elapsed.inSeconds % 60,
+          elapsedMinutes: stopwatch.elapsed.inMinutes,
+        ),
+      );
     });
 
     // Start recording
     final result = await AudioRecordService.startRecording();
 
     result.fold(
-          (error) {
+      (error) {
         // AppToast, not Fluttertoast: fluttertoast has no macOS
         // implementation, so on desktop the toast reporting this
         // failure threw MissingPluginException and buried the failure
@@ -210,18 +227,17 @@ class RecordAndAudioCubit extends Cubit<RecordAndAudioState> {
         stopwatch.stop();
         stopwatch.reset();
         _stopTimer();
-        emit(state.copyWith(
-          isRecording: false,
-          elapsedSeconds: 0,
-          elapsedMinutes: 0,
-          error: () => error.toString(),
-        ));
+        emit(
+          state.copyWith(
+            isRecording: false,
+            elapsedSeconds: 0,
+            elapsedMinutes: 0,
+            error: () => error.toString(),
+          ),
+        );
       },
-          (success) {
-        emit(state.copyWith(
-          isRecording: true,
-          error: () => null,
-        ));
+      (success) {
+        emit(state.copyWith(isRecording: true, error: () => null));
       },
     );
   }
@@ -234,23 +250,22 @@ class RecordAndAudioCubit extends Cubit<RecordAndAudioState> {
     stopwatch.reset();
     _stopTimer();
 
-    emit(state.copyWith(
-      elapsedSeconds: 0,
-      elapsedMinutes: 0,
-      newRecordDuration: duration,
-    ));
+    emit(
+      state.copyWith(
+        elapsedSeconds: 0,
+        elapsedMinutes: 0,
+        newRecordDuration: duration,
+      ),
+    );
 
     final result = await AudioRecordService.stopAndSave(cancel);
 
     result.fold(
-          (error) {
+      (error) {
         AppToast.show('Error Occurred, Please try again');
-        emit(state.copyWith(
-          isRecording: false,
-          error: () => error.toString(),
-        ));
+        emit(state.copyWith(isRecording: false, error: () => error.toString()));
       },
-          (recordPath) {
+      (recordPath) {
         emit(state.copyWith(isRecording: false, error: () => null));
 
         if (recordPath != null) {
@@ -307,8 +322,9 @@ class RecordAndAudioCubit extends Cubit<RecordAndAudioState> {
 
     try {
       // Picker owned by MediaPickerService — cubit no longer touches FilePicker (§16).
-      final paths = await MediaPickerService()
-          .pickFilePaths(allowedExtensions: ChatConstants.audioExtensions);
+      final paths = await MediaPickerService().pickFilePaths(
+        allowedExtensions: ChatConstants.audioExtensions,
+      );
 
       emit(state.copyWith(isProcessing: false));
 
@@ -333,17 +349,18 @@ class RecordAndAudioCubit extends Cubit<RecordAndAudioState> {
         );
       }
     } catch (e) {
-      emit(state.copyWith(
-        isProcessing: false,
-        error: () => 'Failed to pick audio files',
-      ));
+      emit(
+        state.copyWith(
+          isProcessing: false,
+          error: () => 'Failed to pick audio files',
+        ),
+      );
     }
   }
 
   /// Method Name: sendAudioMessage
   /// Purpose: Send audio message to chat
   Future<void> sendAudioMessage({required File audio}) async {
-
     try {
       AudioMessageModel audioMessageModel = AudioMessageModel(
         audioPath: audio.path,
@@ -351,7 +368,7 @@ class RecordAndAudioCubit extends Cubit<RecordAndAudioState> {
       );
 
       AudioMessageContentEntity messageContentEntity =
-      AudioMessageContentEntity(audio: audioMessageModel);
+          AudioMessageContentEntity(audio: audioMessageModel);
 
       final currentUser = masterChatCubit.state.currentUser;
       final otherConnectionSide = masterChatCubit.state.otherConnectionSide;
@@ -406,8 +423,4 @@ class RecordAndAudioCubit extends Cubit<RecordAndAudioState> {
 }
 
 // Speed configurations
-List<Speeds> speeds = [
-  Speeds.speed_1,
-  Speeds.speed_1_0_5,
-  Speeds.speed_2,
-];
+List<Speeds> speeds = [Speeds.speed_1, Speeds.speed_1_0_5, Speeds.speed_2];

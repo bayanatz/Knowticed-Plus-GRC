@@ -2,22 +2,25 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: drawer_menu_item.dart
-/// Purpose: A single icon + label entry in the app drawer rail.
-/// Author: Knowticed Plus team
+/// Description: A single icon + label entry in the app drawer rail.
+/// Author: Amr Mesbah
 /// Created at: 11/8/2026
 ///
 /// Extracted from the 586-line `custom_drawer.dart`. Reordering state is read
 /// from [AppDrawerCubit] rather than the module-global `RxBool` this used to
 /// depend on.
+library;
 
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/features/home/h3_app_drawer/presentation/controller/app_drawer_cubit.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
 class DrawerMenuItem extends StatelessWidget {
   const DrawerMenuItem({
@@ -76,18 +79,19 @@ class DrawerMenuItem extends StatelessWidget {
         final bool tapDisabled = isReorderingActive;
 
         return MouseRegion(
-          cursor: tapDisabled
-              ? SystemMouseCursors.basic
-              : SystemMouseCursors.click,
+          cursor:
+              tapDisabled ? SystemMouseCursors.basic : SystemMouseCursors.click,
           child: GestureDetector(
-            onTap: tapDisabled ? null : () => onTap(index),
+            onTap: withHaptic(
+                tapDisabled ? null : () => onTap(index), HapticLevel.low),
             child: Container(
               width: compact ? 40.w : 70.w,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
                 border: isReorderingActive && !isLogout
                     ? Border.all(
-                        color: AppColors.primary.withOpacity(0.5), width: 1)
+                        color: AppColors.primary.withValues(alpha: 0.5),
+                        width: 1)
                     : null,
               ),
               padding: EdgeInsets.symmetric(
@@ -104,11 +108,19 @@ class DrawerMenuItem extends StatelessWidget {
                   children: [
                     Padding(
                       padding: EdgeInsets.only(top: 8.h),
-                      child: SvgPicture.asset(
-                        iconPath,
-                        width: 26.w,
-                        fit: BoxFit.fill,
-                        height: 26.h,
+                      // FIXED 13/10/2026 (form builder vertical bug report
+                      // p.36 — "make the thickness of the icons equal"): the
+                      // box was 26.w × 26.h with BoxFit.fill, and .w and .h
+                      // scale differently — very differently in portrait — so
+                      // every glyph was stretched on one axis and its strokes
+                      // came out thicker one way than the other, by a
+                      // different amount per icon. A square .sp box with
+                      // `contain` draws each one undistorted.
+                      child: CustomSvgImage.natural(
+                        assetPath: iconPath,
+                        width: 26.sp,
+                        fit: BoxFit.contain,
+                        height: 26.sp,
                         color: isSelected
                             ? AppColors.secondaryPrimaryText
                             : AppColors.secondaryText,
@@ -123,12 +135,13 @@ class DrawerMenuItem extends StatelessWidget {
                               child: Text(
                                 title,
                                 textAlign: TextAlign.center,
-                                style: StyleText.fontSize10Weight500.copyWith(color: Color(0xff797979))
+                                style: StyleText.fontSize10Weight500
+                                    .copyWith(color: Color(0xff797979))
                                     .copyWith(
-                                  color: isSelected
-                                      ? AppColors.secondaryPrimaryText
-                                      : AppColors.secondaryText,
-                                ),
+                                      color: isSelected
+                                          ? AppColors.secondaryPrimaryText
+                                          : AppColors.secondaryText,
+                                    ),
                               ),
                             ),
                     ),

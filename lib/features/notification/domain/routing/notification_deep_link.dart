@@ -40,14 +40,20 @@
 /// separate change: a field on the model, a parameter on the sender, and the
 /// call sites in the eight module notification services.
 ///
+/// UPDATE 7/10/2026: that change now exists — optional
+/// `NotificationModelSystem.requestId` (`Request_Id`) and a `requestId`
+/// parameter on `AppNotificationSender` — and To-Do is its first user:
+/// `NotificationRouting.todoIdFor` opens the to-do itself. Other modules can
+/// adopt it the same way; this table still resolves only to sections.
+///
 /// ⚠️ RULE: a page key that matches nothing resolves to the module landing —
 /// today's behaviour. This router never dead-ends a tap.
 library;
 
-import 'package:grc_module/core/helper/role/modules_enum.dart';
-import 'package:grc_module/features/notification/domain/enums/knowledge_hub_module/knowledge_hub_notification_pages.dart';
-import 'package:grc_module/features/notification/domain/enums/services_module/services_notification_pages.dart';
-import 'package:grc_module/features/notification/domain/enums/settings_module/settings_notification_pages.dart';
+import 'package:grc_module/core/helper/access/modules_enum.dart';
+import 'package:grc_module/features/notification/domain/enums/knowledge_hub/knowledge_hub_notification_pages.dart';
+import 'package:grc_module/features/notification/domain/enums/services/services_notification_pages.dart';
+import 'package:grc_module/features/notification/domain/enums/settings/settings_notification_pages.dart';
 
 /// Which settings section a notification belongs to.
 ///

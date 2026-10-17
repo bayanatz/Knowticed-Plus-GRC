@@ -6,16 +6,16 @@
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header;
 ///          collection names routed through FirebaseCollections (§15).
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:grc_module/core/network/api_constants.dart';
-import 'package:grc_module/core/services/firebase/repository/firebase_repository.dart';
+import 'package:grc_module/core/app_services/firebase/repository/firebase_repository.dart';
 
 import 'package:grc_module/core/network/failure_model.dart';
 import 'package:grc_module/core/network/get_base_url.dart';
 import 'package:grc_module/features/roles/r4_active_directory/data/models/employees_model/new_employee_model.dart';
-import 'package:grc_module/features/onboarding/o3_authentication/data/models/demo_user_account_overview.dart';
 
 // PORTING NOTE (services_app): services_app mixes in
 // `EmployeeMixinRemoteDataSource` here, but this class already defines its own
@@ -28,24 +28,15 @@ class UserAccessRemoteDataSource {
   /// getEmployees - ✅ FIXED: Now fetches from server to avoid stale cache
   Future<Either<Failure, dynamic>> getEmployees() async {
     try {
-
       // ✅ CRITICAL FIX: Force server read to get latest data after updates
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection(getBaseUrl(FirebaseCollections.employeesInfo))
-          .get(GetOptions(source: Source.server));  // ← Force server read!
-
+          .get(GetOptions(source: Source.server)); // ← Force server read!
 
       List<Map<String, dynamic>> employees = [];
       for (var doc in querySnapshot.docs) {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         data['Id'] = doc.id;
-
-        // ✅ Debug: Print status for verification
-        if (data['Status'] != null && data['Status'] is List) {
-          List<dynamic> statusList = data['Status'] as List;
-      // (was an `if (statusList.isNotEmpty) {}` shell left behind by a
-      //  removed debug print)
-        }
 
         employees.add(data);
       }
@@ -72,8 +63,7 @@ class UserAccessRemoteDataSource {
       }
 
       Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
-      data['Id'] = employeeId;  // ✅ Ensure ID is in the data
-
+      data['Id'] = employeeId; // ✅ Ensure ID is in the data
 
       return Right(data);
     } catch (e) {
@@ -88,7 +78,6 @@ class UserAccessRemoteDataSource {
       String collectionPath = getBaseUrl(FirebaseCollections.employeesInfo);
 
       Map<String, dynamic> dataToSave = employeeModel.toMap();
-
 
       await FirebaseFirestore.instance
           .collection(collectionPath)

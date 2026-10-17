@@ -2,9 +2,9 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: user_requests_approvers_repository.dart
-/// Purpose: Resolve WHO is allowed to review employee change requests, so a
+/// Description: Resolve WHO is allowed to review employee change requests, so a
 ///          submitted request can notify all of them.
-/// Author: Knowticed Plus team
+/// Author: Amr Mesbah
 /// Created at: 24/8/2026
 ///
 /// ─── WHY IT EXISTS ───────────────────────────────────────────────────
@@ -25,7 +25,8 @@
 /// asked of every role instead of one:
 ///
 ///   1. the role's `Selected_Modules` contains the Roles module;
-///   2. its document in `roles_permissions` has `Users_Requests` enabled;
+///   2. its document in `roles_module_permissions` (was `roles_permissions`
+///      until 9/10/2026) has `Users_Requests` enabled;
 ///   3. the employee's current `Role` is one of those roles.
 ///
 /// A permission value may be stored as a bare bool or as a history list whose
@@ -47,6 +48,7 @@ import 'package:grc_module/features/roles/r1_role_management/data/models/role_mo
 import 'package:grc_module/features/roles/r1_role_management/data/repository/role_repository.dart';
 import 'package:grc_module/features/roles/r1_role_management/domain/enums/module_name_aliases.dart';
 import 'package:grc_module/features/roles/r1_role_management/domain/enums/roles/user_management_permission.dart';
+import 'package:grc_module/features/settings/se6_requests/domain/rules/self_approval_rule.dart';
 
 class UserRequestsApproversRepository {
   UserRequestsApproversRepository({
@@ -72,46 +74,43 @@ class UserRequestsApproversRepository {
   ///
   /// Purpose: Every employee who may review change requests.
   ///
+  /// [requesterEmail] (ADDED 9/10/2026, owner decision): who raised the
+  /// request. They are LEFT OUT — a requester can no longer approve their own
+  /// request (`SelfApprovalRule`), so "a request is waiting for you" would be
+  /// a notification they cannot act on. Compared trimmed + lower-cased. When
+  /// the requester was the only reviewer, the Master Admin fallback is used
+  /// (minus the requester too); empty means nobody else can decide it.
+  ///
   /// Returns: [Future<List<String>>] de-duplicated emails. Never throws — a
   ///          failed read yields the Master Admin fallback, and a failed
   ///          fallback yields an empty list, because a missing notification
   ///          must not fail the submission that triggered it.
-  Future<List<String>> approverEmails() async {
+  Future<List<String>> approverEmails({String requesterEmail = ''}) async {
+    // 9/10/2026 — every return path drops the requester.
+
     try {
       final Set<String> roleKeys = await _rolesGrantingUsersRequests();
       if (roleKeys.isEmpty) {
         // Worth saying out loud: this is the difference between "nobody has
         // the permission" and "the permission lookup failed", and from the UI
         // the two look identical — no notification either way.
-        if (kDebugMode) {
-          debugPrint(
-            '[approvers] no role grants Users_Requests on the "$rolesModule" '
-            'module — falling back to Master Admins.',
-          );
-        }
-        return masterAdminEmails();
+        if (kDebugMode) {}
+        return await masterAdminEmails();
       }
 
-      final List<String> emails = await _emailsForRoles(roleKeys);
+      final List<String> emails = SelfApprovalRule.withoutRequester(
+        await _emailsForRoles(roleKeys),
+        requesterEmail,
+      );
       if (emails.isEmpty) {
-        if (kDebugMode) {
-          debugPrint(
-            '[approvers] roles granting Users_Requests: ${roleKeys.join(', ')} '
-            '— but no employee currently holds one. Falling back to Master '
-            'Admins.',
-          );
-        }
-        return masterAdminEmails();
+        if (kDebugMode) {}
+        return await masterAdminEmails();
       }
 
-      if (kDebugMode) {
-        debugPrint('[approvers] resolved ${emails.length}: ${emails.join(', ')}');
-      }
+      if (kDebugMode) {}
       return emails;
-    } catch (e, stackTrace) {
-      if (kDebugMode) {
-        debugPrint('[approvers] lookup failed: $e\n$stackTrace');
-      }
+    } catch (e) {
+      if (kDebugMode) {}
       return masterAdminEmails();
     }
   }
@@ -131,8 +130,9 @@ class UserRequestsApproversRepository {
 
     final List<RoleHistoryModel> roles = rolesResult.fold(
       (_) => <RoleHistoryModel>[],
-      (dynamic value) =>
-          value is List ? value.whereType<RoleHistoryModel>().toList() : <RoleHistoryModel>[],
+      (dynamic value) => value is List
+          ? value.whereType<RoleHistoryModel>().toList()
+          : <RoleHistoryModel>[],
     );
 
     final Set<String> granted = <String>{};
@@ -143,10 +143,8 @@ class UserRequestsApproversRepository {
       );
       if (!hasRolesModule) continue;
 
-      final dynamic permissionsResult = await _roleRepository.getRolePermissions(
-        roleId: role.roleId,
-        module: rolesModule,
-      );
+      final dynamic permissionsResult = await _roleRepository
+          .getRolePermissions(roleId: role.roleId, module: rolesModule);
 
       final Map<String, dynamic>? permissions = permissionsResult.fold(
         (_) => null,
@@ -154,7 +152,9 @@ class UserRequestsApproversRepository {
       );
       if (permissions == null) continue;
 
-      if (!_isGranted(permissions[UserManagement.usersRequests.getDataBaseName])) {
+      if (!_isGranted(
+        permissions[UserManagement.usersRequests.getDataBaseName],
+      )) {
         continue;
       }
 
@@ -180,7 +180,8 @@ class UserRequestsApproversRepository {
 
     final Set<String> emails = <String>{};
 
-    for (final QueryDocumentSnapshot<Map<String, dynamic>> doc in snapshot.docs) {
+    for (final QueryDocumentSnapshot<Map<String, dynamic>> doc
+        in snapshot.docs) {
       final Map<String, dynamic> data = doc.data();
 
       final String? role = _currentOf(data[_employeeRoleKey]);
@@ -209,7 +210,8 @@ class UserRequestsApproversRepository {
 
       final Set<String> emails = <String>{};
 
-      for (final QueryDocumentSnapshot<Map<String, dynamic>> doc in snapshot.docs) {
+      for (final QueryDocumentSnapshot<Map<String, dynamic>> doc
+          in snapshot.docs) {
         final Map<String, dynamic> data = doc.data();
 
         final String? role = _currentOf(data[_employeeRoleKey]);

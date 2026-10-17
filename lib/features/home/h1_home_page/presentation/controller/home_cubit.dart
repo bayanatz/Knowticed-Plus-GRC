@@ -9,19 +9,20 @@
 /// Updated: 11/8/2026 - Repository injected, side-effects moved out of the
 ///          constructor into [init], prints removed, locale no longer read
 ///          from GetX, save failures now surface through [HomeError].
+library;
 
 import 'package:dartz/dartz.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
+import 'package:grc_module/core/helper/access/main_core_employee_controller.dart';
 import 'package:grc_module/features/home/h1_home_page/domain/enums/home_components.dart';
 
 import 'package:grc_module/core/constants/quotes_list.dart';
 import 'package:grc_module/core/network/failure_model.dart';
 import 'package:grc_module/features/home/h3_app_drawer/presentation/controller/app_drawer_cubit.dart';
 import 'package:grc_module/features/home/h2_nav_bar/presentation/controller/nav_bar_cubit.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
+import 'package:grc_module/core/helper/access/modules_enum.dart';
 import 'package:grc_module/features/home/h1_home_page/data/models/header_icon_item.dart';
 import 'package:grc_module/features/home/h1_home_page/data/models/home_component_model.dart';
 import 'package:grc_module/features/home/h1_home_page/data/models/home_page_layout_model.dart';
@@ -29,7 +30,7 @@ import 'package:grc_module/features/home/h1_home_page/data/repository/home_repos
 import 'package:grc_module/features/home/h1_home_page/domain/base_repository/home_base_repository.dart';
 import 'package:grc_module/features/home/h1_home_page/domain/enums/app_bar_enum.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/controller/home_state.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
+import 'package:grc_module/core/helper/format_title.dart';
 
 enum PreviewMode { desktop, tablet, mobile }
 
@@ -137,6 +138,7 @@ class AppHomeCubit extends Cubit<HomeState> {
       emit(HomeIconsUpdated(List.from(selectedHeaderIcons)));
     }
   }
+
   PreviewMode currentPreviewMode = PreviewMode.tablet; // Default to tablet
 
   /// Function Name: [setPreviewMode]
@@ -200,12 +202,12 @@ class AppHomeCubit extends Cubit<HomeState> {
   /// Parameters:
   /// - [rowIndex]: The row index of the component
   /// - [columnIndex]: The column index of the component
-  selectComponentToEdit({required int rowIndex, required int columnIndex}) {
+  void selectComponentToEdit({required int rowIndex, required int columnIndex}) {
     List<HomeComponents> components = HomeComponents.values;
     _readyToAddComponent = [];
     for (var component in components) {
       HomeComponentModel model =
-      component.getModel(rowNumber: rowIndex, columnNumber: columnIndex);
+          component.getModel(rowNumber: rowIndex, columnNumber: columnIndex);
       if (component.widget(model) != null) _readyToAddComponent.add(model);
     }
   }
@@ -216,9 +218,9 @@ class AppHomeCubit extends Cubit<HomeState> {
   ///
   /// Parameters:
   /// - [HomeComponentModel][component]: The component to be edited
-  editComponent(HomeComponentModel component) {
+  void editComponent(HomeComponentModel component) {
     _editingComponent.removeWhere((c) =>
-    c.rowNumber == component.rowNumber &&
+        c.rowNumber == component.rowNumber &&
         c.columnNumber == component.columnNumber);
     _editingComponent.add(component);
 
@@ -288,9 +290,9 @@ class AppHomeCubit extends Cubit<HomeState> {
   ///
   /// Parameters:
   /// - [component]: The component to be removed
-  removeComponent(HomeComponentModel component) {
+  void removeComponent(HomeComponentModel component) {
     _editingComponent.removeWhere((c) =>
-    c.rowNumber == component.rowNumber &&
+        c.rowNumber == component.rowNumber &&
         c.columnNumber == component.columnNumber);
     emit(HomeEditingComponent());
   }
@@ -384,9 +386,8 @@ class AppHomeCubit extends Cubit<HomeState> {
         // stored path this build no longer knows is dropped by the whereType
         // above, and the baseline has to match what the user can actually see
         // or the page would open already "changed".
-        _savedHeaderIconPaths = selectedHeaderIcons
-            .map((HeaderIconItem i) => i.svgPath)
-            .toList();
+        _savedHeaderIconPaths =
+            selectedHeaderIcons.map((HeaderIconItem i) => i.svgPath).toList();
       },
     );
     emit(HomeLoaded());

@@ -5,11 +5,11 @@
 /// Purpose: Declares `CalendarDatePicker2`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import 'dart:ui' as ui;
-import 'package:get/get.dart';
 
 import 'dart:math' as math;
 
@@ -19,23 +19,20 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grc_module/core/extensions/calendar_package/src/models/calendar_date_picker2_config.dart';
-import 'package:grc_module/core/custom/76-date_time_in_arabic.dart';
 
-import 'package:grc_module/core/theme/app_font_size.dart';
 // REMOVED_MODULE: import 'package:grc_module/features/external/services_mangment_module/core/new_theme.dart';
 
 import 'package:grc_module/core/theme/app_colors.dart';
 
-import 'package:grc_module/features/home/h1_home_page/presentation/controller/schedule_controller.dart';
 import 'package:grc_module/core/extensions/calendar_package/src/utils/date_util.dart';
-import 'package:grc_module/core/helper/main_helper/arabic_number_format.dart';
+import 'package:grc_module/core/helper/arabic_number_format.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
 
-part 'package:grc_module/core/extensions/calendar_package/src/widgets/_impl/_calendar_view.dart';
-part 'package:grc_module/core/extensions/calendar_package/src/widgets/_impl/_date_picker_mode_toggle_button.dart';
-part 'package:grc_module/core/extensions/calendar_package/src/widgets/_impl/_day_picker.dart';
-part 'package:grc_module/core/extensions/calendar_package/src/widgets/_impl/_focus_date.dart';
-part 'package:grc_module/core/extensions/calendar_package/src/widgets/_impl/year_picker.dart';
+part '_impl/_calendar_view.dart';
+part '_impl/_date_picker_mode_toggle_button.dart';
+part '_impl/_day_picker.dart';
+part '_impl/_focus_date.dart';
+part '_impl/year_picker.dart';
 
 const Duration _monthScrollDuration = Duration(milliseconds: 200);
 
@@ -59,8 +56,8 @@ class CalendarDatePicker2 extends StatefulWidget {
     this.onValueChanged,
     this.displayedMonthDate,
     this.onDisplayedMonthChanged,
-    Key? key,
-  }) : super(key: key) {
+    super.key,
+  }) {
     const valid = true;
     const invalid = false;
 
@@ -156,7 +153,8 @@ class _CalendarDatePicker2State extends State<CalendarDatePicker2> {
       _announcedInitialDate = true;
       for (final date in _selectedDates) {
         if (date != null) {
-          SemanticsService.announce(
+          SemanticsService.sendAnnouncement(
+            View.of(context),
             _localizations.formatFullDate(date),
             _textDirection,
           );
@@ -186,7 +184,8 @@ class _CalendarDatePicker2State extends State<CalendarDatePicker2> {
       if (_selectedDates.isNotEmpty) {
         for (final date in _selectedDates) {
           if (date != null) {
-            SemanticsService.announce(
+            SemanticsService.sendAnnouncement(
+              View.of(context),
               _mode == DatePickerMode.day
                   ? _localizations.formatMonthYear(date)
                   : _localizations.formatYear(date),
@@ -338,7 +337,7 @@ class _CalendarDatePicker2State extends State<CalendarDatePicker2> {
 
   @override
   Widget build(BuildContext context) {
-    var lightMode = Theme.of(context).brightness == Brightness.light;
+    Theme.of(context).brightness == Brightness.light;
     assert(debugCheckHasMaterial(context));
     assert(debugCheckHasMaterialLocalizations(context));
     assert(debugCheckHasDirectionality(context));

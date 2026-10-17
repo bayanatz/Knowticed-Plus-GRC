@@ -13,17 +13,17 @@
 ///          replaced with intl's locale-aware NumberFormat; the duplicated
 ///          `@override`, the dead `countryApp` local and the commented-out
 ///          REMOVED imports are gone.
-import 'dart:ui' as ui;
+library;
 
+import 'package:grc_module/core/extensions/context_extensions.dart'
+    show kpIsPhoneLayout;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:grc_module/core/helper/main_helper/extensions.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_font_size.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/custom/2-custom_textfield.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/ui/widgets/settings_header.dart';
+import 'package:grc_module/core/custom/inputs/custom_textfield.dart';
+import 'package:grc_module/features/settings/presentation/ui/widgets/settings_header.dart';
 import 'package:grc_module/features/settings/se1_profile/data/utils/localized_digits.dart';
 import 'package:grc_module/features/settings/se1_profile/data/utils/phone_country_lookup.dart';
 import 'package:grc_module/features/settings/se1_profile/domain/entities/personal_profile.dart';
@@ -119,7 +119,7 @@ class _ContactInformationState extends State<ContactInformation> {
       label: S.of(context).email,
       hint: S.of(context).enterYourEmail,
       controller: _emailController,
-      textDirection: ui.TextDirection.ltr,
+      textDirection: TextDirection.ltr,
       textAlign: isArabic ? TextAlign.right : TextAlign.left,
       enabled: !widget.isReadOnly,
     );
@@ -130,7 +130,7 @@ class _ContactInformationState extends State<ContactInformation> {
   /// two columns sit at different heights.
   Widget _phoneSection(BuildContext context, {double? dialCodeWidth}) {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
-    final direction = isArabic ? ui.TextDirection.rtl : ui.TextDirection.ltr;
+    final direction = isArabic ? TextDirection.rtl : TextDirection.ltr;
     final align = isArabic ? TextAlign.right : TextAlign.left;
 
     return Column(
@@ -184,15 +184,15 @@ class _ContactInformationState extends State<ContactInformation> {
     // This file imports core/helper/main_helper/extensions.dart, whose
     // extension is ALSO called ContextExtension — and its `isPhone` is
     //
-    //     bool get isPhone => MediaQuery.of(this).size.width >= 600;
+    //     bool get isPhone => !kpIsPhoneLayout(this);
     //
     // i.e. true on WIDE screens, the exact inverse of
     // core/extensions/context_extensions.dart's `shortestSide < 600`. Same
     // name, same target type, opposite meaning, and that file's own comment
     // admits it. Every `isPhone` here was therefore reading FALSE on a phone.
     // Computed inline so it cannot bind to the wrong extension again.
-    final bool isPhone = MediaQuery.of(context).size.shortestSide < 600;
-    bool isTablet = MediaQuery.of(context).size.shortestSide > 600;
+    final bool isPhone = kpIsPhoneLayout(context);
+    !kpIsPhoneLayout(context);
     final isPortrait =
         MediaQuery.of(context).orientation == Orientation.portrait;
 
@@ -209,7 +209,8 @@ class _ContactInformationState extends State<ContactInformation> {
       // All four sides equal: the space under the phone row now matches the
       // space at the sides, instead of being its own number.
       child: Padding(
-        padding: EdgeInsets.only(top : 15.sp,left: 15.sp,right: 15.sp,bottom: 15.sp),
+        padding: EdgeInsets.only(
+            top: 15.sp, left: 15.sp, right: 15.sp, bottom: 15.sp),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -218,7 +219,8 @@ class _ContactInformationState extends State<ContactInformation> {
                 // SettingsHeader adds its own 15.sp on phone — the two stacked,
                 // so the icon sat 30.sp in while Email sat at 15.sp.
                 horizontalPadding: 0,
-                imagePath: 'assets/icons_assets/settings_assets/phone_call_contact.svg',
+                imagePath:
+                    'assets/icons_assets/settings_assets/ic_comms_phone_call.svg',
                 text: S.of(context).contact),
 
             // Mobile only: 15.sp after a section title. Others keep 15.h.
@@ -241,8 +243,12 @@ class _ContactInformationState extends State<ContactInformation> {
                   )
                 : LayoutBuilder(
                     builder: (context, constraints) {
-                      final columnWidth =
-                          (constraints.maxWidth - _gridGap * 2) / 3;
+                      // Clamped (17/10/2026): during a fast window resize the
+                      // width can briefly be smaller than the two gaps, which
+                      // made a negative SizedBox (red error screen).
+                      final double columnWidth =
+                          ((constraints.maxWidth - _gridGap * 2) / 3)
+                              .clamp(0.0, double.infinity);
                       return Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

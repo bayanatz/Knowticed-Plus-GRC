@@ -2,28 +2,31 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: user_access_cubit.dart
-/// Purpose: Declares `UserAccessCubit` — the state holder for the user-access
+/// Description: Declares `UserAccessCubit` — the state holder for the user-access
 ///          screen (status filtering, search, sort, and the activate /
 ///          deactivate / schedule write paths).
-/// Author: Knowticed Plus team
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - Every repository result is now folded and a failure
 ///          emits `UserAccessError`; GetX removed; notification side effects
 ///          pulled out of the domain use case into this layer.
+library;
 
+import 'package:flutter/foundation.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
-import 'package:flutter/foundation.dart';
 
 import 'package:grc_module/core/di/app_controllers.dart';
 import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/core/custom/76-date_time_in_arabic.dart';
+import 'package:grc_module/core/custom/helpers/date_time_in_arabic.dart';
 import 'package:grc_module/features/onboarding/o3_authentication/domain/enums/employee_status_enum.dart';
 import 'package:grc_module/features/roles/r3_user_access/data/repository/user_access_repository.dart';
 import 'package:grc_module/features/roles/r3_user_access/domain/entities/user_access_entity.dart';
 import 'package:grc_module/features/roles/r3_user_access/domain/enums/sort_option_role.dart';
 import 'package:grc_module/features/roles/r3_user_access/domain/usecases/get_user_access_entities_use_case.dart';
 import 'package:grc_module/features/roles/r3_user_access/domain/usecases/update_user_access_status_use_case.dart';
-import './user_access_state.dart';
+
+import 'package:grc_module/features/roles/r3_user_access/presentation/controller/user_access_state.dart';
 
 /// App-wide shared UserAccessCubit instance.
 ///
@@ -95,12 +98,12 @@ class UserAccessCubit extends Cubit<UserAccessState> {
   ///
   /// Returns: [Future<void>]
   Future<void> getAccountsStatusEntities() async {
-    final Either<Failure, dynamic> result =
-        await GetUserAccessEntitiesUseCase(repository).execute();
+    final Either<Failure, dynamic> result = await GetUserAccessEntitiesUseCase(
+      repository,
+    ).execute();
 
     result.fold(
       (failure) {
-        debugPrint('getAccountsStatusEntities failed: ${failure.errMessage}');
         emitSafely(UserAccessError(failure.errMessage));
       },
       (data) {
@@ -176,16 +179,24 @@ class UserAccessCubit extends Cubit<UserAccessState> {
 
     switch (option) {
       case SortOptionRole.firstName:
-        filteredSortedSelectedEntities.sort((a, b) => directed(a.englishName
-            .split(" ")
-            .first
-            .compareTo(b.englishName.split(" ").first)));
+        filteredSortedSelectedEntities.sort(
+          (a, b) => directed(
+            a.englishName
+                .split(" ")
+                .first
+                .compareTo(b.englishName.split(" ").first),
+          ),
+        );
         break;
       case SortOptionRole.lastName:
-        filteredSortedSelectedEntities.sort((a, b) => directed(a.englishName
-            .split(" ")
-            .last
-            .compareTo(b.englishName.split(" ").last)));
+        filteredSortedSelectedEntities.sort(
+          (a, b) => directed(
+            a.englishName
+                .split(" ")
+                .last
+                .compareTo(b.englishName.split(" ").last),
+          ),
+        );
         break;
       case SortOptionRole.firstLogin:
         filteredSortedSelectedEntities.sort((a, b) {
@@ -217,7 +228,10 @@ class UserAccessCubit extends Cubit<UserAccessState> {
   /// - [option]: Optional sort key applied after filtering.
   ///
   /// Returns: [void]
-  void searchAccountsStatusEntities(String searchValue, SortOptionRole? option) {
+  void searchAccountsStatusEntities(
+    String searchValue,
+    SortOptionRole? option,
+  ) {
     searchTerm = searchValue;
     filteredSortedSelectedEntities = [];
 
@@ -240,7 +254,8 @@ class UserAccessCubit extends Cubit<UserAccessState> {
         continue;
       }
 
-      if (selectedDepartment == null || selectedDepartment == entity.department) {
+      if (selectedDepartment == null ||
+          selectedDepartment == entity.department) {
         filteredSortedSelectedEntities.add(entity);
       }
     }
@@ -278,14 +293,14 @@ class UserAccessCubit extends Cubit<UserAccessState> {
   ///
   /// Returns: [Future<void>]
   Future<void> updateAccountStatus(
-      UserAccessEntity accountStatusAccessEntity) async {
-    final Either<Failure, dynamic> result =
-        await UpdateUserAccessStatusUseCase(repository)
-            .execute(accountStatusAccessEntity);
+    UserAccessEntity accountStatusAccessEntity,
+  ) async {
+    final Either<Failure, dynamic> result = await UpdateUserAccessStatusUseCase(
+      repository,
+    ).execute(accountStatusAccessEntity);
 
     await result.fold(
       (failure) async {
-        debugPrint('updateAccountStatus failed: ${failure.errMessage}');
         emitSafely(UserAccessError(failure.errMessage));
       },
       (_) async {
@@ -307,16 +322,17 @@ class UserAccessCubit extends Cubit<UserAccessState> {
   ///
   /// Returns: [Future<void>]
   Future<void> updateAccessDetails(
-      UserAccessEntity accountStatusAccessEntity) async {
+    UserAccessEntity accountStatusAccessEntity,
+  ) async {
     try {
       emitSafely(UserAccessLoading());
       await repository.updateAccessDetails(accountStatusAccessEntity);
       await getAccountsStatusEntities();
       emitSafely(UserAccessLoaded());
-    } catch (e, stackTrace) {
-      debugPrint('updateAccessDetails failed: $e\n$stackTrace');
+    } catch (e) {
       emitSafely(
-          UserAccessError('Failed to update access details: ${e.toString()}'));
+        UserAccessError('Failed to update access details: ${e.toString()}'),
+      );
     }
   }
 
@@ -342,7 +358,6 @@ class UserAccessCubit extends Cubit<UserAccessState> {
 
     await result.fold(
       (failure) async {
-        debugPrint('scheduleReactivation failed: ${failure.errMessage}');
         emitSafely(UserAccessError(failure.errMessage));
       },
       (_) async {
@@ -380,7 +395,6 @@ class UserAccessCubit extends Cubit<UserAccessState> {
 
     await result.fold(
       (failure) async {
-        debugPrint('scheduleDeactivation failed: ${failure.errMessage}');
         emitSafely(UserAccessError(failure.errMessage));
       },
       (_) async {
@@ -496,8 +510,8 @@ class UserAccessCubit extends Cubit<UserAccessState> {
         body: body,
         arabicBody: arabicBody,
       );
-    } catch (e, stackTrace) {
-      debugPrint('user-access push notification failed: $e\n$stackTrace');
+    } catch (e) {
+      debugPrint('Ignored error: $e');
     }
   }
 }

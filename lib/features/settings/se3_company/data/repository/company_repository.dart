@@ -10,6 +10,7 @@
 /// `updateCompanyModel` and `updateCompanyInformation` all reached Firestore
 /// from `CompanyCubit`; the I/O half of them lives here now and the cubit keeps
 /// only the state transitions.
+library;
 
 import 'package:dartz/dartz.dart';
 

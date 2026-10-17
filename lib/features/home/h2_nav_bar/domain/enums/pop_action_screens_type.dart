@@ -6,11 +6,6 @@
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Extracted from the oversized model.dart as part of
 ///          breaking up the vendored persistent-nav-bar god files.
-
-import 'dart:math';
-import 'dart:ui';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:grc_module/features/home/h2_nav_bar/persistent_nav_bar.dart';
+library;
 
 enum PopActionScreensType { once, all }

@@ -6,28 +6,21 @@
 /// Author: Amr Mesbah
 /// Created at: 12/11/2024
 /// Updated: 11/8/2026 - Added the standard header (Docs).
+library;
 
-///******************** FILE INFO ********************///
-/// Purpose: Editable version of emergency contact information section
-/// Author: Assistant
-/// Created At: 2025
-/// Updated: Editable fields for emergency contact information with controllers passed from parent
-import 'dart:ui' as ui;
-import 'package:get/get.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/custom/2-custom_textfield.dart';
+import 'package:grc_module/core/custom/inputs/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:grc_module/core/theme/app_font_size.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/controller/settings_controller.dart';
 import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/features/settings/se4_health_insurance/presentation/controller/health_insurance_controller.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/ui/widgets/settings_header.dart';
+import 'package:grc_module/features/settings/presentation/ui/widgets/settings_header.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/helper/main_helper/countries.dart';
-import 'package:grc_module/core/custom/60-custom_country_picker.dart';
-import 'package:grc_module/core/custom/99-custom_country_flag.dart';
+import 'package:grc_module/core/constants/countries_list.dart';
+import 'package:grc_module/core/custom/pickers/custom_country_picker.dart';
+import 'package:grc_module/core/custom/pickers/custom_country_flag.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
 class EditableEmergencyContactInformationSection extends StatelessWidget {
   final bool isFirstContact; // true for 1st contact, false for 2nd contact
@@ -48,10 +41,15 @@ class EditableEmergencyContactInformationSection extends StatelessWidget {
   /// the "required" error state.
   final bool submitted;
 
+  /// ADDED 9/10/2026 — shown under the header of an OPTIONAL contact (the
+  /// 2nd emergency contact): "optional; if you add it, fill every field".
+  final String? optionalHint;
+
   const EditableEmergencyContactInformationSection({
     super.key,
     this.isFirstContact = true,
     this.submitted = false,
+    this.optionalHint,
     required this.firstNameController,
     required this.lastNameController,
     required this.relationshipController,
@@ -67,7 +65,7 @@ class EditableEmergencyContactInformationSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var isMobile = ContextExtension(context).isPhone;
-    bool isTablet = MediaQuery.of(context).size.shortestSide > 600;
+    !kpIsPhoneLayout(context);
 
     // Header text based on which contact
     final headerText = isFirstContact
@@ -76,7 +74,6 @@ class EditableEmergencyContactInformationSection extends StatelessWidget {
 
     return Column(
       children: [
-
         isMobile ? SizedBox(height: 0.sp) : SizedBox(),
 
         SettingsHeader(
@@ -87,235 +84,246 @@ class EditableEmergencyContactInformationSection extends StatelessWidget {
           // FIXED 8/9/2026. Tablet is unaffected: the default there is already
           // 0. Same pattern as health_insurance_section.dart.
           horizontalPadding: 0,
-          imagePath: 'assets/icons_assets/main_icons_assets/emergency_contact_person.svg',
+          imagePath:
+              'assets/icons_assets/main_icons_assets/ic_user_emergency_contact.svg',
           text: headerText,
         ),
+        // 9/10/2026 — the optional-contact note (2nd emergency contact).
+        if (optionalHint != null && optionalHint!.isNotEmpty) ...[
+          SizedBox(height: 6.sp),
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: Text(
+              optionalHint!,
+              style: StyleText.fontSize14Weight400
+                  .copyWith(color: AppColors.secondaryText),
+            ),
+          ),
+        ],
         SizedBox(height: 15.sp),
 
         // First Row/Column: First Name, Last Name, Relationship
         isMobile
             ? Column(
-          children: [
-
-
-            CustomTextField(
-              label: S.of(context).firstName,
-              hint: S.of(context).enterYourFirstName,
-              fillColor: AppColors.background,
-              controller: firstNameController,
-              enabled: true,
-              submitted: submitted,
-              required: true,
-            ),
-            isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 10),
-            CustomTextField(
-              label: S.of(context).lastName,
-              fillColor: AppColors.background,
-              hint: S.of(context).enterYourLastName,
-              controller: lastNameController,
-              enabled: true,
-              submitted: submitted,
-              required: true,
-            ),
-            isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 10),
-            CustomTextField(
-              label: S.of(context).relationship,
-              fillColor: AppColors.background,
-              hint: S.of(context).enterContactRelation,
-              controller: relationshipController,
-              enabled: true,
-              submitted: submitted,
-              required: true,
-            ),
-          ],
-        )
+                children: [
+                  CustomTextField(
+                    label: S.of(context).firstName,
+                    hint: S.of(context).enterYourFirstName,
+                    fillColor: AppColors.background,
+                    controller: firstNameController,
+                    enabled: true,
+                    submitted: submitted,
+                    required: true,
+                  ),
+                  isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 10),
+                  CustomTextField(
+                    label: S.of(context).lastName,
+                    fillColor: AppColors.background,
+                    hint: S.of(context).enterYourLastName,
+                    controller: lastNameController,
+                    enabled: true,
+                    submitted: submitted,
+                    required: true,
+                  ),
+                  isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 10),
+                  CustomTextField(
+                    label: S.of(context).relationship,
+                    fillColor: AppColors.background,
+                    hint: S.of(context).enterContactRelation,
+                    controller: relationshipController,
+                    enabled: true,
+                    submitted: submitted,
+                    required: true,
+                  ),
+                ],
+              )
             : Row(
-          children: [
-            Expanded(
-              child: CustomTextField(
-                label: S.of(context).firstName,
-                hint: S.of(context).enterYourFirstName,
-                controller: firstNameController,
-                fillColor: AppColors.background,
-                enabled: true,
-              submitted: submitted,
-              required: true,
+                children: [
+                  Expanded(
+                    child: CustomTextField(
+                      label: S.of(context).firstName,
+                      hint: S.of(context).enterYourFirstName,
+                      controller: firstNameController,
+                      fillColor: AppColors.background,
+                      enabled: true,
+                      submitted: submitted,
+                      required: true,
+                    ),
+                  ),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: CustomTextField(
+                      label: S.of(context).lastName,
+                      hint: S.of(context).enterYourLastName,
+                      controller: lastNameController,
+                      fillColor: AppColors.background,
+                      enabled: true,
+                      submitted: submitted,
+                      required: true,
+                    ),
+                  ),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: CustomTextField(
+                      label: S.of(context).relationship,
+                      hint: S.of(context).enterContactRelation,
+                      controller: relationshipController,
+                      enabled: true,
+                      submitted: submitted,
+                      required: true,
+                      fillColor: AppColors.background,
+                    ),
+                  ),
+                ],
               ),
-            ),
-            SizedBox(width: 12),
-            Expanded(
-              child: CustomTextField(
-                label: S.of(context).lastName,
-                hint: S.of(context).enterYourLastName,
-                controller: lastNameController,
-                fillColor: AppColors.background,
-                enabled: true,
-              submitted: submitted,
-              required: true,
-              ),
-            ),
-            SizedBox(width: 12),
-            Expanded(
-              child: CustomTextField(
-                label: S.of(context).relationship,
-                hint: S.of(context).enterContactRelation,
-                controller: relationshipController,
-                enabled: true,
-              submitted: submitted,
-              required: true,
-                fillColor: AppColors.background,
-              ),
-            ),
-          ],
-        ),
         isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 15.sp),
 
         // Second Row/Column: Email, Mobile Phone, Language
         isMobile
             ? Column(
-          children: [
-            CustomTextField(
-              label: S.of(context).email,
-              hint: S.of(context).enterYourEmail,
-              controller: emailController,
-              enabled: true,
-              submitted: submitted,
-              required: true,
-              fillColor: AppColors.background,
-            ),
-            isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 16),
-            // Bug report (Settings mobile p.4): the number had no separate
-            // country-code box — see EmergencyPhoneField.
-            EmergencyPhoneField(
-              label: S.of(context).phoneNumber,
-              hint: S.of(context).enterYourMobilePhone,
-              controller: mobilePhoneController,
-              submitted: submitted,
-            ),
-            isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 16),
-            CustomTextField(
-              label: S.of(context).language,
-              hint: S.of(context).enterLanguage,
-              controller: languageController,
-              enabled: true,
-              submitted: submitted,
-              required: true,
-              fillColor: AppColors.background,
-            ),
-          ],
-        )
+                children: [
+                  CustomTextField(
+                    label: S.of(context).email,
+                    hint: S.of(context).enterYourEmail,
+                    controller: emailController,
+                    enabled: true,
+                    submitted: submitted,
+                    required: true,
+                    fillColor: AppColors.background,
+                  ),
+                  isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 16),
+                  // Bug report (Settings mobile p.4): the number had no separate
+                  // country-code box — see EmergencyPhoneField.
+                  EmergencyPhoneField(
+                    label: S.of(context).phoneNumber,
+                    hint: S.of(context).enterYourMobilePhone,
+                    controller: mobilePhoneController,
+                    submitted: submitted,
+                  ),
+                  isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 16),
+                  CustomTextField(
+                    label: S.of(context).language,
+                    hint: S.of(context).enterLanguage,
+                    controller: languageController,
+                    enabled: true,
+                    submitted: submitted,
+                    required: true,
+                    fillColor: AppColors.background,
+                  ),
+                ],
+              )
             : Row(
-          children: [
-            Expanded(
-              child: CustomTextField(
-                label: S.of(context).email,
-                hint: S.of(context).enterYourEmail,
-                controller: emailController,
-                fillColor: AppColors.background,
-                enabled: true,
-              submitted: submitted,
-              required: true,
+                children: [
+                  Expanded(
+                    child: CustomTextField(
+                      label: S.of(context).email,
+                      hint: S.of(context).enterYourEmail,
+                      controller: emailController,
+                      fillColor: AppColors.background,
+                      enabled: true,
+                      submitted: submitted,
+                      required: true,
+                    ),
+                  ),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: EmergencyPhoneField(
+                      label: S.of(context).phoneNumber,
+                      hint: S.of(context).enterPhoneNumber,
+                      controller: mobilePhoneController,
+                      submitted: submitted,
+                    ),
+                  ),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: CustomTextField(
+                      label: S.of(context).language,
+                      hint: S.of(context).enterLanguage,
+                      fillColor: AppColors.background,
+                      controller: languageController,
+                      enabled: true,
+                      submitted: submitted,
+                      required: true,
+                    ),
+                  ),
+                ],
               ),
-            ),
-            SizedBox(width: 12),
-            Expanded(
-              child: EmergencyPhoneField(
-                label: S.of(context).phoneNumber,
-                hint: S.of(context).enterPhoneNumber,
-                controller: mobilePhoneController,
-                submitted: submitted,
-              ),
-            ),
-            SizedBox(width: 12),
-            Expanded(
-              child: CustomTextField(
-                label: S.of(context).language,
-                hint: S.of(context).enterLanguage,
-                fillColor: AppColors.background,
-                controller: languageController,
-                enabled: true,
-              submitted: submitted,
-              required: true,
-              ),
-            ),
-          ],
-        ),
         isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 15.sp),
 
         // Third Row/Column: Country, Province, City
         isMobile
             ? Column(
-          children: [
-            CustomTextField(
-              label: S.of(context).country,
-              hint: S.of(context).enterYourCountry,
-              controller: countryController,
-              enabled: true,
-              submitted: submitted,
-              required: true,
-              fillColor: AppColors.background,
-            ),
-            isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 16),
-            CustomTextField(
-              label: S.of(context).province,
-              hint: S.of(context).enterYourStateOrProvince,
-              controller: provinceController,
-              enabled: true,
-              submitted: submitted,
-              required: true,
-              fillColor: AppColors.background,
-            ),
-            isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 16),
-            CustomTextField(
-              label: S.of(context).city,
-              hint: S.of(context).enterYourCity,
-              controller: cityController,
-              enabled: true,
-              submitted: submitted,
-              required: true,
-              fillColor: AppColors.background,
-            ),
-          ],
-        )
+                children: [
+                  CustomTextField(
+                    label: S.of(context).country,
+                    hint: S.of(context).enterYourCountry,
+                    controller: countryController,
+                    enabled: true,
+                    submitted: submitted,
+                    required: true,
+                    fillColor: AppColors.background,
+                  ),
+                  isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 16),
+                  CustomTextField(
+                    label: S.of(context).province,
+                    hint: S.of(context).enterYourStateOrProvince,
+                    controller: provinceController,
+                    enabled: true,
+                    submitted: submitted,
+                    required: true,
+                    fillColor: AppColors.background,
+                  ),
+                  isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 16),
+                  CustomTextField(
+                    label: S.of(context).city,
+                    hint: S.of(context).enterYourCity,
+                    controller: cityController,
+                    enabled: true,
+                    submitted: submitted,
+                    required: true,
+                    fillColor: AppColors.background,
+                  ),
+                ],
+              )
             : Row(
-          children: [
-            Expanded(
-              child: CustomTextField(
-                label: S.of(context).country,
-                hint: S.of(context).enterYourCountry,
-                controller: countryController,
-                enabled: true,
-              submitted: submitted,
-              required: true,
-                fillColor: AppColors.background,
+                children: [
+                  Expanded(
+                    child: CustomTextField(
+                      label: S.of(context).country,
+                      hint: S.of(context).enterYourCountry,
+                      controller: countryController,
+                      enabled: true,
+                      submitted: submitted,
+                      required: true,
+                      fillColor: AppColors.background,
+                    ),
+                  ),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: CustomTextField(
+                      label: S.of(context).province,
+                      hint: S.of(context).enterYourStateOrProvince,
+                      controller: provinceController,
+                      enabled: true,
+                      submitted: submitted,
+                      required: true,
+                      fillColor: AppColors.background,
+                    ),
+                  ),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: CustomTextField(
+                      label: S.of(context).city,
+                      hint: S.of(context).enterYourCity,
+                      controller: cityController,
+                      enabled: true,
+                      submitted: submitted,
+                      required: true,
+                      fillColor: AppColors.background,
+                    ),
+                  ),
+                ],
               ),
-            ),
-            SizedBox(width: 12),
-            Expanded(
-              child: CustomTextField(
-                label: S.of(context).province,
-                hint: S.of(context).enterYourStateOrProvince,
-                controller: provinceController,
-                enabled: true,
-              submitted: submitted,
-              required: true,
-                fillColor: AppColors.background,
-              ),
-            ),
-            SizedBox(width: 12),
-            Expanded(
-              child: CustomTextField(
-                label: S.of(context).city,
-                hint: S.of(context).enterYourCity,
-                controller: cityController,
-                enabled: true,
-              submitted: submitted,
-              required: true,
-                fillColor: AppColors.background,
-              ),
-            ),
-          ],
-        ),
         isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 15.sp),
 
         // Fourth Row: Street (full width on both mobile and desktop)
@@ -325,8 +333,8 @@ class EditableEmergencyContactInformationSection extends StatelessWidget {
           controller: streetController,
           fillColor: AppColors.background,
           enabled: true,
-              submitted: submitted,
-              required: true,
+          submitted: submitted,
+          required: true,
         ),
       ],
     );
@@ -338,7 +346,7 @@ class EditableEmergencyContactInformationSection extends StatelessWidget {
 /// ADDED 29/9/2026 (Settings mobile bug p.4 — "add the field of the code").
 /// The contact's phone is stored as ONE string ("+20 10 2456 7316"), so this
 /// widget splits it into a dial code (picked from the app's country picker)
-/// and the number, and writes "+<code> <number>" back into [controller]. The
+/// and the number, and writes "+<code> `<number>`" back into [controller]. The
 /// edit page keeps comparing [controller] with the stored value exactly as
 /// before, so change tracking and the request payload are unchanged.
 class EmergencyPhoneField extends StatefulWidget {
@@ -430,10 +438,11 @@ class _EmergencyPhoneFieldState extends State<EmergencyPhoneField> {
         SizedBox(height: 6.sp),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
-          textDirection: ui.TextDirection.ltr,
+          textDirection: TextDirection.ltr,
           children: [
             // Country code — opens the picker, shows flag + dial code.
             GestureDetector(
+              onTapDown: hapticDown(_pickCountry, HapticLevel.low),
               onTap: _pickCountry,
               child: Container(
                 height: 38.sp,
@@ -467,7 +476,7 @@ class _EmergencyPhoneFieldState extends State<EmergencyPhoneField> {
                 controller: _numberController,
                 fillColor: AppColors.background,
                 keyboardType: TextInputType.phone,
-                textDirection: ui.TextDirection.ltr,
+                textDirection: TextDirection.ltr,
                 enabled: true,
                 submitted: widget.submitted,
                 required: true,

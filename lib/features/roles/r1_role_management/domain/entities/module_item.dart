@@ -5,6 +5,7 @@
 /// Purpose: Declares `ModuleItem`.
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 class ModuleItem {
   final String imageUrl;

@@ -6,7 +6,7 @@
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
 
-part of './main_core_department_cubit.dart';
+part of 'main_core_department_cubit.dart';
 
 sealed class MainCoreDepartmentState {
   const MainCoreDepartmentState();

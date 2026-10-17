@@ -5,7 +5,7 @@
 
 import 'package:get/get.dart';
 
-import '../../../m3_groups/data/models/legacy_group_model.dart';
+import 'package:grc_module/features/messaging/m3_groups/data/models/legacy_group_model.dart';
 
 class Member {
   // generate a random id to each member for now

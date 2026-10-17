@@ -3,7 +3,6 @@ part of '../../pages/chat_mobile_view.dart';
 
 //Youssef Ashraf
 
-
 class DefaultBubble extends StatelessWidget {
   final MessageEntity messageModel;
   final bool isGroup;
@@ -31,12 +30,11 @@ class DefaultBubble extends StatelessWidget {
     var isMe = messageModel.isMe;
 
     // ── DEBUG ──
-    if (isMe) {
-    }
+    if (isMe) {}
 
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, result) {
         if (didPop) return;
 
         final cubit = context.read<MasterChatCubit>();
@@ -75,8 +73,7 @@ class DefaultBubble extends StatelessWidget {
             child: Column(
               children: [
                 // ── WhatsApp-style date separator ──
-                if (isOverlay == null)
-                  _buildDateSeparatorIfNeeded(cubit),
+                if (isOverlay == null) _buildDateSeparatorIfNeeded(cubit),
 
                 Stack(
                   alignment: AlignmentDirectional.topStart,
@@ -91,8 +88,8 @@ class DefaultBubble extends StatelessWidget {
                             bottom: noMargin ?? false
                                 ? 0
                                 : ContextExtension(context).isPhone
-                                ? 24.h
-                                : 16.h,
+                                    ? 24.h
+                                    : 16.h,
                           ),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,17 +105,21 @@ class DefaultBubble extends StatelessWidget {
                                   padding: EdgeInsetsDirectional.only(end: 8.w),
                                   child: messageModel is GroupMessageEntity
                                       ? AvatarChat(
-                                    imageUrl: (messageModel as GroupMessageEntity).senderImage,
-                                  )
+                                          imageUrl: (messageModel
+                                                  as GroupMessageEntity)
+                                              .senderImage,
+                                        )
                                       : ClipRRect(
-                                    borderRadius: BorderRadius.circular(30.r),
-                                    child: CustomSvgImage(
-                                      assetPath: "assets/icons_assets/main_icons_assets/assets_male.svg",
-                                      fit: BoxFit.fill,
-                                      width: 40.w,
-                                      height: 40.h,
-                                    ),
-                                  ),
+                                          borderRadius:
+                                              BorderRadius.circular(30.r),
+                                          child: CustomSvgImage(
+                                            assetPath:
+                                                "assets/icons_assets/main_icons_assets/ic_user_avatar_male.png",
+                                            fit: BoxFit.fill,
+                                            width: 40.w,
+                                            height: 40.h,
+                                          ),
+                                        ),
                                 ),
 
                               // ── Bubble ──
@@ -128,8 +129,7 @@ class DefaultBubble extends StatelessWidget {
                                 children: [
                                   Stack(
                                     clipBehavior: Clip.none,
-                                    alignment:
-                                    AlignmentDirectional.bottomStart,
+                                    alignment: AlignmentDirectional.bottomStart,
                                     children: [
                                       Container(
                                         constraints: constraints ??
@@ -138,8 +138,7 @@ class DefaultBubble extends StatelessWidget {
                                               maxWidth: 186.w,
                                               minWidth: 186.w,
                                             ),
-                                        padding:
-                                        EdgeInsetsDirectional.only(
+                                        padding: EdgeInsetsDirectional.only(
                                           start: 8.w,
                                           end: 8.w,
                                           top: 8.h,
@@ -147,31 +146,30 @@ class DefaultBubble extends StatelessWidget {
                                         ),
                                         decoration: BoxDecoration(
                                           borderRadius:
-                                          BorderRadius.circular(4.r),
+                                              BorderRadius.circular(4.r),
                                           color: messageModel.isMe
                                               ? AppColors.primary
                                               : AppColors.background,
                                         ),
                                         child: Column(
                                           crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                              CrossAxisAlignment.start,
                                           children: [
                                             // ── Replied message ──
-                                            if (messageModel
-                                                .repliedMessage !=
+                                            if (messageModel.repliedMessage !=
                                                 null)
                                               GestureDetector(
+                                                onTapDown: (_) =>
+                                                    HapticController.low(),
                                                 onTap: () {
                                                   cubit.chatScrollCubit
                                                       .scrollAndHighlight(
                                                     messageModel
-                                                        .repliedMessage!
-                                                        .index,
+                                                        .repliedMessage!.index,
                                                   );
                                                 },
                                                 child: Padding(
-                                                  padding: EdgeInsets
-                                                      .symmetric(
+                                                  padding: EdgeInsets.symmetric(
                                                       horizontal: 0.w),
                                                   child: ReplyContent(
                                                     model: messageModel
@@ -210,13 +208,13 @@ class DefaultBubble extends StatelessWidget {
                               // ── Group avatar (sender side) ──
                               if (isMe && messageModel.isGroup)
                                 Padding(
-                                  padding: EdgeInsetsDirectional.only(
-                                      start: 8.w),
+                                  padding:
+                                      EdgeInsetsDirectional.only(start: 8.w),
                                   child: ClipRRect(
-                                    borderRadius:
-                                    BorderRadius.circular(30.r),
+                                    borderRadius: BorderRadius.circular(30.r),
                                     child: CustomSvgImage(
-                                      assetPath: "assets/icons_assets/main_icons_assets/assets_male.svg",
+                                      assetPath:
+                                          "assets/icons_assets/main_icons_assets/ic_user_avatar_male.png",
                                       fit: BoxFit.fill,
                                       width: 40.w,
                                       height: 40.h,
@@ -273,28 +271,14 @@ class DefaultBubble extends StatelessWidget {
         .seenAndUnseen;
 
     // ── DEBUG ──
-    if (isMe) {
-    }
+    if (isMe) {}
 
     return Row(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        // Star icon (reserved)
-        if (false)
-          Padding(
-            padding: EdgeInsetsDirectional.only(end: 4.w, bottom: 2.h),
-            child: Icon(
-              Icons.star,
-              color: !isMe
-                  ? AppColors.secondaryPrimary
-                  : AppTheme.contrastGreyColor(),
-              size: 12.r,
-            ),
-          ),
-
         // Edited label
-        if (messageModel.isEdited ?? false)
+        if (messageModel.isEdited)
           Text(
             S.of(context).edited,
             style: StyleText.fontSize10Weight400.copyWith(
@@ -308,18 +292,16 @@ class DefaultBubble extends StatelessWidget {
         // Time
         Text(
           DateTimeHelper.formatTime(messageModel.time.toDate()),
-          style: StyleText.fontSize8Weight500.copyWith(color: AppColors.secondaryBlack).copyWith(
-            color: !isMe
-                ? AppColors.inverseBase
-                : AppColors.textButton,
-          ),
+          style: StyleText.fontSize8Weight500
+              .copyWith(color: AppColors.secondaryBlack)
+              .copyWith(
+                color: !isMe ? AppColors.secondaryBlack : AppColors.textButton,
+              ),
         ),
 
         SizedBox(width: 4.w),
 
         // ── Seen / Sent icon ──
-
-
 
         if (isMe &&
             Get.find<MainCoreEmployeeController>().isHasPermission(

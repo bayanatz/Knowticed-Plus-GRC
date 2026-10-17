@@ -6,6 +6,7 @@
 /// Author: Knowticed Plus team
 /// Created at: 2026
 /// Updated: 12/8/2026 - Added the standard header (Docs).
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -14,7 +15,8 @@ class NotificationTemplateModel {
   final String module; // 'services', 'qiyas', 'inventory', etc.
   final String eventType; // 'request_submitted', 'request_approved', etc.
   final bool isEnabled;
-  final List<String> selectedNotificationTypes; // ["email", "push"] - stores which types are selected
+  final List<String>
+      selectedNotificationTypes; // ["email", "push"] - stores which types are selected
   final String subjectEnglish;
   final String subjectArabic;
   final String bodyEnglish;
@@ -65,7 +67,8 @@ class NotificationTemplateModel {
       module: data['module'] ?? '',
       eventType: data['eventType'] ?? '',
       isEnabled: data['isEnabled'] ?? true,
-      selectedNotificationTypes: List<String>.from(data['selectedNotificationTypes'] ?? []),
+      selectedNotificationTypes:
+          List<String>.from(data['selectedNotificationTypes'] ?? []),
       subjectEnglish: data['subjectEnglish'] ?? '',
       subjectArabic: data['subjectArabic'] ?? '',
       bodyEnglish: data['bodyEnglish'] ?? '',
@@ -114,7 +117,8 @@ class NotificationTemplateModel {
       module: module ?? this.module,
       eventType: eventType ?? this.eventType,
       isEnabled: isEnabled ?? this.isEnabled,
-      selectedNotificationTypes: selectedNotificationTypes ?? this.selectedNotificationTypes,
+      selectedNotificationTypes:
+          selectedNotificationTypes ?? this.selectedNotificationTypes,
       subjectEnglish: subjectEnglish ?? this.subjectEnglish,
       subjectArabic: subjectArabic ?? this.subjectArabic,
       bodyEnglish: bodyEnglish ?? this.bodyEnglish,

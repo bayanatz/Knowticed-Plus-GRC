@@ -4,13 +4,14 @@
 /// Purpose: Users connection model — messaging Connections sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:grc_module/core/enums/message_module/message_types.dart';
-import '../../../../../core/helper/message_module/interface/entity/user_category.dart';
-import '../../domain/entities/single_connection_entity.dart';
-import './user_connection_last_message_info_model.dart';
+import 'package:grc_module/features/messaging/helpers/enums/message_types.dart';
+import 'package:grc_module/features/messaging/helpers/messaging_bridge/interface/entity/user_category.dart';
+import 'package:grc_module/features/messaging/m2_connections/domain/entities/single_connection_entity.dart';
+import 'package:grc_module/features/messaging/m2_connections/data/models/user_connection_last_message_info_model.dart';
 
 class UsersConnectionModel {
   /// ************************** USER INFO ****************************
@@ -62,54 +63,57 @@ class UsersConnectionModel {
   }
 
   /// ************************** Fields Key Constants ****************************
-  static const String USER_PRIMARY_LANGUAGE_NAME = 'User_Primary_Language_Name';
-  static const String USER_SECONDARY_LANGUAGE_NAME = 'User_Secondary_Language_Name';
-  static const String USER_PRIMARY_LANGUAGE_SUB_INFO = 'User_Primary_Language_Sub_Info';
-  static const String USER_SECONDARY_LANGUAGE_SUB_INFO = 'User_Secondary_Language_Sub_Info';
-  static const String USER_IMAGE_URI = 'User_Image_Uri';
-  static const String USER_ID = 'User_ID';
-  static const String USER_PHONE = 'User_Phone';
-  static const String USER_CATEGORY_ID = 'User_Category_ID';
-  static const String STARTED_CONNECTION_TIME = 'Started_Connection_Time';
-  static const String IS_DELETED_CONNECTION = 'Is_Deleted_Connection';
-  static const String IS_BLOCKED_CONNECTION = 'Is_Blocked_Connection';
-  static const String CONNECTION_ID = 'Connection_ID';
+  static const String kUserPrimaryLanguageName = 'User_Primary_Language_Name';
+  static const String kUserSecondaryLanguageName =
+      'User_Secondary_Language_Name';
+  static const String kUserPrimaryLanguageSubInfo =
+      'User_Primary_Language_Sub_Info';
+  static const String kUserSecondaryLanguageSubInfo =
+      'User_Secondary_Language_Sub_Info';
+  static const String kUserImageUri = 'User_Image_Uri';
+  static const String kUserId = 'User_ID';
+  static const String kUserPhone = 'User_Phone';
+  static const String kUserCategoryId = 'User_Category_ID';
+  static const String kStartedConnectionTime = 'Started_Connection_Time';
+  static const String kIsDeletedConnection = 'Is_Deleted_Connection';
+  static const String kIsBlockedConnection = 'Is_Blocked_Connection';
+  static const String kConnectionId = 'Connection_ID';
 
   /// ************************** Methods ****************************
   Map<String, dynamic> toMap() {
     Map<String, dynamic> data = {
-      USER_PRIMARY_LANGUAGE_NAME: userPrimaryLanguageName,
-      USER_SECONDARY_LANGUAGE_NAME: userSecondaryLanguageName,
-      USER_PRIMARY_LANGUAGE_SUB_INFO: userPrimaryLanguageSubInfo,
-      USER_SECONDARY_LANGUAGE_SUB_INFO: userSecondaryLanguageSubInfo,
-      USER_IMAGE_URI: userImageUri,
-      USER_ID: userId,
-      USER_PHONE: userPhone,
-      USER_CATEGORY_ID: userCategoryId,
-      STARTED_CONNECTION_TIME: startedConnectionTime,
-      IS_DELETED_CONNECTION: isDeletedConnection,
-      IS_BLOCKED_CONNECTION: isBlockedConnection,
-      CONNECTION_ID: connectionId,
+      kUserPrimaryLanguageName: userPrimaryLanguageName,
+      kUserSecondaryLanguageName: userSecondaryLanguageName,
+      kUserPrimaryLanguageSubInfo: userPrimaryLanguageSubInfo,
+      kUserSecondaryLanguageSubInfo: userSecondaryLanguageSubInfo,
+      kUserImageUri: userImageUri,
+      kUserId: userId,
+      kUserPhone: userPhone,
+      kUserCategoryId: userCategoryId,
+      kStartedConnectionTime: startedConnectionTime,
+      kIsDeletedConnection: isDeletedConnection,
+      kIsBlockedConnection: isBlockedConnection,
+      kConnectionId: connectionId,
     };
     data.addAll(lastMessageInfo.toMap());
     return data;
   }
 
   UsersConnectionModel.fromMap(Map<String, dynamic> map)
-      : userPrimaryLanguageName = map[USER_PRIMARY_LANGUAGE_NAME],
-        userSecondaryLanguageName = map[USER_SECONDARY_LANGUAGE_NAME],
-        userPrimaryLanguageSubInfo = map[USER_PRIMARY_LANGUAGE_SUB_INFO],
-        userSecondaryLanguageSubInfo = map[USER_SECONDARY_LANGUAGE_SUB_INFO],
-        userImageUri = map[USER_IMAGE_URI],
-        userId = map[USER_ID],
-        userPhone = map[USER_PHONE],
-        userCategoryId = map[USER_CATEGORY_ID] is int
-            ? (map[USER_CATEGORY_ID] as int).toString()
-            : map[USER_CATEGORY_ID],
-        startedConnectionTime = map[STARTED_CONNECTION_TIME],
-        isDeletedConnection = map[IS_DELETED_CONNECTION],
-        isBlockedConnection = map[IS_BLOCKED_CONNECTION],
-        connectionId = map[CONNECTION_ID],
+      : userPrimaryLanguageName = map[kUserPrimaryLanguageName],
+        userSecondaryLanguageName = map[kUserSecondaryLanguageName],
+        userPrimaryLanguageSubInfo = map[kUserPrimaryLanguageSubInfo],
+        userSecondaryLanguageSubInfo = map[kUserSecondaryLanguageSubInfo],
+        userImageUri = map[kUserImageUri],
+        userId = map[kUserId],
+        userPhone = map[kUserPhone],
+        userCategoryId = map[kUserCategoryId] is int
+            ? (map[kUserCategoryId] as int).toString()
+            : map[kUserCategoryId],
+        startedConnectionTime = map[kStartedConnectionTime],
+        isDeletedConnection = map[kIsDeletedConnection],
+        isBlockedConnection = map[kIsBlockedConnection],
+        connectionId = map[kConnectionId],
         lastMessageInfo = UserConnectionLastMessageInfoModel.fromMap(map);
 
   // ✅ FIX: categories passed in directly — no more Get.find<ConnectionsCubit>()
@@ -145,7 +149,7 @@ class UsersConnectionModel {
       messageContent: lastMessageInfo.textMessage,
       otherSideId: userId,
       isLastMessageSenderIsCurrentUser:
-      lastMessageInfo.isLastMessageSenderCurrentUser ?? true,
+          lastMessageInfo.isLastMessageSenderCurrentUser ?? true,
       otherNumUnreadMessage: lastMessageInfo.otherUnreadMessagesCount,
       isSeen: isRead,
     );

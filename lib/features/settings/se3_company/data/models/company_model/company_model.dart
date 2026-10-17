@@ -17,6 +17,7 @@
 /// immutable means rebuilding all 14 sub-models per write. That is a change to
 /// the write semantics, not a refactor, and is deliberately left out of this
 /// round — [copyWith] is provided so new code does not have to mutate.
+library;
 
 import 'package:grc_module/features/roles/r4_active_directory/data/models/employees_model/address_model.dart';
 import 'package:grc_module/features/roles/r4_active_directory/data/models/employees_model/email_model.dart';
@@ -107,7 +108,6 @@ class CompanyModel {
     this.arabicFont,
     this.status,
   });
-
 
   // ── Legacy field fallback (24/8/2026) ──────────────────────────────────────
   //
@@ -304,7 +304,10 @@ class CompanyModel {
           legacyKey: 'phone',
           valueKey: 'Phone',
           legacyValueKey: 'phones',
-          extraKeys: const <String, String>{'Country_Code': 'countryCode', 'Country_App': 'countryApp'},
+          extraKeys: const <String, String>{
+            'Country_Code': 'countryCode',
+            'Country_App': 'countryApp'
+          },
         );
         return raw != null ? MobilePhone.fromMap(raw) : null;
       }(),
@@ -316,7 +319,9 @@ class CompanyModel {
           valueKey: 'Company_Logo',
           legacyValueKey: 'companyLogo',
         );
-        return raw != null ? CompanyLogo.fromMap(raw) : CompanyLogo(companyLogo: [], timestamps: []);
+        return raw != null
+            ? CompanyLogo.fromMap(raw)
+            : CompanyLogo(companyLogo: [], timestamps: []);
       }(),
       primaryColor: () {
         final Map<String, dynamic>? raw = _field(
@@ -326,7 +331,9 @@ class CompanyModel {
           valueKey: 'Primary_Color',
           legacyValueKey: 'primaryColor',
         );
-        return raw != null ? PrimaryColor.fromMap(raw) : PrimaryColor(primaryColor: [], timestamps: []);
+        return raw != null
+            ? PrimaryColor.fromMap(raw)
+            : PrimaryColor(primaryColor: [], timestamps: []);
       }(),
       secondaryColor: () {
         final Map<String, dynamic>? raw = _field(
@@ -336,7 +343,9 @@ class CompanyModel {
           valueKey: 'Secondary_Color',
           legacyValueKey: 'secondaryColor',
         );
-        return raw != null ? SecondaryColor.fromMap(raw) : SecondaryColor(secondaryColor: [], timestamps: []);
+        return raw != null
+            ? SecondaryColor.fromMap(raw)
+            : SecondaryColor(secondaryColor: [], timestamps: []);
       }(),
       englishFont: () {
         final Map<String, dynamic>? raw = _field(
@@ -346,7 +355,9 @@ class CompanyModel {
           valueKey: 'English_Font',
           legacyValueKey: 'englishFont',
         );
-        return raw != null ? EnglishFont.fromMap(raw) : EnglishFont(englishFont: [], timestamps: []);
+        return raw != null
+            ? EnglishFont.fromMap(raw)
+            : EnglishFont(englishFont: [], timestamps: []);
       }(),
       arabicFont: () {
         final Map<String, dynamic>? raw = _field(
@@ -356,7 +367,9 @@ class CompanyModel {
           valueKey: 'Arabic_Font',
           legacyValueKey: 'arabicFont',
         );
-        return raw != null ? ArabicFont.fromMap(raw) : ArabicFont(arabicFont: [], timestamps: []);
+        return raw != null
+            ? ArabicFont.fromMap(raw)
+            : ArabicFont(arabicFont: [], timestamps: []);
       }(),
       // STATUS 24/8/2026: the document carries `Status: "inactive"` alongside
       // `status: "active"`, and `CompanyState.isCompanyActive` gates every
@@ -368,29 +381,26 @@ class CompanyModel {
   }
 
   Map<String, dynamic> toMap() => {
-        fieldCompanyName: companyName != null ? companyName!.toMap() : null,
-        fieldTaxNumber: taxNumber != null ? taxNumber!.toMap() : null,
-        fieldCompanyAddress:
-            companyAddress != null ? companyAddress!.toMap() : null,
-        fieldCity: city != null ? city!.toMap() : null,
-        fieldZipCode: zipCode != null ? zipCode!.toMap() : null,
-        fieldProvince: province != null ? province!.toMap() : null,
-        fieldCountry: country != null ? country!.toMap() : null,
-        fieldCompanyIndustry:
-            companyIndustry != null ? companyIndustry!.toMap() : null,
-        fieldCompanySize: companySize != null ? companySize!.toMap() : null,
-        fieldModules: modules != null ? modules!.toMap() : null,
-        fieldRole: role != null ? role!.toMap() : null,
-        fieldFirstName: firstName != null ? firstName!.toMap() : null,
-        fieldLastName: lastName != null ? lastName!.toMap() : null,
-        fieldEmail: email != null ? email!.toMap() : null,
-        fieldPhone: phone != null ? phone!.toMap() : null,
-        fieldCompanyLogo: companyLogo != null ? companyLogo!.toMap() : null,
-        fieldPrimaryColor: primaryColor != null ? primaryColor!.toMap() : null,
-        fieldSecondaryColor:
-            secondaryColor != null ? secondaryColor!.toMap() : null,
-        fieldEnglishFont: englishFont != null ? englishFont!.toMap() : null,
-        fieldArabicFont: arabicFont != null ? arabicFont!.toMap() : null,
+        fieldCompanyName: companyName?.toMap(),
+        fieldTaxNumber: taxNumber?.toMap(),
+        fieldCompanyAddress: companyAddress?.toMap(),
+        fieldCity: city?.toMap(),
+        fieldZipCode: zipCode?.toMap(),
+        fieldProvince: province?.toMap(),
+        fieldCountry: country?.toMap(),
+        fieldCompanyIndustry: companyIndustry?.toMap(),
+        fieldCompanySize: companySize?.toMap(),
+        fieldModules: modules?.toMap(),
+        fieldRole: role?.toMap(),
+        fieldFirstName: firstName?.toMap(),
+        fieldLastName: lastName?.toMap(),
+        fieldEmail: email?.toMap(),
+        fieldPhone: phone?.toMap(),
+        fieldCompanyLogo: companyLogo?.toMap(),
+        fieldPrimaryColor: primaryColor?.toMap(),
+        fieldSecondaryColor: secondaryColor?.toMap(),
+        fieldEnglishFont: englishFont?.toMap(),
+        fieldArabicFont: arabicFont?.toMap(),
         fieldStatus: status,
       };
 

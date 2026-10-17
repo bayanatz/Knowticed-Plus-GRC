@@ -12,6 +12,7 @@
 /// build `{baseUri}/Modules/roles/Employees/{id}` for the employee document, a
 /// collection that does not exist, which is where "Employee document not found"
 /// came from.
+library;
 
 import 'package:grc_module/core/constants/firebase_collections.dart';
 import 'package:grc_module/core/network/get_base_url.dart';
@@ -45,6 +46,5 @@ abstract final class RequestCollectionPaths {
   static String get employeesInfo => getBaseUrl('Employees_Info');
 
   /// `{baseUri}/Employees_Info/{id}` for one employee.
-  static String employeeDoc(String employeeId) =>
-      '$employeesInfo/$employeeId';
+  static String employeeDoc(String employeeId) => '$employeesInfo/$employeeId';
 }

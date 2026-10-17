@@ -4,13 +4,14 @@
 /// Purpose: Member entity — messaging Groups sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+library;
 
-import 'package:cloud_firestore_platform_interface/src/timestamp.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' show Timestamp;
 
-import 'package:grc_module/core/helper/message_module/main_helper/localized_text_helper.dart';
-import '../../../../../core/helper/message_module/interface/entity/user_category.dart';
-import '../../../m2_connections/domain/entities/single_connection_entity.dart';
-import '../../data/models/group_members.dart';
+import 'package:grc_module/features/messaging/helpers/messaging_bridge/main_helper/localized_text_helper.dart';
+import 'package:grc_module/features/messaging/helpers/messaging_bridge/interface/entity/user_category.dart';
+import 'package:grc_module/features/messaging/m2_connections/domain/entities/single_connection_entity.dart';
+import 'package:grc_module/features/messaging/m3_groups/data/models/group_members.dart';
 
 class MemberEntity {
   final String memberId;
@@ -140,6 +141,7 @@ class MemberEntity {
         secondaryLanguageText: secondaryLanguageName,
         primaryLanguageText: primaryLanguageName);
   }
+
   String get departmentName {
     if (category != null) {
       return LocalizedTextHelper.formatString(

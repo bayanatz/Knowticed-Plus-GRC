@@ -20,12 +20,7 @@ class LocationBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = context.read<MasterChatCubit>();
     //var isMe = messageModel.isMeLastMessage;
-    var isTablet = ContextExtension(context).isTablett;
-    final street = messageModel.locationModel!.address.split('-')[0];
-    final stateAndCountry = messageModel.locationModel!.address.split('-')[1];
-    var isMe = messageModel.isMeLastMessage;
 
     return /* DefaultBubble(
       index: index,
@@ -35,6 +30,7 @@ class LocationBubble extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           GestureDetector(
+            onTapDown: (_) => HapticController.low(),
             onTap: () {
               controller.setCurrentLocation(
                 false,

@@ -4,15 +4,16 @@
 /// Purpose: Group entity — messaging Groups sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:grc_module/core/enums/message_module/message_types.dart';
-import '../../../../../core/helper/message_module/interface/entity/user_category.dart';
-import '../../../m4_messaging_home/domain/entities/chat_type_entity.dart';
-import '../../data/models/group_members.dart';
-import '../../data/models/group_model.dart';
-import './member_entity.dart';
+import 'package:grc_module/features/messaging/helpers/enums/message_types.dart';
+import 'package:grc_module/features/messaging/helpers/messaging_bridge/interface/entity/user_category.dart';
+import 'package:grc_module/features/messaging/m4_messaging_home/domain/entities/chat_type_entity.dart';
+import 'package:grc_module/features/messaging/m3_groups/data/models/group_members.dart';
+import 'package:grc_module/features/messaging/m3_groups/data/models/group_model.dart';
+import 'package:grc_module/features/messaging/m3_groups/domain/entities/member_entity.dart';
 
 class GroupEntity extends ChatTypeEntity {
   String groupId;
@@ -108,7 +109,7 @@ class GroupEntity extends ChatTypeEntity {
       isPublic: group.isPublic.values.last,
       imageUri: group.groupImage.values.isNotEmpty
           ? group.groupImage.values.last
-          : "assets/icons_assets/main_icons_assets/users_group_three.png",
+          : "assets/icons_assets/main_icons_assets/ic_user_group.svg",
       groupId: group.groupId,
       createdBy: group.createdBy,
       primaryLanguageName: group.groupName.values.last,
@@ -116,8 +117,7 @@ class GroupEntity extends ChatTypeEntity {
           ? group.groupNameAr!.values.last
           : null,
       groupDescription: group.groupDescription.values.last,
-      groupDescriptionAr:
-      group.groupDescriptionAr?.values.isNotEmpty == true
+      groupDescriptionAr: group.groupDescriptionAr?.values.isNotEmpty == true
           ? group.groupDescriptionAr!.values.last
           : null,
       isOnlyAdminsCanSend: group.isOnlyAdminsCanSend.values.last,
@@ -138,7 +138,8 @@ class GroupEntity extends ChatTypeEntity {
           ? group.groupImage.values.last
           : null,
       myNumUnreadMessage: me.numOfUnreadMessages,
-      hasPinnedMessage: group.pinnedMessageId != null && group.pinnedMessageId!.isNotEmpty,
+      hasPinnedMessage:
+          group.pinnedMessageId != null && group.pinnedMessageId!.isNotEmpty,
     );
   }
 }

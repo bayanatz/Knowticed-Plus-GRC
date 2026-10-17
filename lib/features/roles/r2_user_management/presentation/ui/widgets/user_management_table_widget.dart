@@ -2,8 +2,9 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: user_management_table_widget.dart
-/// Purpose: Declares `UserManagementTableWidget`.
-/// Author: Knowticed Plus team
+/// Description: Declares `UserManagementTableWidget`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
 /// Updated: 29/8/2026 - Title and Supervisor swapped (Title now reads first,
 ///                      beside the department it belongs to), and the two
@@ -11,6 +12,7 @@
 /// Updated: 30/8/2026 - Role Type moved out of the identity block to sit after
 ///                      Supervisor, and Access Grantor added before the two
 ///                      access-date columns.
+library;
 
 import 'package:get/get_utils/src/extensions/context_extensions.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
@@ -22,48 +24,48 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 // REMOVED_MODULE: import 'package:grc_module/features/external/knowledge_hub_module/core/theming/new_theme.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/generated/l10n.dart';
+
 import 'dart:ui' as ui;
 
-import 'package:grc_module/core/helper/main_helper/employee_helper.dart';
-import 'package:grc_module/core/helper/main_helper/localized_date.dart';
-import 'package:grc_module/core/helper/main_helper/localized_number.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:grc_module/core/helper/employee_helper.dart';
+import 'package:grc_module/core/helper/localized_date.dart';
+import 'package:grc_module/core/helper/localized_number.dart';
+import 'package:grc_module/core/helper/format_title.dart';
 import 'package:grc_module/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
 import 'package:grc_module/features/roles/r2_user_management/domain/entities/user_permission_entity.dart';
 import 'package:grc_module/features/roles/r4_active_directory/domain/entities/employee_entity.dart';
-import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
 import 'package:grc_module/core/di/app_controllers.dart';
 import 'package:collection/collection.dart';
 import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:grc_module/features/roles/r1_role_management/data/models/role_model.dart'
+    show RoleHistoryModelMethods;
 
 class UserManagementTableWidget extends StatelessWidget {
   final List<UserPermissionEntity> userPermissions;
   final String locale;
 
   const UserManagementTableWidget({
-    Key? key,
+    super.key,
     required this.userPermissions,
     required this.locale,
-  }) : super(key: key);
+  });
 
   bool get _isArabic => locale.toLowerCase().startsWith('ar');
 
-  TextStyle get _headerStyle => StyleText.fontSize14Weight500.copyWith(
-    color: AppColors.white,
-  );
+  TextStyle get _headerStyle =>
+      StyleText.fontSize14Weight500.copyWith(color: AppColors.white);
 
   TextStyle _cellStyle(BuildContext context) {
-    return StyleText.fontSize12Weight400.copyWith(color: AppColors.secondaryBlack).copyWith(
-      color: AppColors.text,
-    );
+    return StyleText.fontSize12Weight400
+        .copyWith(color: AppColors.secondaryBlack)
+        .copyWith(color: AppColors.text);
   }
 
   EmployeeEntityPro? _getEmployee(String employeeId) {
     try {
-      return AppControllers.employee
-          .allEmployeesEntities!
-          .firstWhere((element) => element.id == employeeId);
+      return AppControllers.employee.allEmployeesEntities!.firstWhere(
+        (element) => element.id == employeeId,
+      );
     } catch (e) {
       return null;
     }
@@ -79,9 +81,7 @@ class UserManagementTableWidget extends StatelessWidget {
     try {
       final roleCubit = context.read<RoleCubit>();
       final role = roleCubit.roles.firstWhereOrNull(
-            (r) =>
-        r.roleId == access ||
-            r.currentRoleName == access,
+        (r) => r.roleId == access || r.currentRoleName == access,
       );
 
       if (role != null) {
@@ -122,11 +122,12 @@ class UserManagementTableWidget extends StatelessWidget {
     if (mobile?.phone == null) return '-';
 
     // Clean phone (remove square brackets if present)
-    final phone = (mobile!.phone ?? '').replaceAll(RegExp(r'[\[\]]'), '').trim();
+    final phone = (mobile!.phone).replaceAll(RegExp(r'[\[\]]'), '').trim();
     if (phone.isEmpty) return '-';
 
     // Clean country code and normalize the leading '+'
-    final rawCode = (mobile.countryCode ?? '').replaceAll(RegExp(r'[\[\]]'), '').trim();
+    final rawCode =
+        (mobile.countryCode).replaceAll(RegExp(r'[\[\]]'), '').trim();
     if (rawCode.isEmpty) return phone;
 
     final code = rawCode.startsWith('+') ? rawCode : '+$rawCode';
@@ -159,15 +160,17 @@ class UserManagementTableWidget extends StatelessWidget {
 
       // Find supervisor by email (since supervisor field contains email)
       EmployeeEntityPro? supervisor = allEmployees.firstWhereOrNull(
-            (element) => element.email?.toLowerCase().trim() == employee.supervisor?.toLowerCase().trim(),
+        (element) =>
+            element.email?.toLowerCase().trim() ==
+            employee.supervisor?.toLowerCase().trim(),
       );
 
       // If not found by email, try by ID as fallback
-      if (supervisor == null) {
-        supervisor = allEmployees.firstWhereOrNull(
-              (element) => element.id?.toLowerCase().trim() == employee.supervisor?.toLowerCase().trim(),
-        );
-      }
+      supervisor ??= allEmployees.firstWhereOrNull(
+        (element) =>
+            element.id?.toLowerCase().trim() ==
+            employee.supervisor?.toLowerCase().trim(),
+      );
 
       if (supervisor == null) {
         return '-';
@@ -199,9 +202,10 @@ class UserManagementTableWidget extends StatelessWidget {
   String _getTitle(EmployeeEntityPro? employee, BuildContext context) {
     if (employee == null) return '-';
     return EmployeeHelper.getEmployeeLocalizedTitle(
-      employee: employee,
-      context: context,
-    ) ?? '-';
+          employee: employee,
+          context: context,
+        ) ??
+        '-';
   }
 
   // Width calculation methods
@@ -215,11 +219,14 @@ class UserManagementTableWidget extends StatelessWidget {
       // ✅ Use the localized role name so AR widths are correct too
       final roleName = _getRoleName(user, context);
       if (roleName.isNotEmpty && roleName != '-') {
-        maxLength = maxLength > roleName.length ? maxLength : roleName.length.toDouble();
+        maxLength = maxLength > roleName.length
+            ? maxLength
+            : roleName.length.toDouble();
       }
     }
     if (maxLength == 0) return context.isPortrait ? 120.w : 140.w;
-    double calculatedWidth = ((maxLength * 8.sp) + 40.w) > 200.w ? 200.w : (maxLength * 8.sp) + 40.w;
+    double calculatedWidth =
+        ((maxLength * 8.sp) + 40.w) > 200.w ? 200.w : (maxLength * 8.sp) + 40.w;
     double minWidth = context.isPortrait ? 120.w : 120.w;
     return calculatedWidth > minWidth ? calculatedWidth : minWidth;
   }
@@ -234,11 +241,13 @@ class UserManagementTableWidget extends StatelessWidget {
       EmployeeEntityPro? employee = _getEmployee(user.employeeId);
       String name = _getFirstName(employee, context);
       if (name.isNotEmpty && name != '-') {
-        maxLength = maxLength > name.length ? maxLength : name.length.toDouble();
+        maxLength =
+            maxLength > name.length ? maxLength : name.length.toDouble();
       }
     }
     if (maxLength == 0) return context.isPortrait ? 120.w : 140.w;
-    double calculatedWidth = ((maxLength * 8.sp) + 40.w) > 200.w ? 200.w : (maxLength * 8.sp) + 40.w;
+    double calculatedWidth =
+        ((maxLength * 8.sp) + 40.w) > 200.w ? 200.w : (maxLength * 8.sp) + 40.w;
     double minWidth = context.isPortrait ? 120.w : 120.w;
     return calculatedWidth > minWidth ? calculatedWidth : minWidth;
   }
@@ -249,11 +258,13 @@ class UserManagementTableWidget extends StatelessWidget {
       EmployeeEntityPro? employee = _getEmployee(user.employeeId);
       String name = _getLastName(employee, context);
       if (name.isNotEmpty && name != '-') {
-        maxLength = maxLength > name.length ? maxLength : name.length.toDouble();
+        maxLength =
+            maxLength > name.length ? maxLength : name.length.toDouble();
       }
     }
     if (maxLength == 0) return context.isPortrait ? 120.w : 140.w;
-    double calculatedWidth = ((maxLength * 8.sp) + 40.w) > 200.w ? 200.w : (maxLength * 8.sp) + 40.w;
+    double calculatedWidth =
+        ((maxLength * 8.sp) + 40.w) > 200.w ? 200.w : (maxLength * 8.sp) + 40.w;
     double minWidth = context.isPortrait ? 120.w : 120.w;
     return calculatedWidth > minWidth ? calculatedWidth : minWidth;
   }
@@ -273,11 +284,13 @@ class UserManagementTableWidget extends StatelessWidget {
       EmployeeEntityPro? employee = _getEmployee(user.employeeId);
       String dept = _getDepartment(employee, context);
       if (dept.isNotEmpty && dept != '-') {
-        maxLength = maxLength > dept.length ? maxLength : dept.length.toDouble();
+        maxLength =
+            maxLength > dept.length ? maxLength : dept.length.toDouble();
       }
     }
     if (maxLength == 0) return context.isPortrait ? 140.w : 160.w;
-    double calculatedWidth = ((maxLength * 8.sp) + 40.w) > 220.w ? 220.w : (maxLength * 8.sp) + 40.w;
+    double calculatedWidth =
+        ((maxLength * 8.sp) + 40.w) > 220.w ? 220.w : (maxLength * 8.sp) + 40.w;
     double minWidth = context.isPortrait ? 140.w : 140.w;
     return calculatedWidth > minWidth ? calculatedWidth : minWidth;
   }
@@ -288,11 +301,14 @@ class UserManagementTableWidget extends StatelessWidget {
       EmployeeEntityPro? employee = _getEmployee(user.employeeId);
       String supervisor = _getSupervisor(employee, context);
       if (supervisor.isNotEmpty && supervisor != '-') {
-        maxLength = maxLength > supervisor.length ? maxLength : supervisor.length.toDouble();
+        maxLength = maxLength > supervisor.length
+            ? maxLength
+            : supervisor.length.toDouble();
       }
     }
     if (maxLength == 0) return context.isPortrait ? 140.w : 160.w;
-    double calculatedWidth = ((maxLength * 8.sp) + 40.w) > 200.w ? 200.w : (maxLength * 8.sp) + 40.w;
+    double calculatedWidth =
+        ((maxLength * 8.sp) + 40.w) > 200.w ? 200.w : (maxLength * 8.sp) + 40.w;
     double minWidth = context.isPortrait ? 140.w : 140.w;
     return calculatedWidth > minWidth ? calculatedWidth : minWidth;
   }
@@ -303,11 +319,13 @@ class UserManagementTableWidget extends StatelessWidget {
       EmployeeEntityPro? employee = _getEmployee(user.employeeId);
       String title = _getTitle(employee, context);
       if (title.isNotEmpty && title != '-') {
-        maxLength = maxLength > title.length ? maxLength : title.length.toDouble();
+        maxLength =
+            maxLength > title.length ? maxLength : title.length.toDouble();
       }
     }
     if (maxLength == 0) return context.isPortrait ? 140.w : 160.w;
-    double calculatedWidth = ((maxLength * 8.sp) + 40.w) > 200.w ? 200.w : (maxLength * 8.sp) + 40.w;
+    double calculatedWidth =
+        ((maxLength * 8.sp) + 40.w) > 200.w ? 200.w : (maxLength * 8.sp) + 40.w;
     double minWidth = context.isPortrait ? 140.w : 140.w;
     return calculatedWidth > minWidth ? calculatedWidth : minWidth;
   }
@@ -319,11 +337,13 @@ class UserManagementTableWidget extends StatelessWidget {
     for (var user in userPermissions) {
       String grantor = _getAccessGrantor(user);
       if (grantor.isNotEmpty && grantor != '-') {
-        maxLength = maxLength > grantor.length ? maxLength : grantor.length.toDouble();
+        maxLength =
+            maxLength > grantor.length ? maxLength : grantor.length.toDouble();
       }
     }
     if (maxLength == 0) return context.isPortrait ? 140.w : 160.w;
-    double calculatedWidth = ((maxLength * 8.sp) + 40.w) > 200.w ? 200.w : (maxLength * 8.sp) + 40.w;
+    double calculatedWidth =
+        ((maxLength * 8.sp) + 40.w) > 200.w ? 200.w : (maxLength * 8.sp) + 40.w;
     double minWidth = context.isPortrait ? 140.w : 140.w;
     return calculatedWidth > minWidth ? calculatedWidth : minWidth;
   }
@@ -337,10 +357,7 @@ class UserManagementTableWidget extends StatelessWidget {
   Widget _cell(BuildContext context, Widget child) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10.sp, vertical: 8.sp),
-      child: DefaultTextStyle.merge(
-        style: _cellStyle(context),
-        child: child,
-      ),
+      child: DefaultTextStyle.merge(style: _cellStyle(context), child: child),
     );
   }
 
@@ -349,9 +366,7 @@ class UserManagementTableWidget extends StatelessWidget {
       context,
       Text(
         text.isEmpty ? '-' : text,
-        style: StyleText.fontSize14Weight600.copyWith(
-            color: AppColors.text
-        ),
+        style: StyleText.fontSize14Weight600.copyWith(color: AppColors.text),
         maxLines: maxLines,
         overflow: TextOverflow.ellipsis,
       ),
@@ -365,8 +380,7 @@ class UserManagementTableWidget extends StatelessWidget {
     return _cell(
       context,
       Align(
-        alignment:
-            _isArabic ? Alignment.centerRight : Alignment.centerLeft,
+        alignment: _isArabic ? Alignment.centerRight : Alignment.centerLeft,
         child: Directionality(
           textDirection: ui.TextDirection.ltr,
           child: Text(
@@ -377,8 +391,9 @@ class UserManagementTableWidget extends StatelessWidget {
             // future refactor drops in between.
             textDirection: ui.TextDirection.ltr,
             textAlign: TextAlign.left,
-            style: StyleText.fontSize14Weight600
-                .copyWith(color: AppColors.text),
+            style: StyleText.fontSize14Weight600.copyWith(
+              color: AppColors.text,
+            ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -394,9 +409,11 @@ class UserManagementTableWidget extends StatelessWidget {
   /// [LocalizedDate.parseStored]. An access that has not been revoked has no
   /// end date at all, which is why an unset value renders as "-" rather than
   /// as an error.
-  Widget _accessDateCell(BuildContext context, String? storedDate) =>
-      _textCell(context, LocalizedDate.ofStored(context, storedDate),
-          maxLines: 1);
+  Widget _accessDateCell(BuildContext context, String? storedDate) => _textCell(
+        context,
+        LocalizedDate.ofStored(context, storedDate),
+        maxLines: 1,
+      );
 
   Widget _numberCell(BuildContext context, int number) {
     return _cell(
@@ -461,81 +478,87 @@ class UserManagementTableWidget extends StatelessWidget {
     return AnimatedSizeWrap(
       // Tables animate their size (rows added / removed / filtered).
       child: Directionality(
-      textDirection: _isArabic ? ui.TextDirection.rtl : ui.TextDirection.ltr,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(10.sp),
-          child: Table(
-            border: TableBorder.all(
-              color: AppColors.transparent,
-              borderRadius: BorderRadius.circular(10.sp),
-            ),
-            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-            columnWidths: columnWidths,
-            children: [
-              // Header Row
-              TableRow(
-                decoration: BoxDecoration(
-                  color: AppColors.blackShadow
-                ),
-                children: headers.map((name) =>
-                    Padding(
-                      padding: EdgeInsets.all(10.sp),
-                      child: Text(
-                        name,
-                        style: _headerStyle,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.start,
-                      ),
-                    ),
-                ).toList(),
+        textDirection: _isArabic ? ui.TextDirection.rtl : ui.TextDirection.ltr,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10.sp),
+            child: Table(
+              border: TableBorder.all(
+                color: AppColors.transparent,
+                borderRadius: BorderRadius.circular(10.sp),
               ),
+              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+              columnWidths: columnWidths,
+              children: [
+                // Header Row
+                TableRow(
+                  decoration: BoxDecoration(color: AppColors.blackShadow),
+                  children: headers
+                      .map(
+                        (name) => Padding(
+                          padding: EdgeInsets.all(10.sp),
+                          child: Text(
+                            name,
+                            style: _headerStyle,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.start,
+                          ),
+                        ),
+                      )
+                      .toList(),
+                ),
 
-              // Data Rows
-              ...List.generate(userPermissions.length, (index) {
-                final user = userPermissions[index];
-                final isEven = index.isEven;
-                final rowColor = lightMode
-                    ? (isEven ? AppColors.evenRowColor : AppColors.white)
-                    : (isEven ? AppColors.oddRowColor : AppColors.black);
+                // Data Rows
+                ...List.generate(userPermissions.length, (index) {
+                  final user = userPermissions[index];
+                  final isEven = index.isEven;
+                  final rowColor = lightMode
+                      ? (isEven ? AppColors.evenRowColor : AppColors.white)
+                      : (isEven ? AppColors.oddRowColor : AppColors.black);
 
-                final employee = _getEmployee(user.employeeId);
-                final roleName = _getRoleName(user, context);
-                final firstName = _getFirstName(employee, context);
-                final lastName = _getLastName(employee, context);
-                final email = _getEmail(employee);
-                final mobilePhone = _getMobilePhone(employee);
-                final departmentName = _getDepartment(employee, context);
-                final supervisor = _getSupervisor(employee, context);
-                final title = _getTitle(employee, context);
-                final accessGrantor = _getAccessGrantor(user);
+                  final employee = _getEmployee(user.employeeId);
+                  final roleName = _getRoleName(user, context);
+                  final firstName = _getFirstName(employee, context);
+                  final lastName = _getLastName(employee, context);
+                  final email = _getEmail(employee);
+                  final mobilePhone = _getMobilePhone(employee);
+                  final departmentName = _getDepartment(employee, context);
+                  final supervisor = _getSupervisor(employee, context);
+                  final title = _getTitle(employee, context);
+                  final accessGrantor = _getAccessGrantor(user);
 
-                return TableRow(
-                  decoration: BoxDecoration(color: rowColor),
-                  children: [
-                    _numberCell(context, index + 1),
-                    _textCell(context, user.employeeId, maxLines: 1),
-                    _textCell(context, FormatHelper.capitalize(firstName)),
-                    _textCell(context, FormatHelper.capitalize(lastName)),
-                    _textCell(context, email, maxLines: 1),
-                    _phoneCell(context, mobilePhone),
-                    _textCell(context, FormatHelper.capitalize(departmentName)),
-                    _textCell(context, FormatHelper.capitalize(title)),
-                    _textCell(context, FormatHelper.capitalize(supervisor)),
-                    _textCell(context, FormatHelper.capitalize(roleName)),
-                    _textCell(context, FormatHelper.capitalize(accessGrantor)),
-                    _accessDateCell(context, user.startDate),
-                    _accessDateCell(context, user.endDate),
-                  ],
-                );
-              }),
-            ],
+                  return TableRow(
+                    decoration: BoxDecoration(color: rowColor),
+                    children: [
+                      _numberCell(context, index + 1),
+                      _textCell(context, user.employeeId, maxLines: 1),
+                      _textCell(context, FormatHelper.capitalize(firstName)),
+                      _textCell(context, FormatHelper.capitalize(lastName)),
+                      _textCell(context, email, maxLines: 1),
+                      _phoneCell(context, mobilePhone),
+                      _textCell(
+                        context,
+                        FormatHelper.capitalize(departmentName),
+                      ),
+                      _textCell(context, FormatHelper.capitalize(title)),
+                      _textCell(context, FormatHelper.capitalize(supervisor)),
+                      _textCell(context, FormatHelper.capitalize(roleName)),
+                      _textCell(
+                        context,
+                        FormatHelper.capitalize(accessGrantor),
+                      ),
+                      _accessDateCell(context, user.startDate),
+                      _accessDateCell(context, user.endDate),
+                    ],
+                  );
+                }),
+              ],
+            ),
           ),
         ),
       ),
-    ),
     );
   }
 }

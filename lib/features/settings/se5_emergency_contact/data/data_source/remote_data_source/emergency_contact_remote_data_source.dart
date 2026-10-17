@@ -12,12 +12,13 @@
 ///
 /// PORTED into services_app under features/settings.
 /// Source: services_app features/employees/data/data_source/…
+library;
 
 import 'package:dartz/dartz.dart';
 
 import 'package:grc_module/core/network/api_constants.dart';
 import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/core/services/firebase/repository/firebase_repository.dart';
+import 'package:grc_module/core/app_services/firebase/repository/firebase_repository.dart';
 
 class EmergencyContactRemoteDataSource {
   /// Function Name: [getEmergencyContactData]

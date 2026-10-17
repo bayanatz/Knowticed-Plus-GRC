@@ -13,13 +13,15 @@
 ///          `get/get_core/src/get_main.dart` import are removed — the latter
 ///          reaches into GetX's private source and can break on any patch
 ///          release; the locale now comes from `Localizations.localeOf(context)`.
+library;
 
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:grc_module/core/constants/app_constants.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_font_size.dart';
+import 'package:grc_module/core/extensions/screen_fraction_extension.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 
 /// A single onboarding slide.
@@ -57,8 +59,8 @@ class CustomPageView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          SvgPicture.asset(
-            imgurl,
+          CustomSvgImage.natural(
+            assetPath: imgurl,
             height: isTablet ? 0.39.h : 0.35.h,
             fit: BoxFit.fill,
           ),
@@ -70,9 +72,7 @@ class CustomPageView extends StatelessWidget {
             textAlign: TextAlign.center,
             style: StyleText.fontSize24Weight600.copyWith(
               height: 1.3,
-              fontSize: isTablet
-                  ? FontConstants.fontSize030.h
-                  : FontConstants.fontSize032.h,
+              fontSize: isTablet ? 24.sp : 24.sp,
               // FIXED 22/8/2026: was `Theme.of(context).colorScheme
               // .secondaryContainer`. Neither ColorScheme.light nor
               // ColorScheme.dark in app_theme.dart sets `secondaryContainer`,
@@ -93,9 +93,7 @@ class CustomPageView extends StatelessWidget {
             overflow: TextOverflow.fade,
             style: StyleText.fontSize18Weight500.copyWith(
               height: 1.7,
-              fontSize: isTablet
-                  ? FontConstants.fontSize024.h
-                  : FontConstants.fontSize018.h,
+              fontSize: isTablet ? 20.sp : 14.sp,
               // Theme-aware grey (was the const AppColors.colorGrey, which is
               // the same value in both palettes).
               color: AppColors.darkGrey,

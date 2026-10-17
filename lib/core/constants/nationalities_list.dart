@@ -5,8 +5,7 @@
 /// Purpose: Nationalities list.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
-
-import 'package:get/get.dart';
+library;
 
 import 'package:grc_module/generated/l10n.dart';
 

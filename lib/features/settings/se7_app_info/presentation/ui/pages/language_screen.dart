@@ -3,20 +3,21 @@
 /// Description: Two-column grid of languages. Shipped languages are selectable
 ///              radio tiles; the rest are dimmed and carry a "SOON!" badge
 ///              (soon_light.svg / soon_dark.svg depending on the theme).
+library;
 
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
-import 'package:grc_module/core/helper/main_helper/app_locale.dart';
+import 'package:grc_module/core/helper/app_locale.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/core/theme/haptic_controller.dart';
 import 'package:grc_module/core/theme/theme_controller.dart';
-import 'package:grc_module/core/custom/50-custom_side_frame_master.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/ui/widgets/settings_header.dart';
+import 'package:grc_module/core/custom/navigation/custom_side_frame_master.dart';
+import 'package:grc_module/features/settings/presentation/ui/widgets/settings_header.dart';
 import 'package:grc_module/features/settings/se7_app_info/domain/enums/languages.dart';
 import 'package:grc_module/generated/l10n.dart';
 
@@ -109,7 +110,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool isTablet = MediaQuery.of(context).size.shortestSide > 600;
+    bool isTablet = !kpIsPhoneLayout(context);
     final bool lightMode = Theme.of(context).brightness == Brightness.light;
 
     return isTablet
@@ -148,12 +149,11 @@ class _LanguageScreenState extends State<LanguageScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: 15.sp),
-
           Padding(
-            padding:  EdgeInsets.symmetric(horizontal: 14.sp),
+            padding: EdgeInsets.symmetric(horizontal: 14.sp),
             child: SettingsHeader(
               imagePath:
-                  'assets/icons_assets/settings_assets/language_translate_bubbles.svg',
+                  'assets/icons_assets/settings_assets/ic_module_language_settings.svg',
               text: S.of(context).language,
             ),
           ),
@@ -218,7 +218,9 @@ class _LanguageScreenState extends State<LanguageScreen> {
         option.isAvailable && selectedLanguage == option.language;
 
     return GestureDetector(
-      onTap: option.isAvailable ? () => toggleLangSwitch(option.language) : null,
+      onTapDown: option.isAvailable ? (_) => HapticController.low() : null,
+      onTap:
+          option.isAvailable ? () => toggleLangSwitch(option.language) : null,
       child: MouseRegion(
         cursor: option.isAvailable
             ? SystemMouseCursors.click
@@ -248,10 +250,10 @@ class _LanguageScreenState extends State<LanguageScreen> {
               ),
               if (!option.isAvailable) ...[
                 SizedBox(width: 8.w),
-                SvgPicture.asset(
-                  lightMode
-                      ? 'assets/icons_assets/settings_assets/soon_light.svg'
-                      : 'assets/icons_assets/settings_assets/soon_dark.svg',
+                CustomSvgImage.natural(
+                  assetPath: lightMode
+                      ? 'assets/icons_assets/settings_assets/ic_status_coming_soon.svg'
+                      : 'assets/icons_assets/settings_assets/ic_status_coming_soon_dark.svg',
                   height: 30.sp,
                   width: 30.sp,
                   fit: BoxFit.contain,
@@ -267,7 +269,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
   Widget _radio({required bool selected, required bool enabled}) {
     final Color ringColor = selected
         ? AppColors.primary
-        : AppColors.secondaryText.withOpacity(enabled ? 0.6 : 0.35);
+        : AppColors.secondaryText.withValues(alpha: enabled ? 0.6 : 0.35);
 
     return Container(
       width: 18.sp,

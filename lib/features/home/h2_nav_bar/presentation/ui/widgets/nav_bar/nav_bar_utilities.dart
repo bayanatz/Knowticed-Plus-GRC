@@ -5,6 +5,7 @@
 /// Purpose: Declares `PersistentBottomNavigationBarUtilFunctions`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,7 @@ class PersistentBottomNavigationBarUtilFunctions {
       return BoxDecoration(
         border: showBorder ? decoration!.border : null,
         borderRadius: decoration!.borderRadius,
-        color: color!.withOpacity(opacity),
+        color: color!.withValues(alpha: opacity),
       );
     } else {
       return BoxDecoration(
@@ -41,8 +42,8 @@ class PersistentBottomNavigationBarUtilFunctions {
   static bool isColorOpaque(final BuildContext context, final Color? color) {
     final Color backgroundColor =
         color ?? CupertinoTheme.of(context).barBackgroundColor;
-    return CupertinoDynamicColor.resolve(backgroundColor, context).alpha ==
-        0xFF;
+    final double alpha = CupertinoDynamicColor.resolve(backgroundColor, context).a;
+    return (alpha * 255.0).round().clamp(0, 255) == 0xFF;
   }
 
   static bool opaque(
@@ -74,7 +75,8 @@ class PersistentBottomNavigationBarUtilFunctions {
       return Colors.white;
     } else if (!opaque(items!, selectedIndex) &&
         isColorOpaque(context, color)) {
-      return color.withOpacity(getTranslucencyAmount(items, selectedIndex));
+      return color.withValues(
+          alpha: getTranslucencyAmount(items, selectedIndex));
     } else {
       return color;
     }

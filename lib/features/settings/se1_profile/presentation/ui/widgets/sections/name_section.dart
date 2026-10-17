@@ -9,12 +9,12 @@
 /// Updated: 11/8/2026 - CR-SKEL-SE1-N15/N18: text direction now comes from the
 ///          widget tree instead of `Get.locale` (§13), which also removes the
 ///          GetX import; Colors.transparent routed through AppColors.
-import 'dart:ui' as ui;
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:grc_module/core/custom/2-custom_textfield.dart';
+import 'package:grc_module/core/custom/inputs/custom_textfield.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
@@ -108,8 +108,7 @@ class _NameSectionState extends State<NameSection> {
   }
 
   /// Reads the locale from the tree, not from GetX (§13).
-  ui.TextDirection get _direction =>
-      Directionality.of(context);
+  TextDirection get _direction => Directionality.of(context);
 
   // ── Single field builder — used by both layouts ───────────────────────────
   Widget _nameField({
@@ -198,8 +197,7 @@ class _NameSectionState extends State<NameSection> {
       children: [
         for (int i = 0; i < fields.length; i++) ...[
           fields[i],
-          if (i != fields.length - 1)
-            SizedBox(height: isPhone ? 10.sp : 16.h),
+          if (i != fields.length - 1) SizedBox(height: isPhone ? 10.sp : 16.h),
         ],
       ],
     );

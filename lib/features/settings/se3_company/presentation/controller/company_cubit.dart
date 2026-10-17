@@ -16,11 +16,12 @@
 ///
 /// Merged: add_company_controller.dart + company_controller_personal.dart
 ///         (the latter was a strict superset; nothing was lost), then
-///         converted from GetxController+StateMixin to Cubit<CompanyState>.
+///         converted from GetxController+StateMixin to Cubit`<CompanyState>`.
 ///
 /// NOTE ON LIFECYCLE: this cubit is created in main() and provided at the app
 /// root via BlocProvider.value, because ThemeController is constructed before
 /// runApp and depends on it. Same pattern as ThemeAndLocalizationsCubit.
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
@@ -98,7 +99,8 @@ class CompanyCubit extends Cubit<CompanyState> {
   void setPhone(String v) => emit(state.copyWith(phone: v));
   void setStreetAddress(String v) => emit(state.copyWith(streetAddress: v));
   void setCode(String v) => emit(state.copyWith(code: v));
-  void setContactFirstName(String v) => emit(state.copyWith(contactFirstName: v));
+  void setContactFirstName(String v) =>
+      emit(state.copyWith(contactFirstName: v));
   void setContactLastName(String v) => emit(state.copyWith(contactLastName: v));
   void setContactEmail(String v) => emit(state.copyWith(contactEmail: v));
   void setContactPhone(String v) => emit(state.copyWith(contactPhone: v));
@@ -396,7 +398,8 @@ class CompanyCubit extends Cubit<CompanyState> {
     storage.write(
         'font_arabic', _capitalize(c.arabicFont?.arabicFont?.lastOrNull));
     storage.write('primaryColor', c.primaryColor?.primaryColor?.lastOrNull);
-    storage.write('secondaryColor', c.secondaryColor?.secondaryColor?.lastOrNull);
+    storage.write(
+        'secondaryColor', c.secondaryColor?.secondaryColor?.lastOrNull);
     storage.write('logo', c.companyLogo?.companyLogo?.lastOrNull);
   }
 
@@ -458,18 +461,19 @@ class CompanyCubit extends Cubit<CompanyState> {
 
       if (state.primaryColor != null) {
         c.primaryColor!.primaryColor!
-            .add('0x${state.primaryColor!.value.toRadixString(16)}');
+            .add('0x${state.primaryColor!.toARGB32().toRadixString(16)}');
         c.primaryColor!.timestamps!.add(Timestamp.now());
       }
 
       if (state.secondaryColor != null) {
         c.secondaryColor!.secondaryColor!
-            .add('0x${state.secondaryColor!.value.toRadixString(16)}');
+            .add('0x${state.secondaryColor!.toARGB32().toRadixString(16)}');
         c.secondaryColor!.timestamps!.add(Timestamp.now());
       }
 
       if (state.selectedEnglishFont != null) {
-        c.englishFont!.englishFont!.add(state.selectedEnglishFont!.toLowerCase());
+        c.englishFont!.englishFont!
+            .add(state.selectedEnglishFont!.toLowerCase());
         c.englishFont!.timestamps!.add(Timestamp.now());
       }
 
@@ -596,7 +600,8 @@ class CompanyCubit extends Cubit<CompanyState> {
         stamps?.add(now);
       }
 
-      put(state.companyName, c.companyName?.companyName, c.companyName?.timestamps);
+      put(state.companyName, c.companyName?.companyName,
+          c.companyName?.timestamps);
       put(state.taxNumber, c.taxNumber?.taxNumber, c.taxNumber?.timestamps);
       put(state.country, c.country?.country, c.country?.timestamps);
       put(state.city, c.city?.city, c.city?.timestamps);
@@ -606,7 +611,8 @@ class CompanyCubit extends Cubit<CompanyState> {
       put(state.streetAddress, c.companyAddress?.address,
           c.companyAddress?.timestamps);
       put(state.code, c.zipCode?.zipCode, c.zipCode?.timestamps);
-      put(state.contactFirstName, c.firstName?.firstNames, c.firstName?.timestamps);
+      put(state.contactFirstName, c.firstName?.firstNames,
+          c.firstName?.timestamps);
       put(state.contactLastName, c.lastName?.lastNames, c.lastName?.timestamps);
 
       if (!await addCompany(c, CompanyCollectionPaths.companyId)) return;

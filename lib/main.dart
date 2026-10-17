@@ -1,32 +1,45 @@
+/// Module: lib
+///
+///*************************** FILE INFO ****************************///
+/// File Name: main.dart
+/// Description: `globalNavigatorKey` constant, `_firebaseMessagingBackgroundHandler()`, `main()` and 3 more.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
+library;
 
-import 'package:grc_module/core/services/restricted_location/restricted_location_guard.dart';
+import 'package:grc_module/core/app_services/restricted_location/restricted_location_guard.dart';
 import 'package:grc_module/core/theme/toggle_control.dart';
+
 import 'dart:async';
 import 'dart:io';
 
 //
-import 'package:cloud_firestore/cloud_firestore.dart';
 // Scoped on purpose: this file only needs the delegate, and a bare import
 // would drop Country / CountryService into a 900-line file's namespace.
 import 'package:country_picker/country_picker.dart' show CountryLocalizations;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' hide Transition;
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:grc_module/core/helper/main_helper/offline_builder.dart';
+import 'package:grc_module/core/helper/offline_builder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get_storage/get_storage.dart';
 
-import 'package:grc_module/core/helper/main_helper/app_locale.dart';
-import 'package:grc_module/features/grc/grc_get_it.dart';
-import 'package:grc_module/features/grc/module/presentation/controller/cubit/grc_module_cubit.dart';
+import 'package:grc_module/core/helper/app_locale.dart';
+import 'package:grc_module/features/grc/grc_get_it.dart'; // [module:grc]
+import 'package:grc_module/features/todo/domain/base_repository/todo_base_repository.dart';
+import 'package:grc_module/features/todo/todo_get_it.dart';
+// ADDED 8/10/2026 — Time Tracker DI (phase 1).
+import 'package:grc_module/features/grc/grc11_module/presentation/controller/controller/grc_module_cubit.dart'; // [module:grc]
 
-import 'package:grc_module/features/notification/services/flutter_local_notification_handler.dart';
+import 'package:grc_module/features/notification/helpers/services/flutter_local_notification_handler.dart';
 import 'package:grc_module/core/theme/theme_controller.dart';
 
 import 'package:grc_module/features/onboarding/o3_authentication/presentation/controller/login_controller.dart';
@@ -35,8 +48,8 @@ import 'package:grc_module/features/settings/se3_company/presentation/controller
 import 'package:grc_module/features/roles/r5_system_logs/presentation/controller/system_logs_controller.dart';
 import 'package:grc_module/features/roles/r1_role_management/presentation/controller/modules_cubit.dart';
 import 'package:grc_module/features/roles/r4_active_directory/presentation/controller/main_core_department_cubit.dart';
-import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
-import 'package:grc_module/core/helper/main_helper/device_policy_controller.dart';
+import 'package:grc_module/core/helper/access/main_core_employee_controller.dart';
+import 'package:grc_module/core/helper/device_policy_controller.dart';
 import 'package:grc_module/firebase/dev/firebase_options.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/pages/no_internet_screen.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/controller/home_cubit.dart';
@@ -45,13 +58,15 @@ import 'package:grc_module/features/home/h1_home_page/presentation/controller/se
 import 'package:grc_module/features/settings/se8_watermark/presentation/controller/watermark_cubit.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/app_bar_date.dart';
 import 'package:grc_module/features/onboarding/o1_splash/presentation/ui/pages/splash_screen.dart';
-import 'package:grc_module/features/home/main_controller/helper/todo_new_module/todo_stub.dart';
-import 'package:grc_module/features/home/main_controller/helper/events/events_stub.dart';
-import './generated/l10n.dart';
+import 'package:grc_module/features/home/helpers/events/events_stub.dart';
+
+import 'package:grc_module/generated/l10n.dart';
+
+import 'package:flutter/gestures.dart' show PointerDeviceKind;
 
 GlobalKey<NavigatorState> globalNavigatorKey = GlobalKey<NavigatorState>();
 
-
+// s
 // `@pragma('vm:entry-point')` is REQUIRED: FCM invokes this in a separate
 // background isolate, and in release / obfuscated builds the tree-shaker would
 // otherwise strip a function that has no visible caller — leaving background
@@ -65,151 +80,176 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 void main() async {
-  runZonedGuarded(() async {
-    WidgetsFlutterBinding.ensureInitialized();
-    WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  runZonedGuarded(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
+      WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
-    FlutterError.onError = FlutterError.presentError;
+      FlutterError.onError = FlutterError.presentError;
 
-    // Fonts: use the .ttf files bundled in google_fonts/ instead of fetching
-    // from fonts.gstatic.com at runtime. Avoids a network round-trip on every
-    // cold start and works offline / inside the macOS sandbox.
-    GoogleFonts.config.allowRuntimeFetching = false;
+      // Fonts: use the .ttf files bundled in google_fonts/ instead of fetching
+      // from fonts.gstatic.com at runtime. Avoids a network round-trip on every
+      // cold start and works offline / inside the macOS sandbox.
+      GoogleFonts.config.allowRuntimeFetching = false;
 
-    // intl date symbols for every supported locale. Loading these up-front is
-    // what lets AppBarDate format Arabic dates without a defensive try/catch
-    // in the widget (presentation/ui must not catch).
-    await AppBarDate.ensureDateFormattingInitialized();
+      // intl date symbols for every supported locale. Loading these up-front is
+      // what lets AppBarDate format Arabic dates without a defensive try/catch
+      // in the widget (presentation/ui must not catch).
+      await AppBarDate.ensureDateFormattingInitialized();
 
-    // test
-    // Firebase
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+      // test
+      // Firebase
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
 
-    // Department data. Owned by main() and provided to the tree below via
-    // BlocProvider.value. Also registered with Get for the moment because the
-    // legacy MainCoreEmployeeController still resolves it that way; that
-    // registration goes away with the employee-controller conversion.
-    // Must be registered BEFORE MainCoreEmployeeController, which resolves it.
-    final departmentCubit = MainCoreDepartmentCubit();
-    Get.put(departmentCubit);
+      // Department data. Owned by main() and provided to the tree below via
+      // BlocProvider.value. Also registered with Get for the moment because the
+      // legacy MainCoreEmployeeController still resolves it that way; that
+      // registration goes away with the employee-controller conversion.
+      // Must be registered BEFORE MainCoreEmployeeController, which resolves it.
+      final departmentCubit = MainCoreDepartmentCubit();
+      Get.put(departmentCubit);
 
-    // Core controllers
-    Get.put(MainCoreEmployeeController());
+      // Core controllers
+      Get.put(MainCoreEmployeeController());
 
-    // GRC dependency injection. The module resolves everything through
-    // GetIt.instance (data sources, repositories, use cases, cubits), so this
-    // must run before the GRC tab is opened — otherwise GrcResponsivePageLayout
-    // throws "GRCModuleCubit is not registered inside GetIt".
-    // Guarded so a hot restart doesn't re-register the same lazy singletons.
-    if (!GetIt.instance.isRegistered<GRCModuleCubit>()) {
-      setupGRCDependencies(GetIt.instance);
-    }
+      // GRC dependency injection. The module resolves everything through
+      // GetIt.instance (data sources, repositories, use cases, cubits), so this
+      // must run before the GRC tab is opened — otherwise GrcResponsivePageLayout
+      // throws "GRCModuleCubit is not registered inside GetIt".
+      // Guarded so a hot restart doesn't re-register the same lazy singletons.
+      // [module:grc]
+      if (!GetIt.instance.isRegistered<GRCModuleCubit>()) {
+        setupGRCDependencies(GetIt.instance);
+      }
+      // [/module:grc]
 
+      // To-Do dependency injection (7/10/2026) — same guard, same reason.
+      if (!GetIt.instance.isRegistered<TodoBaseRepository>()) {
+        setupTodoDependencies(GetIt.instance);
+      }
 
+      // Time Tracker dependency injection (ADDED 8/10/2026) — same guard.
 
+      // ScreenUtil
+      await ScreenUtil.ensureScreenSize();
 
-    // ScreenUtil
-    await ScreenUtil.ensureScreenSize();
+      // FCM (mobile only).
+      //
+      // FIXED: the guard was `!isWindows && !isLinux && !isMacOS && !isIOS`,
+      // which is TRUE only on Android — so iOS was excluded from the entire push
+      // setup. On iOS this block is what asks the user for notification
+      // permission (without it APNs is never authorised and no push arrives),
+      // registers the background handler, and forwards foreground messages to a
+      // local notification. iOS subscribes to its topic at login just like
+      // Android (see login_controller `_warmUpSessionData`), so leaving it out
+      // here meant iOS users were subscribed but could never receive anything.
+      // Now gated positively to the two mobile platforms.
+      // `kIsWeb` first: `Platform` (dart:io) throws on web (7/10/2026).
+      if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
+        FirebaseMessaging.onBackgroundMessage(
+          _firebaseMessagingBackgroundHandler,
+        );
+        await FlutterLocalNotificationHandler.initialize();
+        await FirebaseMessaging.instance.requestPermission();
+        FirebaseMessaging.onMessage.listen((msg) {
+          FlutterLocalNotificationHandler.showNotification(msg);
+        });
+      }
 
-    // FCM (mobile only).
-    //
-    // FIXED: the guard was `!isWindows && !isLinux && !isMacOS && !isIOS`,
-    // which is TRUE only on Android — so iOS was excluded from the entire push
-    // setup. On iOS this block is what asks the user for notification
-    // permission (without it APNs is never authorised and no push arrives),
-    // registers the background handler, and forwards foreground messages to a
-    // local notification. iOS subscribes to its topic at login just like
-    // Android (see login_controller `_warmUpSessionData`), so leaving it out
-    // here meant iOS users were subscribed but could never receive anything.
-    // Now gated positively to the two mobile platforms.
-    if (Platform.isAndroid || Platform.isIOS) {
-      FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-      await FlutterLocalNotificationHandler.initialize();
-      await FirebaseMessaging.instance.requestPermission();
-      FirebaseMessaging.onMessage.listen((msg) {
-        FlutterLocalNotificationHandler.showNotification(msg);
-      });
-    }
+      FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
-    FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+      // Storage
+      await GetStorage.init();
+      await Future.delayed(const Duration(milliseconds: 150));
 
-    // Storage
-    await GetStorage.init();
-    await Future.delayed(const Duration(milliseconds: 150));
+      // Locale.
+      //
+      // CHANGED: this used to read GetStorage['LocaleData'] inline and call
+      // `S.load(Locale('ar'))` — language only. `MyApp.build` then read the same
+      // key and built `Locale('ar', 'EG')`, and the language picker used
+      // `Locale('ar', 'SA')`. Three different tags for one language meant
+      // `Intl.defaultLocale` differed depending on whether you booted into
+      // Arabic or switched into it. AppLocale is now the only thing that decides.
+      await AppLocale.restore();
 
-    // Locale.
-    //
-    // CHANGED: this used to read GetStorage['LocaleData'] inline and call
-    // `S.load(Locale('ar'))` — language only. `MyApp.build` then read the same
-    // key and built `Locale('ar', 'EG')`, and the language picker used
-    // `Locale('ar', 'SA')`. Three different tags for one language meant
-    // `Intl.defaultLocale` differed depending on whether you booted into
-    // Arabic or switched into it. AppLocale is now the only thing that decides.
-    await AppLocale.restore();
+      // Device policy (Take Screen Shot / Restricted Location / Screen Share).
+      // Registered here rather than only in settings_layout so the screenshot
+      // block is applied at boot: a device left with the switch off must be
+      // protected from the first frame, not from the first time Settings opens.
+      // Needs GetStorage.init() above — the controller reads its flags from it.
+      final devicePolicyController = Get.put(DevicePolicyController());
+      unawaited(devicePolicyController.applyScreenCapturePolicy());
 
-    // Device policy (Take Screen Shot / Restricted Location / Screen Share).
-    // Registered here rather than only in settings_layout so the screenshot
-    // block is applied at boot: a device left with the switch off must be
-    // protected from the first frame, not from the first time Settings opens.
-    // Needs GetStorage.init() above — the controller reads its flags from it.
-    final devicePolicyController = Get.put(DevicePolicyController());
-    unawaited(devicePolicyController.applyScreenCapturePolicy());
+      // Register controllers needed early (before splash screen navigation)
+      Get.put(SystemLogsController());
+      // RequestController must be registered before LoginController, whose
+      // constructor calls Get.find<RequestController>().
+      Get.lazyPut(() => RequestController());
+      // ScheduleController (home screen) calls Get.find for this stub controller
+      // in its constructor, so register it here before any home screen builds.
+      // (To-dos now come from the To-Do module via get_it — no GetX controller.)
+      Get.lazyPut(() => EventsEmployeeController());
 
-    // Register controllers needed early (before splash screen navigation)
-    Get.put(SystemLogsController());
-    // RequestController must be registered before LoginController, whose
-    // constructor calls Get.find<RequestController>().
-    Get.lazyPut(() => RequestController());
-    // ScheduleController (home screen) calls Get.find for these stub controllers
-    // in its constructor, so register them here before any home screen builds.
-    Get.lazyPut(() => TodoController());
-    Get.lazyPut(() => EventsEmployeeController());
+      // Company branding cubit.
+      // Created here rather than by a root BlocProvider because ThemeController
+      // is constructed before runApp() and depends on it (and the cubit calls
+      // back into themeController.update*). Same pattern as themeCubit below:
+      // owned here, exposed to the widget tree via BlocProvider.value in MyApp.
+      final companyCubit = Get.put(CompanyCubit());
 
-    // Company branding cubit.
-    // Created here rather than by a root BlocProvider because ThemeController
-    // is constructed before runApp() and depends on it (and the cubit calls
-    // back into themeController.update*). Same pattern as themeCubit below:
-    // owned here, exposed to the widget tree via BlocProvider.value in MyApp.
-    final companyCubit = Get.put(CompanyCubit());
+      Get.lazyPut(() => LoginController(companyCubit));
 
-    Get.lazyPut(() => LoginController(companyCubit));
+      // Theme — company cubit injected explicitly so ThemeController never has
+      // to reach into the service locator for it.
+      final themeController = Get.put(
+        ThemeController(companyCubit: companyCubit),
+      );
+      // ✅ FIX: ModulesCubit (was ModulesController) was never registered (Knowticed_plus registers
+      // it in main.dart). Without it, Get.find<ModulesCubit>() threw in
+      // the "Add New Role" page and it showed "No modules available".
+      Get.put(ModulesCubit());
+      final themeCubit = Get.put(ThemeAndLocalizationsCubit());
+      await themeCubit.loadSettings();
 
-    // Theme — company cubit injected explicitly so ThemeController never has
-    // to reach into the service locator for it.
-    final themeController = Get.put(ThemeController(companyCubit: companyCubit));
-    // ✅ FIX: ModulesCubit (was ModulesController) was never registered (Knowticed_plus registers
-    // it in main.dart). Without it, Get.find<ModulesCubit>() threw in
-    // the "Add New Role" page and it showed "No modules available".
-    Get.put(ModulesCubit());
-    final themeCubit = Get.put(ThemeAndLocalizationsCubit());
+      // Mirrors the old CompanyController.onInit(), which loaded the company in
+      // an addPostFrameCallback so the first frame isn't blocked on Firestore.
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => companyCubit.bootstrap(),
+      );
 
-    // Mirrors the old CompanyController.onInit(), which loaded the company in
-    // an addPostFrameCallback so the first frame isn't blocked on Firestore.
-    WidgetsBinding.instance.addPostFrameCallback((_) => companyCubit.bootstrap());
+      await Future.delayed(const Duration(seconds: 2));
+      FlutterNativeSplash.remove();
 
-    await Future.delayed(const Duration(seconds: 2));
-    FlutterNativeSplash.remove();
-
-    runApp(MyApp(themeCubit, themeController, companyCubit, departmentCubit));
-  }, (Object error, StackTrace stack) {
-    // Last-resort sink for uncaught async errors. This previously did
-    // `print('App error: ...')`; stripping that would have left an empty
-    // handler that swallows every uncaught error in the app, so route it to
-    // Flutter's own reporter instead (debug console in debug builds, and the
-    // hook a crash reporter would attach to in release).
-    FlutterError.reportError(FlutterErrorDetails(
-      exception: error,
-      stack: stack,
-      library: 'grc_module',
-      context: ErrorDescription('uncaught async error in runZonedGuarded'),
-    ));
-  });
+      runApp(MyApp(themeCubit, themeController, companyCubit, departmentCubit));
+    },
+    (Object error, StackTrace stack) {
+      // Last-resort sink for uncaught async errors. This previously did
+      // `print('App error: ...')`; stripping that would have left an empty
+      // handler that swallows every uncaught error in the app, so route it to
+      // Flutter's own reporter instead (debug console in debug builds, and the
+      // hook a crash reporter would attach to in release).
+      FlutterError.reportError(
+        FlutterErrorDetails(
+          exception: error,
+          stack: stack,
+          library: 'knowticed_plus',
+          context: ErrorDescription('uncaught async error in runZonedGuarded'),
+        ),
+      );
+    },
+  );
 }
 
 class MyApp extends StatelessWidget {
-  MyApp(this.themeCubit, this.themeController, this.companyCubit,
-      this.departmentCubit,
-      {super.key});
+  const MyApp(
+    this.themeCubit,
+    this.themeController,
+    this.companyCubit,
+    this.departmentCubit, {
+    super.key,
+  });
 
   final ThemeAndLocalizationsCubit themeCubit;
   final ThemeController themeController;
@@ -248,6 +288,7 @@ class MyApp extends StatelessWidget {
           designSize: _getDesignSize(w, h),
           child: MultiBlocProvider(
             providers: [
+              // The Database module's repositories (Amr, 16/10/2026).
               BlocProvider.value(value: themeCubit),
               // Company branding/info. Owned by main() (see comment there),
               // provided by value so the whole widget tree can read it.
@@ -296,20 +337,38 @@ class MyApp extends StatelessWidget {
               // never opens a watermarked page never reads the document.
               BlocProvider<WatermarkCubit>(create: (_) => WatermarkCubit()),
 
-          // Knowledge Hub dashboard. Provided at the root (same as the
-          // master app) so the home-page knowledge widgets and the module's
-          // own screens all read one shared instance.
-
-
-
+              // Knowledge Hub dashboard. Provided at the root (same as the
+              // master app) so the home-page knowledge widgets and the module's
+              // own screens all read one shared instance.
             ],
             child: GetBuilder<ThemeController>(
               builder: (controller) => GetMaterialApp(
-                scrollBehavior: const MaterialScrollBehavior().copyWith(scrollbars: false),
+                // CHANGED 14/10/2026 (iPad: "can't scroll vertical or
+                // horizontal"). Flutter's default scroll behaviour only drags
+                // with touch / stylus / trackpad — NOT a mouse. iPadOS reports
+                // a mouse / pointer (and the simulator / Device Hub window
+                // forwards the Mac pointer the same way) as
+                // PointerDeviceKind.mouse, so click-and-drag did nothing on
+                // every list, table and page in the app. All pointer kinds
+                // may now drag-scroll, in both directions.
+                scrollBehavior: const MaterialScrollBehavior().copyWith(
+                  scrollbars: false,
+                  dragDevices: {
+                    PointerDeviceKind.touch,
+                    PointerDeviceKind.mouse,
+                    PointerDeviceKind.trackpad,
+                    PointerDeviceKind.stylus,
+                    PointerDeviceKind.invertedStylus,
+                    PointerDeviceKind.unknown,
+                  },
+                ),
                 navigatorKey: globalNavigatorKey,
                 theme: controller.currentTheme.value,
-                defaultTransition: Transition.fadeIn,
-                transitionDuration: const Duration(milliseconds: 300),
+                // CHANGED 17/10/2026 (X-15 / X-72): GetX routes use the theme's
+                // KpPageTransitionsBuilder (native) — the same 400 ms slide as
+                // every other page.
+                defaultTransition: Transition.native,
+                transitionDuration: KpMotion.page,
                 supportedLocales: const [Locale('en'), Locale('ar')],
                 localizationsDelegates: const [
                   S.delegate,
@@ -342,8 +401,9 @@ class MyApp extends StatelessWidget {
                 home: OfflineBuilder(
                   connectivityBuilder: (ctx, connectivity, child) {
                     // connectivity_plus reports a LIST of active interfaces.
-                    final bool connected =
-                        !connectivity.contains(ConnectivityResult.none);
+                    final bool connected = !connectivity.contains(
+                      ConnectivityResult.none,
+                    );
                     if (connected) return child;
                     return Stack(
                       children: [
@@ -359,9 +419,9 @@ class MyApp extends StatelessWidget {
                 ),
                 builder: (context, child) => MediaQuery(
                   data: MediaQuery.of(context).copyWith(
-                    textScaler: TextScaler.linear(
-                      MediaQuery.of(context).textScaleFactor.clamp(1.0, 1.2),
-                    ),
+                    textScaler: MediaQuery.of(context)
+                        .textScaler
+                        .clamp(minScaleFactor: 1.0, maxScaleFactor: 1.2),
                   ),
                   // ADDED 28/9/2026 — the Restricted Location block screen
                   // sits over EVERY route, so a restricted employee cannot
@@ -376,7 +436,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
 
 // ─── Notification tap handlers (stubs) ───────────────────────────────────────
 Future<void> onTapOnNotificationMobile(String? payload, context) async {}

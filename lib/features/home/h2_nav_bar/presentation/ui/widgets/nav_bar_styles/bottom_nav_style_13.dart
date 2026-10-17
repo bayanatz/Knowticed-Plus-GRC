@@ -6,21 +6,22 @@
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Extracted from the oversized styles.dart as part of
 ///          breaking up the vendored persistent-nav-bar god files.
+library;
 
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/features/home/h2_nav_bar/persistent_nav_bar.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
 class BottomNavStyle13 extends StatefulWidget {
   const BottomNavStyle13({
-    final Key? key,
+    super.key,
     this.navBarEssentials = const NavBarEssentials(items: null),
-  }) : super(key: key);
+  });
   final NavBarEssentials? navBarEssentials;
 
   @override
-  _BottomNavStyle13State createState() => _BottomNavStyle13State();
+  State<BottomNavStyle13> createState() => _BottomNavStyle13State();
 }
 
 class _BottomNavStyle13State extends State<BottomNavStyle13>
@@ -176,6 +177,7 @@ class _BottomNavStyle13State extends State<BottomNavStyle13>
           final int index = widget.navBarEssentials!.items!.indexOf(item);
           return Expanded(
             child: GestureDetector(
+              onTapDown: (_) => HapticController.low(),
               onTap: () {
                 if (widget.navBarEssentials!.items![index].onPressed != null) {
                   widget.navBarEssentials!.items![index].onPressed!(

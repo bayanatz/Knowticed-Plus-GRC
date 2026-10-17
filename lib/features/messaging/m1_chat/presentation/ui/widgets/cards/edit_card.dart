@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
-import '../../../controller/message_controller.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
 
 class EditCard extends StatelessWidget {
@@ -44,7 +41,7 @@ class EditCard extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8.r),
         color: ContextExtension(context).isPhone
-            ? AppColors.darkGrey.withOpacity(0.1)
+            ? AppColors.darkGrey.withValues(alpha: 0.1)
             : AppColors.background,
       ),
       child: Row(
@@ -54,8 +51,8 @@ class EditCard extends StatelessWidget {
               content ?? '',
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: StyleText.fontSize14Weight400
-                  .copyWith(color: AppColors.text),
+              style:
+                  StyleText.fontSize14Weight400.copyWith(color: AppColors.text),
             ),
           ),
           if (trailing != null) trailing!,

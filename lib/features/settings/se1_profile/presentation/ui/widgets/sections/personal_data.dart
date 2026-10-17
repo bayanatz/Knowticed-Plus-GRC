@@ -12,13 +12,15 @@
 ///          data/utils/employee_date_formatter.dart; the widget takes a
 ///          [PersonalProfile] instead of reading the `employee` global; raw
 ///          Colors.* routed through AppColors.
+library;
 
+import 'package:grc_module/core/extensions/context_extensions.dart'
+    show kpIsPhoneLayout;
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 
-import 'package:grc_module/core/helper/main_helper/extensions.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
+import 'package:grc_module/core/helper/format_title.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/features/settings/se1_profile/data/utils/employee_date_formatter.dart';
 import 'package:grc_module/features/settings/se1_profile/domain/entities/personal_profile.dart';
@@ -51,14 +53,14 @@ class PersonalData extends StatelessWidget {
     // This file imports core/helper/main_helper/extensions.dart, whose
     // extension is ALSO called ContextExtension — and its `isPhone` is
     //
-    //     bool get isPhone => MediaQuery.of(this).size.width >= 600;
+    //     bool get isPhone => !kpIsPhoneLayout(this);
     //
     // i.e. true on WIDE screens, the exact inverse of
     // core/extensions/context_extensions.dart's `shortestSide < 600`. Same
     // name, same target type, opposite meaning, and the file's own comment
     // admits it. Every `isPhone` here was therefore reading FALSE on a phone.
     // Computed inline so it cannot bind to the wrong extension again.
-    final bool isMobile = MediaQuery.of(context).size.shortestSide < 600;
+    final bool isMobile = kpIsPhoneLayout(context);
 
     final String? genderKey =
         (controller.selectedGender ?? profile.gender)?.toLowerCase();
@@ -143,8 +145,9 @@ class PersonalData extends StatelessWidget {
   }
 
   Widget _buildAvatar() {
-    Widget placeholder() => SvgPicture.asset(
-          'assets/icons_assets/main_icons_assets/male_avatar.svg',
+    Widget placeholder() => CustomSvgImage.natural(
+          assetPath:
+              'assets/icons_assets/main_icons_assets/ic_user_avatar_male.png',
           width: 64.r,
           height: 64.r,
           fit: BoxFit.cover,

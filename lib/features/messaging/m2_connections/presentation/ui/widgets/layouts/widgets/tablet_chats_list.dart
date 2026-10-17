@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:grc_module/features/messaging/main_controller/helper/messages_permissions.dart';
+import 'package:grc_module/core/custom/navigation/filter_tab_with_container.dart';
+import 'package:grc_module/features/messaging/helpers/main/messages_permissions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-import 'package:grc_module/core/constants/message_module/app_assets.dart';
-import 'package:grc_module/core/custom/84-messaging_custom_button.dart';
-import 'package:grc_module/core/helper/main_helper/spacing_helper.dart';
+import 'package:grc_module/features/messaging/helpers/constants/messaging_assets.dart';
+import 'package:grc_module/features/messaging/helpers/spacing_helper.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
-import '../../../../controller/connections_controller.dart';
-import '../../connections_list.dart';
-import '../../../../../../m3_groups/presentation/controller/groups_controller.dart';
-import '../../../../../../m3_groups/presentation/ui/pages/tablet/create_group_page_tablet.dart';
-import '../../../../../../m3_groups/presentation/ui/widgets/groups_list.dart';
-import '../../../../../../m4_messaging_home/domain/enums/chat_type_selector_enum.dart';
-import '../../../../../../../../core/helper/message_module/interface/controller/messaging_init_controller.dart';
+import 'package:grc_module/features/messaging/m2_connections/presentation/controller/connections_controller.dart';
+import 'package:grc_module/features/messaging/m2_connections/presentation/ui/widgets/connections_list.dart';
+import 'package:grc_module/features/messaging/m3_groups/presentation/controller/groups_controller.dart';
+import 'package:grc_module/features/messaging/m3_groups/presentation/ui/pages/tablet/create_group_page_tablet.dart';
+import 'package:grc_module/features/messaging/m3_groups/presentation/ui/widgets/groups_list.dart';
+import 'package:grc_module/features/messaging/m4_messaging_home/domain/enums/chat_type_selector_enum.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
-import 'package:grc_module/core/custom/6-custom_button_with_svg.dart';
+import 'package:grc_module/core/custom/buttons/custom_button_with_svg.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
 class TabletChatList extends StatefulWidget {
   const TabletChatList({super.key});
@@ -34,10 +34,15 @@ class _TabletChatListState extends State<TabletChatList> {
 
   @override
   Widget build(BuildContext context) {
-    bool isTablet = MediaQuery.of(context).size.width >= 600;
+    bool isTablet = !kpIsPhoneLayout(context);
 
     // ✅ When on Groups/DirectMessages tab → always show all (no limit)
     // When on All tab → respect seeAll toggles (limit to 3 unless expanded)
+    // CHANGED 17/10/2026 (Moataz: the All / Direct / Groups switch "only
+    // shows in the mobile" — a large screen shows groups and direct messages
+    // together): on tablet / desktop there is no switch and the list is
+    // always "All".
+    if (isTablet) chatTypeSelectorEnum = ChatTypeSelectorEnum.all;
     final bool isAllTab = chatTypeSelectorEnum == ChatTypeSelectorEnum.all;
 
     return Padding(
@@ -50,48 +55,30 @@ class _TabletChatListState extends State<TabletChatList> {
             mainAxisSize: MainAxisSize.min,
             children: [
               // ── Type selector tabs ────────────────────────────────────
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(isTablet ? 0 : 8.sp),
-                decoration: BoxDecoration(
-                  color: isTablet ? Colors.transparent : AppColors.field,
-                  borderRadius: BorderRadius.circular(4.r),
-                ),
-                child: Row(
-                  spacing: isTablet ? 7.w : 0,
-                  mainAxisAlignment: isTablet
-                      ? MainAxisAlignment.start
-                      : MainAxisAlignment.spaceBetween,
-                  children: [
-                    for (ChatTypeSelectorEnum type in ChatTypeSelectorEnum.values)
-                      CustomButton(
-                        horizontalPadding: 8.sp,
-                        // Bug report #3: All / Direct Message / Groups chips
-                        // use a 4.r corner.
-                        borderRadius: 4.r,
-                        // `type.name` is the Dart identifier and is never
-                        // translated — see ChatTypeSelectorEnumLabel.
-                        buttonText: type.label(context),
-                        buttonColor: (chatTypeSelectorEnum == type)
-                            ? AppColors.primary
-                            : AppColors.field,
-                        textStyle: StyleText.fontSize14Weight500.copyWith(
-                          color: (chatTypeSelectorEnum == type)
-                              ? AppColors.textButton
-                              : AppColors.text,
-                        ),
-                        onTap: () {
-                          setState(() {
-                            chatTypeSelectorEnum = type;
-                            // Reset see more when switching tabs
-                            seeAllGroups = false;
-                            seeAllConnections = false;
-                          });
-                        },
-                      ),
+              // CHANGED 17/10/2026 (Moataz: "custom is not working" — the
+              // hand-built row of three customButtons overflowed on the
+              // phone): the shared CustomSegmentedTabs (the Time Tracker
+              // toggle), equal widths so it always fits its row.
+              if (!isTablet)
+                CustomSegmentedTabs(
+                  tabs: <String>[
+                    for (final ChatTypeSelectorEnum type
+                        in ChatTypeSelectorEnum.values)
+                      type.label(context),
                   ],
+                  selectedIndex:
+                      ChatTypeSelectorEnum.values.indexOf(chatTypeSelectorEnum),
+                  equalWidth: true,
+                  containerColor: AppColors.card,
+                  onTabSelected: (int index) {
+                    setState(() {
+                      chatTypeSelectorEnum = ChatTypeSelectorEnum.values[index];
+                      // Reset see more when switching tabs
+                      seeAllGroups = false;
+                      seeAllConnections = false;
+                    });
+                  },
                 ),
-              ),
 
               verticalSpace(16.26),
 
@@ -101,26 +88,29 @@ class _TabletChatListState extends State<TabletChatList> {
               //       .messagingConfigurations
               //       .createGroup)
               // 21/9/2026 — gated like the tablet button (MessagesAccess).
-              ContextExtension(context).isPhone && MessagesAccess.canCreateGroup ?
-                  customButtonWithSvg(
-                    image: AppAssets.message,
-                    title: S.of(context).createGroup,
-                    textStyle: StyleText.fontSize14Weight500
-                        .copyWith(color: AppColors.textButton),
-                    color: AppColors.primary,
-                    colorBorder: AppColors.primary,
-                    svgColor: AppColors.textButton,
-                    widthImage: 20.sp,
-                    heightImage: 20.sp,
-                    space: 10.sp,
-                    function: () {
-                      context.read<GroupsCubit>().resetCreateGroupControllers();
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (_) {
-                        return const CreateGroupPageTablet();
-                      }));
-                    },
-                  ):Container(),
+              ContextExtension(context).isPhone && MessagesAccess.canCreateGroup
+                  ? customButtonWithSvg(
+                      image: AppAssets.message,
+                      title: S.of(context).createGroup,
+                      textStyle: StyleText.fontSize14Weight500
+                          .copyWith(color: AppColors.textButton),
+                      color: AppColors.primary,
+                      colorBorder: AppColors.primary,
+                      svgColor: AppColors.textButton,
+                      widthImage: 20.sp,
+                      heightImage: 20.sp,
+                      space: 10.sp,
+                      function: () {
+                        context
+                            .read<GroupsCubit>()
+                            .resetCreateGroupControllers();
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (_) {
+                          return const CreateGroupPageTablet();
+                        }));
+                      },
+                    )
+                  : Container(),
               if (context.isPortrait &&
                   ContextExtension(context).isPhone &&
                   chatTypeSelectorEnum != ChatTypeSelectorEnum.directMessages)
@@ -131,7 +121,7 @@ class _TabletChatListState extends State<TabletChatList> {
                 BlocBuilder<GroupsCubit, GroupsState>(
                   builder: (context, state) {
                     final groupsLength =
-                    state is GroupsLoaded ? state.groups.length : 0;
+                        state is GroupsLoaded ? state.groups.length : 0;
                     return Row(
                       children: [
                         Text(
@@ -143,12 +133,16 @@ class _TabletChatListState extends State<TabletChatList> {
                         if (groupsLength > 3)
                           GestureDetector(
                             onTap: () {
+                              HapticController
+                                  .low(); // list row: on the tap (X-117)
                               setState(() {
                                 seeAllGroups = !seeAllGroups;
                               });
                             },
                             behavior: HitTestBehavior.opaque,
-                            child: _buildSeeMoreText(seeAllGroups ? S.of(context).seeLess : S.of(context).seeMore),
+                            child: _buildSeeMoreText(seeAllGroups
+                                ? S.of(context).seeLess
+                                : S.of(context).seeMore),
                           ),
                       ],
                     );
@@ -185,12 +179,16 @@ class _TabletChatListState extends State<TabletChatList> {
                         if (connectionsLength > 3)
                           GestureDetector(
                             onTap: () {
+                              HapticController
+                                  .low(); // list row: on the tap (X-117)
                               setState(() {
                                 seeAllConnections = !seeAllConnections;
                               });
                             },
                             behavior: HitTestBehavior.opaque,
-                            child: _buildSeeMoreText(seeAllConnections ? S.of(context).seeLess : S.of(context).seeMore),
+                            child: _buildSeeMoreText(seeAllConnections
+                                ? S.of(context).seeLess
+                                : S.of(context).seeMore),
                           ),
                       ],
                     );
@@ -211,8 +209,6 @@ class _TabletChatListState extends State<TabletChatList> {
       ),
     );
   }
-
-
 
   Widget _buildSeeMoreText(String text) {
     return IntrinsicWidth(

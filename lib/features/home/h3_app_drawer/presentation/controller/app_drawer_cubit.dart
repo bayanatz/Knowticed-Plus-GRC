@@ -5,26 +5,25 @@
 /// Purpose: Declares `AppDrawerCubit`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:get/get.dart';
-import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
+import 'package:grc_module/core/helper/access/main_core_employee_controller.dart';
 import 'package:grc_module/features/home/h3_app_drawer/data/repository/app_drawer_repository.dart';
 import 'package:grc_module/features/home/h3_app_drawer/domain/base_repository/app_drawer_base_repository.dart';
 import 'package:grc_module/features/roles/r1_role_management/data/models/role_model.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
-import 'package:grc_module/main.dart';
+import 'package:grc_module/features/roles/r1_role_management/domain/enums/module_name_aliases.dart';
+import 'package:grc_module/core/helper/access/modules_enum.dart';
 
-import 'package:grc_module/core/helper/main_helper/biometric_controller.dart';
-import '../../../../../core/network/api_constants.dart';
-import 'package:grc_module/features/roles/r1_role_management/presentation/controller/modules_cubit.dart';
+import 'package:grc_module/core/helper/biometric_controller.dart';
+import 'package:grc_module/core/network/api_constants.dart';
 import 'package:grc_module/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
 import 'package:grc_module/features/home/h3_app_drawer/data/utils/app_drawer_constant_modules.dart';
-import 'package:grc_module/features/home/h3_app_drawer/data/utils/app_drawer_update_ids.dart';
 
-part './app_drawer_state.dart';
+part 'app_drawer_state.dart';
 
 class AppDrawerCubit extends Cubit<AppDrawerState> {
   /// Kicks off [_init] immediately, mirroring the GetxController onInit()
@@ -75,15 +74,9 @@ class AppDrawerCubit extends Cubit<AppDrawerState> {
 
   bool isLoadingModules = true;
 
-
-
-
-
-
   // ✅ UPDATE onInit() in app_drawer_controller.dart
 
   Future<void> _init() async {
-
     isLoadingModules = true;
     _publish();
 
@@ -96,14 +89,12 @@ class AppDrawerCubit extends Cubit<AppDrawerState> {
 
     int retries = 0;
     while (currentEmployee == null && retries < 20) {
-      if (retries == 0) {
-      }
+      if (retries == 0) {}
       await Future.delayed(const Duration(milliseconds: 500));
       currentEmployee = mainCoreController.employeeEntity;
       retries++;
     }
-    if (currentEmployee != null && retries > 0) {
-    }
+    if (currentEmployee != null && retries > 0) {}
 
     if (currentEmployee == null) {
       _allDrawerModules = [];
@@ -141,14 +132,17 @@ class AppDrawerCubit extends Cubit<AppDrawerState> {
     try {
       // ✅ UPDATED: Load role from appropriate collection
       if (isAdmin) {
-
         // Load from Subscription_Admin
         roleHistory = roleController.roles.firstWhereOrNull(
-              (element) => element.currentRoleName.toLowerCase() == employeeRoleName.toLowerCase(),
+          (element) =>
+              element.currentRoleName.toLowerCase() ==
+              employeeRoleName.toLowerCase(),
         );
 
         if (roleHistory == null) {
-          _allDrawerModules = Modules.values.where((m) => m != Modules.more).toList();
+          _allDrawerModules = Modules.values
+              .where((m) => m != Modules.more && m != Modules.tracking)
+              .toList();
         } else {
           // Admin/master roles get every module, NOT just the ones stored in
           // Current_Selected_Modules. That stored array is a snapshot from when
@@ -156,27 +150,32 @@ class AppDrawerCubit extends Cubit<AppDrawerState> {
           // crm, ...) are missing from it and would never reach the drawer.
           // The company-license filter in _getDrawerModulesFromReference still
           // applies, so this widens the role gate only — not the license gate.
-          _allDrawerModules =
-              Modules.values.where((m) => m != Modules.more).toList();
+          _allDrawerModules = Modules.values
+              .where((m) => m != Modules.more && m != Modules.tracking)
+              .toList();
         }
       } else {
-
         // Load from Roles (existing code)
         roleHistory = roleController.roles.firstWhereOrNull(
-              (element) => element.currentRoleName.toLowerCase() == employeeRoleName.toLowerCase(),
+          (element) =>
+              element.currentRoleName.toLowerCase() ==
+              employeeRoleName.toLowerCase(),
         );
 
         if (roleHistory == null) {
           if (_isAdminRole(employeeRoleName)) {
-            _allDrawerModules = Modules.values.where((m) => m != Modules.more).toList();
+            _allDrawerModules = Modules.values
+                .where((m) => m != Modules.more && m != Modules.tracking)
+                .toList();
           } else {
             _allDrawerModules = [];
           }
         } else if (_isAdminRole(employeeRoleName)) {
           // Same reasoning as the admin branch above: an admin role's stored
           // Current_Selected_Modules predates newer modules, so widen to all.
-          _allDrawerModules =
-              Modules.values.where((m) => m != Modules.more).toList();
+          _allDrawerModules = Modules.values
+              .where((m) => m != Modules.more && m != Modules.tracking)
+              .toList();
         } else {
           List<String> activeModuleNames = roleHistory!.currentSelectedModules;
           _allDrawerModules = _convertModuleNamesToEnums(activeModuleNames);
@@ -186,15 +185,13 @@ class AppDrawerCubit extends Cubit<AppDrawerState> {
       _getAllowedDrawerModules();
       isLoadingModules = false;
       _publish();
-
-    } catch (e, stackTrace) {
+    } catch (e) {
       _allDrawerModules = [];
       _getAllowedDrawerModules();
       isLoadingModules = false;
       _publish();
     }
   }
-
 
   /// Extract company ID from ApiConstants.baseUri
   String? _getCompanyId(dynamic currentEmployee) {
@@ -288,7 +285,17 @@ class AppDrawerCubit extends Cubit<AppDrawerState> {
     if (module == Modules.qiyas) {
       // Check if you have a separate qiyas key in Firebase
       // If not, use grc key
-      moduleName = _companyLicensedModules.containsKey('qiyas') ? 'qiyas' : 'grc';
+      moduleName =
+          _companyLicensedModules.containsKey('qiyas') ? 'qiyas' : 'grc';
+    }
+
+    // 8/10/2026 — Time Tracker: `Modules.timeTracker.name` lower-cases to
+    // 'timetracker', but the licence is stored as `time_tracker` (spec) or
+    // `tracking` (Knowticed Admin today, owner decision 17). Any spelling
+    // from `ModuleNameAliases` that is licensed counts.
+    if (module == Modules.timeTracker) {
+      return ModuleNameAliases.spellingsOf('time_tracker')
+          .any((String key) => _companyLicensedModules[key] == true);
     }
 
     final isLicensed = _companyLicensedModules[moduleName] ?? false;
@@ -421,9 +428,11 @@ class AppDrawerCubit extends Cubit<AppDrawerState> {
 
     for (String moduleName in moduleNames) {
       Modules? moduleEnum = _getModuleEnum(moduleName);
-      if (moduleEnum != null) {
+      // `!contains` (8/10/2026): `time_tracker` and legacy `tracking` both
+      // map to Modules.timeTracker — list it once.
+      if (moduleEnum != null && !moduleEnums.contains(moduleEnum)) {
         moduleEnums.add(moduleEnum);
-     //   // print('  ✓ Drawer: Added module: $moduleName -> ${moduleEnum.getModuleName}');
+        //   // print('  ✓ Drawer: Added module: $moduleName -> ${moduleEnum.getModuleName}');
       } else {
         // print('  ✗ Drawer: Unknown module: $moduleName');
       }
@@ -455,8 +464,11 @@ class AppDrawerCubit extends Cubit<AppDrawerState> {
         return Modules.qiyas;
       case 'grc':
         return Modules.grc;
+      // 8/10/2026 — owner decision 17: legacy `tracking` IS Time Tracker.
+      case 'time_tracker':
+      case 'timetracker':
       case 'tracking':
-        return Modules.tracking;
+        return Modules.timeTracker;
       case 'inventory':
         return Modules.inventory;
       case 'messages':
@@ -473,11 +485,11 @@ class AppDrawerCubit extends Cubit<AppDrawerState> {
         return Modules.settings;
       case 'home':
         return Modules.home;
-      case 'hr':  // ✅ Add this
+      case 'hr': // ✅ Add this
         return Modules.hr;
-      case 'crm':  // ✅ Add this
+      case 'crm': // ✅ Add this
         return Modules.crm;
-      case 'notification':  // ✅ Add this
+      case 'notification': // ✅ Add this
         return Modules.notification;
       default:
         // print('⚠️ Drawer: Unknown module name: $moduleName');
@@ -523,8 +535,7 @@ class AppDrawerCubit extends Cubit<AppDrawerState> {
 
     // print('🔍 Drawer: Filtering modules by company license...');
     _getDrawerModulesFromReference(
-        referenceModulesList: AppDrawerConstantModules.drawerModules
-    );
+        referenceModulesList: AppDrawerConstantModules.drawerModules);
 
     // print('🔍 Drawer: After reference filtering, allowed modules: ${allowedDrawerModules.map((m) => m.getModuleName).join(', ')}');
 
@@ -585,7 +596,7 @@ class AppDrawerCubit extends Cubit<AppDrawerState> {
     }
   }
 
-  updateSelectedIndex(int index, {bool isOnlyDrawer = false}) {
+  void updateSelectedIndex(int index, {bool isOnlyDrawer = false}) {
     selectedIndex = index;
     if (isOnlyDrawer) {
       _publish();

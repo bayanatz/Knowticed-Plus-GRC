@@ -4,7 +4,10 @@
 /// File Name: social_permissions.dart
 /// Purpose: Enum for Social Permissions in the application
 /// Created by: Mohamed Elrashidy
+library;
+
 import 'package:grc_module/features/roles/r1_role_management/domain/entities/module_permissions_sections_permissions.dart';
+
 enum SocialPermissions implements ModulePermissionsSectionsPermission {
   shareSocialInformation,
   shareEmailsAndSocialDataInBio,

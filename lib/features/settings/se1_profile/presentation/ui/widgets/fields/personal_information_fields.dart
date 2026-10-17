@@ -9,6 +9,7 @@
 ///          once and passes it down, so no section widget reads the `employee`
 ///          global; the commented-out REMOVED_MODULE import and the unused
 ///          `isTablet` local are gone.
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,7 +17,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 
-import 'package:grc_module/features/settings/main_controller/presentation/controller/settings_controller.dart';
+import 'package:grc_module/features/settings/presentation/controller/settings_controller.dart';
 import 'package:grc_module/features/settings/se1_profile/domain/entities/personal_profile.dart';
 import 'package:grc_module/features/settings/se1_profile/presentation/controller/personal_information_controller.dart';
 import 'package:grc_module/features/settings/se1_profile/presentation/ui/widgets/sections/contact_information.dart';
@@ -28,7 +29,8 @@ class PersonalInformationFields extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final SettingsController settingsController = Get.find<SettingsController>();
+    final SettingsController settingsController =
+        Get.find<SettingsController>();
 
     // Rebuilds when the shell reloads the employee, so the cards follow the
     // data instead of holding whatever was there when they were first built.

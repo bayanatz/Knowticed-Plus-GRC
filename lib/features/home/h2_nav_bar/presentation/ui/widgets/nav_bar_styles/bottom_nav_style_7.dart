@@ -6,17 +6,18 @@
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Extracted from the oversized styles.dart as part of
 ///          breaking up the vendored persistent-nav-bar god files.
+library;
 
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/features/home/h2_nav_bar/persistent_nav_bar.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
 class BottomNavStyle7 extends StatelessWidget {
   const BottomNavStyle7({
-    final Key? key,
+    super.key,
     this.navBarEssentials = const NavBarEssentials(items: null),
-  }) : super(key: key);
+  });
   final NavBarEssentials? navBarEssentials;
 
   Widget _buildItem(final PersistentBottomNavBarItem item,
@@ -35,14 +36,16 @@ class BottomNavStyle7 extends StatelessWidget {
                   ? BoxDecoration(
                       color: isSelected
                           ? item.activeColorPrimary
-                          : navBarEssentials!.backgroundColor!.withOpacity(0),
+                          : navBarEssentials!.backgroundColor!
+                              .withValues(alpha: 0),
                       borderRadius:
                           const BorderRadius.all(Radius.circular(100)),
                     )
                   : BoxDecoration(
                       color: isSelected
                           ? item.activeColorPrimary
-                          : navBarEssentials!.backgroundColor!.withOpacity(0),
+                          : navBarEssentials!.backgroundColor!
+                              .withValues(alpha: 0),
                       borderRadius:
                           const BorderRadius.all(Radius.circular(100)),
                     ),
@@ -117,6 +120,7 @@ class BottomNavStyle7 extends StatelessWidget {
             return Flexible(
               flex: navBarEssentials!.selectedIndex == index ? 2 : 1,
               child: GestureDetector(
+                onTapDown: (_) => HapticController.low(),
                 onTap: () {
                   if (navBarEssentials!.items![index].onPressed != null) {
                     navBarEssentials!.items![index].onPressed!(

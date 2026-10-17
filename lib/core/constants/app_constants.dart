@@ -2,8 +2,8 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: app_constants.dart
-/// Purpose: App-wide non-secret constants.
-/// Author: Knowticed Plus team
+/// Description: App-wide non-secret constants.
+/// Author: Amr Mesbah
 /// Created at: 11/8/2026
 ///
 /// One of the three files §5 of the review requires under core/constants/
@@ -38,6 +38,10 @@ abstract final class AppConstants {
   static const double largeTabletShortestSideBreakpoint = 1024;
 
   // ── Storage keys ───────────────────────────────────────────────────────
+  /// Sender shown on notifications the app sends on its own behalf (no
+  /// human sender), e.g. the Knowledge Hub archive notice.
+  static const String systemSenderEmail = 'system@bayanatz.com';
+
   static const String localeStorageKey = 'LocaleData';
   static const String emailStorageKey = 'email';
   static const String companyIdStorageKey = 'company_id';

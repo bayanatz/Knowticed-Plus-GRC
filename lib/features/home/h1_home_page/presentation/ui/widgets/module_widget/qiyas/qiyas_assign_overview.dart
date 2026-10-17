@@ -5,23 +5,28 @@
 /// Purpose: Declares `QiyasAssignOverview`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+/// Updated: 7/10/2026 - Declares its own width (`kHomeWidgetCompactWidth`,
+///          260) instead of `IntrinsicWidth`: home cards now keep their own
+///          width, and the intrinsic width here grew with the topic count
+///          (15 circles ≈ 540) — the status rows scroll horizontally anyway.
+library;
 
-import 'package:get/get.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/standard_container.dart';
-import 'package:grc_module/features/home/main_controller/helper/qiyas/qiyas_interface_consumer.dart';
+import 'package:grc_module/features/home/helpers/qiyas/qiyas_interface_consumer.dart';
 
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/features/home/main_controller/helper/qiyas/domain/entities/qiyas_tracker_entity.dart';
+import 'package:grc_module/features/home/helpers/qiyas/domain/entities/qiyas_tracker_entity.dart';
 import 'package:grc_module/features/home/h1_home_page/data/models/home_component_model.dart';
+import 'package:grc_module/features/home/h1_home_page/presentation/ui/home_widgets/home_widget_shell.dart';
 import 'package:grc_module/generated/l10n.dart';
 
 class QiyasAssignOverview extends StatefulWidget {
-  QiyasAssignOverview({required this.model, super.key});
-  HomeComponentModel model;
+  const QiyasAssignOverview({required this.model, super.key});
+  final HomeComponentModel model;
 
   @override
   State<QiyasAssignOverview> createState() => _QiyasAssignOverviewState();
@@ -38,7 +43,8 @@ class _QiyasAssignOverviewState extends State<QiyasAssignOverview> {
 
   @override
   Widget build(BuildContext context) {
-    return IntrinsicWidth(
+    return SizedBox(
+      width: kHomeWidgetCompactWidth.w,
       child: StandardContainer(
           child: Column(
         spacing: 5.sp,
@@ -51,8 +57,9 @@ class _QiyasAssignOverviewState extends State<QiyasAssignOverview> {
                 style: StyleText.fontSize14Weight500
                     .copyWith(fontWeight: FontWeight.bold),
               ),
-              SvgPicture.asset(
-                'assets/icons_assets/roles_assets/analytics_chart_cycle.svg',
+              CustomSvgImage.natural(
+                assetPath:
+                    'assets/icons_assets/main_icons_assets/ic_module_qiyas.svg',
                 width: 20,
                 height: 20,
                 color: AppColors.primary,
@@ -111,7 +118,7 @@ class _QiyasAssignOverviewState extends State<QiyasAssignOverview> {
     );
   }
 
-  fetchData() async {
+  Future<void> fetchData() async {
     trackerEntity = await QiyasInterfaceConsumer().getTopicsAssignStatus();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       setState(() {});

@@ -2,9 +2,9 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: roles_home_stats_cubit.dart
-/// Purpose: Declares `RolesHomeStatsCubit` — the counts behind the four Roles
+/// Description: Declares `RolesHomeStatsCubit` — the counts behind the four Roles
 ///          cards on the home page and in the Adding Widget picker.
-/// Author: Knowticed Plus team
+/// Author: Amr Mesbah
 /// Created at: 25/8/2026
 ///
 /// WHY THIS EXISTS
@@ -94,8 +94,9 @@ class RolesHomeStatsCubit extends Cubit<RolesHomeStatsState> {
   Map<UserAccessStatus, int> accessCounts = _zeroed(UserAccessStatus.values);
 
   /// Employee accounts by status — the User Access card.
-  Map<EmployeeStatusEnum, int> accountCounts =
-      _zeroed(EmployeeStatusEnum.values);
+  Map<EmployeeStatusEnum, int> accountCounts = _zeroed(
+    EmployeeStatusEnum.values,
+  );
 
   /// Employee change requests by status key — the User Management Requests
   /// card. Keyed by [RequestStatusKey].
@@ -105,8 +106,9 @@ class RolesHomeStatsCubit extends Cubit<RolesHomeStatsState> {
     RequestStatusKey.rejected: 0,
   };
 
-  static Map<T, int> _zeroed<T>(List<T> values) =>
-      <T, int>{for (final T value in values) value: 0};
+  static Map<T, int> _zeroed<T>(List<T> values) => <T, int>{
+        for (final T value in values) value: 0,
+      };
 
   /// Guards against a second load while one is already in flight — all four
   /// cards call [ensureLoaded] from their first build.
@@ -187,8 +189,9 @@ class RolesHomeStatsCubit extends Cubit<RolesHomeStatsState> {
           await _roleRepository.getUnDeletedRoles();
       if (result.isLeft()) return false;
 
-      final List<RoleHistoryModel> roles =
-          List<RoleHistoryModel>.from(result.getOrElse(() => <RoleHistoryModel>[]));
+      final List<RoleHistoryModel> roles = List<RoleHistoryModel>.from(
+        result.getOrElse(() => <RoleHistoryModel>[]),
+      );
 
       final Map<RoleStatus, int> counts = _zeroed(RoleStatus.values);
       for (final RoleHistoryModel role in roles) {
@@ -209,9 +212,12 @@ class RolesHomeStatsCubit extends Cubit<RolesHomeStatsState> {
 
       final List<UserPermissionEntity> permissions =
           List<UserPermissionEntity>.from(
-              result.getOrElse(() => <UserPermissionEntity>[]));
+        result.getOrElse(() => <UserPermissionEntity>[]),
+      );
 
-      final Map<UserAccessStatus, int> counts = _zeroed(UserAccessStatus.values);
+      final Map<UserAccessStatus, int> counts = _zeroed(
+        UserAccessStatus.values,
+      );
       for (final UserPermissionEntity permission in permissions) {
         counts[permission.accessStatus] =
             (counts[permission.accessStatus] ?? 0) + 1;
@@ -234,11 +240,14 @@ class RolesHomeStatsCubit extends Cubit<RolesHomeStatsState> {
 
       final Map<EmployeeStatusEnum, List<UserAccessEntity>> buckets =
           Map<EmployeeStatusEnum, List<UserAccessEntity>>.from(
-              result.getOrElse(
-                  () => <EmployeeStatusEnum, List<UserAccessEntity>>{}));
+        result.getOrElse(
+          () => <EmployeeStatusEnum, List<UserAccessEntity>>{},
+        ),
+      );
 
-      final Map<EmployeeStatusEnum, int> counts =
-          _zeroed(EmployeeStatusEnum.values);
+      final Map<EmployeeStatusEnum, int> counts = _zeroed(
+        EmployeeStatusEnum.values,
+      );
       buckets.forEach((EmployeeStatusEnum status, List<UserAccessEntity> list) {
         counts[status] = list.length;
       });
@@ -287,8 +296,7 @@ class RolesHomeStatsCubit extends Cubit<RolesHomeStatsState> {
   Future<bool> _guard(String label, Future<bool> Function() read) async {
     try {
       return await read();
-    } catch (e, stackTrace) {
-      debugPrint('RolesHomeStatsCubit: $label failed: $e\n$stackTrace');
+    } catch (e) {
       return false;
     }
   }

@@ -27,19 +27,19 @@
 ///          menu already varies by account status, so an absent item reads as
 ///          "not applicable here" and never as a dead control. A card whose
 ///          every action is denied shows no "..." at all.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 
 import 'package:grc_module/core/extensions/context_extensions.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
-import 'package:grc_module/core/helper/role/roles_module_access.dart';
+import 'package:grc_module/core/helper/format_title.dart';
+import 'package:grc_module/features/roles/helpers/roles_module_access.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/features/onboarding/o3_authentication/domain/enums/employee_status_enum.dart';
-import 'package:grc_module/features/onboarding/o3_authentication/presentation/ui/theme/employee_status_style.dart';
 import 'package:grc_module/features/roles/r3_user_access/presentation/ui/widgets/user_access_status_row.dart';
 import 'package:grc_module/features/roles/r1_role_management/domain/enums/roles/user_access_permission.dart';
 import 'package:grc_module/features/roles/r3_user_access/domain/entities/user_access_entity.dart';
@@ -171,7 +171,6 @@ class _UserAccessCardState extends State<UserAccessCard> {
 
   // ── Header: avatar, identity, "..." menu ──────────────────────────────────
 
-
   /// Resolves [UserAccessEntity.department] (a department **id**) to its
   /// display name in the active language.
   String _departmentName(bool isArabic) {
@@ -198,7 +197,7 @@ class _UserAccessCardState extends State<UserAccessCard> {
     // right edge in every locale. In RTL the Row lays out start-to-end
     // right-to-left, so the AVATAR is what sits on the right — and the menu was
     // being painted on top of it. A grey `more_horiz` over the avatar's
-    // `AppColors.field` fill reads as nothing at all. In LTR the same overlay
+    // `AppColors.card` fill reads as nothing at all. In LTR the same overlay
     // landed on the tail of the identity text, where it was visible but was
     // quietly covering the last few characters of a long name.
     //
@@ -214,7 +213,7 @@ class _UserAccessCardState extends State<UserAccessCard> {
           children: [
             CircleAvatar(
               radius: 24.r,
-              backgroundColor: AppColors.field,
+              backgroundColor: AppColors.card,
               backgroundImage: _avatar(entity.photoUrl),
             ),
             SizedBox(width: 12.sp),
@@ -237,13 +236,15 @@ class _UserAccessCardState extends State<UserAccessCard> {
                     // domain entity to import one (§3); the widget already holds
                     // the cubit, so it does the lookup itself.
                     FormatHelper.capitalize(_departmentName(isArabic)),
-                    style: StyleText.fontSize12Weight400.copyWith(color: AppColors.secondaryBlack),
+                    style: StyleText.fontSize12Weight400
+                        .copyWith(color: AppColors.secondaryBlack),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(
                     FormatHelper.capitalize(entity.jobTitle(isArabic)),
-                    style: StyleText.fontSize12Weight400.copyWith(color: AppColors.secondaryBlack),
+                    style: StyleText.fontSize12Weight400
+                        .copyWith(color: AppColors.secondaryBlack),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -411,7 +412,7 @@ class _UserAccessCardState extends State<UserAccessCard> {
           child: Center(
             child: CustomSvgImage(
               assetPath:
-                  'assets/icons_assets/main_icons_assets/dots_horizontal.svg',
+                  'assets/icons_assets/main_icons_assets/ic_nav_more_horizontal.svg',
               width: 18.sp,
               height: 6.sp,
               color: AppColors.secondaryText,
@@ -443,7 +444,8 @@ class _UserAccessCardState extends State<UserAccessCard> {
           ],
         ),
       ),
-      _blockShell(S.of(context).defaultPassword, _valueBox(entity.tempPassword)),
+      _blockShell(
+          S.of(context).defaultPassword, _valueBox(entity.tempPassword)),
       _loginBlock(
         context,
         label: S.of(context).firstLogin,
@@ -543,7 +545,7 @@ class _UserAccessCardState extends State<UserAccessCard> {
               isPlaceholder ? '—' : value,
               style: StyleText.fontSize12Weight500.copyWith(
                 color: isPlaceholder
-                    ? AppColors.secondaryText.withOpacity(0.5)
+                    ? AppColors.secondaryText.withValues(alpha: 0.5)
                     : AppColors.text,
               ),
               maxLines: 1,
@@ -578,8 +580,7 @@ class _UserAccessCardState extends State<UserAccessCard> {
   }) {
     // FIXED 29/8/2026: no locale meant the month stayed English in Arabic mode.
     // Keep the "dd MMM yyyy" (25 Feb 2023) shape but localize the month.
-    final bool isArabic =
-        Localizations.localeOf(context).languageCode == 'ar';
+    final bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
     final String dateText = date == null
         ? ''
         : DateFormat('dd MMM yyyy', isArabic ? 'ar' : 'en').format(date);
@@ -592,10 +593,14 @@ class _UserAccessCardState extends State<UserAccessCard> {
       Row(
         children: [
           Expanded(
-            child: _valueBox(
-              dateText,
-              trailing: CustomSvgImage(assetPath: "assets/icons_assets/main_icons_assets/images_Calendar.svg",width: 15.sp,height: 15.sp,fit: BoxFit.fill,)
-            ),
+            child: _valueBox(dateText,
+                trailing: CustomSvgImage(
+                  assetPath:
+                      "assets/icons_assets/main_icons_assets/ic_time_calendar.svg",
+                  width: 15.sp,
+                  height: 15.sp,
+                  fit: BoxFit.fill,
+                )),
           ),
           SizedBox(width: 8.sp),
           _valueBox(timeText, width: 70.w),
@@ -608,8 +613,7 @@ class _UserAccessCardState extends State<UserAccessCard> {
 
   // ── Action handling — everything routes through a dialog ──────────────────
 
-  Future<void> _onAction(
-      BuildContext context, UserAccessAction action) async {
+  Future<void> _onAction(BuildContext context, UserAccessAction action) async {
     switch (action) {
       case UserAccessAction.edit:
         await UserAccessDialogs.showEditAccessDetails(
@@ -672,10 +676,12 @@ class _UserAccessCardState extends State<UserAccessCard> {
           alignment: Alignment.center,
           child: Text(
             S.of(context).employeeStatusLocked,
-            style: StyleText.fontSize12Weight400.copyWith(color: AppColors.secondaryBlack).copyWith(
-              color: AppColors.white,
-              fontSize: 9.sp,
-            ),
+            style: StyleText.fontSize12Weight400
+                .copyWith(color: AppColors.secondaryBlack)
+                .copyWith(
+                  color: AppColors.white,
+                  fontSize: 9.sp,
+                ),
             maxLines: 1,
           ),
         ),

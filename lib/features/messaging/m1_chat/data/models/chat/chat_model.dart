@@ -3,11 +3,10 @@
 // Last update: 2/9/2024
 // Objectives: This file is responsible for providing a general chat model which contains messages,media and receiver.
 
-
-import '../message/message_model.dart';
-import '../../../../m2_connections/data/models/member_model.dart';
-import '../../../../m3_groups/data/models/legacy_group_model.dart';
-import '../media/media_model.dart';
+import 'package:grc_module/features/messaging/m1_chat/data/models/message/message_model.dart';
+import 'package:grc_module/features/messaging/m2_connections/data/models/member_model.dart';
+import 'package:grc_module/features/messaging/m3_groups/data/models/legacy_group_model.dart';
+import 'package:grc_module/features/messaging/m1_chat/data/models/media/media_model.dart';
 
 class ChatModel {
   List<MessageModel> messages;

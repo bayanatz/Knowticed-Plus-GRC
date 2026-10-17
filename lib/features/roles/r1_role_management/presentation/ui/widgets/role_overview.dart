@@ -10,36 +10,36 @@
 /// Updated: 29/8/2026 - The creation date and the module count on a role card
 ///                      now render in the locale's own numerals; both were
 ///                      Latin-digit on an Arabic screen.
+library;
 
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/features/roles/r1_role_management/presentation/ui/widgets/permission_label.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:flutter/material.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'dart:ui' as ui;
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
+import 'package:grc_module/core/custom/feedback/circle_progress.dart';
 // REMOVED_MODULE: import 'package:grc_module/core/helper/data_grc_module/core/extensions/extensions.dart';
 // REMOVED_MODULE: import 'package:grc_module/features/external/inventory_module/core/circle_progress.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
+import 'package:grc_module/core/helper/access/modules_enum.dart';
 import 'package:grc_module/features/roles/r1_role_management/presentation/controller/modules_cubit.dart';
 import 'package:grc_module/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
 
-import 'package:grc_module/core/helper/main_helper/employee_helper.dart';
-import 'package:grc_module/core/helper/main_helper/localized_date.dart';
-import 'package:grc_module/core/helper/main_helper/localized_number.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
-import 'package:grc_module/core/custom/75-custom_title_value_widget.dart';
+import 'package:grc_module/core/helper/employee_helper.dart';
+import 'package:grc_module/core/helper/localized_date.dart';
+import 'package:grc_module/core/helper/localized_number.dart';
+import 'package:grc_module/core/helper/format_title.dart';
+import 'package:grc_module/core/custom/cards/custom_title_value_widget.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/features/roles/r1_role_management/data/models/role_model.dart';
 import 'package:grc_module/features/roles/r1_role_management/presentation/ui/pages/adding_new_role.dart';
 import 'package:grc_module/features/roles/r1_role_management/presentation/ui/pages/role_details_page.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
+
 class RoleOverview extends StatefulWidget {
-  RoleOverview({required this.role, super.key});
+  const RoleOverview({required this.role, super.key});
 
   final RoleHistoryModel role;
 
@@ -102,6 +102,7 @@ class _RoleOverviewState extends State<RoleOverview> {
     activeModules = _convertModuleStringsToEnums(activeModuleStrings);
 
     return InkWell(
+      onTapDown: (_) => HapticController.low(),
       onTap: () async {
         // AWAITED 29/8/2026: `selectRole` loads the role's module permissions
         // from Firestore. Firing it and navigating in the same frame opened the
@@ -132,7 +133,7 @@ class _RoleOverviewState extends State<RoleOverview> {
       child: Container(
         padding: EdgeInsets.all(15.sp),
         decoration: BoxDecoration(
-          color: AppColors.field,
+          color: AppColors.card,
           borderRadius: BorderRadius.circular(8.sp),
         ),
         child: Column(
@@ -158,14 +159,14 @@ class _RoleOverviewState extends State<RoleOverview> {
                                 children: [
                                   Text(
                                     isArabic &&
-                                        widget.role.currentRoleNameAr
-                                            .isNotEmpty
+                                            widget.role.currentRoleNameAr
+                                                .isNotEmpty
                                         ? widget.role.currentRoleNameAr
                                         : FormatHelper.capitalize(
-                                        widget.role.currentRoleName),
+                                            widget.role.currentRoleName),
                                     style: StyleText.fontSize14Weight500
                                         .copyWith(
-                                        color: AppColors.text, height: 1.2),
+                                            color: AppColors.text, height: 1.2),
                                     overflow: TextOverflow.ellipsis,
                                     textDirection: isArabic
                                         ? ui.TextDirection.rtl
@@ -266,8 +267,7 @@ class _RoleOverviewState extends State<RoleOverview> {
   }
 
   Modules? _getModuleEnum(String moduleName) {
-    String normalized =
-    moduleName.toLowerCase().trim().replaceAll(' ', '_');
+    String normalized = moduleName.toLowerCase().trim().replaceAll(' ', '_');
 
     switch (normalized) {
       case 'employees':
@@ -309,6 +309,8 @@ class _RoleOverviewState extends State<RoleOverview> {
         return Modules.settings;
       case 'home':
         return Modules.home;
+      case 'time_tracker': // ADDED 8/10/2026 — Time Tracker
+        return Modules.timeTracker;
       default:
         return null;
     }
@@ -361,8 +363,8 @@ class _RoleOverviewState extends State<RoleOverview> {
         ),
         width: 50.sp,
         height: 50.sp,
-        child: CustomSvgImage(assetPath: 
-          'assets/icons_assets/roles_assets/roles_people_gear.svg',
+        child: CustomSvgImage(
+          assetPath: 'assets/icons_assets/main_icons_assets/ic_module_roles.svg',
           width: 30.sp,
           height: 30.sp,
           color: AppColors.text,
@@ -375,8 +377,7 @@ class _RoleOverviewState extends State<RoleOverview> {
     if (module == null) return SizedBox.shrink();
 
     // ✅ FIX 3: Format at render time so .tr uses current locale (Arabic/English)
-    List<String> activeSwitches =
-    (_modulePermissions[moduleString] ?? [])
+    List<String> activeSwitches = (_modulePermissions[moduleString] ?? [])
         .map((key) => PermissionLabel.fromStorageKey(context, key))
         .toList();
 
@@ -394,8 +395,8 @@ class _RoleOverviewState extends State<RoleOverview> {
             height: 32.sp,
             alignment: Alignment.center,
             width: 20.sp,
-            child: CustomSvgImage(assetPath: 
-              module.iconPathRole,
+            child: CustomSvgImage(
+              assetPath: module.iconPathRole,
               width: 20.sp,
               height: 20.sp,
               color: AppColors.primary,
@@ -406,13 +407,13 @@ class _RoleOverviewState extends State<RoleOverview> {
             child: activeSwitches.isEmpty
                 ? SizedBox()
                 : LayoutBuilder(
-              builder: (context, constraints) {
-                return _buildPermissionChips(
-                  activeSwitches,
-                  constraints.maxWidth,
-                );
-              },
-            ),
+                    builder: (context, constraints) {
+                      return _buildPermissionChips(
+                        activeSwitches,
+                        constraints.maxWidth,
+                      );
+                    },
+                  ),
           ),
         ],
       ),
@@ -499,8 +500,7 @@ class _RoleOverviewState extends State<RoleOverview> {
       ),
       padding: EdgeInsets.symmetric(horizontal: 10.sp, vertical: 5.sp),
       alignment: Alignment.center,
-      child: Text(
-          text,
+      child: Text(text,
           style: StyleText.fontSize14Weight500.copyWith(
             color: AppColors.text,
           )),

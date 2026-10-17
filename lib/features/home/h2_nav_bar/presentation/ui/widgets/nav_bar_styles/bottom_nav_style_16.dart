@@ -6,18 +6,20 @@
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Extracted from the oversized styles.dart as part of
 ///          breaking up the vendored persistent-nav-bar god files.
+library;
 
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/features/home/h2_nav_bar/persistent_nav_bar.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
 class BottomNavStyle16 extends StatelessWidget {
   const BottomNavStyle16({
-    final Key? key,
+    super.key,
     this.navBarEssentials = const NavBarEssentials(items: null),
     this.navBarDecoration = const NavBarDecoration(),
-  }) : super(key: key);
+  });
   final NavBarEssentials? navBarEssentials;
   final NavBarDecoration? navBarDecoration;
 
@@ -114,8 +116,8 @@ class BottomNavStyle16 extends StatelessWidget {
                             const EdgeInsets.only(top: 2, left: 6, right: 6),
                         decoration: BoxDecoration(
                           color: item.activeColorPrimary,
-                          border:
-                              Border.all(color: AppColors.transparent, width: 5),
+                          border: Border.all(
+                              color: AppColors.transparent, width: 5),
                           borderRadius: BorderRadius.circular(10),
                           boxShadow: navBarDecoration!.boxShadow,
                         ),
@@ -202,6 +204,7 @@ class BottomNavStyle16 extends StatelessWidget {
                   final int index = navBarEssentials!.items!.indexOf(item);
                   return Flexible(
                     child: GestureDetector(
+                      onTapDown: (_) => HapticController.low(),
                       onTap: () {
                         if (navBarEssentials!.items![index].onPressed != null) {
                           navBarEssentials!.items![index].onPressed!(
@@ -227,6 +230,7 @@ class BottomNavStyle16 extends StatelessWidget {
           else
             Center(
               child: GestureDetector(
+                  onTapDown: (_) => HapticController.low(),
                   onTap: () {
                     if (navBarEssentials!.items![midIndex].onPressed != null) {
                       navBarEssentials!.items![midIndex].onPressed!(

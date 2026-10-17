@@ -2,13 +2,13 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: umdr_methods3.dart
-/// Purpose: Declares `UmdrMethods3`.
+/// Purpose: Declares `_UmdrMethods3`.
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
 
 part of '../pages/user_management_details_request.dart';
 
-extension UmdrMethods3 on _UserManagementDetailsRequestSettingsState {
+extension _UmdrMethods3 on _UserManagementDetailsRequestSettingsState {
   /// The single card holding every change in the request.
   ///
   /// Landscape: two columns — "Current Details" and "New Details" — each
@@ -45,8 +45,7 @@ extension UmdrMethods3 on _UserManagementDetailsRequestSettingsState {
                   child: _buildValueColumn(
                     lightMode: lightMode,
                     title: S.of(context).current_details,
-                    titleColor:
-                    lightMode ? AppColors.blackButton : AppColors.white,
+                    titleColor: AppColors.blackButton,
                     isNew: false,
                   ),
                 ),
@@ -87,7 +86,7 @@ extension UmdrMethods3 on _UserManagementDetailsRequestSettingsState {
             lightMode: lightMode,
             fieldName: changes[i]['fieldName'] ?? '',
             value:
-            (isNew ? changes[i]['newValue'] : changes[i]['oldValue']) ?? '',
+                (isNew ? changes[i]['newValue'] : changes[i]['oldValue']) ?? '',
             isNew: isNew,
           ),
           if (i != changes.length - 1) SizedBox(height: 12.h),
@@ -111,7 +110,7 @@ extension UmdrMethods3 on _UserManagementDetailsRequestSettingsState {
             Text(
               FormatHelper.capitalize(S.of(context).current_details),
               style:
-              StyleText.fontSize16Weight600.copyWith(color: AppColors.text),
+                  StyleText.fontSize16Weight600.copyWith(color: AppColors.text),
             ),
             SizedBox(height: 8.h),
             _buildFieldCell(
@@ -123,8 +122,8 @@ extension UmdrMethods3 on _UserManagementDetailsRequestSettingsState {
             SizedBox(height: 12.h),
             Text(
               FormatHelper.capitalize(S.of(context).new_details),
-              style:
-              StyleText.fontSize16Weight600.copyWith(color: AppColors.green),
+              style: StyleText.fontSize16Weight600
+                  .copyWith(color: AppColors.green),
             ),
             SizedBox(height: 8.h),
             _buildFieldCell(
@@ -167,6 +166,7 @@ extension UmdrMethods3 on _UserManagementDetailsRequestSettingsState {
       fillColor: isNew ? null : AppColors.background,
     );
   }
+
   Widget _buildSectionHeader(bool lightMode, String sectionTitle) {
     bool isInsuranceSection =
         sectionTitle.contains('Insurance') || sectionTitle.contains('التأمين');
@@ -178,13 +178,13 @@ extension UmdrMethods3 on _UserManagementDetailsRequestSettingsState {
           height: 30.h,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(4.r),
-            color: AppColors.primary.withOpacity(.15),
+            color: AppColors.primary.withValues(alpha: .15),
           ),
           child: Center(
             child: CustomSvgImage(
               assetPath: isInsuranceSection
-                  ? "assets/icons_assets/main_icons_assets/insurance_document_shield.svg"
-                  : "assets/icons_assets/main_icons_assets/emergency_contact_person.svg",
+                  ? "assets/icons_assets/main_icons_assets/ic_hr_insurance_document.svg"
+                  : "assets/icons_assets/main_icons_assets/ic_user_emergency_contact.svg",
               width: 16.w,
               height: 16.h,
               fit: BoxFit.fill,
@@ -196,14 +196,13 @@ extension UmdrMethods3 on _UserManagementDetailsRequestSettingsState {
         Text(
           FormatHelper.capitalize(sectionTitle),
           style: StyleText.fontSize18Weight500.copyWith(
-            color: lightMode
-                ? AppColors.blackButton
-                : AppColors.white,
+            color: AppColors.blackButton,
           ),
         ),
       ],
     );
   }
+
   Widget _buildRequestNoteSection(bool lightMode) {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
@@ -223,7 +222,7 @@ extension UmdrMethods3 on _UserManagementDetailsRequestSettingsState {
               maxLines: 3,
               height: 72,
               textDirection:
-              isArabic ? ui.TextDirection.rtl : ui.TextDirection.ltr,
+                  isArabic ? ui.TextDirection.rtl : ui.TextDirection.ltr,
               showCharCount: true,
             ),
             SizedBox(height: 20.h),

@@ -7,15 +7,17 @@
 /// Purpose: Declares `AddWrongEmployeeController`.
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:grc_module/core/network/api_constants.dart' hide FirebaseCollections;
+import 'package:grc_module/core/network/api_constants.dart'
+    hide FirebaseCollections;
 import 'package:grc_module/features/roles/r4_active_directory/data/models/invalid_import_row_model.dart';
 import 'package:grc_module/core/constants/firebase_collections.dart';
 
-part './wrong_employee_state.dart';
+part 'wrong_employee_state.dart';
 
 /// Cubit for wrong-employee records.
 ///

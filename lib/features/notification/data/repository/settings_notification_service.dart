@@ -2,10 +2,10 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: settings_notification_service.dart
-/// Purpose: Notifications raised by the Settings change-request flow —
+/// Description: Notifications raised by the Settings change-request flow —
 ///          Personal Information, Health Insurance and Emergency Contact
 ///          submitted / approved / rejected.
-/// Author: Knowticed Plus team
+/// Author: Amr Mesbah
 /// Created at: 23/8/2026
 /// Updated: 24/8/2026 - `changeRequestSubmitted` now resolves its own audience
 ///          and fans out; Emergency Contact became a kind of its own.
@@ -45,9 +45,9 @@ library;
 import 'package:flutter/foundation.dart';
 
 import 'package:grc_module/core/enums/template_variable.dart';
-import 'package:grc_module/features/notification/domain/enums/settings_module/settings_events.dart';
-import 'package:grc_module/features/notification/domain/enums/settings_module/settings_notification_pages.dart';
-import 'package:grc_module/features/notification/services/app_notification_sender.dart';
+import 'package:grc_module/features/notification/domain/enums/settings/settings_events.dart';
+import 'package:grc_module/features/notification/domain/enums/settings/settings_notification_pages.dart';
+import 'package:grc_module/features/notification/helpers/services/app_notification_sender.dart';
 import 'package:grc_module/features/roles/r2_user_management/data/repository/user_requests_approvers_repository.dart';
 
 /// Which settings section a change request came from.
@@ -129,44 +129,32 @@ class SettingsNotificationService {
     bool isArabic = false,
   }) async {
     try {
-      // EVERY eligible reviewer, the submitter included.
+      // CHANGED 9/10/2026 (owner decision) — every eligible reviewer EXCEPT
+      // the submitter.
       //
-      // FIXED 25/8/2026 (second attempt). This first excluded the submitter
-      // outright, then excluded them only when other reviewers remained. Both
-      // were wrong, and for the same reason: whether someone needs to see a
-      // request is decided by whether they have to act on it, not by who typed
-      // it. A reviewer who edits their own profile still has a request sitting
-      // in their queue, and the notification is how that queue announces
-      // itself. Suppressing it left them with the "approved" notification and
-      // no "needs your action" notification — the decision arrived without the
-      // thing to decide.
-      //
-      // Do not reintroduce a sender filter here. If duplicate-looking cards
-      // ever become a problem, the fix belongs in how the inbox groups them,
-      // not in refusing to write one.
-      final List<String> reviewers = await _approvers.approverEmails();
+      // The 25/8/2026 note that used to stand here kept the submitter on the
+      // list because "whether someone needs to see a request is decided by
+      // whether they have to act on it" — and at the time a reviewer could
+      // approve their own request. That is now blocked (SelfApprovalRule: the
+      // review screen hides Approve / Reject and RequestsRepository refuses
+      // it), so the submitter no longer has anything to act on and the
+      // "needs your action" notification would be wrong. The same test still
+      // decides it; only the answer changed. The exclusion lives in
+      // UserRequestsApproversRepository.approverEmails(requesterEmail:).
+      final List<String> reviewers = await _approvers.approverEmails(
+        requesterEmail: employeeEmail,
+      );
 
       if (reviewers.isEmpty) {
-        if (kDebugMode) {
-          debugPrint(
-            '[settings-notify] no reviewer resolved for "$section" — nobody '
-            'holds Users_Requests and no Master Admin was found, so no '
-            'submitted notification was sent.',
-          );
-        }
+        if (kDebugMode) {}
         return 0;
       }
 
-      if (kDebugMode) {
-        debugPrint(
-          '[settings-notify] "$section" submitted by $employeeEmail → '
-          'notifying ${reviewers.length} reviewer(s): ${reviewers.join(', ')}',
-        );
-      }
+      if (kDebugMode) {}
 
       final SettingsRequestKind kind = SettingsRequestKind.fromSection(section);
 
-      return AppNotificationSender.sendEventToAll(
+      return await AppNotificationSender.sendEventToAll(
         event: _submittedEventFor(kind),
         pageKey: _reviewPageFor(kind),
         senderEmail: employeeEmail,
@@ -176,14 +164,12 @@ class SettingsNotificationService {
           TemplateVariable.employeeName: employeeName,
         },
       );
-    } catch (e, stackTrace) {
+    } catch (e) {
       // Never rethrown — a submission must not fail because its notification
       // did. Recorded rather than swallowed silently: a fan-out that quietly
       // returns 0 is exactly the failure that is impossible to diagnose from
       // the UI, because the request itself still saves correctly.
-      if (kDebugMode) {
-        debugPrint('[settings-notify] fan-out failed: $e\n$stackTrace');
-      }
+      if (kDebugMode) {}
       return 0;
     }
   }
@@ -260,7 +246,9 @@ class SettingsNotificationService {
     );
   }
 
-  static SettingsNotificationEvent _submittedEventFor(SettingsRequestKind kind) {
+  static SettingsNotificationEvent _submittedEventFor(
+    SettingsRequestKind kind,
+  ) {
     switch (kind) {
       case SettingsRequestKind.healthInsurance:
         return SettingsNotificationEvent

@@ -1,7 +1,9 @@
 /// Module: messaging / chat / presentation/ui/widgets/bubbles/shared_location_contact_bubbles.dart
-/// Purpose: Bubbles for shared LOCATION and CONTACT messages (bug report #23).
+/// Description: Bubbles for shared LOCATION and CONTACT messages (bug report #23).
 ///          Both payloads travel as JSON in Message_Content — see
 ///          LocationPayload / ContactPayload in new_message_content_entity.dart.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 
 part of '../../pages/chat_mobile_view.dart';
 
@@ -21,8 +23,9 @@ class SharedLocationBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final LocationPayload? location =
-        LocationPayload.tryDecode(messageModel.messageContent);
+    final LocationPayload? location = LocationPayload.tryDecode(
+      messageModel.messageContent,
+    );
     final bool isMe = messageModel.isMe;
     final bool isAr = context.isArabic;
     final Color textColor = isMe ? AppColors.textButton : AppColors.text;
@@ -32,15 +35,19 @@ class SharedLocationBubble extends StatelessWidget {
       isGroup: isGroup,
       messageModel: messageModel,
       content: location == null
-          ? Text(isAr ? 'موقع غير صالح' : 'Invalid location',
-              style: StyleText.fontSize14Weight400.copyWith(color: textColor))
+          ? Text(
+              isAr ? 'موقع غير صالح' : 'Invalid location',
+              style: StyleText.fontSize14Weight400.copyWith(color: textColor),
+            )
           : InkWell(
+              onTapDown: (_) => HapticController.low(),
               onTap: () async {
                 final Uri uri = Uri.parse(location.googleMapsUrl);
-                debugPrint('[LocationBubble] opening $uri');
-                final bool ok = await launchUrl(uri,
-                    mode: LaunchMode.externalApplication);
-                if (!ok) debugPrint('[LocationBubble] ✗ could not open $uri');
+                final bool ok = await launchUrl(
+                  uri,
+                  mode: LaunchMode.externalApplication,
+                );
+                if (!ok) {}
               },
               child: Padding(
                 padding: EdgeInsets.only(bottom: 8.h),
@@ -51,12 +58,13 @@ class SharedLocationBubble extends StatelessWidget {
                       height: 110.h,
                       width: 220.w,
                       decoration: BoxDecoration(
-                        color: AppColors.field,
+                        color: AppColors.card,
                         borderRadius: BorderRadius.circular(4.r),
                       ),
                       alignment: Alignment.center,
-                      child: SvgPicture.asset(
-                        'assets/icons_assets/messaging_assets/location_svg.svg',
+                      child: CustomSvgImage.natural(
+                        assetPath:
+                            'assets/icons_assets/messaging_assets/ic_place_map.svg',
                         width: 40.sp,
                         height: 40.sp,
                       ),
@@ -66,16 +74,18 @@ class SharedLocationBubble extends StatelessWidget {
                       (location.address?.isNotEmpty ?? false)
                           ? location.address!
                           : (isAr ? 'الموقع المشترك' : 'Shared location'),
-                      style: StyleText.fontSize14Weight500
-                          .copyWith(color: textColor),
+                      style: StyleText.fontSize14Weight500.copyWith(
+                        color: textColor,
+                      ),
                     ),
                     SizedBox(height: 2.h),
                     Text(
                       '${location.latitude.toStringAsFixed(5)}, '
                       '${location.longitude.toStringAsFixed(5)}',
-                      textDirection: ui.TextDirection.ltr,
-                      style: StyleText.fontSize12Weight400
-                          .copyWith(color: textColor.withOpacity(0.7)),
+                      textDirection: TextDirection.ltr,
+                      style: StyleText.fontSize12Weight400.copyWith(
+                        color: textColor.withValues(alpha: 0.7),
+                      ),
                     ),
                     SizedBox(height: 4.h),
                     Text(
@@ -109,8 +119,9 @@ class SharedContactBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ContactPayload? contact =
-        ContactPayload.tryDecode(messageModel.messageContent);
+    final ContactPayload? contact = ContactPayload.tryDecode(
+      messageModel.messageContent,
+    );
     final bool isMe = messageModel.isMe;
     final bool isAr = context.isArabic;
     final Color textColor = isMe ? AppColors.textButton : AppColors.text;
@@ -120,17 +131,20 @@ class SharedContactBubble extends StatelessWidget {
         index: index,
         isGroup: isGroup,
         messageModel: messageModel,
-        content: Text(isAr ? 'جهة اتصال غير صالحة' : 'Invalid contact',
-            style: StyleText.fontSize14Weight400.copyWith(color: textColor)),
+        content: Text(
+          isAr ? 'جهة اتصال غير صالحة' : 'Invalid contact',
+          style: StyleText.fontSize14Weight400.copyWith(color: textColor),
+        ),
       );
     }
 
     // Bug report p.19: the full name, capitalised ("ibrahim al-shamm…" →
     // "Ibrahim Al-shammari"), wrapping instead of being cut with an ellipsis.
     final String name = FormatHelper.capitalize(
-        isAr && (contact.nameAr?.isNotEmpty ?? false)
-            ? contact.nameAr!
-            : contact.name);
+      isAr && (contact.nameAr?.isNotEmpty ?? false)
+          ? contact.nameAr!
+          : contact.name,
+    );
     final String? rawJob = isAr && (contact.jobTitleAr?.isNotEmpty ?? false)
         ? contact.jobTitleAr
         : contact.jobTitle;
@@ -152,11 +166,13 @@ class SharedContactBubble extends StatelessWidget {
               children: [
                 ClipOval(
                   child: image.startsWith('http')
-                      ? Image.network(image,
+                      ? Image.network(
+                          image,
                           width: 36.r,
                           height: 36.r,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => _maleAvatar())
+                          errorBuilder: (_, __, ___) => _maleAvatar(),
+                        )
                       : _maleAvatar(),
                 ),
                 SizedBox(width: 8.w),
@@ -164,15 +180,21 @@ class SharedContactBubble extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(name,
-                          softWrap: true,
-                          style: StyleText.fontSize14Weight600
-                              .copyWith(color: textColor)),
+                      Text(
+                        name,
+                        softWrap: true,
+                        style: StyleText.fontSize14Weight600.copyWith(
+                          color: textColor,
+                        ),
+                      ),
                       if (job != null && job.isNotEmpty)
-                        Text(job,
-                            softWrap: true,
-                            style: StyleText.fontSize12Weight400
-                                .copyWith(color: textColor.withOpacity(0.8))),
+                        Text(
+                          job,
+                          softWrap: true,
+                          style: StyleText.fontSize12Weight400.copyWith(
+                            color: textColor.withValues(alpha: 0.8),
+                          ),
+                        ),
                     ],
                   ),
                 ),
@@ -180,6 +202,7 @@ class SharedContactBubble extends StatelessWidget {
             ),
             SizedBox(height: 8.h),
             InkWell(
+              onTapDown: (_) => HapticController.low(),
               onTap: () => _openChat(context, contact.userId),
               child: Text(
                 isAr ? 'مراسلة' : 'Message',
@@ -196,14 +219,14 @@ class SharedContactBubble extends StatelessWidget {
   }
 
   Widget _maleAvatar() => CustomSvgImage(
-        assetPath: 'assets/icons_assets/main_icons_assets/assets_male.svg',
+        assetPath:
+            'assets/icons_assets/main_icons_assets/ic_user_avatar_male.png',
         width: 36.r,
         height: 36.r,
         fit: BoxFit.fill,
       );
 
   Future<void> _openChat(BuildContext context, String userId) async {
-    debugPrint('[ContactBubble] open chat with $userId');
     final MessagingInterfaceImplementation messaging =
         MessagingInterfaceImplementation();
     // Tablet / desktop: select it so the inline chat panel switches.
@@ -211,8 +234,9 @@ class SharedContactBubble extends StatelessWidget {
     final OpenChatResult result = ContextExtension(context).isTablett
         ? await messaging.selectChatWithUser(userEmail: userId)
         : await messaging.tryOpenChatWithUser(
-            context: context, userEmail: userId);
-    debugPrint('[ContactBubble] result = ${result.name}');
+            context: context,
+            userEmail: userId,
+          );
     if (context.mounted) await showOpenChatFailure(context, result);
   }
 }

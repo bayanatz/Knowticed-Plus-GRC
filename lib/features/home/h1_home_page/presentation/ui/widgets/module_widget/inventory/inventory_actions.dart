@@ -5,12 +5,12 @@
 /// Purpose: Declares `InventoryActions`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
-import 'package:get/get.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/standard_container.dart';
 import 'package:grc_module/features/home/h1_home_page/data/models/home_component_model.dart';
@@ -19,9 +19,10 @@ import 'package:grc_module/core/theme/app_theme.dart';
 
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/home_widgets/home_widget_shell.dart';
+
 class InventoryActions extends StatelessWidget {
-  InventoryActions({super.key, required this.model});
-  HomeComponentModel model;
+  const InventoryActions({super.key, required this.model});
+  final HomeComponentModel model;
   @override
   Widget build(BuildContext context) {
     return StandardContainer(
@@ -38,8 +39,9 @@ class InventoryActions extends StatelessWidget {
                 style: StyleText.fontSize14Weight500
                     .copyWith(fontWeight: FontWeight.bold),
               ),
-              SvgPicture.asset(
-                'assets/icons_assets/roles_assets/inventory_warehouse.svg',
+              CustomSvgImage.natural(
+                assetPath:
+                    'assets/icons_assets/main_icons_assets/ic_module_inventory.svg',
                 width: 20,
                 height: 20,
                 color: AppColors.primary,
@@ -59,7 +61,7 @@ class InventoryActions extends StatelessWidget {
           // draws for stacked card actions and what makes every card agree.
           HomeCardButton(
             label: S.of(context).addProduct,
-            icon: 'assets/icons_assets/roles_assets/inventory_warehouse.svg',
+            icon: 'assets/icons_assets/main_icons_assets/ic_module_inventory.svg',
             onTap: () {},
           ),
           HomeCardButton(

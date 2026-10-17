@@ -4,18 +4,17 @@
 /// Purpose: Community tablet layout — messaging Connections sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+library;
 
 // By: Youssef Ashraf
 // Date: 16/9/2024
 // Objectives: This file is responsible for providing the home tablet layout used in the messaging feature.
 
 import 'package:flutter/material.dart';
-import 'package:grc_module/features/messaging/main_controller/helper/messages_permissions.dart';
+import 'package:grc_module/features/messaging/helpers/main/messages_permissions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:grc_module/core/custom/35-custom_search_widget_custom.dart';
+import 'package:grc_module/core/custom/inputs/custom_search_widget_custom.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/features/messaging/m3_groups/presentation/controller/groups_controller.dart';
 import 'package:grc_module/features/messaging/m3_groups/presentation/ui/pages/tablet/create_group_page_tablet.dart';
@@ -24,22 +23,19 @@ import 'package:grc_module/features/messaging/m4_messaging_home/presentation/con
 import 'package:grc_module/features/messaging/m2_connections/presentation/ui/widgets/layouts/tablet_body.dart';
 
 import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/core/helper/main_helper/spacing_helper.dart';
-import 'package:grc_module/core/constants/message_module/app_assets.dart';
+import 'package:grc_module/features/messaging/helpers/spacing_helper.dart';
+import 'package:grc_module/features/messaging/helpers/constants/messaging_assets.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
-import 'package:grc_module/core/custom/47-custom_sort_button.dart';
-import 'package:grc_module/core/custom/6-custom_button_with_svg.dart';
+import 'package:grc_module/core/custom/buttons/custom_sort_button.dart';
+import 'package:grc_module/core/custom/buttons/custom_button_with_svg.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
-
-
 
 class HomeTabletLayout extends StatelessWidget {
   const HomeTabletLayout({super.key});
 
   @override
   Widget build(BuildContext context) {
-
-    var isMobile = ContextExtension(context).isPhone;
+    ContextExtension(context).isPhone;
     bool isPortrait =
         MediaQuery.of(context).orientation == Orientation.portrait;
 
@@ -64,22 +60,16 @@ class HomeTabletLayout extends StatelessWidget {
                     onChanged: (text) => controller.filterAllChats(),
                   ),
                 ),
-                SizedBox(
-                  width: isMobile ? 38.sp : 100.sp,
-                  height: 38.sp,
-                  child: CustomSortButton<SortEnum>(
-                      value: controller.sort,
-                      items: SortEnum.values,
-                      labelBuilder: (sort) => sort.label(context),
-                      title: S.of(context).sort,
-                      showTitle: !isPortrait,
-                      svgPath: AppAssets.sort,
-                      width: double.infinity,
-                      height: 38.h,
-                      // Bug report #4: no gap between Sort and its menu —
-                      // use the widget's default 2.sp offset.
-                      onChanged: controller.sortChats,
-                    ),
+                // CHANGED 17/10/2026: the To-Do sort — the custom's own
+                // sizes (38 x 38 on phone, 100 x 38 with label on iPad).
+                CustomSortButton<SortEnum>(
+                  value: controller.sort,
+                  items: SortEnum.values,
+                  labelBuilder: (sort) => sort.label(context),
+                  title: S.of(context).sort,
+                  showTitle: !isPortrait,
+                  svgPath: AppAssets.sort,
+                  onChanged: controller.sortChats,
                 ),
                 // CHANGED 21/9/2026 — the same check GroupsCubit.createGroup
                 // enforces (master toggle AND switch). Checking only the
@@ -109,7 +99,7 @@ class HomeTabletLayout extends StatelessWidget {
                   ),
               ],
             ),
-             Expanded(child: TabletLayoutBody()),
+            Expanded(child: TabletLayoutBody()),
           ],
         );
       },

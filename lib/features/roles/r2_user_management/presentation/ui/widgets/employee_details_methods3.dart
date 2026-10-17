@@ -2,14 +2,14 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: employee_details_methods3.dart
-/// Purpose: Declares `EmployeeDetailsMethods3`.
+/// Purpose: Declares `_EmployeeDetailsMethods3`.
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
 /// Updated: 25/8/2026 - Permission chips render through PermissionLabel (ar/en).
 
 part of '../pages/employee_details.dart';
 
-extension EmployeeDetailsMethods3 on _RoleEmployeeDetailsPageState {
+extension _EmployeeDetailsMethods3 on _RoleEmployeeDetailsPageState {
   Widget _buildModulePermissionRow({
     required bool lightMode,
     required String moduleString,
@@ -33,8 +33,8 @@ extension EmployeeDetailsMethods3 on _RoleEmployeeDetailsPageState {
             height: 32.sp,
             alignment: Alignment.center,
             width: 20.sp,
-            child: CustomSvgImage(assetPath: 
-              module.iconPathRole,
+            child: CustomSvgImage(
+              assetPath: module.iconPathRole,
               width: 20.sp,
               height: 20.sp,
               color: AppColors.primary,
@@ -44,29 +44,30 @@ extension EmployeeDetailsMethods3 on _RoleEmployeeDetailsPageState {
           Expanded(
             child: actions.isEmpty
                 ? Container(
-              height: 32.sp,
-              alignment: Alignment.centerLeft,
-              child: Text(
-                S.current.no_specific_permissions,
-                style: StyleText.fontSize12Weight400.copyWith(
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-            )
+                    height: 32.sp,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      S.current.no_specific_permissions,
+                      style: StyleText.fontSize12Weight400.copyWith(
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  )
                 : LayoutBuilder(
-              builder: (context, constraints) {
-                final maxW = constraints.maxWidth;
-                if (maxW <= 0 || maxW.isInfinite) {
-                  return _buildPermissionChipsWrap(actions, lightMode);
-                }
-                return _buildPermissionChips(actions, maxW, lightMode);
-              },
-            ),
+                    builder: (context, constraints) {
+                      final maxW = constraints.maxWidth;
+                      if (maxW <= 0 || maxW.isInfinite) {
+                        return _buildPermissionChipsWrap(actions, lightMode);
+                      }
+                      return _buildPermissionChips(actions, maxW, lightMode);
+                    },
+                  ),
           ),
         ],
       ),
     );
   }
+
   Widget _buildPermissionChipsWrap(List<String> permissions, bool lightMode) {
     return Wrap(
       spacing: 8.w,
@@ -74,6 +75,7 @@ extension EmployeeDetailsMethods3 on _RoleEmployeeDetailsPageState {
       children: permissions.map((p) => _buildChip(p, lightMode)).toList(),
     );
   }
+
   Widget _buildPermissionChips(
       List<String> permissions, double maxWidth, bool lightMode) {
     if (maxWidth < 200) {
@@ -141,6 +143,7 @@ extension EmployeeDetailsMethods3 on _RoleEmployeeDetailsPageState {
     }
     return content;
   }
+
   /// The permission chip's text, in the active locale.
   ///
   /// LOCALIZED 25/8/2026: the chips rendered `_formatPermissionName`, which
@@ -160,7 +163,7 @@ extension EmployeeDetailsMethods3 on _RoleEmployeeDetailsPageState {
     return Container(
       height: 32.sp,
       decoration: BoxDecoration(
-        color: AppColors.field,
+        color: AppColors.card,
         borderRadius: BorderRadius.circular(4.sp),
       ),
       padding: EdgeInsets.symmetric(horizontal: 10.sp, vertical: 5.sp),
@@ -168,13 +171,12 @@ extension EmployeeDetailsMethods3 on _RoleEmployeeDetailsPageState {
       child: Text(
         _permissionChipLabel(permissionKey),
         style: StyleText.fontSize12Weight500.copyWith(
-          color: lightMode
-              ? AppColors.blackButton
-              : AppColors.white,
+          color: AppColors.blackButton,
         ),
       ),
     );
   }
+
   double _calculateChipWidth(String permissionKey) {
     final textPainter = TextPainter(
       text: TextSpan(
@@ -190,44 +192,13 @@ extension EmployeeDetailsMethods3 on _RoleEmployeeDetailsPageState {
     textPainter.layout();
     return textPainter.width + 20.sp + 4;
   }
-  Widget itemText({
-    required String label,
-    required String value,
-    TextStyle? labelStyle,
-    TextStyle? valueStyle,
-  }) {
-    final lightMode = Theme.of(context).brightness == Brightness.light;
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Text(
-          FormatHelper.capitalize(label),
-          style: labelStyle ??
-              StyleText.fontSize10Weight500.copyWith(
-                color: lightMode
-                    ? AppColors.secondaryText
-                    : AppColors.grey,
-              ),
-        ),
-        Text(
-          FormatHelper.capitalize(value),
-          style: valueStyle ??
-              StyleText.fontSize10Weight500.copyWith(
-                color: lightMode
-                    ? AppColors.blackButton
-                    : AppColors.white,
-              ),
-        ),
-      ],
-    );
-  }
+
   Widget itemTextProduct({
     required String label,
     required String value,
     required String image,
     Color? valueColor,
   }) {
-    final lightMode = Theme.of(context).brightness == Brightness.light;
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -242,17 +213,17 @@ extension EmployeeDetailsMethods3 on _RoleEmployeeDetailsPageState {
           FormatHelper.capitalize(label),
           style: ContextExtension(context).isPhone
               ? StyleText.fontSize12Weight500
-              .copyWith(color: AppColors.secondaryText)
+                  .copyWith(color: AppColors.secondaryText)
               : StyleText.fontSize14Weight500
-              .copyWith(color: AppColors.secondaryText),
+                  .copyWith(color: AppColors.secondaryText),
         ),
         Text(
           FormatHelper.capitalize(value),
           style: ContextExtension(context).isPhone
               ? StyleText.fontSize12Weight500
-              .copyWith(color: valueColor ?? AppColors.text)
+                  .copyWith(color: valueColor ?? AppColors.text)
               : StyleText.fontSize14Weight500
-              .copyWith(color: valueColor ?? AppColors.text),
+                  .copyWith(color: valueColor ?? AppColors.text),
         ),
       ],
     );

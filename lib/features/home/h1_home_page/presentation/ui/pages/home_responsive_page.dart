@@ -5,6 +5,7 @@
 /// Purpose: Declares `HomeResponsivePage`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 /// Fixed HomeResponsivePage that properly handles resize
 ///
@@ -18,13 +19,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/controller/home_cubit.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/pages/home_screen.dart';
 import 'package:get/get.dart';
-import 'package:grc_module/core/custom/70-custom_appbar.dart';
-import 'package:grc_module/features/roles/r1_role_management/presentation/ui/pages/role_management_home.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/controller/schedule_controller.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/controller/skeleton_home_controller.dart';
-import 'package:grc_module/features/home/main_controller/helper/todo_new_module/todo_stub.dart';
-import 'package:grc_module/features/home/main_controller/helper/events/events_stub.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
+import 'package:grc_module/features/home/helpers/events/events_stub.dart';
+import 'package:grc_module/core/helper/access/modules_enum.dart';
 import 'package:grc_module/features/settings/se8_watermark/presentation/ui/widgets/watermark_layer.dart';
 
 // Import the controllers
@@ -51,11 +49,9 @@ class _HomeResponsivePageState extends State<HomeResponsivePage> {
     if (!Get.isRegistered<SkeletonHomeController>()) {
       Get.put(SkeletonHomeController());
     }
-    // ScheduleController's constructor calls Get.find() for these stub
-    // controllers, so they must be registered BEFORE it is created.
-    if (!Get.isRegistered<TodoController>()) {
-      Get.put(TodoController());
-    }
+    // ScheduleController's constructor calls Get.find() for this stub
+    // controller, so it must be registered BEFORE it is created. (To-dos come
+    // from the To-Do module through get_it.)
     if (!Get.isRegistered<EventsEmployeeController>()) {
       Get.put(EventsEmployeeController());
     }
@@ -83,7 +79,6 @@ class _HomeResponsivePageState extends State<HomeResponsivePage> {
 
     // ✅ Detect size change
     if (_wasTablet != null && _wasTablet != isTablet) {
-
       // Clean up wrong controller after build
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _handleSizeChange(isTablet);
@@ -131,7 +126,6 @@ class _HomeResponsivePageState extends State<HomeResponsivePage> {
   }
 
   void _handleSizeChange(bool isNowTablet) {
-
     if (isNowTablet) {
       // Switched to tablet - remove NavBarCubit
       if (Get.isRegistered<NavBarCubit>()) {

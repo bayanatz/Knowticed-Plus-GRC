@@ -13,13 +13,15 @@
 /// a card height of 120 (200 for the taller progress-bar card).
 library;
 
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/custom/16-custom_card_styles.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
+import 'package:grc_module/core/custom/cards/custom_card_styles.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
 /// One grid column.
 const double kHomeWidgetNarrowWidth = 125;
@@ -55,39 +57,41 @@ const double kHomeWidgetTallHeight = 200;
 /// pubspec's `assets:` block, so none of them can fail at runtime.
 abstract class HomeWidgetSvg {
   static const String service =
-      'assets/icons_assets/services_assets/headset_support.svg';
+      'assets/icons_assets/main_icons_assets/ic_module_support_headset.svg';
   static const String serviceRequest =
-      'assets/icons_assets/home_assets/service_requests_document.svg';
+      'assets/icons_assets/main_icons_assets/ic_data_service_requests.svg';
   static const String serviceTap =
-      'assets/icons_assets/home_assets/service_tap_finger.svg';
-  static const String sla = 'assets/icons_assets/home_assets/sla_stopwatch.svg';
+      'assets/icons_assets/home_assets/ic_data_service_total.svg';
+  static const String sla = 'assets/icons_assets/home_assets/ic_time_sla.svg';
   static const String done =
-      'assets/icons_assets/home_assets/todo_done_stamp.svg';
-  static const String approved = 'assets/icons_assets/watermark/Approved.svg';
-  static const String closed = 'assets/icons_assets/watermark/Closed.svg';
-  static const String fixed = 'assets/icons_assets/watermark/Fixed.svg';
-  static const String open = 'assets/icons_assets/watermark/Open.svg';
+      'assets/icons_assets/home_assets/ic_status_todo_done.svg';
+  static const String approved =
+      'assets/icons_assets/home_assets/ic_approved.svg';
+  static const String closed = 'assets/icons_assets/home_assets/ic_closed.svg';
+  static const String fixed = 'assets/icons_assets/home_assets/ic_fixed.svg';
+  static const String open = 'assets/icons_assets/home_assets/ic_open.svg';
 
-  static const String pending = 'assets/icons_assets/watermark/Pending.svg';
-  static const String rejected = 'assets/icons_assets/watermark/Rejected.svg';
+  static const String pending = 'assets/icons_assets/main_icons_assets/ic_pending.svg';
+  static const String rejected =
+      'assets/icons_assets/home_assets/ic_rejected.svg';
   static const String hourglass =
-      'assets/icons_assets/home_assets/hourglass_pending.svg';
+      'assets/icons_assets/home_assets/ic_status_pending_hourglass.svg';
   static const String checkGreen =
-      'assets/icons_assets/main_icons_assets/check_circle_green.svg';
+      'assets/icons_assets/main_icons_assets/ic_status_success_small.svg';
   static const String rejectedStamp =
-      'assets/icons_assets/home_assets/rejected_stamp_red.svg';
+      'assets/icons_assets/home_assets/ic_status_rejected_stamp.svg';
   static const String chat =
-      'assets/icons_assets/main_icons_assets/chat_bubble_dots.svg';
+      'assets/icons_assets/main_icons_assets/ic_messages_new.svg';
   static const String messages =
-      'assets/icons_assets/main_icons_assets/roles_icons_Messages.svg';
+      'assets/icons_assets/main_icons_assets/ic_comms_chat_double.svg';
   static const String avatar =
-      'assets/icons_assets/main_icons_assets/male_avatar.svg';
+      'assets/icons_assets/main_icons_assets/ic_user_avatar_male.png';
   static const String group =
-      'assets/icons_assets/main_icons_assets/users_group_three.svg';
+      'assets/icons_assets/main_icons_assets/ic_user_group.svg';
   static const String bell =
-      'assets/icons_assets/main_icons_assets/notification_bell.svg';
+      'assets/icons_assets/main_icons_assets/ic_comms_notification_bell.svg';
   static const String lowStock =
-      'assets/icons_assets/home_assets/inventory_damaged_box.svg';
+      'assets/icons_assets/main_icons_assets/ic_data_inventory_damaged.svg';
 
   // ── Lifecycle statuses ────────────────────────────────────────────────────
   // ADDED 25/8/2026 for the four Roles cards (home_roles_widgets.dart), whose
@@ -98,23 +102,25 @@ abstract class HomeWidgetSvg {
   // `EmployeeStatusStyle.color`) so a tile and its module's screens agree.
 
   static const String statusActive =
-      'assets/icons_assets/watermark/active_roles.svg';
+      'assets/icons_assets/home_assets/ic_active_roles.svg';
   static const String statusInactive =
-      'assets/icons_assets/watermark/inactice_roles.svg';
+      'assets/icons_assets/home_assets/ic_inactice_roles.svg';
 
   /// A draft is something still being written — hence the pencil. Figma draws a
   /// bookmark here; there is no bookmark glyph in the app's icon set, and
   /// adding one for a single tile would leave the app with two marks for the
   /// same idea.
-  static const String statusDraft = 'assets/icons_assets/watermark/draft.svg';
+  static const String statusDraft =
+      'assets/icons_assets/home_assets/ic_draft.svg';
 
   /// Both "Scheduled" (a grant that has not started) and "Scheduled
   /// Deactivation" — in each case the state is *waiting on a date*.
   static const String statusScheduled =
-      'assets/icons_assets/watermark/Scheduled Deactivation.svg';
+      'assets/icons_assets/home_assets/ic_scheduled_deactivation.svg';
   static const String statusDeactivated =
-      'assets/icons_assets/watermark/Deactivate.svg';
-  static const String statusLocked = 'assets/icons_assets/watermark/Locked.svg';
+      'assets/icons_assets/home_assets/ic_deactivate.svg';
+  static const String statusLocked =
+      'assets/icons_assets/home_assets/ic_locked.svg';
 }
 
 /// The white rounded card every Adding Widget entry sits in.
@@ -252,6 +258,7 @@ class HomeCardButton extends StatelessWidget {
     );
 
     return InkWell(
+      onTapDown: hapticDown(onTap, HapticLevel.low),
       onTap: onTap,
       borderRadius: BorderRadius.circular(4.r),
       child: Container(
@@ -333,7 +340,8 @@ class HomeStatTile extends StatelessWidget {
         else
           Text(
             label,
-            style: StyleText.fontSize12Weight500.copyWith(color: AppColors.text),
+            style:
+                StyleText.fontSize12Weight500.copyWith(color: AppColors.text),
             maxLines: labelMaxLines,
             overflow: TextOverflow.ellipsis,
           ),
@@ -527,7 +535,12 @@ class HomeCountLine extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 1.h),
       child: Row(
         children: <Widget>[
-          CustomSvgImage(assetPath: icon, width: 16.sp, height: 16.sp,fit: BoxFit.fill,),
+          CustomSvgImage(
+            assetPath: icon,
+            width: 16.sp,
+            height: 16.sp,
+            fit: BoxFit.fill,
+          ),
           SizedBox(width: 4.w),
           Text(value, style: CardStyles.value(11)),
         ],

@@ -1,9 +1,11 @@
 /// Module: messaging / chat / presentation/controller/functions_on_messages_controllers/overlay_cubit.dart
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../domain/entity/message_entity.dart';
-import '../main_controllers/master_chat_cubit.dart';
-import '../../ui/pages/chat_mobile_view.dart';
+import 'package:grc_module/features/messaging/m1_chat/domain/entity/message_entity.dart';
+import 'package:grc_module/features/messaging/m1_chat/presentation/controller/main_controllers/master_chat_cubit.dart';
+import 'package:grc_module/features/messaging/m1_chat/presentation/ui/pages/chat_mobile_view.dart';
 
 class OverlayState {
   final OverlayEntry? overlayEntry;
@@ -37,7 +39,6 @@ class OverlayCubit extends Cubit<OverlayState> {
     required bool isGroup,
     required MessageEntity messageModel,
   }) {
-
     if (messageModel.isDeleted) return;
 
     // ✅ Safe remove — guard against stale entries
@@ -96,6 +97,7 @@ class OverlayCubit extends Cubit<OverlayState> {
         state.overlayEntry!.remove();
         state.overlayEntry!.dispose();
       } catch (e) {
+        debugPrint('Ignored error: $e');
       }
     }
   }

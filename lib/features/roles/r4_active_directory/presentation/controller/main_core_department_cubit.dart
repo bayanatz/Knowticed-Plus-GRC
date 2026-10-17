@@ -9,6 +9,7 @@
 ///              The old onInit() auto-load now runs from the constructor, so
 ///              creating the cubit still kicks off the department fetch.
 /// ********************************************************************* ///
+library;
 
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -16,13 +17,12 @@ import 'package:dartz/dartz.dart';
 // Full import: `Get.locale` is an extension member on GetInterface, so a
 // `show Get` clause does not bring it into scope.
 
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
+import 'package:grc_module/core/helper/format_title.dart';
 import 'package:grc_module/core/network/failure_model.dart';
 import 'package:grc_module/features/roles/r4_active_directory/data/models/department_model.dart';
 import 'package:grc_module/features/roles/r4_active_directory/data/repository/department_repository.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
 
-part './main_core_department_state.dart';
+part 'main_core_department_state.dart';
 
 class MainCoreDepartmentCubit extends Cubit<MainCoreDepartmentState> {
   /// Kicks off [getAllDepartments] immediately, mirroring the GetxController
@@ -121,9 +121,15 @@ class MainCoreDepartmentCubit extends Cubit<MainCoreDepartmentState> {
   /// behaviour for every existing call site (all pass an explicit value).
   String getDepartmentName(String departmentId, bool? isEnglish) {
     final bool useEnglish = isEnglish ?? true;
-    return useEnglish
-        ? getEnglishDepartmentNameFromDepartmentId(departmentId: departmentId)!
-        : getArabicDepartmentNameFromDepartmentId(departmentId: departmentId)!;
+    // `?? ''` not `!` (7/10/2026): an employee with an empty / unknown
+    // department id (e.g. a freshly activated company admin) crashed every
+    // screen that shows a department — first seen on the Notifications inbox.
+    return (useEnglish
+            ? getEnglishDepartmentNameFromDepartmentId(
+                departmentId: departmentId)
+            : getArabicDepartmentNameFromDepartmentId(
+                departmentId: departmentId)) ??
+        '';
   }
 
   /// Fetches the department ID based on the department name or its Arabic
@@ -220,8 +226,7 @@ class MainCoreDepartmentCubit extends Cubit<MainCoreDepartmentState> {
     return _departmentsArabicNameFromDepartmentId[departmentId];
   }
 
-  dynamic getDepartmentEnglishNameFromArabicName(
-      {required String arabicName}) {
+  dynamic getDepartmentEnglishNameFromArabicName({required String arabicName}) {
     String departmentId =
         getDepartmentIdFromDepartmentName(departmentName: arabicName)!;
     return getEnglishDepartmentNameFromDepartmentId(departmentId: departmentId);

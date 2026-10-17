@@ -17,6 +17,7 @@
 ///          is gone; the heading row is now painted by `DefaultDataTable`.
 /// Updated: 30/8/2026 - Labels centred over their column (`headingRowAlignment`),
 ///          matching the values below them. Type size is unchanged at 14.sp.
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -24,7 +25,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 
-import 'package:grc_module/features/roles/r5_system_logs/domain/constants/system_logs_constants.dart';
+import 'package:grc_module/features/roles/helpers/constants/system_logs_constants.dart';
 
 /// The system logs table heading, as `DataTable` columns.
 ///

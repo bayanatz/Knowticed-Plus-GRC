@@ -9,6 +9,7 @@
 /// Added for CR-SKEL-SE3-N01 / N07. `CompanyCubit` held
 /// `FirebaseFirestore.instance` and called `.doc().set(...)` / `.doc().get()`
 /// itself — a Firestore call from the presentation layer.
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 

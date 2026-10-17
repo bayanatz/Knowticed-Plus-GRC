@@ -2,11 +2,11 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: dialog.dart
-/// Purpose: Shared calendar widget.
-/// Author: Knowticed Plus team
+/// Description: Shared calendar widget.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
-
-import 'dart:math';
+library;
 
 import 'package:flutter/material.dart';
 
@@ -28,7 +28,6 @@ Future<List<DateTime?>?> showCalendarDatePicker2Dialog({
   RouteSettings? routeSettings,
   String? barrierLabel,
   TransitionBuilder? builder,
- 
 }) {
   var dialog = Dialog(
     insetPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
@@ -45,7 +44,6 @@ Future<List<DateTime?>?> showCalendarDatePicker2Dialog({
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CalendarDatePicker2WithActionButtons(
-       
             value: value,
             config: config.copyWith(openedFromDialog: true),
           ),

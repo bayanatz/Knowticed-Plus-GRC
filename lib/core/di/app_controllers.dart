@@ -5,6 +5,7 @@
 /// Purpose: Declares `AppControllers`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 // ******************* FILE INFO *******************
 // File Name: app_controllers.dart
@@ -19,14 +20,14 @@
 
 import 'package:get/get.dart';
 
-import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
+import 'package:grc_module/core/helper/access/main_core_employee_controller.dart';
 import 'package:grc_module/core/theme/haptic_controller.dart';
 import 'package:grc_module/core/theme/theme_controller.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/controller/settings_controller.dart';
+import 'package:grc_module/features/settings/presentation/controller/settings_controller.dart';
 import 'package:grc_module/features/roles/r4_active_directory/presentation/controller/active_directory_controller.dart';
 import 'package:grc_module/features/roles/r4_active_directory/presentation/controller/wrong_employee_cubit.dart';
 import 'package:grc_module/features/notification/presentation/controller/app_notification_cubit.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/controller/employee_controller.dart';
+import 'package:grc_module/features/settings/presentation/controller/employee_controller.dart';
 import 'package:grc_module/features/roles/r5_system_logs/presentation/controller/system_logs_controller.dart';
 import 'package:grc_module/features/roles/r4_active_directory/presentation/controller/main_core_department_cubit.dart';
 import 'package:grc_module/features/settings/se3_company/presentation/controller/company_cubit.dart';
@@ -61,7 +62,8 @@ class AppControllers {
       Get.find<ActiveDirectoryController>();
 
   /// Registers [activeDirectory] if it is not already in the locator.
-  static void ensureActiveDirectory(ActiveDirectoryController Function() build) {
+  static void ensureActiveDirectory(
+      ActiveDirectoryController Function() build) {
     if (!Get.isRegistered<ActiveDirectoryController>()) {
       Get.put(build());
     }
@@ -84,7 +86,8 @@ class AppControllers {
   /// Added so the user-access feature can drop its `Get.find<AppNotificationCubit>()`
   /// calls — one of which sat in a `domain/` use case, where a service-locator
   /// lookup is doubly wrong (GetX standing rule + §3 domain purity).
-  static AppNotificationCubit get notifications => Get.find<AppNotificationCubit>();
+  static AppNotificationCubit get notifications =>
+      Get.find<AppNotificationCubit>();
 
   /// Whether [employee] can currently be resolved.
   ///
@@ -99,7 +102,8 @@ class AppControllers {
   /// Distinct from [employee], which is the *current user*. Added so the user-
   /// management feature can drop its seven raw `Get.find<EmployeeController>()`
   /// calls (GetX standing rule).
-  static EmployeeController get employeeDirectory => Get.find<EmployeeController>();
+  static EmployeeController get employeeDirectory =>
+      Get.find<EmployeeController>();
 
   /// The shared haptic-feedback controller.
   ///
@@ -110,7 +114,8 @@ class AppControllers {
   static HapticController get haptic => Get.put(HapticController());
 
   /// The system-logs cubit, used by the roles module to record page actions.
-  static SystemLogsController get systemLogs => Get.find<SystemLogsController>();
+  static SystemLogsController get systemLogs =>
+      Get.find<SystemLogsController>();
 
   /// The app-wide company branding/info cubit, created and owned by main().
   ///
@@ -120,4 +125,15 @@ class AppControllers {
   /// caller able to pass one down: RoleRepository.isCompanyAdminByEmail and
   /// UserManagementCubit's company-email lookup.
   static CompanyCubit get company => Get.find<CompanyCubit>();
+
+  /// The department cubit (Active Directory).
+  static MainCoreDepartmentCubit get departments =>
+      Get.find<MainCoreDepartmentCubit>();
+
+  /// The [EmployeeController] holding the signed-in employee, or null before
+  /// sign-in (it is registered by `LoginController`). Never throws.
+  static EmployeeController? get signedInEmployeeDirectory =>
+      Get.isRegistered<EmployeeController>()
+          ? Get.find<EmployeeController>()
+          : null;
 }

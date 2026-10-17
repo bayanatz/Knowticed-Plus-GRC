@@ -5,28 +5,28 @@
 /// Purpose: Declares `AccessInfo`.
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'package:flutter/cupertino.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
+import 'package:grc_module/core/helper/format_title.dart';
 // REMOVED_MODULE: import 'package:grc_module/core/helper/data_grc_module/core/extensions/extensions.dart';
 import 'package:grc_module/features/roles/r2_user_management/presentation/controller/user_management_cubit.dart';
 
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_font_weights.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/helper/role/constants.dart';
+import 'package:grc_module/core/helper/access/constants.dart';
 import 'package:grc_module/generated/l10n.dart';
 
 class AccessInfo extends StatelessWidget {
-  AccessInfo({super.key});
-  late UserManagementAccessCubit controller;
+  const AccessInfo({super.key});
   @override
   Widget build(BuildContext context) {
-    controller = context.read<UserManagementAccessCubit>();
+    final UserManagementAccessCubit controller = context.read<UserManagementAccessCubit>();
 
     return Column(
       spacing: 8.sp,
@@ -68,7 +68,7 @@ class AccessInfo extends StatelessWidget {
         height: 75.sp,
         padding: EdgeInsets.all(15.sp),
         decoration: BoxDecoration(
-          color: AppColors.field,
+          color: AppColors.card,
           borderRadius: BorderRadius.circular(8.sp),
         ),
         child: Column(
@@ -76,12 +76,14 @@ class AccessInfo extends StatelessWidget {
           children: [
             FittedBox(
               child: Text(title,
-                  style: StyleText.fontSize14Weight600
-                      .copyWith(fontSize: 13.sp)),
+                  style:
+                      StyleText.fontSize14Weight600.copyWith(fontSize: 13.sp)),
             ),
             Text(value,
-                style: StyleText.fontSize14Weight500.copyWith(color: AppColors.secondaryBlack).copyWith(
-                    fontSize: 13.sp, fontWeight: AppFontWeights.semiBold)),
+                style: StyleText.fontSize14Weight500
+                    .copyWith(color: AppColors.secondaryBlack)
+                    .copyWith(
+                        fontSize: 13.sp, fontWeight: AppFontWeights.semiBold)),
           ],
         ));
   }

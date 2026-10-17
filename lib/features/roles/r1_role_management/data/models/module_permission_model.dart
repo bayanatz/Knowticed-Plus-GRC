@@ -5,6 +5,7 @@
 /// Purpose: Declares `ModulePermissionModel`.
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:grc_module/features/roles/r1_role_management/domain/entities/module_permissions_sections.dart';
@@ -54,10 +55,9 @@ class ModulePermissionModel {
 
   factory ModulePermissionModel.fromMap(Map<String, dynamic> map,
       {required List<ModulePermissionsSections> constructedAdminSections,
-        required Map<ModulePermissionsSections,
-            List<ModulePermissionsSectionsPermission>>
-        constructedSectionsPermissions})
-  {
+      required Map<ModulePermissionsSections,
+              List<ModulePermissionsSectionsPermission>>
+          constructedSectionsPermissions}) {
     return ModulePermissionModel(
       granted: map[grantedKey] != null ? map[grantedKey] as bool : null,
       grantorEmail: map[grantorEmailKey] != null

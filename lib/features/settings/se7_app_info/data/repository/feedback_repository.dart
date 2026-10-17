@@ -10,6 +10,7 @@
 /// The raw Firestore error is converted to a [Failure] here so the controller
 /// never sees a `FirebaseException` and cannot interpolate it into a
 /// user-facing message.
+library;
 
 import 'dart:typed_data';
 

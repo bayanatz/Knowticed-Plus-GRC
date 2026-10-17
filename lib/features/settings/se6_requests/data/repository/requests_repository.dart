@@ -8,6 +8,7 @@
 ///
 /// Added for CR-SKEL-SE6-N01 / N02. This is the legal home for the 17 `try`
 /// blocks that were spread across the four pages.
+library;
 
 import 'package:dartz/dartz.dart';
 
@@ -16,6 +17,9 @@ import 'package:grc_module/features/settings/se6_requests/data/data_source/remot
 import 'package:grc_module/features/settings/se6_requests/domain/base_repository/requests_base_repository.dart';
 import 'package:grc_module/features/settings/se6_requests/domain/entities/change_request.dart';
 import 'package:grc_module/features/settings/se6_requests/domain/enums/request_status.dart';
+// ADDED 9/10/2026 — self-approval block.
+import 'package:grc_module/features/settings/se6_requests/domain/rules/self_approval_rule.dart';
+import 'package:grc_module/generated/l10n.dart';
 
 class RequestsRepository implements RequestsBaseRepository {
   RequestsRepository({RequestsRemoteDataSource? remoteDataSource})
@@ -87,10 +91,65 @@ class RequestsRepository implements RequestsBaseRepository {
     }
   }
 
+  /// Function Name: [_guardDecision]
+  ///
+  /// Purpose: The self-approval check, run against the STORED request
+  ///          (ADDED 9/10/2026, owner decision).
+  ///
+  /// The screens already hide Approve / Reject on an own request; this is the
+  /// second check, so a stale screen, a role switch mid-session or a future
+  /// caller cannot get round it. The request is re-read rather than trusted
+  /// from the caller, and anything that cannot be verified is refused.
+  ///
+  /// Returns: `null` when the decision may go ahead, otherwise the
+  ///          localized [SelfApprovalFailure] to return. Never throws.
+  Future<Failure?> _guardDecision({
+    required String requestId,
+    required String deciderEmail,
+    required String deciderEmployeeId,
+  }) async {
+    try {
+      final ChangeRequest? stored = await _remoteDataSource.read(requestId);
+
+      final SelfApprovalVerdict verdict = stored == null
+          ? SelfApprovalVerdict.unverifiable
+          : SelfApprovalRule.check(
+              requesterEmail: stored.employeeEmail,
+              requesterId: stored.employeeId,
+              deciderEmail: deciderEmail,
+              deciderId: deciderEmployeeId,
+            );
+
+      if (verdict.isAllowed) return null;
+      return _selfApprovalFailure(verdict);
+    } catch (e) {
+      // Could not read the request — fail closed.
+      return _selfApprovalFailure(SelfApprovalVerdict.unverifiable);
+    }
+  }
+
+  /// The user-facing EN/AR failure for a blocked decision.
+  static SelfApprovalFailure _selfApprovalFailure(SelfApprovalVerdict verdict) {
+    String message;
+    try {
+      message = verdict == SelfApprovalVerdict.ownRequest
+          ? S.current.selfApprovalBlocked
+          : S.current.requestDecisionUnverifiable;
+    } catch (_) {
+      // S not loaded (should not happen in the app) — still refuse.
+      message = verdict == SelfApprovalVerdict.ownRequest
+          ? 'You cannot approve or reject your own request.'
+          : 'This decision could not be verified, so nothing was saved.';
+    }
+    return SelfApprovalFailure(message, verdict: verdict);
+  }
+
   @override
   Future<Either<Failure, void>> approveRequest({
     required ChangeRequest request,
     required String employeeId,
+    required String approverEmail,
+    String approverEmployeeId = '',
     String reason = '',
   }) async {
     if (employeeId.isEmpty) {
@@ -99,6 +158,14 @@ class RequestsRepository implements RequestsBaseRepository {
     if (request.id.isEmpty) {
       return Left<Failure, void>(FeatureFailure('No request id was supplied.'));
     }
+
+    // ADDED 9/10/2026 — never the requester; checked before ANY write.
+    final Failure? blocked = await _guardDecision(
+      requestId: request.id,
+      deciderEmail: approverEmail,
+      deciderEmployeeId: approverEmployeeId,
+    );
+    if (blocked != null) return Left<Failure, void>(blocked);
 
     try {
       // Profile first, status second. If the profile write throws, the request
@@ -136,9 +203,22 @@ class RequestsRepository implements RequestsBaseRepository {
     required String requestId,
     required RequestStatus status,
     String reason = '',
+    String deciderEmail = '',
+    String deciderEmployeeId = '',
   }) async {
     if (requestId.isEmpty) {
       return Left<Failure, void>(FeatureFailure('No request id was supplied.'));
+    }
+
+    // ADDED 9/10/2026 — a reject (or approve) is a reviewer's decision and
+    // goes through the same self-approval check; cancel does not.
+    if (SelfApprovalRule.isDecision(status)) {
+      final Failure? blocked = await _guardDecision(
+        requestId: requestId,
+        deciderEmail: deciderEmail,
+        deciderEmployeeId: deciderEmployeeId,
+      );
+      if (blocked != null) return Left<Failure, void>(blocked);
     }
 
     try {

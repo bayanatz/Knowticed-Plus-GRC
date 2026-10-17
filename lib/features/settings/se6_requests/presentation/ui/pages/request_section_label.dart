@@ -21,6 +21,7 @@
 /// Both copies also hardcoded the Arabic strings inline rather than using the
 /// `personalInformation` / `healthInsurance` / `emergencyContact` keys that
 /// already existed in both .arb files.
+library;
 
 import 'package:flutter/widgets.dart';
 

@@ -1,4 +1,6 @@
 /// Module: messaging / chat / data/models/message/doc_message_model.dart
+library;
+
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -67,7 +69,8 @@ class DocMessageModel {
     // have none (29/9/2026). Both — and int/double sizes — must read.
     final Object? rawFirstPage = map[firstPageBytesKey];
     final Uint8List? firstPageBytes = rawFirstPage is List
-        ? Uint8List.fromList(rawFirstPage.map((e) => (e as num).toInt()).toList())
+        ? Uint8List.fromList(
+            rawFirstPage.map((e) => (e as num).toInt()).toList())
         : null;
 
     return DocMessageModel(

@@ -30,6 +30,7 @@
 /// than here: those seven enums describe a report's CONTENT, the three in this
 /// file describe its LIFECYCLE, and folding them together would double the
 /// length of this one.
+library;
 
 import 'package:grc_module/features/settings/se7_app_info/domain/entities/feedback_details.dart';
 

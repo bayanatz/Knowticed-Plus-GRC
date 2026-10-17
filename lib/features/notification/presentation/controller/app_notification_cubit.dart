@@ -6,6 +6,7 @@
 /// Author: Knowticed Plus team
 /// Created at: 2026
 /// Updated: 12/8/2026 - Added the standard header (Docs).
+library;
 
 /// ***************************** FILE INFO ***************************** ///
 /// File Name: app_notification_cubit.dart
@@ -20,10 +21,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:grc_module/features/settings/main_controller/presentation/ui/pages/settings_screen.dart';
+import 'package:grc_module/features/settings/presentation/ui/pages/settings_screen.dart';
 import 'package:grc_module/core/constants/firebase_collections.dart';
 
-part './app_notification_state.dart';
+part 'app_notification_state.dart';
 
 class AppNotificationCubit extends Cubit<AppNotificationState> {
   AppNotificationCubit() : super(const AppNotificationInitial());
@@ -77,7 +78,7 @@ class AppNotificationCubit extends Cubit<AppNotificationState> {
   /// Stream of unseen notifications for the currently logged-in employee.
   Stream<QuerySnapshot>? getUnseenNotificationsStream() {
     try {
-      final email = employee?.email?.lastOrNull;
+      final email = employee?.email.lastOrNull;
       if (email == null || email.isEmpty) return null;
       return FirebaseFirestore.instance
           .collection(FirebaseCollections.notifications)

@@ -5,6 +5,7 @@
 /// Purpose: Declares `HomeServicesOfferedChart`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 ///********************** FILE INFO ****************************///
 /// Purpose: The chart components offered on the Home Layout "Chart & Graph"
@@ -16,9 +17,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:grc_module/core/custom/24-custom_chart_card.dart';
-import 'package:grc_module/core/custom/26-custom_bar_chart_card.dart';
-import 'package:grc_module/core/custom/28-custom_horizontal_bar_chart_card.dart';
+import 'package:grc_module/core/custom/charts/custom_chart_card.dart';
+import 'package:grc_module/core/custom/charts/custom_bar_chart_card.dart';
+import 'package:grc_module/core/custom/charts/custom_horizontal_bar_chart_card.dart';
 import 'package:grc_module/generated/l10n.dart';
 
 /// Shared sizing so every chart card lines up in the picker grid and on the
@@ -31,12 +32,49 @@ const double kHomeChartHeight = 200;
 String _formatLabel(String label, bool isArabic) {
   if (!isArabic) return label;
   const english = [
-    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-    'S', 's', 'A', 'a', 'B', 'b', 'C', 'c', 'D', 'd',
+    '0',
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    'S',
+    's',
+    'A',
+    'a',
+    'B',
+    'b',
+    'C',
+    'c',
+    'D',
+    'd',
   ];
+  // D-145: digits stay Western in Arabic; only the letters are mapped.
   const arabic = [
-    '٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩',
-    'س', 'س', 'أ', 'أ', 'ب', 'ب', 'ج', 'ج', 'د', 'د',
+    '0',
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    'س',
+    'س',
+    'أ',
+    'أ',
+    'ب',
+    'ب',
+    'ج',
+    'ج',
+    'د',
+    'د',
   ];
   String result = label;
   for (int i = 0; i < english.length; i++) {

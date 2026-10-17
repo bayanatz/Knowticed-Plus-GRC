@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/custom/46-custom_image_picker.dart';
+import 'package:grc_module/core/custom/pickers/custom_image_picker.dart';
 
 class AvatarChat extends StatelessWidget {
   final String? imageUrl;

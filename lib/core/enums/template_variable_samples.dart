@@ -10,10 +10,11 @@
 /// each `{{placeholder}}` it declares. The "Apply all modules" demo seeder
 /// sends EVERY event, so it needs a believable value for ANY variable without
 /// a hand-written map per event. [sampleValue] derives one from the key:
-/// dates become a real date, counts a number, names "Demo <Thing>".
+/// dates become a real date, counts a number, names "Demo `<Thing>`".
+library;
 
 import 'package:intl/intl.dart';
-import 'template_variable.dart';
+import 'package:grc_module/core/enums/template_variable.dart';
 
 extension TemplateVariableSample on TemplateVariable {
   /// A believable demo value for this placeholder.
@@ -40,7 +41,8 @@ extension TemplateVariableSample on TemplateVariable {
 
     // camelCase -> "Demo Service" / "Demo Rejection Reason".
     final String words = k
-        .replaceAllMapped(RegExp(r'([a-z0-9])([A-Z])'), (m) => '${m[1]} ${m[2]}')
+        .replaceAllMapped(
+            RegExp(r'([a-z0-9])([A-Z])'), (m) => '${m[1]} ${m[2]}')
         .split(' ')
         .where((w) => w.toLowerCase() != 'name')
         .map((w) => w.isEmpty ? w : '${w[0].toUpperCase()}${w.substring(1)}')

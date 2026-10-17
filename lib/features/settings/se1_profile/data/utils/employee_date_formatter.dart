@@ -11,6 +11,7 @@
 /// §11.2) and a `print()` in the catch. `DateFormat.parseStrict` is the only
 /// call here that throws, so the exception handling belongs to this layer and
 /// the widgets just call [parse] / [format].
+library;
 
 import 'package:intl/intl.dart';
 

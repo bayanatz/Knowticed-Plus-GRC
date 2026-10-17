@@ -11,6 +11,7 @@
 /// widgets, each with a raw `Colors.black` container, a raw `Colors.white` icon
 /// and an inline `TextStyle(color: …, fontSize: 14.sp, …)` instead of a theme
 /// text style. One copy now, routed through AppColors and StyleText.
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,6 +20,8 @@ import 'package:get/get.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/generated/l10n.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
 class AddMoreButton extends StatelessWidget {
   const AddMoreButton({super.key, required this.onPressed});
@@ -28,8 +31,9 @@ class AddMoreButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: context.isPhone ?  15.sp : 0.sp),
+      padding: EdgeInsets.symmetric(horizontal: context.isPhone ? 15.sp : 0.sp),
       child: GestureDetector(
+        onTapDown: hapticDown(onPressed, HapticLevel.medium),
         onTap: onPressed,
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 20.sp, vertical: 6.sp),
@@ -44,8 +48,8 @@ class AddMoreButton extends StatelessWidget {
               SizedBox(width: 8.sp),
               Text(
                 S.of(context).more,
-                style:
-                    StyleText.fontSize14Weight500.copyWith(color: AppColors.white),
+                style: StyleText.fontSize14Weight500
+                    .copyWith(color: AppColors.white),
               ),
             ],
           ),

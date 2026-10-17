@@ -2,10 +2,10 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: feedback_more_options_panel.dart
-/// Purpose: The collapsible "More Options" block under each box on the
+/// Description: The collapsible "More Options" block under each box on the
 ///          comments-and-feedback form — seven triage dropdowns and the
 ///          "Steps to reproduce" field.
-/// Author: Knowticed Plus team
+/// Author: Amr Mesbah
 /// Created at: 2/9/2026
 ///
 /// Figma: MESBAH 4717:8596. A slate header bar with a chevron, and under it a
@@ -25,18 +25,21 @@
 /// shut and empty, and that is three pieces of per-kind state — putting any of
 /// it in here would mean this widget losing it every time the parent rebuilds
 /// the list of boxes.
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:grc_module/core/custom/1-custom_dropdown.dart';
-import 'package:grc_module/core/custom/2-custom_textfield.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
+import 'package:grc_module/core/custom/dropdowns/custom_dropdown.dart';
+import 'package:grc_module/core/custom/inputs/custom_textfield.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/features/settings/se7_app_info/domain/entities/app_feedback.dart';
 import 'package:grc_module/features/settings/se7_app_info/presentation/ui/widgets/feedback_display.dart';
 import 'package:grc_module/generated/l10n.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
 class FeedbackMoreOptionsPanel extends StatelessWidget {
   const FeedbackMoreOptionsPanel({
@@ -88,10 +91,7 @@ class FeedbackMoreOptionsPanel extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         _header(context),
-        if (isExpanded) ...<Widget>[
-          SizedBox(height: 12.h),
-          _body(context),
-        ],
+        if (isExpanded) ...<Widget>[SizedBox(height: 12.h), _body(context)],
       ],
     );
   }
@@ -103,6 +103,7 @@ class FeedbackMoreOptionsPanel extends StatelessWidget {
   /// label and chevron on it can be a flat white rather than a theme lookup.
   Widget _header(BuildContext context) {
     return InkWell(
+      onTapDown: hapticDown(onToggle, HapticLevel.low),
       onTap: onToggle,
       borderRadius: BorderRadius.circular(4.r),
       child: Container(
@@ -118,8 +119,9 @@ class FeedbackMoreOptionsPanel extends StatelessWidget {
             Expanded(
               child: Text(
                 S.of(context).moreOptions,
-                style: StyleText.fontSize14Weight500
-                    .copyWith(color: Colors.white),
+                style: StyleText.fontSize14Weight500.copyWith(
+                  color: Colors.white,
+                ),
               ),
             ),
             AnimatedRotation(
@@ -129,7 +131,7 @@ class FeedbackMoreOptionsPanel extends StatelessWidget {
               duration: const Duration(milliseconds: 180),
               child: CustomSvgImage(
                 assetPath:
-                    'assets/icons_assets/main_icons_assets/chevron_down.svg',
+                    'assets/icons_assets/main_icons_assets/ic_nav_chevron_down.svg',
                 width: 18.sp,
                 height: 18.sp,
                 color: Colors.white,
@@ -148,20 +150,11 @@ class FeedbackMoreOptionsPanel extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        _pair(
-          _moduleField(context),
-          _screenSectionField(context),
-        ),
+        _pair(_moduleField(context), _screenSectionField(context)),
         SizedBox(height: 15.sp),
-        _pair(
-          _designIssueField(context),
-          _logicIssueField(context),
-        ),
+        _pair(_designIssueField(context), _logicIssueField(context)),
         SizedBox(height: 15.sp),
-        _pair(
-          _deviceField(context),
-          _softwareTypeField(context),
-        ),
+        _pair(_deviceField(context), _softwareTypeField(context)),
         SizedBox(height: 15.sp),
         _pair(_frequencyField(context), null),
         SizedBox(height: 15.sp),

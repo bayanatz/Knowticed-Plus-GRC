@@ -3,7 +3,7 @@
 // Last update: 2/9/2024
 // Objectives: This file is responsible for providing a model for the link.
 
-import 'package:grc_module/core/helper/main_helper/date_time_helper.dart';
+import 'package:grc_module/core/helper/date_time_helper.dart';
 
 class LinkModel {
   String link;

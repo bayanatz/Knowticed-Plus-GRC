@@ -7,7 +7,7 @@
 /// Created at: 2026
 /// Updated: 12/8/2026 - Added the standard header (Docs).
 
-part of './notification_controller_cubit_main_core.dart';
+part of 'notification_controller_cubit_main_core.dart';
 
 @immutable
 sealed class NotificationControllerState {}

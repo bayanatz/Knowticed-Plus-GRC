@@ -2,9 +2,9 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: social_saved_dialog.dart
-/// Purpose: The "your data has been updated" confirmation shown after a
+/// Description: The "your data has been updated" confirmation shown after a
 ///          successful save.
-/// Author: Knowticed Plus team
+/// Author: Amr Mesbah
 /// Created at: 11/8/2026
 ///
 /// Added for CR-SKEL-SE2-N08 / N10. This dialog used to be built inside
@@ -13,6 +13,7 @@
 /// pops whatever route happens to be on top three seconds later, dialog or not.
 /// The timer lives with the dialog now and is cancelled on dispose, and the pop
 /// is guarded by `mounted`.
+library;
 
 import 'dart:async';
 
@@ -65,14 +66,12 @@ class _SocialSavedDialogState extends State<SocialSavedDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final bool lightMode = Theme.of(context).brightness == Brightness.light;
-
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
       child: Container(
         width: 411.w,
         decoration: BoxDecoration(
-          color: lightMode ? AppColors.white : AppColors.chatBackground,
+          color: AppColors.card,
           borderRadius: BorderRadius.circular(16.r),
         ),
         padding: EdgeInsets.all(24.sp),
@@ -80,7 +79,7 @@ class _SocialSavedDialogState extends State<SocialSavedDialog> {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Lottie.asset(
-              'assets/lottie_assets/main_lottie_assets/approved.json',
+              'assets/lottie_assets/main_lottie_assets/lot_status_success.json',
               width: 100.w,
               height: 100.h,
               repeat: false,
@@ -88,8 +87,9 @@ class _SocialSavedDialogState extends State<SocialSavedDialog> {
             SizedBox(height: 16.h),
             Text(
               S.of(context).successMessage,
-              style:
-                  StyleText.fontSize18Weight500.copyWith(color: AppColors.text),
+              style: StyleText.fontSize18Weight500.copyWith(
+                color: AppColors.text,
+              ),
               textAlign: TextAlign.center,
             ),
           ],

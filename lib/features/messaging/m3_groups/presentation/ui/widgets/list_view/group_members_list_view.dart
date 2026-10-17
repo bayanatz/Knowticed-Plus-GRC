@@ -6,18 +6,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-import 'package:grc_module/core/custom/69-cross_axis_count_helper.dart';
+import 'package:grc_module/core/custom/layout/cross_axis_count_helper.dart';
 
-import '../../../../domain/entities/group_entity.dart';
-import '../../../../domain/entities/member_entity.dart';
-import '../../../controller/groups_controller.dart';
-import '../tiles/group_member_tile.dart';
+import 'package:grc_module/features/messaging/m3_groups/domain/entities/member_entity.dart';
+import 'package:grc_module/features/messaging/m3_groups/presentation/controller/groups_controller.dart';
+import 'package:grc_module/features/messaging/m3_groups/presentation/ui/widgets/tiles/group_member_tile.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
 
 class GroupMembersListView extends StatelessWidget {
-
-
+  const GroupMembersListView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,14 +26,13 @@ class GroupMembersListView extends StatelessWidget {
 
         final controller = context.read<GroupsCubit>();
 
-
         bool isCurrentUserAdmin = state.selectedGroup!.members
             .where((element) {
-          if (element.memberId == controller.currentUser.userId) {
-            return element.isAdmin;
-          }
-          return false;
-        })
+              if (element.memberId == controller.currentUser.userId) {
+                return element.isAdmin;
+              }
+              return false;
+            })
             .toList()
             .isNotEmpty;
 
@@ -47,7 +43,8 @@ class GroupMembersListView extends StatelessWidget {
           shrinkWrap: true,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount:
-            CrossAxisCountHelper.getCrossAxisCountForDefaultTablet2(context),
+                CrossAxisCountHelper.getCrossAxisCountForDefaultTablet2(
+                    context),
             mainAxisExtent: 75.sp,
             mainAxisSpacing: 10,
             crossAxisSpacing: 10,
@@ -67,15 +64,17 @@ class GroupMembersListView extends StatelessWidget {
     );
   }
 
-  List<MemberEntity> _getGroupMembers(GroupsCubit controller, GroupsLoaded state) {
-    List<MemberEntity> members = (
-        controller.membersSearchTextField.text.trim().isEmpty
-            ? state.selectedGroup!.members  // ✅ Always fresh from state
-            : state.members
-    ).toSet().toList();
+  List<MemberEntity> _getGroupMembers(
+      GroupsCubit controller, GroupsLoaded state) {
+    List<MemberEntity> members =
+        (controller.membersSearchTextField.text.trim().isEmpty
+                ? state.selectedGroup!.members // ✅ Always fresh from state
+                : state.members)
+            .toSet()
+            .toList();
 
     members.removeWhere(
-          (element) => element.memberId == controller.currentUser.userId,
+      (element) => element.memberId == controller.currentUser.userId,
     );
     return members;
   }

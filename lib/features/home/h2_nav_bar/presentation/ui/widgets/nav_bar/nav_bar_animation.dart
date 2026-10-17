@@ -5,18 +5,18 @@
 /// Purpose: Declares `OffsetAnimation`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'package:flutter/material.dart';
 
 class OffsetAnimation extends StatefulWidget {
   const OffsetAnimation(
-      {final Key? key,
+      {super.key,
       this.child,
       this.hideNavigationBar,
       this.navBarHeight,
       this.onAnimationComplete,
-      this.extendedLength = false})
-      : super(key: key);
+      this.extendedLength = false});
   final Widget? child;
   final bool? hideNavigationBar;
   final double? navBarHeight;
@@ -24,7 +24,7 @@ class OffsetAnimation extends StatefulWidget {
   final Function(bool, bool)? onAnimationComplete;
 
   @override
-  _OffsetAnimationState createState() => _OffsetAnimationState();
+  State<OffsetAnimation> createState() => _OffsetAnimationState();
 }
 
 class _OffsetAnimationState extends State<OffsetAnimation>

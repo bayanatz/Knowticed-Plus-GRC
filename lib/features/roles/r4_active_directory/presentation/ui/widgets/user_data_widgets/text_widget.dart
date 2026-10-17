@@ -5,10 +5,10 @@
 /// Purpose: Declares `UserText`.
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:grc_module/core/theme/app_font_size.dart';
 
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
@@ -50,7 +50,7 @@ class UserText extends StatefulWidget {
   final Color? fillColor;
 
   const UserText({
-    Key? key,
+    super.key,
     required this.text,
     required this.isEditable,
     required this.onChanged,
@@ -59,10 +59,10 @@ class UserText extends StatefulWidget {
     this.validator,
     this.titleValidator,
     this.fillColor,
-  }) : super(key: key);
+  });
 
   @override
-  _UserTextState createState() => _UserTextState();
+  State<UserText> createState() => _UserTextState();
 }
 
 class _UserTextState extends State<UserText> {
@@ -74,8 +74,8 @@ class _UserTextState extends State<UserText> {
     super.initState();
     _controller = TextEditingController(text: widget.text);
     _controller.addListener(() {
-      final error =
-          widget.validator != null && widget.validator!(_controller.text) != null;
+      final error = widget.validator != null &&
+          widget.validator!(_controller.text) != null;
       if (error != hasError) {
         setState(() => hasError = error);
       }
@@ -113,7 +113,7 @@ class _UserTextState extends State<UserText> {
       // Use a SizedBox with the same height as the read-mode text so the
       // DataRow height never changes when a cell enters/exits edit mode.
       return Padding(
-        padding:  EdgeInsets.symmetric(vertical: 6.h),
+        padding: EdgeInsets.symmetric(vertical: 6.h),
         child: SizedBox(
           height: cellH,
           child: ClipRRect(
@@ -155,7 +155,7 @@ class _UserTextState extends State<UserText> {
           widget.text.isEmpty ? '-' : widget.text,
           style: widget.style ??
               StyleText.fontSize16Weight600.copyWith(
-                color: lightMode ? AppColors.black : AppColors.white,
+                color: AppColors.text,
               ),
           maxLines: 1,
           textAlign: TextAlign.start,

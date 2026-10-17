@@ -2,13 +2,15 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: role_screen.dart
-/// Purpose: Declares `RoleScreenHost`, `RoleScreen`.
-/// Author: Knowticed Plus team
+/// Description: Declares `RoleScreenHost`, `RoleScreen`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
 /// Updated: 25/8/2026 - Header is now SideFrameMasterServices, not PaginationAppBar.
 /// Updated: 30/8/2026 - The Active Directory tab hides itself for a company
 ///                      that owns the HR module, which is where that company
 ///                      administers its employee records.
+library;
 
 // ============================================================================
 // COMPLETE WORKING IMPLEMENTATION
@@ -17,10 +19,10 @@
 // FILE 1: role_screen.dart (UPDATED)
 // ============================================================================
 
-import 'package:grc_module/core/custom/66-circle_progress.dart';
+import 'package:grc_module/core/custom/feedback/circle_progress.dart';
 import 'package:grc_module/features/roles/r1_role_management/presentation/ui/widgets/permission_label.dart';
 // REMOVED 25/8/2026: `pagination_app_bar.dart` — replaced by the shared frame.
-import 'package:grc_module/core/custom/50-custom_side_frame_master.dart';
+import 'package:grc_module/core/custom/navigation/custom_side_frame_master.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -36,19 +38,22 @@ import 'package:grc_module/features/roles/r5_system_logs/presentation/ui/pages/s
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
+import 'package:grc_module/core/helper/access/main_core_employee_controller.dart';
 import 'package:grc_module/features/roles/r3_user_access/presentation/controller/user_access_cubit.dart';
-import 'package:grc_module/features/roles/r5_system_logs/presentation/controller/system_logs_controller.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
+import 'package:grc_module/core/helper/access/modules_enum.dart';
 // ADDED 30/8/2026: the company-licence gate, used alongside the role gate in
 // `_buildVisibleTabs` — see the note there.
-import 'package:grc_module/core/helper/role/company_modules.dart';
+import 'package:grc_module/features/roles/helpers/constants/company_modules.dart';
 import 'package:grc_module/features/roles/r1_role_management/domain/enums/roles/roles_permissions_sections.dart';
-import 'package:grc_module/core/helper/role/constants.dart';
+import 'package:grc_module/core/helper/access/constants.dart';
 import 'package:grc_module/features/roles/r2_user_management/presentation/controller/user_management_cubit.dart';
 import 'package:grc_module/features/roles/r2_user_management/presentation/controller/user_management_controller.dart';
 import 'package:grc_module/core/di/app_controllers.dart';
 import 'package:grc_module/features/settings/se8_watermark/presentation/ui/widgets/watermark_layer.dart';
+import 'package:grc_module/features/roles/r1_role_management/data/models/role_model.dart'
+    show RoleHistoryModelMethods;
+import 'package:grc_module/core/theme/haptic_controller.dart';
+
 /// Navigator key for the Roles module's nested navigator.
 ///
 /// The app shell (left rail + CustomAppBar) is built by CustomDrawer, which is
@@ -64,7 +69,7 @@ GlobalKey rolesNavigatorKey = GlobalKey();
 /// is mounted as a drawer/nav destination; use [RoleScreen] directly only when
 /// it is already inside a navigator that should own its pushes.
 class RoleScreenHost extends StatelessWidget {
-  const RoleScreenHost({Key? key, this.selectedIndex}) : super(key: key);
+  const RoleScreenHost({super.key, this.selectedIndex});
   final int? selectedIndex;
 
   /// Tab this module should open on, set by whoever is about to navigate here.
@@ -113,7 +118,7 @@ class RoleScreenHost extends StatelessWidget {
 }
 
 class RoleScreen extends StatefulWidget {
-  RoleScreen({Key? key, this.selectedIndex}) : super(key: key);
+  const RoleScreen({super.key, this.selectedIndex});
   final int? selectedIndex;
 
   @override
@@ -129,7 +134,7 @@ class _RoleScreenState extends State<RoleScreen> {
   @override
   void initState() {
     super.initState();
-//
+    //
     controller = AppControllers.employee;
 
     // Load data first
@@ -180,12 +185,14 @@ class _RoleScreenState extends State<RoleScreen> {
       return roleName == 'master admin' || roleNameAr == 'مسؤول رئيسي';
     });
 
-
     // ✅ CRITICAL: Preload ALL role permissions before showing screen
     if (selectedIndex == 0) {
       await roleCubit.preloadAllRolePermissions();
     }
 
+    // The screen can be closed while permissions load (e.g. a window resize
+    // swaps the layout) — then there is nothing left to update.
+    if (!mounted) return;
     setState(() {
       isLoading = false;
     });
@@ -266,11 +273,7 @@ class _RoleScreenState extends State<RoleScreen> {
 
     // ✅ Show loading indicator while everything loads
     if (isLoading) {
-      return Scaffold(
-        body: Center(
-          child: CircleProgressMaster(),
-        ),
-      );
+      return Scaffold(body: Center(child: CircleProgressMaster()));
     }
 
     // FRAME 25/8/2026: the page header is now the shared
@@ -331,8 +334,10 @@ class _RoleScreenState extends State<RoleScreen> {
         // Phone branch. `_phoneFrameHeaderHeight` is the frame's title row plus
         // the 20.sp gap it puts under it; the clamp keeps the content usable on
         // a very short viewport rather than collapsing to nothing.
-        final double available =
-            (pageHeight - _phoneFrameHeaderHeight).clamp(200.sp, pageHeight);
+        final double available = (pageHeight - _phoneFrameHeaderHeight).clamp(
+          200.sp,
+          pageHeight,
+        );
         return SizedBox(height: available, child: body);
       },
     );
@@ -347,8 +352,6 @@ class _RoleScreenState extends State<RoleScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-
-
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
@@ -357,6 +360,7 @@ class _RoleScreenState extends State<RoleScreen> {
               for (int i = 0; i < visibleTabIndices.length; i++)
                 GestureDetector(
                   onTap: () {
+                    HapticController.low(); // list row: on the tap (X-117)
                     if (selectedIndex != visibleTabIndices[i]) {
                       setState(() {
                         selectedIndex = visibleTabIndices[i];
@@ -374,25 +378,26 @@ class _RoleScreenState extends State<RoleScreen> {
                           // list stays canonical (its indices drive
                           // selectedIndex -> indexContainer); only the
                           // rendered text is translated.
-                          PermissionLabel.of(context,
-                              Constants.tabletRolePageTabs[visibleTabIndices[i]]),
-                          style: StyleText.fontSize20Weight500.copyWith(color: AppColors.secondaryBlack).copyWith(
-                            height: 1.3,
-                            color: selectedIndex == visibleTabIndices[i]
-                                ? AppColors.primary
-                                : AppColors.secondaryBlack,
+                          PermissionLabel.of(
+                            context,
+                            Constants.tabletRolePageTabs[visibleTabIndices[i]],
                           ),
+                          style: StyleText.fontSize20Weight500
+                              .copyWith(color: AppColors.secondaryBlack)
+                              .copyWith(
+                                height: 1.3,
+                                color: selectedIndex == visibleTabIndices[i]
+                                    ? AppColors.primary
+                                    : AppColors.secondaryBlack,
+                              ),
                         ),
                         SizedBox(height: 1.h),
                         if (selectedIndex == visibleTabIndices[i])
-                          Container(
-                            height: 1.5.sp,
-                            color: AppColors.primary,
-                          ),
+                          Container(height: 1.5.sp, color: AppColors.primary),
                       ],
                     ),
                   ),
-                )
+                ),
             ],
           ),
         ),
@@ -406,7 +411,7 @@ class _RoleScreenState extends State<RoleScreen> {
   Widget indexContainer(int index) {
     switch (index) {
       case 0:
-        return PlatFormRoleContainer.RoleManagementHome();
+        return PlatFormRoleContainer.roleManagementHome();
       case 1:
         roleCubit.selectedRole = null;
         userManagementController.filterUsersPermissionEntity(searchText: "");

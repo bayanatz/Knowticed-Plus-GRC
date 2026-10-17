@@ -17,6 +17,7 @@
 /// `ChangeRequest`. Only `getuserRequests` / `getAllRequests` still read this,
 /// and only during login — the two are deliberately kept apart rather than
 /// merged, because they describe different documents.
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';

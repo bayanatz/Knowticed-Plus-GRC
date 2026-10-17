@@ -2,11 +2,12 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: forgot_password_dialog.dart
-/// Purpose: The "forgot password" prompt.
-/// Author: Knowticed Plus team
+/// Description: The "forgot password" prompt.
+/// Author: Amr Mesbah
 /// Created at: 2026
 /// Updated: 12/8/2026 - CR-SKEL-O3-N24: the `try/finally` is gone — even try/finally is forbidden in
 ///          presentation/ui/ (§11.2).
+library;
 
 /// Objectives: "Forgot Password?" dialog shown from the sign-in screen.
 ///
@@ -14,25 +15,26 @@
 /// email field, Cancel / Send row) without the Firestore employee lookup — the
 /// submit handler validates the address and reports back through
 /// [ResponseDialog].
-import 'dart:ui' as ui;
 
+import 'package:grc_module/core/extensions/context_extensions.dart'
+    show kpIsPhoneLayout;
+import 'package:grc_module/core/custom/buttons/custom_button.dart';
+import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-import 'package:grc_module/core/custom/2-custom_textfield.dart';
-import 'package:grc_module/core/custom/64-custom_response_dialog.dart';
-import 'package:grc_module/core/helper/role/validator.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
+import 'package:grc_module/core/custom/inputs/custom_textfield.dart';
+import 'package:grc_module/core/custom/dialogs/custom_response_dialog.dart';
+import 'package:grc_module/core/helper/validation/validator.dart';
 // Brings in ScreenSizeExtension, so `0.15.w` means 15% of the screen (as in
 // Knowticed) rather than screenutil's design-size scale factor.
-import 'package:grc_module/core/theme/app_font_size.dart';
+import 'package:grc_module/core/extensions/screen_fraction_extension.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/core/theme/haptic_controller.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/core/theme/app_animations.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
 
 class ForgotPasswordDialog extends StatefulWidget {
   const ForgotPasswordDialog({super.key, this.onSubmit});
@@ -96,14 +98,15 @@ class _ForgotPasswordDialogState extends State<ForgotPasswordDialog> {
       builder: (dialogContext) => ResponseDialog(
         title: S.of(dialogContext).resetPassword,
         subtitle: S.of(dialogContext).passwordResetLinkSent,
-        lottieAsset: 'assets/lottie_assets/main_lottie_assets/successful.json',
+        lottieAsset:
+            'assets/lottie_assets/main_lottie_assets/lot_status_success.json',
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final bool isTablet = MediaQuery.of(context).size.shortestSide > 600;
+    final bool isTablet = !kpIsPhoneLayout(context);
     final bool isPortrait =
         MediaQuery.of(context).orientation == Orientation.portrait;
 
@@ -125,8 +128,9 @@ class _ForgotPasswordDialogState extends State<ForgotPasswordDialog> {
             children: [
               Text(
                 S.of(context).forgotPassword2,
-                style: StyleText.fontSize18Weight500
-                    .copyWith(color: AppColors.text),
+                style: StyleText.fontSize18Weight500.copyWith(
+                  color: AppColors.text,
+                ),
               ),
               SizedBox(height: 15.sp),
               CustomTextField(
@@ -134,53 +138,43 @@ class _ForgotPasswordDialogState extends State<ForgotPasswordDialog> {
                 hint: S.of(context).textHere,
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
-                textDirection: ui.TextDirection.ltr,
+                textDirection: TextDirection.ltr,
                 textAlign: TextAlign.start,
                 errorText: _emailError,
-                fillColor: AppColors.field,
+                fillColor: AppColors.card,
                 onChanged: (_) {
                   if (_emailError != null) setState(() => _emailError = null);
                 },
               ),
               SizedBox(height: 15.sp),
               Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+                // X-73: Cancel at the left edge, Send at the right edge, same
+                // size, in both languages.
+                textDirection: TextDirection.ltr,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  TextButton(
-                    onPressed:
-                        _submitting ? null : () => Navigator.of(context).pop(),
-                    child: Text(
-                      S.of(context).cancel,
-                      style: StyleText.fontSize14Weight500
-                          .copyWith(color: AppColors.text),
+                  // Half the row each: two fixed 135 buttons overflowed the
+                  // phone dialog by 44 px.
+                  Expanded(
+                    child: customButton(
+                      title: S.of(context).cancel,
+                      function: () {
+                        if (!_submitting) Navigator.of(context).pop();
+                      },
+                      width: double.infinity,
+                      color: AppColors.darkGrey,
+                      textColor: AppColors.text,
+                      haptic: HapticController.high,
                     ),
                   ),
-                  SizedBox(width: 8.sp),
-                  ElevatedButton(
-                    onPressed: _submitting ? null : _submit,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      minimumSize: isTablet
-                          ? Size(0.1.w, 0.053.h)
-                          : Size(0.3.w, 0.05.h),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
+                  SizedBox(width: 15.sp),
+                  Expanded(
+                    child: customButton(
+                      title: S.of(context).send,
+                      function: _submit,
+                      width: double.infinity,
+                      isLoading: _submitting,
                     ),
-                    child: _submitting
-                        ? SizedBox(
-                            width: 18.sp,
-                            height: 18.sp,
-                            child: CircleProgressMaster.inline(
-                              strokeWidth: 2,
-                              color: AppColors.textButton,
-                            ),
-                          )
-                        : Text(
-                            S.of(context).send,
-                            style: StyleText.fontSize14Weight500
-                                .copyWith(color: AppColors.textButton),
-                          ),
                   ),
                 ],
               ),

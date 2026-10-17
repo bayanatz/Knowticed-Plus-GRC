@@ -29,7 +29,7 @@
 /// every successful sign-in and whenever an admin unlocks the account.
 library;
 
-import 'package:grc_module/core/helper/main_helper/biometric_controller.dart'
+import 'package:grc_module/core/helper/biometric_controller.dart'
     show storage;
 
 abstract class LoginAttemptStore {

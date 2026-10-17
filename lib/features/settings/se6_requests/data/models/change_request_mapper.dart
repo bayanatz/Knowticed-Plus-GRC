@@ -9,6 +9,7 @@
 /// Added for CR-SKEL-SE6-N01 / N03. Parsing lived in three pages; this is the
 /// single copy, including the fallback that reads the pre-`changes` documents
 /// (one field per document, under `whatChanged` / `oldValue` / `newValue`).
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -91,8 +92,7 @@ abstract class ChangeRequestMapper {
     required String formattedDate,
   }) {
     return <String, dynamic>{
-      keyChanges:
-          request.changes.map((FieldChange c) => c.toMap()).toList(),
+      keyChanges: request.changes.map((FieldChange c) => c.toMap()).toList(),
       keySection: request.section,
       keyRequestDate: FieldValue.serverTimestamp(),
       keyRequestDateFormatted: formattedDate,

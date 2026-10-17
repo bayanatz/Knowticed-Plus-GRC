@@ -10,33 +10,31 @@
 ///          `Get.put(HapticController())` — which registered a global singleton
 ///          as a side effect of importing this page — replaced with the lazy
 ///          `hapticController` accessor from core/custom/misc/custom_haptic.dart.
-import 'package:cloud_firestore/cloud_firestore.dart';
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
-import 'package:grc_module/core/network/api_constants.dart';
 import 'package:grc_module/core/theme/haptic_controller.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/theme/theme_controller.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grc_module/features/settings/se3_company/presentation/controller/company_cubit.dart';
 import 'package:grc_module/features/settings/se3_company/presentation/controller/company_state.dart';
 import 'package:grc_module/features/settings/se3_company/presentation/ui/widgets/sections/company_branding_section.dart';
-import 'package:grc_module/core/custom/50-custom_side_frame_master.dart';
+import 'package:grc_module/core/custom/navigation/custom_side_frame_master.dart';
 
-import 'package:grc_module/core/custom/5-custom_button.dart';
-import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
-import 'package:grc_module/core/custom/33-custom_haptic.dart';
+import 'package:grc_module/core/custom/buttons/custom_button.dart';
+import 'package:grc_module/core/custom/dialogs/custom_dialog_manager.dart';
+import 'package:grc_module/core/custom/helpers/custom_haptic.dart';
 import 'package:grc_module/generated/l10n.dart';
 
 class CompanyInfoScreen extends StatefulWidget {
   final bool? isBranding;
 
-  CompanyInfoScreen({super.key, this.isBranding = false});
+  const CompanyInfoScreen({super.key, this.isBranding = false});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -76,7 +74,8 @@ class _CompanyInfoScreenState extends State<CompanyInfoScreen> {
       // (company_branding_section.dart, _resetBranding). The two now match, so
       // the page does not alarm the user with a red warning for saving their
       // own edits while the genuinely destructive action gets the calmer icon.
-      confirmLottie: 'assets/lottie_assets/main_lottie_assets/reset_brand.json',
+      confirmLottie:
+          'assets/lottie_assets/settings_lottie_assets/lot_action_reset_branding.json',
       confirmTitle: S.of(context).applyChanges,
       confirmSubtitle: S.of(context).areYouSureYouWantToSaveTheseChanges,
       confirmYesText: S.of(context).yes,
@@ -91,7 +90,8 @@ class _CompanyInfoScreenState extends State<CompanyInfoScreen> {
 
         return companyController.state.status != CompanyStatus.failure;
       },
-      successLottie: 'assets/lottie_assets/main_lottie_assets/correct.json',
+      successLottie:
+          'assets/lottie_assets/main_lottie_assets/lot_status_success.json',
       successTitle: S.of(context).Successful,
       successSubtitle: S.of(context).dataHasBeenSavedSuccessfully,
       onSuccessComplete: () {
@@ -119,7 +119,7 @@ class _CompanyInfoScreenState extends State<CompanyInfoScreen> {
 
     // FIXED 8/9/2026 — the disabled label was unreadable, same as Submit on the
     // health request preview page. `AppColors.textButton` is
-    // `AppTheme.contrastColor()`, so in light mode it resolves to (near) black
+    // `AppTheme.readableOn(AppColors.primary)`, so in light mode it resolves to (near) black
     // on the grey disabled fill, and the `Opacity(0.5)` wrapper washed out what
     // was left of it. The label is pinned to white while disabled and the
     // opacity layer is gone, since it faded the white back to grey. The FILL is
@@ -192,39 +192,40 @@ class _CompanyInfoScreenState extends State<CompanyInfoScreen> {
 
   /// Tablet design (formerly tablet_company_info_screen.dart)
   Widget _buildTablet(BuildContext context) {
-    var lightMode = Theme.of(context).brightness == Brightness.light;
-    return Expanded(
+    // CHANGED 18/10/2026: no Expanded here. The settings shell already wraps
+    // this page in an Expanded, so a second one nested inside it was a
+    // ParentData misuse; the scroll view fills the pane on its own.
+    return SizedBox.expand(
       child: SingleChildScrollView(
         // ADDED 24/8/2026: this layout read nothing from the cubit, so the
         // Apply button below could not know whether anything had been picked.
         // The phone layout was already inside a BlocBuilder.
         child: BlocBuilder<CompanyCubit, CompanyState>(
           builder: (context, state) => Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                color:
-                    lightMode ? AppColors.background : AppColors.chatBackground,
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-              child: SingleChildScrollView(
-                child: CompanyBrandingScreen(
-                  onChangedImageUrl: (value) {},
-                  onChangedPrimaryColor: (Color value) {},
-                  onChangedSecondaryColor: (Color value) {},
-                  onChangedFontArabic: (String value) {},
-                  onChangedFontEnglish: (String value) {},
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: AppColors.chatBackground,
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                child: SingleChildScrollView(
+                  child: CompanyBrandingScreen(
+                    onChangedImageUrl: (value) {},
+                    onChangedPrimaryColor: (Color value) {},
+                    onChangedSecondaryColor: (Color value) {},
+                    onChangedFontArabic: (String value) {},
+                    onChangedFontEnglish: (String value) {},
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 20.h),
-            SizedBox(
-              width: 220.w,
-              // Haptics + setState live inside _applyChanges, so both layouts
-              // behave identically.
-              child: _buildApplyButton(context, state, width: 220.w),
-            ),
-          ],
+              SizedBox(height: 20.h),
+              SizedBox(
+                width: 220.w,
+                // Haptics + setState live inside _applyChanges, so both layouts
+                // behave identically.
+                child: _buildApplyButton(context, state, width: 220.w),
+              ),
+            ],
           ),
         ),
       ),

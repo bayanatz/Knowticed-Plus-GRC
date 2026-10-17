@@ -8,6 +8,7 @@
 /// Updated: 11/8/2026 - CR-SKEL-SE3-N22/N25: the Firestore keys are
 ///          `static const` instead of literals repeated in fromMap and toMap,
 ///          and the file carries the standard header.
+library;
 
 import 'dart:convert';
 

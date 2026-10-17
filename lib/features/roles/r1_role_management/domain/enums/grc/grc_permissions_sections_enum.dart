@@ -15,13 +15,14 @@
 /// The section headers ARE switches, exactly like Services'
 /// `*_Permissions_Module` rows, so they carry a [getDataBaseName] too and have
 /// twin keys in the admin dashboard's grc map.
+library;
 
 import 'package:grc_module/features/roles/r1_role_management/domain/entities/module_permissions_sections.dart';
 import 'package:grc_module/features/roles/r1_role_management/domain/entities/module_permissions_sections_permissions.dart';
-import 'grc_control_permissions_enum.dart';
-import 'grc_dashboards_permissions_enum.dart';
-import 'grc_module_permissions_enum.dart';
-import 'grc_policy_permissions_enum.dart';
+import 'package:grc_module/features/roles/r1_role_management/domain/enums/grc/grc_control_permissions_enum.dart';
+import 'package:grc_module/features/roles/r1_role_management/domain/enums/grc/grc_dashboards_permissions_enum.dart';
+import 'package:grc_module/features/roles/r1_role_management/domain/enums/grc/grc_module_permissions_enum.dart';
+import 'package:grc_module/features/roles/r1_role_management/domain/enums/grc/grc_policy_permissions_enum.dart';
 
 enum GrcPermissionsSections
     implements ModulePermissionsSections, ModulePermissionsSectionsPermission {

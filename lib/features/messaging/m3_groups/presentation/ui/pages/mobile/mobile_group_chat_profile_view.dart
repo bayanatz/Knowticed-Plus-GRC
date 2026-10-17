@@ -4,29 +4,28 @@
 /// Purpose: Mobile group chat profile view — messaging Groups sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+library;
 
 // Date: 5/9/2024
 // By: Mohamed Ashraf
 // Last update: 5/9/2024
 // Objectives: This file is responsible for providing a chat profile view used in the message feature to show the group chat profile.
 
+import 'package:grc_module/core/extensions/context_extensions.dart'
+    show kpIsPhoneLayout;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grc_module/features/messaging/m3_groups/presentation/controller/groups_controller.dart';
 
-import 'package:grc_module/core/helper/message_module/main_helper/localized_text_helper.dart';
-import 'package:grc_module/core/helper/main_helper/spacing_helper.dart';
+import 'package:grc_module/features/messaging/helpers/messaging_bridge/main_helper/localized_text_helper.dart';
+import 'package:grc_module/features/messaging/helpers/spacing_helper.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/helper/main_helper/custom_app_bar.dart';
-import '../../../../../m1_chat/data/models/chat/chat_model.dart';
-import '../../../../../m1_chat/presentation/controller/message_controller.dart';
-import '../../widgets/about_group_profile.dart';
-import '../../widgets/group_chat_profile_header.dart';
-import '../../widgets/list_view/group_members_list_view.dart';
-import '../../widgets/shared_content.dart';
-import '../../widgets/tab_bar_name.dart';
-import '../../../../domain/entities/group_entity.dart';
+import 'package:grc_module/features/messaging/helpers/messaging_app_bar.dart';
+import 'package:grc_module/features/messaging/m3_groups/presentation/ui/widgets/group_chat_profile_header.dart';
+import 'package:grc_module/features/messaging/m3_groups/presentation/ui/widgets/list_view/group_members_list_view.dart';
+import 'package:grc_module/features/messaging/m3_groups/presentation/ui/widgets/tab_bar_name.dart';
+import 'package:grc_module/features/messaging/m3_groups/domain/entities/group_entity.dart';
 
 class MobileGroupChatProfileView extends StatelessWidget {
   const MobileGroupChatProfileView({super.key});
@@ -34,7 +33,7 @@ class MobileGroupChatProfileView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Check if the current device is a tablet
-    var isTablet = MediaQuery.of(context).size.width >= 600;
+    var isTablet = !kpIsPhoneLayout(context);
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -70,9 +69,8 @@ class MobileGroupChatProfileView extends StatelessWidget {
                     GroupChatProfileHeader(
                       title: LocalizedTextHelper.formatString(
                           secondaryLanguageText:
-                          groupEntity.secondaryLanguageName,
-                          primaryLanguageText:
-                          groupEntity.primaryLanguageName),
+                              groupEntity.secondaryLanguageName,
+                          primaryLanguageText: groupEntity.primaryLanguageName),
                       countMember: '+ ${groupEntity.members.length}',
                     ),
                     verticalSpace(24),
@@ -87,9 +85,7 @@ class MobileGroupChatProfileView extends StatelessWidget {
                       );
                     }*/
                     /*  if (controller.selectedAllTab == 'Member') {*/
-                    GroupMembersListView(
-
-                    ),
+                    GroupMembersListView(),
                     //  }
                     /*       return SharedContent(
                       model: controller.chatModel!.mediaModel,

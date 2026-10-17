@@ -2,9 +2,10 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: module_permissions_widget.dart
-/// Purpose: Read-only, expandable summary of the permissions granted to the
+/// Description: Read-only, expandable summary of the permissions granted to the
 ///          selected role, grouped by module.
-/// Author: Knowticed Plus team
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - Renamed from "module select.dart" (a literal space in a
 ///          filename is an auto-reject, §6.2/§20) and the Firestore read moved
 ///          out of the widget into RoleCubit (§16).
@@ -18,14 +19,15 @@
 ///          of this module"; the switches show every permission with its real
 ///          state. The module header row keeps its original design, and the
 ///          switches are read-only — editing belongs behind the تعديل button.
+library;
 
-import 'package:grc_module/core/custom/32-custom_svg.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
+import 'package:grc_module/core/custom/feedback/circle_progress.dart';
+import 'package:grc_module/core/helper/access/modules_enum.dart';
 import 'package:grc_module/features/roles/r1_role_management/presentation/ui/widgets/module_switches_builder.dart';
 // REMOVED_MODULE: import 'package:grc_module/core/helper/inventory_module/core/svg_custom.dart';
 // REMOVED_MODULE: import 'package:grc_module/features/external/services_mangment_module/core/new_theme.dart';
@@ -33,11 +35,16 @@ import 'package:grc_module/features/roles/r1_role_management/presentation/ui/wid
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
+import 'package:grc_module/features/roles/r1_role_management/data/models/role_model.dart'
+    show RoleHistoryModelMethods;
+import 'package:grc_module/core/theme/haptic_controller.dart';
+
 class ModulePermissionsWidget extends StatefulWidget {
   const ModulePermissionsWidget({super.key});
 
   @override
-  State<ModulePermissionsWidget> createState() => _ModulePermissionsWidgetState();
+  State<ModulePermissionsWidget> createState() =>
+      _ModulePermissionsWidgetState();
 }
 
 class _ModulePermissionsWidgetState extends State<ModulePermissionsWidget> {
@@ -111,7 +118,7 @@ class _ModulePermissionsWidgetState extends State<ModulePermissionsWidget> {
             children: [
               for (String moduleName in moduleStrings)
                 _buildModuleSection(moduleName),
-              SizedBox(height: 10.h,)
+              SizedBox(height: 10.h),
             ],
           ),
       ],
@@ -126,28 +133,32 @@ class _ModulePermissionsWidgetState extends State<ModulePermissionsWidget> {
 
     // The switch layout is keyed off the module's enum (its sections and their
     // permissions), so a name with no enum has nothing to draw.
-    final List<Modules> moduleEnums = controller.moduleEnumsFor(<String>[moduleName]);
+    final List<Modules> moduleEnums = controller.moduleEnumsFor(<String>[
+      moduleName,
+    ]);
 
     // A module is expandable when it HAS permissions at all — not only when
     // some are switched on. Under the old chip list an all-off module had
     // nothing to draw, so it was collapsed shut; a switch list has something
     // to say about it.
-    final bool hasPermissions = permissions.isNotEmpty && moduleEnums.isNotEmpty;
+    final bool hasPermissions =
+        permissions.isNotEmpty && moduleEnums.isNotEmpty;
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.field,
+        color: AppColors.card,
         borderRadius: BorderRadius.circular(8.sp),
       ),
       child: Column(
         children: [
           InkWell(
+            onTapDown: hasPermissions ? (_) => HapticController.low() : null,
             onTap: hasPermissions
                 ? () {
-              setState(() {
-                expandedModules[moduleName] = !isExpanded;
-              });
-            }
+                    setState(() {
+                      expandedModules[moduleName] = !isExpanded;
+                    });
+                  }
                 : null, // ✅ Disabled if no permissions
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 15.sp, vertical: 12.sp),
@@ -166,11 +177,12 @@ class _ModulePermissionsWidgetState extends State<ModulePermissionsWidget> {
                       duration: Duration(milliseconds: 300),
                       curve: Curves.easeInOut,
                       child: CustomSvgImage(
-                        assetPath: "assets/icons_assets/main_icons_assets/chevron_down.svg",
+                        assetPath:
+                            "assets/icons_assets/main_icons_assets/ic_nav_chevron_down.svg",
                         width: 12.w,
                         height: 15.h,
                         fit: BoxFit.scaleDown,
-                        color: AppColors.text
+                        color: AppColors.text,
                       ),
                     ),
                 ],
@@ -182,23 +194,21 @@ class _ModulePermissionsWidgetState extends State<ModulePermissionsWidget> {
             curve: Curves.easeInOut,
             child: isExpanded && hasPermissions
                 ? Container(
-              width: double.infinity,
-              padding: EdgeInsets.fromLTRB(15.sp, 0, 15.sp, 15.sp),
-              // The edit screen's own widget, reading this screen's saved
-              // snapshot and with its switches made read-only. `showHeader` is
-              // off because the collapsible bar above is already this module's
-              // header.
-              child: ModuleSwitchesBuilder(
-                module: moduleEnums.first,
-                permissions: permissions,
-                readOnly: true,
-                showHeader: false,
-              ),
-            )
+                    width: double.infinity,
+                    padding: EdgeInsets.fromLTRB(15.sp, 0, 15.sp, 15.sp),
+                    // The edit screen's own widget, reading this screen's saved
+                    // snapshot and with its switches made read-only. `showHeader` is
+                    // off because the collapsible bar above is already this module's
+                    // header.
+                    child: ModuleSwitchesBuilder(
+                      module: moduleEnums.first,
+                      permissions: permissions,
+                      readOnly: true,
+                      showHeader: false,
+                    ),
+                  )
                 : SizedBox.shrink(),
           ),
-
-
         ],
       ),
     );
@@ -241,10 +251,18 @@ class _ModulePermissionsWidgetState extends State<ModulePermissionsWidget> {
         return S.of(context).tracking;
       case 'database_builder':
         return S.of(context).database_builder;
+      case 'time_tracker': // ADDED 8/10/2026 — Time Tracker
+        return S.of(context).timeTracker;
       default:
-        return moduleName.replaceAll('_', ' ').split(' ').map((word) =>
-        word.isNotEmpty ? '${word[0].toUpperCase()}${word.substring(1)}' : ''
-        ).join(' ');
+        return moduleName
+            .replaceAll('_', ' ')
+            .split(' ')
+            .map(
+              (word) => word.isNotEmpty
+                  ? '${word[0].toUpperCase()}${word.substring(1)}'
+                  : '',
+            )
+            .join(' ');
     }
   }
 

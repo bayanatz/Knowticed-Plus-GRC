@@ -19,11 +19,12 @@
 /// why [selected] is nullable — the widget cannot draw the difference if the
 /// caller hands it a default and calls it a choice. The list is still ordered
 /// newest-first in the meantime; see `CommentsFeedbackLoaded.sortOption`.
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:grc_module/core/custom/32-custom_svg.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/features/settings/se7_app_info/presentation/controller/comments_feedback_state.dart';
@@ -50,12 +51,10 @@ class FeedbackSortMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool lightMode = Theme.of(context).brightness == Brightness.light;
-
     // One colour for both the glyph and the label — they are one control and
     // must not drift apart. Dimmed until the user has picked something.
     final Color foreground = selected == null
-        ? AppColors.secondaryText.withOpacity(0.5)
+        ? AppColors.secondaryText.withValues(alpha: 0.5)
         : AppColors.textButton;
 
     return PopupMenuButton<FeedbackSortOption>(
@@ -63,7 +62,7 @@ class FeedbackSortMenu extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.r),
       ),
-      color: lightMode ? AppColors.white : AppColors.chatBackground,
+      color: AppColors.card,
       position: PopupMenuPosition.under,
       onSelected: onSelected,
       itemBuilder: (BuildContext context) =>
@@ -93,7 +92,8 @@ class FeedbackSortMenu extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             CustomSvgImage(
-              assetPath: 'assets/icons_assets/main_icons_assets/sort_lines.svg',
+              assetPath:
+                  'assets/icons_assets/main_icons_assets/ic_action_sort.svg',
               width: 18.sp,
               height: 18.sp,
               color: foreground,
@@ -102,7 +102,8 @@ class FeedbackSortMenu extends StatelessWidget {
               SizedBox(width: 8.w),
               Text(
                 S.of(context).sort,
-                style: StyleText.fontSize14Weight500.copyWith(color: foreground),
+                style:
+                    StyleText.fontSize14Weight500.copyWith(color: foreground),
               ),
             ],
           ],

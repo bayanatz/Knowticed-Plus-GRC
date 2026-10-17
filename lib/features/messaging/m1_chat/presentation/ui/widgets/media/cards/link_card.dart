@@ -7,7 +7,6 @@ class LinkCard extends StatelessWidget {
   const LinkCard({super.key, required this.model});
 
   @override
-
   Widget build(BuildContext context) {
     return Container(
       height: ContextExtension(context).isTablett ? 114.h : 73.h,
@@ -19,7 +18,9 @@ class LinkCard extends StatelessWidget {
         bottom: 8.h,
       ),
       decoration: BoxDecoration(
-          color: ContextExtension(context).isTablett ? AppColors.background : AppColors.field,
+          color: ContextExtension(context).isTablett
+              ? AppColors.background
+              : AppColors.card,
           borderRadius: BorderRadius.circular(16.r),
           border: Border.all(color: Colors.transparent)),
       child: Column(
@@ -30,8 +31,8 @@ class LinkCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                SvgPicture.asset(
-                  AppAssets.link,
+                CustomSvgImage.natural(
+                  assetPath: AppAssets.link,
                   width: ContextExtension(context).isTablett ? 48.w : 40.w,
                   height: ContextExtension(context).isTablett ? 48.h : 40.h,
                 ),
@@ -43,7 +44,8 @@ class LinkCard extends StatelessWidget {
                     model.link,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: StyleText.fontSize12Weight400.copyWith(color: AppColors.blue),
+                    style: StyleText.fontSize12Weight400
+                        .copyWith(color: AppColors.blue),
                   ),
                 ),
               ],
@@ -57,7 +59,8 @@ class LinkCard extends StatelessWidget {
                   model.date,
                 )
                 .toLowerCase(),
-            style: StyleText.fontSize12Weight400.copyWith(color: AppColors.secondaryBlack),
+            style: StyleText.fontSize12Weight400
+                .copyWith(color: AppColors.secondaryBlack),
           ),
         ],
       ),

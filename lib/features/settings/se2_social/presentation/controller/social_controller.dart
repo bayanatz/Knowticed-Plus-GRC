@@ -16,12 +16,13 @@
 ///
 /// The class name is kept: `SettingsController.socialController` and the four
 /// section widgets resolve it by that name, and the shell owns its lifecycle.
+library;
 
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 
 import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/controller/settings_controller.dart';
+import 'package:grc_module/features/settings/presentation/controller/settings_controller.dart';
 import 'package:grc_module/features/settings/se2_social/data/models/social_profile_mapper.dart';
 import 'package:grc_module/features/settings/se2_social/data/repository/social_repository.dart';
 import 'package:grc_module/features/settings/se2_social/domain/base_repository/social_base_repository.dart';
@@ -30,7 +31,7 @@ import 'package:grc_module/features/settings/se2_social/domain/entities/skill_en
 import 'package:grc_module/features/settings/se2_social/domain/entities/social_profile.dart';
 import 'package:grc_module/features/settings/se2_social/domain/use_cases/build_social_update.dart';
 
-part './social_state.dart';
+part 'social_state.dart';
 
 class SocialController extends Cubit<SocialState> {
   SocialController({

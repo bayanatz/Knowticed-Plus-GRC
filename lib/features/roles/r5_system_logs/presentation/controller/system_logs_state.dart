@@ -6,7 +6,7 @@
 /// Author: Knowticed Plus team
 /// Created At: 12/8/2026
 
-part of './system_logs_controller.dart';
+part of 'system_logs_controller.dart';
 
 @immutable
 sealed class SystemLogsState {}

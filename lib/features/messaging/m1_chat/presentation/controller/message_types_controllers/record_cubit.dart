@@ -1,3 +1,12 @@
+/// Module: messaging/m1_chat
+///
+///*************************** FILE INFO ****************************///
+/// File Name: record_cubit.dart
+/// Description: `RecordState` state, `RecordCubit` cubit (state management).
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
+library;
+
 /// Module: messaging / chat / presentation/controller/message_types_controllers/record_cubit.dart
 import 'dart:async';
 import 'dart:io';
@@ -6,14 +15,15 @@ import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import 'package:grc_module/core/services/message_module/audio_record_service.dart';
+import 'package:grc_module/features/messaging/helpers/services/audio_record_service.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
-import '../../../data/models/message/audio_message_model.dart';
-import '../main_controllers/master_chat_cubit.dart';
+
+import 'package:grc_module/features/messaging/m1_chat/data/models/message/audio_message_model.dart';
+import 'package:grc_module/features/messaging/m1_chat/presentation/controller/main_controllers/master_chat_cubit.dart';
+
 import 'package:grc_module/generated/l10n.dart';
 
 // State class for RecordCubit
@@ -59,24 +69,18 @@ class RecordCubit extends Cubit<RecordState> {
   final stopwatch = Stopwatch();
   Timer? _timer;
 
-  List<Speeds> speeds = [
-    Speeds.speed_1,
-    Speeds.speed_1_0_5,
-    Speeds.speed_2,
-  ];
+  List<Speeds> speeds = [Speeds.speed_1, Speeds.speed_1_0_5, Speeds.speed_2];
   int speedIndex = 0;
 
   Future<void> startPlayingAudio(AudioMessageModel model) async {
     // listen to the player state to update the ui
-    model.playerController.addListener(
-          () {
-        model.playerController.playerState == PlayerState.playing
-            ? model.isCurrentPlaying = true
-            : model.isCurrentPlaying = false;
-        // Trigger rebuild by emitting current state
-        emit(state.copyWith());
-      },
-    );
+    model.playerController.addListener(() {
+      model.playerController.playerState == PlayerState.playing
+          ? model.isCurrentPlaying = true
+          : model.isCurrentPlaying = false;
+      // Trigger rebuild by emitting current state
+      emit(state.copyWith());
+    });
 
     // listen to the completion of the audio
     model.playerController.onCompletion.listen((event) {
@@ -97,9 +101,7 @@ class RecordCubit extends Cubit<RecordState> {
     final isPaused = model.playerController.playerState == PlayerState.paused;
 
     // Update the currently playing controller to this one
-    emit(state.copyWith(
-      currentlyPlayingAudioModel: () => model,
-    ));
+    emit(state.copyWith(currentlyPlayingAudioModel: () => model));
 
     if (isInitialized || isPaused) {
       model.isCurrentPlaying = true;
@@ -119,26 +121,25 @@ class RecordCubit extends Cubit<RecordState> {
       }
 
       stopwatch.start();
-      _timer = Timer.periodic(
-        const Duration(seconds: 1),
-            (timer) {
-          emit(state.copyWith(
+      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        emit(
+          state.copyWith(
             ellapsedSeconds: stopwatch.elapsed.inSeconds % 60,
             ellapsedMinutes: stopwatch.elapsed.inMinutes,
-          ));
-        },
-      );
+          ),
+        );
+      });
 
       final result = await AudioRecordService.startRecording();
       result.fold(
-            (l) {
+        (l) {
           Fluttertoast.showToast(
             msg: S.current.errorOccuredPleaseTryAgain,
             backgroundColor: AppColors.primary,
-            textColor: AppTheme.contrastColor(),
+            textColor: AppTheme.readableOn(AppColors.primary),
           );
         },
-            (r) {
+        (r) {
           emit(state.copyWith(isRecording: true));
         },
       );
@@ -147,7 +148,7 @@ class RecordCubit extends Cubit<RecordState> {
         Fluttertoast.showToast(
           msg: S.current.pleaseEnableMicrophoneService,
           backgroundColor: AppColors.primary,
-          textColor: AppTheme.contrastColor(),
+          textColor: AppTheme.readableOn(AppColors.primary),
         );
         return;
       }
@@ -168,20 +169,22 @@ class RecordCubit extends Cubit<RecordState> {
     final result = await AudioRecordService.stopAndSave(cancel);
 
     result.fold(
-          (l) {
+      (l) {
         Fluttertoast.showToast(
           msg: S.current.errorOccuredPleaseTryAgain,
           backgroundColor: AppColors.primary,
-          textColor: AppTheme.contrastColor(),
+          textColor: AppTheme.readableOn(AppColors.primary),
         );
       },
-          (r) {
-        emit(state.copyWith(
-          isRecording: false,
-          ellapsedSeconds: 0,
-          ellapsedMinutes: 0,
-          newRecordDuration: recordDuration,
-        ));
+      (r) {
+        emit(
+          state.copyWith(
+            isRecording: false,
+            ellapsedSeconds: 0,
+            ellapsedMinutes: 0,
+            newRecordDuration: recordDuration,
+          ),
+        );
 
         if (r != null) {
           // Handle the recorded audio file path

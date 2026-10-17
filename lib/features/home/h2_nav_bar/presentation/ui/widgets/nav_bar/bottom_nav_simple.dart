@@ -6,18 +6,17 @@
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Extracted from the oversized model.dart as part of
 ///          breaking up the vendored persistent-nav-bar god files.
+library;
 
-import 'dart:math';
-import 'dart:ui';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:grc_module/features/home/h2_nav_bar/persistent_nav_bar.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
 class BottomNavSimple extends StatelessWidget {
   const BottomNavSimple({
-    final Key? key,
+    super.key,
     this.navBarEssentials = const NavBarEssentials(items: null),
-  }) : super(key: key);
+  });
   final NavBarEssentials? navBarEssentials;
 
   Widget _buildItem(final PersistentBottomNavBarItem item,
@@ -106,6 +105,7 @@ class BottomNavSimple extends StatelessWidget {
             final int index = navBarEssentials!.items!.indexOf(item);
             return Flexible(
               child: GestureDetector(
+                onTapDown: (_) => HapticController.low(),
                 onTap: () {
                   if (navBarEssentials!.items![index].onPressed != null) {
                     navBarEssentials!.items![index].onPressed!(

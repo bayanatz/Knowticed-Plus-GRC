@@ -1,16 +1,18 @@
 /// Module: messaging / chat / presentation/ui/widgets/buttons/menu_icon_button.dart
+library;
 // By:Youssef Ashraf
 // Date: 18/9/2024
 // Objectives: This file is responsible for providing a widget that represents the menu icon in the menu attachment message widget.
 
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 
 import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/helper/main_helper/spacing_helper.dart';
+import 'package:grc_module/features/messaging/helpers/spacing_helper.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
 class MenuIconButton extends StatelessWidget {
   final Function() onTap;
@@ -30,6 +32,7 @@ class MenuIconButton extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         GestureDetector(
+          onTapDown: hapticDown(onTap, HapticLevel.low),
           onTap: onTap,
           child: Container(
             alignment: Alignment.center,
@@ -41,10 +44,9 @@ class MenuIconButton extends StatelessWidget {
                 8.r,
               ),
             ),
-            child: SvgPicture.asset(
-              color:
-                  AppTheme.isDark ?? false ? AppColors.textButton : AppColors.black,
-              icon,
+            child: CustomSvgImage.natural(
+              assetPath: icon,
+              color: AppTheme.isDark ? AppColors.textButton : AppColors.black,
               height: 32.h,
               width: 32.w,
             ),
@@ -53,9 +55,7 @@ class MenuIconButton extends StatelessWidget {
         verticalSpace(4),
         Text(
           text,
-          style: StyleText.fontSize14Weight500.copyWith(
-            color: AppColors.text
-          ),
+          style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
         ),
       ],
     );

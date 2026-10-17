@@ -14,6 +14,7 @@
 ///
 /// PORTED into services_app under features/settings.
 /// Source: services_app features/employees/employee_branding/data/repo/…
+library;
 
 import 'package:dartz/dartz.dart';
 

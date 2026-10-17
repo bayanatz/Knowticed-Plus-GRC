@@ -1,14 +1,17 @@
 /// Module: messaging / chat / presentation/controller/message_types_controllers/image_message_cubit.dart
+library;
+
+import 'package:flutter/foundation.dart';
 import 'dart:io';
 
-import 'package:grc_module/core/services/media_picker_service.dart';
+import 'package:grc_module/core/app_services/media_picker_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grc_module/features/messaging/m1_chat/presentation/controller/main_controllers/master_chat_cubit.dart';
 import 'package:mime/mime.dart';
 
-import '../../../data/models/message/video_message_model.dart';
-import '../../../domain/entity/new_message_content_entity.dart';
-import '../../../domain/repository/chat_repository/base_chat_repository.dart';
+import 'package:grc_module/features/messaging/m1_chat/data/models/message/video_message_model.dart';
+import 'package:grc_module/features/messaging/m1_chat/domain/entity/new_message_content_entity.dart';
+import 'package:grc_module/features/messaging/m1_chat/domain/repository/chat_repository/base_chat_repository.dart';
 
 // State class
 class ImageMessageState {
@@ -61,7 +64,8 @@ class ImageMessageCubit extends Cubit<ImageMessageState> {
   Future<void> getImageCamera() async {
     final picked = await MediaPickerService().pickImage(fromCamera: true);
     if (picked?.path != null) {
-      final updated = List<File>.from(state.mediaPaths)..add(File(picked!.path!));
+      final updated = List<File>.from(state.mediaPaths)
+        ..add(File(picked!.path!));
       emit(state.copyWith(mediaPaths: updated));
 
       // ✅ Add to preview queue
@@ -95,7 +99,6 @@ class ImageMessageCubit extends Cubit<ImageMessageState> {
 
   /// ✅ Send multiple media files (called from MasterChatCubit.applySelectedMessageAction)
   Future<void> sendMultipleMedia(List<String> paths) async {
-
     for (int i = 0; i < paths.length; i++) {
       final filePath = paths[i];
       final file = File(filePath);
@@ -107,7 +110,6 @@ class ImageMessageCubit extends Cubit<ImageMessageState> {
       final mimeType = lookupMimeType(filePath);
       final isVideo = mimeType?.startsWith('video/') ?? false;
 
-
       try {
         if (isVideo) {
           await _sendSingleVideo(filePath);
@@ -115,6 +117,7 @@ class ImageMessageCubit extends Cubit<ImageMessageState> {
           await _sendSingleImage(filePath);
         }
       } catch (e) {
+        debugPrint('Ignored error: $e');
       }
     }
 
@@ -181,10 +184,10 @@ class ImageMessageCubit extends Cubit<ImageMessageState> {
     model.playerController.addListener(() async {
       emit(state.copyWith(
         isPlaying: model.isCurrentPlaying,
-        bufferedVideo: model.playerController.value.position.inMilliseconds
-            .toDouble(),
+        bufferedVideo:
+            model.playerController.value.position.inMilliseconds.toDouble(),
         videoDuration:
-        model.formatDuration(model.playerController.value.position),
+            model.formatDuration(model.playerController.value.position),
       ));
 
       if (model.isCurrentPlaying &&

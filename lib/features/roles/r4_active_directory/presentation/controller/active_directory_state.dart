@@ -1,6 +1,6 @@
 /// Module: roles / r4_active_directory / presentation / controller
 ///
-part of './active_directory_controller.dart';
+part of 'active_directory_controller.dart';
 
 /// ************************* FILE INFO ******************** ///
 /// FILE NAME: active_directory_state.dart
@@ -23,5 +23,5 @@ class ActiveDirectoryInitial extends ActiveDirectoryState {
 /// NOTE: GetX's targeted `update([id])` / `GetBuilder(id:)` granularity is not
 /// preserved — every emit rebuilds all listening [BlocBuilder]s.
 class ActiveDirectoryUpdated extends ActiveDirectoryState {
-  ActiveDirectoryUpdated();
+  const ActiveDirectoryUpdated();
 }

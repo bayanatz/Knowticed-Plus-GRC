@@ -4,6 +4,7 @@
 /// Purpose: Groups list — messaging Groups sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+library;
 
 // By: Youssef Ashraf, Nada Mohammed
 // Last update: 18/9/2024
@@ -14,10 +15,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grc_module/features/messaging/m3_groups/presentation/controller/groups_controller.dart';
 
-import 'package:grc_module/core/enums/message_module/message_types.dart';
-import '../../../../main_controller/helper/chat_settings_service.dart';
-import './groups_tile.dart';
-import './new_group_tile.dart';
+import 'package:grc_module/features/messaging/helpers/enums/message_types.dart';
+import 'package:grc_module/features/messaging/helpers/main/chat_settings_service.dart';
+import 'package:grc_module/features/messaging/m3_groups/presentation/ui/widgets/groups_tile.dart';
+import 'package:grc_module/features/messaging/m3_groups/presentation/ui/widgets/new_group_tile.dart';
 
 class GroupsList extends StatelessWidget {
   final bool seeAll;
@@ -46,36 +47,37 @@ class GroupsList extends StatelessWidget {
         return ValueListenableBuilder<Set<String>>(
           valueListenable: ChatSettingsService.pinnedChats,
           builder: (context, pinned, _) {
-        bool isPinned(dynamic g) =>
-            pinned.contains(ChatSettingsService.groupKey(g.groupId));
-        final ordered = [
-          ...filteredList.where(isPinned),
-          ...filteredList.where((g) => !isPinned(g)),
-        ];
-        filteredList
-          ..clear()
-          ..addAll(ordered);
+            bool isPinned(dynamic g) =>
+                pinned.contains(ChatSettingsService.groupKey(g.groupId));
+            final ordered = [
+              ...filteredList.where(isPinned),
+              ...filteredList.where((g) => !isPinned(g)),
+            ];
+            filteredList
+              ..clear()
+              ..addAll(ordered);
 
-        final itemCount = seeAll ? filteredList.length : filteredList.length.clamp(0, 3);
+            final itemCount =
+                seeAll ? filteredList.length : filteredList.length.clamp(0, 3);
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            SizedBox(height: 8.w),
-            ListView.separated(
-              separatorBuilder: (context, index) => SizedBox(height: 8.h),
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: itemCount,
-              itemBuilder: (context, index) {
-                final group = filteredList[index];
-                return group.messageType != MessageTypes.none
-                    ? GroupsTile(groupEntity: group)
-                    : NewGroupTile(groupEntity: group);
-              },
-            ),
-          ],
-        );
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                SizedBox(height: 8.w),
+                ListView.separated(
+                  separatorBuilder: (context, index) => SizedBox(height: 8.h),
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: itemCount,
+                  itemBuilder: (context, index) {
+                    final group = filteredList[index];
+                    return group.messageType != MessageTypes.none
+                        ? GroupsTile(groupEntity: group)
+                        : NewGroupTile(groupEntity: group);
+                  },
+                ),
+              ],
+            );
           },
         );
       },

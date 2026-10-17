@@ -2,34 +2,37 @@
 ///
 ///************************** FILE INFO ****************************///
 /// File Name: search_and_filter.dart
-/// Purpose : Contains the ui for search and filter in account status screen.
+/// Description: Contains the ui for search and filter in account status screen.
 /// Author: Amr Mesbah
-/// Created at : 28/1/2025
+/// Created at: 28/1/2025
 /// Updated: 29/8/2026 - The Sort control is now the same button + anchored
 ///          dropdown used on the Requests screen
 ///          (`r2_user_management/.../request_page_approval.dart`), instead of
 ///          `SortDropdownWidgetRole` / `CustomDropdown`. Picking the active
 ///          option again clears the sort instead of flipping its direction.
+library;
+
 import 'package:grc_module/core/constants/app_assets.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:grc_module/core/custom/35-custom_search_widget_custom.dart';
+import 'package:grc_module/core/custom/inputs/custom_search_widget_custom.dart';
 
-
-import 'package:grc_module/core/helper/main_helper/icon_size.dart';
+import 'package:grc_module/features/roles/helpers/icon_size.dart';
 import 'package:grc_module/features/roles/r3_user_access/presentation/controller/user_access_cubit.dart';
 import 'package:grc_module/features/roles/r3_user_access/presentation/controller/user_access_state.dart';
-import './filter.dart';
-import './filter_widget.dart';
+
+import 'package:grc_module/features/roles/r3_user_access/presentation/ui/widgets/filter.dart';
+import 'package:grc_module/features/roles/r3_user_access/presentation/ui/widgets/filter_widget.dart';
+
 import 'package:grc_module/features/roles/r3_user_access/domain/enums/sort_option_role.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
 import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
 class SearchAndFilter extends StatefulWidget {
   const SearchAndFilter({super.key});
@@ -53,14 +56,15 @@ class _SearchAndFilterState extends State<SearchAndFilter> {
   /// ADDED 29/8/2026 with the port from `CustomDropdown` to `showMenu`. The
   /// menu is positioned from this key's RenderBox measured against the overlay,
   /// so it follows the button in both LTR and RTL with no hardcoded offsets —
-  /// same approach as `RequestPageApprovalMethods1._showSortMenu`.
+  /// same approach as `_RequestPageApprovalMethods1._showSortMenu`.
   final GlobalKey _sortButtonKey = GlobalKey();
 
   @override
   void initState() {
     super.initState();
-    _searchController =
-        TextEditingController(text: context.read<UserAccessCubit>().searchTerm);
+    _searchController = TextEditingController(
+      text: context.read<UserAccessCubit>().searchTerm,
+    );
   }
 
   @override
@@ -75,13 +79,13 @@ class _SearchAndFilterState extends State<SearchAndFilter> {
     controller = context.read<UserAccessCubit>();
     bool isPortrait =
         MediaQuery.of(context).orientation == Orientation.portrait;
-    bool isTablet = MediaQuery.of(context).size.width > 600;
+    bool isTablet = !kpIsPhoneLayout(context);
 
     return IntrinsicHeight(
       child: Row(
         spacing: 5.sp,
         crossAxisAlignment:
-        isPortrait ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+            isPortrait ? CrossAxisAlignment.start : CrossAxisAlignment.center,
         children: [
           // AppSearchTextField already returns an Expanded, so it must NOT be
           // wrapped in one here (nested Expanded is a runtime error).
@@ -89,7 +93,9 @@ class _SearchAndFilterState extends State<SearchAndFilter> {
             controller: _searchController,
             onChanged: (value) {
               controller.searchAccountsStatusEntities(
-                  value, controller.selectedSortOption);
+                value,
+                controller.selectedSortOption,
+              );
             },
           ),
 
@@ -99,8 +105,7 @@ class _SearchAndFilterState extends State<SearchAndFilter> {
           // Role QA p.42: Sort was hidden on phones; it now shows there too,
           // as a 38×38 square like the Filter button beside it.
           BlocBuilder<UserAccessCubit, UserAccessState>(
-            builder: (context, state) =>
-                _sortButton(isPortrait || isMobile),
+            builder: (context, state) => _sortButton(isPortrait || isMobile),
           ),
 
           // BlocBuilder for the same reason as the Sort button: applying or
@@ -137,6 +142,7 @@ class _SearchAndFilterState extends State<SearchAndFilter> {
         _filterSelected ? AppColors.textButton : AppColors.secondaryText;
 
     return GestureDetector(
+      onTapDown: (_) => HapticController.low(),
       onTap: () {
         showAppDialog(
           context: context,
@@ -164,7 +170,7 @@ class _SearchAndFilterState extends State<SearchAndFilter> {
               scale: IconSizeHelper.getIconSize(context),
               child: CustomSvgImage(
                 assetPath:
-                    "assets/icons_assets/main_icons_assets/filter_sliders.svg",
+                    "assets/icons_assets/main_icons_assets/ic_action_filter.svg",
                 width: 15.sp,
                 height: 15.sp,
                 color: foreground,
@@ -187,7 +193,7 @@ class _SearchAndFilterState extends State<SearchAndFilter> {
 
   // ── Sort ───────────────────────────────────────────────────────────────────
   //
-  // PORTED 29/8/2026 from `RequestPageApprovalMethods1` so both screens present
+  // PORTED 29/8/2026 from `_RequestPageApprovalMethods1` so both screens present
   // one sort control. This used to be `SortDropdownWidgetRole`, a
   // `CustomDropdown` dressed up as a button: it carried a form field's trigger,
   // hint and `alwaysShowHint` hack just to keep the word "Sort" on a control
@@ -205,6 +211,7 @@ class _SearchAndFilterState extends State<SearchAndFilter> {
 
   Widget _sortButton(bool isPortrait) {
     return GestureDetector(
+      onTapDown: hapticDown(_showSortMenu, HapticLevel.low),
       onTap: _showSortMenu,
       child: Container(
         key: _sortButtonKey,
@@ -220,7 +227,6 @@ class _SearchAndFilterState extends State<SearchAndFilter> {
             CustomSvgImage(
               assetPath: AppAssets.sort,
               width: 20.sp,
-
               height: 20.sp,
               fit: BoxFit.fill,
               color: _sortSelected
@@ -276,9 +282,7 @@ class _SearchAndFilterState extends State<SearchAndFilter> {
       position: position,
       color: AppColors.card,
       constraints: BoxConstraints(minWidth: buttonSize.width),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8.r),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
       // The selected row is painted edge to edge, so the menu does the
       // rounding and gives up its default vertical list padding — otherwise a
       // strip of `AppColors.card` shows above and below the fill and the row

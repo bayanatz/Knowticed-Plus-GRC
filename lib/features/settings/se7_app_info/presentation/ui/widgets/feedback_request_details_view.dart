@@ -19,19 +19,19 @@
 /// ([openFeedbackRequestDetailsPage]).
 library;
 
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/custom/50-custom_side_frame_master.dart';
-import 'package:grc_module/core/helper/main_helper/localized_date.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
+import 'package:grc_module/core/custom/navigation/custom_side_frame_master.dart';
+import 'package:grc_module/core/helper/localized_date.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/features/settings/se7_app_info/domain/entities/app_feedback.dart';
 import 'package:grc_module/features/settings/se7_app_info/presentation/ui/widgets/feedback_display.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
 /// Phone: push the details as a full page under the settings breadcrumb.
 Future<void> openFeedbackRequestDetailsPage(
@@ -91,7 +91,9 @@ class FeedbackRequestDetailsView extends StatelessWidget {
               ..._detailsGrid(context),
               SizedBox(height: 15.h),
               _textBlock(context, S.of(context).reportBugs, request.body),
-              if (request.details.stepsToReproduce.trim().isNotEmpty) ...<Widget>[
+              if (request.details.stepsToReproduce
+                  .trim()
+                  .isNotEmpty) ...<Widget>[
                 SizedBox(height: 15.h),
                 _textBlock(context, S.of(context).stepsToReproduce,
                     request.details.stepsToReproduce),
@@ -118,11 +120,12 @@ class FeedbackRequestDetailsView extends StatelessWidget {
 
   // ── Header: back + "Request Details" …… "Requested Date: x" ─────────────
   Widget _header(BuildContext context) {
-    final bool isArabic = Directionality.of(context) == ui.TextDirection.rtl;
+    final bool isArabic = Directionality.of(context) == TextDirection.rtl;
     return Row(
       children: <Widget>[
         if (onBack != null) ...<Widget>[
           InkWell(
+            onTapDown: hapticDown(onBack, HapticLevel.low),
             onTap: onBack,
             borderRadius: BorderRadius.circular(4.r),
             child: Padding(
@@ -165,11 +168,12 @@ class FeedbackRequestDetailsView extends StatelessWidget {
           height: 30.sp,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: AppColors.primary.withOpacity(.15),
+            color: AppColors.primary.withValues(alpha: .15),
             borderRadius: BorderRadius.circular(8.r),
           ),
           child: CustomSvgImage(
-            assetPath: 'assets/icons_assets/settings_assets/feedback_stamp.svg',
+            assetPath:
+                'assets/icons_assets/settings_assets/ic_module_feedback.svg',
             width: 16.sp,
             height: 16.sp,
             color: AppColors.primary,
@@ -179,14 +183,15 @@ class FeedbackRequestDetailsView extends StatelessWidget {
         Expanded(
           child: Text(
             FeedbackDisplay.kindLabel(context, request.kind),
-            style: StyleText.fontSize18Weight500.copyWith(color: AppColors.text),
+            style:
+                StyleText.fontSize18Weight500.copyWith(color: AppColors.text),
           ),
         ),
         if (request.priority != null)
           Container(
             padding: EdgeInsets.symmetric(horizontal: 10.sp, vertical: 4.sp),
             decoration: BoxDecoration(
-              color: AppColors.field,
+              color: AppColors.card,
               borderRadius: BorderRadius.circular(4.r),
             ),
             child: Text.rich(
@@ -231,8 +236,8 @@ class FeedbackRequestDetailsView extends StatelessWidget {
         MapEntry(l.softwareType,
             FeedbackDisplay.softwareTypeLabel(context, d.softwareType!)),
       if (d.frequency != null)
-        MapEntry(l.frequency,
-            FeedbackDisplay.frequencyLabel(context, d.frequency!)),
+        MapEntry(
+            l.frequency, FeedbackDisplay.frequencyLabel(context, d.frequency!)),
     ];
     if (cells.isEmpty) return const <Widget>[];
 
@@ -284,7 +289,8 @@ class FeedbackRequestDetailsView extends StatelessWidget {
           ),
           child: SelectableText(
             text.trim().isEmpty ? '—' : text.trim(),
-            style: StyleText.fontSize14Weight400.copyWith(color: AppColors.text),
+            style:
+                StyleText.fontSize14Weight400.copyWith(color: AppColors.text),
           ),
         ),
       ],
@@ -302,7 +308,7 @@ class FeedbackRequestDetailsView extends StatelessWidget {
         alignment: AlignmentDirectional.centerStart,
         padding: EdgeInsets.symmetric(horizontal: 12.sp),
         decoration: BoxDecoration(
-          color: AppColors.field,
+          color: AppColors.card,
           borderRadius: BorderRadius.circular(4.r),
         ),
         child: Text(
@@ -318,6 +324,7 @@ class FeedbackRequestDetailsView extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 8.h),
       child: InkWell(
         borderRadius: BorderRadius.circular(4.r),
+        onTapDown: file.url.isEmpty ? null : (_) => HapticController.low(),
         onTap: file.url.isEmpty
             ? null
             : () => launchUrl(Uri.parse(file.url),
@@ -349,7 +356,6 @@ class FeedbackRequestDetailsView extends StatelessWidget {
                       .copyWith(color: AppColors.text),
                 ),
               ),
-
             ],
           ),
         ),

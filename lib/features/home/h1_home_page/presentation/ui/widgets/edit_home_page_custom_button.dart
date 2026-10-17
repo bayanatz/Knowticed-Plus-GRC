@@ -2,19 +2,20 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: edit_home_page_custom_button.dart
-/// Purpose: Preview / Save / Discard actions for the home-layout editor.
+/// Description: Preview / Save / Discard actions for the home-layout editor.
 /// Author: Amr Mesbah
 /// Created at: 21/9/2025
 /// Updated: 24/8/2026 - Save now runs the shared confirm -> success dialog flow
 ///          and stays disabled until the layout actually differs from what is
 ///          stored.
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:grc_module/core/custom/5-custom_button.dart';
-import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
+import 'package:grc_module/core/custom/buttons/custom_button.dart';
+import 'package:grc_module/core/custom/dialogs/custom_dialog_manager.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
@@ -40,13 +41,14 @@ class EditHomePageCustomButton extends StatelessWidget {
     await CustomDialogManager.showDialogFlow(
       context: context,
       confirmLottie:
-          'assets/lottie_assets/main_lottie_assets/lottie_warning.json',
+          'assets/lottie_assets/main_lottie_assets/lot_action_delete_role.json',
       confirmTitle: S.of(context).applyChanges,
       confirmSubtitle: S.of(context).areYouSureYouWantToSaveTheseChanges,
       confirmYesText: S.of(context).yes,
       confirmNoText: S.of(context).no,
       onConfirm: () => cubit.updateHomeComponents(),
-      successLottie: 'assets/lottie_assets/main_lottie_assets/correct.json',
+      successLottie:
+          'assets/lottie_assets/main_lottie_assets/lot_status_success.json',
       successTitle: S.of(context).Successful,
       successSubtitle: S.of(context).dataHasBeenSavedSuccessfully,
     );
@@ -88,8 +90,8 @@ class EditHomePageCustomButton extends StatelessWidget {
       function: () {
         Navigator.of(context).pop();
       },
-      color: AppColors.secondaryButton,
-      textStyle: StyleText.fontSize16Weight400,
+      color: AppColors.darkGrey,
+      textStyle: StyleText.fontSize16Weight400.copyWith(color: AppColors.text),
     );
   }
 
@@ -116,9 +118,9 @@ class EditHomePageCustomButton extends StatelessWidget {
             customButton(
               width: 150.w,
               function: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => HomePreview()),
-                );
+                Navigator.of(
+                  context,
+                ).push(MaterialPageRoute(builder: (context) => HomePreview()));
               },
               title: S.of(context).preview,
             ),
@@ -127,11 +129,7 @@ class EditHomePageCustomButton extends StatelessWidget {
           ],
         ),
         SizedBox(height: 20),
-        Row(
-          children: [
-            _buildDiscardButton(context),
-          ],
-        )
+        Row(children: [_buildDiscardButton(context)]),
       ],
     );
   }

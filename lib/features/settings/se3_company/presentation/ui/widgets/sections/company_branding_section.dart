@@ -28,31 +28,31 @@
 ///          the app is actually rendering with, so no branding field ever shows
 ///          a hint — matching how `employee_branding_screen.dart` already seeds
 ///          its own pickers.
-import 'package:grc_module/core/custom/55-custom_responsive_fields.dart';
-import 'package:grc_module/core/custom/61-custom_color_picker.dart';
+library;
+
+import 'package:grc_module/core/custom/layout/custom_responsive_fields.dart';
+import 'package:grc_module/core/custom/pickers/custom_color_picker.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:grc_module/core/theme/haptic_controller.dart' hide storage;
 
-
-import 'package:grc_module/core/theme/app_font_size.dart';
-import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
+import 'package:grc_module/core/custom/dialogs/custom_dialog_manager.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grc_module/features/settings/se3_company/data/utils/branding_color.dart';
 import 'package:grc_module/features/settings/se3_company/presentation/controller/company_cubit.dart';
 import 'package:grc_module/features/settings/se3_company/presentation/controller/company_state.dart';
-import 'package:grc_module/core/custom/33-custom_haptic.dart';
+import 'package:grc_module/core/custom/helpers/custom_haptic.dart';
 import 'package:grc_module/features/settings/se3_company/presentation/ui/widgets/shared/company_image.dart';
-import 'package:grc_module/core/custom/1-custom_dropdown.dart';
+import 'package:grc_module/core/custom/dropdowns/custom_dropdown.dart';
 
-import 'package:grc_module/core/custom/5-custom_button.dart';
+import 'package:grc_module/core/custom/buttons/custom_button.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
+
 class CompanyBrandingScreen extends StatefulWidget {
   const CompanyBrandingScreen({
     super.key,
@@ -199,7 +199,8 @@ class _CompanyBrandingScreenState extends State<CompanyBrandingScreen> {
     if (!mounted) return;
     await CustomDialogManager.showMessage(
       context: context,
-      lottiePath: "assets/lottie_assets/main_lottie_assets/error.json",
+      lottiePath:
+          "assets/lottie_assets/main_lottie_assets/lot_status_error.json",
       title: S.of(context).unsuccessful,
       subtitle: subtitle,
     );
@@ -211,7 +212,8 @@ class _CompanyBrandingScreenState extends State<CompanyBrandingScreen> {
   Future<void> _resetBranding() async {
     await CustomDialogManager.showDialogFlow(
       context: context,
-      confirmLottie: "assets/lottie_assets/main_lottie_assets/reset_brand.json",
+      confirmLottie:
+          "assets/lottie_assets/settings_lottie_assets/lot_action_reset_branding.json",
       confirmTitle: S.of(context).resetBranding,
       confirmSubtitle: S.of(context).areYouSureYouWantToResetTheCompanyBranding,
       confirmYesText: S.of(context).yes,
@@ -226,6 +228,7 @@ class _CompanyBrandingScreenState extends State<CompanyBrandingScreen> {
 
         if (!reset) {
           // Every abort path used to just return, so a failed reset looked
+          if (!mounted) return false;
           // exactly like a dead button.
           await _showResetError(S.of(context).errorOccurred);
           return false;
@@ -254,7 +257,8 @@ class _CompanyBrandingScreenState extends State<CompanyBrandingScreen> {
         if (mounted) setState(() {});
         return true;
       },
-      successLottie: "assets/lottie_assets/main_lottie_assets/correct.json",
+      successLottie:
+          "assets/lottie_assets/main_lottie_assets/lot_status_success.json",
       successTitle: S.of(context).Successful,
       successSubtitle: S.of(context).dataHasBeenSavedSuccessfully,
       // No onSuccessComplete: the reload it used to hold now runs in onConfirm,
@@ -264,130 +268,131 @@ class _CompanyBrandingScreenState extends State<CompanyBrandingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var isMobile = ContextExtension(context).isPhone;
-    final bool lightMode = Theme.of(context).brightness == Brightness.light;
-    final bool isVertical = MediaQuery.of(context).orientation == Orientation.portrait;
-    final bool isTablet = MediaQuery.of(context).size.shortestSide > 600;
+    ContextExtension(context).isPhone;
+    Theme.of(context).brightness == Brightness.light;
+    MediaQuery.of(context).orientation == Orientation.portrait;
+    !kpIsPhoneLayout(context);
 
     return BlocBuilder<CompanyCubit, CompanyState>(
       builder: (context, state) => Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8.r),
-            color: AppColors.card,
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(15.sp),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // ── Company Image + Reset Button ──────────────────────────
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CompanyImage(onChangedImageUrl: widget.onChangedImageUrl),
-                    customButton(
-                      title: S.of(context).Reset,
-                      function: _resetBranding,
-                      textStyle: StyleText.fontSize16Weight500.copyWith(
-                        color: AppColors.text,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8.r),
+              color: AppColors.card,
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(15.sp),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // ── Company Image + Reset Button ──────────────────────────
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CompanyImage(onChangedImageUrl: widget.onChangedImageUrl),
+                      customButton(
+                        title: S.of(context).Reset,
+                        function: _resetBranding,
+                        textStyle: StyleText.fontSize16Weight500.copyWith(
+                          color: AppColors.text,
+                        ),
+                        width: 100.w,
+                        height: 38,
+                        radius: 8.r,
+                        // Was a malformed `const Color(0xffCCCCCCCC)` — 10 hex digits, so
+                        // the leading alpha byte overflowed and was masked off
+                        // (CR-SKEL-SE3-N15).
+                        color: AppColors.darkGrey,
                       ),
-                      width: 100.w,
-                      height: 38,
-                      radius: 8.r,
-                      // Was a malformed `const Color(0xffCCCCCCCC)` — 10 hex digits, so
-                      // the leading alpha byte overflowed and was masked off
-                      // (CR-SKEL-SE3-N15).
-                      color: AppColors.darkGrey,
-                    ),
-                  ],
-                ),
-
-                SizedBox(height: 20.h),
-
-                // ── Color Display Section ─────────────────────────────────
-                // Always a real colour — unsaved pick, else the saved company
-                // colour, else the theme default the app is currently painting.
-                // These were passed through as nullable so a cleared brand fell
-                // back to the "Primary Color" / "Secondary Color" hints; that
-                // was also reachable on an active company whose colours had been
-                // cleared but whose fonts had since been re-applied, where an
-                // empty field read as a bug (23/8/2026).
-                CustomColorPickerSection(
-                  primaryColor: _effectivePrimaryColor(state),
-                  secondaryColor: _effectiveSecondaryColor(state),
-                  onPrimaryColorSelected: (Color color) {
-                    _cubit.setPrimaryColor(color);
-                    widget.onChangedPrimaryColor(color);
-                  },
-                  onSecondaryColorSelected: (Color color) {
-                    _cubit.setSecondaryColor(color);
-                    widget.onChangedSecondaryColor(color);
-                  },
-                ),
-
-                SizedBox(height: 20.h),
-
-                // ── Fonts Section ─────────────────────────────────────────
-                Text(
-                  S.of(context).fonts,
-                  style: StyleText.fontSize16Weight500.copyWith(
-                    color: AppColors.text,
+                    ],
                   ),
-                ),
 
-                SizedBox(height: 12.h),
+                  SizedBox(height: 20.h),
 
-                buildResponsiveFields(
-                  context: context,
-                  mobileSpacing: 10,
-                  left: CustomDropdown<String>(
-                    value: _effectiveEnglishFont(state),
-                    items: _convertToDropdownItems(CompanyConstants.englishList),
-                    // Pinned to the colour fields' 40 (10 + 20 + 10, all .sp) so
-                    // the Fonts and Colors rows are the same height (Settings p.13).
-                    height: 40,
-                    borderRadius: BorderRadius.circular(4.r),
-                    hint: S.of(context).selectEnglishFont,
-                    // Same hint treatment CustomTextField uses, so the colour
-                    // fields and the font dropdowns read as one set.
-                    hintStyle: StyleText.fontSize14Weight400.copyWith(
-                      color: AppColors.text.withOpacity(0.4),
-                    ),
-                    onChanged: (value) {
-                      _cubit.setSelectedEnglishFont(value);
-                      widget.onChangedFontEnglish(value);
+                  // ── Color Display Section ─────────────────────────────────
+                  // Always a real colour — unsaved pick, else the saved company
+                  // colour, else the theme default the app is currently painting.
+                  // These were passed through as nullable so a cleared brand fell
+                  // back to the "Primary Color" / "Secondary Color" hints; that
+                  // was also reachable on an active company whose colours had been
+                  // cleared but whose fonts had since been re-applied, where an
+                  // empty field read as a bug (23/8/2026).
+                  CustomColorPickerSection(
+                    primaryColor: _effectivePrimaryColor(state),
+                    secondaryColor: _effectiveSecondaryColor(state),
+                    onPrimaryColorSelected: (Color color) {
+                      _cubit.setPrimaryColor(color);
+                      widget.onChangedPrimaryColor(color);
+                    },
+                    onSecondaryColorSelected: (Color color) {
+                      _cubit.setSecondaryColor(color);
+                      widget.onChangedSecondaryColor(color);
                     },
                   ),
-                  right: CustomDropdown<String>(
 
-                    value: _effectiveArabicFont(state),
-                    items: _convertToDropdownItems(CompanyConstants.arabicList),
-                    // Pinned to the colour fields' 40 (10 + 20 + 10, all .sp) so
-                    // the Fonts and Colors rows are the same height (Settings p.13).
-                    height: 40,
-                    borderRadius: BorderRadius.circular(4.r),
-                    hint: S.of(context).selectArabicFont,
-                    // Same hint treatment CustomTextField uses, so the colour
-                    // fields and the font dropdowns read as one set.
-                    hintStyle: StyleText.fontSize14Weight400.copyWith(
-                      color: AppColors.text.withOpacity(0.4),
+                  SizedBox(height: 20.h),
+
+                  // ── Fonts Section ─────────────────────────────────────────
+                  Text(
+                    S.of(context).fonts,
+                    style: StyleText.fontSize16Weight500.copyWith(
+                      color: AppColors.text,
                     ),
-                    onChanged: (value) {
-                      _cubit.setSelectedArabicFont(value);
-                      widget.onChangedFontArabic(value);
-                    },
                   ),
-                ),
-              ],
+
+                  SizedBox(height: 12.h),
+
+                  buildResponsiveFields(
+                    context: context,
+                    mobileSpacing: 10,
+                    left: CustomDropdown<String>(
+                      value: _effectiveEnglishFont(state),
+                      items:
+                          _convertToDropdownItems(CompanyConstants.englishList),
+                      // Pinned to the colour fields' 40 (10 + 20 + 10, all .sp) so
+                      // the Fonts and Colors rows are the same height (Settings p.13).
+                      height: 40,
+                      borderRadius: BorderRadius.circular(4.r),
+                      hint: S.of(context).selectEnglishFont,
+                      // Same hint treatment CustomTextField uses, so the colour
+                      // fields and the font dropdowns read as one set.
+                      hintStyle: StyleText.fontSize14Weight400.copyWith(
+                        color: AppColors.text.withValues(alpha: 0.4),
+                      ),
+                      onChanged: (value) {
+                        _cubit.setSelectedEnglishFont(value);
+                        widget.onChangedFontEnglish(value);
+                      },
+                    ),
+                    right: CustomDropdown<String>(
+                      value: _effectiveArabicFont(state),
+                      items:
+                          _convertToDropdownItems(CompanyConstants.arabicList),
+                      // Pinned to the colour fields' 40 (10 + 20 + 10, all .sp) so
+                      // the Fonts and Colors rows are the same height (Settings p.13).
+                      height: 40,
+                      borderRadius: BorderRadius.circular(4.r),
+                      hint: S.of(context).selectArabicFont,
+                      // Same hint treatment CustomTextField uses, so the colour
+                      // fields and the font dropdowns read as one set.
+                      hintStyle: StyleText.fontSize14Weight400.copyWith(
+                        color: AppColors.text.withValues(alpha: 0.4),
+                      ),
+                      onChanged: (value) {
+                        _cubit.setSelectedArabicFont(value);
+                        widget.onChangedFontArabic(value);
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
       ),
     );
   }

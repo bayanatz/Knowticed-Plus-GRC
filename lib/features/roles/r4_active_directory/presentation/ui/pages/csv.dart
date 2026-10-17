@@ -10,6 +10,7 @@
 ///          (MESBAH / ROLE MANAGEMENT, node 6975:11036), not as the desktop
 ///          data table squeezed into 375 points. `CustomCsvTable` is unchanged
 ///          and still serves tablet and desktop.
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,8 +19,8 @@ import 'package:grc_module/core/di/app_controllers.dart';
 import 'package:grc_module/features/roles/r4_active_directory/presentation/controller/active_directory_controller.dart';
 import 'package:grc_module/features/roles/r4_active_directory/presentation/controller/main_core_department_cubit.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
-import './ad_mobile_export_details_page.dart';
-import './custom_csv_table_page.dart';
+import 'package:grc_module/features/roles/r4_active_directory/presentation/ui/pages/ad_mobile_export_details_page.dart';
+import 'package:grc_module/features/roles/r4_active_directory/presentation/ui/pages/custom_csv_table_page.dart';
 
 class CsvView extends StatelessWidget {
   const CsvView({
@@ -28,7 +29,6 @@ class CsvView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     // Was `Get.isRegistered` + `Get.put` inline. The locator stays behind the
     // AppControllers seam (GetX standing rule).
     AppControllers.ensureActiveDirectory(

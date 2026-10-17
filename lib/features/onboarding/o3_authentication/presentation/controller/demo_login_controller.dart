@@ -2,34 +2,22 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: demo_login_controller.dart
-/// Purpose: Drives the demo-tenant login flow.
-/// Author: Knowticed Plus team
+/// Description: Drives the demo-tenant login flow.
+/// Author: Amr Mesbah
 /// Created at: 2026
 /// Updated: 12/8/2026 - CR-SKEL-O3-N10: added the standard header; the repository is still constructed
 ///          inline here.
+library;
 
-/// ************************* FILE INFO ************************* ///
-/// File Name: demo_login_controller.dart
-/// Purpose: Contains the controller for demo login feature.
-/// Author: Amr Mesbah
-/// Created At: 4/1/2025
-/// Updated: 23/12/2025 - Added comprehensive notification system
-/// ✅ UPDATED: Added moduleUserLimitReached handler
-/// ✅ FIXED: Removed duplicate success handling - login_controller handles navigation
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:grc_module/features/onboarding/o3_authentication/data/constants.dart';
 import 'package:grc_module/features/roles/r4_active_directory/data/models/employees_model/new_employee_model.dart';
 
-
 import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/core/custom/64-custom_response_dialog.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
+import 'package:grc_module/core/custom/dialogs/custom_response_dialog.dart';
+import 'package:grc_module/core/custom/feedback/circle_progress.dart';
 import 'package:grc_module/features/notification/data/repository/account_status_notification_service.dart';
 import 'package:grc_module/features/onboarding/o3_authentication/data/repository/demo_login_repository.dart';
 import 'package:grc_module/features/onboarding/o3_authentication/data/utils/login_attempt_store.dart';
@@ -37,11 +25,12 @@ import 'package:grc_module/features/onboarding/o3_authentication/domain/enums/em
 import 'package:grc_module/features/onboarding/o3_authentication/domain/enums/failure_authentication_type.dart';
 import 'package:grc_module/features/roles/r5_system_logs/presentation/controller/system_logs_controller.dart';
 import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/controller/employee_controller.dart';
+import 'package:grc_module/features/settings/presentation/controller/employee_controller.dart';
 // ADDED 26/8/2026 — raising the unlock request. See
 // [handleLockedAccountSignIn].
 import 'package:grc_module/features/roles/r3_user_access/data/repository/user_access_repository.dart';
 import 'package:grc_module/core/theme/app_animations.dart';
+
 class DemoLoginController {
   final DemoLoginRepository demoLoginRepository = DemoLoginRepository();
   SystemLogsController systemLogsController = Get.find<SystemLogsController>();
@@ -63,7 +52,7 @@ class DemoLoginController {
   ///   is what made an account lock on the user's *second* visible try.
   ///
   /// Returns: the repository's `Either`, unmodified.
-  loginWithEmailAndPassword({
+  Future<Either<Failure, dynamic>> loginWithEmailAndPassword({
     required String email,
     required String password,
     bool countsTowardLockout = true,
@@ -74,9 +63,10 @@ class DemoLoginController {
     if (result.isLeft()) {
       String errorMessage = result.fold((l) => l.errMessage, (r) => "");
       await handleAuthenticationErrorMessage(
-          errorMessage: errorMessage,
-          email: email,
-          countsTowardLockout: countsTowardLockout);
+        errorMessage: errorMessage,
+        email: email,
+        countsTowardLockout: countsTowardLockout,
+      );
     } else {
       // A clean sign-in clears the failure history, so the next lock again
       // requires a full LoginAttemptStore.maxAttempts consecutive failures.
@@ -86,7 +76,7 @@ class DemoLoginController {
   }
 
   // ✅ UPDATED: Added moduleUserLimitReached case
-  handleAuthenticationErrorMessage({
+  Future<void> handleAuthenticationErrorMessage({
     required String errorMessage,
     required String email,
     bool countsTowardLockout = true,
@@ -97,8 +87,9 @@ class DemoLoginController {
     FailureAuthenticationType? failureType;
 
     try {
-      failureType = FailureAuthenticationType.values
-          .firstWhere((element) => element.dialogBoxMessage == errorMessage);
+      failureType = FailureAuthenticationType.values.firstWhere(
+        (element) => element.dialogBoxMessage == errorMessage,
+      );
     } catch (e) {
       // DIAGNOSTIC 7/9/2026. Reaching this `catch` means `firstWhere` matched
       // no `FailureAuthenticationType`: `errorMessage` is not one of the app's
@@ -108,27 +99,23 @@ class DemoLoginController {
       // does not have permission…" ends up under the "Authentication Error"
       // title. The `[firestore]` line logged at the failing read names the
       // path; this line marks where it turned into a dialog.
-      if (kDebugMode) {
-        debugPrint(
-          '[login] UNMAPPED failure for "$email" — no FailureAuthenticationType '
-          'matches this message, so it is shown verbatim as "Authentication '
-          'Error". Raw message: $errorMessage',
-        );
-      }
+      if (kDebugMode) {}
       await showAppDialog(
-      // Login error -> shake once.
-      destructive: true,
-          context: Get.context!,
-          barrierDismissible: true,
-          builder: (context) {
-            return ResponseDialog(
-              title: S.of(context).authenticationError,
-              subtitle: errorMessage.isNotEmpty
-                  ? errorMessage
-                  : S.of(context).anErrorOccurredDuringLoginPleaseTryAgain,
-              lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
-            );
-          });
+        // Login error -> shake once.
+        destructive: true,
+        context: Get.context!,
+        barrierDismissible: true,
+        builder: (context) {
+          return ResponseDialog(
+            title: S.of(context).authenticationError,
+            subtitle: errorMessage.isNotEmpty
+                ? errorMessage
+                : S.of(context).anErrorOccurredDuringLoginPleaseTryAgain,
+            lottieAsset:
+                "assets/lottie_assets/main_lottie_assets/lot_status_error.json",
+          );
+        },
+      );
       return;
     }
 
@@ -137,8 +124,10 @@ class DemoLoginController {
         await handleEmailNotFound();
         break;
       case FailureAuthenticationType.wrongPassword:
-        await handleFailureWrongPassword(email,
-            countsTowardLockout: countsTowardLockout);
+        await handleFailureWrongPassword(
+          email,
+          countsTowardLockout: countsTowardLockout,
+        );
         break;
       case FailureAuthenticationType.wrongActivationPassword:
         await handleWrongActivationPassword();
@@ -169,19 +158,21 @@ class DemoLoginController {
     }
   }
 
-  handleEmailNotFound() async {
+  Future<void> handleEmailNotFound() async {
     await showAppDialog(
       // Login error -> shake once.
       destructive: true,
-        context: Get.context!,
-        barrierDismissible: true,
-        builder: (context) {
-          return ResponseDialog(
-            title: FailureAuthenticationType.emailNotFound.dialogBoxTitle,
-            subtitle: FailureAuthenticationType.emailNotFound.dialogBoxMessage,
-            lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
-          );
-        });
+      context: Get.context!,
+      barrierDismissible: true,
+      builder: (context) {
+        return ResponseDialog(
+          title: FailureAuthenticationType.emailNotFound.dialogBoxTitle,
+          subtitle: FailureAuthenticationType.emailNotFound.dialogBoxMessage,
+          lottieAsset:
+              "assets/lottie_assets/main_lottie_assets/lot_status_error.json",
+        );
+      },
+    );
   }
 
   /// Function Name: [handleFailureWrongPassword]
@@ -200,8 +191,10 @@ class DemoLoginController {
   /// - [email]: whose failure this is.
   /// - [countsTowardLockout]: `false` for background/biometric attempts, which
   ///   report the error but must not push the account toward a lock.
-  handleFailureWrongPassword(String email,
-      {bool countsTowardLockout = true}) async {
+  Future<void> handleFailureWrongPassword(
+    String email, {
+    bool countsTowardLockout = true,
+  }) async {
     final int attempts = countsTowardLockout
         ? LoginAttemptStore.registerFailure(email)
         : LoginAttemptStore.attemptsFor(email);
@@ -216,18 +209,20 @@ class DemoLoginController {
     await showAppDialog(
       // Login error -> shake once.
       destructive: true,
-        context: Get.context!,
-        barrierDismissible: true,
-        builder: (context) {
-          return ResponseDialog(
-            title: FailureAuthenticationType.wrongPassword.dialogBoxTitle,
-            subtitle: remaining > 0
-                ? '${FailureAuthenticationType.wrongPassword.dialogBoxMessage}\n\n'
-                    '${_attemptsRemainingMessage(remaining)}'
-                : "${FailureAuthenticationType.wrongPassword.dialogBoxMessage}\n\n",
-            lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
-          );
-        });
+      context: Get.context!,
+      barrierDismissible: true,
+      builder: (context) {
+        return ResponseDialog(
+          title: FailureAuthenticationType.wrongPassword.dialogBoxTitle,
+          subtitle: remaining > 0
+              ? '${FailureAuthenticationType.wrongPassword.dialogBoxMessage}\n\n'
+                  '${_attemptsRemainingMessage(remaining)}'
+              : "${FailureAuthenticationType.wrongPassword.dialogBoxMessage}\n\n",
+          lottieAsset:
+              "assets/lottie_assets/main_lottie_assets/lot_status_error.json",
+        );
+      },
+    );
   }
 
   /// Bilingual "you have N attempts left before this account is locked" line.
@@ -237,8 +232,9 @@ class DemoLoginController {
   /// the REMAINING note at the top of that file); moving one of the two halves
   /// to the .arb bundle on its own would leave the dialog half-translated.
   String _attemptsRemainingMessage(int remaining) {
-    final bool isArabic =
-        Intl.getCurrentLocale().toLowerCase().startsWith('ar');
+    final bool isArabic = Intl.getCurrentLocale().toLowerCase().startsWith(
+          'ar',
+        );
     if (isArabic) {
       return 'لديك $remaining محاولة متبقية قبل قفل الحساب.';
     }
@@ -247,153 +243,182 @@ class DemoLoginController {
         : 'You have $remaining attempts remaining before this account is locked.';
   }
 
-  handleWrongActivationPassword() async {
+  Future<void> handleWrongActivationPassword() async {
     await showAppDialog(
       // Login error -> shake once.
       destructive: true,
-        context: Get.context!,
-        barrierDismissible: true,
-        builder: (context) {
-          return ResponseDialog(
-            title: FailureAuthenticationType.wrongActivationPassword.dialogBoxTitle,
-            subtitle: FailureAuthenticationType.wrongActivationPassword.dialogBoxMessage,
-            lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
-          );
-        });
+      context: Get.context!,
+      barrierDismissible: true,
+      builder: (context) {
+        return ResponseDialog(
+          title:
+              FailureAuthenticationType.wrongActivationPassword.dialogBoxTitle,
+          subtitle: FailureAuthenticationType
+              .wrongActivationPassword.dialogBoxMessage,
+          lottieAsset:
+              "assets/lottie_assets/main_lottie_assets/lot_status_error.json",
+        );
+      },
+    );
   }
 
-  handleNotFoundInCompanyDatabase() async {
+  Future<void> handleNotFoundInCompanyDatabase() async {
     await showAppDialog(
       // Login error -> shake once.
       destructive: true,
-        context: Get.context!,
-        barrierDismissible: true,
-        builder: (context) {
-          return ResponseDialog(
-            title: FailureAuthenticationType.notFoundInCompanyDatabase.dialogBoxTitle,
-            subtitle: FailureAuthenticationType.notFoundInCompanyDatabase.dialogBoxMessage,
-            lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
-          );
-        });
+      context: Get.context!,
+      barrierDismissible: true,
+      builder: (context) {
+        return ResponseDialog(
+          title: FailureAuthenticationType
+              .notFoundInCompanyDatabase.dialogBoxTitle,
+          subtitle: FailureAuthenticationType
+              .notFoundInCompanyDatabase.dialogBoxMessage,
+          lottieAsset:
+              "assets/lottie_assets/main_lottie_assets/lot_status_error.json",
+        );
+      },
+    );
   }
 
-  handleDemoCancelled() async {
+  Future<void> handleDemoCancelled() async {
     await showAppDialog(
       // Login error -> shake once.
       destructive: true,
-        context: Get.context!,
-        barrierDismissible: true,
-        builder: (context) {
-          return ResponseDialog(
-            title: FailureAuthenticationType.demoCancelled.dialogBoxTitle,
-            subtitle: FailureAuthenticationType.demoCancelled.dialogBoxMessage,
-            lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
-          );
-        });
+      context: Get.context!,
+      barrierDismissible: true,
+      builder: (context) {
+        return ResponseDialog(
+          title: FailureAuthenticationType.demoCancelled.dialogBoxTitle,
+          subtitle: FailureAuthenticationType.demoCancelled.dialogBoxMessage,
+          lottieAsset:
+              "assets/lottie_assets/main_lottie_assets/lot_status_error.json",
+        );
+      },
+    );
   }
 
-  handleBeforeActivationDate() async {
+  Future<void> handleBeforeActivationDate() async {
     await showAppDialog(
-        context: Get.context!,
-        barrierDismissible: true,
-        builder: (context) {
-          return ResponseDialog(
-            title: FailureAuthenticationType.beforActivationDate.dialogBoxTitle,
-            subtitle: FailureAuthenticationType.beforActivationDate.dialogBoxMessage,
-            lottieAsset: "assets/lottie_assets/main_lottie_assets/newAttension.json",
-          );
-        });
+      context: Get.context!,
+      barrierDismissible: true,
+      builder: (context) {
+        return ResponseDialog(
+          title: FailureAuthenticationType.beforActivationDate.dialogBoxTitle,
+          subtitle:
+              FailureAuthenticationType.beforActivationDate.dialogBoxMessage,
+          lottieAsset:
+              "assets/lottie_assets/main_lottie_assets/lot_status_warning_red.json",
+        );
+      },
+    );
   }
 
-  handleSubscriptionExpired() async {
-    await showAppDialog(
-      // Login error -> shake once.
-      destructive: true,
-        context: Get.context!,
-        barrierDismissible: true,
-        builder: (context) {
-          return ResponseDialog(
-            title: FailureAuthenticationType.subscriptionExpired.dialogBoxTitle,
-            subtitle: FailureAuthenticationType.subscriptionExpired.dialogBoxMessage,
-            lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
-          );
-        });
-  }
-
-  handleNoPermission() async {
+  Future<void> handleSubscriptionExpired() async {
     await showAppDialog(
       // Login error -> shake once.
       destructive: true,
-        context: Get.context!,
-        barrierDismissible: true,
-        builder: (context) {
-          return ResponseDialog(
-            title: FailureAuthenticationType.dontHavePermission.dialogBoxTitle,
-            subtitle: FailureAuthenticationType.dontHavePermission.dialogBoxMessage,
-            lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
-          );
-        });
+      context: Get.context!,
+      barrierDismissible: true,
+      builder: (context) {
+        return ResponseDialog(
+          title: FailureAuthenticationType.subscriptionExpired.dialogBoxTitle,
+          subtitle:
+              FailureAuthenticationType.subscriptionExpired.dialogBoxMessage,
+          lottieAsset:
+              "assets/lottie_assets/main_lottie_assets/lot_status_error.json",
+        );
+      },
+    );
   }
 
-  handleTooManyUsers() async {
+  Future<void> handleNoPermission() async {
     await showAppDialog(
-        context: Get.context!,
-        barrierDismissible: true,
-        builder: (context) {
-          return ResponseDialog(
-            title: FailureAuthenticationType.tooManyUsers.dialogBoxTitle,
-            subtitle: FailureAuthenticationType.tooManyUsers.dialogBoxMessage,
-            lottieAsset: "assets/lottie_assets/main_lottie_assets/newAttension.json",
-          );
-        });
+      // Login error -> shake once.
+      destructive: true,
+      context: Get.context!,
+      barrierDismissible: true,
+      builder: (context) {
+        return ResponseDialog(
+          title: FailureAuthenticationType.dontHavePermission.dialogBoxTitle,
+          subtitle:
+              FailureAuthenticationType.dontHavePermission.dialogBoxMessage,
+          lottieAsset:
+              "assets/lottie_assets/main_lottie_assets/lot_status_error.json",
+        );
+      },
+    );
+  }
+
+  Future<void> handleTooManyUsers() async {
+    await showAppDialog(
+      context: Get.context!,
+      barrierDismissible: true,
+      builder: (context) {
+        return ResponseDialog(
+          title: FailureAuthenticationType.tooManyUsers.dialogBoxTitle,
+          subtitle: FailureAuthenticationType.tooManyUsers.dialogBoxMessage,
+          lottieAsset:
+              "assets/lottie_assets/main_lottie_assets/lot_status_warning_red.json",
+        );
+      },
+    );
   }
 
   // ✅ NEW: Handle module user limit reached error dialog
-  handleModuleUserLimitReached() async {
+  Future<void> handleModuleUserLimitReached() async {
     await showAppDialog(
-        context: Get.context!,
-        barrierDismissible: true,
-        builder: (context) {
-          return ResponseDialog(
-            title: FailureAuthenticationType.moduleUserLimitReached.dialogBoxTitle,
-            subtitle: FailureAuthenticationType.moduleUserLimitReached.dialogBoxMessage,
-            lottieAsset: "assets/lottie_assets/main_lottie_assets/newAttension.json",
-          );
-        });
+      context: Get.context!,
+      barrierDismissible: true,
+      builder: (context) {
+        return ResponseDialog(
+          title:
+              FailureAuthenticationType.moduleUserLimitReached.dialogBoxTitle,
+          subtitle:
+              FailureAuthenticationType.moduleUserLimitReached.dialogBoxMessage,
+          lottieAsset:
+              "assets/lottie_assets/main_lottie_assets/lot_status_warning_red.json",
+        );
+      },
+    );
   }
 
-  handleDefaultFailure(String errorMessage) async {
+  Future<void> handleDefaultFailure(String errorMessage) async {
     try {
       FailureAuthenticationType failureType = FailureAuthenticationType.values
           .firstWhere((element) => element.dialogBoxMessage == errorMessage);
 
       await showAppDialog(
-      // Login error -> shake once.
-      destructive: true,
-          context: Get.context!,
-          barrierDismissible: true,
-          builder: (context) {
-            return ResponseDialog(
-              title: failureType.dialogBoxTitle,
-              subtitle: failureType.dialogBoxMessage,
-              lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
-            );
-          });
+        // Login error -> shake once.
+        destructive: true,
+        context: Get.context!,
+        barrierDismissible: true,
+        builder: (context) {
+          return ResponseDialog(
+            title: failureType.dialogBoxTitle,
+            subtitle: failureType.dialogBoxMessage,
+            lottieAsset:
+                "assets/lottie_assets/main_lottie_assets/lot_status_error.json",
+          );
+        },
+      );
     } catch (e) {
       await showAppDialog(
-      // Login error -> shake once.
-      destructive: true,
-          context: Get.context!,
-          barrierDismissible: true,
-          builder: (context) {
-            return ResponseDialog(
-              title: S.of(context).authenticationFailed,
-              subtitle: errorMessage.isNotEmpty
-                  ? errorMessage
-                  : S.of(context).invalidCredentialsPleaseVerifyAndTryAgain,
-              lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
-            );
-          });
+        // Login error -> shake once.
+        destructive: true,
+        context: Get.context!,
+        barrierDismissible: true,
+        builder: (context) {
+          return ResponseDialog(
+            title: S.of(context).authenticationFailed,
+            subtitle: errorMessage.isNotEmpty
+                ? errorMessage
+                : S.of(context).invalidCredentialsPleaseVerifyAndTryAgain,
+            lottieAsset:
+                "assets/lottie_assets/main_lottie_assets/lot_status_error.json",
+          );
+        },
+      );
     }
   }
 
@@ -444,35 +469,38 @@ class DemoLoginController {
     await showAppDialog(
       // Login error -> shake once.
       destructive: true,
-        context: Get.context!,
-        barrierDismissible: true,
-        builder: (context) {
-          return ResponseDialog(
-            title: S.of(context).accountLocked,
-            subtitle: S.of(context).accountLockedMessage,
-            lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
-          );
-        });
+      context: Get.context!,
+      barrierDismissible: true,
+      builder: (context) {
+        return ResponseDialog(
+          title: S.of(context).accountLocked,
+          subtitle: S.of(context).accountLockedMessage,
+          lottieAsset:
+              "assets/lottie_assets/main_lottie_assets/lot_status_error.json",
+        );
+      },
+    );
   }
 
-  lockAccount({required String email}) async {
+  Future<void> lockAccount({required String email}) async {
     // The account is now locked, so the running failure count has done its job.
     // Clearing it here means that after an admin unlocks the account the user
     // again gets the full LoginAttemptStore.maxAttempts before re-locking,
     // rather than being one mistake away from another lock.
     LoginAttemptStore.reset(email);
 
-    Either<Failure, dynamic> result =
-    await demoLoginRepository.getEmployee(email: email);
+    Either<Failure, dynamic> result = await demoLoginRepository.getEmployee(
+      email: email,
+    );
 
     if (result.isRight()) {
       List<Map<String, dynamic>> employeeData = result.getOrElse(() => []);
-      NewEmployeeModelHistory employee =
-      NewEmployeeModelHistory.fromMap(employeeData.first);
+      NewEmployeeModelHistory employee = NewEmployeeModelHistory.fromMap(
+        employeeData.first,
+      );
 
-      String currentStatus = employee.status.isNotEmpty
-          ? employee.status.last
-          : '';
+      String currentStatus =
+          employee.status.isNotEmpty ? employee.status.last : '';
 
       if (currentStatus == EmployeeStatusEnum.locked.name) {
         // The account was ALREADY locked before this attempt. Nothing to lock;
@@ -497,17 +525,19 @@ class DemoLoginController {
         );
 
         await showAppDialog(
-      // Login error -> shake once.
-      destructive: true,
-            context: Get.context!,
-            barrierDismissible: true,
-            builder: (context) {
-              return ResponseDialog(
-                title: S.of(context).accountLocked,
-                subtitle: S.of(context).accountLockedMessage,
-                lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
-              );
-            });
+          // Login error -> shake once.
+          destructive: true,
+          context: Get.context!,
+          barrierDismissible: true,
+          builder: (context) {
+            return ResponseDialog(
+              title: S.of(context).accountLocked,
+              subtitle: S.of(context).accountLockedMessage,
+              lottieAsset:
+                  "assets/lottie_assets/main_lottie_assets/lot_status_error.json",
+            );
+          },
+        );
 
         hideLoadingIndicator();
       }

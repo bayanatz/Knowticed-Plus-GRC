@@ -16,3 +16,4 @@
 ///
 /// The file itself is kept only so nothing breaks on a stale import; it can be
 /// deleted outright — no source in lib/ references it any more.
+library;

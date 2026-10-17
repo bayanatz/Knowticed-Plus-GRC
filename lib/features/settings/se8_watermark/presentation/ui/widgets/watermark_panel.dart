@@ -2,9 +2,9 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: watermark_panel.dart
-/// Purpose: Declares `WatermarkPanel` — the "Watermark Content",
+/// Description: Declares `WatermarkPanel` — the "Watermark Content",
 ///          "Watermark Modules" and "Watermark Style" cards.
-/// Author: Knowticed Plus team
+/// Author: Amr Mesbah
 /// Created at: 25/8/2026
 /// Updated: 31/8/2026 - Rebuilt against the Figma frame. Three things the
 ///          previous build was missing or getting wrong:
@@ -43,14 +43,14 @@
 /// draws. Module tile icons come from `Modules.iconPath`.
 library;
 
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
-import 'package:grc_module/core/custom/61-custom_color_picker.dart';
-import 'package:grc_module/core/helper/main_helper/localized_number.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
+import 'package:grc_module/core/custom/pickers/custom_color_picker.dart';
+import 'package:grc_module/core/helper/localized_number.dart';
+import 'package:grc_module/core/helper/access/modules_enum.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/features/home/h2_nav_bar/presentation/controller/nav_bar_cubit.dart';
@@ -58,15 +58,22 @@ import 'package:grc_module/features/home/h3_app_drawer/presentation/controller/a
 import 'package:grc_module/features/settings/se8_watermark/domain/entities/watermark_settings.dart';
 import 'package:grc_module/features/settings/se8_watermark/presentation/controller/watermark_cubit.dart';
 import 'package:grc_module/generated/l10n.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
+
+part 'watermark_panel/style_card.dart';
+part 'watermark_panel/module_tile.dart';
+part 'watermark_panel/content_card.dart';
+part 'watermark_panel/slider_row.dart';
 
 /// The three SVGs this panel draws itself. See the note in this file's header.
 abstract class WatermarkSvg {
   static const String checkboxChecked =
-      'assets/icons_assets/watermark/watermark_checkbox_checked.svg';
+      'assets/icons_assets/main_icons_assets/ic_form_checkbox_checked.svg';
   static const String checkboxUnchecked =
-      'assets/icons_assets/watermark/watermark_checkbox_unchecked.svg';
+      'assets/icons_assets/main_icons_assets/ic_form_checkbox_empty.svg';
   static const String chevronDown =
-      'assets/icons_assets/watermark/watermark_chevron_down.svg';
+      'assets/icons_assets/main_icons_assets/ic_nav_chevron_down.svg';
 }
 
 /// The modules from [kWatermarkModules] this account is actually allowed to
@@ -253,94 +260,6 @@ class _Card extends StatelessWidget {
   }
 }
 
-// ── Watermark Content ───────────────────────────────────────────────────────
-
-class _ContentCard extends StatelessWidget {
-  final WatermarkSettings settings;
-
-  const _ContentCard({required this.settings});
-
-  @override
-  Widget build(BuildContext context) {
-    final S l = S.of(context);
-    final WatermarkCubit cubit = context.read<WatermarkCubit>();
-
-    String label(WatermarkField field) {
-      switch (field) {
-        case WatermarkField.employeeEmail:
-          return l.employeeEmail;
-        case WatermarkField.employeePhone:
-          return l.employeePhone;
-        case WatermarkField.employeeName:
-          return l.employeeName;
-      }
-    }
-
-    return _Card(
-      title: l.watermarkContent,
-      children: <Widget>[
-        // FIXED 31/8/2026 (second pass) — the three chips were stacking one per
-        // row instead of sitting side by side as Figma draws them.
-        //
-        // Cause: `_FieldChip` used `Container(alignment: Alignment.center)` with
-        // no width. A Container with a non-null `alignment` and no size of its
-        // own EXPANDS to `constraints.biggest`, and a Wrap hands its children
-        // the full line width as a loose maximum — so every chip claimed the
-        // whole row and only one fitted per line. The Wrap was innocent; the
-        // Container was the greedy one.
-        //
-        // Back to a Row of `Expanded` cells, which is what Figma actually
-        // shows: three equal-width chips across the card. That was the ORIGINAL
-        // layout, and the reason it got replaced was ellipsis — so the fix for
-        // that is inside `_FieldChip` (a scale-down instead of a truncation),
-        // not a different layout out here.
-        Row(
-          children: <Widget>[
-            for (final WatermarkField field in WatermarkField.values) ...<Widget>[
-              if (field != WatermarkField.values.first) const SizedBox(width: 8),
-              Expanded(
-                child: _FieldChip(
-                  label: label(field),
-                  selected: settings.field == field,
-                  onTap: () => cubit.selectField(field),
-                ),
-              ),
-            ],
-          ],
-        ),
-        const SizedBox(height: 10),
-        // Wrap here too: "Display With" plus two labelled checkboxes overflows a
-        // narrow card once the Arabic strings are in ("العرض مع", "التاريخ",
-        // "الوقت" are all wider than the English).
-        Wrap(
-          spacing: 16,
-          runSpacing: 8,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: <Widget>[
-            Text(
-              l.displayWith,
-              style: StyleText.fontSize16Weight500.copyWith(
-                fontSize: _Type.rowLabel,
-                color: AppColors.secondaryText,
-              ),
-            ),
-            _CheckOption(
-              label: l.date,
-              checked: settings.showDate,
-              onChanged: cubit.toggleDate,
-            ),
-            _CheckOption(
-              label: l.time,
-              checked: settings.showTime,
-              onChanged: cubit.toggleTime,
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
 class _FieldChip extends StatelessWidget {
   final String label;
   final bool selected;
@@ -355,6 +274,7 @@ class _FieldChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      onTapDown: hapticDown(onTap, HapticLevel.low),
       onTap: onTap,
       borderRadius: BorderRadius.circular(8),
       child: Container(
@@ -368,13 +288,12 @@ class _FieldChip extends StatelessWidget {
           color: selected ? AppColors.primary : AppColors.background,
           borderRadius: BorderRadius.circular(8),
           // ADDED — an outline on the unselected chips. Their fill is
-          // `AppColors.field`, which in dark mode sits almost on top of
+          // `AppColors.card`, which in dark mode sits almost on top of
           // `AppColors.card`, so the two unselected chips read as bare floating
           // text with no control around them. Figma shows three distinct
           // buttons; the border is what makes that true in both themes.
-          border: selected
-              ? null
-              : Border.all(color: AppColors.border, width: 1),
+          border:
+              selected ? null : Border.all(color: AppColors.border, width: 1),
         ),
         child: Center(
           // FittedBox, not `TextOverflow.ellipsis`. The chips are equal-width
@@ -415,13 +334,14 @@ class _CheckOption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      onTapDown: (_) => HapticController.low(),
       onTap: () => onChanged(!checked),
       borderRadius: BorderRadius.circular(4),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          SvgPicture.asset(
-            checked
+          CustomSvgImage.natural(
+            assetPath: checked
                 ? WatermarkSvg.checkboxChecked
                 : WatermarkSvg.checkboxUnchecked,
             width: 20,
@@ -483,6 +403,7 @@ class _ModulesCard extends StatelessWidget {
       // Fifteen tiles is a lot of tapping to reach "all but one", which is the
       // usual shape of this setting.
       trailing: InkWell(
+        onTapDown: (_) => HapticController.low(),
         onTap: () => cubit.setAllModules(!allSelected),
         borderRadius: BorderRadius.circular(4),
         child: Padding(
@@ -539,195 +460,6 @@ class _ModulesCard extends StatelessWidget {
   }
 }
 
-/// One module tile: a square holding the icon, with the name UNDER it.
-///
-/// CHANGED 31/8/2026 (second pass). The first build drew one bordered box
-/// around the icon AND the label, and outlined every tile whether selected or
-/// not — fifteen boxes competing for attention, which is not what Figma shows.
-///
-/// Figma's tile is two separate pieces: a rounded square that holds only the
-/// icon and carries the selection colour, and the label sitting below it on the
-/// card background with no box of its own. Unselected tiles have NO border at
-/// all — the icon and its name simply sit there in grey. That is what makes the
-/// selected ones actually stand out at a glance.
-class _ModuleTile extends StatelessWidget {
-  final Modules module;
-  final bool selected;
-  final VoidCallback onTap;
-
-  /// Measured by [_ModulesCard] so six land in a row at the panel's real width.
-  final double width;
-
-  const _ModuleTile({
-    required this.module,
-    required this.selected,
-    required this.onTap,
-    required this.width,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    // A selected tile is a solid brand square, so its icon has to flip to the
-    // dark on-primary colour to stay visible — the same pairing the selected
-    // field chip and the Save button use.
-    final Color iconTint = selected ? AppColors.black : AppColors.secondaryText;
-
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
-      child: SizedBox(
-        width: width,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            // The icon square. Kept square via AspectRatio rather than a fixed
-            // height so it tracks the measured tile width instead of drifting
-            // out of proportion when the panel resizes.
-            AspectRatio(
-              aspectRatio: 1,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: selected ? AppColors.primary : AppColors.background,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                padding: const EdgeInsets.all(8),
-                child: SvgPicture.asset(
-                  // `iconPath`, not `iconPathRole`: the two differ only for
-                  // `qiyas`, and this screen is not the roles permission matrix.
-                  module.iconPath,
-                  colorFilter: ColorFilter.mode(iconTint, BlendMode.srcIn),
-                ),
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              // Localised by `modules_enum.dart` itself, so a tile's name here
-              // always matches that module's name everywhere else in the app.
-              module.getModuleName,
-              textAlign: TextAlign.center,
-              // Two lines, and NO ellipsis: "Knowledge Hub" and "Time Tracker"
-              // both need the second line, and a module the admin cannot read
-              // is a module they cannot decide about.
-              maxLines: 2,
-              style: StyleText.fontSize16Weight500.copyWith(
-                fontSize: _Type.moduleTile,
-                fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-                color: selected ? AppColors.text : AppColors.secondaryText,
-                // Tightened: 9px Cairo at the default height leaves too much
-                // air between the two lines of "Knowledge Hub".
-                height: 1.2,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ── Watermark Style ─────────────────────────────────────────────────────────
-
-class _StyleCard extends StatelessWidget {
-  final WatermarkSettings settings;
-
-  const _StyleCard({required this.settings});
-
-  @override
-  Widget build(BuildContext context) {
-    final S l = S.of(context);
-    final WatermarkCubit cubit = context.read<WatermarkCubit>();
-
-    return _Card(
-      title: l.watermarkStyle,
-      children: <Widget>[
-        // ADDED 31/8/2026 — the Text / Bubble pair Figma opens this card with.
-        // It had no field behind it before, so it could not be drawn at all.
-        Wrap(
-          spacing: 16,
-          runSpacing: 8,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: <Widget>[
-            Text(
-              l.watermarkStyleLabel,
-              style: StyleText.fontSize16Weight500.copyWith(
-                fontSize: _Type.rowLabel,
-                color: AppColors.secondaryText,
-              ),
-            ),
-            for (final WatermarkStyleMode mode in WatermarkStyleMode.values)
-              _RadioOption(
-                label: mode == WatermarkStyleMode.text
-                    ? l.watermarkStyleText
-                    : l.watermarkStyleBubble,
-                selected: settings.styleMode == mode,
-                onTap: () => cubit.setStyleMode(mode),
-              ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        _SliderRow(
-          label: l.opacity,
-          // Localised numerals, like every other figure in the app.
-          value:
-              '${LocalizedNumber.of(context, (settings.opacity * 100).round())}%',
-          slider: Slider(
-            value: settings.opacity,
-            min: WatermarkSettings.minOpacity,
-            max: WatermarkSettings.maxOpacity,
-            // Whole percents. Without divisions the slider hands back the raw
-            // double and the read-out chip showed things like "23.836 px" — a
-            // precision the control does not actually offer.
-            divisions: 95,
-            onChanged: cubit.setOpacity,
-          ),
-        ),
-        _SliderRow(
-          label: l.quantityDensity,
-          value: LocalizedNumber.of(context, settings.density),
-          slider: Slider(
-            value: settings.density.toDouble(),
-            min: WatermarkSettings.minDensity.toDouble(),
-            max: WatermarkSettings.maxDensity.toDouble(),
-            divisions:
-                WatermarkSettings.maxDensity - WatermarkSettings.minDensity,
-            onChanged: (double v) => cubit.setDensity(v.round()),
-          ),
-        ),
-        _SliderRow(
-          label: l.size,
-          // Figma reads "12.0 px"; `LocalizedNumber` drops a trailing .0, so
-          // this renders "12 px" / "١٢ بكسل". Keeping the numeral localised
-          // matters more here than the trailing zero.
-          value:
-              '${LocalizedNumber.of(context, settings.fontSize.round())} ${l.px}',
-          slider: Slider(
-            value: settings.fontSize,
-            min: WatermarkSettings.minFontSize,
-            max: WatermarkSettings.maxFontSize,
-            divisions:
-                (WatermarkSettings.maxFontSize - WatermarkSettings.minFontSize)
-                    .round(),
-            onChanged: cubit.setFontSize,
-          ),
-        ),
-        _SliderRow(
-          label: l.angle,
-          value: '${LocalizedNumber.of(context, settings.angle.round())}°',
-          slider: Slider(
-            value: settings.angle,
-            min: WatermarkSettings.minAngle,
-            max: WatermarkSettings.maxAngle,
-            divisions: (WatermarkSettings.maxAngle - WatermarkSettings.minAngle)
-                .round(),
-            onChanged: cubit.setAngle,
-          ),
-        ),
-        _ColorRow(color: settings.color, onChanged: cubit.setColor),
-      ],
-    );
-  }
-}
-
 /// A radio option. Figma draws a ring, not Material's filled dot.
 class _RadioOption extends StatelessWidget {
   final String label;
@@ -743,6 +475,7 @@ class _RadioOption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      onTapDown: hapticDown(onTap, HapticLevel.low),
       onTap: onTap,
       borderRadius: BorderRadius.circular(4),
       child: Row(
@@ -787,90 +520,6 @@ class _RadioOption extends StatelessWidget {
               fontWeight: FontWeight.w600,
               color: AppColors.text,
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SliderRow extends StatelessWidget {
-  final String label;
-  final String value;
-  final Slider slider;
-
-  const _SliderRow({
-    required this.label,
-    required this.value,
-    required this.slider,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              // CHANGED 31/8/2026 — dropped `maxLines: 1` +
-              // `TextOverflow.ellipsis`. "Quantity (Density)" is the longest
-              // label here and it truncated to "Quantity (Densi…" on a narrow
-              // panel. It wraps now: the row grows by a line instead of hiding
-              // which control the reader is looking at.
-              Expanded(
-                child: Text(
-                  label,
-                  style: StyleText.fontSize16Weight500.copyWith(
-                    fontSize: _Type.rowLabel,
-                    color: AppColors.text,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 6),
-              // The read-out chip Figma draws on the right of every row.
-              Container(
-                height: 24,
-                padding: const EdgeInsets.symmetric(horizontal: 5),
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: AppColors.field,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: Text(
-                  value,
-                  style: StyleText.fontSize16Weight500.copyWith(
-                    fontSize: _Type.readout,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.text,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          // The stock Slider reserves a lot of vertical padding; the design's
-          // rows are tight, so the track is squeezed back with a narrower theme
-          // rather than by fighting the widget's own layout.
-          SliderTheme(
-            data: SliderTheme.of(context).copyWith(
-              trackHeight: 6,
-              activeTrackColor: AppColors.primary,
-              // CHANGED 2/9/2026 — the unfilled half of every slider was
-              // `AppColors.field`, the same fill the read-out chip beside it
-              // uses, so on the card the two ran together and the track's
-              // remaining length was hard to judge. `AppColors.background` is
-              // the page behind the card, so the empty part now reads as a
-              // groove cut into the card rather than as another chip.
-              inactiveTrackColor: AppColors.background,
-              thumbColor: AppColors.primary,
-              overlayShape: SliderComponentShape.noOverlay,
-              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 7),
-              trackShape: const RoundedRectSliderTrackShape(),
-            ),
-            child: SizedBox(height: 24, child: slider),
           ),
         ],
       ),

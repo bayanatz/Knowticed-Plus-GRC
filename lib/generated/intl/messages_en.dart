@@ -46,17 +46,285 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m12(count) => "Error: ${count}";
 
-  static String m13(title) => "${title} Details";
+  static String m13(title) =>
+      "Move \"${title}\" to Deleted? It stops appearing in the list and keeps its access grants — you can restore it from the Deleted tab.";
 
-  static String m14(documentName) => "Editing ${documentName} Details";
+  static String m14(departments) =>
+      "Still needs a permission level and both dates: ${departments}.";
 
-  static String m15(count) => "Preview ${count} Matches";
+  static String m15(title) =>
+      "Restore \"${title}\"? It goes back to Drafts, where it was before it was deleted.";
 
-  static String m16(field) =>
+  static String m16(title) =>
+      "Restore \"${title}\"? It goes back to the database list with its access grants unchanged.";
+
+  static String m17(titleMinLength) =>
+      "Title must be at least ${titleMinLength} characters";
+
+  static String m18(count) =>
+      "Open and Restricted access choose people in different ways, so the ${count} people picked here will be cleared and have to be chosen again.";
+
+  static String m19(title) =>
+      "Are you sure you want to delete \"${title}\"? Its access grants are removed with it and this cannot be undone.";
+
+  static String m20(title) =>
+      "\"${title}\" and its access grants have been removed.";
+
+  static String m21(title) => "${title} Details";
+
+  static String m22(title) => "Editing ${title}";
+
+  static String m23(fileName) =>
+      "Saved ${fileName} and opened the share sheet.";
+
+  static String m24(count) =>
+      "Personal access is for you alone. Saving will revoke access for the ${count} people who have it now.";
+
+  static String m25(min) => "Title must be at least ${min} characters";
+
+  static String m26(minColumns, maxColumns) =>
+      "Enter a column number between ${minColumns} and ${maxColumns}";
+
+  static String m27(date, time) => "Date: ${date} At ${time}";
+
+  static String m28(name) =>
+      "Are you sure you want to delete \"${name}\"? This cannot be undone.";
+
+  static String m29(name) => "\"${name}\" has been deleted.";
+
+  static String m30(name) => "Editing ${name}";
+
+  static String m31(count) => "${count} fields";
+
+  static String m32(headings) =>
+      "These headings were skipped because this table has no column for them: ${headings}";
+
+  static String m33(count) =>
+      "${count} cells do not match their column type. They are outlined in red.";
+
+  static String m34(titleMinLength) =>
+      "Table name must be at least ${titleMinLength} characters";
+
+  static String m35(ordinal) => "${ordinal} Column";
+
+  static String m36(count) =>
+      "Remove access for all ${count} people? They keep a Removed row on the access table.";
+
+  static String m37(name) =>
+      "Remove \"${name}\" and everything filled into it?";
+
+  static String m38(count) =>
+      "Lowering the column number removes ${count} columns you have already named. Continue?";
+
+  static String m39(minRows, maxRows) =>
+      "Enter a row number between ${minRows} and ${maxRows}";
+
+  static String m40(name) => "${name} Details";
+
+  static String m41(domains) =>
+      "No test employees found in this company (emails ending in ${domains}).";
+
+  static String m42(domains) =>
+      "Only test accounts can be used (emails ending in ${domains}).";
+
+  static String m43(companyId) =>
+      "This account belongs to another company (${companyId}).";
+
+  static String m44(status) => "Status: ${status}";
+
+  static String m45(status) =>
+      "This account cannot sign in because its status is \"${status}\".";
+
+  static String m46(title) => "${title} Details";
+
+  static String m47(documentName) => "Editing ${documentName} Details";
+
+  static String m48(ordinal) => "Choose Field of ${ordinal} Column";
+
+  static String m49(ordinal) => "${ordinal} Column";
+
+  static String m50(count) =>
+      "Filled ${count} fields with demo answers. Image, attachment and signature fields need a real file.";
+
+  static String m51(count) => "Phone number must be ${count} digits";
+
+  static String m52(count) =>
+      "Phone number must be digits only (${count} digits)";
+
+  static String m53(ordinal) => "${ordinal} Row";
+
+  static String m54(notifications, events, email) =>
+      "Send all ${notifications} Form Builder notifications and add all ${events} calendar events to your account (${email})?";
+
+  static String m55(sent, attempted, written, tried) =>
+      "Notifications: ${sent}/${attempted}\nCalendar: ${written}/${tried}";
+
+  static String m56(notifications, events) =>
+      "${notifications} Form Builder notifications + ${events} calendar events to you";
+
+  static String m57(date, time) => "${date} at ${time}";
+
+  static String m58(extension) => "File type: .${extension}";
+
+  static String m59(count) => "Preview ${count} Matches";
+
+  static String m60(module) =>
+      "Every Notification In \"${module}\" Will Be Restored To Its Approved Default Text. Any Edits Made Here Will Be Lost. Continue?";
+
+  static String m61(field) =>
       "The specified ${field} does not exist. Please verify the entry";
 
-  static String m17(field, error) =>
+  static String m62(field, error) =>
       "The specified ${field} ${error}! Please verify the entry";
+
+  static String m63(count) => "${count} Absences";
+
+  static String m64(count) => "${count} Absences";
+
+  static String m65(count) => "${count} Absences";
+
+  static String m66(count) => "Assign (${count})";
+
+  static String m67(date) => "Assign Date: ${date}";
+
+  static String m68(taken) => "Break ${taken} min, breaks are not allowed";
+
+  static String m69(taken, allowed) =>
+      "Break ${taken} min, allowed ${allowed} min";
+
+  static String m70(minutes) => "Breaks ${minutes} min";
+
+  static String m71(time) => "Checked in at ${time}, no check-out";
+
+  static String m72(date) => "Created Date: ${date}";
+
+  static String m73(date, time) => "${date} At ${time}";
+
+  static String m74(count) => "${count} Days";
+
+  static String m75(count) => "${count} Days";
+
+  static String m76(count) => "${count} Days";
+
+  static String m77(count, files) =>
+      "${count} demo records and ${files} documents added.";
+
+  static String m78(count) => "${count} demo records removed.";
+
+  static String m79(name, year) =>
+      "Here you set how many vacation days ${name} gets in ${year} (Total Days). Used Days are counted from approved vacation requests and cannot be edited here. Remaining = Total Days − Used Days.";
+
+  static String m80(count) => "${count} Employees Selected";
+
+  static String m81(days, left) =>
+      "This request needs ${days} vacation days, but only ${left} are left.";
+
+  static String m82(name, date) => "By ${name} on ${date}";
+
+  static String m83(date) => "From ${date}";
+
+  static String m84(h, m) => "${h} h ${m} m";
+
+  static String m85(value) => "${value} Hrs";
+
+  static String m86(line) => "Line ${line}";
+
+  static String m87(year) =>
+      "Change Total Days for each employee for ${year}. A blank Year means ${year}; other years are skipped. Nothing is ever deleted.";
+
+  static String m88(create, update, unchanged, skip) =>
+      "${create} new · ${update} updated · ${unchanged} unchanged · ${skip} skipped";
+
+  static String m89(column) => "Unreadable value in “${column}”";
+
+  static String m90(year) => "Only ${year} can be imported";
+
+  static String m91(date) => "Last Update: ${date}";
+
+  static String m92(minutes) => "Late after ${minutes} min";
+
+  static String m93(count) =>
+      "${count} employees are assigned to this location. Reassign them first.";
+
+  static String m94(name) => "Location: ${name}";
+
+  static String m95(count) => "${count} selected";
+
+  static String m96(count) => "${count} m";
+
+  static String m97(count) => "${count} Mins";
+
+  static String m98(count) => "${count} Minutes";
+
+  static String m99(count) => "+${count} more";
+
+  static String m100(year) => "No vacation requests in ${year}.";
+
+  static String m101(time) => "Pause left: ${time}";
+
+  static String m102(time) => "Pause time is over (${time} more)";
+
+  static String m103(minutes) => "Pause up to ${minutes} min";
+
+  static String m104(time) => "Paused: ${time}";
+
+  static String m105(time) => "You Can Remind Again In ${time}";
+
+  static String m106(date) => "Reminder Was Sent On ${date}";
+
+  static String m107(location) => "Rules from ${location}";
+
+  static String m108(date, start, end) => "${date}, ${start} – ${end}";
+
+  static String m109(role, decision) => "${role} · ${decision}";
+
+  static String m110(role) => "${role} Justification";
+
+  static String m111(start, end) => "${start} To ${end}";
+
+  static String m112(date) => "Uploaded Date: ${date}";
+
+  static String m113(year) =>
+      "Download the template, set each employee\'s Total Days for ${year}, then upload it. A blank Year means ${year}; other years are skipped. Nothing is deleted.";
+
+  static String m114(count) => "Requests: ${count}";
+
+  static String m115(count) => "Waiting ${count}";
+
+  static String m116(year, days) =>
+      "${year} has only ${days} vacation days left.";
+
+  static String m117(count) =>
+      "${count} demo to-dos added. Reminders will arrive in about three minutes.";
+
+  static String m118(count) => "${count} demo to-dos removed.";
+
+  static String m119(count) => "${count} reminders sent.";
+
+  static String m120(count, unit) => "Every ${count} ${unit}";
+
+  static String m121(value) => "Frequency: ${value}";
+
+  static String m122(date, time) => "Scheduled: ${date} At ${time}";
+
+  static String m123(module, limit, assigned) =>
+      "${module} allows ${limit} users. ${assigned} are already assigned.";
+
+  static String m124(module) =>
+      "The user limit for ${module} could not be read, so no access was granted.";
+
+  static String m125(module, assigned, limit) =>
+      "${module}: ${assigned} of ${limit} users";
+
+  static String m126(remaining) => "Only ${remaining} more can be added.";
+
+  static String m127(limit, assigned) =>
+      "Your plan allows ${limit} users. ${assigned} are already assigned.";
+
+  static String m128(assigned, limit) => "Users: ${assigned} of ${limit}";
+
+  static String m129(role) =>
+      "The role \"${role}\" could not be found, so its user limits cannot be checked.";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -299,6 +567,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "access": MessageLookupByLibrary.simpleMessage("Access"),
     "accessBegins": MessageLookupByLibrary.simpleMessage("Access Begins"),
     "accessBlocked": MessageLookupByLibrary.simpleMessage("Access Blocked"),
+    "accessChangedElsewhere": MessageLookupByLibrary.simpleMessage(
+      "Someone else changed this access after you opened it. Close this screen and open it again to see their changes.",
+    ),
     "accessDenied": MessageLookupByLibrary.simpleMessage("Access Denied"),
     "accessDeniedWrongly": MessageLookupByLibrary.simpleMessage(
       "Access Denied Wrongly",
@@ -322,6 +593,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "access_revoked": MessageLookupByLibrary.simpleMessage("Access Revoked"),
     "accessoriesReturned": MessageLookupByLibrary.simpleMessage(
       "Accessories Returned",
+    ),
+    "accountDataLoadError": MessageLookupByLibrary.simpleMessage(
+      "Could not load your account data.",
     ),
     "accountLocked": MessageLookupByLibrary.simpleMessage("Account Locked"),
     "accountLockedMessage": MessageLookupByLibrary.simpleMessage(
@@ -523,6 +797,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Allow Multiple Answers",
     ),
     "allowPause": MessageLookupByLibrary.simpleMessage("Allow Pause"),
+    "allowRemoveContributorsDocuments": MessageLookupByLibrary.simpleMessage(
+      "Allow Remove Contributor\'s Documents",
+    ),
     "allowsRemovingDocumentsOwnedByAnyone":
         MessageLookupByLibrary.simpleMessage(
           "Allows Removing Documents Owned By Anyone",
@@ -577,6 +854,36 @@ class MessageLookup extends MessageLookupByLibrary {
       "Approval Request Details",
     ),
     "approvals": MessageLookupByLibrary.simpleMessage("Approvals"),
+    "approvalsAddCommentFailed": MessageLookupByLibrary.simpleMessage(
+      "Could not add the comment.",
+    ),
+    "approvalsApproveFailed": MessageLookupByLibrary.simpleMessage(
+      "Could not approve the document.",
+    ),
+    "approvalsNoApprovePermission": MessageLookupByLibrary.simpleMessage(
+      "You do not have permission to approve documents.",
+    ),
+    "approvalsNoRejectPermission": MessageLookupByLibrary.simpleMessage(
+      "You do not have permission to reject documents.",
+    ),
+    "approvalsNotPendingInQueue": MessageLookupByLibrary.simpleMessage(
+      "This document is not waiting for your approval. Please refresh.",
+    ),
+    "approvalsRecordActionFailed": MessageLookupByLibrary.simpleMessage(
+      "Could not record this action.",
+    ),
+    "approvalsRejectFailed": MessageLookupByLibrary.simpleMessage(
+      "Could not reject the document.",
+    ),
+    "approvalsSessionExpired": MessageLookupByLibrary.simpleMessage(
+      "Your session has expired. Please log in again.",
+    ),
+    "approvalsStatusUpdateFailed": MessageLookupByLibrary.simpleMessage(
+      "Could not update the status.",
+    ),
+    "approvalsUnreadableDocs": MessageLookupByLibrary.simpleMessage(
+      "Documents that could not be read:",
+    ),
     "approve": MessageLookupByLibrary.simpleMessage("Approve"),
     "approveAndReject": MessageLookupByLibrary.simpleMessage(
       "Approve And Reject",
@@ -1394,6 +1701,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "commentAndFeedback": MessageLookupByLibrary.simpleMessage(
       "Comment and Feedback",
     ),
+    "commentAuthorNotFound": MessageLookupByLibrary.simpleMessage(
+      "Your employee details could not be found, so the comment was not posted. Try again.",
+    ),
     "commentNotFound": MessageLookupByLibrary.simpleMessage(
       "No Comment uploaded yet",
     ),
@@ -1789,6 +2099,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Create New Request",
     ),
     "createOrder": MessageLookupByLibrary.simpleMessage("Create Order"),
+    "createOther": MessageLookupByLibrary.simpleMessage("Create Other"),
     "createPoll": MessageLookupByLibrary.simpleMessage("Create Poll"),
     "createRoleManagement": MessageLookupByLibrary.simpleMessage(
       "Create Role Management",
@@ -1820,6 +2131,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "createdModules": MessageLookupByLibrary.simpleMessage("Created Modules"),
     "created_at": MessageLookupByLibrary.simpleMessage("Created At"),
     "created_by": MessageLookupByLibrary.simpleMessage("Created By"),
+    "creatingEmployee": MessageLookupByLibrary.simpleMessage(
+      "Creating employee...",
+    ),
     "creatingForm": MessageLookupByLibrary.simpleMessage("Creating Form"),
     "creatingModules": MessageLookupByLibrary.simpleMessage("Creating Modules"),
     "creatingNewLocation": MessageLookupByLibrary.simpleMessage(
@@ -1838,6 +2152,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "creatingRole": MessageLookupByLibrary.simpleMessage("Creating Role"),
     "creatingService": MessageLookupByLibrary.simpleMessage("Creating Service"),
+    "creatingToDoList": MessageLookupByLibrary.simpleMessage(
+      "Creating To Do List",
+    ),
     "creatingToDoTitle": MessageLookupByLibrary.simpleMessage("Creating To Do"),
     "creatingToDodialoge": MessageLookupByLibrary.simpleMessage(
       "Creating To Do",
@@ -1855,17 +2172,28 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmActive": MessageLookupByLibrary.simpleMessage("Active"),
     "crmAdd": MessageLookupByLibrary.simpleMessage("Add"),
     "crmAddAddress": MessageLookupByLibrary.simpleMessage("Add Address"),
+    "crmAddBillingContract": MessageLookupByLibrary.simpleMessage(
+      "Add Billing & Contract",
+    ),
     "crmAddCategory": MessageLookupByLibrary.simpleMessage("Add Category"),
     "crmAddDiscount": MessageLookupByLibrary.simpleMessage("Add Discount"),
     "crmAddField": MessageLookupByLibrary.simpleMessage("Add Field"),
+    "crmAddFieldAndSection": MessageLookupByLibrary.simpleMessage(
+      "Add Field & Section",
+    ),
     "crmAddMoreLink": MessageLookupByLibrary.simpleMessage("Add More Link"),
     "crmAddNewClient": MessageLookupByLibrary.simpleMessage("Add New Client"),
+    "crmAddNote": MessageLookupByLibrary.simpleMessage("Note"),
     "crmAddRelationship": MessageLookupByLibrary.simpleMessage(
       "Add Relationship",
     ),
     "crmAddRow": MessageLookupByLibrary.simpleMessage("Row"),
     "crmAddStage": MessageLookupByLibrary.simpleMessage("Add Stage"),
     "crmAddTag": MessageLookupByLibrary.simpleMessage("Add Tag"),
+    "crmAddTemplate": MessageLookupByLibrary.simpleMessage("Add Template"),
+    "crmAddTemplateSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Are you sure to add this template?",
+    ),
     "crmAddTerm": MessageLookupByLibrary.simpleMessage("Add Term"),
     "crmAddType": MessageLookupByLibrary.simpleMessage("Add Type"),
     "crmAddView": MessageLookupByLibrary.simpleMessage("Add View"),
@@ -1880,6 +2208,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmAll": MessageLookupByLibrary.simpleMessage("All"),
     "crmAllCity": MessageLookupByLibrary.simpleMessage("All City"),
     "crmAllCountry": MessageLookupByLibrary.simpleMessage("All Country"),
+    "crmAllFieldsAndSectionsAssigned": MessageLookupByLibrary.simpleMessage(
+      "All fields and sections are already assigned",
+    ),
     "crmAllStatus": MessageLookupByLibrary.simpleMessage("All Status"),
     "crmAllTypes": MessageLookupByLibrary.simpleMessage("All Types"),
     "crmAllowMultipleEmails": MessageLookupByLibrary.simpleMessage(
@@ -1899,12 +2230,34 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "crmArchived": MessageLookupByLibrary.simpleMessage("Archived"),
     "crmAutoAddHttps": MessageLookupByLibrary.simpleMessage("Auto Add HTTPS"),
+    "crmAutoRenewal": MessageLookupByLibrary.simpleMessage("Auto Renewal"),
+    "crmBilling": MessageLookupByLibrary.simpleMessage("Billing"),
+    "crmBillingContractDeletedSuccess": MessageLookupByLibrary.simpleMessage(
+      "Billing & Contract package deleted successfully.",
+    ),
+    "crmBillingContractDetails": MessageLookupByLibrary.simpleMessage(
+      "Billing & Contract Details",
+    ),
+    "crmBillingContractSavedSuccess": MessageLookupByLibrary.simpleMessage(
+      "Billing & Contract package saved successfully.",
+    ),
+    "crmBillingContractUpdatedSuccess": MessageLookupByLibrary.simpleMessage(
+      "Billing & Contract package updated successfully.",
+    ),
+    "crmBillingCycle": MessageLookupByLibrary.simpleMessage("Billing Cycle"),
+    "crmBillingDesc": MessageLookupByLibrary.simpleMessage(
+      "Manage invoice template, files, message, notes and colors.",
+    ),
+    "crmBillingDetails": MessageLookupByLibrary.simpleMessage(
+      "Billing Details",
+    ),
     "crmBoth": MessageLookupByLibrary.simpleMessage("Both"),
     "crmBulkUpload": MessageLookupByLibrary.simpleMessage("Bulk Upload"),
     "crmBusinessInitiationDate": MessageLookupByLibrary.simpleMessage(
       "Business Initiation Date",
     ),
     "crmBy": MessageLookupByLibrary.simpleMessage("By: "),
+    "crmByAuthor": MessageLookupByLibrary.simpleMessage("By: "),
     "crmCategories": MessageLookupByLibrary.simpleMessage("Categories"),
     "crmCategoriesAddPrompt": MessageLookupByLibrary.simpleMessage(
       "Click on Add button to create a new category",
@@ -1921,6 +2274,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Category saved successfully",
     ),
     "crmCategorySection": MessageLookupByLibrary.simpleMessage("Section"),
+    "crmChoice": MessageLookupByLibrary.simpleMessage("Choice"),
     "crmChoices": MessageLookupByLibrary.simpleMessage("Choices"),
     "crmChoose": MessageLookupByLibrary.simpleMessage("Choose"),
     "crmCities": MessageLookupByLibrary.simpleMessage("Cities"),
@@ -1949,6 +2303,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmClientsCount": m10,
     "crmClientsStatus": MessageLookupByLibrary.simpleMessage("Clients Status"),
     "crmCode": MessageLookupByLibrary.simpleMessage("Code"),
+    "crmColors": MessageLookupByLibrary.simpleMessage("Colors"),
     "crmColumn": MessageLookupByLibrary.simpleMessage("Column"),
     "crmCompanies": MessageLookupByLibrary.simpleMessage("Companies"),
     "crmCompany": MessageLookupByLibrary.simpleMessage("Company"),
@@ -1960,9 +2315,28 @@ class MessageLookup extends MessageLookupByLibrary {
       "Contact Channel",
     ),
     "crmContinents": MessageLookupByLibrary.simpleMessage("Continents"),
+    "crmContractDetails": MessageLookupByLibrary.simpleMessage(
+      "Contract Details",
+    ),
+    "crmContractDuration": MessageLookupByLibrary.simpleMessage(
+      "Contract Duration (Months)",
+    ),
+    "crmContractTerms": MessageLookupByLibrary.simpleMessage(
+      "Contract Terms & Conditions",
+    ),
+    "crmContracts": MessageLookupByLibrary.simpleMessage("Contracts"),
+    "crmContractsDesc": MessageLookupByLibrary.simpleMessage(
+      "Manage contract template, files, message, notes and colors.",
+    ),
     "crmControlActivity": MessageLookupByLibrary.simpleMessage("Activity"),
     "crmControlActivityDesc": MessageLookupByLibrary.simpleMessage(
       "Create and manage activity types for your clients",
+    ),
+    "crmControlBillingAndContracts": MessageLookupByLibrary.simpleMessage(
+      "Billing & Contracts",
+    ),
+    "crmControlBillingAndContractsDesc": MessageLookupByLibrary.simpleMessage(
+      "Manage all Billing and Contracts .",
     ),
     "crmControlClientsTypes": MessageLookupByLibrary.simpleMessage(
       "Clients Types",
@@ -1970,9 +2344,25 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmControlClientsTypesDesc": MessageLookupByLibrary.simpleMessage(
       "Manage Your client ans view details",
     ),
+    "crmControlCommissions": MessageLookupByLibrary.simpleMessage(
+      "Commissions",
+    ),
+    "crmControlCommissionsDesc": MessageLookupByLibrary.simpleMessage(
+      "Manage and create Commissions Packages.",
+    ),
+    "crmControlConvert": MessageLookupByLibrary.simpleMessage("Convert"),
+    "crmControlConvertDesc": MessageLookupByLibrary.simpleMessage(
+      "Manage all Stages of Convert Leads to Clients .",
+    ),
     "crmControlDeals": MessageLookupByLibrary.simpleMessage("Deals"),
     "crmControlDealsDesc": MessageLookupByLibrary.simpleMessage(
       "Manage all permissions for your Employees",
+    ),
+    "crmControlDeliveryRules": MessageLookupByLibrary.simpleMessage(
+      "Delivery Rules",
+    ),
+    "crmControlDeliveryRulesDesc": MessageLookupByLibrary.simpleMessage(
+      "Define how delivery fees and conditions are calculated.",
     ),
     "crmControlDiscount": MessageLookupByLibrary.simpleMessage("Discount"),
     "crmControlDiscountDesc": MessageLookupByLibrary.simpleMessage(
@@ -1984,11 +2374,19 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmControlPermissionsDesc": MessageLookupByLibrary.simpleMessage(
       "Manage all permissions for your Employees",
     ),
+    "crmControlReasons": MessageLookupByLibrary.simpleMessage("Reasons"),
+    "crmControlReasonsDesc": MessageLookupByLibrary.simpleMessage(
+      "Manage the reasons available for each client status.",
+    ),
     "crmControlRelationship": MessageLookupByLibrary.simpleMessage(
       "Relationship",
     ),
     "crmControlRelationshipDesc": MessageLookupByLibrary.simpleMessage(
       "Create and manage activity types for your clients",
+    ),
+    "crmControlTeamTypes": MessageLookupByLibrary.simpleMessage("Team Types"),
+    "crmControlTeamTypesDesc": MessageLookupByLibrary.simpleMessage(
+      "Manage team types",
     ),
     "crmControlTeams": MessageLookupByLibrary.simpleMessage("Teams"),
     "crmControlTeamsDesc": MessageLookupByLibrary.simpleMessage(
@@ -2009,9 +2407,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmCrNumber": MessageLookupByLibrary.simpleMessage(
       "Commercial Registration No. (CR No.)",
     ),
+    "crmCreationBy": MessageLookupByLibrary.simpleMessage("Creation By"),
     "crmCreationDate": m11,
     "crmCreationDateLabel": MessageLookupByLibrary.simpleMessage(
       "Creation Date",
+    ),
+    "crmCustomGrid": MessageLookupByLibrary.simpleMessage("Custom Grid"),
+    "crmCustomGridLimitReached": MessageLookupByLibrary.simpleMessage(
+      "Limit Reached",
+    ),
+    "crmCustomGridSaveFailedDesc": MessageLookupByLibrary.simpleMessage(
+      "Failed to save custom grid fields.",
     ),
     "crmDashboardTab": MessageLookupByLibrary.simpleMessage("Dashboard"),
     "crmDate": MessageLookupByLibrary.simpleMessage("Date"),
@@ -2019,6 +2425,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmDateRangeTo": MessageLookupByLibrary.simpleMessage("Date Range To"),
     "crmDealCategory": MessageLookupByLibrary.simpleMessage("Category"),
     "crmDealStage": MessageLookupByLibrary.simpleMessage("Stage"),
+    "crmDeleteBillingContractConfirm": MessageLookupByLibrary.simpleMessage(
+      "Are you sure you want to delete this billing & contract package?",
+    ),
     "crmDeleteCategory": MessageLookupByLibrary.simpleMessage(
       "Delete Category",
     ),
@@ -2036,8 +2445,18 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmDeleteTagConfirm": MessageLookupByLibrary.simpleMessage(
       "Are you sure you want to delete this tag?",
     ),
+    "crmDeleteTemplate": MessageLookupByLibrary.simpleMessage(
+      "Delete Template",
+    ),
+    "crmDeleteTemplateSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Are you sure to delete this template?",
+    ),
+    "crmDepositPercentage": MessageLookupByLibrary.simpleMessage(
+      "Deposit Rate (%)",
+    ),
     "crmDescription": MessageLookupByLibrary.simpleMessage("Description"),
     "crmDetails": MessageLookupByLibrary.simpleMessage("Details"),
+    "crmDigitalSeal": MessageLookupByLibrary.simpleMessage("Digital Seal"),
     "crmDiscard": MessageLookupByLibrary.simpleMessage("Discard"),
     "crmDiscountDeletedSuccess": MessageLookupByLibrary.simpleMessage(
       "Discount rule deleted successfully",
@@ -2064,14 +2483,26 @@ class MessageLookup extends MessageLookupByLibrary {
       "Similar Client found in the system; please review before continuing.",
     ),
     "crmEdit": MessageLookupByLibrary.simpleMessage("Edit"),
+    "crmEditBilling": MessageLookupByLibrary.simpleMessage("Edit Billing"),
+    "crmEditBillingContract": MessageLookupByLibrary.simpleMessage(
+      "Edit Billing & Contract",
+    ),
     "crmEditCategory": MessageLookupByLibrary.simpleMessage("Edit Category"),
+    "crmEditContract": MessageLookupByLibrary.simpleMessage("Edit Contract"),
+    "crmEditCustomGrid": MessageLookupByLibrary.simpleMessage(
+      "Edit Custom Grid",
+    ),
     "crmEditDiscount": MessageLookupByLibrary.simpleMessage("Edit Discount"),
+    "crmEditField": MessageLookupByLibrary.simpleMessage("Edit Field"),
+    "crmEditMerge": MessageLookupByLibrary.simpleMessage("Edit Merge"),
     "crmEditRelationship": MessageLookupByLibrary.simpleMessage(
       "Edit Relationship",
     ),
     "crmEditRule": MessageLookupByLibrary.simpleMessage("Edit Rule"),
+    "crmEditSection": MessageLookupByLibrary.simpleMessage("Edit Section"),
     "crmEditStage": MessageLookupByLibrary.simpleMessage("Edit Stage"),
     "crmEditTag": MessageLookupByLibrary.simpleMessage("Edit Tag"),
+    "crmEditTemplate": MessageLookupByLibrary.simpleMessage("Edit Template"),
     "crmEditTerm": MessageLookupByLibrary.simpleMessage("Edit Term"),
     "crmEditType": MessageLookupByLibrary.simpleMessage("Edit Type Details"),
     "crmEmail": MessageLookupByLibrary.simpleMessage("Email"),
@@ -2084,6 +2515,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmEntityName": MessageLookupByLibrary.simpleMessage("Entity Name"),
     "crmEntityNameAr": MessageLookupByLibrary.simpleMessage("اسم الكيان"),
     "crmEntryType": MessageLookupByLibrary.simpleMessage("Entry Type"),
+    "crmError": MessageLookupByLibrary.simpleMessage("Error"),
     "crmErrorCount": m12,
     "crmErrorMessage": MessageLookupByLibrary.simpleMessage("Error Message"),
     "crmExport": MessageLookupByLibrary.simpleMessage("Export"),
@@ -2094,20 +2526,41 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmFieldDetails": MessageLookupByLibrary.simpleMessage("Field Details"),
     "crmFieldName": MessageLookupByLibrary.simpleMessage("Field Name"),
     "crmFieldNameAr": MessageLookupByLibrary.simpleMessage("اسم الحقل"),
+    "crmFieldNotFound": MessageLookupByLibrary.simpleMessage("Field not found"),
     "crmFieldRequired": MessageLookupByLibrary.simpleMessage("Field Required"),
     "crmFieldRequiredAr": MessageLookupByLibrary.simpleMessage("الحقل مطلوب"),
     "crmFieldType": MessageLookupByLibrary.simpleMessage("Field Type"),
+    "crmFieldsAndSections": MessageLookupByLibrary.simpleMessage(
+      "Fields & Sections",
+    ),
+    "crmFieldsCount": MessageLookupByLibrary.simpleMessage("Fields: "),
+    "crmFifthRow": MessageLookupByLibrary.simpleMessage("Fifth Row"),
     "crmFileTypes": MessageLookupByLibrary.simpleMessage("File Types"),
+    "crmFiles": MessageLookupByLibrary.simpleMessage("Files"),
     "crmFilter": MessageLookupByLibrary.simpleMessage("Filter"),
+    "crmFinancialRules": MessageLookupByLibrary.simpleMessage(
+      "Financial Rules & Taxes",
+    ),
+    "crmFirstRow": MessageLookupByLibrary.simpleMessage("First Row"),
     "crmFixedAmount": MessageLookupByLibrary.simpleMessage("Fixed Amount"),
     "crmFormat": MessageLookupByLibrary.simpleMessage("Format"),
     "crmFormatExample": MessageLookupByLibrary.simpleMessage("Format Example"),
+    "crmFourthRow": MessageLookupByLibrary.simpleMessage("Fourth Row"),
     "crmFrom": MessageLookupByLibrary.simpleMessage("From"),
+    "crmGeneralSetting": MessageLookupByLibrary.simpleMessage(
+      "General Setting",
+    ),
     "crmGovernment": MessageLookupByLibrary.simpleMessage("Government"),
     "crmGovernmentSector": MessageLookupByLibrary.simpleMessage(
       "Government Sector",
     ),
+    "crmGracePeriod": MessageLookupByLibrary.simpleMessage(
+      "Grace Period (Days)",
+    ),
     "crmHide": MessageLookupByLibrary.simpleMessage("Hide"),
+    "crmHighlightingColor": MessageLookupByLibrary.simpleMessage(
+      "Highlighting",
+    ),
     "crmImageTypes": MessageLookupByLibrary.simpleMessage("Image Types"),
     "crmImport": MessageLookupByLibrary.simpleMessage("Import"),
     "crmInactive": MessageLookupByLibrary.simpleMessage("Inactive"),
@@ -2116,11 +2569,22 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmInvalidUrl": MessageLookupByLibrary.simpleMessage("Invalid URL"),
     "crmItems": MessageLookupByLibrary.simpleMessage("Items"),
     "crmLastUpdate": MessageLookupByLibrary.simpleMessage("Last Update"),
+    "crmLateFee": MessageLookupByLibrary.simpleMessage("Late Fee (%)"),
+    "crmLayout": MessageLookupByLibrary.simpleMessage("Layout"),
+    "crmLayoutSavedSuccess": MessageLookupByLibrary.simpleMessage(
+      "Layout saved successfully.",
+    ),
+    "crmLikelihood": MessageLookupByLibrary.simpleMessage("Likelihood"),
+    "crmLink": MessageLookupByLibrary.simpleMessage("Link"),
+    "crmLogo": MessageLookupByLibrary.simpleMessage("Logo"),
     "crmMakeFieldRequired": MessageLookupByLibrary.simpleMessage(
       "Make This Field Required",
     ),
     "crmMasterTemplate": MessageLookupByLibrary.simpleMessage(
       "Master Template",
+    ),
+    "crmMax4FieldsCanBeSelected": MessageLookupByLibrary.simpleMessage(
+      "Maximum 4 fields can be selected.",
     ),
     "crmMaxCharacters": MessageLookupByLibrary.simpleMessage("Max Characters"),
     "crmMaxLength": MessageLookupByLibrary.simpleMessage("Max Length"),
@@ -2130,8 +2594,21 @@ class MessageLookup extends MessageLookupByLibrary {
       "Maximum Quantity",
     ),
     "crmMergeAddLevel": MessageLookupByLibrary.simpleMessage("Add Level"),
+    "crmMergeAddLikelihoodLevel": MessageLookupByLibrary.simpleMessage(
+      "Add Likelihood Level",
+    ),
     "crmMergeChooseColor": MessageLookupByLibrary.simpleMessage("Choose"),
     "crmMergeColor": MessageLookupByLibrary.simpleMessage("Color"),
+    "crmMergeCriteria": MessageLookupByLibrary.simpleMessage("Criteria"),
+    "crmMergeCriteriaAndWeights": MessageLookupByLibrary.simpleMessage(
+      "Criteria & Weights Setting",
+    ),
+    "crmMergeCriteriaEmail": MessageLookupByLibrary.simpleMessage("Email"),
+    "crmMergeCriteriaFullName": MessageLookupByLibrary.simpleMessage(
+      "Full Name",
+    ),
+    "crmMergeCriteriaId": MessageLookupByLibrary.simpleMessage("ID"),
+    "crmMergeCriteriaPhone": MessageLookupByLibrary.simpleMessage("Phone"),
     "crmMergeDays": MessageLookupByLibrary.simpleMessage("Days"),
     "crmMergeDeleteConfirm": MessageLookupByLibrary.simpleMessage(
       "Are you sure you want to delete this level?",
@@ -2144,6 +2621,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Edit Level Details",
     ),
     "crmMergeHours": MessageLookupByLibrary.simpleMessage("Hours"),
+    "crmMergeLevel": MessageLookupByLibrary.simpleMessage("Level"),
     "crmMergeLevelDetails": MessageLookupByLibrary.simpleMessage(
       "Level Details",
     ),
@@ -2157,6 +2635,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "crmMergeRangeFrom": MessageLookupByLibrary.simpleMessage("Range From"),
     "crmMergeRangeTo": MessageLookupByLibrary.simpleMessage("Range To"),
+    "crmMergeSaveFailed": MessageLookupByLibrary.simpleMessage(
+      "Failed to save merge level",
+    ),
     "crmMergeSettings": MessageLookupByLibrary.simpleMessage("Settings"),
     "crmMergeSortRangeAsc": MessageLookupByLibrary.simpleMessage(
       "Range (Low - High)",
@@ -2165,8 +2646,11 @@ class MessageLookup extends MessageLookupByLibrary {
       "Range (High - Low)",
     ),
     "crmMergeUndoMode": MessageLookupByLibrary.simpleMessage("Undo Mode"),
+    "crmMergeUnit": MessageLookupByLibrary.simpleMessage("Unit"),
     "crmMergeWeeks": MessageLookupByLibrary.simpleMessage("Weeks"),
+    "crmMergeWeight": MessageLookupByLibrary.simpleMessage("Weight"),
     "crmMergeYears": MessageLookupByLibrary.simpleMessage("Years"),
+    "crmMessage": MessageLookupByLibrary.simpleMessage("Message"),
     "crmMinimumQuantity": MessageLookupByLibrary.simpleMessage(
       "Minimum Quantity",
     ),
@@ -2183,9 +2667,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "crmNameArabic": MessageLookupByLibrary.simpleMessage("الاسم"),
     "crmNationalId": MessageLookupByLibrary.simpleMessage("National ID"),
+    "crmNewest": MessageLookupByLibrary.simpleMessage("Newest"),
     "crmNext": MessageLookupByLibrary.simpleMessage("Next"),
     "crmNextActivity": MessageLookupByLibrary.simpleMessage("Next Activity"),
     "crmNo": MessageLookupByLibrary.simpleMessage("NO"),
+    "crmNoBillingContractsFound": MessageLookupByLibrary.simpleMessage(
+      "No Billing & Contract packages found.",
+    ),
     "crmNoCategoriesAvailable": MessageLookupByLibrary.simpleMessage(
       "No Categories Available",
     ),
@@ -2201,6 +2689,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmNoTagsAvailable": MessageLookupByLibrary.simpleMessage(
       "No Tags Available",
     ),
+    "crmNoTemplateId": MessageLookupByLibrary.simpleMessage("No template ID"),
     "crmNoTemplates": MessageLookupByLibrary.simpleMessage(
       "No templates available yet",
     ),
@@ -2209,12 +2698,18 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "crmNote": MessageLookupByLibrary.simpleMessage("Note"),
     "crmNoteArabic": MessageLookupByLibrary.simpleMessage("ملاحظة"),
+    "crmNotes": MessageLookupByLibrary.simpleMessage("Notes"),
     "crmNumberOfColumns": MessageLookupByLibrary.simpleMessage(
       "Number of Columns",
     ),
+    "crmNumberOfFields": MessageLookupByLibrary.simpleMessage(
+      "Number of Fields",
+    ),
     "crmOK": MessageLookupByLibrary.simpleMessage("OK"),
+    "crmOldest": MessageLookupByLibrary.simpleMessage("Oldest"),
     "crmOwner": MessageLookupByLibrary.simpleMessage("Owner"),
     "crmPage": MessageLookupByLibrary.simpleMessage("Page"),
+    "crmPaymentTerms": MessageLookupByLibrary.simpleMessage("Payment Terms"),
     "crmPercentage": MessageLookupByLibrary.simpleMessage("Percentage (%)"),
     "crmPerson": MessageLookupByLibrary.simpleMessage("Person"),
     "crmPersons": MessageLookupByLibrary.simpleMessage("Persons"),
@@ -2277,6 +2772,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "crmProspect": MessageLookupByLibrary.simpleMessage("Prospect"),
     "crmProvince": MessageLookupByLibrary.simpleMessage("Province"),
+    "crmRange": MessageLookupByLibrary.simpleMessage("Range"),
     "crmRelationship": MessageLookupByLibrary.simpleMessage("Relationship"),
     "crmRelationshipAddPrompt": MessageLookupByLibrary.simpleMessage(
       "Click on Add button to create a new relationship",
@@ -2304,6 +2800,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmRemoveRelationshipConfirm": MessageLookupByLibrary.simpleMessage(
       "Are you sure you want to delete this relationship completely?",
     ),
+    "crmRemoveSection": MessageLookupByLibrary.simpleMessage("Remove Section"),
+    "crmRemoveSectionSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Are you sure to remove this section?",
+    ),
     "crmRemoveSelection": MessageLookupByLibrary.simpleMessage(
       "Remove Selection",
     ),
@@ -2314,6 +2814,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmRemovedSuccessfully": MessageLookupByLibrary.simpleMessage(
       "Removed successfully .",
     ),
+    "crmRequireDeposit": MessageLookupByLibrary.simpleMessage(
+      "Require Deposit",
+    ),
     "crmRequiredField": MessageLookupByLibrary.simpleMessage(
       "This field is required",
     ),
@@ -2321,11 +2824,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmReviewBulkUpload": MessageLookupByLibrary.simpleMessage(
       "Review Bulk Upload",
     ),
+    "crmRow": MessageLookupByLibrary.simpleMessage("Row"),
     "crmRule": MessageLookupByLibrary.simpleMessage("Rule"),
     "crmRuleDetails": MessageLookupByLibrary.simpleMessage("Rule Details"),
     "crmRuleName": MessageLookupByLibrary.simpleMessage("Rule Name"),
     "crmRuleNameAr": MessageLookupByLibrary.simpleMessage("اسم القاعدة"),
     "crmSave": MessageLookupByLibrary.simpleMessage("Save"),
+    "crmSaveAsSection": MessageLookupByLibrary.simpleMessage("Save as Section"),
     "crmSaveCategory": MessageLookupByLibrary.simpleMessage("Save Category"),
     "crmSaveCategoryConfirm": MessageLookupByLibrary.simpleMessage(
       "Are you sure you want to save this category?",
@@ -2336,6 +2841,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmSaveClientRecord": MessageLookupByLibrary.simpleMessage(
       "Save Client Record",
     ),
+    "crmSaveFailed": MessageLookupByLibrary.simpleMessage("Save Failed"),
     "crmSaveForLater": MessageLookupByLibrary.simpleMessage("Save For Later"),
     "crmSaveFormat": MessageLookupByLibrary.simpleMessage("Save Format"),
     "crmSaveRelationship": MessageLookupByLibrary.simpleMessage(
@@ -2354,7 +2860,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "crmSavedSections": MessageLookupByLibrary.simpleMessage("Saved Sections"),
     "crmSavedView": MessageLookupByLibrary.simpleMessage("Saved View"),
+    "crmSaving": MessageLookupByLibrary.simpleMessage("Saving..."),
     "crmSearch": MessageLookupByLibrary.simpleMessage("Search"),
+    "crmSecondRow": MessageLookupByLibrary.simpleMessage("Second Row"),
     "crmSection": MessageLookupByLibrary.simpleMessage("Section"),
     "crmSectionBlacklist": MessageLookupByLibrary.simpleMessage("Blacklist"),
     "crmSectionBlacklistDesc": MessageLookupByLibrary.simpleMessage(
@@ -2393,6 +2901,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "crmSectionName": MessageLookupByLibrary.simpleMessage("Section Name"),
     "crmSectionNameAr": MessageLookupByLibrary.simpleMessage("اسم القسم"),
+    "crmSectionNotFound": MessageLookupByLibrary.simpleMessage(
+      "Section not found",
+    ),
     "crmSectionProducts": MessageLookupByLibrary.simpleMessage("Products"),
     "crmSectionProductsDesc": MessageLookupByLibrary.simpleMessage(
       "Manage your Products",
@@ -2423,6 +2934,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmShowBothLanguages": MessageLookupByLibrary.simpleMessage(
       "Show AR + EN Language",
     ),
+    "crmSignature": MessageLookupByLibrary.simpleMessage("Signature"),
+    "crmSixthRow": MessageLookupByLibrary.simpleMessage("Sixth Row"),
     "crmSize": MessageLookupByLibrary.simpleMessage("Size"),
     "crmSort": MessageLookupByLibrary.simpleMessage("Sort"),
     "crmSortNameAZ": MessageLookupByLibrary.simpleMessage("Name (A-Z)"),
@@ -2477,7 +2990,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmTaxNumber": MessageLookupByLibrary.simpleMessage(
       "Tax No. (Tax Number)",
     ),
+    "crmTaxPercentage": MessageLookupByLibrary.simpleMessage("Tax Rate (%)"),
     "crmTeams": MessageLookupByLibrary.simpleMessage("Teams"),
+    "crmTemplateActive": MessageLookupByLibrary.simpleMessage("Active"),
+    "crmTemplateCreatedSuccess": MessageLookupByLibrary.simpleMessage(
+      "Template created successfully",
+    ),
+    "crmTemplateDeleted": MessageLookupByLibrary.simpleMessage("Deleted"),
+    "crmTemplateDetails": MessageLookupByLibrary.simpleMessage(
+      "Template Details",
+    ),
+    "crmTemplateInactive": MessageLookupByLibrary.simpleMessage("Inactive"),
     "crmTemplates": MessageLookupByLibrary.simpleMessage("Templates"),
     "crmTermAddedSuccess": MessageLookupByLibrary.simpleMessage(
       "Term added successfully",
@@ -2494,7 +3017,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "crmTermsCount": MessageLookupByLibrary.simpleMessage("Terms:"),
     "crmTermsDetails": MessageLookupByLibrary.simpleMessage("Terms Details"),
+    "crmTextColor": MessageLookupByLibrary.simpleMessage("Text"),
     "crmTextHere": MessageLookupByLibrary.simpleMessage("Text Here"),
+    "crmThirdRow": MessageLookupByLibrary.simpleMessage("Third Row"),
     "crmTime": MessageLookupByLibrary.simpleMessage("Time"),
     "crmTo": MessageLookupByLibrary.simpleMessage("To"),
     "crmToAddSectionHint": MessageLookupByLibrary.simpleMessage(
@@ -2508,6 +3033,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmTypes": MessageLookupByLibrary.simpleMessage("Types"),
     "crmTypesCount": MessageLookupByLibrary.simpleMessage("Types:"),
     "crmUnique": MessageLookupByLibrary.simpleMessage("Unique"),
+    "crmUpload": MessageLookupByLibrary.simpleMessage("Upload"),
     "crmValidateImportedClients": MessageLookupByLibrary.simpleMessage(
       "Validate imported clients data before activating",
     ),
@@ -2526,6 +3052,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmWarningLanguageCheckTitle": MessageLookupByLibrary.simpleMessage(
       "Warning Language Check",
     ),
+    "crmWatermark": MessageLookupByLibrary.simpleMessage("Watermark"),
     "crmWebsite": MessageLookupByLibrary.simpleMessage("Website"),
     "crmWriteHere": MessageLookupByLibrary.simpleMessage("اكتب هنا"),
     "croatian": MessageLookupByLibrary.simpleMessage("Croatian"),
@@ -2591,6 +3118,762 @@ class MessageLookup extends MessageLookupByLibrary {
     "days": MessageLookupByLibrary.simpleMessage("Days"),
     "daysAgo": MessageLookupByLibrary.simpleMessage("Days Ago"),
     "daysOff": MessageLookupByLibrary.simpleMessage("Days Off"),
+    "dbAccessStatusActive": MessageLookupByLibrary.simpleMessage("Active"),
+    "dbAccessStatusDeactivated": MessageLookupByLibrary.simpleMessage(
+      "Deactivated",
+    ),
+    "dbAccessStatusRemoved": MessageLookupByLibrary.simpleMessage("Removed"),
+    "dbAccessStatusScheduled": MessageLookupByLibrary.simpleMessage(
+      "Scheduled",
+    ),
+    "dbAccessTypeOpen": MessageLookupByLibrary.simpleMessage("Open Access"),
+    "dbAccessTypePersonal": MessageLookupByLibrary.simpleMessage(
+      "Personal Access",
+    ),
+    "dbAccessTypeRestricted": MessageLookupByLibrary.simpleMessage(
+      "Restricted Access",
+    ),
+    "dbArabicDatabaseTitleLabel": MessageLookupByLibrary.simpleMessage(
+      "عنوان قاعدة بيانات",
+    ),
+    "dbArabicDescriptionLabel": MessageLookupByLibrary.simpleMessage("الوصف"),
+    "dbArabicHint": MessageLookupByLibrary.simpleMessage("اكتب هنا"),
+    "dbArabicTableNameLabel": MessageLookupByLibrary.simpleMessage(
+      "اسم الجدول",
+    ),
+    "dbColumnTypeCurrency": MessageLookupByLibrary.simpleMessage("Currency"),
+    "dbColumnTypeDate": MessageLookupByLibrary.simpleMessage("Date"),
+    "dbColumnTypeGeneral": MessageLookupByLibrary.simpleMessage("General"),
+    "dbColumnTypeNumber": MessageLookupByLibrary.simpleMessage("Number"),
+    "dbColumnTypePercentage": MessageLookupByLibrary.simpleMessage(
+      "Percentage",
+    ),
+    "dbColumnTypeTime": MessageLookupByLibrary.simpleMessage("Time"),
+    "dbCommentsAccessHintPrivate": MessageLookupByLibrary.simpleMessage(
+      "Private: Only admins can view and manage the comments.",
+    ),
+    "dbCommentsAccessHintShared": MessageLookupByLibrary.simpleMessage(
+      "Shared: All employees can view, reply to, and engage with the comments.",
+    ),
+    "dbCommentsAccessPrivate": MessageLookupByLibrary.simpleMessage("Private"),
+    "dbCommentsAccessShared": MessageLookupByLibrary.simpleMessage("Shared"),
+    "dbCreateAccess": MessageLookupByLibrary.simpleMessage("Access:"),
+    "dbCreateAccessManagement": MessageLookupByLibrary.simpleMessage(
+      "Access Management",
+    ),
+    "dbCreateAccessManagementCrumb": MessageLookupByLibrary.simpleMessage(
+      "Access Management",
+    ),
+    "dbCreateAccessRequired": MessageLookupByLibrary.simpleMessage(
+      "Choose an access type",
+    ),
+    "dbCreateAddMembers": MessageLookupByLibrary.simpleMessage("Add Members"),
+    "dbCreateAll": MessageLookupByLibrary.simpleMessage("All"),
+    "dbCreateApply": MessageLookupByLibrary.simpleMessage("Apply"),
+    "dbCreateChoosePermissions": MessageLookupByLibrary.simpleMessage(
+      "Choose Permissions",
+    ),
+    "dbCreateClose": MessageLookupByLibrary.simpleMessage("Close"),
+    "dbCreateConfirmCreateSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Are You Sure You Want To Create This Database?",
+    ),
+    "dbCreateConfirmCreateTitle": MessageLookupByLibrary.simpleMessage(
+      "New Database",
+    ),
+    "dbCreateCouldNotSave": MessageLookupByLibrary.simpleMessage(
+      "The database could not be saved. Check your connection and try again.",
+    ),
+    "dbCreateCreate": MessageLookupByLibrary.simpleMessage("Create"),
+    "dbCreateCreateDatabase": MessageLookupByLibrary.simpleMessage(
+      "Create Database",
+    ),
+    "dbCreateCreateNewDatabase": MessageLookupByLibrary.simpleMessage(
+      "Create New Database",
+    ),
+    "dbCreateCreation": MessageLookupByLibrary.simpleMessage("Creation:"),
+    "dbCreateCreationDate": MessageLookupByLibrary.simpleMessage(
+      "Creation Date",
+    ),
+    "dbCreateDatabase": MessageLookupByLibrary.simpleMessage("Database"),
+    "dbCreateDatabaseBuilder": MessageLookupByLibrary.simpleMessage(
+      "Database Builder",
+    ),
+    "dbCreateDate": MessageLookupByLibrary.simpleMessage("Date"),
+    "dbCreateDelete": MessageLookupByLibrary.simpleMessage("Delete"),
+    "dbCreateDeleteConfirmSubtitle": m13,
+    "dbCreateDeleteConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "Delete Database",
+    ),
+    "dbCreateDeleteFailed": MessageLookupByLibrary.simpleMessage(
+      "The database could not be deleted. Check your connection and try again.",
+    ),
+    "dbCreateDeleteFailedTitle": MessageLookupByLibrary.simpleMessage(
+      "Delete Failed",
+    ),
+    "dbCreateDeleted": MessageLookupByLibrary.simpleMessage("Deleted"),
+    "dbCreateDepartment": MessageLookupByLibrary.simpleMessage("Department"),
+    "dbCreateDeselectAll": MessageLookupByLibrary.simpleMessage("Deselect All"),
+    "dbCreateDiscard": MessageLookupByLibrary.simpleMessage("Discard"),
+    "dbCreateDiscardConfirmSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Are you sure you want to discard this database?",
+    ),
+    "dbCreateDiscardConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "Discard Changes",
+    ),
+    "dbCreateDraftSavedSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Your database is saved under Drafts. Nobody has been granted access to it yet.",
+    ),
+    "dbCreateDraftSavedTitle": MessageLookupByLibrary.simpleMessage(
+      "Saved As Draft",
+    ),
+    "dbCreateDrafts": MessageLookupByLibrary.simpleMessage("Drafts"),
+    "dbCreateDuplicateTitle": MessageLookupByLibrary.simpleMessage(
+      "A database with this title already exists. Change the title and try again.",
+    ),
+    "dbCreateEdit": MessageLookupByLibrary.simpleMessage("Edit"),
+    "dbCreateEditNotAvailable": MessageLookupByLibrary.simpleMessage(
+      "Editing a saved database is not wired up yet.",
+    ),
+    "dbCreateEditNotAvailableTitle": MessageLookupByLibrary.simpleMessage(
+      "Editing Not Available Yet",
+    ),
+    "dbCreateEmployeeInformation": MessageLookupByLibrary.simpleMessage(
+      "Employee  Information",
+    ),
+    "dbCreateEndBeforeStart": MessageLookupByLibrary.simpleMessage(
+      "End date must be after the start date",
+    ),
+    "dbCreateEndDateOfAccess": MessageLookupByLibrary.simpleMessage(
+      "End Date Of Access",
+    ),
+    "dbCreateErrorTitle": MessageLookupByLibrary.simpleMessage(
+      "Something Went Wrong",
+    ),
+    "dbCreateFilter": MessageLookupByLibrary.simpleMessage("Filter"),
+    "dbCreateFinishTheseFirst": MessageLookupByLibrary.simpleMessage(
+      "Finish these before granting access:",
+    ),
+    "dbCreateGrantAccess": MessageLookupByLibrary.simpleMessage("Grant Access"),
+    "dbCreateIncompleteGrants": MessageLookupByLibrary.simpleMessage(
+      "Choose a permission level and both dates for every group.",
+    ),
+    "dbCreateIncompleteGrantsFor": m14,
+    "dbCreateIncompleteTitle": MessageLookupByLibrary.simpleMessage(
+      "Missing Information",
+    ),
+    "dbCreateLastUpdate": MessageLookupByLibrary.simpleMessage("Last Update"),
+    "dbCreateNext": MessageLookupByLibrary.simpleMessage("Next"),
+    "dbCreateNextStepPending": MessageLookupByLibrary.simpleMessage(
+      "Details saved. Access Management is not wired up yet.",
+    ),
+    "dbCreateNextStepPendingTitle": MessageLookupByLibrary.simpleMessage(
+      "Details Saved",
+    ),
+    "dbCreateNo": MessageLookupByLibrary.simpleMessage("No"),
+    "dbCreateNoDatabasesYet": MessageLookupByLibrary.simpleMessage(
+      "No databases yet",
+    ),
+    "dbCreateNoDeletedDatabases": MessageLookupByLibrary.simpleMessage(
+      "Nothing has been deleted.",
+    ),
+    "dbCreateNoEmployeesFound": MessageLookupByLibrary.simpleMessage(
+      "No employees found",
+    ),
+    "dbCreateNoMembersSelected": MessageLookupByLibrary.simpleMessage(
+      "No members selected yet",
+    ),
+    "dbCreateNoOfTables": MessageLookupByLibrary.simpleMessage(
+      "No. Of Tables:",
+    ),
+    "dbCreateOpen": MessageLookupByLibrary.simpleMessage("Open"),
+    "dbCreatePermissions": MessageLookupByLibrary.simpleMessage("Permissions"),
+    "dbCreatePersonal": MessageLookupByLibrary.simpleMessage("Personal"),
+    "dbCreatePickDepartmentFirst": MessageLookupByLibrary.simpleMessage(
+      "Choose one or more departments to set their access and pick people.",
+    ),
+    "dbCreatePickSomeoneFirst": MessageLookupByLibrary.simpleMessage(
+      "Select at least one person before continuing.",
+    ),
+    "dbCreateReset": MessageLookupByLibrary.simpleMessage("Reset"),
+    "dbCreateRestore": MessageLookupByLibrary.simpleMessage("Restore"),
+    "dbCreateRestoreConfirmSubtitleDraft": m15,
+    "dbCreateRestoreConfirmSubtitleLive": m16,
+    "dbCreateRestoreConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "Restore Database",
+    ),
+    "dbCreateRestoreFailed": MessageLookupByLibrary.simpleMessage(
+      "The database could not be restored. Check your connection and try again.",
+    ),
+    "dbCreateRestoreFailedTitle": MessageLookupByLibrary.simpleMessage(
+      "Restore Failed",
+    ),
+    "dbCreateRestricted": MessageLookupByLibrary.simpleMessage("Restricted"),
+    "dbCreateRetry": MessageLookupByLibrary.simpleMessage("Retry"),
+    "dbCreateReview": MessageLookupByLibrary.simpleMessage("Review"),
+    "dbCreateSaveDraftSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Save this database as a draft? It will wait for you under Drafts.",
+    ),
+    "dbCreateSaveDraftTitle": MessageLookupByLibrary.simpleMessage(
+      "Save For Later",
+    ),
+    "dbCreateSaveForLater": MessageLookupByLibrary.simpleMessage(
+      "Save For Later",
+    ),
+    "dbCreateSearch": MessageLookupByLibrary.simpleMessage("Search"),
+    "dbCreateSelectAccess": MessageLookupByLibrary.simpleMessage(
+      "Select Access",
+    ),
+    "dbCreateSelectAll": MessageLookupByLibrary.simpleMessage("Select All"),
+    "dbCreateSort": MessageLookupByLibrary.simpleMessage("Sort"),
+    "dbCreateStartDateOfAccess": MessageLookupByLibrary.simpleMessage(
+      "Start Date Of Access",
+    ),
+    "dbCreateSuccessSubtitle": MessageLookupByLibrary.simpleMessage(
+      "You Successfully Created New Database",
+    ),
+    "dbCreateSuccessTitle": MessageLookupByLibrary.simpleMessage("Success"),
+    "dbCreateSummary": MessageLookupByLibrary.simpleMessage("Summary"),
+    "dbCreateTitleArRequired": MessageLookupByLibrary.simpleMessage(
+      "Arabic title is required",
+    ),
+    "dbCreateTitleEnRequired": MessageLookupByLibrary.simpleMessage(
+      "English title is required",
+    ),
+    "dbCreateTitleTooShort": m17,
+    "dbCreateTotalDepartments": MessageLookupByLibrary.simpleMessage(
+      "Total Departments",
+    ),
+    "dbCreateTotalEmployees": MessageLookupByLibrary.simpleMessage(
+      "Total Employees",
+    ),
+    "dbCreateYes": MessageLookupByLibrary.simpleMessage("Yes"),
+    "dbDetailsAccess": MessageLookupByLibrary.simpleMessage("Access"),
+    "dbDetailsAccessBegins": MessageLookupByLibrary.simpleMessage(
+      "Access Begins",
+    ),
+    "dbDetailsAccessCrumb": MessageLookupByLibrary.simpleMessage("Access"),
+    "dbDetailsAccessEnds": MessageLookupByLibrary.simpleMessage("Access Ends"),
+    "dbDetailsAccessManagement": MessageLookupByLibrary.simpleMessage(
+      "Access Management",
+    ),
+    "dbDetailsAccessManagementLabel": MessageLookupByLibrary.simpleMessage(
+      "Access Management:",
+    ),
+    "dbDetailsAccessSavedSubtitle": MessageLookupByLibrary.simpleMessage(
+      "You Successfully Edited This Database",
+    ),
+    "dbDetailsAccessSavedTitle": MessageLookupByLibrary.simpleMessage(
+      "Access Updated",
+    ),
+    "dbDetailsAccessTypeChangeSubtitle": m18,
+    "dbDetailsAccessTypeChangeTitle": MessageLookupByLibrary.simpleMessage(
+      "Change Access Type?",
+    ),
+    "dbDetailsActiveChip": MessageLookupByLibrary.simpleMessage("Active"),
+    "dbDetailsAll": MessageLookupByLibrary.simpleMessage("All"),
+    "dbDetailsApply": MessageLookupByLibrary.simpleMessage("Apply"),
+    "dbDetailsChoosePermissions": MessageLookupByLibrary.simpleMessage(
+      "Choose Permissions",
+    ),
+    "dbDetailsClose": MessageLookupByLibrary.simpleMessage("Close"),
+    "dbDetailsColAccessStatus": MessageLookupByLibrary.simpleMessage(
+      "Access Status",
+    ),
+    "dbDetailsColAccessType": MessageLookupByLibrary.simpleMessage(
+      "Access Type",
+    ),
+    "dbDetailsColDepartment": MessageLookupByLibrary.simpleMessage(
+      "Department",
+    ),
+    "dbDetailsColEnd": MessageLookupByLibrary.simpleMessage(
+      "End Date Of Access",
+    ),
+    "dbDetailsColGrantor": MessageLookupByLibrary.simpleMessage(
+      "Access Grantor",
+    ),
+    "dbDetailsColJobTitle": MessageLookupByLibrary.simpleMessage("Job Title"),
+    "dbDetailsColName": MessageLookupByLibrary.simpleMessage("Employee Name"),
+    "dbDetailsColStart": MessageLookupByLibrary.simpleMessage(
+      "Start Date Of Access",
+    ),
+    "dbDetailsCouldNotLoad": MessageLookupByLibrary.simpleMessage(
+      "This database could not be read. Check your connection and try again.",
+    ),
+    "dbDetailsCouldNotSave": MessageLookupByLibrary.simpleMessage(
+      "The changes could not be saved. Check your connection and try again.",
+    ),
+    "dbDetailsCreationLabel": MessageLookupByLibrary.simpleMessage("Creation:"),
+    "dbDetailsDatabase": MessageLookupByLibrary.simpleMessage("Database"),
+    "dbDetailsDatabaseDetails": MessageLookupByLibrary.simpleMessage(
+      "Database Details",
+    ),
+    "dbDetailsDate": MessageLookupByLibrary.simpleMessage("Date"),
+    "dbDetailsDeactivatedChip": MessageLookupByLibrary.simpleMessage(
+      "Deactivated",
+    ),
+    "dbDetailsDelete": MessageLookupByLibrary.simpleMessage("Delete"),
+    "dbDetailsDeleteConfirmSubtitle": m19,
+    "dbDetailsDeleteConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "Delete Database",
+    ),
+    "dbDetailsDeleteFailedTitle": MessageLookupByLibrary.simpleMessage(
+      "Delete Failed",
+    ),
+    "dbDetailsDeletedSubtitle": m20,
+    "dbDetailsDeletedTitle": MessageLookupByLibrary.simpleMessage(
+      "Database Deleted",
+    ),
+    "dbDetailsDepartment": MessageLookupByLibrary.simpleMessage("Department"),
+    "dbDetailsDepartmentLabel": MessageLookupByLibrary.simpleMessage(
+      "Department:",
+    ),
+    "dbDetailsDescriptionLabel": MessageLookupByLibrary.simpleMessage(
+      "Description:",
+    ),
+    "dbDetailsDeselectAll": MessageLookupByLibrary.simpleMessage(
+      "Deselect All",
+    ),
+    "dbDetailsDetailsCrumb": m21,
+    "dbDetailsDiscardChanges": MessageLookupByLibrary.simpleMessage(
+      "Discard Changes",
+    ),
+    "dbDetailsDiscardConfirmSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Your changes have not been saved. Leave without saving?",
+    ),
+    "dbDetailsDiscardConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "Discard Changes",
+    ),
+    "dbDetailsDuplicateTitle": MessageLookupByLibrary.simpleMessage(
+      "Another database already uses this title. Change it and try again.",
+    ),
+    "dbDetailsEdit": MessageLookupByLibrary.simpleMessage("Edit"),
+    "dbDetailsEditAccess": MessageLookupByLibrary.simpleMessage("Edit Access"),
+    "dbDetailsEditConfirmSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Are You Sure You Want To Edit This Database?",
+    ),
+    "dbDetailsEditConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "Editing Database",
+    ),
+    "dbDetailsEditSuccessSubtitle": MessageLookupByLibrary.simpleMessage(
+      "You Successfully Edited This Database",
+    ),
+    "dbDetailsEditingAccessManagement": MessageLookupByLibrary.simpleMessage(
+      "Editing Access Management",
+    ),
+    "dbDetailsEditingCrumb": m22,
+    "dbDetailsEditingDatabaseAccess": MessageLookupByLibrary.simpleMessage(
+      "Editing Database Access",
+    ),
+    "dbDetailsEmployeeInformation": MessageLookupByLibrary.simpleMessage(
+      "Employee  Information",
+    ),
+    "dbDetailsEndDateOfAccess": MessageLookupByLibrary.simpleMessage(
+      "End Date Of Access",
+    ),
+    "dbDetailsErrorTitle": MessageLookupByLibrary.simpleMessage(
+      "Something Went Wrong",
+    ),
+    "dbDetailsExpand": MessageLookupByLibrary.simpleMessage("Expand"),
+    "dbDetailsExport": MessageLookupByLibrary.simpleMessage("Export"),
+    "dbDetailsExportDone": m23,
+    "dbDetailsExportDoneTitle": MessageLookupByLibrary.simpleMessage(
+      "Export Ready",
+    ),
+    "dbDetailsExportEmpty": MessageLookupByLibrary.simpleMessage(
+      "There are no access rows on screen to export.",
+    ),
+    "dbDetailsExportEmptyTitle": MessageLookupByLibrary.simpleMessage(
+      "Nothing To Export",
+    ),
+    "dbDetailsExportFailed": MessageLookupByLibrary.simpleMessage(
+      "The access list could not be written to a file.",
+    ),
+    "dbDetailsExportFailedTitle": MessageLookupByLibrary.simpleMessage(
+      "Export Failed",
+    ),
+    "dbDetailsFilter": MessageLookupByLibrary.simpleMessage("Filter"),
+    "dbDetailsGrantAccess": MessageLookupByLibrary.simpleMessage(
+      "Grant Access",
+    ),
+    "dbDetailsHide": MessageLookupByLibrary.simpleMessage("Hide"),
+    "dbDetailsIncompleteGrants": MessageLookupByLibrary.simpleMessage(
+      "Choose a permission level and both dates for every group.",
+    ),
+    "dbDetailsIncompleteRows": MessageLookupByLibrary.simpleMessage(
+      "Choose a permission level and both dates for every person you picked.",
+    ),
+    "dbDetailsIncompleteTitle": MessageLookupByLibrary.simpleMessage(
+      "Missing Information",
+    ),
+    "dbDetailsJobTitleLabel": MessageLookupByLibrary.simpleMessage(
+      "Job Title:",
+    ),
+    "dbDetailsLastEditLabel": MessageLookupByLibrary.simpleMessage(
+      "Last Edit:",
+    ),
+    "dbDetailsNo": MessageLookupByLibrary.simpleMessage("No"),
+    "dbDetailsNoAccessMatches": MessageLookupByLibrary.simpleMessage(
+      "No access rows match this filter.",
+    ),
+    "dbDetailsNoAccessYet": MessageLookupByLibrary.simpleMessage(
+      "Nobody has been granted access to this database yet.",
+    ),
+    "dbDetailsNoDescription": MessageLookupByLibrary.simpleMessage(
+      "No description was added.",
+    ),
+    "dbDetailsNoEmployeesFound": MessageLookupByLibrary.simpleMessage(
+      "No employees found",
+    ),
+    "dbDetailsNothingChanged": MessageLookupByLibrary.simpleMessage(
+      "Nothing on this screen has been changed yet.",
+    ),
+    "dbDetailsNothingChangedTitle": MessageLookupByLibrary.simpleMessage(
+      "Nothing Changed",
+    ),
+    "dbDetailsPermissions": MessageLookupByLibrary.simpleMessage("Permissions"),
+    "dbDetailsPersonalAccessExplainer": MessageLookupByLibrary.simpleMessage(
+      "A personal database belongs to you alone. Nobody else is granted access, so there is nothing to configure here.",
+    ),
+    "dbDetailsPersonalDropsGrants": m24,
+    "dbDetailsPersonalDropsGrantsTitle": MessageLookupByLibrary.simpleMessage(
+      "Remove All Access?",
+    ),
+    "dbDetailsPickDepartmentFirst": MessageLookupByLibrary.simpleMessage(
+      "Choose one or more departments above, then pick the people inside them.",
+    ),
+    "dbDetailsPickSomeoneFirst": MessageLookupByLibrary.simpleMessage(
+      "Select at least one person before continuing.",
+    ),
+    "dbDetailsRemovedChip": MessageLookupByLibrary.simpleMessage("Removed"),
+    "dbDetailsReset": MessageLookupByLibrary.simpleMessage("Reset"),
+    "dbDetailsRetry": MessageLookupByLibrary.simpleMessage("Retry"),
+    "dbDetailsReview": MessageLookupByLibrary.simpleMessage("Review"),
+    "dbDetailsSave": MessageLookupByLibrary.simpleMessage("Save"),
+    "dbDetailsScheduledChip": MessageLookupByLibrary.simpleMessage("Scheduled"),
+    "dbDetailsSearch": MessageLookupByLibrary.simpleMessage("Search"),
+    "dbDetailsSelectAll": MessageLookupByLibrary.simpleMessage("Select All"),
+    "dbDetailsSelectPermission": MessageLookupByLibrary.simpleMessage(
+      "Select Permission",
+    ),
+    "dbDetailsSort": MessageLookupByLibrary.simpleMessage("Sort"),
+    "dbDetailsStartDateOfAccess": MessageLookupByLibrary.simpleMessage(
+      "Start Date Of Access",
+    ),
+    "dbDetailsSummary": MessageLookupByLibrary.simpleMessage("Summary"),
+    "dbDetailsTable": MessageLookupByLibrary.simpleMessage("Table"),
+    "dbDetailsTitleArRequired": MessageLookupByLibrary.simpleMessage(
+      "Arabic title is required",
+    ),
+    "dbDetailsTitleEnRequired": MessageLookupByLibrary.simpleMessage(
+      "English title is required",
+    ),
+    "dbDetailsTitleTooShort": m25,
+    "dbDetailsTotalDepartments": MessageLookupByLibrary.simpleMessage(
+      "Total Departments",
+    ),
+    "dbDetailsTotalEmployees": MessageLookupByLibrary.simpleMessage(
+      "Total Employees",
+    ),
+    "dbDetailsYes": MessageLookupByLibrary.simpleMessage("Yes"),
+    "dbEmployeeListLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "The employee list could not be loaded. Try again.",
+    ),
+    "dbImportModeAppend": MessageLookupByLibrary.simpleMessage("Append"),
+    "dbImportModeOverwrite": MessageLookupByLibrary.simpleMessage("Overwrite"),
+    "dbListSeparator": MessageLookupByLibrary.simpleMessage(", "),
+    "dbPermissionCustom": MessageLookupByLibrary.simpleMessage("Custom"),
+    "dbPermissionEdit": MessageLookupByLibrary.simpleMessage("Edit"),
+    "dbPermissionExport": MessageLookupByLibrary.simpleMessage("Export"),
+    "dbPermissionFullAccess": MessageLookupByLibrary.simpleMessage(
+      "Full Access",
+    ),
+    "dbPermissionView": MessageLookupByLibrary.simpleMessage("View"),
+    "dbSortAscending": MessageLookupByLibrary.simpleMessage("Ascending"),
+    "dbSortDescending": MessageLookupByLibrary.simpleMessage("Descending"),
+    "dbSortLastUpdated": MessageLookupByLibrary.simpleMessage("Last Updated"),
+    "dbTableAccess": MessageLookupByLibrary.simpleMessage("Access"),
+    "dbTableAccessCrumb": MessageLookupByLibrary.simpleMessage("Access"),
+    "dbTableAccessSavedSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Table access has been updated.",
+    ),
+    "dbTableAccesses": MessageLookupByLibrary.simpleMessage("Accesses"),
+    "dbTableAddColumn": MessageLookupByLibrary.simpleMessage("Column"),
+    "dbTableAddRow": MessageLookupByLibrary.simpleMessage("Row"),
+    "dbTableAllDepartments": MessageLookupByLibrary.simpleMessage(
+      "All Departments",
+    ),
+    "dbTableAllFields": MessageLookupByLibrary.simpleMessage("All fields"),
+    "dbTableCardColumns": MessageLookupByLibrary.simpleMessage(
+      "No. of Columns:",
+    ),
+    "dbTableCardRows": MessageLookupByLibrary.simpleMessage("No. of Rows:"),
+    "dbTableClose": MessageLookupByLibrary.simpleMessage("Close"),
+    "dbTableColJobTitle": MessageLookupByLibrary.simpleMessage("Job Title"),
+    "dbTableColName": MessageLookupByLibrary.simpleMessage("Employee Name"),
+    "dbTableColPicture": MessageLookupByLibrary.simpleMessage(
+      "Employee Picture",
+    ),
+    "dbTableColumnCountRange": m26,
+    "dbTableColumnFirst": MessageLookupByLibrary.simpleMessage("1st Column"),
+    "dbTableColumnName": MessageLookupByLibrary.simpleMessage("Column Name"),
+    "dbTableColumnNameHint": MessageLookupByLibrary.simpleMessage(
+      "Employee Name",
+    ),
+    "dbTableColumnSecond": MessageLookupByLibrary.simpleMessage("2nd Column"),
+    "dbTableColumnThird": MessageLookupByLibrary.simpleMessage("3rd Column"),
+    "dbTableCommentDate": m27,
+    "dbTableCommentFailed": MessageLookupByLibrary.simpleMessage(
+      "Your comment could not be posted. Check your connection and try again.",
+    ),
+    "dbTableComments": MessageLookupByLibrary.simpleMessage("Comments"),
+    "dbTableCommentsAccess": MessageLookupByLibrary.simpleMessage(
+      "Comments Access",
+    ),
+    "dbTableCommentsLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "The comments could not be loaded.",
+    ),
+    "dbTableCommentsPrivate": MessageLookupByLibrary.simpleMessage(
+      "Comments on this table are Private, so only admins can post.",
+    ),
+    "dbTableConfirmAccessSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Save these access rules for this table?",
+    ),
+    "dbTableConfirmAccessTitle": MessageLookupByLibrary.simpleMessage(
+      "Table Access",
+    ),
+    "dbTableConfirmCreateSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Are You Sure You Want To Create This Table?",
+    ),
+    "dbTableConfirmCreateTitle": MessageLookupByLibrary.simpleMessage(
+      "New Table",
+    ),
+    "dbTableCouldNotDelete": MessageLookupByLibrary.simpleMessage(
+      "The table could not be deleted. Check your connection and try again.",
+    ),
+    "dbTableCouldNotSave": MessageLookupByLibrary.simpleMessage(
+      "The table could not be saved. Check your connection and try again.",
+    ),
+    "dbTableCreate": MessageLookupByLibrary.simpleMessage("Create"),
+    "dbTableCreatedSubtitle": MessageLookupByLibrary.simpleMessage(
+      "You Successfully Created A New Table",
+    ),
+    "dbTableCreatingTable": MessageLookupByLibrary.simpleMessage(
+      "Creating Table",
+    ),
+    "dbTableCreationDateLabel": MessageLookupByLibrary.simpleMessage(
+      "Creation Date:",
+    ),
+    "dbTableDataType": MessageLookupByLibrary.simpleMessage("Data Type"),
+    "dbTableDatabase": MessageLookupByLibrary.simpleMessage("Database"),
+    "dbTableDelete": MessageLookupByLibrary.simpleMessage("Delete"),
+    "dbTableDeleteCommentSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Delete this comment? It cannot be brought back.",
+    ),
+    "dbTableDeleteCommentTitle": MessageLookupByLibrary.simpleMessage(
+      "Delete Comment",
+    ),
+    "dbTableDeleteFailedTitle": MessageLookupByLibrary.simpleMessage(
+      "Delete Failed",
+    ),
+    "dbTableDeleteTableSubtitle": m28,
+    "dbTableDeleteTableTitle": MessageLookupByLibrary.simpleMessage(
+      "Delete Table",
+    ),
+    "dbTableDeletedSubtitle": m29,
+    "dbTableDeletedTitle": MessageLookupByLibrary.simpleMessage("Deleted"),
+    "dbTableDepartment": MessageLookupByLibrary.simpleMessage("Department"),
+    "dbTableDescriptionLabel": MessageLookupByLibrary.simpleMessage(
+      "Description:",
+    ),
+    "dbTableDeselectAll": MessageLookupByLibrary.simpleMessage("Deselect All"),
+    "dbTableDiscard": MessageLookupByLibrary.simpleMessage("Discard"),
+    "dbTableDiscardAccessSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Discard the changes you made to this table\'s access?",
+    ),
+    "dbTableDiscardChanges": MessageLookupByLibrary.simpleMessage(
+      "Discard Changes",
+    ),
+    "dbTableDiscardConfirmSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Are you sure you want to discard this table?",
+    ),
+    "dbTableDiscardConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "Discard Changes",
+    ),
+    "dbTableDiscardRowsSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Your changes to this table data will be lost.",
+    ),
+    "dbTableDislike": MessageLookupByLibrary.simpleMessage("Dislike"),
+    "dbTableDuplicateColumn": MessageLookupByLibrary.simpleMessage(
+      "Duplicate column",
+    ),
+    "dbTableDuplicateName": MessageLookupByLibrary.simpleMessage(
+      "A table with this name already exists in this database. Change the name and try again.",
+    ),
+    "dbTableEdit": MessageLookupByLibrary.simpleMessage("Edit"),
+    "dbTableEditingTableAccess": MessageLookupByLibrary.simpleMessage(
+      "Editing Table Access",
+    ),
+    "dbTableEditingTableDataCrumb": m30,
+    "dbTableEditingTableName": MessageLookupByLibrary.simpleMessage(
+      "Editing Table Name",
+    ),
+    "dbTableEmployeeInformation": MessageLookupByLibrary.simpleMessage(
+      "Employee  Information",
+    ),
+    "dbTableEndBeforeStart": MessageLookupByLibrary.simpleMessage(
+      "End date must be after the start date",
+    ),
+    "dbTableEnterColumnNumber": MessageLookupByLibrary.simpleMessage(
+      "Enter Column Number",
+    ),
+    "dbTableEnterRowNumber": MessageLookupByLibrary.simpleMessage(
+      "Enter Row Number",
+    ),
+    "dbTableErrorTitle": MessageLookupByLibrary.simpleMessage(
+      "Something Went Wrong",
+    ),
+    "dbTableExpand": MessageLookupByLibrary.simpleMessage("Expand"),
+    "dbTableExport": MessageLookupByLibrary.simpleMessage("Export"),
+    "dbTableFieldsSelectedOne": MessageLookupByLibrary.simpleMessage("1 field"),
+    "dbTableFieldsSelectedOther": m31,
+    "dbTableFilter": MessageLookupByLibrary.simpleMessage("Filter"),
+    "dbTableHide": MessageLookupByLibrary.simpleMessage("Hide"),
+    "dbTableImport": MessageLookupByLibrary.simpleMessage("Import"),
+    "dbTableImportMatchedNothing": MessageLookupByLibrary.simpleMessage(
+      "None of the headings in that file match this table\'s columns.",
+    ),
+    "dbTableImportTable": MessageLookupByLibrary.simpleMessage("Import Table"),
+    "dbTableImportUnmatchedHeadings": m32,
+    "dbTableIncompleteGrant": MessageLookupByLibrary.simpleMessage(
+      "Choose a permission level and both dates before saving.",
+    ),
+    "dbTableIncompleteTitle": MessageLookupByLibrary.simpleMessage(
+      "Missing Information",
+    ),
+    "dbTableInvalidCellsSubtitleOne": MessageLookupByLibrary.simpleMessage(
+      "One cell does not match its column type. It is outlined in red.",
+    ),
+    "dbTableInvalidCellsSubtitleOther": m33,
+    "dbTableLastEditLabel": MessageLookupByLibrary.simpleMessage("Last Edit:"),
+    "dbTableLike": MessageLookupByLibrary.simpleMessage("Like"),
+    "dbTableNameArRequired": MessageLookupByLibrary.simpleMessage(
+      "Arabic table name is required",
+    ),
+    "dbTableNameEnRequired": MessageLookupByLibrary.simpleMessage(
+      "English table name is required",
+    ),
+    "dbTableNameTooShort": m34,
+    "dbTableNo": MessageLookupByLibrary.simpleMessage("No"),
+    "dbTableNoDescription": MessageLookupByLibrary.simpleMessage(
+      "No description",
+    ),
+    "dbTableNoEmployeesFound": MessageLookupByLibrary.simpleMessage(
+      "No employees found",
+    ),
+    "dbTableNoMembersSelected": MessageLookupByLibrary.simpleMessage(
+      "No members selected yet",
+    ),
+    "dbTableNoNamedColumns": MessageLookupByLibrary.simpleMessage(
+      "This table has no named columns yet. Use Edit to give them headings.",
+    ),
+    "dbTableNoOfColumns": MessageLookupByLibrary.simpleMessage(
+      "No. Of Columns",
+    ),
+    "dbTableNoOfRows": MessageLookupByLibrary.simpleMessage("No. Of Rows"),
+    "dbTableNothingChanged": MessageLookupByLibrary.simpleMessage(
+      "Nothing on this screen has been changed yet.",
+    ),
+    "dbTableNothingChangedTitle": MessageLookupByLibrary.simpleMessage(
+      "Nothing Changed",
+    ),
+    "dbTableNothingToPreview": MessageLookupByLibrary.simpleMessage(
+      "Fill in at least one cell before previewing the table.",
+    ),
+    "dbTableNthColumn": m35,
+    "dbTablePermissions": MessageLookupByLibrary.simpleMessage("Permissions"),
+    "dbTablePickSomeoneFirst": MessageLookupByLibrary.simpleMessage(
+      "Select at least one person before continuing.",
+    ),
+    "dbTablePreview": MessageLookupByLibrary.simpleMessage("Preview"),
+    "dbTablePreviewCrumb": MessageLookupByLibrary.simpleMessage("Preview"),
+    "dbTableRedo": MessageLookupByLibrary.simpleMessage("Redo"),
+    "dbTableRemoveAllAccess": MessageLookupByLibrary.simpleMessage(
+      "Remove All Access",
+    ),
+    "dbTableRemoveAllAccessSubtitleOne": MessageLookupByLibrary.simpleMessage(
+      "Remove access for 1 person? They keep a Removed row on the access table.",
+    ),
+    "dbTableRemoveAllAccessSubtitleOther": m36,
+    "dbTableRemoveColumn": MessageLookupByLibrary.simpleMessage(
+      "Remove column",
+    ),
+    "dbTableRemoveColumnSubtitle": m37,
+    "dbTableRemoveColumnsSubtitleOne": MessageLookupByLibrary.simpleMessage(
+      "Lowering the column number removes 1 column you have already named. Continue?",
+    ),
+    "dbTableRemoveColumnsSubtitleOther": m38,
+    "dbTableRemoveColumnsTitle": MessageLookupByLibrary.simpleMessage(
+      "Remove Columns",
+    ),
+    "dbTableRemoveSelection": MessageLookupByLibrary.simpleMessage(
+      "Remove Selection",
+    ),
+    "dbTableRetry": MessageLookupByLibrary.simpleMessage("Retry"),
+    "dbTableReview": MessageLookupByLibrary.simpleMessage("Review"),
+    "dbTableRowCountRange": m39,
+    "dbTableRowNumber": MessageLookupByLibrary.simpleMessage("NO"),
+    "dbTableRowsSavedSubtitle": MessageLookupByLibrary.simpleMessage(
+      "The table data has been saved.",
+    ),
+    "dbTableSave": MessageLookupByLibrary.simpleMessage("Save"),
+    "dbTableSavedSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Your changes have been saved.",
+    ),
+    "dbTableSearch": MessageLookupByLibrary.simpleMessage("Search"),
+    "dbTableSelectAll": MessageLookupByLibrary.simpleMessage("Select All"),
+    "dbTableSelectCommentsAccess": MessageLookupByLibrary.simpleMessage(
+      "Select Comments Access",
+    ),
+    "dbTableSelectDataType": MessageLookupByLibrary.simpleMessage(
+      "Select Data Type",
+    ),
+    "dbTableSelectViewableFields": MessageLookupByLibrary.simpleMessage(
+      "Select Viewable Fields",
+    ),
+    "dbTableSend": MessageLookupByLibrary.simpleMessage("Send"),
+    "dbTableSignInToComment": MessageLookupByLibrary.simpleMessage(
+      "Sign in to leave a comment.",
+    ),
+    "dbTableSuccessTitle": MessageLookupByLibrary.simpleMessage("Success"),
+    "dbTableSummary": MessageLookupByLibrary.simpleMessage("Summary"),
+    "dbTableTableDetails": MessageLookupByLibrary.simpleMessage(
+      "Table Details",
+    ),
+    "dbTableTableDetailsCrumb": m40,
+    "dbTableTableHasNoNamedColumns": MessageLookupByLibrary.simpleMessage(
+      "This table has no named columns yet, so there are no fields to limit.",
+    ),
+    "dbTableTablesLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "The tables could not be loaded.",
+    ),
+    "dbTableTotalDepartments": MessageLookupByLibrary.simpleMessage(
+      "Total Departments",
+    ),
+    "dbTableTotalEmployees": MessageLookupByLibrary.simpleMessage(
+      "Total Employees",
+    ),
+    "dbTableTypeOfImport": MessageLookupByLibrary.simpleMessage(
+      "Type Of Import",
+    ),
+    "dbTableUndo": MessageLookupByLibrary.simpleMessage("Undo"),
+    "dbTableUploadFile": MessageLookupByLibrary.simpleMessage("Upload File"),
+    "dbTableViewableFields": MessageLookupByLibrary.simpleMessage(
+      "Viewable Fields",
+    ),
+    "dbTableWriteAComment": MessageLookupByLibrary.simpleMessage(
+      "Write a Comment",
+    ),
+    "dbTableYes": MessageLookupByLibrary.simpleMessage("Yes"),
     "deactivateUser": MessageLookupByLibrary.simpleMessage("Deactivate User"),
     "deactivatedForNow": MessageLookupByLibrary.simpleMessage(
       "Deactivated For Now",
@@ -2599,6 +3882,55 @@ class MessageLookup extends MessageLookupByLibrary {
       "Deactivating User Account",
     ),
     "deathVacation": MessageLookupByLibrary.simpleMessage("Death Vacation"),
+    "debugSwitchToTestEmployee": MessageLookupByLibrary.simpleMessage(
+      "🧪 Switch to test employee",
+    ),
+    "debugTestEmployeeBadge": MessageLookupByLibrary.simpleMessage(
+      "DEBUG: test employee",
+    ),
+    "debugTestEmployeeButton": MessageLookupByLibrary.simpleMessage(
+      "🧪 Test employee",
+    ),
+    "debugTestEmployeeCannotSwitch": MessageLookupByLibrary.simpleMessage(
+      "Cannot Switch",
+    ),
+    "debugTestEmployeeCompanyAdmin": MessageLookupByLibrary.simpleMessage(
+      "The company admin account cannot be used with the debug switch.",
+    ),
+    "debugTestEmployeeCompanyId": MessageLookupByLibrary.simpleMessage(
+      "Company ID",
+    ),
+    "debugTestEmployeeConfirmSwitch": MessageLookupByLibrary.simpleMessage(
+      "You will be signed out of this session to choose a test employee.",
+    ),
+    "debugTestEmployeeDebugOnly": MessageLookupByLibrary.simpleMessage(
+      "This is available in debug builds only.",
+    ),
+    "debugTestEmployeeEmpty": m41,
+    "debugTestEmployeeHint": MessageLookupByLibrary.simpleMessage(
+      "Debug builds only. Signs in as the chosen test account without its password; its role, status and access dates are still checked.",
+    ),
+    "debugTestEmployeeLoad": MessageLookupByLibrary.simpleMessage("Load"),
+    "debugTestEmployeeLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "Could not load this company\'s employees.",
+    ),
+    "debugTestEmployeeNoDepartment": MessageLookupByLibrary.simpleMessage(
+      "No department",
+    ),
+    "debugTestEmployeeNoRole": MessageLookupByLibrary.simpleMessage("No role"),
+    "debugTestEmployeeNotActivated": MessageLookupByLibrary.simpleMessage(
+      "This account is not activated yet. It must complete its first sign-in (password change) before it can be used here.",
+    ),
+    "debugTestEmployeeNotActivatedNote": MessageLookupByLibrary.simpleMessage(
+      "Not activated yet (signs in as activated in debug)",
+    ),
+    "debugTestEmployeeNotTestEmail": m42,
+    "debugTestEmployeeOtherCompany": m43,
+    "debugTestEmployeeStatus": m44,
+    "debugTestEmployeeStatusBlocked": m45,
+    "debugTestEmployeeTitle": MessageLookupByLibrary.simpleMessage(
+      "🧪 Test Employees",
+    ),
     "dec": MessageLookupByLibrary.simpleMessage("Dec"),
     "defaultPassword": MessageLookupByLibrary.simpleMessage("Default Password"),
     "degreeOrCertification": MessageLookupByLibrary.simpleMessage(
@@ -2628,6 +3960,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Delete starred messages",
     ),
     "deleteSupplier": MessageLookupByLibrary.simpleMessage("Delete Supplier"),
+    "deleteToDo": MessageLookupByLibrary.simpleMessage("Delete To Do"),
     "deleted": MessageLookupByLibrary.simpleMessage("Deleted"),
     "deletedGrcModule": MessageLookupByLibrary.simpleMessage(
       "Deleted GRC Module",
@@ -2735,6 +4068,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "department_operations": MessageLookupByLibrary.simpleMessage("Operations"),
     "department_sales": MessageLookupByLibrary.simpleMessage("Sales"),
     "departments": MessageLookupByLibrary.simpleMessage("Departments"),
+    "departmentsLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "Departments could not be loaded, so the department filter may be empty.",
+    ),
     "departmentsScore": MessageLookupByLibrary.simpleMessage(
       "Departments Score",
     ),
@@ -2779,7 +4115,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "designIssue": MessageLookupByLibrary.simpleMessage("Design Issue"),
     "desktopView": MessageLookupByLibrary.simpleMessage("Desktop View"),
     "details": MessageLookupByLibrary.simpleMessage("Details"),
-    "detailsOfTitle": m13,
+    "detailsOfTitle": m46,
     "detailsPageTitle": MessageLookupByLibrary.simpleMessage("To Do Details"),
     "development": MessageLookupByLibrary.simpleMessage("Development"),
     "developmentTeam": MessageLookupByLibrary.simpleMessage("Development Team"),
@@ -2811,6 +4147,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "doYouWantToSaveThisRoleAsDraft": MessageLookupByLibrary.simpleMessage(
       "Do you want to save this role as draft?",
+    ),
+    "doYouWantToSubmitAllProducts": MessageLookupByLibrary.simpleMessage(
+      "Do You Want To Submit All Products?",
     ),
     "doctorate": MessageLookupByLibrary.simpleMessage("Doctorate"),
     "document": MessageLookupByLibrary.simpleMessage("Document"),
@@ -2923,6 +4262,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "dueDateOfReturn": MessageLookupByLibrary.simpleMessage(
       "Due Date of Return",
     ),
+    "duplicate": MessageLookupByLibrary.simpleMessage("Duplicate"),
     "duplicateEmails": MessageLookupByLibrary.simpleMessage(
       "Duplicate emails not allowed",
     ),
@@ -3009,6 +4349,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Edit Service Provider",
     ),
     "editSuccess": MessageLookupByLibrary.simpleMessage("Editing Success"),
+    "editToDo": MessageLookupByLibrary.simpleMessage("Edit To Do"),
     "editUploadedDocument": MessageLookupByLibrary.simpleMessage(
       "Edit Uploaded Document",
     ),
@@ -3028,7 +4369,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "editingControlsWeight": MessageLookupByLibrary.simpleMessage(
       "Editing Controls Weight",
     ),
-    "editingDocumentDetails": m14,
+    "editingDocumentDetails": m47,
     "editingEmployeeDetails": MessageLookupByLibrary.simpleMessage(
       "Editing Employee Details",
     ),
@@ -3064,6 +4405,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "editingService": MessageLookupByLibrary.simpleMessage("Editing Service"),
     "editingSupplierDetails": MessageLookupByLibrary.simpleMessage(
       "Editing Supplier Details",
+    ),
+    "editingToDoList": MessageLookupByLibrary.simpleMessage(
+      "Editing To Do List",
     ),
     "editingToDoTitle": MessageLookupByLibrary.simpleMessage("Editing To Do"),
     "editingToDodialog": MessageLookupByLibrary.simpleMessage("Editing To Do"),
@@ -3255,6 +4599,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "employeeDetails": MessageLookupByLibrary.simpleMessage("Employee Details"),
     "employeeDetailsUpdatedSuccessfully": MessageLookupByLibrary.simpleMessage(
       "Employee details updated successfully",
+    ),
+    "employeeDirectoryLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "The employee list could not be loaded. The people already on this access are still shown.",
     ),
     "employeeEmail": MessageLookupByLibrary.simpleMessage("Employee Email"),
     "employeeEnglishFirstName": MessageLookupByLibrary.simpleMessage(
@@ -3595,6 +4942,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "errorRejectingDocument": MessageLookupByLibrary.simpleMessage(
       "Error rejecting document",
     ),
+    "errorSavingSupplier": MessageLookupByLibrary.simpleMessage(
+      "Error Saving Supplier",
+    ),
     "errorSubmittingRequest": MessageLookupByLibrary.simpleMessage(
       "Error submitting request",
     ),
@@ -3754,6 +5104,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "failedToCreateServiceRequest": MessageLookupByLibrary.simpleMessage(
       "Failed to create service request. Please try again.",
     ),
+    "failedToCreateStorageLocation": MessageLookupByLibrary.simpleMessage(
+      "Failed To Create The Storage Location. Please Try Again.",
+    ),
     "failedToDownloadFile": MessageLookupByLibrary.simpleMessage(
       "FailedToDownloadFile",
     ),
@@ -3776,6 +5129,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "failedToSaveRolePleaseTryAgain": MessageLookupByLibrary.simpleMessage(
       "Failed to save the role. Please try again.",
     ),
+    "failedToSaveStorageLocation": MessageLookupByLibrary.simpleMessage(
+      "Failed To Save The Storage Location. Please Try Again.",
+    ),
+    "failedToSaveSupplierCheckConnection": MessageLookupByLibrary.simpleMessage(
+      "Failed To Save The Supplier. Please Check Your Internet Connection And Try Again.",
+    ),
     "failedToUpdateAccess": MessageLookupByLibrary.simpleMessage(
       "Failed to update access",
     ),
@@ -3785,11 +5144,150 @@ class MessageLookup extends MessageLookupByLibrary {
     "failedToUpdateProduct": MessageLookupByLibrary.simpleMessage(
       "Failed to update product",
     ),
+    "failedToUpdateStatus": MessageLookupByLibrary.simpleMessage(
+      "Failed To Update The Status. Please Try Again.",
+    ),
+    "failedToUpdateStorageLocation": MessageLookupByLibrary.simpleMessage(
+      "Failed To Update The Storage Location. Please Try Again.",
+    ),
     "family": MessageLookupByLibrary.simpleMessage("Family"),
     "faxNumber": MessageLookupByLibrary.simpleMessage("Fax Number"),
     "faxNumberRequired": MessageLookupByLibrary.simpleMessage(
       "Fax number is required.",
     ),
+    "fbAccessGrantedSuccessfully": MessageLookupByLibrary.simpleMessage(
+      "Access granted successfully",
+    ),
+    "fbAddHint": MessageLookupByLibrary.simpleMessage("Add Hint"),
+    "fbAddOptionOr": MessageLookupByLibrary.simpleMessage("Add Option Or"),
+    "fbAddOptions": MessageLookupByLibrary.simpleMessage("Add Options"),
+    "fbAddOther": MessageLookupByLibrary.simpleMessage("Add \"other\""),
+    "fbAddTitle": MessageLookupByLibrary.simpleMessage("Add Title"),
+    "fbAnswersCount": MessageLookupByLibrary.simpleMessage("Answers"),
+    "fbArabicOnly": MessageLookupByLibrary.simpleMessage(
+      "Must enter text in Arabic only",
+    ),
+    "fbChooseAlignment": MessageLookupByLibrary.simpleMessage(
+      "Choose Alignment",
+    ),
+    "fbChooseArrangement": MessageLookupByLibrary.simpleMessage(
+      "Choose Arrangement",
+    ),
+    "fbChooseFieldOfColumn": m48,
+    "fbColor": MessageLookupByLibrary.simpleMessage("Color"),
+    "fbColumnTitle": m49,
+    "fbDateHint": MessageLookupByLibrary.simpleMessage("DD / MM / YYYY"),
+    "fbDeleteGroup": MessageLookupByLibrary.simpleMessage("Delete Group"),
+    "fbDeletedDate": MessageLookupByLibrary.simpleMessage("Deleted Date"),
+    "fbDeletingFormDetails": MessageLookupByLibrary.simpleMessage(
+      "Deleting Form Details",
+    ),
+    "fbDemoAnswersFilled": m50,
+    "fbDemoFilledPhone": MessageLookupByLibrary.simpleMessage(
+      "Demo data filled — press Next to see all 18 field types.",
+    ),
+    "fbDemoFilledTablet": MessageLookupByLibrary.simpleMessage(
+      "Demo data filled — all 18 field types added. Review and press Publish.",
+    ),
+    "fbDownloadFormPdfConfirm": MessageLookupByLibrary.simpleMessage(
+      "Are you sure you want to download this form as PDF?",
+    ),
+    "fbEditPermissionReviewHint": MessageLookupByLibrary.simpleMessage(
+      "This allows them the opportunity to review and make any necessary changes to their responses",
+    ),
+    "fbEditingFormDetails": MessageLookupByLibrary.simpleMessage(
+      "Editing Form Details",
+    ),
+    "fbEnglishOnly": MessageLookupByLibrary.simpleMessage(
+      "Must enter text in English only",
+    ),
+    "fbEnterGroupName": MessageLookupByLibrary.simpleMessage(
+      "Enter Group Name",
+    ),
+    "fbFillDemoData": MessageLookupByLibrary.simpleMessage("Fill demo data"),
+    "fbFormDataNotReady": MessageLookupByLibrary.simpleMessage(
+      "Form data not initialized. Please try again.",
+    ),
+    "fbFormNotFound": MessageLookupByLibrary.simpleMessage("Form not found"),
+    "fbGroupNameAndDescriptionRequired": MessageLookupByLibrary.simpleMessage(
+      "Group name and description are required",
+    ),
+    "fbInvalidEmailExample": MessageLookupByLibrary.simpleMessage(
+      "Enter a valid email address, e.g. name@company.com",
+    ),
+    "fbInvalidLinkExample": MessageLookupByLibrary.simpleMessage(
+      "Enter a valid link, e.g. https://www.example.com",
+    ),
+    "fbLimitation": MessageLookupByLibrary.simpleMessage("Limitation"),
+    "fbMaximumSelection": MessageLookupByLibrary.simpleMessage(
+      "Maximum Selection",
+    ),
+    "fbMediaESignatures": MessageLookupByLibrary.simpleMessage("eSignature"),
+    "fbMediaImages": MessageLookupByLibrary.simpleMessage("Images"),
+    "fbMinutes": MessageLookupByLibrary.simpleMessage("Minutes"),
+    "fbNoDataFound": MessageLookupByLibrary.simpleMessage("No data found"),
+    "fbNoGroupSelected": MessageLookupByLibrary.simpleMessage(
+      "No group selected",
+    ),
+    "fbNoPermissionSection": MessageLookupByLibrary.simpleMessage(
+      "You don\'t have permission to view this section.",
+    ),
+    "fbNoPersonsFound": MessageLookupByLibrary.simpleMessage(
+      "No persons found",
+    ),
+    "fbNoResultsFound": MessageLookupByLibrary.simpleMessage(
+      "No results found",
+    ),
+    "fbPhoneDigitsCount": m51,
+    "fbPhoneDigitsOnly": m52,
+    "fbPickAColor": MessageLookupByLibrary.simpleMessage("Pick a color"),
+    "fbPickColor": MessageLookupByLibrary.simpleMessage("Pick Color"),
+    "fbPleaseSelectAtLeastOnePerson": MessageLookupByLibrary.simpleMessage(
+      "Please select at least one person",
+    ),
+    "fbReminderSentSuccessfully": MessageLookupByLibrary.simpleMessage(
+      "Reminder Sent Successfully",
+    ),
+    "fbRemindersSent": MessageLookupByLibrary.simpleMessage("Reminders Sent"),
+    "fbRequired": MessageLookupByLibrary.simpleMessage("Required"),
+    "fbResendIn": MessageLookupByLibrary.simpleMessage("Resend In"),
+    "fbResendNow": MessageLookupByLibrary.simpleMessage("Resend Now"),
+    "fbResults": MessageLookupByLibrary.simpleMessage("Results"),
+    "fbRowTitle": m53,
+    "fbSelectDocument": MessageLookupByLibrary.simpleMessage("Select Document"),
+    "fbSending": MessageLookupByLibrary.simpleMessage("Sending…"),
+    "fbSent": MessageLookupByLibrary.simpleMessage("Sent"),
+    "fbSortMostMembers": MessageLookupByLibrary.simpleMessage("Most Members"),
+    "fbSortNameAsc": MessageLookupByLibrary.simpleMessage("Name (A-Z)"),
+    "fbSortNameDesc": MessageLookupByLibrary.simpleMessage("Name (Z-A)"),
+    "fbStreetNumber": MessageLookupByLibrary.simpleMessage("Street Number"),
+    "fbTestNotificationsButton": MessageLookupByLibrary.simpleMessage(
+      "Test notifications & calendar",
+    ),
+    "fbTestNotificationsConfirm": m54,
+    "fbTestNotificationsDone": MessageLookupByLibrary.simpleMessage(
+      "Open Notifications and Calendar to check every Form Builder event.",
+    ),
+    "fbTestNotificationsPartial": m55,
+    "fbTestNotificationsSubtitle": m56,
+    "fbTestNotificationsTitle": MessageLookupByLibrary.simpleMessage(
+      "Test Form Builder notifications",
+    ),
+    "fbTextFormattingStyles": MessageLookupByLibrary.simpleMessage(
+      "Text Formatting Styles",
+    ),
+    "fbTextSize": MessageLookupByLibrary.simpleMessage("Text Size"),
+    "fbTimeHint": MessageLookupByLibrary.simpleMessage("HH : MM"),
+    "fbTitle": MessageLookupByLibrary.simpleMessage("Title"),
+    "fbTotalPages": MessageLookupByLibrary.simpleMessage("Total Pages"),
+    "fbTypeOfDocument": MessageLookupByLibrary.simpleMessage(
+      "Type Of Document",
+    ),
+    "fbUploadESignature": MessageLookupByLibrary.simpleMessage(
+      "Upload eSignature",
+    ),
+    "fbUsedBy": MessageLookupByLibrary.simpleMessage("Used by"),
+    "fbUsers": MessageLookupByLibrary.simpleMessage("Users"),
     "feb": MessageLookupByLibrary.simpleMessage("Feb"),
     "feedbackClosed": MessageLookupByLibrary.simpleMessage("Closed"),
     "feedbackFixed": MessageLookupByLibrary.simpleMessage("Fixed"),
@@ -3911,16 +5409,25 @@ class MessageLookup extends MessageLookupByLibrary {
     "forgotPassword2": MessageLookupByLibrary.simpleMessage("Forgot Password"),
     "forklift": MessageLookupByLibrary.simpleMessage("Forklift"),
     "form": MessageLookupByLibrary.simpleMessage("Form"),
+    "formAccessSaveFailed": MessageLookupByLibrary.simpleMessage(
+      "The form was saved, but its access list could not be saved. Please share the form again.",
+    ),
     "formBuilder": MessageLookupByLibrary.simpleMessage("Form Builder"),
     "formCreated": MessageLookupByLibrary.simpleMessage("Form Created"),
     "formDetails": MessageLookupByLibrary.simpleMessage("Form Details"),
     "formDownloadAsPdf": MessageLookupByLibrary.simpleMessage(
       "Form Download As PDF",
     ),
+    "formEditingClosed": MessageLookupByLibrary.simpleMessage(
+      "This form is closed, so your answer can no longer be edited.",
+    ),
     "formName": MessageLookupByLibrary.simpleMessage("Form Name"),
     "formPermissions": MessageLookupByLibrary.simpleMessage("Form Permissions"),
     "formPermissionsModule": MessageLookupByLibrary.simpleMessage(
       "Form Permissions Module",
+    ),
+    "formSaveFailed": MessageLookupByLibrary.simpleMessage(
+      "Could not save the form. Please try again.",
     ),
     "formStatusDeleted": MessageLookupByLibrary.simpleMessage("Deleted"),
     "formStatusDrafts": MessageLookupByLibrary.simpleMessage("Drafts"),
@@ -3936,10 +5443,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "formatCsv": MessageLookupByLibrary.simpleMessage("CSV"),
     "formatExcel": MessageLookupByLibrary.simpleMessage("Excel (.xlsx)"),
     "formatPdf": MessageLookupByLibrary.simpleMessage("PDF"),
+    "formerEmployee": MessageLookupByLibrary.simpleMessage("Former employee"),
     "formresponsivepage": MessageLookupByLibrary.simpleMessage(
       "FormResponsivePage",
     ),
     "forms": MessageLookupByLibrary.simpleMessage("Forms"),
+    "formsLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "Could not load your forms. Please try again.",
+    ),
     "formsSubmission": MessageLookupByLibrary.simpleMessage("Forms Submission"),
     "forwardMessage": MessageLookupByLibrary.simpleMessage("Forward Message"),
     "forwardMessages": MessageLookupByLibrary.simpleMessage("Forward Messages"),
@@ -4044,6 +5555,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "greek": MessageLookupByLibrary.simpleMessage("Greek"),
     "grenadian": MessageLookupByLibrary.simpleMessage("Grenadian"),
     "group": MessageLookupByLibrary.simpleMessage("Group"),
+    "groupActionFailed": MessageLookupByLibrary.simpleMessage(
+      "Could not save the group. Please try again.",
+    ),
+    "groupAdmin": MessageLookupByLibrary.simpleMessage("Admin"),
     "groupCreatedSuccessfully": MessageLookupByLibrary.simpleMessage(
       "Group Created Successfully",
     ),
@@ -4053,12 +5568,18 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "groupMessages": MessageLookupByLibrary.simpleMessage("Group Messages"),
     "groupName": MessageLookupByLibrary.simpleMessage("Group Name"),
+    "groupNeedsMembers": MessageLookupByLibrary.simpleMessage(
+      "Please select at least one member",
+    ),
     "groupedBarChart": MessageLookupByLibrary.simpleMessage(
       "Grouped Bar Chart",
     ),
     "groups": MessageLookupByLibrary.simpleMessage("Groups"),
     "groupsCommon": MessageLookupByLibrary.simpleMessage("Groups Common"),
     "groupsInCommon": MessageLookupByLibrary.simpleMessage("Groups in common"),
+    "groupsLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "Could not load groups. Please try again.",
+    ),
     "guatemalan": MessageLookupByLibrary.simpleMessage("Guatemalan"),
     "guidelines": MessageLookupByLibrary.simpleMessage("Guidelines"),
     "guineaBissauan": MessageLookupByLibrary.simpleMessage("Guinea-Bissauan"),
@@ -4215,7 +5736,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "ils": MessageLookupByLibrary.simpleMessage("ILS"),
     "image": MessageLookupByLibrary.simpleMessage("Image"),
     "imageAsset": MessageLookupByLibrary.simpleMessage(
-      "assets/icons_assets/main_icons_assets/check_circle_green.svg",
+      "assets/icons_assets/main_icons_assets/ic_status_success_small.svg",
     ),
     "imageDeletedSuccessfully": MessageLookupByLibrary.simpleMessage(
       "Image deleted successfully",
@@ -4226,6 +5747,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "import": MessageLookupByLibrary.simpleMessage("Import"),
     "importContacts": MessageLookupByLibrary.simpleMessage("Import Contacts"),
+    "importFileNoHeadings": MessageLookupByLibrary.simpleMessage(
+      "The file has no heading row.",
+    ),
+    "importFileNoRows": MessageLookupByLibrary.simpleMessage(
+      "The file has no rows.",
+    ),
+    "importFileUnreadable": MessageLookupByLibrary.simpleMessage(
+      "This file could not be read. Use a .csv or .xlsx file.",
+    ),
     "importUsersData": MessageLookupByLibrary.simpleMessage(
       "Import Users Data",
     ),
@@ -4443,6 +5973,95 @@ class MessageLookup extends MessageLookupByLibrary {
     "k3rd": MessageLookupByLibrary.simpleMessage("3rd"),
     "kazakhstani": MessageLookupByLibrary.simpleMessage("Kazakhstani"),
     "kenyan": MessageLookupByLibrary.simpleMessage("Kenyan"),
+    "khApprovalFailed": MessageLookupByLibrary.simpleMessage("Approval Failed"),
+    "khArabicDocumentDescription": MessageLookupByLibrary.simpleMessage(
+      "Arabic Document Description",
+    ),
+    "khArabicDocumentName": MessageLookupByLibrary.simpleMessage(
+      "Arabic Document Name",
+    ),
+    "khBackfillDone": MessageLookupByLibrary.simpleMessage(
+      "Documents updated:",
+    ),
+    "khBackfillFailed": MessageLookupByLibrary.simpleMessage(
+      "Backfill failed.",
+    ),
+    "khBackfillRunning": MessageLookupByLibrary.simpleMessage("Backfilling…"),
+    "khBackfillTitle": MessageLookupByLibrary.simpleMessage(
+      "Backfill visibility",
+    ),
+    "khCommentDeleted": MessageLookupByLibrary.simpleMessage("Comment deleted"),
+    "khDateAtTime": m57,
+    "khDaysAgoShort": MessageLookupByLibrary.simpleMessage("d ago"),
+    "khDocTypeFrameWork": MessageLookupByLibrary.simpleMessage("Frame Work"),
+    "khDocTypeVideoRecording": MessageLookupByLibrary.simpleMessage(
+      "Video Recording",
+    ),
+    "khDocTypeWorkshop": MessageLookupByLibrary.simpleMessage("Workshop"),
+    "khDocumentApproved": MessageLookupByLibrary.simpleMessage(
+      "Document Approved Successfully",
+    ),
+    "khDocumentApprovedBody": MessageLookupByLibrary.simpleMessage(
+      "The document has been approved and is now published.",
+    ),
+    "khDocumentAttachment": MessageLookupByLibrary.simpleMessage(
+      "Document Attachment",
+    ),
+    "khDocumentNotFound": MessageLookupByLibrary.simpleMessage(
+      "The document could not be found.",
+    ),
+    "khDownloadToView": MessageLookupByLibrary.simpleMessage(
+      "Please download to view this file",
+    ),
+    "khEnglishDocumentDescription": MessageLookupByLibrary.simpleMessage(
+      "Document Description",
+    ),
+    "khEnglishDocumentName": MessageLookupByLibrary.simpleMessage(
+      "Name of Document",
+    ),
+    "khFailedToLoadImage": MessageLookupByLibrary.simpleMessage(
+      "Failed to load image",
+    ),
+    "khFileType": m58,
+    "khFileUploadFailed": MessageLookupByLibrary.simpleMessage(
+      "Failed to Upload File",
+    ),
+    "khFileUploaded": MessageLookupByLibrary.simpleMessage(
+      "File Uploaded Successfully",
+    ),
+    "khHoursAgoShort": MessageLookupByLibrary.simpleMessage("h ago"),
+    "khImageAttachment": MessageLookupByLibrary.simpleMessage(
+      "Image Attachment",
+    ),
+    "khJustNow": MessageLookupByLibrary.simpleMessage("Just now"),
+    "khMinutesAgoShort": MessageLookupByLibrary.simpleMessage("m ago"),
+    "khPreviewNotAvailable": MessageLookupByLibrary.simpleMessage(
+      "Preview not available",
+    ),
+    "khRejectionFailed": MessageLookupByLibrary.simpleMessage(
+      "Rejection Failed",
+    ),
+    "khRemoveDocumentFailed": MessageLookupByLibrary.simpleMessage(
+      "Could not remove the document. Please try again.",
+    ),
+    "khSeedBody": MessageLookupByLibrary.simpleMessage(
+      "Sample documents will be created, one per file type, spread across every status.",
+    ),
+    "khSeedCreating": MessageLookupByLibrary.simpleMessage("Creating…"),
+    "khSeedDone": MessageLookupByLibrary.simpleMessage(
+      "Sample documents created:",
+    ),
+    "khSeedFailed": MessageLookupByLibrary.simpleMessage(
+      "Could not create sample documents.",
+    ),
+    "khSeedTitle": MessageLookupByLibrary.simpleMessage(
+      "Create sample knowledge",
+    ),
+    "khUnknownDepartment": MessageLookupByLibrary.simpleMessage(
+      "Unknown Department",
+    ),
+    "khUnknownUser": MessageLookupByLibrary.simpleMessage("Unknown User"),
+    "khWriteHere": MessageLookupByLibrary.simpleMessage("Write here"),
     "kindlyAssignARoleToTheEmployeeThisIsARequiredFieldForAc":
         MessageLookupByLibrary.simpleMessage(
           "Kindly assign a role to the employee. This is a required field for access permissions.",
@@ -4767,6 +6386,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "may": MessageLookupByLibrary.simpleMessage("May"),
     "mechanical": MessageLookupByLibrary.simpleMessage("Mechanical"),
     "media": MessageLookupByLibrary.simpleMessage("Media"),
+    "mediaDownloaded": MessageLookupByLibrary.simpleMessage(
+      "Files downloaded successfully",
+    ),
     "mediaLinksAndDocs": MessageLookupByLibrary.simpleMessage(
       "Media, links, and docs",
     ),
@@ -5038,6 +6660,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "No experience data available",
     ),
     "noFileSelected": MessageLookupByLibrary.simpleMessage("No file selected"),
+    "noFilesToDownload": MessageLookupByLibrary.simpleMessage(
+      "There are no files to download. Choose people and a media type.",
+    ),
     "noFormFound": MessageLookupByLibrary.simpleMessage("No Form Found"),
     "noGrcModulesFound": MessageLookupByLibrary.simpleMessage(
       "No GRC modules found",
@@ -5074,6 +6699,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "No owners assigned",
     ),
     "noPeopleFound": MessageLookupByLibrary.simpleMessage("No people found"),
+    "noPermissionCreateForm": MessageLookupByLibrary.simpleMessage(
+      "You do not have permission to create forms",
+    ),
     "noPermissionNeeded": MessageLookupByLibrary.simpleMessage(
       "No permission configuration needed for these modules.",
     ),
@@ -5312,6 +6940,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "overall": MessageLookupByLibrary.simpleMessage("Overall"),
     "overdue": MessageLookupByLibrary.simpleMessage("Overdue"),
     "overdueReturn": MessageLookupByLibrary.simpleMessage("Overdue Return"),
+    "ownRequestReviewNote": MessageLookupByLibrary.simpleMessage(
+      "This is your own request. Another reviewer must approve or reject it.",
+    ),
     "owner": MessageLookupByLibrary.simpleMessage("Owner"),
     "owningDepartment": MessageLookupByLibrary.simpleMessage(
       "Owning Department",
@@ -5372,6 +7003,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "pause": MessageLookupByLibrary.simpleMessage("Pause"),
     "paymentMethod": MessageLookupByLibrary.simpleMessage("Payment Method"),
     "paymentType": MessageLookupByLibrary.simpleMessage("Payment Type"),
+    "pdfCouldNotBeGenerated": MessageLookupByLibrary.simpleMessage(
+      "The PDF Could Not Be Generated. Please Try Again.",
+    ),
+    "pdfNoPages": MessageLookupByLibrary.simpleMessage(
+      "There is no page to download.",
+    ),
+    "pdfNotReady": MessageLookupByLibrary.simpleMessage(
+      "The PDF preview is not ready yet.",
+    ),
     "pending": MessageLookupByLibrary.simpleMessage("Pending"),
     "pendingProjects": MessageLookupByLibrary.simpleMessage("Pending Projects"),
     "pendingSubmissions": MessageLookupByLibrary.simpleMessage(
@@ -5760,7 +7400,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "previewHealthInsuranceChanges": MessageLookupByLibrary.simpleMessage(
       "Preview Health Insurance",
     ),
-    "previewMatches": m15,
+    "previewMatches": m59,
     "previewingPolicyAndControls": MessageLookupByLibrary.simpleMessage(
       "Previewing Policy & Controls",
     ),
@@ -5958,6 +7598,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "remindAll": MessageLookupByLibrary.simpleMessage("Remind All"),
     "reminder": MessageLookupByLibrary.simpleMessage("Reminder"),
+    "reminderFailed": MessageLookupByLibrary.simpleMessage(
+      "Could not send the reminder.",
+    ),
+    "reminderSent": MessageLookupByLibrary.simpleMessage(
+      "Reminder sent to your supervisor.",
+    ),
+    "reminderTooSoon": MessageLookupByLibrary.simpleMessage(
+      "A reminder was already sent in the last 24 hours",
+    ),
     "remote": MessageLookupByLibrary.simpleMessage("Remote"),
     "remoteStatus": MessageLookupByLibrary.simpleMessage("Remote Status"),
     "remove": MessageLookupByLibrary.simpleMessage("Remove"),
@@ -5974,6 +7623,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Delete Knowledge",
     ),
     "removeMember": MessageLookupByLibrary.simpleMessage("Remove Member"),
+    "removeMySubmissionsDocuments": MessageLookupByLibrary.simpleMessage(
+      "Remove My Submissions Documents",
+    ),
     "removeSelection": MessageLookupByLibrary.simpleMessage("Remove Selection"),
     "remove_access": MessageLookupByLibrary.simpleMessage("Remove Access"),
     "remove_access_confirmation": MessageLookupByLibrary.simpleMessage(
@@ -6019,6 +7671,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Request Cancelled",
     ),
     "requestDate": MessageLookupByLibrary.simpleMessage("Request Date"),
+    "requestDecisionUnverifiable": MessageLookupByLibrary.simpleMessage(
+      "This decision could not be verified, so nothing was saved. Please sign in again and retry.",
+    ),
     "requestDescription": MessageLookupByLibrary.simpleMessage(
       "Request Description",
     ),
@@ -6140,6 +7795,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "rescheduled": MessageLookupByLibrary.simpleMessage("Rescheduled"),
     "reset": MessageLookupByLibrary.simpleMessage("Reset"),
     "resetBranding": MessageLookupByLibrary.simpleMessage("Reset Branding"),
+    "resetModuleNotifications": MessageLookupByLibrary.simpleMessage(
+      "Reset Module Notifications",
+    ),
+    "resetModuleNotificationsBody": m60,
     "resetPassword": MessageLookupByLibrary.simpleMessage("Reset Password"),
     "resetPersonalBranding": MessageLookupByLibrary.simpleMessage(
       "Reset Personal Branding",
@@ -6168,6 +7827,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "restoreRequestType": MessageLookupByLibrary.simpleMessage(
       "Are your sure to restore request type?",
     ),
+    "restoreToDo": MessageLookupByLibrary.simpleMessage("Restore To Do"),
     "restoredGrcModule": MessageLookupByLibrary.simpleMessage(
       "Restored GRC Module",
     ),
@@ -6199,6 +7859,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Resubmit Evidence",
     ),
     "result": MessageLookupByLibrary.simpleMessage("Result"),
+    "resultsLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "Could not load the results. Please try again.",
+    ),
     "resultsPermissions": MessageLookupByLibrary.simpleMessage(
       "Results Permissions",
     ),
@@ -6209,10 +7872,22 @@ class MessageLookup extends MessageLookupByLibrary {
     "retrieve": MessageLookupByLibrary.simpleMessage("Retrieve"),
     "retrieveProduct": MessageLookupByLibrary.simpleMessage("Retrieve Product"),
     "retry": MessageLookupByLibrary.simpleMessage("Retry"),
+    "retryEmployeeCreation": MessageLookupByLibrary.simpleMessage(
+      "Retry employee creation",
+    ),
     "returnDate": MessageLookupByLibrary.simpleMessage("Return Date"),
     "returned": MessageLookupByLibrary.simpleMessage("Returned"),
+    "retypeColumnsSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Cells that do not fit a column\'s new type will be cleared. Continue?",
+    ),
+    "retypeColumnsTitle": MessageLookupByLibrary.simpleMessage(
+      "Change Column Type?",
+    ),
     "review": MessageLookupByLibrary.simpleMessage("Review"),
     "reviewedDate": MessageLookupByLibrary.simpleMessage("Reviewed Date"),
+    "revisionRequested": MessageLookupByLibrary.simpleMessage(
+      "Revision requested",
+    ),
     "riskManagement": MessageLookupByLibrary.simpleMessage("Risk Management"),
     "riskManager": MessageLookupByLibrary.simpleMessage("Risk Manager"),
     "riyadh": MessageLookupByLibrary.simpleMessage("Riyadh"),
@@ -6350,6 +8025,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "secReminder": MessageLookupByLibrary.simpleMessage("Second Reminder"),
     "second": MessageLookupByLibrary.simpleMessage("Second"),
     "secondBackup": MessageLookupByLibrary.simpleMessage("Second Backup"),
+    "secondContactIncomplete": MessageLookupByLibrary.simpleMessage(
+      "Fill in every field of the second emergency contact, or leave it all empty.",
+    ),
+    "secondContactOptionalHint": MessageLookupByLibrary.simpleMessage(
+      "Optional. If you add a second contact, fill in all of its fields.",
+    ),
     "secondEmergencyContact": MessageLookupByLibrary.simpleMessage(
       "Second Emergency Contact",
     ),
@@ -6392,6 +8073,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "selectAssetConditions": MessageLookupByLibrary.simpleMessage(
       "Select Asset Conditions",
+    ),
+    "selectAtLeastOneDepartment": MessageLookupByLibrary.simpleMessage(
+      "Please select at least one department",
     ),
     "selectAtLeastOneEmployee": MessageLookupByLibrary.simpleMessage(
       "Please select at least one employee",
@@ -6532,6 +8216,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "selected": MessageLookupByLibrary.simpleMessage("Selected"),
     "selectedModules": MessageLookupByLibrary.simpleMessage("Selected modules"),
     "selectpriority": MessageLookupByLibrary.simpleMessage("Select Priority"),
+    "selfApprovalBlocked": MessageLookupByLibrary.simpleMessage(
+      "You can\'t approve or reject your own request. Another reviewer must decide it.",
+    ),
     "semiAnnual": MessageLookupByLibrary.simpleMessage("Semi Annual"),
     "send": MessageLookupByLibrary.simpleMessage("Send"),
     "sendReminder": MessageLookupByLibrary.simpleMessage("Send Reminder"),
@@ -6613,6 +8300,12 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "shareEmailsAndSocialDataInBio": MessageLookupByLibrary.simpleMessage(
       "Share Emails And Social Data In Bio",
+    ),
+    "shareFailed": MessageLookupByLibrary.simpleMessage(
+      "Could not share the form. Please try again.",
+    ),
+    "shareNeedsPeopleAndDates": MessageLookupByLibrary.simpleMessage(
+      "Please select people and both access dates",
     ),
     "shareSocialInformation": MessageLookupByLibrary.simpleMessage(
       "Share Social Information",
@@ -6798,8 +8491,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Special characters not allowed",
     ),
     "specification": MessageLookupByLibrary.simpleMessage("Specification"),
-    "specifiedDoesNotExist": m16,
-    "specifiedError": m17,
+    "specifiedDoesNotExist": m61,
+    "specifiedError": m62,
     "spouse": MessageLookupByLibrary.simpleMessage("Spouse"),
     "sriLankan": MessageLookupByLibrary.simpleMessage("Sri Lankan"),
     "ss": MessageLookupByLibrary.simpleMessage("Edit"),
@@ -6915,6 +8608,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "submissions": MessageLookupByLibrary.simpleMessage("Submissions"),
     "submit": MessageLookupByLibrary.simpleMessage("Submit"),
     "submitEvidence": MessageLookupByLibrary.simpleMessage("Submit Evidence"),
+    "submitFailedTryAgain": MessageLookupByLibrary.simpleMessage(
+      "Your answer could not be sent. Please try again.",
+    ),
     "submitForApproval": MessageLookupByLibrary.simpleMessage(
       "Submit For Approval",
     ),
@@ -7105,6 +8801,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "systemsLogs": MessageLookupByLibrary.simpleMessage("Systems Logs"),
     "table": MessageLookupByLibrary.simpleMessage("Table"),
     "tableChart": MessageLookupByLibrary.simpleMessage("Table chart"),
+    "tableRowsChangedElsewhere": MessageLookupByLibrary.simpleMessage(
+      "Someone else saved this table after you opened it. Reload to see their changes, then make yours again.",
+    ),
+    "tableRowsLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "The rows could not be loaded, so nothing can be saved. Try again.",
+    ),
     "tabletView": MessageLookupByLibrary.simpleMessage("Tablet View"),
     "tabulated": MessageLookupByLibrary.simpleMessage("Tabulated"),
     "tagalogLanguage": MessageLookupByLibrary.simpleMessage("Tagalog"),
@@ -7228,6 +8930,1531 @@ class MessageLookup extends MessageLookupByLibrary {
     "thursday": MessageLookupByLibrary.simpleMessage("Thursday"),
     "time": MessageLookupByLibrary.simpleMessage("Time"),
     "timeTracker": MessageLookupByLibrary.simpleMessage("Time Tracker"),
+    "timeTrackerAbsence": MessageLookupByLibrary.simpleMessage("Absence"),
+    "timeTrackerAbsencesCount": m63,
+    "timeTrackerAbsencesFew": m64,
+    "timeTrackerAbsencesMany": m65,
+    "timeTrackerAbsent": MessageLookupByLibrary.simpleMessage("Absent"),
+    "timeTrackerAbsentToday": MessageLookupByLibrary.simpleMessage(
+      "Absent Today",
+    ),
+    "timeTrackerAccessGranted": MessageLookupByLibrary.simpleMessage(
+      "You Successfully Granted Access",
+    ),
+    "timeTrackerAccessGrantedTitle": MessageLookupByLibrary.simpleMessage(
+      "Access Granted",
+    ),
+    "timeTrackerActionFailed": MessageLookupByLibrary.simpleMessage(
+      "Something went wrong. Please try again.",
+    ),
+    "timeTrackerActivateLocationConfirm": MessageLookupByLibrary.simpleMessage(
+      "Are You Sure You Want To Activate This Location ?",
+    ),
+    "timeTrackerActivateRequestTypeConfirm":
+        MessageLookupByLibrary.simpleMessage(
+          "Are You Sure You Want To Activate This Request Type ?",
+        ),
+    "timeTrackerActive": MessageLookupByLibrary.simpleMessage("Active"),
+    "timeTrackerAddedBy": MessageLookupByLibrary.simpleMessage("Added By"),
+    "timeTrackerAddressFromPin": MessageLookupByLibrary.simpleMessage(
+      "Country, State and City were filled in from the pin.",
+    ),
+    "timeTrackerAddressNotFound": MessageLookupByLibrary.simpleMessage(
+      "No place was found for this address. Try a fuller address, or tap the map.",
+    ),
+    "timeTrackerAll": MessageLookupByLibrary.simpleMessage("All"),
+    "timeTrackerAllClear": MessageLookupByLibrary.simpleMessage(
+      "Nothing needs your attention right now.",
+    ),
+    "timeTrackerAllDay": MessageLookupByLibrary.simpleMessage("All Day"),
+    "timeTrackerAllEmployees": MessageLookupByLibrary.simpleMessage(
+      "All Employees",
+    ),
+    "timeTrackerAllowBreaks": MessageLookupByLibrary.simpleMessage(
+      "Allow Breaks In Attendance",
+    ),
+    "timeTrackerAllowDifferentLocation": MessageLookupByLibrary.simpleMessage(
+      "Allow Different Work Location",
+    ),
+    "timeTrackerAllowGeofence": MessageLookupByLibrary.simpleMessage(
+      "Allow Geofence",
+    ),
+    "timeTrackerAllowPause": MessageLookupByLibrary.simpleMessage(
+      "Allow Pause",
+    ),
+    "timeTrackerAllowedLocationsRequired": MessageLookupByLibrary.simpleMessage(
+      "Choose at least one location.",
+    ),
+    "timeTrackerAlreadyCheckedOut": MessageLookupByLibrary.simpleMessage(
+      "You have already checked out. The screen now shows your latest attendance.",
+    ),
+    "timeTrackerApprovalCycle": MessageLookupByLibrary.simpleMessage(
+      "Approval Cycle",
+    ),
+    "timeTrackerApprovalJustification": MessageLookupByLibrary.simpleMessage(
+      "Justification",
+    ),
+    "timeTrackerApprovalPermissions": MessageLookupByLibrary.simpleMessage(
+      "Approvals",
+    ),
+    "timeTrackerApprovalsAllDepartments": MessageLookupByLibrary.simpleMessage(
+      "Approvals — All Departments",
+    ),
+    "timeTrackerApproveAndReject": MessageLookupByLibrary.simpleMessage(
+      "Approve And Reject",
+    ),
+    "timeTrackerApproveCancellation": MessageLookupByLibrary.simpleMessage(
+      "Approve Cancellation",
+    ),
+    "timeTrackerApproveCancellationConfirm":
+        MessageLookupByLibrary.simpleMessage(
+          "Are You Sure You Want To Approve The Cancellation Of This Request ?",
+        ),
+    "timeTrackerApproveRequest": MessageLookupByLibrary.simpleMessage(
+      "Approve Request",
+    ),
+    "timeTrackerApproveRequestConfirm": MessageLookupByLibrary.simpleMessage(
+      "Are You Sure You Want To Approve This Request ?",
+    ),
+    "timeTrackerApproved": MessageLookupByLibrary.simpleMessage("Approved"),
+    "timeTrackerApprovedByColumn": MessageLookupByLibrary.simpleMessage(
+      "Approved By",
+    ),
+    "timeTrackerArabicNameRequired": MessageLookupByLibrary.simpleMessage(
+      "Enter the Arabic name.",
+    ),
+    "timeTrackerAssign": MessageLookupByLibrary.simpleMessage("Assign"),
+    "timeTrackerAssignCount": m66,
+    "timeTrackerAssignDate": m67,
+    "timeTrackerAssignDateLabel": MessageLookupByLibrary.simpleMessage(
+      "Assign Date",
+    ),
+    "timeTrackerAssignEmployee": MessageLookupByLibrary.simpleMessage(
+      "Assign Employee",
+    ),
+    "timeTrackerAssigned": MessageLookupByLibrary.simpleMessage("Assigned"),
+    "timeTrackerAssignedBy": MessageLookupByLibrary.simpleMessage(
+      "Assigned By",
+    ),
+    "timeTrackerAssignedEmployees": MessageLookupByLibrary.simpleMessage(
+      "Assigned Employees",
+    ),
+    "timeTrackerAssignmentRemoved": MessageLookupByLibrary.simpleMessage(
+      "You Successfully Removed This Employee\'s Assignment",
+    ),
+    "timeTrackerAssignmentRemovedEntry": MessageLookupByLibrary.simpleMessage(
+      "Assignment Removed",
+    ),
+    "timeTrackerAssignmentRemovedTitle": MessageLookupByLibrary.simpleMessage(
+      "Assignment Removed",
+    ),
+    "timeTrackerAttachments": MessageLookupByLibrary.simpleMessage(
+      "Attachments",
+    ),
+    "timeTrackerAttachmentsRequired": MessageLookupByLibrary.simpleMessage(
+      "This request type needs an attachment.",
+    ),
+    "timeTrackerAttendanceChanged": MessageLookupByLibrary.simpleMessage(
+      "Your attendance was changed on another screen or device. It has been refreshed, please check it and try again.",
+    ),
+    "timeTrackerAttendanceDate": MessageLookupByLibrary.simpleMessage(
+      "Attendance Date",
+    ),
+    "timeTrackerAttendanceExportName": MessageLookupByLibrary.simpleMessage(
+      "Attendance Report",
+    ),
+    "timeTrackerAttendanceHistory": MessageLookupByLibrary.simpleMessage(
+      "Attendance History",
+    ),
+    "timeTrackerAttendancePermissions": MessageLookupByLibrary.simpleMessage(
+      "Attendance",
+    ),
+    "timeTrackerAttendanceUpdatedTitle": MessageLookupByLibrary.simpleMessage(
+      "Attendance Updated",
+    ),
+    "timeTrackerBreak": MessageLookupByLibrary.simpleMessage("Break"),
+    "timeTrackerBreakLengthHint": MessageLookupByLibrary.simpleMessage("30"),
+    "timeTrackerBreakLengthRequired": MessageLookupByLibrary.simpleMessage(
+      "Enter the break length.",
+    ),
+    "timeTrackerBreakNotAllowedLine": m68,
+    "timeTrackerBreakTime": MessageLookupByLibrary.simpleMessage("Break Time"),
+    "timeTrackerBreakWarningLine": m69,
+    "timeTrackerBreakWarnings": MessageLookupByLibrary.simpleMessage(
+      "Break Rule Warnings",
+    ),
+    "timeTrackerBreaksMinutes": m70,
+    "timeTrackerCancelRequest": MessageLookupByLibrary.simpleMessage(
+      "Cancel Request",
+    ),
+    "timeTrackerCancelRequestAfterApproving":
+        MessageLookupByLibrary.simpleMessage("Cancel Request After Approving"),
+    "timeTrackerCancelRequestConfirm": MessageLookupByLibrary.simpleMessage(
+      "Are You Sure You Want To Cancel This Request ?",
+    ),
+    "timeTrackerCancelTransaction": MessageLookupByLibrary.simpleMessage(
+      "Cancel Transaction",
+    ),
+    "timeTrackerCanceled": MessageLookupByLibrary.simpleMessage("Canceled"),
+    "timeTrackerCanceledByHr": MessageLookupByLibrary.simpleMessage(
+      "Canceled By HR",
+    ),
+    "timeTrackerCancellationApproved": MessageLookupByLibrary.simpleMessage(
+      "You Successfully Approved The Cancellation Of This Request",
+    ),
+    "timeTrackerCancellationApprovedTitle":
+        MessageLookupByLibrary.simpleMessage("Cancellation Approved"),
+    "timeTrackerCancellationRejected": MessageLookupByLibrary.simpleMessage(
+      "The Request Stays Approved",
+    ),
+    "timeTrackerCancellationRejectedTitle":
+        MessageLookupByLibrary.simpleMessage("Cancellation Rejected"),
+    "timeTrackerCancellationRequested": MessageLookupByLibrary.simpleMessage(
+      "You Successfully Requested Cancellation For This Request",
+    ),
+    "timeTrackerCancellationReviewNote": MessageLookupByLibrary.simpleMessage(
+      "This approved request is being canceled — the approvers are reviewing the cancellation.",
+    ),
+    "timeTrackerChangeLocationStatus": MessageLookupByLibrary.simpleMessage(
+      "Change Location Status",
+    ),
+    "timeTrackerChangeRequestTypeStatus": MessageLookupByLibrary.simpleMessage(
+      "Change Request Type Status",
+    ),
+    "timeTrackerChangingStatus": MessageLookupByLibrary.simpleMessage(
+      "Changing Status",
+    ),
+    "timeTrackerChartAttendanceSummary": MessageLookupByLibrary.simpleMessage(
+      "Attendance Summary",
+    ),
+    "timeTrackerChartLateArrivalsHistory": MessageLookupByLibrary.simpleMessage(
+      "Late Arrivals History",
+    ),
+    "timeTrackerChartMonthlyAttendance": MessageLookupByLibrary.simpleMessage(
+      "Monthly Attendance History",
+    ),
+    "timeTrackerChartMonthlyRequestsByType":
+        MessageLookupByLibrary.simpleMessage("Monthly Requests By Type"),
+    "timeTrackerChartMonthlyRequestsVolume":
+        MessageLookupByLibrary.simpleMessage("Monthly Requests Volume"),
+    "timeTrackerChartRequestsByStatus": MessageLookupByLibrary.simpleMessage(
+      "Requests By Status",
+    ),
+    "timeTrackerChartRequestsByType": MessageLookupByLibrary.simpleMessage(
+      "Requests By Type",
+    ),
+    "timeTrackerChartWorkLocationDistribution":
+        MessageLookupByLibrary.simpleMessage("Work Location Distribution"),
+    "timeTrackerCheckIn": MessageLookupByLibrary.simpleMessage("Check In"),
+    "timeTrackerCheckInAndOut": MessageLookupByLibrary.simpleMessage(
+      "Check In And Out",
+    ),
+    "timeTrackerCheckInAvailable": MessageLookupByLibrary.simpleMessage(
+      "You can check in and out.",
+    ),
+    "timeTrackerCheckInDate": MessageLookupByLibrary.simpleMessage(
+      "Check In Date",
+    ),
+    "timeTrackerCheckInPermissions": MessageLookupByLibrary.simpleMessage(
+      "Check In & Out",
+    ),
+    "timeTrackerCheckInRequired": MessageLookupByLibrary.simpleMessage(
+      "Choose the check-in date and time.",
+    ),
+    "timeTrackerCheckInTime": MessageLookupByLibrary.simpleMessage(
+      "Check In Time",
+    ),
+    "timeTrackerCheckOut": MessageLookupByLibrary.simpleMessage("Check Out"),
+    "timeTrackerCheckOutAfterCheckIn": MessageLookupByLibrary.simpleMessage(
+      "Check out must be after check in.",
+    ),
+    "timeTrackerCheckOutConfirmBody": MessageLookupByLibrary.simpleMessage(
+      "Are You Sure You Want To Check Out ?",
+    ),
+    "timeTrackerCheckOutConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "Checking Out",
+    ),
+    "timeTrackerCheckOutDate": MessageLookupByLibrary.simpleMessage(
+      "Check Out Date",
+    ),
+    "timeTrackerCheckOutRequired": MessageLookupByLibrary.simpleMessage(
+      "Choose the check-out date and time.",
+    ),
+    "timeTrackerCheckOutSameDay": MessageLookupByLibrary.simpleMessage(
+      "The check-out must be on the same day as the check-in",
+    ),
+    "timeTrackerCheckOutSameOrNextDay": MessageLookupByLibrary.simpleMessage(
+      "The check-out must be on the check-in day or the next day",
+    ),
+    "timeTrackerCheckOutTime": MessageLookupByLibrary.simpleMessage(
+      "Check Out Time",
+    ),
+    "timeTrackerCheckedInNoCheckOut": m71,
+    "timeTrackerCheckedInNow": MessageLookupByLibrary.simpleMessage(
+      "Checked In Now",
+    ),
+    "timeTrackerCheckedInSuccess": MessageLookupByLibrary.simpleMessage(
+      "You Successfully Checked In",
+    ),
+    "timeTrackerCheckedOutSuccess": MessageLookupByLibrary.simpleMessage(
+      "You Successfully Checked Out",
+    ),
+    "timeTrackerChooseEmployee": MessageLookupByLibrary.simpleMessage(
+      "Choose Employee",
+    ),
+    "timeTrackerChooseHere": MessageLookupByLibrary.simpleMessage(
+      "Choose Here",
+    ),
+    "timeTrackerChooseLocation": MessageLookupByLibrary.simpleMessage(
+      "Choose Location",
+    ),
+    "timeTrackerChooseMembers": MessageLookupByLibrary.simpleMessage(
+      "Choose Members",
+    ),
+    "timeTrackerChooseOneDepartment": MessageLookupByLibrary.simpleMessage(
+      "Choose at least one department, or switch the limit off.",
+    ),
+    "timeTrackerChooseOneLocation": MessageLookupByLibrary.simpleMessage(
+      "Choose at least one location, or switch the limit off.",
+    ),
+    "timeTrackerChooseTheDate": MessageLookupByLibrary.simpleMessage(
+      "Choose The Date",
+    ),
+    "timeTrackerChooseType": MessageLookupByLibrary.simpleMessage(
+      "Choose Type",
+    ),
+    "timeTrackerChooseWorkLocation": MessageLookupByLibrary.simpleMessage(
+      "Choose Work Location",
+    ),
+    "timeTrackerCity": MessageLookupByLibrary.simpleMessage("City"),
+    "timeTrackerCityAr": MessageLookupByLibrary.simpleMessage("مدينة"),
+    "timeTrackerClientSite": MessageLookupByLibrary.simpleMessage(
+      "Client Site",
+    ),
+    "timeTrackerColumnNo": MessageLookupByLibrary.simpleMessage("No"),
+    "timeTrackerCommentDeleted": MessageLookupByLibrary.simpleMessage(
+      "You Successfully Deleted This Comment",
+    ),
+    "timeTrackerCommentDeletedTitle": MessageLookupByLibrary.simpleMessage(
+      "Comment Deleted",
+    ),
+    "timeTrackerCommentOnApprovals": MessageLookupByLibrary.simpleMessage(
+      "Comment On Approvals",
+    ),
+    "timeTrackerCommentOnRequests": MessageLookupByLibrary.simpleMessage(
+      "Comment On Requests",
+    ),
+    "timeTrackerConfirmedTitle": MessageLookupByLibrary.simpleMessage(
+      "Confirmed",
+    ),
+    "timeTrackerCoordinatesRequired": MessageLookupByLibrary.simpleMessage(
+      "A geofence needs the latitude and longitude.",
+    ),
+    "timeTrackerCountry": MessageLookupByLibrary.simpleMessage("Country"),
+    "timeTrackerCountryAr": MessageLookupByLibrary.simpleMessage("دولة"),
+    "timeTrackerCounts": MessageLookupByLibrary.simpleMessage("Counts"),
+    "timeTrackerCreateGroup": MessageLookupByLibrary.simpleMessage(
+      "Create Group",
+    ),
+    "timeTrackerCreateGroupConfirm": MessageLookupByLibrary.simpleMessage(
+      "Are You Sure You Want To Create This Group ?",
+    ),
+    "timeTrackerCreateLocation": MessageLookupByLibrary.simpleMessage(
+      "Create Location",
+    ),
+    "timeTrackerCreateLocationConfirm": MessageLookupByLibrary.simpleMessage(
+      "Are You Sure You Want To Create This Location ?",
+    ),
+    "timeTrackerCreateRequest": MessageLookupByLibrary.simpleMessage(
+      "Create Request",
+    ),
+    "timeTrackerCreateRequestConfirm": MessageLookupByLibrary.simpleMessage(
+      "Are You Sure You Want To Create This Request ?",
+    ),
+    "timeTrackerCreateRequestType": MessageLookupByLibrary.simpleMessage(
+      "Create Request Type",
+    ),
+    "timeTrackerCreateRequestTypeConfirm": MessageLookupByLibrary.simpleMessage(
+      "Are You Sure You Want To Create This Request Type ?",
+    ),
+    "timeTrackerCreateTransactionConfirm": MessageLookupByLibrary.simpleMessage(
+      "Are You Sure You Want To Create This Transaction ?",
+    ),
+    "timeTrackerCreatedDateValue": m72,
+    "timeTrackerCreatingNewGroup": MessageLookupByLibrary.simpleMessage(
+      "Creating New Group",
+    ),
+    "timeTrackerCreatingNewLocation": MessageLookupByLibrary.simpleMessage(
+      "Creating New Location",
+    ),
+    "timeTrackerCreatingNewRequest": MessageLookupByLibrary.simpleMessage(
+      "Creating New Request",
+    ),
+    "timeTrackerCreatingRequest": MessageLookupByLibrary.simpleMessage(
+      "Creating Request",
+    ),
+    "timeTrackerCreatingRequestType": MessageLookupByLibrary.simpleMessage(
+      "Creating Request Type",
+    ),
+    "timeTrackerCreatingTransaction": MessageLookupByLibrary.simpleMessage(
+      "Creating Transaction",
+    ),
+    "timeTrackerCreationDate": MessageLookupByLibrary.simpleMessage(
+      "Creation Date",
+    ),
+    "timeTrackerCurrentAssignment": MessageLookupByLibrary.simpleMessage(
+      "Current Assignment",
+    ),
+    "timeTrackerCustomDateSelector": MessageLookupByLibrary.simpleMessage(
+      "Custom Date Selector",
+    ),
+    "timeTrackerCustomOverridesLocation": MessageLookupByLibrary.simpleMessage(
+      "Custom — Overrides The Location",
+    ),
+    "timeTrackerCustomRulesEmployee": MessageLookupByLibrary.simpleMessage(
+      "Custom Rules For This Employee",
+    ),
+    "timeTrackerCustomRulesGroup": MessageLookupByLibrary.simpleMessage(
+      "Custom Rules For This Group",
+    ),
+    "timeTrackerCustomRulesTag": MessageLookupByLibrary.simpleMessage(
+      "Custom Rules",
+    ),
+    "timeTrackerDashboardPermissions": MessageLookupByLibrary.simpleMessage(
+      "Dashboard",
+    ),
+    "timeTrackerDate": MessageLookupByLibrary.simpleMessage("Date"),
+    "timeTrackerDateAtTime": m73,
+    "timeTrackerDateFrom": MessageLookupByLibrary.simpleMessage("From Date"),
+    "timeTrackerDateRangeError": MessageLookupByLibrary.simpleMessage(
+      "The end date must be on or after the start date.",
+    ),
+    "timeTrackerDateRequested": MessageLookupByLibrary.simpleMessage(
+      "Date Requested",
+    ),
+    "timeTrackerDateTo": MessageLookupByLibrary.simpleMessage("To Date"),
+    "timeTrackerDaysFew": m74,
+    "timeTrackerDaysMany": m75,
+    "timeTrackerDaysValue": m76,
+    "timeTrackerDeactivateLocationConfirm":
+        MessageLookupByLibrary.simpleMessage(
+          "Are You Sure You Want To Deactivate This Location ?",
+        ),
+    "timeTrackerDeactivateRequestTypeConfirm":
+        MessageLookupByLibrary.simpleMessage(
+          "Are You Sure You Want To Deactivate This Request Type ?",
+        ),
+    "timeTrackerDeductedFromBalance": MessageLookupByLibrary.simpleMessage(
+      "Deducted From Balance",
+    ),
+    "timeTrackerDeductsFromVacation": MessageLookupByLibrary.simpleMessage(
+      "Deducts From Vacation Balance",
+    ),
+    "timeTrackerDeleteCommentConfirm": MessageLookupByLibrary.simpleMessage(
+      "Are You Sure You Want To Delete This Comment ?",
+    ),
+    "timeTrackerDeleteGroup": MessageLookupByLibrary.simpleMessage(
+      "Delete Group",
+    ),
+    "timeTrackerDeleteGroupConfirm": MessageLookupByLibrary.simpleMessage(
+      "Are You Sure You Want To Delete This Group ?",
+    ),
+    "timeTrackerDeleteLocation": MessageLookupByLibrary.simpleMessage(
+      "Delete Location",
+    ),
+    "timeTrackerDeleteLocationConfirm": MessageLookupByLibrary.simpleMessage(
+      "Are You Sure You Want To Delete This Location ?",
+    ),
+    "timeTrackerDeletedGroupTitle": MessageLookupByLibrary.simpleMessage(
+      "Group Deleted",
+    ),
+    "timeTrackerDeletingComment": MessageLookupByLibrary.simpleMessage(
+      "Deleting Comment",
+    ),
+    "timeTrackerDeletingGroups": MessageLookupByLibrary.simpleMessage(
+      "Deleting Group",
+    ),
+    "timeTrackerDeletingLocation": MessageLookupByLibrary.simpleMessage(
+      "Deleting Location",
+    ),
+    "timeTrackerDemoAlreadyLoaded": MessageLookupByLibrary.simpleMessage(
+      "The demo data is already loaded.",
+    ),
+    "timeTrackerDemoLoad": MessageLookupByLibrary.simpleMessage(
+      "Load Demo Data",
+    ),
+    "timeTrackerDemoLoadDone": m77,
+    "timeTrackerDemoRemove": MessageLookupByLibrary.simpleMessage(
+      "Remove Demo Data",
+    ),
+    "timeTrackerDemoRemoveDone": m78,
+    "timeTrackerDemoTools": MessageLookupByLibrary.simpleMessage("Demo Tools"),
+    "timeTrackerDemoToolsHint": MessageLookupByLibrary.simpleMessage(
+      "Available in debug builds only. Adds realistic sample records to every Time Tracker tab. Existing records are never changed.",
+    ),
+    "timeTrackerDepartment": MessageLookupByLibrary.simpleMessage("Department"),
+    "timeTrackerDepartmentAvailability": MessageLookupByLibrary.simpleMessage(
+      "Department Availability",
+    ),
+    "timeTrackerDescription": MessageLookupByLibrary.simpleMessage(
+      "Description",
+    ),
+    "timeTrackerDescriptionAr": MessageLookupByLibrary.simpleMessage(
+      "وصف الطلب",
+    ),
+    "timeTrackerDescriptionRequired": MessageLookupByLibrary.simpleMessage(
+      "This request type needs a description.",
+    ),
+    "timeTrackerDifferentLocationNotAllowed":
+        MessageLookupByLibrary.simpleMessage(
+          "You are not allowed to work from a different location.",
+        ),
+    "timeTrackerDownloadTemplate": MessageLookupByLibrary.simpleMessage(
+      "Download Template",
+    ),
+    "timeTrackerEditGroup": MessageLookupByLibrary.simpleMessage("Edit Group"),
+    "timeTrackerEditGroupConfirm": MessageLookupByLibrary.simpleMessage(
+      "Are You Sure You Want To Edit This Group ?",
+    ),
+    "timeTrackerEditLocation": MessageLookupByLibrary.simpleMessage(
+      "Edit Location",
+    ),
+    "timeTrackerEditLocationConfirm": MessageLookupByLibrary.simpleMessage(
+      "Are You Sure You Want To Edit This Location ?",
+    ),
+    "timeTrackerEditRequestType": MessageLookupByLibrary.simpleMessage(
+      "Edit Request Type",
+    ),
+    "timeTrackerEditRequestTypeConfirm": MessageLookupByLibrary.simpleMessage(
+      "Are You Sure You Want To Edit This Request Type ?",
+    ),
+    "timeTrackerEditVacationBalance": MessageLookupByLibrary.simpleMessage(
+      "Edit Vacation Balance",
+    ),
+    "timeTrackerEditVacationConfirm": MessageLookupByLibrary.simpleMessage(
+      "Are You Sure You Want To Edit This Vacation Balance ?",
+    ),
+    "timeTrackerEditVacationExplain": m79,
+    "timeTrackerEdited": MessageLookupByLibrary.simpleMessage("Edited"),
+    "timeTrackerEditedGroupTitle": MessageLookupByLibrary.simpleMessage(
+      "Edited Group",
+    ),
+    "timeTrackerEditingGroup": MessageLookupByLibrary.simpleMessage(
+      "Editing Group",
+    ),
+    "timeTrackerEditingGroupDetails": MessageLookupByLibrary.simpleMessage(
+      "Editing Group Details",
+    ),
+    "timeTrackerEditingLocation": MessageLookupByLibrary.simpleMessage(
+      "Editing Location",
+    ),
+    "timeTrackerEditingRequestType": MessageLookupByLibrary.simpleMessage(
+      "Editing Request Type",
+    ),
+    "timeTrackerEmail": MessageLookupByLibrary.simpleMessage("Email"),
+    "timeTrackerEmployeeDashboard": MessageLookupByLibrary.simpleMessage(
+      "Employee Dashboard",
+    ),
+    "timeTrackerEmployeeDetails": MessageLookupByLibrary.simpleMessage(
+      "Employee Details",
+    ),
+    "timeTrackerEmployeeInformation": MessageLookupByLibrary.simpleMessage(
+      "Employee Information",
+    ),
+    "timeTrackerEmployeeName": MessageLookupByLibrary.simpleMessage(
+      "Employee Name",
+    ),
+    "timeTrackerEmployeePermissions": MessageLookupByLibrary.simpleMessage(
+      "Employees",
+    ),
+    "timeTrackerEmployeesAllDepartments": MessageLookupByLibrary.simpleMessage(
+      "Employees — All Departments",
+    ),
+    "timeTrackerEmployeesExportName": MessageLookupByLibrary.simpleMessage(
+      "Employees Report",
+    ),
+    "timeTrackerEmployeesInScope": MessageLookupByLibrary.simpleMessage(
+      "Employees Included",
+    ),
+    "timeTrackerEmployeesSelected": m80,
+    "timeTrackerEnDescription": MessageLookupByLibrary.simpleMessage(
+      "Description",
+    ),
+    "timeTrackerEnGroupName": MessageLookupByLibrary.simpleMessage(
+      "Group Name",
+    ),
+    "timeTrackerEnLocationName": MessageLookupByLibrary.simpleMessage(
+      "Location Name",
+    ),
+    "timeTrackerEnRequestName": MessageLookupByLibrary.simpleMessage(
+      "Request Name",
+    ),
+    "timeTrackerEndAfterStart": MessageLookupByLibrary.simpleMessage(
+      "The end must be after the start.",
+    ),
+    "timeTrackerEndDate": MessageLookupByLibrary.simpleMessage("End Date"),
+    "timeTrackerEndDateRequired": MessageLookupByLibrary.simpleMessage(
+      "Choose the end date.",
+    ),
+    "timeTrackerEndTime": MessageLookupByLibrary.simpleMessage("End Time"),
+    "timeTrackerEndTimeRequired": MessageLookupByLibrary.simpleMessage(
+      "Choose the end time.",
+    ),
+    "timeTrackerExceedsBalance": m81,
+    "timeTrackerExcuseLeave": MessageLookupByLibrary.simpleMessage(
+      "Excuse Leave",
+    ),
+    "timeTrackerExcused": MessageLookupByLibrary.simpleMessage("Excused"),
+    "timeTrackerExportAttendance": MessageLookupByLibrary.simpleMessage(
+      "Export Attendance",
+    ),
+    "timeTrackerExportEmployees": MessageLookupByLibrary.simpleMessage(
+      "Export Employees",
+    ),
+    "timeTrackerExportEmpty": MessageLookupByLibrary.simpleMessage(
+      "There is nothing to export.",
+    ),
+    "timeTrackerExportItem": MessageLookupByLibrary.simpleMessage("Item"),
+    "timeTrackerExportLocations": MessageLookupByLibrary.simpleMessage(
+      "Export Locations",
+    ),
+    "timeTrackerExportRequestTypes": MessageLookupByLibrary.simpleMessage(
+      "Export Request Types",
+    ),
+    "timeTrackerExportRequests": MessageLookupByLibrary.simpleMessage(
+      "Export Requests",
+    ),
+    "timeTrackerExportSection": MessageLookupByLibrary.simpleMessage("Section"),
+    "timeTrackerExportVacationBalances": MessageLookupByLibrary.simpleMessage(
+      "Export Vacation Balances",
+    ),
+    "timeTrackerExportValue": MessageLookupByLibrary.simpleMessage("Value"),
+    "timeTrackerFileTooLarge": MessageLookupByLibrary.simpleMessage(
+      "The file is larger than 10 MB.",
+    ),
+    "timeTrackerFilterDay": MessageLookupByLibrary.simpleMessage("Day"),
+    "timeTrackerFilterType": MessageLookupByLibrary.simpleMessage("Type"),
+    "timeTrackerFiltersTitle": MessageLookupByLibrary.simpleMessage("Filters"),
+    "timeTrackerFrequentAbsences": MessageLookupByLibrary.simpleMessage(
+      "3 Or More Absences This Month",
+    ),
+    "timeTrackerGeofencePreview": MessageLookupByLibrary.simpleMessage(
+      "Location On Map",
+    ),
+    "timeTrackerGeofenceRadius": MessageLookupByLibrary.simpleMessage(
+      "Geofencing Radius (Meters)",
+    ),
+    "timeTrackerGeofenceRadiusColumn": MessageLookupByLibrary.simpleMessage(
+      "Geofencing Radius",
+    ),
+    "timeTrackerGeofencing": MessageLookupByLibrary.simpleMessage("Geofencing"),
+    "timeTrackerGoogleMap": MessageLookupByLibrary.simpleMessage("Google Map"),
+    "timeTrackerGoogleMapsHint": MessageLookupByLibrary.simpleMessage(
+      "https://www.google.com/maps/place",
+    ),
+    "timeTrackerGrantAccess": MessageLookupByLibrary.simpleMessage(
+      "Grant Access",
+    ),
+    "timeTrackerGroupButton": MessageLookupByLibrary.simpleMessage("Group"),
+    "timeTrackerGroupCreated": MessageLookupByLibrary.simpleMessage(
+      "You Successfully Created This Group",
+    ),
+    "timeTrackerGroupCreationTitle": MessageLookupByLibrary.simpleMessage(
+      "Group Creation",
+    ),
+    "timeTrackerGroupDeleted": MessageLookupByLibrary.simpleMessage(
+      "You Successfully Deleted This Group",
+    ),
+    "timeTrackerGroupDescriptionAr": MessageLookupByLibrary.simpleMessage(
+      "وصف المجموعة",
+    ),
+    "timeTrackerGroupEdited": MessageLookupByLibrary.simpleMessage(
+      "You Successfully Edited This Group",
+    ),
+    "timeTrackerGroupInformation": MessageLookupByLibrary.simpleMessage(
+      "Group Information",
+    ),
+    "timeTrackerGroupName": MessageLookupByLibrary.simpleMessage("Group Name"),
+    "timeTrackerGroupNameAr": MessageLookupByLibrary.simpleMessage(
+      "اسم المجموعة",
+    ),
+    "timeTrackerGroupNameLabel": MessageLookupByLibrary.simpleMessage("Group"),
+    "timeTrackerGroupPermissions": MessageLookupByLibrary.simpleMessage(
+      "Groups",
+    ),
+    "timeTrackerGroupRulesTag": MessageLookupByLibrary.simpleMessage(
+      "Group Rules",
+    ),
+    "timeTrackerHistoryBy": m82,
+    "timeTrackerHistoryFrom": m83,
+    "timeTrackerHourUnit": MessageLookupByLibrary.simpleMessage("Hour"),
+    "timeTrackerHoursMinutesShort": m84,
+    "timeTrackerHrApproval": MessageLookupByLibrary.simpleMessage(
+      "HR Approval",
+    ),
+    "timeTrackerHrDashboard": MessageLookupByLibrary.simpleMessage(
+      "HR Dashboard",
+    ),
+    "timeTrackerHrDashboardAllDepartments":
+        MessageLookupByLibrary.simpleMessage("HR Dashboard — All Departments"),
+    "timeTrackerHrDashboardExportName": MessageLookupByLibrary.simpleMessage(
+      "HR Dashboard Report",
+    ),
+    "timeTrackerHrDashboardFilterByEmployee":
+        MessageLookupByLibrary.simpleMessage(
+          "HR Dashboard — Filter By Employee",
+        ),
+    "timeTrackerHrOwnsSetup": MessageLookupByLibrary.simpleMessage(
+      "Locations, shifts and employee assignments are managed in the HR module.",
+    ),
+    "timeTrackerHrStep": MessageLookupByLibrary.simpleMessage("HR"),
+    "timeTrackerHrsValue": m85,
+    "timeTrackerImport": MessageLookupByLibrary.simpleMessage("Import"),
+    "timeTrackerImportActionCreate": MessageLookupByLibrary.simpleMessage(
+      "New",
+    ),
+    "timeTrackerImportActionSkip": MessageLookupByLibrary.simpleMessage(
+      "Skipped",
+    ),
+    "timeTrackerImportActionUnchanged": MessageLookupByLibrary.simpleMessage(
+      "No Change",
+    ),
+    "timeTrackerImportActionUpdate": MessageLookupByLibrary.simpleMessage(
+      "Update",
+    ),
+    "timeTrackerImportConfirm": MessageLookupByLibrary.simpleMessage(
+      "Are You Sure You Want To Import These Locations ?",
+    ),
+    "timeTrackerImportDone": MessageLookupByLibrary.simpleMessage(
+      "You Successfully Imported The Locations",
+    ),
+    "timeTrackerImportDoneTitle": MessageLookupByLibrary.simpleMessage(
+      "Locations Imported",
+    ),
+    "timeTrackerImportDuplicate": MessageLookupByLibrary.simpleMessage(
+      "This name appears more than once in the file",
+    ),
+    "timeTrackerImportDuplicateEmail": MessageLookupByLibrary.simpleMessage(
+      "This email appears more than once in the file",
+    ),
+    "timeTrackerImportFileError": MessageLookupByLibrary.simpleMessage(
+      "The file could not be read. Please use the CSV or Excel template.",
+    ),
+    "timeTrackerImportHelp": MessageLookupByLibrary.simpleMessage(
+      "Download the template, fill one row per location, then upload it as CSV or Excel. A row whose name matches an existing location updates it (a blank cell keeps the current value); every other row creates a new location. Nothing is deleted.",
+    ),
+    "timeTrackerImportLine": m86,
+    "timeTrackerImportLocations": MessageLookupByLibrary.simpleMessage(
+      "Import Locations",
+    ),
+    "timeTrackerImportNoNameColumn": MessageLookupByLibrary.simpleMessage(
+      "The file has no “Location Name” column. Please use the template.",
+    ),
+    "timeTrackerImportNothing": MessageLookupByLibrary.simpleMessage(
+      "There is nothing to import.",
+    ),
+    "timeTrackerImportStep1Balances": MessageLookupByLibrary.simpleMessage(
+      "A spreadsheet (CSV), one row per employee, already filled with the current balances of the selected year. Only Total Days is imported; Employee Name, Department, Job Title, Used and Remaining Days help you find the employee and are not changed.",
+    ),
+    "timeTrackerImportStep1Locations": MessageLookupByLibrary.simpleMessage(
+      "A spreadsheet (CSV), one row per location. The rows already in it are your CURRENT locations — they show how to fill each column. Columns: name, map link, address, work hours, rules.",
+    ),
+    "timeTrackerImportStep1Title": MessageLookupByLibrary.simpleMessage(
+      "Download The Template",
+    ),
+    "timeTrackerImportStep2Balances": m87,
+    "timeTrackerImportStep2Locations": MessageLookupByLibrary.simpleMessage(
+      "Add a row for each new location, or change values in an existing row (same name = update). An empty cell keeps the saved value. Nothing is ever deleted.",
+    ),
+    "timeTrackerImportStep2Title": MessageLookupByLibrary.simpleMessage(
+      "Fill It In",
+    ),
+    "timeTrackerImportStep3Body": MessageLookupByLibrary.simpleMessage(
+      "Choose the filled file (CSV or Excel). You will see what will be added, updated or skipped before anything is saved.",
+    ),
+    "timeTrackerImportStep3Title": MessageLookupByLibrary.simpleMessage(
+      "Upload The File",
+    ),
+    "timeTrackerImportSummary": m88,
+    "timeTrackerImportTemplateName": MessageLookupByLibrary.simpleMessage(
+      "Locations Template",
+    ),
+    "timeTrackerImportUnknownEmployee": MessageLookupByLibrary.simpleMessage(
+      "No employee has this email",
+    ),
+    "timeTrackerImportUnreadable": m89,
+    "timeTrackerImportVacationBalances": MessageLookupByLibrary.simpleMessage(
+      "Import Vacation Balances",
+    ),
+    "timeTrackerImportWrongYear": m90,
+    "timeTrackerInactive": MessageLookupByLibrary.simpleMessage("Inactive"),
+    "timeTrackerInquiriesAndComments": MessageLookupByLibrary.simpleMessage(
+      "Inquiries And Comments",
+    ),
+    "timeTrackerJobTitle": MessageLookupByLibrary.simpleMessage("Job Title"),
+    "timeTrackerLastUpdate": MessageLookupByLibrary.simpleMessage(
+      "Last Update",
+    ),
+    "timeTrackerLastUpdateValue": m91,
+    "timeTrackerLate": MessageLookupByLibrary.simpleMessage("Late"),
+    "timeTrackerLateAbsentRanking": MessageLookupByLibrary.simpleMessage(
+      "Late & Absent Ranking",
+    ),
+    "timeTrackerLateAfter": MessageLookupByLibrary.simpleMessage(
+      "Late After (Minutes)",
+    ),
+    "timeTrackerLateAfterGraceHint": MessageLookupByLibrary.simpleMessage(
+      "Minutes after start before it counts as late (e.g. 15)",
+    ),
+    "timeTrackerLateAfterHint": MessageLookupByLibrary.simpleMessage("0"),
+    "timeTrackerLateAfterMinutes": m92,
+    "timeTrackerLateAfterTooLong": MessageLookupByLibrary.simpleMessage(
+      "Late After must be shorter than the work day.",
+    ),
+    "timeTrackerLateHistory": MessageLookupByLibrary.simpleMessage(
+      "Late History",
+    ),
+    "timeTrackerLateToday": MessageLookupByLibrary.simpleMessage("Late Today"),
+    "timeTrackerLatitude": MessageLookupByLibrary.simpleMessage("Latitude"),
+    "timeTrackerLatitudeInvalid": MessageLookupByLibrary.simpleMessage(
+      "Enter a latitude between -90 and 90.",
+    ),
+    "timeTrackerLeavingTime": MessageLookupByLibrary.simpleMessage(
+      "Leaving Time",
+    ),
+    "timeTrackerLimitDepartmentAvailability":
+        MessageLookupByLibrary.simpleMessage("Limit Department Availability"),
+    "timeTrackerLimitLocationAvailability":
+        MessageLookupByLibrary.simpleMessage("Limit Location Availability"),
+    "timeTrackerLoadError": MessageLookupByLibrary.simpleMessage(
+      "Could not load the Time Tracker. Please try again.",
+    ),
+    "timeTrackerLocation": MessageLookupByLibrary.simpleMessage("Location"),
+    "timeTrackerLocationAtGoogleMaps": MessageLookupByLibrary.simpleMessage(
+      "Location At Google Maps",
+    ),
+    "timeTrackerLocationAvailability": MessageLookupByLibrary.simpleMessage(
+      "Location Availability",
+    ),
+    "timeTrackerLocationCreated": MessageLookupByLibrary.simpleMessage(
+      "You Successfully Created New Location",
+    ),
+    "timeTrackerLocationCreatedTitle": MessageLookupByLibrary.simpleMessage(
+      "Location Created",
+    ),
+    "timeTrackerLocationDeleted": MessageLookupByLibrary.simpleMessage(
+      "You Successfully Deleted This Location",
+    ),
+    "timeTrackerLocationDeletedTitle": MessageLookupByLibrary.simpleMessage(
+      "Location Deleted",
+    ),
+    "timeTrackerLocationDenied": MessageLookupByLibrary.simpleMessage(
+      "Location access is turned off for Knowticed. Allow it in your device Settings to check in at the office, or choose Remote / Client Site if you are allowed.",
+    ),
+    "timeTrackerLocationDeniedSetup": MessageLookupByLibrary.simpleMessage(
+      "Location access is turned off for Knowticed. Allow it in your device Settings, or type the latitude and longitude.",
+    ),
+    "timeTrackerLocationDescription": MessageLookupByLibrary.simpleMessage(
+      "Location Description",
+    ),
+    "timeTrackerLocationEdited": MessageLookupByLibrary.simpleMessage(
+      "You Successfully Edited This Location",
+    ),
+    "timeTrackerLocationEditedTitle": MessageLookupByLibrary.simpleMessage(
+      "Location Edited",
+    ),
+    "timeTrackerLocationHistory": MessageLookupByLibrary.simpleMessage(
+      "Location History",
+    ),
+    "timeTrackerLocationInUse": m93,
+    "timeTrackerLocationInUseTitle": MessageLookupByLibrary.simpleMessage(
+      "Location In Use",
+    ),
+    "timeTrackerLocationMatches": MessageLookupByLibrary.simpleMessage(
+      "Your Location Matches The Company’s Location",
+    ),
+    "timeTrackerLocationName": MessageLookupByLibrary.simpleMessage(
+      "Location Name",
+    ),
+    "timeTrackerLocationNameAr": MessageLookupByLibrary.simpleMessage(
+      "اسم الموقع",
+    ),
+    "timeTrackerLocationNeededTitle": MessageLookupByLibrary.simpleMessage(
+      "Location Needed",
+    ),
+    "timeTrackerLocationNotAllowed": MessageLookupByLibrary.simpleMessage(
+      "You can\'t check in at this location.",
+    ),
+    "timeTrackerLocationPermissions": MessageLookupByLibrary.simpleMessage(
+      "Locations",
+    ),
+    "timeTrackerLocationRequired": MessageLookupByLibrary.simpleMessage(
+      "Choose the location.",
+    ),
+    "timeTrackerLocationServiceOff": MessageLookupByLibrary.simpleMessage(
+      "Location services are turned off on this device. Turn them on to check in at the office.",
+    ),
+    "timeTrackerLocationSetting": MessageLookupByLibrary.simpleMessage(
+      "Location Setting",
+    ),
+    "timeTrackerLocationStatusChanged": MessageLookupByLibrary.simpleMessage(
+      "You Successfully Changed the Status Of This Location",
+    ),
+    "timeTrackerLocationUnavailable": MessageLookupByLibrary.simpleMessage(
+      "We could not read your location. Please try again.",
+    ),
+    "timeTrackerLocationValue": m94,
+    "timeTrackerLocationsExportName": MessageLookupByLibrary.simpleMessage(
+      "Locations Report",
+    ),
+    "timeTrackerLongitude": MessageLookupByLibrary.simpleMessage("Longitude"),
+    "timeTrackerLongitudeInvalid": MessageLookupByLibrary.simpleMessage(
+      "Enter a longitude between -180 and 180.",
+    ),
+    "timeTrackerMainLocation": MessageLookupByLibrary.simpleMessage("Main"),
+    "timeTrackerManagerApproval": MessageLookupByLibrary.simpleMessage(
+      "Manager Approval",
+    ),
+    "timeTrackerManagerStep": MessageLookupByLibrary.simpleMessage("Manager"),
+    "timeTrackerMapView": MessageLookupByLibrary.simpleMessage("Map"),
+    "timeTrackerMapsUrlInvalid": MessageLookupByLibrary.simpleMessage(
+      "Enter a map link that starts with https:// (Google Maps or Apple Maps).",
+    ),
+    "timeTrackerMaxPauseMinutes": MessageLookupByLibrary.simpleMessage(
+      "Maximum Pause (Minutes)",
+    ),
+    "timeTrackerMembers": MessageLookupByLibrary.simpleMessage("Members"),
+    "timeTrackerMembersRequired": MessageLookupByLibrary.simpleMessage(
+      "Choose at least one member.",
+    ),
+    "timeTrackerMembersSelected": m95,
+    "timeTrackerMetersValue": m96,
+    "timeTrackerMinTotalHoursHint": MessageLookupByLibrary.simpleMessage(
+      "At Least (Hours)",
+    ),
+    "timeTrackerMinsValue": m97,
+    "timeTrackerMinutes": MessageLookupByLibrary.simpleMessage("Minutes"),
+    "timeTrackerMinutesValue": m98,
+    "timeTrackerMissingCheckOuts": MessageLookupByLibrary.simpleMessage(
+      "Missing Check-Outs Yesterday",
+    ),
+    "timeTrackerMockedLocation": MessageLookupByLibrary.simpleMessage(
+      "Your device is using a fake (mock) location. Please turn it off to check in.",
+    ),
+    "timeTrackerMoreItems": m99,
+    "timeTrackerMyDashboard": MessageLookupByLibrary.simpleMessage(
+      "My Dashboard",
+    ),
+    "timeTrackerNameRequired": MessageLookupByLibrary.simpleMessage(
+      "Enter the name.",
+    ),
+    "timeTrackerNeedsAttention": MessageLookupByLibrary.simpleMessage(
+      "Needs Attention",
+    ),
+    "timeTrackerNo": MessageLookupByLibrary.simpleMessage("No"),
+    "timeTrackerNoAccess": MessageLookupByLibrary.simpleMessage(
+      "You don\'t have access to the Time Tracker.",
+    ),
+    "timeTrackerNoBalanceApprover": MessageLookupByLibrary.simpleMessage(
+      "This employee has no vacation balance yet. Please set it in Vacation Balances first.",
+    ),
+    "timeTrackerNoBalanceEmployee": MessageLookupByLibrary.simpleMessage(
+      "No vacation balance has been set for you yet. Please contact HR.",
+    ),
+    "timeTrackerNoBreak": MessageLookupByLibrary.simpleMessage("No Break"),
+    "timeTrackerNoBreakWarnings": MessageLookupByLibrary.simpleMessage(
+      "No break rule warnings in this period.",
+    ),
+    "timeTrackerNoBreaks": MessageLookupByLibrary.simpleMessage("No Breaks"),
+    "timeTrackerNoComments": MessageLookupByLibrary.simpleMessage(
+      "No comments yet.",
+    ),
+    "timeTrackerNoDataYet": MessageLookupByLibrary.simpleMessage(
+      "No data for this period yet.",
+    ),
+    "timeTrackerNoHistory": MessageLookupByLibrary.simpleMessage(
+      "No changes yet.",
+    ),
+    "timeTrackerNoLimit": MessageLookupByLibrary.simpleMessage("No Limit"),
+    "timeTrackerNoPause": MessageLookupByLibrary.simpleMessage("No Pause"),
+    "timeTrackerNoPendingApprovals": MessageLookupByLibrary.simpleMessage(
+      "No Pending Approvals",
+    ),
+    "timeTrackerNoPermission": MessageLookupByLibrary.simpleMessage(
+      "You don\'t have permission to do this.",
+    ),
+    "timeTrackerNoRequestTypesAvailable": MessageLookupByLibrary.simpleMessage(
+      "No request type is available to you yet. Ask HR to add one.",
+    ),
+    "timeTrackerNoVacationsInYear": m100,
+    "timeTrackerNotAssigned": MessageLookupByLibrary.simpleMessage(
+      "You are not assigned to a work location yet. Ask HR to assign you before checking in.",
+    ),
+    "timeTrackerNotAssignedYet": MessageLookupByLibrary.simpleMessage(
+      "Not assigned to a location yet.",
+    ),
+    "timeTrackerNotRequired": MessageLookupByLibrary.simpleMessage(
+      "Not Required",
+    ),
+    "timeTrackerOff": MessageLookupByLibrary.simpleMessage("Off"),
+    "timeTrackerOffice": MessageLookupByLibrary.simpleMessage("Office"),
+    "timeTrackerOn": MessageLookupByLibrary.simpleMessage("On"),
+    "timeTrackerOnLeaveToday": MessageLookupByLibrary.simpleMessage(
+      "On Leave Today",
+    ),
+    "timeTrackerOncomingTime": MessageLookupByLibrary.simpleMessage(
+      "Oncoming Time",
+    ),
+    "timeTrackerOneAbsence": MessageLookupByLibrary.simpleMessage("1 Absence"),
+    "timeTrackerOneDay": MessageLookupByLibrary.simpleMessage("1 Day"),
+    "timeTrackerOpenInGoogleMaps": MessageLookupByLibrary.simpleMessage(
+      "Open In Google Maps",
+    ),
+    "timeTrackerOptional": MessageLookupByLibrary.simpleMessage("Optional"),
+    "timeTrackerOthers": MessageLookupByLibrary.simpleMessage("Others"),
+    "timeTrackerOverall": MessageLookupByLibrary.simpleMessage("Overall"),
+    "timeTrackerOverdueApprovals": MessageLookupByLibrary.simpleMessage(
+      "Approvals Pending More Than 2 Days",
+    ),
+    "timeTrackerPause": MessageLookupByLibrary.simpleMessage("Pause"),
+    "timeTrackerPauseAllowed": MessageLookupByLibrary.simpleMessage(
+      "Pause Allowed",
+    ),
+    "timeTrackerPauseLeft": m101,
+    "timeTrackerPauseLimitHint": MessageLookupByLibrary.simpleMessage(
+      "Longest pause in minutes (empty = no limit)",
+    ),
+    "timeTrackerPauseOver": m102,
+    "timeTrackerPauseTooLong": MessageLookupByLibrary.simpleMessage(
+      "A pause can be at most 1440 minutes (one day).",
+    ),
+    "timeTrackerPauseUpToMinutes": m103,
+    "timeTrackerPausedFor": m104,
+    "timeTrackerPending": MessageLookupByLibrary.simpleMessage("Pending"),
+    "timeTrackerPendingApprovals": MessageLookupByLibrary.simpleMessage(
+      "Pending Approvals",
+    ),
+    "timeTrackerPendingWithColumn": MessageLookupByLibrary.simpleMessage(
+      "Pending With",
+    ),
+    "timeTrackerPersonalDashboard": MessageLookupByLibrary.simpleMessage(
+      "Personal Dashboard",
+    ),
+    "timeTrackerPhoneNumber": MessageLookupByLibrary.simpleMessage(
+      "Phone Number",
+    ),
+    "timeTrackerPickTypeFirst": MessageLookupByLibrary.simpleMessage(
+      "Choose the request type first — the form then shows only what it needs.",
+    ),
+    "timeTrackerPostalCode": MessageLookupByLibrary.simpleMessage(
+      "Postal Code",
+    ),
+    "timeTrackerPresent": MessageLookupByLibrary.simpleMessage("Present"),
+    "timeTrackerRadiusHint": MessageLookupByLibrary.simpleMessage("500"),
+    "timeTrackerRadiusRequired": MessageLookupByLibrary.simpleMessage(
+      "Enter the radius in meters (up to 50000).",
+    ),
+    "timeTrackerRangeCustom": MessageLookupByLibrary.simpleMessage("Custom"),
+    "timeTrackerRangeDay": MessageLookupByLibrary.simpleMessage("Day"),
+    "timeTrackerRangeMonth": MessageLookupByLibrary.simpleMessage("Month"),
+    "timeTrackerRangeTime": MessageLookupByLibrary.simpleMessage("Time"),
+    "timeTrackerRangeWeek": MessageLookupByLibrary.simpleMessage("Week"),
+    "timeTrackerRangeYear": MessageLookupByLibrary.simpleMessage("Year"),
+    "timeTrackerRankingEmpty": MessageLookupByLibrary.simpleMessage(
+      "No late or absent days in this period.",
+    ),
+    "timeTrackerReasonOfCancellation": MessageLookupByLibrary.simpleMessage(
+      "Reason Of Cancellation",
+    ),
+    "timeTrackerReasonOfRejection": MessageLookupByLibrary.simpleMessage(
+      "Reason Of Rejection",
+    ),
+    "timeTrackerReasonsOfCancellation": MessageLookupByLibrary.simpleMessage(
+      "Reasons Of Cancellation",
+    ),
+    "timeTrackerReasonsOfRejection": MessageLookupByLibrary.simpleMessage(
+      "Reasons Of Rejection",
+    ),
+    "timeTrackerReassign": MessageLookupByLibrary.simpleMessage("Reassign"),
+    "timeTrackerReassignEmployeeLocation": MessageLookupByLibrary.simpleMessage(
+      "Reassign Employee Location",
+    ),
+    "timeTrackerRejectCancellation": MessageLookupByLibrary.simpleMessage(
+      "Reject Cancellation",
+    ),
+    "timeTrackerRejectCancellationConfirm":
+        MessageLookupByLibrary.simpleMessage(
+          "Are You Sure You Want To Reject The Cancellation Of This Request ?",
+        ),
+    "timeTrackerRejectRequest": MessageLookupByLibrary.simpleMessage(
+      "Reject Request",
+    ),
+    "timeTrackerRejectRequestConfirm": MessageLookupByLibrary.simpleMessage(
+      "Are You Sure You Want To Reject This Request ?",
+    ),
+    "timeTrackerRejected": MessageLookupByLibrary.simpleMessage("Rejected"),
+    "timeTrackerRemainingDays": MessageLookupByLibrary.simpleMessage(
+      "Remaining",
+    ),
+    "timeTrackerRemindAgainIn": m105,
+    "timeTrackerReminderRule": MessageLookupByLibrary.simpleMessage(
+      "You Can Only Send A Reminder Once Every 24 Hours. Feel Free To Contact Your Supervisor Directly For Assistance",
+    ),
+    "timeTrackerReminderSentOn": m106,
+    "timeTrackerRemote": MessageLookupByLibrary.simpleMessage("Remote"),
+    "timeTrackerRemove": MessageLookupByLibrary.simpleMessage("Remove"),
+    "timeTrackerRemoveAssignmentConfirm": MessageLookupByLibrary.simpleMessage(
+      "Are You Sure You Want To Remove This Employee\'s Assignment ?",
+    ),
+    "timeTrackerRemoveEmployeeAssignment": MessageLookupByLibrary.simpleMessage(
+      "Remove Employee Assignment",
+    ),
+    "timeTrackerRemoveRequestType": MessageLookupByLibrary.simpleMessage(
+      "Remove Request Type",
+    ),
+    "timeTrackerRemoveRequestTypeConfirm": MessageLookupByLibrary.simpleMessage(
+      "Are You Sure You Want To Remove This Request Type ?",
+    ),
+    "timeTrackerRemoved": MessageLookupByLibrary.simpleMessage("Removed"),
+    "timeTrackerRemovedBy": MessageLookupByLibrary.simpleMessage("Removed By"),
+    "timeTrackerRemovedDate": MessageLookupByLibrary.simpleMessage(
+      "Removed Date",
+    ),
+    "timeTrackerRemovingAssignment": MessageLookupByLibrary.simpleMessage(
+      "Removing Assignment",
+    ),
+    "timeTrackerRemovingRequestType": MessageLookupByLibrary.simpleMessage(
+      "Removing Request Type",
+    ),
+    "timeTrackerRequestApproved": MessageLookupByLibrary.simpleMessage(
+      "You Successfully Approved This Request",
+    ),
+    "timeTrackerRequestAttachments": MessageLookupByLibrary.simpleMessage(
+      "Request Attachments",
+    ),
+    "timeTrackerRequestCanceled": MessageLookupByLibrary.simpleMessage(
+      "You Successfully Canceled This Request",
+    ),
+    "timeTrackerRequestCanceledTitle": MessageLookupByLibrary.simpleMessage(
+      "Request Canceled",
+    ),
+    "timeTrackerRequestCancellationTitle": MessageLookupByLibrary.simpleMessage(
+      "Request Cancellation",
+    ),
+    "timeTrackerRequestChangedMeanwhile": MessageLookupByLibrary.simpleMessage(
+      "This request was just changed by someone else. Please check it and try again.",
+    ),
+    "timeTrackerRequestDate": MessageLookupByLibrary.simpleMessage(
+      "Request Date",
+    ),
+    "timeTrackerRequestDescription": MessageLookupByLibrary.simpleMessage(
+      "Request Description",
+    ),
+    "timeTrackerRequestDetails": MessageLookupByLibrary.simpleMessage(
+      "Request Details",
+    ),
+    "timeTrackerRequestName": MessageLookupByLibrary.simpleMessage(
+      "Request Name",
+    ),
+    "timeTrackerRequestNameAr": MessageLookupByLibrary.simpleMessage(
+      "اسم الطلب",
+    ),
+    "timeTrackerRequestNotFound": MessageLookupByLibrary.simpleMessage(
+      "This request is not available.",
+    ),
+    "timeTrackerRequestOverlaps": MessageLookupByLibrary.simpleMessage(
+      "You already have a request for this time",
+    ),
+    "timeTrackerRequestPermissions": MessageLookupByLibrary.simpleMessage(
+      "Requests",
+    ),
+    "timeTrackerRequestRejected": MessageLookupByLibrary.simpleMessage(
+      "You Successfully Rejected This Request",
+    ),
+    "timeTrackerRequestSubmitted": MessageLookupByLibrary.simpleMessage(
+      "Your Request Has Been Successfully Submitted",
+    ),
+    "timeTrackerRequestTimeline": MessageLookupByLibrary.simpleMessage(
+      "Request Timeline",
+    ),
+    "timeTrackerRequestToCancellation": MessageLookupByLibrary.simpleMessage(
+      "Request To Cancellation",
+    ),
+    "timeTrackerRequestTransaction": MessageLookupByLibrary.simpleMessage(
+      "Request Transaction",
+    ),
+    "timeTrackerRequestType": MessageLookupByLibrary.simpleMessage(
+      "Request Type",
+    ),
+    "timeTrackerRequestTypeCreated": MessageLookupByLibrary.simpleMessage(
+      "You Successfully Created This Request Type",
+    ),
+    "timeTrackerRequestTypeCreatedTitle": MessageLookupByLibrary.simpleMessage(
+      "Request Type Created",
+    ),
+    "timeTrackerRequestTypeEdited": MessageLookupByLibrary.simpleMessage(
+      "You Successfully Edited This Request Type",
+    ),
+    "timeTrackerRequestTypeEditedTitle": MessageLookupByLibrary.simpleMessage(
+      "Request Type Edited",
+    ),
+    "timeTrackerRequestTypePermissions": MessageLookupByLibrary.simpleMessage(
+      "Request Types",
+    ),
+    "timeTrackerRequestTypeRemoved": MessageLookupByLibrary.simpleMessage(
+      "You Successfully Removed This Request Type",
+    ),
+    "timeTrackerRequestTypeRemovedTitle": MessageLookupByLibrary.simpleMessage(
+      "Request Type Removed",
+    ),
+    "timeTrackerRequestTypeRequired": MessageLookupByLibrary.simpleMessage(
+      "Choose the request type.",
+    ),
+    "timeTrackerRequestTypeRestored": MessageLookupByLibrary.simpleMessage(
+      "The request type is active again.",
+    ),
+    "timeTrackerRequestTypeRestoredTitle": MessageLookupByLibrary.simpleMessage(
+      "Request Type Restored",
+    ),
+    "timeTrackerRequestTypeStatusChanged": MessageLookupByLibrary.simpleMessage(
+      "You Successfully Changed the Status Of This Request Type",
+    ),
+    "timeTrackerRequestTypesExportName": MessageLookupByLibrary.simpleMessage(
+      "Request Types Report",
+    ),
+    "timeTrackerRequestWord": MessageLookupByLibrary.simpleMessage("Request"),
+    "timeTrackerRequestedBy": MessageLookupByLibrary.simpleMessage(
+      "Requested By",
+    ),
+    "timeTrackerRequestedTimeframe": MessageLookupByLibrary.simpleMessage(
+      "Period",
+    ),
+    "timeTrackerRequestsExportName": MessageLookupByLibrary.simpleMessage(
+      "Requests Report",
+    ),
+    "timeTrackerRequestsTitle": MessageLookupByLibrary.simpleMessage(
+      "Requests",
+    ),
+    "timeTrackerRequired": MessageLookupByLibrary.simpleMessage("Required"),
+    "timeTrackerRequiresAttachments": MessageLookupByLibrary.simpleMessage(
+      "Requires Attachments",
+    ),
+    "timeTrackerRequiresDescription": MessageLookupByLibrary.simpleMessage(
+      "Requires Description",
+    ),
+    "timeTrackerRestore": MessageLookupByLibrary.simpleMessage("Restore"),
+    "timeTrackerRestoreRequestTypeConfirm":
+        MessageLookupByLibrary.simpleMessage(
+          "This request type will be active again and employees can use it in new requests.",
+        ),
+    "timeTrackerRestoringRequestType": MessageLookupByLibrary.simpleMessage(
+      "Restoring Request Type",
+    ),
+    "timeTrackerResume": MessageLookupByLibrary.simpleMessage("Resume"),
+    "timeTrackerRetry": MessageLookupByLibrary.simpleMessage("Try Again"),
+    "timeTrackerRulesFromLocation": m107,
+    "timeTrackerRulesFromLocationTag": MessageLookupByLibrary.simpleMessage(
+      "From Location",
+    ),
+    "timeTrackerRulesLabel": MessageLookupByLibrary.simpleMessage("Rules"),
+    "timeTrackerSameDayTimeframe": m108,
+    "timeTrackerSatelliteView": MessageLookupByLibrary.simpleMessage(
+      "Satellite",
+    ),
+    "timeTrackerScreensComingSoon": MessageLookupByLibrary.simpleMessage(
+      "The Time Tracker screens are being built and will appear here soon.",
+    ),
+    "timeTrackerSearchAddress": MessageLookupByLibrary.simpleMessage(
+      "Search An Address Or Place",
+    ),
+    "timeTrackerSearchApprovalsHint": MessageLookupByLibrary.simpleMessage(
+      "Search by employee, type or department",
+    ),
+    "timeTrackerSearchAttendanceHint": MessageLookupByLibrary.simpleMessage(
+      "Search by date, status or time",
+    ),
+    "timeTrackerSearching": MessageLookupByLibrary.simpleMessage("Searching…"),
+    "timeTrackerSectionAddress": MessageLookupByLibrary.simpleMessage(
+      "Address",
+    ),
+    "timeTrackerSectionAttendanceRules": MessageLookupByLibrary.simpleMessage(
+      "Attendance Rules",
+    ),
+    "timeTrackerSectionAvailability": MessageLookupByLibrary.simpleMessage(
+      "Availability",
+    ),
+    "timeTrackerSectionComingSoon": MessageLookupByLibrary.simpleMessage(
+      "This section is coming soon.",
+    ),
+    "timeTrackerSectionHistory": MessageLookupByLibrary.simpleMessage(
+      "History",
+    ),
+    "timeTrackerSectionMap": MessageLookupByLibrary.simpleMessage(
+      "Location On Map",
+    ),
+    "timeTrackerSectionRequirements": MessageLookupByLibrary.simpleMessage(
+      "Request Requirements",
+    ),
+    "timeTrackerSelectLocation": MessageLookupByLibrary.simpleMessage(
+      "Select Location",
+    ),
+    "timeTrackerSelectState": MessageLookupByLibrary.simpleMessage(
+      "Select State Or Province",
+    ),
+    "timeTrackerSendRequestReminder": MessageLookupByLibrary.simpleMessage(
+      "Send Reminder",
+    ),
+    "timeTrackerSickLeave": MessageLookupByLibrary.simpleMessage("Sick Leave"),
+    "timeTrackerSortNameAsc": MessageLookupByLibrary.simpleMessage(
+      "Name (A To Z)",
+    ),
+    "timeTrackerSortNameDesc": MessageLookupByLibrary.simpleMessage(
+      "Name (Z To A)",
+    ),
+    "timeTrackerSortNewest": MessageLookupByLibrary.simpleMessage(
+      "Newest First",
+    ),
+    "timeTrackerStartDate": MessageLookupByLibrary.simpleMessage("Start Date"),
+    "timeTrackerStartDateRequired": MessageLookupByLibrary.simpleMessage(
+      "Choose the start date.",
+    ),
+    "timeTrackerStartShift": MessageLookupByLibrary.simpleMessage(
+      "Start Shift",
+    ),
+    "timeTrackerStartTime": MessageLookupByLibrary.simpleMessage("Start Time"),
+    "timeTrackerStartTimeRequired": MessageLookupByLibrary.simpleMessage(
+      "Choose the start time.",
+    ),
+    "timeTrackerStateOrProvince": MessageLookupByLibrary.simpleMessage(
+      "State Or Province",
+    ),
+    "timeTrackerStateOrProvinceAr": MessageLookupByLibrary.simpleMessage(
+      "ولاية او محافظة",
+    ),
+    "timeTrackerStatus": MessageLookupByLibrary.simpleMessage("Status"),
+    "timeTrackerStatusChangedTitle": MessageLookupByLibrary.simpleMessage(
+      "Status Changed",
+    ),
+    "timeTrackerStepDecision": m109,
+    "timeTrackerStepJustification": m110,
+    "timeTrackerSubmittedTransaction": MessageLookupByLibrary.simpleMessage(
+      "Submitted Transaction",
+    ),
+    "timeTrackerSuccessful": MessageLookupByLibrary.simpleMessage("Successful"),
+    "timeTrackerTabApprovals": MessageLookupByLibrary.simpleMessage(
+      "Approvals",
+    ),
+    "timeTrackerTabAttendance": MessageLookupByLibrary.simpleMessage(
+      "Attendance",
+    ),
+    "timeTrackerTabDashboard": MessageLookupByLibrary.simpleMessage(
+      "Dashboard",
+    ),
+    "timeTrackerTabEmployees": MessageLookupByLibrary.simpleMessage(
+      "Employees",
+    ),
+    "timeTrackerTabLocations": MessageLookupByLibrary.simpleMessage(
+      "Locations",
+    ),
+    "timeTrackerTabOverview": MessageLookupByLibrary.simpleMessage("Overview"),
+    "timeTrackerTabRequestTypes": MessageLookupByLibrary.simpleMessage(
+      "Request Types",
+    ),
+    "timeTrackerTabRequests": MessageLookupByLibrary.simpleMessage("Requests"),
+    "timeTrackerTabVacationBalances": MessageLookupByLibrary.simpleMessage(
+      "Vacation Balances",
+    ),
+    "timeTrackerTapMapHint": MessageLookupByLibrary.simpleMessage(
+      "Tap the map to place the pin. The yellow circle is the check-in area.",
+    ),
+    "timeTrackerTerrainView": MessageLookupByLibrary.simpleMessage("Terrain"),
+    "timeTrackerTextHereAr": MessageLookupByLibrary.simpleMessage("اكتب هنا"),
+    "timeTrackerTextHereEn": MessageLookupByLibrary.simpleMessage("Text here"),
+    "timeTrackerTimeframeValue": m111,
+    "timeTrackerTitle": MessageLookupByLibrary.simpleMessage("Time Tracker"),
+    "timeTrackerTitleLabel": MessageLookupByLibrary.simpleMessage("Title"),
+    "timeTrackerTotal": MessageLookupByLibrary.simpleMessage("Total"),
+    "timeTrackerTotalDays": MessageLookupByLibrary.simpleMessage("Total Days"),
+    "timeTrackerTotalDaysHint": MessageLookupByLibrary.simpleMessage("e.g. 21"),
+    "timeTrackerTotalDaysInvalid": MessageLookupByLibrary.simpleMessage(
+      "Enter a number of days, with at most one decimal.",
+    ),
+    "timeTrackerTotalDaysRequired": MessageLookupByLibrary.simpleMessage(
+      "Enter the total days.",
+    ),
+    "timeTrackerTotalDaysTooLarge": MessageLookupByLibrary.simpleMessage(
+      "A year has at most 366 days.",
+    ),
+    "timeTrackerTotalTime": MessageLookupByLibrary.simpleMessage("Total Time"),
+    "timeTrackerTrackerApprover": MessageLookupByLibrary.simpleMessage(
+      "Tracker Approver",
+    ),
+    "timeTrackerTransactionButton": MessageLookupByLibrary.simpleMessage(
+      "Transaction",
+    ),
+    "timeTrackerTransactionDescriptionRequired":
+        MessageLookupByLibrary.simpleMessage(
+          "Write why this attendance needs correcting.",
+        ),
+    "timeTrackerTransactionDocument": MessageLookupByLibrary.simpleMessage(
+      "Transaction Document",
+    ),
+    "timeTrackerTransactionDocumentRequired":
+        MessageLookupByLibrary.simpleMessage(
+          "Attach a document that supports this correction.",
+        ),
+    "timeTrackerTransactionInFuture": MessageLookupByLibrary.simpleMessage(
+      "A transaction can\'t be in the future.",
+    ),
+    "timeTrackerTransactionSubmitted": MessageLookupByLibrary.simpleMessage(
+      "You Successfully Submitted This Transaction",
+    ),
+    "timeTrackerTransactionTooLong": MessageLookupByLibrary.simpleMessage(
+      "A correction cannot be longer than 24 hours",
+    ),
+    "timeTrackerTransactionsWaiting": MessageLookupByLibrary.simpleMessage(
+      "Transactions Waiting",
+    ),
+    "timeTrackerTwoAbsences": MessageLookupByLibrary.simpleMessage(
+      "2 Absences",
+    ),
+    "timeTrackerTwoDays": MessageLookupByLibrary.simpleMessage("2 Days"),
+    "timeTrackerUnassigned": MessageLookupByLibrary.simpleMessage("Unassigned"),
+    "timeTrackerUnderReview": MessageLookupByLibrary.simpleMessage(
+      "Under Review",
+    ),
+    "timeTrackerUnitHours": MessageLookupByLibrary.simpleMessage("Hours"),
+    "timeTrackerUnitMins": MessageLookupByLibrary.simpleMessage("Mins"),
+    "timeTrackerUpdatedBy": MessageLookupByLibrary.simpleMessage("Updated By"),
+    "timeTrackerUploadFailed": MessageLookupByLibrary.simpleMessage(
+      "Could not upload the file. Please try again.",
+    ),
+    "timeTrackerUploadFile": MessageLookupByLibrary.simpleMessage(
+      "Upload File",
+    ),
+    "timeTrackerUploadedOn": m112,
+    "timeTrackerUseLocationRules": MessageLookupByLibrary.simpleMessage(
+      "Use The Location\'s Rules",
+    ),
+    "timeTrackerUseMyLocation": MessageLookupByLibrary.simpleMessage(
+      "Use My Current Location",
+    ),
+    "timeTrackerUsedDays": MessageLookupByLibrary.simpleMessage("Used"),
+    "timeTrackerVacation": MessageLookupByLibrary.simpleMessage("Vacation"),
+    "timeTrackerVacationBalancePermissions":
+        MessageLookupByLibrary.simpleMessage("Vacation Balance"),
+    "timeTrackerVacationBalanceShort": MessageLookupByLibrary.simpleMessage(
+      "Vacation Balance",
+    ),
+    "timeTrackerVacationBalancesExportName":
+        MessageLookupByLibrary.simpleMessage("Vacation Balances Report"),
+    "timeTrackerVacationEdited": MessageLookupByLibrary.simpleMessage(
+      "You Successfully Edited This Vacation Balance",
+    ),
+    "timeTrackerVacationEditedTitle": MessageLookupByLibrary.simpleMessage(
+      "Vacation Balance Edited",
+    ),
+    "timeTrackerVacationHistory": MessageLookupByLibrary.simpleMessage(
+      "Vacation History",
+    ),
+    "timeTrackerVacationImportConfirm": MessageLookupByLibrary.simpleMessage(
+      "Are You Sure You Want To Import These Vacation Balances ?",
+    ),
+    "timeTrackerVacationImportDone": MessageLookupByLibrary.simpleMessage(
+      "You Successfully Imported The Vacation Balances",
+    ),
+    "timeTrackerVacationImportDoneTitle": MessageLookupByLibrary.simpleMessage(
+      "Vacation Balances Imported",
+    ),
+    "timeTrackerVacationImportHelp": m113,
+    "timeTrackerVacationImportNoColumns": MessageLookupByLibrary.simpleMessage(
+      "The file needs the “Email” and “Total Days” columns. Please use the template.",
+    ),
+    "timeTrackerVacationRequestsCount": m114,
+    "timeTrackerVacationTemplateName": MessageLookupByLibrary.simpleMessage(
+      "Vacation Balances Template",
+    ),
+    "timeTrackerVacations": MessageLookupByLibrary.simpleMessage("Vacations"),
+    "timeTrackerVacationsCredit": MessageLookupByLibrary.simpleMessage(
+      "Vacations Credit",
+    ),
+    "timeTrackerViewApprovals": MessageLookupByLibrary.simpleMessage(
+      "View Approvals",
+    ),
+    "timeTrackerViewAttendance": MessageLookupByLibrary.simpleMessage(
+      "View Attendance",
+    ),
+    "timeTrackerViewEmployees": MessageLookupByLibrary.simpleMessage(
+      "View Employees",
+    ),
+    "timeTrackerViewGroups": MessageLookupByLibrary.simpleMessage(
+      "View Groups",
+    ),
+    "timeTrackerViewLocations": MessageLookupByLibrary.simpleMessage(
+      "View Locations",
+    ),
+    "timeTrackerViewRequestTypes": MessageLookupByLibrary.simpleMessage(
+      "View Request Types",
+    ),
+    "timeTrackerViewRequests": MessageLookupByLibrary.simpleMessage(
+      "View Requests",
+    ),
+    "timeTrackerViewVacationBalances": MessageLookupByLibrary.simpleMessage(
+      "View Vacation Balances",
+    ),
+    "timeTrackerWaitingDays": m115,
+    "timeTrackerWorkEndRequired": MessageLookupByLibrary.simpleMessage(
+      "Choose the work end time.",
+    ),
+    "timeTrackerWorkEndTime": MessageLookupByLibrary.simpleMessage(
+      "Work End Time",
+    ),
+    "timeTrackerWorkFromDifferentLocation":
+        MessageLookupByLibrary.simpleMessage("Work From A Different Location"),
+    "timeTrackerWorkLocation": MessageLookupByLibrary.simpleMessage(
+      "Work Location",
+    ),
+    "timeTrackerWorkLocationType": MessageLookupByLibrary.simpleMessage(
+      "Work Location Type",
+    ),
+    "timeTrackerWorkLocations": MessageLookupByLibrary.simpleMessage(
+      "Work Locations",
+    ),
+    "timeTrackerWorkLocationsHint": MessageLookupByLibrary.simpleMessage(
+      "The first location is the main one: its hours and rules apply.",
+    ),
+    "timeTrackerWorkSchedule": MessageLookupByLibrary.simpleMessage(
+      "Work Schedule",
+    ),
+    "timeTrackerWorkStartRequired": MessageLookupByLibrary.simpleMessage(
+      "Choose the work start time.",
+    ),
+    "timeTrackerWorkStartTime": MessageLookupByLibrary.simpleMessage(
+      "Work Start Time",
+    ),
+    "timeTrackerWorkTimesSame": MessageLookupByLibrary.simpleMessage(
+      "Work start and end can\'t be the same time.",
+    ),
+    "timeTrackerWorkingDays": MessageLookupByLibrary.simpleMessage(
+      "Working Days",
+    ),
+    "timeTrackerWorkingDaysRequired": MessageLookupByLibrary.simpleMessage(
+      "Choose at least one working day.",
+    ),
+    "timeTrackerWriteComment": MessageLookupByLibrary.simpleMessage(
+      "Write A Comment",
+    ),
+    "timeTrackerWrongLocationBody": MessageLookupByLibrary.simpleMessage(
+      "Your check-in location does not match the company\'s designated location. Please check in from the correct location.",
+    ),
+    "timeTrackerWrongLocationTitle": MessageLookupByLibrary.simpleMessage(
+      "Wrong Location",
+    ),
+    "timeTrackerYearBalanceShort": m116,
+    "timeTrackerYes": MessageLookupByLibrary.simpleMessage("Yes"),
+    "timeTrackerYourTabs": MessageLookupByLibrary.simpleMessage(
+      "Your Time Tracker sections",
+    ),
     "timeUnit": MessageLookupByLibrary.simpleMessage("Time Unit"),
     "timeminutes": MessageLookupByLibrary.simpleMessage("timeMinutes"),
     "title": MessageLookupByLibrary.simpleMessage("Title"),
@@ -7237,12 +10464,75 @@ class MessageLookup extends MessageLookupByLibrary {
     "tnd": MessageLookupByLibrary.simpleMessage("TND"),
     "to": MessageLookupByLibrary.simpleMessage("To"),
     "toDo": MessageLookupByLibrary.simpleMessage("To-Do"),
+    "toDoListDetails": MessageLookupByLibrary.simpleMessage(
+      "To Do List Details",
+    ),
     "toDoListTitle": MessageLookupByLibrary.simpleMessage("To Do List"),
+    "toDoPermissions": MessageLookupByLibrary.simpleMessage(
+      "To Do Permissions",
+    ),
     "toWhichTypesOfRequestsDoesThisApply": MessageLookupByLibrary.simpleMessage(
       "To Which Types Of Requests Does This Apply",
     ),
     "today": MessageLookupByLibrary.simpleMessage("Today"),
     "todo": MessageLookupByLibrary.simpleMessage("To Do List"),
+    "todoChoose": MessageLookupByLibrary.simpleMessage("Choose"),
+    "todoCompletionDate": MessageLookupByLibrary.simpleMessage(
+      "Completion Date",
+    ),
+    "todoDateHint": MessageLookupByLibrary.simpleMessage("DD/MM/YYYY"),
+    "todoDatesRequired": MessageLookupByLibrary.simpleMessage(
+      "Start and end dates are required.",
+    ),
+    "todoDayUnit": MessageLookupByLibrary.simpleMessage("Day"),
+    "todoDebugFailed": MessageLookupByLibrary.simpleMessage(
+      "The action could not be completed. Please try again.",
+    ),
+    "todoDebugLoad": MessageLookupByLibrary.simpleMessage("Load demo to-dos"),
+    "todoDebugLoadDone": m117,
+    "todoDebugRemove": MessageLookupByLibrary.simpleMessage(
+      "Remove demo to-dos",
+    ),
+    "todoDebugRemoveDone": m118,
+    "todoDebugSweep": MessageLookupByLibrary.simpleMessage(
+      "Send due reminders now",
+    ),
+    "todoDebugSweepDone": m119,
+    "todoDebugTools": MessageLookupByLibrary.simpleMessage("Demo tools"),
+    "todoDebugToolsHint": MessageLookupByLibrary.simpleMessage(
+      "Available in debug builds only. Due reminders arrive about three minutes after loading the demo to-dos.",
+    ),
+    "todoDeletionDate": MessageLookupByLibrary.simpleMessage("Deletion Date"),
+    "todoEndAfterStart": MessageLookupByLibrary.simpleMessage(
+      "The end date must be after the start date.",
+    ),
+    "todoEveryInterval": m120,
+    "todoFrequencyBadge": m121,
+    "todoHomeNoOpen": MessageLookupByLibrary.simpleMessage("No open to-dos"),
+    "todoItemHint": MessageLookupByLibrary.simpleMessage("Add an item"),
+    "todoLoadError": MessageLookupByLibrary.simpleMessage(
+      "Could not load your to-dos.",
+    ),
+    "todoMarkDone": MessageLookupByLibrary.simpleMessage("Mark as done"),
+    "todoNoAccess": MessageLookupByLibrary.simpleMessage(
+      "You don\'t have access to the To Do List.",
+    ),
+    "todoNoPermission": MessageLookupByLibrary.simpleMessage(
+      "You don\'t have permission for this action.",
+    ),
+    "todoNotFound": MessageLookupByLibrary.simpleMessage(
+      "This to-do no longer exists.",
+    ),
+    "todoRemoveItem": MessageLookupByLibrary.simpleMessage("Remove item"),
+    "todoSaveError": MessageLookupByLibrary.simpleMessage(
+      "Could not save the to-do. Please try again.",
+    ),
+    "todoScheduledAt": m122,
+    "todoTimeHint": MessageLookupByLibrary.simpleMessage("00:00"),
+    "todoWeekDaysRequired": MessageLookupByLibrary.simpleMessage(
+      "Select at least one day.",
+    ),
+    "todoWeekUnit": MessageLookupByLibrary.simpleMessage("Week"),
     "togolese": MessageLookupByLibrary.simpleMessage("Togolese"),
     "tongan": MessageLookupByLibrary.simpleMessage("Tongan"),
     "top": MessageLookupByLibrary.simpleMessage("Top"),
@@ -7399,6 +10689,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "unpinnedSuccessfully": MessageLookupByLibrary.simpleMessage(
       "Unpinned successfully",
     ),
+    "unreadableDocuments": MessageLookupByLibrary.simpleMessage(
+      "Documents that could not be read:",
+    ),
     "unsuccessful": MessageLookupByLibrary.simpleMessage("Unsuccessful"),
     "unsupportedCharactersInPassportNumber":
         MessageLookupByLibrary.simpleMessage(
@@ -7435,6 +10728,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "uploadEvidence": MessageLookupByLibrary.simpleMessage("Upload Evidence"),
     "uploadFailed": MessageLookupByLibrary.simpleMessage("Upload failed"),
+    "uploadFailedTryAgain": MessageLookupByLibrary.simpleMessage(
+      "Upload failed, please try again",
+    ),
     "uploadNationalIdBack": MessageLookupByLibrary.simpleMessage(
       "Upload National ID (Back)",
     ),
@@ -7490,6 +10786,23 @@ class MessageLookup extends MessageLookupByLibrary {
     "userEmailNotFound": MessageLookupByLibrary.simpleMessage(
       "User email not found",
     ),
+    "userLimitCheckFailed": MessageLookupByLibrary.simpleMessage(
+      "Could not verify the user limits, so no access was granted. Please try again.",
+    ),
+    "userLimitChecking": MessageLookupByLibrary.simpleMessage(
+      "Checking user limits…",
+    ),
+    "userLimitModuleReached": m123,
+    "userLimitModuleUnverifiable": m124,
+    "userLimitModuleUsage": m125,
+    "userLimitSeatsLeft": m126,
+    "userLimitTotalReached": m127,
+    "userLimitTotalUnverifiable": MessageLookupByLibrary.simpleMessage(
+      "The company user limit could not be read, so no access was granted.",
+    ),
+    "userLimitTotalUsage": m128,
+    "userLimitUnknownRole": m129,
+    "userLimitsTitle": MessageLookupByLibrary.simpleMessage("User Limits"),
     "userManagement": MessageLookupByLibrary.simpleMessage("User Management"),
     "userManagementModule": MessageLookupByLibrary.simpleMessage(
       "User Management Module",
@@ -7564,6 +10877,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "View Storage Locations",
     ),
     "viewSubmissions": MessageLookupByLibrary.simpleMessage("View Submissions"),
+    "viewToDo": MessageLookupByLibrary.simpleMessage("View To Do"),
     "viewTrainingReports": MessageLookupByLibrary.simpleMessage(
       "View Training Reports",
     ),
@@ -7924,6 +11238,7 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Your reassign owner request has been submitted",
         ),
+    "youreAllClear": MessageLookupByLibrary.simpleMessage("You’re all clear"),
     "zambian": MessageLookupByLibrary.simpleMessage("Zambian"),
     "zimbabwean": MessageLookupByLibrary.simpleMessage("Zimbabwean"),
     "zipCodeOrPostalCode": MessageLookupByLibrary.simpleMessage(

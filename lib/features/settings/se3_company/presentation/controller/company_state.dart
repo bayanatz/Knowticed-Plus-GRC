@@ -12,6 +12,7 @@
 ///          EmployeeBrandingEntity, and added [restartRequested] so the cubit
 ///          can ask the UI to remount instead of calling
 ///          `RestartWidget.restartApp(Get.context!)` after a `Future.delayed`.
+library;
 
 import 'package:flutter/material.dart';
 
@@ -175,23 +176,27 @@ class CompanyState {
           ? this.errorMessage
           : errorMessage as String?,
       restartRequested: restartRequested ?? this.restartRequested,
-      company: identical(company, _unset) ? this.company : company as CompanyModel?,
+      company:
+          identical(company, _unset) ? this.company : company as CompanyModel?,
       employeeBranding: identical(employeeBranding, _unset)
           ? this.employeeBranding
           : employeeBranding as EmployeeBrandingEntity?,
-      brandingSelectedIndex: brandingSelectedIndex ?? this.brandingSelectedIndex,
+      brandingSelectedIndex:
+          brandingSelectedIndex ?? this.brandingSelectedIndex,
       selectedEnglishFont: identical(selectedEnglishFont, _unset)
           ? this.selectedEnglishFont
           : selectedEnglishFont as String?,
       selectedArabicFont: identical(selectedArabicFont, _unset)
           ? this.selectedArabicFont
           : selectedArabicFont as String?,
-      primaryColor:
-          identical(primaryColor, _unset) ? this.primaryColor : primaryColor as Color?,
+      primaryColor: identical(primaryColor, _unset)
+          ? this.primaryColor
+          : primaryColor as Color?,
       secondaryColor: identical(secondaryColor, _unset)
           ? this.secondaryColor
           : secondaryColor as Color?,
-      imageUrl: identical(imageUrl, _unset) ? this.imageUrl : imageUrl as String?,
+      imageUrl:
+          identical(imageUrl, _unset) ? this.imageUrl : imageUrl as String?,
       companyName: companyName ?? this.companyName,
       taxNumber: taxNumber ?? this.taxNumber,
       birthDate: birthDate ?? this.birthDate,

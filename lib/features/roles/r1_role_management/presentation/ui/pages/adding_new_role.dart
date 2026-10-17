@@ -2,51 +2,49 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: adding_new_role.dart
-/// Purpose: Declares `AddingNewRole`.
-/// Author: Knowticed Plus team
+/// Description: Declares `AddingNewRole`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
-import 'dart:ui' as ui;
+library;
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:grc_module/core/custom/5-custom_button.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
+import 'package:grc_module/core/custom/buttons/custom_button.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_switch/flutter_switch.dart';
-import 'package:grc_module/core/custom/2-custom_textfield.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
+import 'package:grc_module/core/custom/inputs/custom_textfield.dart';
+import 'package:grc_module/core/custom/feedback/circle_progress.dart';
 // FRAME 8/9/2026: `pagination_app_bar.dart` replaced by the shared side frame.
-import 'package:grc_module/core/custom/50-custom_side_frame_master.dart';
+import 'package:grc_module/core/custom/navigation/custom_side_frame_master.dart';
 // REMOVED_MODULE: import 'package:grc_module/features/external/knowledge_hub_module/core/theming/new_theme.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
+import 'package:grc_module/core/helper/access/modules_enum.dart';
 
 import 'package:grc_module/core/theme/haptic_controller.dart';
-import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
-import 'package:grc_module/core/network/api_constants.dart';
+import 'package:grc_module/core/custom/dialogs/custom_dialog_manager.dart';
 import 'package:grc_module/core/constants/app_assets.dart';
 import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/core/custom/12-custom_delete_icon.dart';
+import 'package:grc_module/core/custom/buttons/custom_delete_icon.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/features/roles/r1_role_management/data/models/role_model.dart';
 import 'package:grc_module/features/roles/r1_role_management/domain/enums/role_status.dart';
 import 'package:grc_module/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
-import 'package:grc_module/features/roles/r1_role_management/presentation/controller/modules_cubit.dart';
 import 'package:grc_module/features/roles/r1_role_management/presentation/ui/widgets/role_image_editor.dart';
 import 'package:grc_module/features/roles/r1_role_management/presentation/ui/widgets/dialog.dart';
-import './role_permission_switches.dart';
+
+import 'package:grc_module/features/roles/r1_role_management/presentation/ui/pages/role_permission_switches.dart';
+
 import 'package:flutter/services.dart';
 import 'package:grc_module/features/roles/r5_system_logs/data/role_log_service.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
 import 'package:grc_module/core/di/app_controllers.dart';
+import 'dart:ui' as ui;
 
 part '../widgets/adding_new_role_methods1.dart';
 
 class AddingNewRole extends StatefulWidget {
-  AddingNewRole({super.key});
+  const AddingNewRole({super.key});
 
   @override
   State<AddingNewRole> createState() => _AddingNewRoleState();
@@ -60,6 +58,7 @@ class _AddingNewRoleState extends State<AddingNewRole> {
     super.initState();
 
     Future.microtask(() {
+      if (!mounted) return;
       final controller = context.read<RoleCubit>();
 
       if (!controller.isEditing && controller.selectedRole == null) {
@@ -71,17 +70,11 @@ class _AddingNewRoleState extends State<AddingNewRole> {
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-
-
-
-
-
-
   final HapticController hapticController = AppControllers.haptic;
 
   @override
   Widget build(BuildContext context) {
-    bool isTablet = MediaQuery.of(context).size.width > 600;
+    bool isTablet = !kpIsPhoneLayout(context);
     bool isArabic = context.isArabic;
     controller = context.read<RoleCubit>();
     var isMobile = ContextExtension(context).isPhone;
@@ -108,318 +101,336 @@ class _AddingNewRoleState extends State<AddingNewRole> {
             secondTitle: controller.isEditing
                 ? S.of(context).roleDetails
                 : S.of(context).addingNewRole,
-            onSecondTap: controller.isEditing
-                ? () => popFrameRoutes(context, 1)
-                : null,
-            thirdTitle:
-                controller.isEditing ? S.of(context).editingRole : null,
+            onSecondTap:
+                controller.isEditing ? () => popFrameRoutes(context, 1) : null,
+            thirdTitle: controller.isEditing ? S.of(context).editingRole : null,
             child: SideFrameBoundedBody(
               child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // ── DELETE (draft only) ────────────────────────────────
-                // A draft role opens straight into this screen (see
-                // role_overview.dart), so its Delete action sits top-right
-                // under the breadcrumb — the same place RoleDetailsPage puts
-                // edit/delete — rather than in the bottom bar. Confirm →
-                // delete → success → home, all in the shared RoleDialogs flow.
-                // isDraft and isEditing are mutually exclusive, so this and the
-                // status switch below never show together.
-                if (isDraft) ...[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      CustomDeleteIcon(
-                        title: S.of(context).delete,
-                        color: AppColors.red,
-                        onTap: () => RoleDialogs.showDeleteRoleDialog(
-                          context: context,
-                          controller: controller,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // ── DELETE (draft only) ────────────────────────────────
+                  // A draft role opens straight into this screen (see
+                  // role_overview.dart), so its Delete action sits top-right
+                  // under the breadcrumb — the same place RoleDetailsPage puts
+                  // edit/delete — rather than in the bottom bar. Confirm →
+                  // delete → success → home, all in the shared RoleDialogs flow.
+                  // isDraft and isEditing are mutually exclusive, so this and the
+                  // status switch below never show together.
+                  if (isDraft) ...[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        CustomDeleteIcon(
+                          title: S.of(context).delete,
+                          color: AppColors.red,
+                          onTap: () => RoleDialogs.showDeleteRoleDialog(
+                            context: context,
+                            controller: controller,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 10.sp),
-                ],
-
-                // ── STATUS SWITCH ──────────────────────────────────────
-                // Edit mode only: a role that doesn't exist yet has no
-                // status to toggle, so it stays hidden while creating.
-                // Lives outside the form container, under the app bar.
-                if (controller.isEditing) ...[
-                  BlocBuilder<RoleCubit, RoleState>(
-                    buildWhen: (_, state) =>
-                        state is RoleModuleSelected || state is RoleSelected,
-                    builder: (context, state) {
-                      // ADDED 29/8/2026: the row was a label and a switch, so
-                      // the role's state had to be read off the toggle's
-                      // position. It now names the state in words —
-                      // Active/Inactive, نشط/غير نشط — through
-                      // RoleStatus.getLocalizedName, the same table the role
-                      // list and the details screen use.
-                      final RoleStatus shownStatus = controller.isActive
-                          ? RoleStatus.active
-                          : RoleStatus.inactive;
-
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          // Role QA p.30: icon in front of the Status label.
-                          CustomSvgImage(
-                            assetPath:
-                                'assets/icons_assets/main_icons_assets/status_pulse_line.svg',
-                            width: 16.sp,
-                            height: 16.sp,
-                            fit: BoxFit.scaleDown,
-                            color: AppColors.text,
-                          ),
-                          SizedBox(width: 6.sp),
-                          Text(
-                            S.of(context).status,
-                            style: StyleText.fontSize14Weight400.copyWith(
-                              color: AppColors.text,
-                            ),
-                          ),
-                          SizedBox(width: 10.sp),
-                          Transform(
-                            alignment: Alignment.center,
-                            transform: isArabic
-                                ? Matrix4.rotationY(3.14159)
-                                : Matrix4.identity(),
-                            child: FlutterSwitch(
-                              width: 38.sp,
-                              height: 22.sp,
-                              padding: 3.sp,
-                              borderRadius: 20.sp,
-                              toggleSize: 16.sp,
-                              activeColor: AppColors.secondaryPrimary,
-                              inactiveColor: AppColors.grey.withOpacity(.16),
-                              // ✅ reads from cubit
-                              value: controller.isActive,
-                              onToggle: (newValue) async {
-                                // Confirm → apply → success, all handled
-                                // by the shared CustomDialogManager flow.
-                                await _showStatusConfirmDialog(
-                                    context, newValue);
-                              },
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                  SizedBox(height: 10.sp),
-                ],
-
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.all(15.sp),
-                    decoration: BoxDecoration(
-                      color: AppColors.field,
-                      borderRadius: BorderRadius.circular(8.sp),
+                      ],
                     ),
-                    child: SingleChildScrollView(
-                      physics: const ClampingScrollPhysics(),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          RoleImageEditor(),
-                          // SPACING 8/9/2026: every gap inside the form card is
-                          // 10.sp. They used to be 15.sp with one 0 in the
-                          // middle (phones got no gap at all between the name
-                          // and description blocks), so the fields sat at three
-                          // different distances from each other.
-                          SizedBox(height: 10.sp),
+                    SizedBox(height: 10.sp),
+                  ],
 
-                          // ── NAME FIELDS ────────────────────────────────
-                          if (isMobile)
-                            Column(
-                              children: isArabic
-                                  ? [
-                                _buildArabicNameField(),
-                                SizedBox(height: 10.sp),
-                                _buildEnglishNameField(),
-                              ]
-                                  : [
-                                _buildEnglishNameField(),
-                                SizedBox(height: 10.sp),
-                                _buildArabicNameField(),
-                              ],
-                            )
-                          else
-                            Row(
-                              children: isArabic
-                                  ? [
-                                Expanded(child: _buildArabicNameField()),
-                                SizedBox(width: 20.sp),
-                                Expanded(child: _buildEnglishNameField()),
-                              ]
-                                  : [
-                                Expanded(child: _buildEnglishNameField()),
-                                SizedBox(width: 20.sp),
-                                Expanded(child: _buildArabicNameField()),
-                              ],
-                            ),
-
-
-                          SizedBox(height: 10.sp),
-
-                          // ── DESCRIPTION FIELDS ─────────────────────────
-                          if (isArabic) ...[
-                            _buildArabicDescriptionField(),
-                            SizedBox(height: 10.sp),
-                            _buildEnglishDescriptionField(),
-                          ] else ...[
-                            _buildEnglishDescriptionField(),
-                            SizedBox(height: 10.sp),
-                            _buildArabicDescriptionField(),
-                          ],
-
-                          SizedBox(height: 10.sp),
-
-                          Text(
-                            S.of(context).selectModules,
-                            style: StyleText.fontSize16Weight400,
-                          ),
-
-                          SizedBox(height: 10.sp),
-
-                          // ── MODULE GRID ────────────────────────────────
-                          FutureBuilder<List<String>>(
-                            future: _getAllowedModulesForRoleCreation(),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return const Center(
-                                  child: Padding(
-                                    padding: EdgeInsets.all(20),
-                                    child: CircleProgressMaster(),
-                                  ),
-                                );
-                              }
-
-                              if (snapshot.hasError) {
-                                return Container(
-                                  padding: const EdgeInsets.all(20),
-                                  child: Text(
-                                    "Error loading modules: ${snapshot.error}",
-                                    style:  TextStyle(
-                                        color: AppColors.red, fontSize: 16),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                );
-                              }
-
-                              List<String> allowedModuleNames =
-                                  snapshot.data ?? [];
-
-                              if (allowedModuleNames.isEmpty) {
-                                return Container(
-                                  padding: const EdgeInsets.all(20),
-                                  child:  Text(
-                                    "No modules available. Please contact your administrator.",
-                                    style: TextStyle(
-                                        color: AppColors.orange, fontSize: 16),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                );
-                              }
-
-                              // Unknown-module skipping moved to RoleCubit —
-                              // §11.2 forbids try/catch in pages.
-                              final List<Modules> activeModules =
-                                  controller.moduleEnumsFor(allowedModuleNames);
-
-                              return BlocBuilder<RoleCubit, RoleState>(
-                                buildWhen: (_, state) =>
-                                state is RoleModuleSelected,
-                                builder: (context, state) {
-                                  return GridView.builder(
-                                    physics:
-                                    const NeverScrollableScrollPhysics(),
-                                    shrinkWrap: true,
-                                    itemCount: activeModules.length,
-                                    gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: isTablet ? 14 : 4,
-                                      mainAxisSpacing: 10.sp,
-                                      crossAxisSpacing: 10.sp,
-                                      // Fixed 48.sp square tile + 6.sp gap +
-                                      // a label box that is always two lines
-                                      // tall. Defined beside the cell itself
-                                      // (adding_new_role_methods1.dart) so the
-                                      // row height and what the row draws can
-                                      // never disagree.
-                                      mainAxisExtent: kModuleCellExtent,
-                                    ),
-                                    itemBuilder: (_, index) {
-                                      return _moduleItem(
-                                          activeModules[index], context);
-                                    },
-                                  );
-                                },
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-
-                SizedBox(height: 20.sp),
-
-                BlocBuilder<RoleCubit, RoleState>(
-                  // Module selection arrives as a cubit state; the four text
-                  // fields notify through their own controllers, hence the
-                  // ListenableBuilder nested below. Both feed the same gate.
-                  buildWhen: (_, state) => state is RoleModuleSelected,
-                  builder: (context, state) {
-                    return ListenableBuilder(
-                      listenable: Listenable.merge(<Listenable>[
-                        controller.roleNameController,
-                        controller.roleNameControllerAr,
-                        controller.roleDescriptionController,
-                        controller.roleDescriptionControllerAr,
-                      ]),
-                      builder: (BuildContext context, Widget? _) {
-                        final bool canProceed = _canProceedToPermissions;
+                  // ── STATUS SWITCH ──────────────────────────────────────
+                  // Edit mode only: a role that doesn't exist yet has no
+                  // status to toggle, so it stays hidden while creating.
+                  // Lives outside the form container, under the app bar.
+                  if (controller.isEditing) ...[
+                    BlocBuilder<RoleCubit, RoleState>(
+                      buildWhen: (_, state) =>
+                          state is RoleModuleSelected || state is RoleSelected,
+                      builder: (context, state) {
+                        // ADDED 29/8/2026: the row was a label and a switch, so
+                        // the role's state had to be read off the toggle's
+                        // position. It now names the state in words —
+                        // Active/Inactive, نشط/غير نشط — through
+                        // RoleStatus.getLocalizedName, the same table the role
+                        // list and the details screen use.
 
                         return Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            customButton(
-                              width: isTablet ? 150 : 120,
-                              function: () => Navigator.of(context).pop(),
-                              title: S.of(context).discard,
-                              color: AppColors.secondaryButton,
-                              textStyle: StyleText.fontSize16Weight400.copyWith(color: AppColors.text),
+                            // Role QA p.30: icon in front of the Status label.
+                            CustomSvgImage(
+                              assetPath:
+                                  'assets/icons_assets/main_icons_assets/ic_status.svg',
+                              width: 16.sp,
+                              height: 16.sp,
+                              fit: BoxFit.scaleDown,
+                              color: AppColors.text,
                             ),
-                            customButton(
-                              width: isTablet ? 150 : 120,
-                              // A no-op rather than a null callback:
-                              // customButton takes a non-nullable VoidCallback.
-                              // The colour is what tells the user it is off.
-                              function: canProceed
-                                  ? () => _onNextPressed(context)
-                                  : () {},
-                              title: S.of(context).next,
-                              color: canProceed
-                                  ? AppColors.primary
-                                  : AppColors.darkGrey,
-                              textStyle: canProceed
-                                  ? null
-                                  : StyleText.fontSize16Weight400.copyWith(color: AppColors.text.withOpacity(0.45))
+                            SizedBox(width: 6.sp),
+                            Text(
+                              S.of(context).status,
+                              style: StyleText.fontSize14Weight400.copyWith(
+                                color: AppColors.text,
+                              ),
+                            ),
+                            SizedBox(width: 10.sp),
+                            Transform(
+                              alignment: Alignment.center,
+                              transform: isArabic
+                                  ? Matrix4.rotationY(3.14159)
+                                  : Matrix4.identity(),
+                              child: FlutterSwitch(
+                                width: 38.sp,
+                                height: 22.sp,
+                                padding: 3.sp,
+                                borderRadius: 20.sp,
+                                toggleSize: 16.sp,
+                                activeColor: AppColors.secondaryPrimary,
+                                inactiveColor:
+                                    AppColors.grey.withValues(alpha: .16),
+                                // ✅ reads from cubit
+                                value: controller.isActive,
+                                onToggle: (newValue) async {
+                                  // Confirm → apply → success, all handled
+                                  // by the shared CustomDialogManager flow.
+                                  await _showStatusConfirmDialog(
+                                    context,
+                                    newValue,
+                                  );
+                                },
+                              ),
                             ),
                           ],
                         );
                       },
-                    );
-                  },
-                ),
+                    ),
+                    SizedBox(height: 10.sp),
+                  ],
 
-                SizedBox(height: 20.sp),
-              ],
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.all(15.sp),
+                      decoration: BoxDecoration(
+                        color: AppColors.card,
+                        borderRadius: BorderRadius.circular(8.sp),
+                      ),
+                      child: SingleChildScrollView(
+                        physics: const ClampingScrollPhysics(),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            RoleImageEditor(),
+                            // SPACING 8/9/2026: every gap inside the form card is
+                            // 10.sp. They used to be 15.sp with one 0 in the
+                            // middle (phones got no gap at all between the name
+                            // and description blocks), so the fields sat at three
+                            // different distances from each other.
+                            SizedBox(height: 10.sp),
+
+                            // ── NAME FIELDS ────────────────────────────────
+                            if (isMobile)
+                              Column(
+                                children: isArabic
+                                    ? [
+                                        _buildArabicNameField(),
+                                        SizedBox(height: 10.sp),
+                                        _buildEnglishNameField(),
+                                      ]
+                                    : [
+                                        _buildEnglishNameField(),
+                                        SizedBox(height: 10.sp),
+                                        _buildArabicNameField(),
+                                      ],
+                              )
+                            else
+                              Row(
+                                children: isArabic
+                                    ? [
+                                        Expanded(
+                                          child: _buildArabicNameField(),
+                                        ),
+                                        SizedBox(width: 20.sp),
+                                        Expanded(
+                                          child: _buildEnglishNameField(),
+                                        ),
+                                      ]
+                                    : [
+                                        Expanded(
+                                          child: _buildEnglishNameField(),
+                                        ),
+                                        SizedBox(width: 20.sp),
+                                        Expanded(
+                                          child: _buildArabicNameField(),
+                                        ),
+                                      ],
+                              ),
+
+                            SizedBox(height: 10.sp),
+
+                            // ── DESCRIPTION FIELDS ─────────────────────────
+                            if (isArabic) ...[
+                              _buildArabicDescriptionField(),
+                              SizedBox(height: 10.sp),
+                              _buildEnglishDescriptionField(),
+                            ] else ...[
+                              _buildEnglishDescriptionField(),
+                              SizedBox(height: 10.sp),
+                              _buildArabicDescriptionField(),
+                            ],
+
+                            SizedBox(height: 10.sp),
+
+                            Text(
+                              S.of(context).selectModules,
+                              style: StyleText.fontSize16Weight400,
+                            ),
+
+                            SizedBox(height: 10.sp),
+
+                            // ── MODULE GRID ────────────────────────────────
+                            FutureBuilder<List<String>>(
+                              future: _getAllowedModulesForRoleCreation(),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Center(
+                                    child: Padding(
+                                      padding: EdgeInsets.all(20),
+                                      child: CircleProgressMaster(),
+                                    ),
+                                  );
+                                }
+
+                                if (snapshot.hasError) {
+                                  return Container(
+                                    padding: const EdgeInsets.all(20),
+                                    child: Text(
+                                      "Error loading modules: ${snapshot.error}",
+                                      style: TextStyle(
+                                        color: AppColors.red,
+                                        fontSize: 16,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  );
+                                }
+
+                                List<String> allowedModuleNames =
+                                    snapshot.data ?? [];
+
+                                if (allowedModuleNames.isEmpty) {
+                                  return Container(
+                                    padding: const EdgeInsets.all(20),
+                                    child: Text(
+                                      "No modules available. Please contact your administrator.",
+                                      style: TextStyle(
+                                        color: AppColors.orange,
+                                        fontSize: 16,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  );
+                                }
+
+                                // Unknown-module skipping moved to RoleCubit —
+                                // §11.2 forbids try/catch in pages.
+                                final List<Modules> activeModules = controller
+                                    .moduleEnumsFor(allowedModuleNames);
+
+                                return BlocBuilder<RoleCubit, RoleState>(
+                                  buildWhen: (_, state) =>
+                                      state is RoleModuleSelected,
+                                  builder: (context, state) {
+                                    return GridView.builder(
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      itemCount: activeModules.length,
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: isTablet ? 14 : 4,
+                                        mainAxisSpacing: 10.sp,
+                                        crossAxisSpacing: 10.sp,
+                                        // Fixed 48.sp square tile + 6.sp gap +
+                                        // a label box that is always two lines
+                                        // tall. Defined beside the cell itself
+                                        // (adding_new_role_methods1.dart) so the
+                                        // row height and what the row draws can
+                                        // never disagree.
+                                        mainAxisExtent: kModuleCellExtent,
+                                      ),
+                                      itemBuilder: (_, index) {
+                                        return _moduleItem(
+                                          activeModules[index],
+                                          context,
+                                        );
+                                      },
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 20.sp),
+
+                  BlocBuilder<RoleCubit, RoleState>(
+                    // Module selection arrives as a cubit state; the four text
+                    // fields notify through their own controllers, hence the
+                    // ListenableBuilder nested below. Both feed the same gate.
+                    buildWhen: (_, state) => state is RoleModuleSelected,
+                    builder: (context, state) {
+                      return ListenableBuilder(
+                        listenable: Listenable.merge(<Listenable>[
+                          controller.roleNameController,
+                          controller.roleNameControllerAr,
+                          controller.roleDescriptionController,
+                          controller.roleDescriptionControllerAr,
+                        ]),
+                        builder: (BuildContext context, Widget? _) {
+                          final bool canProceed = _canProceedToPermissions;
+
+                          return Row(
+                            textDirection: TextDirection
+                                .ltr, // X-73: Cancel left, action right in both languages
+
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              customButton(
+                                width: isTablet ? 150 : 120,
+                                function: () => Navigator.of(context).pop(),
+                                title: S.of(context).discard,
+                                color: AppColors.darkGrey,
+                                textStyle: StyleText.fontSize16Weight400
+                                    .copyWith(color: AppColors.text),
+                              ),
+                              customButton(
+                                width: isTablet ? 150 : 120,
+                                // A no-op rather than a null callback:
+                                // customButton takes a non-nullable VoidCallback.
+                                // The colour is what tells the user it is off.
+                                function: canProceed
+                                    ? () => _onNextPressed(context)
+                                    : () {},
+                                title: S.of(context).next,
+                                color: canProceed
+                                    ? AppColors.primary
+                                    : AppColors.darkGrey,
+                                textStyle: canProceed
+                                    ? null
+                                    : StyleText.fontSize16Weight400.copyWith(
+                                        color: AppColors.text
+                                            .withValues(alpha: 0.45),
+                                      ),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                  ),
+
+                  SizedBox(height: 20.sp),
+                ],
               ),
             ),
           ),
@@ -427,17 +438,8 @@ class _AddingNewRoleState extends State<AddingNewRole> {
       ),
     );
   }
-
-
-
-
-
-
-
-
 }
 
 // ════════════════════════════════════════════════════════════════
 // DIALOG — matches StatusChangeDialog from services exactly
 // ════════════════════════════════════════════════════════════════
-

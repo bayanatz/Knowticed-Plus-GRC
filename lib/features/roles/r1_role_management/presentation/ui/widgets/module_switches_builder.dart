@@ -2,32 +2,38 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: module_switches_builder.dart
-/// Purpose: Declares `ModuleSwitchesBuilder`.
-/// Author: Knowticed Plus team
+/// Description: Declares `ModuleSwitchesBuilder`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
+import 'package:grc_module/core/extensions/context_extensions.dart'
+    show kpIsPhoneLayout;
 import 'dart:math';
 import 'package:grc_module/features/roles/r1_role_management/presentation/ui/widgets/permission_label.dart';
 
-import 'package:grc_module/core/custom/32-custom_svg.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:flutter/material.dart';
+import 'package:grc_module/features/roles/r1_role_management/domain/enums/knowledge_hub/submissions_permissions_enum.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
+import 'package:grc_module/core/helper/format_title.dart';
 // REMOVED_MODULE: import 'package:grc_module/features/external/services_mangment_module/core/new_theme.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
+import 'package:grc_module/core/helper/access/modules_enum.dart';
 import 'package:flutter/services.dart';
 
 import 'package:grc_module/core/theme/haptic_controller.dart';
-import 'package:grc_module/core/custom/58-default_switch_button.dart';
+import 'package:grc_module/core/custom/inputs/default_switch_button.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/features/roles/r1_role_management/domain/entities/module_permissions_sections.dart';
 import 'package:grc_module/features/roles/r1_role_management/domain/entities/module_permissions_sections_permissions.dart';
 import 'package:grc_module/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
 import 'package:grc_module/core/di/app_controllers.dart';
+
+part 'module_switches_builder/module_switches_builder_builders.dart';
+
 /// The permission switches for one module.
 ///
 /// EXTENDED 29/8/2026 — the role DETAILS screen used to draw its own summary of
@@ -44,7 +50,7 @@ import 'package:grc_module/core/di/app_controllers.dart';
 ///  * [showHeader] — hide the collapsible bar and the icon/name row, for a
 ///    caller that already draws its own module header.
 class ModuleSwitchesBuilder extends StatefulWidget {
-  ModuleSwitchesBuilder({
+  const ModuleSwitchesBuilder({
     required this.module,
     this.permissions,
     this.readOnly = false,
@@ -62,6 +68,10 @@ class ModuleSwitchesBuilder extends StatefulWidget {
 }
 
 class _ModuleSwitchesBuilderState extends State<ModuleSwitchesBuilder> {
+  /// Lets this screen's builder/logic extensions refresh it (setState
+  /// itself may only be called inside the State class).
+  void rebuild(VoidCallback fn) => setState(fn);
+
   late bool isTablet;
   late RoleCubit controller;
   bool isExpanded = true;
@@ -86,11 +96,11 @@ class _ModuleSwitchesBuilderState extends State<ModuleSwitchesBuilder> {
   @override
   Widget build(BuildContext context) {
     controller = context.read<RoleCubit>();
-    isTablet = MediaQuery.of(context).size.width > 600;
+    isTablet = !kpIsPhoneLayout(context);
 
     return BlocBuilder<RoleCubit, RoleState>(
       buildWhen: (previous, current) =>
-      current is RoleSwitchToggled ||
+          current is RoleSwitchToggled ||
           current is RoleSelected ||
           current is RolePermissionLoaded ||
           current is RolePermissionUpdated,
@@ -109,9 +119,6 @@ class _ModuleSwitchesBuilderState extends State<ModuleSwitchesBuilder> {
   }
 
   Widget modulePermissionsBuilder(Modules module) {
-    var lightMode = Theme.of(context).brightness == Brightness.light;
-    final HapticController hapticController = AppControllers.haptic;
-
     String moduleName = controller.moduleEnumToString(module);
     // Settings is skipped in the EDIT flow only — its switches have their own
     // page there (settings_switches_page.dart). A read-only viewer showing a
@@ -125,7 +132,6 @@ class _ModuleSwitchesBuilderState extends State<ModuleSwitchesBuilder> {
     // ✅ Check if module has enum-based permissions
     bool hasEnumPermissions = module.moduleFirstColumnPermissions.isNotEmpty ||
         module.moduleLastColumnPermissions.isNotEmpty;
-
 
     // A caller that draws its own module header gets the switches alone, with
     // no card of its own to nest inside theirs.
@@ -144,90 +150,89 @@ class _ModuleSwitchesBuilderState extends State<ModuleSwitchesBuilder> {
         children: [
           // Module header (collapsible bar)
           if (showChrome)
-          InkWell(
-            onTap: () {
-              setState(() {
-                isExpanded = !isExpanded;
-              });
-            },
-            child: Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(10.sp),
-              // Role QA p.5 (per Figma): the collapsible module bar is grey
-              // with white text in the add/edit wizard.
-              decoration: BoxDecoration(
-                color: widget.readOnly
-                    ? AppColors.background
-                    : AppColors.darkGrey,
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    module.getModuleName,
-                    style: StyleText.fontSize16Weight400.copyWith(
-                        color: widget.readOnly
-                            ? (lightMode ? AppColors.black : AppColors.white)
-                            : AppColors.colorWhite),
-                  ),
-                  Transform.rotate(
-                    angle: isExpanded ? 0 : pi,
-                    child: CustomSvgImage(assetPath:
-                        "assets/icons_assets/main_icons_assets/chevron_down.svg",
-                        height: 16.sp,
-                        width: 16.sp,
-                        fit: BoxFit.fill,
-                        color: widget.readOnly
-                            ? AppColors.secondaryText
-                            : AppColors.colorWhite
+            InkWell(
+              onTapDown: (_) => HapticController.low(),
+              onTap: () {
+                setState(() {
+                  isExpanded = !isExpanded;
+                });
+              },
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.all(10.sp),
+                // Role QA p.5 (per Figma): the collapsible module bar is grey
+                // with white text in the add/edit wizard.
+                decoration: BoxDecoration(
+                  color: widget.readOnly
+                      ? AppColors.background
+                      : AppColors.darkGrey,
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      module.getModuleName,
+                      style: StyleText.fontSize16Weight400.copyWith(
+                          color: widget.readOnly
+                              ? AppColors.text
+                              : AppColors.colorWhite),
                     ),
-                  )
-                ],
+                    Transform.rotate(
+                      angle: isExpanded ? 0 : pi,
+                      child: CustomSvgImage(
+                          assetPath:
+                              "assets/icons_assets/main_icons_assets/ic_nav_chevron_down.svg",
+                          height: 16.sp,
+                          width: 16.sp,
+                          fit: BoxFit.fill,
+                          color: widget.readOnly
+                              ? AppColors.secondaryText
+                              : AppColors.colorWhite),
+                    )
+                  ],
+                ),
               ),
             ),
-          ),
 
           // Module content — always shown when this instance draws no header of
           // its own, since there is then nothing to collapse it with.
           if (isExpanded || !showChrome) ...[
             // Module icon and name row
             if (showChrome)
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                CircleAvatar(
-                  backgroundColor: AppColors.primary,
-                  radius: 20.r,
-                  child: CustomSvgImage(assetPath: module.iconPath,
-                    width: 25.w,
-                    height: 25.h,
-
-                    fit: BoxFit.scaleDown,
-                    color: AppColors.textButton,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    backgroundColor: AppColors.primary,
+                    radius: 20.r,
+                    child: CustomSvgImage(
+                      assetPath: module.iconPath,
+                      width: 25.w,
+                      height: 25.h,
+                      fit: BoxFit.scaleDown,
+                      color: AppColors.textButton,
+                    ),
                   ),
-                ),
-                SizedBox(width: 10.sp),
-                Expanded(
-                  child: Text(
-                    module.getModuleName,
-                    style: StyleText.fontSize16Weight400,
+                  SizedBox(width: 10.sp),
+                  Expanded(
+                    child: Text(
+                      module.getModuleName,
+                      style: StyleText.fontSize16Weight400,
+                    ),
                   ),
-                ),
-                const Spacer(),
-                // DefaultSwitchButton(
-                //     value: controller.isAdminAccessActive(module),
-                //     onChanged: (value) {
-                //       controller.toggleAdminAccess(module: module);
-                //     })
-              ],
-            ),
-
-
+                  const Spacer(),
+                  // DefaultSwitchButton(
+                  //     value: controller.isAdminAccessActive(module),
+                  //     onChanged: (value) {
+                  //       controller.toggleAdminAccess(module: module);
+                  //     })
+                ],
+              ),
 
             // ✅✅✅ KEEP ORIGINAL UI, BUT USE FIREBASE DATA
             if (hasEnumPermissions)
-            // Use enum UI structure but fill with Firebase data
+              // Use enum UI structure but fill with Firebase data
               if (isTablet)
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -247,7 +252,7 @@ class _ModuleSwitchesBuilderState extends State<ModuleSwitchesBuilder> {
                   ],
                 )
             else
-            // For non-enum modules, use simple Firebase switches
+              // For non-enum modules, use simple Firebase switches
               _buildFirebaseOnlySwitches(module, moduleName),
           ]
         ],
@@ -289,218 +294,20 @@ class _ModuleSwitchesBuilderState extends State<ModuleSwitchesBuilder> {
     );
   }
 
-  Widget buildPermissionSection<T extends ModulePermissionsSections>(
-      T permissionSection, Modules module) {
-
-    final HapticController hapticController = AppControllers.haptic;
-
-    String moduleName = controller.moduleEnumToString(module);
-
-    // ✅ Check if this section exists in Firebase
-    final Map<String, bool>? sourcePerms = _permsFor(moduleName);
-    if (sourcePerms == null) {
-      return SizedBox.shrink();
-    }
-
-    Map<String, bool> modulePerms = sourcePerms;
-
-    // ✅ Try multiple possible keys for section
-    String sectionName = permissionSection.getName;
-
-    // FIXED 2/9/2026 — the section key was resolved from `getName` ALONE, and
-    // `getName` is LOCALIZED on the newer enums (Messages and Notification both
-    // return `S.current.…`). With the app in Arabic every candidate below
-    // became an Arabic string, none of which is a Firestore key, so the
-    // section's own key was never found: the master switch fell back to
-    // deriving itself from its children and stopped writing the section key at
-    // all. `getDataBaseName` is on-disk vocabulary and never localized, so it
-    // is tried as well — which also covers any enum whose display name and
-    // storage name differ for ordinary reasons.
-    final String? sectionDbName =
-        permissionSection is ModulePermissionsSectionsPermission
-            ? (permissionSection as ModulePermissionsSectionsPermission)
-                .getDataBaseName
-            : null;
-
-    List<String> possibleKeys = [
-      "${sectionName}_Module",                          // "Product Permissions_Module"
-      "${sectionName.replaceAll(' ', '_')}_Module",     // "Product_Permissions_Module"
-      "${sectionName} Module",                          // "Product Permissions Module"
-      sectionName,                                      // "Product Permissions"
-      sectionName.replaceAll(' ', '_'),                 // "Product_Permissions"
-      if (sectionDbName != null) ...<String>[
-        sectionDbName,                                  // "Notification_Control"
-        "${sectionDbName}_Module",                      // "Notification_Control_Module"
-      ],
-    ];
-
-    String? foundKey;
-    bool sectionValue = false;
-
-    for (String key in possibleKeys) {
-      if (modulePerms.containsKey(key)) {
-        foundKey = key;
-        sectionValue = modulePerms[key]!;
-        break;
-      }
-    }
-
-    // ── The section's master switch ──────────────────────────────────────
-    //
-    // ADDED 28/8/2026. The header used to draw a switch ONLY when the
-    // section's own `*_Module` key was present, and an empty 40.sp gap
-    // otherwise — which is why Form Builder sections ("Form Permissions",
-    // "Results Permissions") showed a bare title with no way to turn the whole
-    // group on or off, even though every child under them had a working
-    // switch.
-    //
-    // ⚠️ WHY A MISSING KEY IS NOT SIMPLY CREATED HERE.
-    // `modulePermissions` only ever holds keys the company's admin template
-    // allows: `_loadAllModulePermissions` filters every key through
-    // `isPermissionAllowedByAdmin`, which is DEFAULT-DENY by design (unknown
-    // key, unknown module or an unloaded template all deny). So a missing
-    // `*_Module` key means the administrator's template does not grant that
-    // section, and writing it from here would hand a role a permission the
-    // template withholds.
-    //
-    // The switch is therefore DERIVED when the key is absent: it reflects and
-    // drives only the child keys ALREADY in the map — ones the admin already
-    // allows and the user can already toggle one at a time. It is a bulk
-    // operation over existing switches, so it grants nothing new. When the
-    // section key IS present the behaviour is unchanged: the key is written
-    // and the children follow it.
-    //
-    // A section with no key AND no resolvable children (e.g. Create Group
-    // Permissions, whose `sectionPermissions` is empty) still renders no
-    // switch — there is nothing to drive, and inventing the key would be the
-    // escalation described above. That one needs the admin template fixed.
-    final List<String> childKeys = <String>[];
-    for (final Enum permission in permissionSection.sectionPermissions) {
-      final String? childKey = _findPermissionKey(
-        permission as ModulePermissionsSectionsPermission,
-        modulePerms,
-      );
-      if (childKey != null) childKeys.add(childKey);
-    }
-
-    final bool hasMasterSwitch = foundKey != null || childKeys.isNotEmpty;
-
-    // With a real key the stored value wins; without one the group reads as
-    // "on" only when every child under it is on.
-    final bool masterValue = foundKey != null
-        ? sectionValue
-        : childKeys.every((String key) => modulePerms[key] == true);
-
-    return Column(
-      spacing: 10.sp,
-      children: [
-        // Section header with Firebase data
-        //
-        // PADDING 8/9/2026: the 10.sp horizontal here is what keeps this header
-        // aligned with the permission rows in the padded container below it.
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10.sp),
-          child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Builder(
-                  builder: (context) {
-                    // FIXED 13/8/2026: rendered the raw English
-                    // identifier. getName is also a Firestore map key,
-                    // so it is translated here, not at the enum.
-                    String displayText = PermissionLabel.of(
-                        context, permissionSection.getName);
-
-                    // 🐛 DEBUG: Print what's being displayed
-
-                    return Text(
-                      FormatHelper.capitalize(displayText),
-                      style: StyleText.fontSize12Weight400.copyWith(color: AppColors.secondaryBlack),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    );
-                  }
-              ),
-            ),
-            SizedBox(width: 8.sp),
-            // Shown when the section has its own key OR any child to drive.
-            if (hasMasterSwitch)
-              _switch(
-                  value: masterValue,
-                  onChanged: (value) {
-                    hapticController.triggerHapticFeedback(
-                        vibration: VibrateType.mediumImpact,
-                        hapticFeedback: HapticFeedback.mediumImpact
-                    );
-                    setState(() {
-                      final Map<String, bool> perms =
-                          controller.modulePermissions[moduleName]!;
-
-                      // Only ever write the section key when the admin
-                      // template actually granted it — see the note above.
-                      if (foundKey != null) {
-                        perms[foundKey!] = value;
-                      }
-
-                      // ✅ The section header acts as a master switch: every
-                      // permission inside its container follows it.
-                      for (final String childKey in childKeys) {
-                        perms[childKey] = value;
-                      }
-                    });
-                    controller.emitSafely(RoleSwitchToggled());
-                  })
-            else
-              SizedBox(width: 40.sp), // Empty space for alignment
-          ],
-          ),
-        ),
-
-        // Section permissions from Firebase
-        if (permissionSection.sectionPermissions.isNotEmpty)
-          Container(
-              // PADDING 8/9/2026: 10.sp all round — every container that holds
-              // text-and-switch rows keeps 10.sp of horizontal breathing room
-              // inside its background. The section header row above carries the
-              // same 10.sp, so the labels still line up across both.
-              padding: EdgeInsets.all(10.sp),
-              decoration: BoxDecoration(
-                color: AppColors.background,
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-              child: Column(
-                spacing: 10.sp,
-                children: [
-                  for (int permissionIndex = 0;
-                  permissionIndex < permissionSection.sectionPermissions.length;
-                  permissionIndex++)
-                    _buildEnumPermissionRow(
-                      permissionSection.sectionPermissions[permissionIndex]
-                      as ModulePermissionsSectionsPermission,
-                      permissionSection,
-                      module,
-                    ),
-                ],
-              ))
-      ],
-    );
-  }
-
   /// ✅ Resolves the Firebase key for a permission, tolerating the different
   /// naming conventions used across modules. Shared by the row builder and the
   /// section master switch so both always target the same key.
   String? _findPermissionKey(
-      ModulePermissionsSectionsPermission permission,
-      Map<String, bool> modulePerms,
-      ) {
+    ModulePermissionsSectionsPermission permission,
+    Map<String, bool> modulePerms,
+  ) {
     String uiName = permission.getUiName;
 
     List<String> possibleKeys = [
-      uiName,                              // "Add Product"
-      uiName.replaceAll(' ', '_'),         // "Add_Product"
-      uiName.replaceAll(' ', ''),          // "AddProduct"
-      permission.getDataBaseName,          // Try database name too
+      uiName, // "Add Product"
+      uiName.replaceAll(' ', '_'), // "Add_Product"
+      uiName.replaceAll(' ', ''), // "AddProduct"
+      permission.getDataBaseName, // Try database name too
       permission.getDataBaseName.replaceAll(' ', '_'),
     ];
 
@@ -511,10 +318,10 @@ class _ModuleSwitchesBuilderState extends State<ModuleSwitchesBuilder> {
   }
 
   Widget _buildEnumPermissionRow(
-      ModulePermissionsSectionsPermission permission,
-      ModulePermissionsSections section,
-      Modules module,
-      ) {
+    ModulePermissionsSectionsPermission permission,
+    ModulePermissionsSections section,
+    Modules module,
+  ) {
     String moduleName = controller.moduleEnumToString(module);
 
     // ✅ Get value from Firebase
@@ -527,8 +334,17 @@ class _ModuleSwitchesBuilderState extends State<ModuleSwitchesBuilder> {
 
     // ✅ Try multiple possible keys for permission
     String? foundKey = _findPermissionKey(permission, modulePerms);
-    bool permissionValue = foundKey != null ? modulePerms[foundKey]! : false;
-
+    // 14/10/2026 — KH large-screen report p.31 "show this switch": "Create
+    // Without Need Approval" was added after most role templates were saved,
+    // so its key is missing and the row showed no switch. It is offered OFF
+    // (the safe default — creating still needs approval) and stored under its
+    // own key once toggled.
+    if (foundKey == null &&
+        permission == SubmissionsPermissions.createWithoutNeedApproval) {
+      foundKey = permission.getDataBaseName;
+    }
+    bool permissionValue =
+        foundKey != null ? (modulePerms[foundKey] ?? false) : false;
 
     // ✅ FIXED: Show switch if permission EXISTS in Firebase (regardless of value)
     // The admin dashboard controls WHICH permissions appear
@@ -541,24 +357,21 @@ class _ModuleSwitchesBuilderState extends State<ModuleSwitchesBuilder> {
         // 20.sp)`. Child permissions were indented 20.sp under their parent, so
         // the page showed permission labels starting at three different x
         // positions. Every label now starts at the same edge.
-        Expanded(
-            child: Builder(
-                builder: (context) {
-                  // FIXED 13/8/2026: see note above.
-                  String displayText =
-                      PermissionLabel.of(context, permission.getUiName);
+        Expanded(child: Builder(builder: (context) {
+          // FIXED 13/8/2026: see note above.
+          String displayText =
+              PermissionLabel.of(context, permission.getUiName);
 
-                  // 🐛 DEBUG: Print what's being displayed
+          // 🐛 DEBUG: Print what's being displayed
 
-                  return Text(
-                    displayText,
-                    style: StyleText.fontSize12Weight400.copyWith(color: AppColors.secondaryBlack),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  );
-                }
-            )
-        ),
+          return Text(
+            displayText,
+            style: StyleText.fontSize12Weight400
+                .copyWith(color: AppColors.secondaryBlack),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          );
+        })),
         SizedBox(width: 8.sp),
         // ✅ Show switch if permission exists in Firebase (can be true or false)
         if (shouldShowSwitch)
@@ -575,7 +388,6 @@ class _ModuleSwitchesBuilderState extends State<ModuleSwitchesBuilder> {
       ],
     );
   }
-
 
   // ============================================================================
   // ✅ For modules WITHOUT enums - simple Firebase list
@@ -639,13 +451,12 @@ class _ModuleSwitchesBuilderState extends State<ModuleSwitchesBuilder> {
   /// tap is how a role silently ends up over-privileged; the admin re-enables
   /// the specific ones they want. Flag this if you want symmetric behaviour.
   Widget _buildPermissionRow(
-      String moduleName,
-      String permissionKey,
-      bool currentValue,
-      bool isModulePermission, {
-      List<String> childKeys = const <String>[],
-      }) {
-
+    String moduleName,
+    String permissionKey,
+    bool currentValue,
+    bool isModulePermission, {
+    List<String> childKeys = const <String>[],
+  }) {
     // Convert key to readable name.
     // FIXED 13/8/2026: this screen builds its labels straight off the Firestore
     // permission keys ('CRM_Module' -> 'CRM Module'), so it never went near the
@@ -660,14 +471,14 @@ class _ModuleSwitchesBuilderState extends State<ModuleSwitchesBuilder> {
       // container around it — the old 15.sp indent here is gone, so plain rows
       // start where the section header does.
       padding: EdgeInsets.symmetric(
-          vertical: 5.sp,
-          horizontal: isModulePermission ? 10.sp : 0,
+        vertical: 5.sp,
+        horizontal: isModulePermission ? 10.sp : 0,
       ),
       decoration: isModulePermission
           ? BoxDecoration(
-        color: AppColors.field,
-        borderRadius: BorderRadius.circular(6.r),
-      )
+              color: AppColors.card,
+              borderRadius: BorderRadius.circular(6.r),
+            )
           : null,
       child: Row(
         children: [
@@ -676,9 +487,10 @@ class _ModuleSwitchesBuilderState extends State<ModuleSwitchesBuilder> {
               displayName,
               style: isModulePermission
                   ? StyleText.fontSize14Weight400.copyWith(
-                fontWeight: FontWeight.w600,
-              )
-                  : StyleText.fontSize12Weight400.copyWith(color: AppColors.secondaryBlack),
+                      fontWeight: FontWeight.w600,
+                    )
+                  : StyleText.fontSize12Weight400
+                      .copyWith(color: AppColors.secondaryBlack),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),

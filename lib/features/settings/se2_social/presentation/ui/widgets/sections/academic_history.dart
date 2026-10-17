@@ -17,7 +17,7 @@
 ///          sibling) that sat on a row of its own above the fields is replaced
 ///          by one minus-circle icon on the "Graduation From" title line, the
 ///          way Skills and Hobbies remove a row.
-import 'dart:ui' as ui;
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -25,16 +25,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import 'package:grc_module/core/extensions/context_extensions.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
+import 'package:grc_module/core/helper/format_title.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/core/theme/haptic_controller.dart';
-import 'package:grc_module/core/custom/1-custom_dropdown.dart';
-import 'package:grc_module/core/custom/3-custom_dropdwon_calander.dart';
-import 'package:grc_module/core/custom/55-custom_responsive_fields.dart';
-import 'package:grc_module/core/custom/2-custom_textfield.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/ui/widgets/settings_header.dart';
+import 'package:grc_module/core/custom/dropdowns/custom_dropdown.dart';
+import 'package:grc_module/core/custom/pickers/custom_date_field.dart';
+import 'package:grc_module/core/custom/layout/custom_responsive_fields.dart';
+import 'package:grc_module/core/custom/inputs/custom_textfield.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
+import 'package:grc_module/features/settings/presentation/ui/widgets/settings_header.dart';
 import 'package:grc_module/features/settings/se2_social/domain/entities/academic_entry.dart';
 import 'package:grc_module/features/settings/se2_social/presentation/ui/widgets/add_more_button.dart';
 import 'package:grc_module/generated/l10n.dart';
@@ -147,7 +147,7 @@ class _AcademicHistoryState extends State<AcademicHistory> {
   @override
   Widget build(BuildContext context) {
     final bool isMobile = ContextExtension(context).isPhone;
-    final bool isTablet = MediaQuery.of(context).size.width > 600;
+    final bool isTablet = !kpIsPhoneLayout(context);
     final bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return Container(
@@ -168,7 +168,7 @@ class _AcademicHistoryState extends State<AcademicHistory> {
         children: <Widget>[
           SettingsHeader(
             imagePath:
-                'assets/icons_assets/settings_assets/academic_history_graduation.svg',
+                'assets/icons_assets/settings_assets/ic_hr_academic_history.svg',
             text: FormatHelper.capitalize(S.of(context).academicHistory),
           ),
           SizedBox(height: 10.sp),
@@ -238,10 +238,11 @@ class _AcademicHistoryState extends State<AcademicHistory> {
                     if (canDelete) ...<Widget>[
                       SizedBox(width: 8.sp),
                       InkWell(
+                        onTapDown: (_) => HapticController.high(),
                         onTap: () => widget.onRemove(index),
                         child: CustomSvgImage(
                           assetPath:
-                              'assets/icons_assets/main_icons_assets/cancel_minus_circle.svg',
+                              'assets/icons_assets/main_icons_assets/ic_status_blocked_minus_circle.svg',
                           width: 15.sp,
                           fit: BoxFit.fill,
                           height: 15.sp,
@@ -291,19 +292,20 @@ class _AcademicHistoryState extends State<AcademicHistory> {
                 ),
                 SizedBox(height: kFieldLabelGap.sp),
                 CustomTextField(
-              // Keyed per entry so each record keeps its own field state when
-              // one is inserted or removed above it.
-              key: ValueKey<String>('academic_university_$index'),
-              // HEIGHT 21/9/2026 (Settings bug report p.15): one height for the row.
-              height: 40,
-              hint: FormatHelper.capitalize(S.of(context).textHere),
-              textDirection: isArabic ? ui.TextDirection.rtl : ui.TextDirection.ltr,
-              controller: _universityControllers[index],
-              onChanged: (String value) => widget.onEntryChanged(
-                index,
-                entry.copyWith(university: value.trim()),
-              ),
-            ),
+                  // Keyed per entry so each record keeps its own field state when
+                  // one is inserted or removed above it.
+                  key: ValueKey<String>('academic_university_$index'),
+                  // HEIGHT 21/9/2026 (Settings bug report p.15): one height for the row.
+                  height: 40,
+                  hint: FormatHelper.capitalize(S.of(context).textHere),
+                  textDirection:
+                      isArabic ? TextDirection.rtl : TextDirection.ltr,
+                  controller: _universityControllers[index],
+                  onChanged: (String value) => widget.onEntryChanged(
+                    index,
+                    entry.copyWith(university: value.trim()),
+                  ),
+                ),
               ],
             ),
           ),
@@ -313,7 +315,7 @@ class _AcademicHistoryState extends State<AcademicHistory> {
           // Second row: graduation year.
           buildResponsiveFields(
             context: context,
-            left: CustomDropdownCalendar(
+            left: CustomDateField(
               value: entry.graduationYear.isEmpty
                   ? null
                   : DateTime(int.tryParse(entry.graduationYear) ??

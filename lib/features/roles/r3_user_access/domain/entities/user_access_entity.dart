@@ -19,10 +19,11 @@
 ///            mapper;
 ///          - dead `_applyScheduledStatusChanges` (no callers).
 ///          All fields are now `final` with a `copyWith` (§10/§20).
+library;
 
 import 'package:intl/intl.dart';
 
-import 'package:grc_module/core/helper/main_helper/date_time_helper.dart';
+import 'package:grc_module/core/helper/date_time_helper.dart';
 import 'package:grc_module/features/onboarding/o3_authentication/domain/enums/employee_status_enum.dart';
 
 class UserAccessEntity {

@@ -1,7 +1,9 @@
 /// Module: messaging / chat / data/models/group_member_seen_model.dart
+library;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class GroupMemberSeenModel{
+class GroupMemberSeenModel {
   String memberId;
   Timestamp seenTime;
 
@@ -10,20 +12,20 @@ class GroupMemberSeenModel{
     required this.seenTime,
   });
 
-  static const String MEMBER_ID = "Member_Id";
-  static const String SEEN_TIME = "Seen_Time";
+  static const String kMemberId = "Member_Id";
+  static const String kSeenTime = "Seen_Time";
 
-  toMap() {
+  Map<String, Object> toMap() {
     return {
-      MEMBER_ID: memberId,
-      SEEN_TIME: seenTime,
+      kMemberId: memberId,
+      kSeenTime: seenTime,
     };
   }
 
-  static fromMap(Map<String, dynamic> map) {
+  static GroupMemberSeenModel fromMap(Map<String, dynamic> map) {
     return GroupMemberSeenModel(
-      memberId: map[MEMBER_ID],
-      seenTime: map[SEEN_TIME],
+      memberId: map[kMemberId],
+      seenTime: map[kSeenTime],
     );
   }
 }

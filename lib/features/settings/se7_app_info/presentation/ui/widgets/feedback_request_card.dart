@@ -8,19 +8,22 @@
 /// Created at: 1/9/2026
 ///
 /// Figma: MESBAH 7628:8180, the 265×91 card repeated four times. Icon and
-/// title on the first line, "Date Requested: <date>" on the second, the status
+/// title on the first line, "Date Requested: `<date>`" on the second, the status
 /// on the third.
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/helper/main_helper/localized_date.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
+import 'package:grc_module/core/helper/localized_date.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/features/settings/se7_app_info/domain/entities/app_feedback.dart';
 import 'package:grc_module/features/settings/se7_app_info/presentation/ui/widgets/feedback_display.dart';
 import 'package:grc_module/generated/l10n.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
 class FeedbackRequestCard extends StatelessWidget {
   const FeedbackRequestCard({
@@ -37,11 +40,12 @@ class FeedbackRequestCard extends StatelessWidget {
     final Color statusColor = FeedbackDisplay.statusColor(request.status);
 
     return GestureDetector(
+      onTapDown: hapticDown(onTap, HapticLevel.medium),
       onTap: onTap,
       child: Container(
         padding: EdgeInsets.all(10.sp),
         decoration: BoxDecoration(
-          color: AppColors.field,
+          color: AppColors.card,
           borderRadius: BorderRadius.circular(8.r),
         ),
         child: Column(
@@ -59,7 +63,8 @@ class FeedbackRequestCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(4.r),
                   ),
                   child: CustomSvgImage(
-                    assetPath: "assets/icons_assets/settings_assets/feedback_stamp.svg",
+                    assetPath:
+                        "assets/icons_assets/settings_assets/ic_module_feedback.svg",
                     width: 16.sp,
                     height: 16.sp,
                     color: AppColors.text,
@@ -90,7 +95,7 @@ class FeedbackRequestCard extends StatelessWidget {
               children: <Widget>[
                 CustomSvgImage(
                   assetPath:
-                      'assets/icons_assets/main_icons_assets/images_Calendar.svg',
+                      'assets/icons_assets/main_icons_assets/ic_time_calendar.svg',
                   width: 14.sp,
                   height: 14.sp,
                   color: AppColors.secondaryText,
@@ -129,7 +134,7 @@ class FeedbackRequestCard extends StatelessWidget {
                 // calendar icon directly above, so the two rows line up.
                 CustomSvgImage(
                   assetPath:
-                      'assets/icons_assets/main_icons_assets/assets_status.svg',
+                      'assets/icons_assets/main_icons_assets/ic_status.svg',
                   width: 14.sp,
                   height: 14.sp,
                   color: AppColors.secondaryText,
@@ -142,8 +147,8 @@ class FeedbackRequestCard extends StatelessWidget {
                 ),
                 Text(
                   FeedbackDisplay.statusLabel(context, request.status),
-                  style:
-                      StyleText.fontSize12Weight600.copyWith(color: statusColor),
+                  style: StyleText.fontSize12Weight600
+                      .copyWith(color: statusColor),
                 ),
                 if (request.priority != null) ...<Widget>[
                   const Spacer(),

@@ -8,6 +8,7 @@
 ///
 /// Added for CR-SKEL-SE2-N01. `SocialController.updateAllSocialInformation`
 /// called `FirebaseFirestore.instance…update(...)` directly from presentation.
+library;
 
 import 'package:dartz/dartz.dart';
 
@@ -16,13 +17,18 @@ import 'package:grc_module/core/network/failure_model.dart';
 abstract class SocialBaseRepository {
   /// Function Name: [updateSocialFields]
   ///
-  /// Purpose: Merge the given fields into the employee's profile document.
+  /// Purpose: Append the given social changes to the employee's profile
+  ///          document as ONE new revision (CHANGED 9/10/2026 — was "merge",
+  ///          which overwrote the history arrays): one entry added to
+  ///          `timestamps` and to every history list, the new value for each
+  ///          changed field.
   ///
   /// Parameters:
   /// - [employeeId]: Firestore document id.
-  /// - [fields]: only the changed top-level keys, as produced by
-  ///   `BuildSocialUpdate`. Never empty — the caller short-circuits on an empty
-  ///   change set rather than issuing a no-op write.
+  /// - [fields]: only the changed fields, field name → new revision value, as
+  ///   produced by `BuildSocialUpdate`. Never empty — the caller
+  ///   short-circuits on an empty change set rather than issuing a no-op
+  ///   write.
   ///
   /// Returns: [Future<Either<Failure, void>>].
   Future<Either<Failure, void>> updateSocialFields({

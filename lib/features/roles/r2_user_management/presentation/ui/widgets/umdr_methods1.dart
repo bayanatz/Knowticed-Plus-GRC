@@ -2,18 +2,18 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: umdr_methods1.dart
-/// Purpose: Declares `UmdrMethods1`.
+/// Purpose: Declares `_UmdrMethods1`.
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
 /// Updated: 25/8/2026 - Approve confirm dialog opens on approved.json.
 
 part of '../pages/user_management_details_request.dart';
 
-extension UmdrMethods1 on _UserManagementDetailsRequestSettingsState {
+extension _UmdrMethods1 on _UserManagementDetailsRequestSettingsState {
   Future<void> _fetchCompleteRequestData() async {
     try {
       if (widget.requestId == null || widget.requestId!.isEmpty) {
-        setState(() => isLoading = false);
+        rebuild(() => isLoading = false);
         return;
       }
 
@@ -25,19 +25,20 @@ extension UmdrMethods1 on _UserManagementDetailsRequestSettingsState {
           .get();
 
       if (!docSnapshot.exists) {
-        setState(() => isLoading = false);
+        rebuild(() => isLoading = false);
         return;
       }
 
       completeRequestData = docSnapshot.data();
       _initializeWithCompleteData();
     } catch (e) {
-      setState(() => isLoading = false);
+      rebuild(() => isLoading = false);
     }
   }
+
   void _initializeWithCompleteData() {
     if (completeRequestData == null) {
-      setState(() => isLoading = false);
+      rebuild(() => isLoading = false);
       return;
     }
 
@@ -59,23 +60,27 @@ extension UmdrMethods1 on _UserManagementDetailsRequestSettingsState {
         completeRequestData!['requestNote']?.toString() ?? '');
 
     _parseChanges();
-    setState(() => isLoading = false);
+    rebuild(() => isLoading = false);
   }
+
   void _parseChanges() {
     try {
       final changesData = completeRequestData!['changes'];
 
       if (changesData is List && changesData.isNotEmpty) {
-        changes = changesData.map((change) {
-          if (change is Map) {
-            return {
-              'fieldName': change['fieldName']?.toString() ?? '',
-              'oldValue': change['oldValue']?.toString() ?? '',
-              'newValue': change['newValue']?.toString() ?? '',
-            };
-          }
-          return <String, String>{};
-        }).where((c) => c['fieldName']?.isNotEmpty == true).toList();
+        changes = changesData
+            .map((change) {
+              if (change is Map) {
+                return {
+                  'fieldName': change['fieldName']?.toString() ?? '',
+                  'oldValue': change['oldValue']?.toString() ?? '',
+                  'newValue': change['newValue']?.toString() ?? '',
+                };
+              }
+              return <String, String>{};
+            })
+            .where((c) => c['fieldName']?.isNotEmpty == true)
+            .toList();
       } else {
         final whatChanged =
             completeRequestData!['whatChanged']?.toString().trim() ?? '';
@@ -84,7 +89,11 @@ extension UmdrMethods1 on _UserManagementDetailsRequestSettingsState {
 
         if (whatChanged.isNotEmpty) {
           changes = [
-            {'fieldName': whatChanged, 'oldValue': oldValue, 'newValue': newValue}
+            {
+              'fieldName': whatChanged,
+              'oldValue': oldValue,
+              'newValue': newValue
+            }
           ];
         } else {
           changes = [];
@@ -94,8 +103,7 @@ extension UmdrMethods1 on _UserManagementDetailsRequestSettingsState {
       changes = [];
     }
   }
-  String _mapFieldName(String requestFieldName) =>
-      userManagementController.mapFieldName(requestFieldName);
+
 
   // REMOVED 24/8/2026: `_updateEmployeeData` and `_mergedMobilePhone`.
   //
@@ -146,7 +154,7 @@ extension UmdrMethods1 on _UserManagementDetailsRequestSettingsState {
     final Map<String, dynamic>? data = completeRequestData;
     if (data == null) return false;
 
-    setState(() => isProcessing = true);
+    rebuild(() => isProcessing = true);
 
     // Read before the first await — `context` must not be touched afterwards.
     final bool isArabic = context.isArabic;
@@ -155,7 +163,13 @@ extension UmdrMethods1 on _UserManagementDetailsRequestSettingsState {
 
     // Who is acting. The cubit sends this as the notification's sender; with
     // no email it skips the notification rather than sending from nobody.
+    // 9/10/2026: the same email + id also feed the repository's
+    // self-approval check — no email means the decision is refused.
     final String approverEmail = employeeController.employeeEntity?.email ?? '';
+    final String approverEmployeeId =
+        employeeController.employeeEntity?.id ?? '';
+    // Read before the first await, like isArabic (9/10/2026).
+    final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
 
     final ChangeRequest request =
         ChangeRequestMapper.fromDocument(widget.requestId!, data);
@@ -174,6 +188,7 @@ extension UmdrMethods1 on _UserManagementDetailsRequestSettingsState {
         request: request,
         employeeId: employeeId,
         approverEmail: approverEmail,
+        approverEmployeeId: approverEmployeeId,
         isArabic: isArabic,
         approvalReason: rejectionReasonController.text.trim(),
       );
@@ -182,9 +197,25 @@ extension UmdrMethods1 on _UserManagementDetailsRequestSettingsState {
         request,
         decision,
         approverEmail: approverEmail,
+        approverEmployeeId: approverEmployeeId,
         isArabic: isArabic,
         rejectionReason: rejectionReasonController.text.trim(),
       );
+    }
+
+    // ADDED 9/10/2026 — a blocked self-approval says why (EN/AR). Other
+    // failures keep the old behaviour (the dialog flow simply stops).
+    final String? blockedMessage = _requestsCubit.state.userMessage;
+    if (!ok && blockedMessage != null && blockedMessage.isNotEmpty) {
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text(blockedMessage),
+            backgroundColor: AppColors.primary,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
     }
 
     if (ok && decision == RequestStatus.approved) {
@@ -198,7 +229,7 @@ extension UmdrMethods1 on _UserManagementDetailsRequestSettingsState {
 
     if (!mounted) return ok;
 
-    setState(() {
+    rebuild(() {
       isProcessing = false;
       if (ok) status = decision.wireValue;
     });
@@ -209,6 +240,7 @@ extension UmdrMethods1 on _UserManagementDetailsRequestSettingsState {
     _requestsCubit.clearMessages();
     return ok;
   }
+
   // ─── Confirmation dialog via CustomDialogManager ─────────────────────────
   //
   // UPDATED 24/8/2026: rejecting now asks why, and the hardcoded English
@@ -240,8 +272,8 @@ extension UmdrMethods1 on _UserManagementDetailsRequestSettingsState {
       // one IS the cautionary action, and an approval tick over "are you sure
       // you want to reject this request?" would read as the wrong answer.
       confirmLottie: isApprove
-          ? 'assets/lottie_assets/main_lottie_assets/approved.json'
-          : 'assets/lottie_assets/main_lottie_assets/lottie_warning.json',
+          ? 'assets/lottie_assets/main_lottie_assets/lot_status_success.json'
+          : 'assets/lottie_assets/main_lottie_assets/lot_action_delete_role.json',
       confirmTitle: isApprove
           ? S.of(context).approveRequest
           : S.of(context).rejectRequest,
@@ -268,7 +300,8 @@ extension UmdrMethods1 on _UserManagementDetailsRequestSettingsState {
       onConfirm: () => _updateRequestStatus(action),
 
       // ── Success step ──────────────────────────────────────────────────────
-      successLottie: 'assets/lottie_assets/main_lottie_assets/approved.json',
+      successLottie:
+          'assets/lottie_assets/main_lottie_assets/lot_status_success.json',
       successTitle: isApprove
           ? S.of(context).requestApproved
           : S.of(context).requestRejected,
@@ -277,9 +310,9 @@ extension UmdrMethods1 on _UserManagementDetailsRequestSettingsState {
           : S.of(context).theRequestHasBeenRejectedSuccessfully,
     );
   }
-  String _translateSectionTitle(String englishTitle) =>
-      userManagementController.translateSectionTitle(englishTitle,
-          isArabic: context.isArabic);
+
+  String _translateSectionTitle(String englishTitle) => userManagementController
+      .translateSectionTitle(englishTitle, isArabic: context.isArabic);
 
   String _formatDate(int timestamp) =>
       userManagementController.formatDate(timestamp);
@@ -302,6 +335,7 @@ extension UmdrMethods1 on _UserManagementDetailsRequestSettingsState {
         return status;
     }
   }
+
   String _getFieldLabel(String fieldKey) {
     final labelMap = {
       'first_name': S.of(context).firstName,

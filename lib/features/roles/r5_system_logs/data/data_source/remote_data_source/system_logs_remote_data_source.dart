@@ -1,12 +1,12 @@
 /// Module: roles / r5_system_logs / data / data_source / remote_data_source
 ///
-import 'dart:math';
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:grc_module/core/network/api_constants.dart';
 import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/core/services/firebase/repository/firebase_repository.dart';
+import 'package:grc_module/core/app_services/firebase/repository/firebase_repository.dart';
 import 'package:grc_module/features/roles/r5_system_logs/data/models/system_logs_model.dart';
 
 ///****************** FILE INFO ********************///
@@ -24,7 +24,7 @@ class SystemLogsRemoteDataSource {
   ///           [SystemLogsModel] systemLogsModel: the model that will be added to the system logs.
   ///
   /// Return Value: [Future<Either<Failure,dynamic>>] the result of the operation.
-  addActivityLog(SystemLogsModel systemLogsModel) async {
+  Future<dynamic> addActivityLog(SystemLogsModel systemLogsModel) async {
     return await FirebaseRepository.setDocumentWithId(
         collection: ApiConstants.systemLogs,
         data: systemLogsModel.toMap(),
@@ -37,16 +37,15 @@ class SystemLogsRemoteDataSource {
   ///              ordered by timestamp descending, to avoid loading the entire collection.
   ///
   /// Return Value: [Future<Either<Failure, dynamic>>] the result of the operation.
-  getSystemLogs() async {
+  Future<Either<Failure, dynamic>> getSystemLogs() async {
     try {
       final querySnapshot = await FirebaseFirestore.instance
           .collection(ApiConstants.systemLogs)
-          .orderBy(SystemLogsModel.TIMESTAMP, descending: true)
+          .orderBy(SystemLogsModel.kTimestamp, descending: true)
           .limit(500)
           .get();
-      final List<Map<String, dynamic>> data = querySnapshot.docs
-          .map((doc) => doc.data() as Map<String, dynamic>)
-          .toList();
+      final List<Map<String, dynamic>> data =
+          querySnapshot.docs.map((doc) => doc.data()).toList();
       return Right<Failure, dynamic>(data);
     } catch (e) {
       return Left<Failure, dynamic>(FirebaseFailure(e.toString()));

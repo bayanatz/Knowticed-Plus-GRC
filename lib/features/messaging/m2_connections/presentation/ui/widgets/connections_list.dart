@@ -4,6 +4,7 @@
 /// Purpose: Connections list — messaging Connections sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+library;
 
 // Date: 1/9/2024
 // By: Youssef Ashraf, Nada Mohammed
@@ -15,11 +16,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grc_module/features/messaging/m2_connections/presentation/controller/connections_controller.dart';
 
-import 'package:grc_module/core/enums/message_module/message_types.dart';
-import '../../../domain/entities/single_connection_entity.dart';
-import '../../../../main_controller/helper/chat_settings_service.dart';
-import './connection_tile.dart';
-import './connectionless_tile.dart';
+import 'package:grc_module/features/messaging/helpers/enums/message_types.dart';
+import 'package:grc_module/features/messaging/m2_connections/domain/entities/single_connection_entity.dart';
+import 'package:grc_module/features/messaging/helpers/main/chat_settings_service.dart';
+import 'package:grc_module/features/messaging/m2_connections/presentation/ui/widgets/connection_tile.dart';
+import 'package:grc_module/features/messaging/m2_connections/presentation/ui/widgets/connectionless_tile.dart';
 
 class ConnectionsList extends StatelessWidget {
   final bool seeAll;
@@ -49,37 +50,36 @@ class ConnectionsList extends StatelessWidget {
         return ValueListenableBuilder<Set<String>>(
           valueListenable: ChatSettingsService.pinnedChats,
           builder: (context, pinned, _) {
-        // Only when no Sort option is picked — Read / Unread keep their order.
-        if (controller.sortType == null) {
-        filteredList = List<SingleConnectionEntity>.of(filteredList)
-          ..sort((a, b) {
-            final at = a.lastMessageTime;
-            final bt = b.lastMessageTime;
-            if (at == null && bt == null) return 0;
-            if (at == null) return 1;
-            if (bt == null) return -1;
-            return bt.compareTo(at);
-          });
-        }
+            // Only when no Sort option is picked — Read / Unread keep their order.
+            if (controller.sortType == null) {
+              filteredList = List<SingleConnectionEntity>.of(filteredList)
+                ..sort((a, b) {
+                  final at = a.lastMessageTime;
+                  final bt = b.lastMessageTime;
+                  if (at == null && bt == null) return 0;
+                  if (at == null) return 1;
+                  if (bt == null) return -1;
+                  return bt.compareTo(at);
+                });
+            }
 
-        // ✅ When seeAll=false (in "All" tab), show only 3
-        // When seeAll=true (in "Direct Messages" tab OR after clicking See More), show all
-        final itemCount = seeAll
-            ? filteredList.length
-            : filteredList.length.clamp(0, 3);
+            // ✅ When seeAll=false (in "All" tab), show only 3
+            // When seeAll=true (in "Direct Messages" tab OR after clicking See More), show all
+            final itemCount =
+                seeAll ? filteredList.length : filteredList.length.clamp(0, 3);
 
-        return ListView.separated(
-          separatorBuilder: (context, index) => SizedBox(height: 8.h),
-          shrinkWrap: true,
-          itemCount: itemCount,
-          physics: const NeverScrollableScrollPhysics(),
-          itemBuilder: (context, index) {
-            SingleConnectionEntity connection = filteredList[index];
-            return connection.messageType != MessageTypes.none
-                ? ConnectionTile(connection: connection)
-                : ConnectionlessTile(chatModel: connection);
-          },
-        );
+            return ListView.separated(
+              separatorBuilder: (context, index) => SizedBox(height: 8.h),
+              shrinkWrap: true,
+              itemCount: itemCount,
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                SingleConnectionEntity connection = filteredList[index];
+                return connection.messageType != MessageTypes.none
+                    ? ConnectionTile(connection: connection)
+                    : ConnectionlessTile(chatModel: connection);
+              },
+            );
           },
         );
       },

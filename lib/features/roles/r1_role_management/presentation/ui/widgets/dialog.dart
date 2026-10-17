@@ -2,18 +2,19 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: dialog.dart
-/// Purpose: Declares `RoleDialogs`.
-/// Author: Knowticed Plus team
+/// Description: Declares `RoleDialogs`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - Rebuilt "save for later" on top of CustomDialogManager
 ///          (core/custom/dialogs) and fixed the post-save navigation so the
 ///          roles home lands on a loaded list instead of a stuck spinner.
 /// Updated: 25/8/2026 - Added `showSaveRoleDialog`: the create / save flow from
 ///          SettingsSwitchesPage, which used to navigate straight out of the
 ///          confirm dialog and never showed a success dialog at all.
+library;
 
 import 'package:flutter/material.dart';
-import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
+import 'package:grc_module/core/custom/dialogs/custom_dialog_manager.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/features/roles/r1_role_management/domain/enums/role_status.dart';
 import 'package:grc_module/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
@@ -42,7 +43,8 @@ class RoleDialogs {
 
     await CustomDialogManager.showDialogFlow(
       context: context,
-      confirmLottie: 'assets/lottie_assets/roles_lottie_assets/Edit Document.json',
+      confirmLottie:
+          'assets/lottie_assets/main_lottie_assets/lot_action_edit_document.json',
       confirmTitle: S.of(context).saveDraft,
       confirmSubtitle: S.of(context).doYouWantToSaveThisRoleAsDraft,
       confirmYesText: S.of(context).yes,
@@ -58,7 +60,8 @@ class RoleDialogs {
 
         return saved;
       },
-      successLottie: 'assets/lottie_assets/main_lottie_assets/approved.json',
+      successLottie:
+          'assets/lottie_assets/main_lottie_assets/lot_status_success.json',
       successTitle: S.of(context).success,
       successSubtitle: S.of(context).roleSavedAsDraftSuccessfully,
       // Runs only after the success dialog has closed, so the pops can never
@@ -78,7 +81,8 @@ class RoleDialogs {
     if (!saved && context.mounted) {
       await CustomDialogManager.showMessage(
         context: context,
-        lottiePath: 'assets/lottie_assets/main_lottie_assets/warning.json',
+        lottiePath:
+            'assets/lottie_assets/main_lottie_assets/lot_status_warning.json',
         title: S.of(context).failedToSaveDraftPleaseTryAgain,
       );
     }
@@ -131,7 +135,7 @@ class RoleDialogs {
     await CustomDialogManager.showDialogFlow(
       context: context,
       confirmLottie:
-          'assets/lottie_assets/roles_lottie_assets/Edit Document.json',
+          'assets/lottie_assets/main_lottie_assets/lot_action_edit_document.json',
       confirmTitle: isEditing
           ? S.of(context).editingRole
           : (isDraft
@@ -156,7 +160,6 @@ class RoleDialogs {
           await controller.addNewRole();
         }
 
-
         // The three cubit methods return void and report the outcome through
         // the state they leave behind — success states are emitted last, after
         // the list refresh, so reading `state` here is safe. Anything else
@@ -170,7 +173,8 @@ class RoleDialogs {
 
         return saved;
       },
-      successLottie: 'assets/lottie_assets/main_lottie_assets/approved.json',
+      successLottie:
+          'assets/lottie_assets/main_lottie_assets/lot_status_success.json',
       successTitle: S.of(context).success,
       successSubtitle: isEditing
           ? S.of(context).roleUpdatedSuccessfully
@@ -192,7 +196,8 @@ class RoleDialogs {
     if (attempted && !saved && context.mounted) {
       await CustomDialogManager.showMessage(
         context: context,
-        lottiePath: 'assets/lottie_assets/main_lottie_assets/warning.json',
+        lottiePath:
+            'assets/lottie_assets/main_lottie_assets/lot_status_warning.json',
         title: S.of(context).failedToSaveRolePleaseTryAgain,
         // The cubit's message carries the useful part on the common failure —
         // the list of permissions an administrator has restricted.
@@ -233,7 +238,8 @@ class RoleDialogs {
 
     await CustomDialogManager.showDialogFlow(
       context: context,
-      confirmLottie: 'assets/lottie_assets/roles_lottie_assets/delete.json',
+      confirmLottie:
+          'assets/lottie_assets/main_lottie_assets/lot_action_delete_role.json',
       confirmTitle: S.of(context).deleteRole,
       confirmSubtitle: S.of(context).areYouSureYouWantToDeleteThisRole,
       confirmYesText: S.of(context).yes,
@@ -248,14 +254,14 @@ class RoleDialogs {
         // reflects the deletion.
         await controller.deleteRole();
 
-
         final RoleState outcome = controller.state;
         deleted = outcome is RoleDeleted;
         failureMessage = outcome is RoleError ? outcome.message : '';
 
         return deleted;
       },
-      successLottie: 'assets/lottie_assets/main_lottie_assets/approved.json',
+      successLottie:
+          'assets/lottie_assets/main_lottie_assets/lot_status_success.json',
       successTitle: S.of(context).success,
       successSubtitle: S.of(context).roleDeletedSuccessfully,
       onSuccessComplete: () {
@@ -267,7 +273,8 @@ class RoleDialogs {
     if (attempted && !deleted && context.mounted) {
       await CustomDialogManager.showMessage(
         context: context,
-        lottiePath: 'assets/lottie_assets/main_lottie_assets/warning.json',
+        lottiePath:
+            'assets/lottie_assets/main_lottie_assets/lot_status_warning.json',
         title: S.of(context).errorOccurred,
         // The cubit's message carries the useful part on the common failure —
         // e.g. the delete permission an administrator has restricted.

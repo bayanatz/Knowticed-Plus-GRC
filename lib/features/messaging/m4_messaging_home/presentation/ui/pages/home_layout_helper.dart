@@ -4,25 +4,25 @@
 /// Purpose: Home layout helper — messaging Home sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+library;
 
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:grc_module/core/custom/38-custom_responsive.dart';
+import 'package:grc_module/core/custom/layout/custom_responsive.dart';
 
-
-import '../../../../m1_chat/presentation/controller/main_controllers/group_chat_cubit.dart';
-import '../../../../m1_chat/presentation/controller/main_controllers/single_chat_cubit.dart';
-import '../../../../m1_chat/presentation/controller/media_controller.dart';
-import '../../../../m1_chat/presentation/controller/message_controller.dart';
-import '../../../../m2_connections/presentation/controller/community_controller.dart';
-import '../../../../m2_connections/presentation/controller/connections_controller.dart';
-import '../../../../m3_groups/presentation/controller/groups_controller.dart';
-import '../../controller/messaging_home_controller.dart';
-import '../../../../main_controller/helper/chat_settings_service.dart';
-import './home_mobile_page.dart';
-import './home_tablet_page.dart';
+import 'package:grc_module/features/messaging/m1_chat/presentation/controller/main_controllers/group_chat_cubit.dart';
+import 'package:grc_module/features/messaging/m1_chat/presentation/controller/main_controllers/single_chat_cubit.dart';
+import 'package:grc_module/features/messaging/m1_chat/presentation/controller/media_controller.dart';
+import 'package:grc_module/features/messaging/m1_chat/presentation/controller/message_controller.dart';
+import 'package:grc_module/features/messaging/m2_connections/presentation/controller/community_controller.dart';
+import 'package:grc_module/features/messaging/m2_connections/presentation/controller/connections_controller.dart';
+import 'package:grc_module/features/messaging/m3_groups/presentation/controller/groups_controller.dart';
+import 'package:grc_module/features/messaging/m4_messaging_home/presentation/controller/messaging_home_controller.dart';
+import 'package:grc_module/features/messaging/helpers/main/chat_settings_service.dart';
+import 'package:grc_module/features/messaging/m4_messaging_home/presentation/ui/pages/home_mobile_page.dart';
+import 'package:grc_module/features/messaging/m4_messaging_home/presentation/ui/pages/home_tablet_page.dart';
 
 class HomePageHelperLayout extends StatelessWidget {
   const HomePageHelperLayout({super.key});
@@ -46,7 +46,6 @@ class HomePageHelperLayout extends StatelessWidget {
         !available<MessageCubit>() ||
         !available<MediaCubit>() ||
         !available<SingleChatCubit>() ||
-
         !available<GroupChatCubit>()) {
       log('❌ HomePageHelper: messaging dependencies not registered. '
           'Make sure useGroupAndSingleMessaging() is called before navigating here.');
@@ -63,7 +62,8 @@ class HomePageHelperLayout extends StatelessWidget {
     // for the pushed route, which is unaffected by these.
     return MultiBlocProvider(
       providers: [
-        BlocProvider<ConnectionsCubit>.value(value: Get.find<ConnectionsCubit>()),
+        BlocProvider<ConnectionsCubit>.value(
+            value: Get.find<ConnectionsCubit>()),
         BlocProvider<MessagingHomeCubit>.value(
             value: Get.find<MessagingHomeCubit>()),
         BlocProvider<CommunityCubit>.value(value: Get.find<CommunityCubit>()),

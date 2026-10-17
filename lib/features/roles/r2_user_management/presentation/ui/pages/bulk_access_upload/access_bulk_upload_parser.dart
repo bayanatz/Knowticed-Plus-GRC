@@ -2,12 +2,12 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: access_bulk_upload_parser.dart
-/// Purpose: Reads a User Management import workbook (.xlsx / .xls) into raw
+/// Description: Reads a User Management import workbook (.xlsx / .xls) into raw
 ///          rows. No validation happens here — that is
 ///          `AccessBulkUploadRows`' job, against the live employee and role
 ///          lists.
-/// Author: Knowticed Plus team
-/// Created At: 21/9/2026 — bug report p.1, "where is the import button?".
+/// Author: Amr Mesbah
+/// Created at: 21/9/2026 — bug report p.1, "where is the import button?".
 ///          Modelled on the GRC assignee importer (`assignee_excel_parser.dart`),
 ///          which is the cleaned-up form of the services bulk upload
 ///          (`s4_bulk_upload_services`).
@@ -107,7 +107,6 @@ AccessBulkParseResult parseAccessBulkWorkbook(List<int> bytes) {
   } catch (e) {
     // ignore: avoid_print
     assert(() {
-      print('[access-import] workbook could not be decoded: $e');
       return true;
     }());
     return AccessBulkParseInvalid(const <String>[]);
@@ -142,7 +141,10 @@ AccessBulkParseResult parseAccessBulkCsv(List<int> bytes) {
     return AccessBulkParseInvalid(const <String>[]);
   }
 
-  final List<List<dynamic>> table = Csv(autoDetect: false, skipEmptyLines: false).decode(text);
+  final List<List<dynamic>> table = Csv(
+    autoDetect: false,
+    skipEmptyLines: false,
+  ).decode(text);
 
   final List<List<String>> rows = <List<String>>[
     for (final List<dynamic> row in table)
@@ -185,7 +187,9 @@ AccessBulkParseResult? _fromRows(List<List<String>> rows) {
     if (!raw.isBlank) parsed.add(raw);
   }
 
-  return parsed.isEmpty ? AccessBulkParseEmpty() : AccessBulkParseSuccess(parsed);
+  return parsed.isEmpty
+      ? AccessBulkParseEmpty()
+      : AccessBulkParseSuccess(parsed);
 }
 
 /// Rewrites absolute part targets (`Target="/xl/worksheets/sheet1.xml"`) in a
@@ -265,8 +269,11 @@ String _cellText(CellValue? value) {
     FormulaCellValue() => value.formula.trim(),
     // ISO text, so `parseAccessDate` reads it back without guessing.
     DateCellValue() => value.asDateTimeLocal().toIso8601String(),
-    DateTimeCellValue() =>
-      DateTime(value.year, value.month, value.day).toIso8601String(),
+    DateTimeCellValue() => DateTime(
+        value.year,
+        value.month,
+        value.day,
+      ).toIso8601String(),
     TimeCellValue() => value.toString(),
   };
 }

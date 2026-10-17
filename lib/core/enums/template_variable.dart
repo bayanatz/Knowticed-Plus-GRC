@@ -2,13 +2,16 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: template_variable.dart
-/// Purpose: Enum `TemplateVariable` used by this feature.
-/// Author: Knowticed Plus team
+/// Description: Enum `TemplateVariable` used by this feature.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+/// Updated: 9/10/2026 - Time Tracker QA KP-TT-011: + `countedRequests`.
+library;
 
 /// ************************* FILE INFO ************************* ///
 /// File Name: template_variable.dart
-/// Purpose: Every dynamic placeholder that can appear in a piece of
+/// Description: Every dynamic placeholder that can appear in a piece of
 ///          templated text — a notification title/body, or a calendar card
 ///          description. Shared, so both features substitute the same
 ///          tokens the same way.
@@ -37,6 +40,9 @@ enum TemplateVariable {
   dueDate('dueDate'),
   employeeName('employeeName'),
   endDate('endDate'),
+
+  /// MOVED to SHARED 12/10/2026 — used by Messages and Form Builder.
+  groupName('groupName'),
   moduleName('moduleName'),
   newActivationDate('newActivationDate'),
   oldActivationDate('oldActivationDate'),
@@ -74,6 +80,11 @@ enum TemplateVariable {
 
   // //////////////////////  TIME TRACKER & ATTENDANCE  ///////////////////////
   count('count'),
+  // ADDED 9/10/2026 (Time Tracker QA KP-TT-011): the count WITH its noun in
+  // correct grammar — "1 request" / "3 requests", "طلب واحد" / "طلبان" /
+  // "3 طلبات" / "11 طلبا" (`TimeTrackerCountWording`). Same token in the
+  // Cloud Functions' texts.
+  countedRequests('countedRequests'),
   minutes('minutes'),
   requestType('requestType'),
   time('time'),
@@ -130,7 +141,7 @@ enum TemplateVariable {
   chatName('chatName'),
   createdByName('createdByName'),
   deletedByName('deletedByName'),
-  groupName('groupName'),
+
   /// The first ~50 characters of the message, NOT the whole body. A
   /// notification is a pointer to the conversation, not a copy of it, and a
   /// full message in a push payload leaks content onto a lock screen.
@@ -140,10 +151,23 @@ enum TemplateVariable {
   recipientName('recipientName'),
   removedByName('removedByName'),
   senderName('senderName'),
+
   /// Rendered as a string because every other variable is. The calendar's
   /// unread reminder updates this in place rather than raising a second entry.
   unreadMessageCount('unreadMessageCount'),
   voterName('voterName'),
+
+  // /////////////////////////////  FORM BUILDER  /////////////////////////////
+  // ADDED 12/10/2026 for section 2.3 of the notification spec and the Form
+  // Builder rows of the calendar table. Shared: employeeName, groupName.
+  accessEndDate('accessEndDate'),
+  formName('formName'),
+  newAccessEndDate('newAccessEndDate'),
+  newGroupName('newGroupName'),
+  oldGroupName('oldGroupName'),
+  ownerName('ownerName'),
+  previousAccessEndDate('previousAccessEndDate'),
+  submissionDate('submissionDate'),
 
   // ////////////////////////  NOTIFICATIONS CONTROL  /////////////////////////
   channel('channel'),
@@ -152,9 +176,7 @@ enum TemplateVariable {
   // /////////////  LEGACY  —  no longer referenced by any event  /////////////
   // Kept so older Firestore templates that still contain the token keep
   // rendering. Safe to delete once no template text uses it.
-  cancelledBy('cancelledBy'),
-
-  ;
+  cancelledBy('cancelledBy');
 
   const TemplateVariable(this.key);
 

@@ -4,14 +4,15 @@
 /// Purpose: Get groups use case — messaging Groups sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+library;
 
 import 'package:dartz/dartz.dart';
 
-import 'package:grc_module/core/network/message_module/services/error_handler.dart';
-import '../../../../../core/helper/message_module/interface/entity/user_category.dart';
-import '../../data/models/group_model.dart';
-import '../entities/group_entity.dart';
-import '../base_repository/base_group_repository.dart';
+import 'package:grc_module/core/network/failure_model.dart';
+import 'package:grc_module/features/messaging/helpers/messaging_bridge/interface/entity/user_category.dart';
+import 'package:grc_module/features/messaging/m3_groups/data/models/group_model.dart';
+import 'package:grc_module/features/messaging/m3_groups/domain/entities/group_entity.dart';
+import 'package:grc_module/features/messaging/m3_groups/domain/base_repository/base_group_repository.dart';
 
 class GetGroupsUseCase {
   final BaseGroupsRepository groupRepository;
@@ -28,10 +29,10 @@ class GetGroupsUseCase {
       {
         if (groups.isLeft()) {
           yield groups;
-
         }
         List<GroupEntity> groupEntities = [];
-        List<GroupModel> groupsList = groups.getOrElse(() => [] as List<GroupModel>) as List<GroupModel>;
+        List<GroupModel> groupsList =
+            groups.getOrElse(() => [] as List<GroupModel>) as List<GroupModel>;
         for (GroupModel group in groupsList) {
           groupEntities.add(
               GroupEntity.fromModel(group, userId, categories: categories));

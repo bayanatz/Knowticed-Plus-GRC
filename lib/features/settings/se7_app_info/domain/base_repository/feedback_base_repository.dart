@@ -6,6 +6,7 @@
 /// Author: Knowticed Plus team
 /// Created at: 13/8/2026
 /// Updated: 1/9/2026 - Added [listForEmployee] for the "Request Details" list.
+library;
 
 import 'dart:typed_data';
 

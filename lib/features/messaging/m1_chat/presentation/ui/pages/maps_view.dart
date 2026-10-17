@@ -1,35 +1,43 @@
+/// Module: messaging/m1_chat
+///
+///*************************** FILE INFO ****************************///
+/// File Name: maps_view.dart
+/// Description: `MapsView` page.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
+library;
+
 // Date: 8/9/2024
 // By: Nada Mohamed , Youssef Ashraf
 // Last update: 8/9/2024
 // Objectives: This file is responsible for providing a maps view for the user to pick a location.
 
 import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 
-import 'package:latlong2/latlong.dart' as latLng;
+import 'package:latlong2/latlong.dart' as lat_lng;
 
-import 'package:grc_module/core/helper/message_module/main_helper/share_helper.dart';
+import 'package:grc_module/core/helper/share_helper.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/helper/main_helper/custom_app_bar.dart';
-import '../../controller/message_controller.dart';
-import '../../../data/models/location_message_model.dart';
+import 'package:grc_module/features/messaging/helpers/messaging_app_bar.dart';
+
+import 'package:grc_module/features/messaging/m1_chat/presentation/controller/message_controller.dart';
+import 'package:grc_module/features/messaging/m1_chat/data/models/location_message_model.dart';
+
 import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/core/custom/5-custom_button.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
+import 'package:grc_module/core/custom/buttons/custom_button.dart';
+import 'package:grc_module/core/custom/feedback/circle_progress.dart';
 
 class MapsView extends StatelessWidget {
   final bool isSelecting;
 
-  const MapsView({
-    super.key,
-    required this.isSelecting,
-  });
+  const MapsView({super.key, required this.isSelecting});
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +49,9 @@ class MapsView extends StatelessWidget {
         if (state is! MessageLoaded || state.pickedLocation == null) {
           return Scaffold(
             appBar: CustomAppBar(
-              title: isSelecting ? S.of(context).pickALocation : S.of(context).location,
+              title: isSelecting
+                  ? S.of(context).pickALocation
+                  : S.of(context).location,
               centerTitle: false,
             ),
             body: const Center(child: CircleProgressMaster.inline()),
@@ -53,7 +63,9 @@ class MapsView extends StatelessWidget {
 
         return Scaffold(
           appBar: CustomAppBar(
-            title: isSelecting ? S.of(context).pickALocation : S.of(context).location,
+            title: isSelecting
+                ? S.of(context).pickALocation
+                : S.of(context).location,
             centerTitle: false,
           ),
           body: Stack(
@@ -67,14 +79,14 @@ class MapsView extends StatelessWidget {
                     onMapReady: () {
                       // move to the picked location
                       messageCubit.mapController.move(
-                        latLng.LatLng(
+                        lat_lng.LatLng(
                           pickedLocation.latitude,
                           pickedLocation.longitude,
                         ),
                         13,
                       );
                     },
-                    initialCenter: latLng.LatLng(
+                    initialCenter: lat_lng.LatLng(
                       pickedLocation.latitude,
                       pickedLocation.longitude,
                     ),
@@ -90,25 +102,25 @@ class MapsView extends StatelessWidget {
                   children: [
                     TileLayer(
                       urlTemplate:
-                      'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                          'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                       userAgentPackageName: 'com.ensightvision',
                       maxNativeZoom: 19,
                     ),
                     MarkerLayer(
                       markers: [
                         Marker(
-                          point: latLng.LatLng(
+                          point: lat_lng.LatLng(
                             pickedLocation.latitude,
                             pickedLocation.longitude,
                           ),
                           child: Icon(
                             Icons.location_on,
-                            color: Colors.red.shade700,
+                            color: AppColors.red,
                             size: 40.r,
                           ),
                         ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -120,10 +132,12 @@ class MapsView extends StatelessWidget {
                     color: AppColors.primary,
                     height: 36,
                     width: MediaQuery.of(context).size.width * 0.9,
-                    textStyle: StyleText.fontSize18Weight500.copyWith(color: AppColors.textButton),
+                    textStyle: StyleText.fontSize18Weight500.copyWith(
+                      color: AppColors.textButton,
+                    ),
                     function: () async {
                       // make sure to move camera back again to the picked location if the user didn't pick a location
-                      final point = latLng.LatLng(
+                      final point = lat_lng.LatLng(
                         pickedLocation.latitude,
                         pickedLocation.longitude,
                       );
@@ -135,7 +149,7 @@ class MapsView extends StatelessWidget {
 
                       bytes = await ShareHelper.capture(
                         boundary: key.currentContext?.findRenderObject()
-                        as RenderRepaintBoundary,
+                            as RenderRepaintBoundary,
                       );
 
                       if (context.mounted) {
@@ -154,7 +168,6 @@ class MapsView extends StatelessWidget {
                         }
                       }
                     },
-
                   ),
                 ),
             ],

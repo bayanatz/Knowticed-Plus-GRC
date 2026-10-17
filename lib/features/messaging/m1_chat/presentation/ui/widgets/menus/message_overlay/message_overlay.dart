@@ -51,7 +51,7 @@ class MessageOverlay extends StatelessWidget {
 
     // ✅ Reaction bar width
     final double reactionBarWidth =
-    (6 * 34.w + 20.w).clamp(0.0, screenWidth - 32.w);
+        (6 * 34.w + 20.w).clamp(0.0, screenWidth - 32.w);
 
     // ✅ Available space calculations
     final double spaceBelow =
@@ -59,8 +59,9 @@ class MessageOverlay extends StatelessWidget {
     final double spaceAbove = position.dy - topPadding;
 
     // ✅ Estimate menu + reaction bar height
-    final double reactionBarH =
-    hasReactionsPermission ? 48.h + 6.h : 0; // bar + spacing (0 if no permission)
+    final double reactionBarH = hasReactionsPermission
+        ? 48.h + 6.h
+        : 0; // bar + spacing (0 if no permission)
     final double menuEstimateH = 220.h; // approximate menu height
 
     final bool fitsBelow = spaceBelow >= menuEstimateH + 16.h;
@@ -90,7 +91,7 @@ class MessageOverlay extends StatelessWidget {
       child: BlocBuilder<CommunityCubit, CommunityState>(
         builder: (context, state) {
           final showAdditionalInfo =
-          state is CommunityLoaded ? state.showAdditionalInfo : false;
+              state is CommunityLoaded ? state.showAdditionalInfo : false;
 
           return Stack(
             children: [
@@ -102,16 +103,16 @@ class MessageOverlay extends StatelessWidget {
                 start: isMe
                     ? null
                     : ContextExtension(context).isPhone
-                    ? 16.w
-                    : showAdditionalInfo ?? false
-                    ? 32.w
-                    : 305.w,
+                        ? 16.w
+                        : showAdditionalInfo ?? false
+                            ? 32.w
+                            : 305.w,
                 end: isMe
                     ? ContextExtension(context).isPhone
-                    ? 16.w
-                    : showAdditionalInfo ?? false
-                    ? 320.w
-                    : 32.w
+                        ? 16.w
+                        : showAdditionalInfo ?? false
+                            ? 320.w
+                            : 32.w
                     : null,
                 top: adjustTop,
                 bottom: adjustBottom,
@@ -249,11 +250,11 @@ class _ReactionBarState extends State<_ReactionBar>
         height: 48.h,
         padding: EdgeInsets.symmetric(horizontal: 8.w),
         decoration: BoxDecoration(
-          color: AppColors.field,
+          color: AppColors.card,
           borderRadius: BorderRadius.circular(40.r),
           boxShadow: [
             BoxShadow(
-              color: AppColors.black.withOpacity(0.12),
+              color: AppColors.black.withValues(alpha: 0.12),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -266,17 +267,18 @@ class _ReactionBarState extends State<_ReactionBar>
             final isTapped = _tappedIndex == i;
 
             return GestureDetector(
+              onTapDown: (_) => HapticController.low(),
               onTap: () => _handleReact(react, i),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 150),
                 curve: Curves.easeOut,
                 transform: Matrix4.identity()
-                  ..translate(0.0, isTapped ? -8.0 : 0.0),
+                  ..translateByDouble(0.0, isTapped ? -8.0 : 0.0, 0.0, 1.0),
                 child: AnimatedScale(
                   scale: isTapped ? 1.4 : 1.0,
                   duration: const Duration(milliseconds: 150),
-                  child: SvgPicture.asset(
-                    react.getReact,
+                  child: CustomSvgImage.natural(
+                    assetPath: react.getReact,
                     width: 28.w,
                     height: 28.h,
                   ),

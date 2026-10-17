@@ -25,6 +25,7 @@
 ///
 /// Every string below is an existing ARB key with an Arabic translation, so
 /// this adds no new l10n entries.
+library;
 
 import 'package:flutter/widgets.dart';
 

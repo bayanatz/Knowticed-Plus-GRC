@@ -4,9 +4,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get.dart';
 
-import '../../data/models/media/media_model.dart';
+import 'package:grc_module/features/messaging/m1_chat/data/models/media/media_model.dart';
 import 'package:grc_module/generated/l10n.dart';
 
 // State classes
@@ -79,19 +78,19 @@ class MediaCubit extends Cubit<MediaState> {
       return model.images
           ?.where(
             (element) => element.sortedCategory == sortedDateLabel,
-      )
+          )
           .toList();
     } else if (tab == S.current.documents) {
       return model.pdfs
           ?.where(
             (element) => element.sortedCategory == sortedDateLabel,
-      )
+          )
           .toList();
     }
     return model.links
         ?.where(
           (element) => element.sortedCategory == sortedDateLabel,
-    )
+        )
         .toList();
   }
 

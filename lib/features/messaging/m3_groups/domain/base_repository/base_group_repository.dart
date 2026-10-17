@@ -4,13 +4,14 @@
 /// Purpose: Base group repository — messaging Groups sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+library;
 
 import 'package:dartz/dartz.dart';
 
-import 'package:grc_module/core/network/message_module/services/error_handler.dart';
-import '../../data/models/group_model.dart';
-import '../entities/group_entity.dart';
-import '../entities/member_entity.dart';
+import 'package:grc_module/core/network/failure_model.dart';
+import 'package:grc_module/features/messaging/m3_groups/data/models/group_model.dart';
+import 'package:grc_module/features/messaging/m3_groups/domain/entities/group_entity.dart';
+import 'package:grc_module/features/messaging/m3_groups/domain/entities/member_entity.dart';
 
 abstract interface class BaseGroupsRepository {
   Future<Either<Failure, dynamic>> createGroup(
@@ -21,13 +22,13 @@ abstract interface class BaseGroupsRepository {
   Future<Either<Failure, dynamic>> removeGroupMembers(
       {required String groupId, required List<String> members});
 
-  addGroupAdmins({required String groupId, required List<String> admins});
+  Future<Either<Failure, dynamic>> addGroupAdmins({required String groupId, required List<String> admins});
 
-  removeGroupAdmins({required String groupId, required List<String> admins});
+  Future<Either<Failure, dynamic>> removeGroupAdmins({required String groupId, required List<String> admins});
 
-  addGroupMembers({required String groupId, required MemberEntity member});
+  Future<Either<Failure, dynamic>> addGroupMembers({required String groupId, required MemberEntity member});
 
-  updateGroupData({
+  Future<Either<Failure, dynamic>> updateGroupData({
     String? image,
     String? groupName,
     String? groupNameAr, // ✅ Arabic name

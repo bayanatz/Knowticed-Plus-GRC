@@ -17,8 +17,6 @@
 /// about Settings. Wrap any widget with [WatermarkPreview] to stamp it.
 library;
 
-import 'dart:ui' as ui;
-
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -101,7 +99,7 @@ class WatermarkPainter extends CustomPainter {
 
   /// Resolved once by the caller (which has a BuildContext) rather than read
   /// from a global: the stamp has to be able to render inside a painter.
-  final ui.TextDirection textDirection;
+  final TextDirection textDirection;
 
   const WatermarkPainter({
     required this.settings,
@@ -131,7 +129,8 @@ class WatermarkPainter extends CustomPainter {
         style: StyleText.fontSize16Weight500.copyWith(
           fontSize: settings.fontSize,
           fontWeight: FontWeight.w500,
-          color: settings.color.withOpacity(settings.opacity.clamp(0.0, 1.0)),
+          color: settings.color
+              .withValues(alpha: settings.opacity.clamp(0.0, 1.0)),
         ),
       ),
       textDirection: textDirection,
@@ -189,7 +188,7 @@ class WatermarkPainter extends CustomPainter {
           ..color = settings.color
               // A quarter of the text's opacity. At parity the pill is as loud
               // as the text and the whole surface turns into a block of colour.
-              .withOpacity((settings.opacity * 0.25).clamp(0.0, 1.0))
+              .withValues(alpha: (settings.opacity * 0.25).clamp(0.0, 1.0))
           ..style = PaintingStyle.fill)
         : null;
     final double padX = settings.fontSize * 0.5;

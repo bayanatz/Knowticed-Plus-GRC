@@ -5,6 +5,7 @@
 /// Purpose: Declares `CardMember`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -26,7 +27,9 @@ class CardMember {
         ? json['Card_Members_Status'].cast<String>()
         : [];
     timestamp = json['Timestamp'] != null
-        ? List<Timestamp>.from(json['Timestamp'].map((t) => t is Timestamp ? t : Timestamp.fromMillisecondsSinceEpoch(t.seconds * 1000)))
+        ? List<Timestamp>.from(json['Timestamp'].map((t) => t is Timestamp
+            ? t
+            : Timestamp.fromMillisecondsSinceEpoch(t.seconds * 1000)))
         : [];
   }
 

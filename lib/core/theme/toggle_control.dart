@@ -2,9 +2,11 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: toggle_control.dart
-/// Purpose: Declares `ThemeAndLocalizationsState`.
-/// Author: Knowticed Plus team
+/// Description: Declares `ThemeAndLocalizationsState`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 // ******************* FILE INFO *******************
 // File Name: toogle_control.dart
@@ -19,7 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:grc_module/core/helper/main_helper/app_locale.dart';
+import 'package:grc_module/core/helper/app_locale.dart';
 
 class ThemeAndLocalizationsState {
   final ThemeMode themeMode;
@@ -63,20 +65,19 @@ class ThemeAndLocalizationsCubit extends Cubit<ThemeAndLocalizationsState> {
   // even a correct value would have been English for the first frames.
   ThemeAndLocalizationsCubit()
       : super(
-    ThemeAndLocalizationsState(
-      themeMode: ThemeMode.dark,
-      locale: AppLocale.current,
-    ),
-  ) {
-    _loadSettings();
-  }
+          ThemeAndLocalizationsState(
+            themeMode: ThemeMode.dark,
+            locale: AppLocale.current,
+          ),
+        );
 
-  /// Load theme from SharedPreferences.
+  /// Load theme from SharedPreferences. Called once by whoever creates the
+  /// cubit (main.dart) — never from the constructor (no async work there).
   ///
   /// The locale is NOT loaded here — it is already correct from the
   /// constructor, and re-reading it from a second store is what caused the
   /// disagreement this class used to introduce.
-  Future<void> _loadSettings() async {
+  Future<void> loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
 
     final themeString = prefs.getString('themeMode');
@@ -85,13 +86,14 @@ class ThemeAndLocalizationsCubit extends Cubit<ThemeAndLocalizationsState> {
       themeMode = ThemeMode.light;
     }
 
+    if (isClosed) return;
     emit(state.copyWith(themeMode: themeMode));
   }
 
   /// Toggle between light and dark mode
   Future<void> toggleTheme() async {
     final newTheme =
-    state.themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
+        state.themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
 
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('themeMode', newTheme.toString());
@@ -107,8 +109,9 @@ class ThemeAndLocalizationsCubit extends Cubit<ThemeAndLocalizationsState> {
   /// `Intl.defaultLocale` call was made. It now goes through AppLocale, the
   /// same path the language picker uses.
   Future<void> toggleLanguage() async {
-    final Locale newLocale =
-        state.locale.languageCode == 'en' ? AppLocale.arabic : AppLocale.english;
+    final Locale newLocale = state.locale.languageCode == 'en'
+        ? AppLocale.arabic
+        : AppLocale.english;
 
     await AppLocale.apply(newLocale);
 

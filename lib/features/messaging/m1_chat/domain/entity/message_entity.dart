@@ -1,11 +1,13 @@
 /// Module: messaging / chat / domain/entity/message_entity.dart
+library;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:grc_module/core/enums/message_module/message_types.dart';
-import '../../data/models/message/audio_message_model.dart';
-import '../../data/models/message/doc_message_model.dart';
-import '../../data/models/message/video_message_model.dart';
-import '../enum/reacts.dart';
+import 'package:grc_module/features/messaging/helpers/enums/message_types.dart';
+import 'package:grc_module/features/messaging/m1_chat/data/models/message/audio_message_model.dart';
+import 'package:grc_module/features/messaging/m1_chat/data/models/message/doc_message_model.dart';
+import 'package:grc_module/features/messaging/m1_chat/data/models/message/video_message_model.dart';
+import 'package:grc_module/features/messaging/m1_chat/domain/enum/reacts.dart';
 
 class MessageEntity {
   String channelId;
@@ -93,7 +95,7 @@ class MessageEntity {
       isStarred: isStarred ?? this.isStarred,
       messageType: messageType ?? this.messageType,
       messageContent:
-      messageContent != null ? messageContent() : this.messageContent,
+          messageContent != null ? messageContent() : this.messageContent,
       isGroup: isGroup ?? this.isGroup,
       indexOfRepliedMessage: indexOfRepliedMessage != null
           ? indexOfRepliedMessage()
@@ -101,11 +103,11 @@ class MessageEntity {
       index: index ?? this.index,
       isPinned: isPinned ?? this.isPinned,
       repliedMessage:
-      repliedMessage != null ? repliedMessage() : this.repliedMessage,
+          repliedMessage != null ? repliedMessage() : this.repliedMessage,
       mediaLink: mediaLink != null ? mediaLink() : this.mediaLink,
       reacts: reacts ?? this.reacts,
       docMessageModel:
-      docMessageModel != null ? docMessageModel() : this.docMessageModel,
+          docMessageModel != null ? docMessageModel() : this.docMessageModel,
       videoMessageModel: videoMessageModel != null
           ? videoMessageModel()
           : this.videoMessageModel,

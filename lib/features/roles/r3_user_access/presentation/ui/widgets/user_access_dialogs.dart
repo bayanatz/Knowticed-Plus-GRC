@@ -2,8 +2,9 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: user_access_dialogs.dart
-/// Purpose: Declares `UserAccessStrings` and the user-access dialog flows.
-/// Author: Knowticed Plus team
+/// Description: Declares `UserAccessStrings` and the user-access dialog flows.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - GetX removed; the string bag now resolves the
 ///          locale from the ambient Localizations instead of Get.locale.
 /// Updated: 29/8/2026 - Dialog shell padding 24 → 12; the schedule date field
@@ -13,36 +14,38 @@
 /// Updated: 30/8/2026 - That shared height reaches `CustomDropdown` unscaled,
 ///          so the unit box and the stepper beside it are finally the same
 ///          height (it was being scaled twice).
+library;
 
 ///************************* FILE INFO ****************************///
 /// File: user_access_dialogs.dart
-/// Purpose: The dialog flows behind the User Access card's "..." menu, built
+/// Description: The dialog flows behind the User Access card's "..." menu, built
 ///          to match the Figma:
 ///            • Editing Access Details  → Expiration Time + Default Password
 ///            • Schedule / Editing Schedule → date + reminder
 ///          Confirmation + success steps go through [CustomDialogManager] so
 ///          they look identical to the rest of the app.
-/// Author: Amr Mesbah
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' hide TextDirection;
 
-import 'package:grc_module/core/custom/1-custom_dropdown.dart';
-import 'package:grc_module/core/custom/3-custom_dropdown_calander.dart';
-import 'package:grc_module/core/custom/2-custom_textfield.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/custom/5-custom_button.dart';
-import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
+import 'package:grc_module/core/custom/dropdowns/custom_dropdown.dart';
+import 'package:grc_module/core/custom/pickers/custom_date_field.dart';
+import 'package:grc_module/core/custom/inputs/custom_textfield.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
+import 'package:grc_module/core/custom/buttons/custom_button.dart';
+import 'package:grc_module/core/custom/dialogs/custom_dialog_manager.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
-import 'package:grc_module/core/helper/role/constants.dart';
+import 'package:grc_module/core/helper/access/constants.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/features/roles/r3_user_access/domain/entities/user_access_entity.dart';
 import 'package:grc_module/features/roles/r3_user_access/presentation/controller/user_access_cubit.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
+
+part 'user_access_dialogs/dialog_shell.dart';
 
 /// Copy used by the User Access flows that has no generated l10n key yet.
 ///
@@ -56,70 +59,108 @@ class UserAccessStrings {
       context.isArabic ? ar : en;
 
   // Menu
-  static String deactivate(BuildContext context) => _t(context, 'Deactivate', 'إلغاء التنشيط');
-  static String editSchedule(BuildContext context) => _t(context, 'Edit Schedule', 'تعديل الجدولة');
-  static String cancelDeactivate(BuildContext context) => _t(context, 'Cancel Deactivate', 'إلغاء جدولة الإيقاف');
-  static String cancelActivate(BuildContext context) => _t(context, 'Cancel Activate', 'إلغاء جدولة التنشيط');
-  static String lastLogin(BuildContext context) => _t(context, 'Last Login', 'آخر تسجيل دخول');
+  static String deactivate(BuildContext context) =>
+      _t(context, 'Deactivate', 'إلغاء التنشيط');
+  static String editSchedule(BuildContext context) =>
+      _t(context, 'Edit Schedule', 'تعديل الجدولة');
+  static String cancelDeactivate(BuildContext context) =>
+      _t(context, 'Cancel Deactivate', 'إلغاء جدولة الإيقاف');
+  static String cancelActivate(BuildContext context) =>
+      _t(context, 'Cancel Activate', 'إلغاء جدولة التنشيط');
+  static String lastLogin(BuildContext context) =>
+      _t(context, 'Last Login', 'آخر تسجيل دخول');
 
   // Buttons
-  static String schedule(BuildContext context) => _t(context, 'Schedule', 'جدولة');
-  static String continueText(BuildContext context) => _t(context, 'Continue', 'متابعة');
-  static String discard(BuildContext context) => _t(context, 'Discard', 'تجاهل');
+  static String schedule(BuildContext context) =>
+      _t(context, 'Schedule', 'جدولة');
+  static String continueText(BuildContext context) =>
+      _t(context, 'Continue', 'متابعة');
+  static String discard(BuildContext context) =>
+      _t(context, 'Discard', 'تجاهل');
   static String create(BuildContext context) => _t(context, 'Create', 'إنشاء');
 
   // Dialog titles
-  static String editingAccessDetails(BuildContext context) => _t(context, 'Editing Access Details', 'تعديل تفاصيل الوصول');
-  static String editingSchedule(BuildContext context) => _t(context, 'Editing Schedule', 'تعديل الجدولة');
-  static String reminder(BuildContext context) => _t(context, 'Reminder', 'تذكير');
-  static String scheduledForActivate(BuildContext context) => _t(context, 'Scheduled for Activate', 'مجدول للتنشيط');
-  static String scheduledForReactivate(BuildContext context) => _t(context, 'Scheduled for Reactivate', 'مجدول لإعادة التنشيط');
-  static String scheduledForDeactivate(BuildContext context) => _t(context, 'Scheduled for Deactivate', 'مجدول لإلغاء التنشيط');
+  static String editingAccessDetails(BuildContext context) =>
+      _t(context, 'Editing Access Details', 'تعديل تفاصيل الوصول');
+  static String editingSchedule(BuildContext context) =>
+      _t(context, 'Editing Schedule', 'تعديل الجدولة');
+  static String reminder(BuildContext context) =>
+      _t(context, 'Reminder', 'تذكير');
+  static String scheduledForActivate(BuildContext context) =>
+      _t(context, 'Scheduled for Activate', 'مجدول للتنشيط');
+  static String scheduledForReactivate(BuildContext context) =>
+      _t(context, 'Scheduled for Reactivate', 'مجدول لإعادة التنشيط');
+  static String scheduledForDeactivate(BuildContext context) =>
+      _t(context, 'Scheduled for Deactivate', 'مجدول لإلغاء التنشيط');
 
   // Success copy
-  static String accessEdited(BuildContext context) => _t(context, 'Access Edited', 'تم تعديل الوصول');
-  static String accessEditedBody(BuildContext context) => _t(context, 
+  static String accessEdited(BuildContext context) =>
+      _t(context, 'Access Edited', 'تم تعديل الوصول');
+  static String accessEditedBody(BuildContext context) => _t(context,
       'You Successfully Edited Access Details', 'تم تعديل تفاصيل الوصول بنجاح');
-  static String scheduleCreated(BuildContext context) => _t(context, 'Schedule Created', 'تم إنشاء الجدولة');
-  static String scheduleCreatedBody(BuildContext context) => _t(context, 'You Successfully Created Schedule', 'تم إنشاء الجدولة بنجاح');
-  static String scheduleEdited(BuildContext context) => _t(context, 'Schedule Edited', 'تم تعديل الجدولة');
-  static String scheduleEditedBody(BuildContext context) => _t(context, 'You Successfully Edited Schedule', 'تم تعديل الجدولة بنجاح');
+  static String scheduleCreated(BuildContext context) =>
+      _t(context, 'Schedule Created', 'تم إنشاء الجدولة');
+  static String scheduleCreatedBody(BuildContext context) => _t(
+      context, 'You Successfully Created Schedule', 'تم إنشاء الجدولة بنجاح');
+  static String scheduleEdited(BuildContext context) =>
+      _t(context, 'Schedule Edited', 'تم تعديل الجدولة');
+  static String scheduleEditedBody(BuildContext context) =>
+      _t(context, 'You Successfully Edited Schedule', 'تم تعديل الجدولة بنجاح');
 
-  static String accountDeactivated(BuildContext context) => _t(context, 'Account Deactivated', 'تم إلغاء تنشيط الحساب');
-  static String accountDeactivatedBody(BuildContext context) => _t(context, 
-      'You Successfully Deactivated This Account', 'تم إلغاء تنشيط الحساب بنجاح');
-  static String accountActivated(BuildContext context) => _t(context, 'Account Activated', 'تم تنشيط الحساب');
-  static String accountActivatedBody(BuildContext context) => _t(context, 'You Successfully Activated This Account', 'تم تنشيط الحساب بنجاح');
+  static String accountDeactivated(BuildContext context) =>
+      _t(context, 'Account Deactivated', 'تم إلغاء تنشيط الحساب');
+  static String accountDeactivatedBody(BuildContext context) => _t(
+      context,
+      'You Successfully Deactivated This Account',
+      'تم إلغاء تنشيط الحساب بنجاح');
+  static String accountActivated(BuildContext context) =>
+      _t(context, 'Account Activated', 'تم تنشيط الحساب');
+  static String accountActivatedBody(BuildContext context) => _t(context,
+      'You Successfully Activated This Account', 'تم تنشيط الحساب بنجاح');
 
-  static String unlockingAccount(BuildContext context) => _t(context, 'Unlocking Account', 'إلغاء قفل الحساب');
-  static String unlockingAccountBody(BuildContext context) => _t(context, 'Are You Sure You Want To Unlock This Account?',
-          'هل أنت متأكد أنك تريد إلغاء قفل هذا الحساب؟');
-  static String accountUnlocked(BuildContext context) => _t(context, 'Account Unlocked', 'تم إلغاء قفل الحساب');
-  static String accountUnlockedBody(BuildContext context) => _t(context, 'You Successfully Unlocked Account', 'تم إلغاء قفل الحساب بنجاح');
+  static String unlockingAccount(BuildContext context) =>
+      _t(context, 'Unlocking Account', 'إلغاء قفل الحساب');
+  static String unlockingAccountBody(BuildContext context) => _t(
+      context,
+      'Are You Sure You Want To Unlock This Account?',
+      'هل أنت متأكد أنك تريد إلغاء قفل هذا الحساب؟');
+  static String accountUnlocked(BuildContext context) =>
+      _t(context, 'Account Unlocked', 'تم إلغاء قفل الحساب');
+  static String accountUnlockedBody(BuildContext context) => _t(context,
+      'You Successfully Unlocked Account', 'تم إلغاء قفل الحساب بنجاح');
 
-  static String cancelDeactivatingSchedule(BuildContext context) => _t(context, 'Cancel Deactivating Schedule', 'إلغاء جدولة الإيقاف');
-  static String cancelDeactivatingScheduleBody(BuildContext context) => _t(context, 'Are You Sure You Want To Cancel This Deactivating Schedule?',
-          'هل أنت متأكد أنك تريد إلغاء جدولة الإيقاف؟');
-  static String deactivatingScheduleCanceled(BuildContext context) => _t(context, 'Deactivating Schedule Canceled', 'تم إلغاء جدولة الإيقاف');
+  static String cancelDeactivatingSchedule(BuildContext context) =>
+      _t(context, 'Cancel Deactivating Schedule', 'إلغاء جدولة الإيقاف');
+  static String cancelDeactivatingScheduleBody(BuildContext context) => _t(
+      context,
+      'Are You Sure You Want To Cancel This Deactivating Schedule?',
+      'هل أنت متأكد أنك تريد إلغاء جدولة الإيقاف؟');
+  static String deactivatingScheduleCanceled(BuildContext context) =>
+      _t(context, 'Deactivating Schedule Canceled', 'تم إلغاء جدولة الإيقاف');
 
-  static String cancelActivatingSchedule(BuildContext context) => _t(context, 'Cancel Activating Schedule', 'إلغاء جدولة التنشيط');
-  static String cancelActivatingScheduleBody(BuildContext context) => _t(context, 'Are You Sure You Want To Cancel This Reactivating Schedule?',
-          'هل أنت متأكد أنك تريد إلغاء جدولة إعادة التنشيط؟');
-  static String activatingScheduleCanceled(BuildContext context) => _t(context, 'Activating Schedule Canceled', 'تم إلغاء جدولة التنشيط');
-  static String scheduleCanceledBody(BuildContext context) => _t(context, 'You Successfully Canceled Schedule', 'تم إلغاء الجدولة بنجاح');
+  static String cancelActivatingSchedule(BuildContext context) =>
+      _t(context, 'Cancel Activating Schedule', 'إلغاء جدولة التنشيط');
+  static String cancelActivatingScheduleBody(BuildContext context) => _t(
+      context,
+      'Are You Sure You Want To Cancel This Reactivating Schedule?',
+      'هل أنت متأكد أنك تريد إلغاء جدولة إعادة التنشيط؟');
+  static String activatingScheduleCanceled(BuildContext context) =>
+      _t(context, 'Activating Schedule Canceled', 'تم إلغاء جدولة التنشيط');
+  static String scheduleCanceledBody(BuildContext context) => _t(
+      context, 'You Successfully Canceled Schedule', 'تم إلغاء الجدولة بنجاح');
 }
 
 class UserAccessDialogs {
   static const String _confirmLottie =
-      'assets/lottie_assets/roles_lottie_assets/Edit Document.json';
+      'assets/lottie_assets/main_lottie_assets/lot_action_edit_document.json';
   static const String _successLottie =
-      'assets/lottie_assets/main_lottie_assets/check.json';
+      'assets/lottie_assets/main_lottie_assets/lot_status_check.json';
 
   // Header badge icons for the form dialogs.
   static const String _editAccessIcon =
-      'assets/icons_assets/roles_assets/edit_access.svg';
+      'assets/icons_assets/main_icons_assets/ic_security_edit_access.svg';
   static const String _calendarIcon =
-      'assets/icons_assets/watermark/Schedule.svg';
+      'assets/icons_assets/main_icons_assets/ic_time_sla_schedule.svg';
 
   // ── Editing Access Details ────────────────────────────────────────────────
 
@@ -260,7 +301,7 @@ class UserAccessDialogs {
                   onDiscard: () => Navigator.of(dialogContext).pop(false),
                   children: [
                     _FieldLabel(dateLabel),
-                    CustomDropdownCalendar(
+                    CustomDateField(
                       value: selectedDate,
                       hint: S.of(context).pleaseSelectADate,
                       // EDIT 29/8/2026: `card` → `background`. Every other
@@ -272,8 +313,7 @@ class UserAccessDialogs {
                       borderRadius: BorderRadius.circular(8.r),
                       firstDate: DateTime.now(),
                       lastDate: DateTime(DateTime.now().year + 5),
-                      dateFormatter: (d) =>
-                          DateFormat('dd MMM yyyy').format(d),
+                      dateFormatter: (d) => DateFormat('dd MMM yyyy').format(d),
                       onChanged: (picked) {
                         if (picked != null) {
                           setDialogState(() => selectedDate = picked);
@@ -334,8 +374,8 @@ class UserAccessDialogs {
     // it. Rendering the date for a human is the reader's job. Identical to the
     // note in `employee_details_methods2.dart` (FIXED 13/8/2026), which is the
     // same bug in the user-management module.
-    final String formatted = DateFormat(Constants.userAccessDateFormat, 'en')
-        .format(selectedDate!);
+    final String formatted =
+        DateFormat(Constants.userAccessDateFormat, 'en').format(selectedDate!);
 
     // ADDED 28/9/2026 (Role bug report p.9 — "show the loading indicator"):
     // after Create the dialog closed and nothing moved until the success
@@ -343,6 +383,7 @@ class UserAccessDialogs {
     // 30/9/2026 (Role QA p.19): the shared overlay loader appears on the
     // same frame; the old GetX dialog faded in over 700 ms, so a quick write
     // finished before it was visible.
+    if (!context.mounted) return;
     await CustomDialogManager.runWithLoading(context, () async {
       if (schedulingDeactivation) {
         await controller.scheduleDeactivation(entity, formatted);
@@ -498,114 +539,6 @@ class UserAccessDialogs {
   }
 }
 
-// ══════════════════════════════════════════════════════════════════════════
-// Dialog building blocks — styled to match CustomDialogManager's dialogs.
-// ══════════════════════════════════════════════════════════════════════════
-
-class _DialogShell extends StatelessWidget {
-  const _DialogShell({
-    required this.iconPath,
-    required this.title,
-    required this.confirmText,
-    required this.onConfirm,
-    required this.onDiscard,
-    required this.children,
-  });
-
-  /// SVG asset path for the header badge.
-  final String iconPath;
-  final String title;
-  final String confirmText;
-
-  /// A null [onConfirm] renders the primary button disabled — used while the
-  /// schedule dialog has no date picked yet.
-  final VoidCallback? onConfirm;
-  final VoidCallback onDiscard;
-  final List<Widget> children;
-
-  @override
-  Widget build(BuildContext context) {
-    final bool isMobile = ContextExtension(context).isPhone;
-
-    return Dialog(
-      backgroundColor: Theme.of(context).brightness == Brightness.light
-          ? AppColors.white
-          : AppColors.chatBackground,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
-      child: Padding(
-        // EDIT 29/8/2026: 24 → 12. The shell is a fixed 420 wide, so the old
-        // padding spent 48 of that on margin and squeezed the date field and
-        // the reminder row for no gain.
-        padding: EdgeInsets.all(12.r),
-        child: SizedBox(
-          width: 420.sp,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 16.r,
-                    backgroundColor: AppColors.primary,
-                    child: CustomSvgImage(
-                      assetPath: iconPath,
-                      width: 16.sp,
-                      height: 16.sp,
-                      fit: BoxFit.scaleDown,
-                      color: AppColors.textButton,
-                    ),
-                  ),
-                  SizedBox(width: 10.sp),
-                  Expanded(
-                    child: Text(
-                      title,
-                      style: StyleText.fontSize16Weight400,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 20.sp),
-              ...children,
-              SizedBox(height: 24.sp),
-              Row(
-                children: [
-                  customButton(
-
-                    title: UserAccessStrings.discard(context),
-                    color: AppColors.secondaryButton,
-                    textStyle: StyleText.fontSize15Weight400
-                        .copyWith(color: AppColors.blackButton),
-                    width: isMobile ? 115.sp : 160.sp,
-                    function: onDiscard,
-                  ),
-                  Spacer(),
-                  customButton(
-                    title: confirmText,
-                    // EDIT 29/8/2026: the disabled state is `darkGrey`, not a
-                    // 40%-opacity primary. Faded primary still read as the
-                    // brand colour — a dimmed live button rather than a dead
-                    // one — and it sat next to Discard, which is already
-                    // `darkGrey`, so "disabled" and "secondary" now share one
-                    // colour and only the primary state stands out.
-                    color: onConfirm == null
-                        ? AppColors.darkGrey
-                        : AppColors.primary,
-                    width: isMobile ? 115.sp : 160.sp,
-                    function: onConfirm ?? () {},
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class _FieldLabel extends StatelessWidget {
   const _FieldLabel(this.text);
 
@@ -647,8 +580,7 @@ class _Stepper extends StatelessWidget {
     required this.value,
     required this.onChanged,
     this.step = 1,
-    this.min = 1,
-  });
+  }) : min = 1;
 
   final int value;
   final ValueChanged<int> onChanged;
@@ -690,6 +622,7 @@ class _Stepper extends StatelessWidget {
 
   Widget _stepButton(IconData icon, VoidCallback onTap) {
     return InkWell(
+      onTapDown: (_) => HapticController.low(),
       onTap: () {
         HapticFeedback.selectionClick();
         onTap();
@@ -732,7 +665,7 @@ class _UnitDropdown extends StatelessWidget {
           DropdownItem<String>(value: unit, label: labelOf(unit)),
       ],
       onChanged: (selected) {
-        if (selected != null) onChanged(selected);
+        onChanged(selected);
       },
     );
   }

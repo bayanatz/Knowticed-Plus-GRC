@@ -4,19 +4,20 @@
 /// Purpose: Connections repository — messaging Connections sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+library;
 
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 
-import 'package:grc_module/core/network/message_module/services/error_handler.dart';
-import '../../../../../core/helper/message_module/interface/entity/base_messaging_interface_parameters.dart';
-import '../../../../../core/helper/message_module/interface/entity/user_category.dart';
-import '../../domain/base_repository/base_connections_repository.dart';
-import '../../domain/entities/single_connection_entity.dart';
-import '../data_source/remote_data_source/connections_remote_data_source.dart';
-import '../models/users_connection_model.dart';
-import '../models/user_connection_last_message_info_model.dart';
+import 'package:grc_module/core/network/failure_model.dart';
+import 'package:grc_module/features/messaging/helpers/messaging_bridge/interface/entity/base_messaging_interface_parameters.dart';
+import 'package:grc_module/features/messaging/helpers/messaging_bridge/interface/entity/user_category.dart';
+import 'package:grc_module/features/messaging/m2_connections/domain/base_repository/base_connections_repository.dart';
+import 'package:grc_module/features/messaging/m2_connections/domain/entities/single_connection_entity.dart';
+import 'package:grc_module/features/messaging/m2_connections/data/data_source/remote_data_source/connections_remote_data_source.dart';
+import 'package:grc_module/features/messaging/m2_connections/data/models/users_connection_model.dart';
+import 'package:grc_module/features/messaging/m2_connections/data/models/user_connection_last_message_info_model.dart';
 
 // created by Mohamed Elrashidy
 // created at 30/9/2024
@@ -38,7 +39,7 @@ class ConnectionsRepository extends ConnectionsRepositoryInterface {
       connectionId: connectionId,
     );
     UsersConnectionModel newConnectionUserConnectionModel =
-    _createConnectionModel(
+        _createConnectionModel(
       user: currentUser,
       timestamp: timestamp,
       connectionId: connectionId,
@@ -74,8 +75,7 @@ class ConnectionsRepository extends ConnectionsRepositoryInterface {
     Map<String, dynamic> map,
     List<UserCategory> categories,
   ) {
-    final Object? docId =
-        map[ConnectionsRemoteDataSource.connectionDocIdKey];
+    final Object? docId = map[ConnectionsRemoteDataSource.connectionDocIdKey];
     if (docId is! String || docId.isEmpty) return null;
     try {
       final UserConnectionLastMessageInfoModel info =

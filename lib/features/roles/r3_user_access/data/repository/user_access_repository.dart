@@ -2,19 +2,20 @@
 ///
 ///********************** FILE INFO **********************
 /// File: user_access_repository.dart
-/// Purpose: repository contains all function related to database for account status feature.
+/// Description: repository contains all function related to database for account status feature.
 /// Author: Amr Mesbah
-/// Date: 22/1/2025
+/// Created at: 22/1/2025
 /// Updated: 23/12/2025 - Added comprehensive notification system
+library;
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-import 'package:grc_module/core/helper/role/constants.dart';
+import 'package:grc_module/core/helper/access/constants.dart';
 import 'package:dartz/dartz.dart';
 import 'package:grc_module/core/network/api_constants.dart';
 import 'package:grc_module/features/onboarding/o3_authentication/domain/enums/employee_status_enum.dart';
-import 'package:grc_module/core/helper/main_helper/biometric_controller.dart';
+import 'package:grc_module/core/helper/biometric_controller.dart';
 import 'package:grc_module/core/network/failure_model.dart';
 import 'package:grc_module/core/network/get_base_url.dart';
 import 'package:grc_module/features/roles/r4_active_directory/data/models/employees_model/new_employee_model.dart';
@@ -23,6 +24,8 @@ import 'package:grc_module/features/roles/r3_user_access/domain/entities/user_ac
 import 'package:grc_module/features/notification/data/repository/account_status_notification_service.dart';
 import 'package:grc_module/features/roles/r3_user_access/data/data_source/remote_data_source/user_access_remote_data_source.dart';
 import 'package:grc_module/features/onboarding/o3_authentication/data/utils/login_attempt_store.dart';
+
+part 'user_access_repository/user_access_repository_methods.dart';
 
 class UserAccessRepository {
   /// Sender identity attached to account-status notifications when the acting
@@ -33,8 +36,7 @@ class UserAccessRepository {
   static const String _systemSenderEmail = 'system@company.com';
   static const String _adminSenderEmail = 'admin@company.com';
 
-  UserAccessRemoteDataSource remoteDataSource =
-  UserAccessRemoteDataSource();
+  UserAccessRemoteDataSource remoteDataSource = UserAccessRemoteDataSource();
 
   /// Method Name: [getAccountsStatusEntities]
   ///
@@ -50,13 +52,13 @@ class UserAccessRepository {
     List<UserAccessEntity> entities = [];
 
     for (Map<String, dynamic> employee in employees) {
-      entities.add(_toUserAccessEntity(NewEmployeeModelHistory.fromMap(employee)));
+      entities
+          .add(_toUserAccessEntity(NewEmployeeModelHistory.fromMap(employee)));
     }
 
     result = Right(entities);
     return result;
   }
-
 
   /// Function Name: [_toUserAccessEntity]
   ///
@@ -87,8 +89,8 @@ class UserAccessRepository {
       final bool isFemale = employeeModel.gender.isNotEmpty &&
           employeeModel.gender.last.toLowerCase() == "female";
       photo = isFemale
-          ? 'assets/icons_assets/main_icons_assets/female_avatar.png'
-          : 'assets/icons_assets/main_icons_assets/male_avatar.png';
+          ? 'assets/icons_assets/main_icons_assets/ic_user_avatar_female.png'
+          : 'assets/icons_assets/main_icons_assets/ic_user_avatar_male.png';
     }
 
     return UserAccessEntity(
@@ -177,7 +179,6 @@ class UserAccessRepository {
       }
     }
 
-    debugPrint('_parseDateFlexible: unrecognised date format "$dateString"');
     return null;
   }
 
@@ -197,7 +198,16 @@ class UserAccessRepository {
   /// Returns: [String] the same text with ASCII digits.
   static String _toAsciiDigits(String value) {
     const List<String> arabicIndic = <String>[
-      '٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩',
+      '٠',
+      '١',
+      '٢',
+      '٣',
+      '٤',
+      '٥',
+      '٦',
+      '٧',
+      '٨',
+      '٩',
     ];
 
     String result = value;
@@ -205,149 +215,6 @@ class UserAccessRepository {
       result = result.replaceAll(arabicIndic[i], '$i');
     }
     return result;
-  }
-
-  /// Method Name: [updateAccountStatus]
-  ///
-  /// Purpose: Update employee status using synchronized history pattern
-  ///
-  /// Parameters:
-  ///   [UserAccessEntity] accountStatusAccessEntity
-  ///   [EmployeeStatusEnum] status - new status to set
-  /// ✅ UPDATED: Now sends notifications based on status change
-  Future<Either<Failure, dynamic>> updateAccountStatus(
-      UserAccessEntity accountStatusAccessEntity,
-      EmployeeStatusEnum status) async {
-
-    Either<Failure, dynamic> result = await remoteDataSource
-        .getEmployeeModel(accountStatusAccessEntity.employeeId);
-
-    if (result.isLeft()) {
-      return result;
-    }
-
-    var employeeDataOrNull = result.getOrElse(() => null);
-
-    if (employeeDataOrNull == null) {
-      return Left(FirebaseFailure(
-          'Employee data not found for ID: ${accountStatusAccessEntity.employeeId}'));
-    }
-
-    Map<String, dynamic> employeeData =
-    employeeDataOrNull as Map<String, dynamic>;
-
-
-    NewEmployeeModelHistory employeeModel =
-    NewEmployeeModelHistory.fromMap(employeeData);
-
-
-    // ✅ Store old values for notification logic
-    String oldStatus = employeeModel.status.isNotEmpty
-        ? employeeModel.status.last
-        : '';
-    String? oldActivationDate = employeeModel.activationDate;
-    String? oldDeactivationDate = employeeModel.deactivationDate;
-
-
-    // Is this the admin lifting a lock, as opposed to any other status change?
-    final bool isUnlocking = status == EmployeeStatusEnum.active &&
-        (oldStatus == EmployeeStatusEnum.locked.name ||
-            oldStatus == EmployeeStatusEnum.lockedWithRequest.name ||
-            oldStatus == _lockedWithRequestStatus);
-
-    // Update the employee model
-    employeeModel = employeeModel.copyWithUpdateSynchronized(
-      status: status.name,
-      deactivationDate: '', // Clear scheduled deactivation
-      activationDate: '',   // Clear scheduled activation
-    );
-
-    if (isUnlocking) {
-      // ADDED 22/8/2026 — unlocking must NOT hand the account straight back to
-      // the user's old password.
-      //
-      // `DemoLoginRepository.validateActiveAccount` resolves the accepted
-      // credential as `employeeModel.password ?? employeeModel.defaultPassword`,
-      // so as long as `Password` holds a value the personal password the user
-      // was locked out on keeps working — the lock taught them nothing and the
-      // admin had no way to hand over a fresh credential.
-      //
-      // Clearing `Password` makes the account fall back to `Default_Password`,
-      // which is exactly the value the admin can see in the Default Password
-      // column of this screen and read out to the user.
-      employeeModel.password = null;
-    }
-
-    // REMOVED 12/8/2026: `Map<String, dynamic> mapToSave = employeeModel.toMap();`
-    // — computed and never used; the write below sends `employeeModel` directly.
-    var updateResult = await remoteDataSource.updateEmployeeModel(employeeModel);
-
-    if (updateResult.isRight() && isUnlocking) {
-      // …and flipping Is_Activated back to false routes the next sign-in
-      // through `validateInactiveAccount`, whose success type is
-      // `SuccessAuthenticationType.inactive` — which `LoginController.login`
-      // already sends to the ResetPassword screen. So the unlocked user signs
-      // in once with the default password and is then required to create a new
-      // one before reaching the app. `DemoLoginRepository.updateEmployeePassword`
-      // sets both fields back when they save.
-      await _requirePasswordResetOnNextLogin(accountStatusAccessEntity.email);
-
-      // The failure history that produced the lock is spent. Without this the
-      // unlocked user would be one wrong password away from being locked again.
-      LoginAttemptStore.reset(accountStatusAccessEntity.email);
-    }
-
-    if (updateResult.isRight()) {
-
-      // ═══════════════════════════════════════════════════════════
-      // ✅ SEND NOTIFICATIONS BASED ON STATUS CHANGE
-      // ═══════════════════════════════════════════════════════════
-
-      String userEmail = accountStatusAccessEntity.email;
-      String userName = accountStatusAccessEntity.englishName;
-      String adminEmail = storage.read('email') ?? _systemSenderEmail;
-
-      // 1. Account Activated
-      if (status == EmployeeStatusEnum.active && oldStatus != 'active') {
-        await AccountStatusNotificationService.sendAccountActivatedNotification(
-          userEmail: userEmail,
-          userName: userName,
-          senderEmail: adminEmail, // ✅ ADD THIS
-        );
-      }
-
-      // 2. Account Deactivated
-      if (status == EmployeeStatusEnum.deactivated && oldStatus != 'deactivated') {
-        await AccountStatusNotificationService.sendAccountDeactivatedNotification(
-          userEmail: userEmail,
-          userName: userName,
-          senderEmail: adminEmail, // ✅ ADD THIS
-
-        );
-      }
-
-      // 3. Account Unlocked (from locked to active)
-      if (status == EmployeeStatusEnum.active &&
-          (oldStatus == 'locked' || oldStatus == 'locked with send request')) {
-        await AccountStatusNotificationService.sendAccountUnlockedNotification(
-          userEmail: userEmail,
-          userName: userName,
-          senderEmail: adminEmail, // ✅ ADD THIS
-        );
-      }
-
-      // 4. Schedule Canceled (if had scheduled dates and now cleared)
-      if ((oldActivationDate != null && oldActivationDate.isNotEmpty) ||
-          (oldDeactivationDate != null && oldDeactivationDate.isNotEmpty)) {
-        await AccountStatusNotificationService.sendScheduleCanceledNotification(
-          userEmail: userEmail,
-          userName: userName,
-          senderEmail: adminEmail, // ✅ ADD THIS
-        );
-      }
-    }
-
-    return updateResult;
   }
 
   /// Method Name: [scheduleDeactivationTime]
@@ -361,7 +228,6 @@ class UserAccessRepository {
   Future<Either<Failure, dynamic>> scheduleDeactivationTime(
       UserAccessEntity accountStatusAccessEntity,
       String deactivationTime) async {
-
     Either<Failure, dynamic> result = await remoteDataSource
         .getEmployeeModel(accountStatusAccessEntity.employeeId);
     if (result.isLeft()) return result;
@@ -373,9 +239,8 @@ class UserAccessRepository {
           'Employee data not found for ID: ${accountStatusAccessEntity.employeeId}'));
     }
 
-    NewEmployeeModelHistory employeeModel =
-    NewEmployeeModelHistory.fromMap(employeeDataOrNull as Map<String, dynamic>);
-
+    NewEmployeeModelHistory employeeModel = NewEmployeeModelHistory.fromMap(
+        employeeDataOrNull as Map<String, dynamic>);
 
     // ✅ Store old value to detect edit vs new schedule
     String? oldDeactivationDate = employeeModel.deactivationDate;
@@ -384,8 +249,8 @@ class UserAccessRepository {
     employeeModel.deactivationDate = deactivationTime;
     employeeModel.activationDate = ''; // Clear activation schedule
 
-
-    var updateResult = await remoteDataSource.updateEmployeeModel(employeeModel);
+    var updateResult =
+        await remoteDataSource.updateEmployeeModel(employeeModel);
 
     // ═══════════════════════════════════════════════════════════
     // ✅ SEND NOTIFICATIONS
@@ -415,7 +280,8 @@ class UserAccessRepository {
         );
       } else {
         // NEW - first time scheduling
-        await AccountStatusNotificationService.sendDeactivationScheduledNotification(
+        await AccountStatusNotificationService
+            .sendDeactivationScheduledNotification(
           userEmail: userEmail,
           userName: userName,
           scheduledDate: deactivationTime,
@@ -438,7 +304,6 @@ class UserAccessRepository {
   Future<Either<Failure, dynamic>> scheduleReactivationTime(
       UserAccessEntity accountStatusAccessEntity,
       String reactivationTime) async {
-
     Either<Failure, dynamic> result = await remoteDataSource
         .getEmployeeModel(accountStatusAccessEntity.employeeId);
     if (result.isLeft()) return result;
@@ -450,9 +315,8 @@ class UserAccessRepository {
           'Employee data not found for ID: ${accountStatusAccessEntity.employeeId}'));
     }
 
-    NewEmployeeModelHistory employeeModel =
-    NewEmployeeModelHistory.fromMap(employeeDataOrNull as Map<String, dynamic>);
-
+    NewEmployeeModelHistory employeeModel = NewEmployeeModelHistory.fromMap(
+        employeeDataOrNull as Map<String, dynamic>);
 
     // ✅ Store old value to detect edit vs new schedule
     String? oldActivationDate = employeeModel.activationDate;
@@ -461,8 +325,8 @@ class UserAccessRepository {
     employeeModel.activationDate = reactivationTime;
     employeeModel.deactivationDate = ''; // Clear deactivation schedule
 
-
-    var updateResult = await remoteDataSource.updateEmployeeModel(employeeModel);
+    var updateResult =
+        await remoteDataSource.updateEmployeeModel(employeeModel);
 
     // ═══════════════════════════════════════════════════════════
     // ✅ SEND NOTIFICATIONS
@@ -470,7 +334,6 @@ class UserAccessRepository {
     if (updateResult.isRight()) {
       String userEmail = accountStatusAccessEntity.email;
       String userName = accountStatusAccessEntity.englishName;
-      String adminEmail = _adminSenderEmail;
 
       // Check if this is a NEW schedule or EDIT
       if (oldActivationDate != null && oldActivationDate.isNotEmpty) {
@@ -489,7 +352,8 @@ class UserAccessRepository {
         );
       } else {
         // NEW - first time scheduling
-        await AccountStatusNotificationService.sendActivationScheduledNotification(
+        await AccountStatusNotificationService
+            .sendActivationScheduledNotification(
           userEmail: userEmail,
           userName: userName,
           scheduledDate: reactivationTime,
@@ -523,8 +387,8 @@ class UserAccessRepository {
           'Employee data not found for ID: ${accountStatusAccessEntity.employeeId}'));
     }
 
-    NewEmployeeModelHistory employeeModel =
-    NewEmployeeModelHistory.fromMap(employeeDataOrNull as Map<String, dynamic>);
+    NewEmployeeModelHistory employeeModel = NewEmployeeModelHistory.fromMap(
+        employeeDataOrNull as Map<String, dynamic>);
 
     // Use copyWithUpdateSynchronized for status change
     employeeModel = employeeModel.copyWithUpdateSynchronized(
@@ -561,12 +425,10 @@ class UserAccessRepository {
   /// Purpose: Update default password and expiration time in Firebase
   Future<Either<Failure, dynamic>> updateAccessDetails(
       UserAccessEntity entity) async {
-
-
     try {
       String? documentId = entity.employeeId;
 
-      if (documentId == null || documentId.isEmpty) {
+      if (documentId.isEmpty) {
         return Left(FirebaseFailure('Document ID cannot be null or empty'));
       }
 
@@ -584,19 +446,18 @@ class UserAccessRepository {
       Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
       data['Id'] = documentId;
       NewEmployeeModelHistory employeeModel =
-      NewEmployeeModelHistory.fromMap(data);
-
+          NewEmployeeModelHistory.fromMap(data);
 
       // Update ALL THREE fields
       employeeModel.defaultPassword = entity.tempPassword;
       employeeModel.passwordExpirationTime = entity.expirationTimeOfPassword;
       employeeModel.passwordExpirationUnit = entity.expirationTimeUnit;
 
-
       Map<String, dynamic> mapToSave = employeeModel.toMap();
 
-      await employeesInfoRef.doc(documentId).set(
-          mapToSave, SetOptions(merge: true));
+      await employeesInfoRef
+          .doc(documentId)
+          .set(mapToSave, SetOptions(merge: true));
 
       return Right(null);
     } catch (e) {
@@ -683,108 +544,9 @@ class UserAccessRepository {
         },
         SetOptions(merge: true),
       );
-    } catch (e, stackTrace) {
-      debugPrint(
-        'schedule-change marker: could not stamp $field on $employeeId: '
-        '$e\n$stackTrace',
-      );
+    } catch (e) {
+      debugPrint('Ignored error: $e');
     }
-  }
-
-  // ══════════════════════════════════════════════════════════════════
-  //  UNLOCK REQUEST — added 26/8/2026
-  //
-  //  `AccountStatusNotificationService.sendUnlockRequestNotification` and its
-  //  event `accountUnlockRequestedAdmin` have existed since the catalog was
-  //  written, with no caller anywhere in `lib/`. The same is true of the
-  //  status the request produces: `EmployeeStatusEnum.lockedWithRequest` is
-  //  READ in three places — `_checkEmployeeStatus` maps it to
-  //  `SuccessAuthenticationType.lockedWithRequest`, [updateAccountStatus]
-  //  treats it as unlockable, and the User Access screen styles it — and was
-  //  WRITTEN by nothing. Half a feature, wired at both ends and missing its
-  //  middle.
-  //
-  //  This is that middle. The trigger is the locked user's next sign-in
-  //  attempt: someone who has been locked out and comes back to try again IS
-  //  asking to be let in, and making them find a button to say so adds a step
-  //  without adding information. The caller is
-  //  `DemoLoginController.handleLockedAccountSignIn`, reached from both sign-in
-  //  paths that can land on a locked account — `lockAccount`'s "already locked"
-  //  branch (wrong password again) and `LoginController`'s catch-all `else`
-  //  (right password, locked account).
-  //
-  //  It is idempotent by construction: the status it writes is the same status
-  //  it refuses to act on, so a user who tries five times raises one request.
-  // ══════════════════════════════════════════════════════════════════
-
-  /// Function Name: [requestAccountUnlock]
-  ///
-  /// Purpose: Record that a locked-out user has asked to be unlocked, and tell
-  /// the Master Admins.
-  ///
-  /// Parameters:
-  /// - [employeeModel]: the locked account, freshly read by the caller.
-  /// - [userName]: the display name to print in the admin notification.
-  ///
-  /// Returns: [Future<bool>] true when a NEW request was raised. False when the
-  /// account was not locked, when a request was already outstanding, or when
-  /// the write failed — in all three cases no notification is sent.
-  Future<bool> requestAccountUnlock({
-    required NewEmployeeModelHistory employeeModel,
-    required String userName,
-  }) async {
-    final String email =
-        employeeModel.email.isNotEmpty ? employeeModel.email.last : '';
-    if (email.isEmpty) return false;
-
-    final String currentStatus =
-        employeeModel.status.isNotEmpty ? employeeModel.status.last : '';
-
-    // Already asked. Both spellings, for the reason [_lockedWithRequestStatus]
-    // gives.
-    if (currentStatus == EmployeeStatusEnum.lockedWithRequest.name ||
-        currentStatus == _lockedWithRequestStatus) {
-      return false;
-    }
-
-    // Only a locked account can ask to be unlocked.
-    if (currentStatus != EmployeeStatusEnum.locked.name) return false;
-
-    // `updateEmployeeModel` addresses the document by `id`, and this model was
-    // read by EMAIL — `FirebaseRepository.getDocumentWithFieldLasValue` returns
-    // `document.data()` without folding in `document.id`, so `Id` is there only
-    // because `toMap()` happens to write it as a field. A record last written
-    // through an older path may not carry it, and a null id would write to a
-    // document literally named "null". Resolved from the address in that case,
-    // and resolved BEFORE the copy: `copyWithUpdateSynchronized` appends a row
-    // to every history list, so calling it twice would record two status
-    // changes for one request.
-    String? documentId = employeeModel.id;
-    if (documentId == null || documentId.trim().isEmpty) {
-      documentId = await _employeeIdForEmail(email);
-      if (documentId == null) return false;
-    }
-
-    final NewEmployeeModelHistory requested =
-        employeeModel.copyWithUpdateSynchronized(
-      id: documentId,
-      status: EmployeeStatusEnum.lockedWithRequest.name,
-    );
-
-    final Either<Failure, dynamic> updateResult =
-        await remoteDataSource.updateEmployeeModel(requested);
-    if (updateResult.isLeft()) return false;
-
-    await AccountStatusNotificationService.sendUnlockRequestNotification(
-      userEmail: email,
-      userName: userName,
-      // The user IS the sender here — this is the one notification in the
-      // module that travels upward, from the locked account to the
-      // administrators, rather than from an admin to a user.
-      senderEmail: email,
-    );
-
-    return true;
   }
 
   /// Function Name: [_employeeIdForEmail]
@@ -825,9 +587,7 @@ class UserAccessRepository {
         }
       }
       return null;
-    } catch (e, stackTrace) {
-      debugPrint('unlock request: could not resolve an id for $email: '
-          '$e\n$stackTrace');
+    } catch (e) {
       return null;
     }
   }
@@ -857,11 +617,8 @@ class UserAccessRepository {
           .collection(ApiConstants.demoUsersAccounts)
           .doc(normalizedEmail)
           .update({DemoUserAccountOverview.isActivatedField: false});
-    } catch (e, stackTrace) {
-      debugPrint(
-        'unlock: could not flag $normalizedEmail for a password reset: '
-        '$e\n$stackTrace',
-      );
+    } catch (e) {
+      debugPrint('Ignored error: $e');
     }
   }
 

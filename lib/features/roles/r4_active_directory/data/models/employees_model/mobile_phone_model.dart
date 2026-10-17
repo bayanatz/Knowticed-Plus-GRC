@@ -5,6 +5,7 @@
 /// Purpose: Declares `MobilePhone`.
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'dart:convert';
 
@@ -49,9 +50,7 @@ class MobilePhone {
 
   factory MobilePhone.fromMap(Map<String, dynamic> map) {
     return MobilePhone(
-      phones: map['Phone'] != null
-          ? List<String>.from(map['Phone'])
-          : null,
+      phones: map['Phone'] != null ? List<String>.from(map['Phone']) : null,
       countryCode: map['Country_Code'] != null
           ? List<String>.from(map['Country_Code'])
           : null,

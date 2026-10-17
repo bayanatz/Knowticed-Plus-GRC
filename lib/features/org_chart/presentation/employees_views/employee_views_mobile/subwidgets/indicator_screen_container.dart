@@ -1,0 +1,46 @@
+import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:flutter/material.dart';
+import 'package:grc_module/core/theme/app_colors.dart';
+import 'package:grc_module/core/extensions/screen_fraction_extension.dart';
+
+
+class IndicatorContainerScreen extends StatefulWidget {
+  const IndicatorContainerScreen({super.key, required this.value});
+  final double value;
+
+  @override
+  State<IndicatorContainerScreen> createState() =>
+      _IndicatorContainerScreenState();
+}
+
+class _IndicatorContainerScreenState extends State<IndicatorContainerScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 0.015.h),
+      child: Container(
+        width: 0.99.w,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.inversePrimary,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 0.015.w, vertical: 0.02.h),
+          child: SizedBox(
+            width: double.infinity,
+            child: LinearProgressIndicator(
+              value: widget.value,
+              minHeight: 0.015.h,
+              borderRadius: BorderRadius.circular(64),
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+              backgroundColor:
+                  !AppTheme.isDark
+                      ? AppColors.secondaryPrimary.withValues(alpha: 0.1)
+                      : AppColors.grey.withValues(alpha: 0.4),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

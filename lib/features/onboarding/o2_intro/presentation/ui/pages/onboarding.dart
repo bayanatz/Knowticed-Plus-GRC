@@ -19,20 +19,24 @@
 ///          `description` / `titlestr` fields are renamed and made final;
 ///          the blanket `ignore_for_file` and the commented-out imports are
 ///          deleted; `_OnboardScreenState` is `_WelcomeViewState`.
+library;
 
+import 'package:grc_module/core/custom/buttons/custom_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
 
 import 'package:grc_module/core/constants/app_constants.dart';
-import 'package:grc_module/core/network/message_module/routes/app_routes.dart';
-import 'package:grc_module/core/network/message_module/routes/get_pages.dart';
+import 'package:grc_module/core/routes/app_routes.dart';
+import 'package:grc_module/core/routes/get_pages.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_font_size.dart';
+import 'package:grc_module/core/extensions/screen_fraction_extension.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/core/theme/haptic_controller.dart';
-import 'package:grc_module/core/custom/33-custom_haptic.dart';
+import 'package:grc_module/core/custom/helpers/custom_haptic.dart';
 import 'package:grc_module/features/onboarding/o2_intro/presentation/ui/widgets/page_on_boarding.dart';
 import 'package:grc_module/generated/l10n.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
 
 /// One slide's content.
 ///
@@ -64,14 +68,14 @@ class _WelcomeViewState extends State<WelcomeView> {
   /// Illustration per slide, in order. Kept separate from the localized text
   /// so the list below can be built with a `BuildContext`.
   static const List<String> _slideAssets = <String>[
-    '$_assetRoot/onboarding_checklist.svg',
-    '$_assetRoot/onboarding_calendar_planning.svg',
-    '$_assetRoot/onboarding_chat_conversation.svg',
-    '$_assetRoot/onboarding_analytics_presentation.svg',
-    '$_assetRoot/onboarding_profile_accept.svg',
-    '$_assetRoot/onboarding_customer_loyalty_handshake.svg',
-    '$_assetRoot/onboarding_secure_login.svg',
-    '$_assetRoot/onboarding_checklist.svg',
+    '$_assetRoot/img_onboarding_checklist.svg',
+    '$_assetRoot/img_onboarding_calendar_planning.svg',
+    '$_assetRoot/img_onboarding_chat_conversation.svg',
+    '$_assetRoot/img_onboarding_analytics_presentation.svg',
+    '$_assetRoot/img_onboarding_profile_accept.svg',
+    '$_assetRoot/img_onboarding_customer_loyalty_handshake.svg',
+    'assets/icons_assets/onboarding_assets/ic_onboarding_secure_login.svg',
+    '$_assetRoot/img_onboarding_checklist.svg',
   ];
 
   int currentIndex = 0;
@@ -284,7 +288,7 @@ class _WelcomeViewState extends State<WelcomeView> {
           selected: currentIndex == index,
           label: '${index + 1}',
           child: InkWell(
-            onTap: () => _onDotPressed(index),
+            onTap: withHaptic(() => _onDotPressed(index), HapticLevel.low),
             customBorder: const CircleBorder(),
             // A bare dot is well under the 48dp minimum tap target, so the
             // padding — not the dot — is what the finger actually hits.
@@ -313,23 +317,12 @@ class _WelcomeViewState extends State<WelcomeView> {
       padding: EdgeInsets.symmetric(
         horizontal: isTablet ? (isPortrait ? 0.2.w : 0.45.h) : 0.04.w,
       ),
-      child: ElevatedButton(
-        onPressed: () => _onPrimaryPressed(slideCount),
-        style: ElevatedButton.styleFrom(
-          elevation: 0,
-          minimumSize: Size(0.035.w, 0.057.h),
-          backgroundColor: AppColors.signOut,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8.0)),
-          ),
-        ),
-        child: Text(
-          currentIndex != slideCount - 1
-              ? S.of(context).next
-              : S.of(context).getStart,
-          style: StyleText.fontSize16Weight400
-              .copyWith(color: AppColors.textButton),
-        ),
+      child: customButton(
+        title: currentIndex != slideCount - 1
+            ? S.of(context).next
+            : S.of(context).getStart,
+        function: () => _onPrimaryPressed(slideCount),
+        wrapContent: true,
       ),
     );
   }
@@ -343,7 +336,7 @@ class _WelcomeViewState extends State<WelcomeView> {
         horizontal: isTablet ? (isPortrait ? 0.2.w : 0.45.h) : 0.04.w,
       ),
       child: TextButton(
-        onPressed: _onSkipPressed,
+        onPressed: withHaptic(_onSkipPressed, HapticLevel.low),
         style: TextButton.styleFrom(
           minimumSize: Size(0.035.w, 0.057.h),
           foregroundColor: AppColors.darkGrey,
@@ -356,9 +349,7 @@ class _WelcomeViewState extends State<WelcomeView> {
         child: Text(
           S.of(context).skip,
           style: StyleText.fontSize20Weight500.copyWith(
-            fontSize: isTablet
-                ? FontConstants.fontSize022.h
-                : FontConstants.fontSize020.h,
+            fontSize: isTablet ? 18.sp : 16.sp,
             // Secondary action → the palette's grey, per the design rule that
             // grey buttons use AppColors.darkGrey. `textdeactivecolor` is an
             // alias for the same key; naming it directly makes the intent
@@ -389,7 +380,7 @@ class _WelcomeViewState extends State<WelcomeView> {
       decoration: BoxDecoration(
         // Theme-aware: AppColors.onboardingDotInactive resolves per palette,
         // replacing the manual currentTheme == lightTheme comparison.
-        color: isCurrent ? AppColors.signOut : AppColors.onboardingDotInactive,
+        color: isCurrent ? AppColors.primary : AppColors.onboardingDotInactive,
         borderRadius: BorderRadius.circular(15),
       ),
     );

@@ -18,8 +18,9 @@
 /// — comparing "EG" to "20" — so it always fell through to the Egyptian
 /// default. This matches on `Country.code` first (what is actually stored) and
 /// still accepts a dial code, so records that stored one keep working.
+library;
 
-import 'package:grc_module/core/helper/main_helper/countries.dart';
+import 'package:grc_module/core/constants/countries_list.dart';
 import 'package:grc_module/features/settings/se1_profile/domain/entities/personal_profile.dart';
 
 abstract class PhoneCountryLookup {

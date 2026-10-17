@@ -4,6 +4,7 @@
 /// Purpose: Connection tile — messaging Connections sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+library;
 
 // Date: 1/9/2024
 // By: Youssef Ashraf , Nada Mohammed
@@ -13,25 +14,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/enums/message_module/message_types.dart';
-import 'package:grc_module/core/helper/main_helper/date_time_helper.dart';
-import 'package:grc_module/core/helper/message_module/main_helper/localized_text_helper.dart';
-import 'package:grc_module/core/helper/main_helper/spacing_helper.dart';
-import 'package:grc_module/core/helper/message_module/main_helper/incrption.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
+import 'package:grc_module/features/messaging/helpers/enums/message_types.dart';
+import 'package:grc_module/core/helper/date_time_helper.dart';
+import 'package:grc_module/features/messaging/helpers/messaging_bridge/main_helper/localized_text_helper.dart';
+import 'package:grc_module/features/messaging/helpers/spacing_helper.dart';
+import 'package:grc_module/features/messaging/helpers/messaging_bridge/main_helper/incrption.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_font_weights.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
-import '../../../../../../core/helper/message_module/interface/controller/messaging_init_controller.dart';
-import '../../../../m1_chat/presentation/controller/main_controllers/master_chat_cubit.dart';
-import '../../../domain/entities/single_connection_entity.dart';
-import '../../controller/connections_controller.dart';
-import '../../../../main_controller/helper/chat_settings_service.dart';
-import '../../../../main_controller/helper/chat_state_icons.dart';
+import 'package:grc_module/features/messaging/helpers/messaging_bridge/interface/controller/messaging_init_controller.dart';
+import 'package:grc_module/features/messaging/m2_connections/domain/entities/single_connection_entity.dart';
+import 'package:grc_module/features/messaging/m2_connections/presentation/controller/connections_controller.dart';
+import 'package:grc_module/features/messaging/helpers/main/chat_settings_service.dart';
+import 'package:grc_module/features/messaging/helpers/main/chat_state_icons.dart';
 import 'package:grc_module/generated/l10n.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
 class ConnectionTile extends StatelessWidget {
   final SingleConnectionEntity connection;
@@ -45,13 +45,15 @@ class ConnectionTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
+        HapticController.low(); // list row: on the tap (X-117)
         context.read<ConnectionsCubit>().selectConnection(connection, context);
       },
       child: Container(
         padding: EdgeInsetsDirectional.all(8.sp),
         decoration: BoxDecoration(
-          color: AppColors.field,
-          borderRadius: BorderRadius.circular(4.r), // bug report #3: cards use 4.r
+          color: AppColors.card,
+          borderRadius:
+              BorderRadius.circular(4.r), // bug report #3: cards use 4.r
         ),
         child: Column(
           spacing: 4.sp,
@@ -65,7 +67,8 @@ class ConnectionTile extends StatelessWidget {
                         ? connection.lastMessageTime!.toDate()
                         : DateTime.now(),
                   ),
-                  style: StyleText.fontSize8Weight500.copyWith(color: AppColors.secondaryBlack)
+                  style: StyleText.fontSize8Weight500
+                      .copyWith(color: AppColors.secondaryBlack)
                       .copyWith(fontSize: 10.sp, height: 1),
                 ),
               ],
@@ -75,21 +78,22 @@ class ConnectionTile extends StatelessWidget {
               children: [
                 ClipOval(
                   child: connection.imageUri.isNotEmpty &&
-                      connection.imageUri.contains('http')
+                          connection.imageUri.contains('http')
                       ? Image.network(
-                    connection.imageUri,
-                    fit: BoxFit.cover,
-                    width: 30.w,
-                    height: 30.h,
-                  )
+                          connection.imageUri,
+                          fit: BoxFit.cover,
+                          width: 30.w,
+                          height: 30.h,
+                        )
                       : ClipOval(
-                    child: CustomSvgImage(
-                      assetPath: "assets/icons_assets/main_icons_assets/assets_male.svg",
-                      width: 30.w,
-                      height: 30.h,
-                      fit: BoxFit.fill,
-                    ),
-                  ),
+                          child: CustomSvgImage(
+                            assetPath:
+                                "assets/icons_assets/main_icons_assets/ic_user_avatar_male.png",
+                            width: 30.w,
+                            height: 30.h,
+                            fit: BoxFit.fill,
+                          ),
+                        ),
                 ),
                 horizontalSpace(5),
                 Expanded(
@@ -100,11 +104,11 @@ class ConnectionTile extends StatelessWidget {
                       Text(
                         LocalizedTextHelper.formatString(
                           secondaryLanguageText:
-                          connection.secondaryLanguageName,
+                              connection.secondaryLanguageName,
                           primaryLanguageText: connection.primaryLanguageName,
                         ),
-                        style: StyleText.fontSize14Weight500
-                            .copyWith(height: 1.3),
+                        style:
+                            StyleText.fontSize14Weight500.copyWith(height: 1.3),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                       ),
@@ -120,26 +124,32 @@ class ConnectionTile extends StatelessWidget {
                                   Text(
                                     LocalizedTextHelper.formatString(
                                       secondaryLanguageText:
-                                      connection.secondaryLanguageSubInfo,
+                                          connection.secondaryLanguageSubInfo,
                                       primaryLanguageText:
-                                      connection.primaryLanguageSubInfo!,
+                                          connection.primaryLanguageSubInfo!,
                                     ),
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 1,
-                                    style: StyleText.fontSize12Weight400.copyWith(color: AppColors.secondaryBlack),
+                                    style: StyleText.fontSize12Weight400
+                                        .copyWith(
+                                            color: AppColors.secondaryBlack),
                                   ),
                                 Text(
                                   getMessageText(),
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 1,
                                   style: connection.isrUserTyping
-                                      ? StyleText.fontSize12Weight500.copyWith(color: AppColors.secondaryPrimary)
-                                      .copyWith(
-                                      height: 1.3,
-                                      fontWeight:
-                                      AppFontWeights.regular)
-                                      : StyleText.fontSize12Weight400.copyWith(color: AppColors.secondaryBlack)
-                                      .copyWith(height: 1.3),
+                                      ? StyleText.fontSize12Weight500
+                                          .copyWith(
+                                              color: AppColors.secondaryPrimary)
+                                          .copyWith(
+                                              height: 1.3,
+                                              fontWeight:
+                                                  AppFontWeights.regular)
+                                      : StyleText.fontSize12Weight400
+                                          .copyWith(
+                                              color: AppColors.secondaryBlack)
+                                          .copyWith(height: 1.3),
                                 ),
                               ],
                             ),
@@ -148,17 +158,17 @@ class ConnectionTile extends StatelessWidget {
                           Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              if ((connection.myNumUnreadMessage ?? 0) > 0)
+                              if ((connection.myNumUnreadMessage) > 0)
                                 CircleAvatar(
                                   radius: 8.r,
-                                  backgroundColor:
-                                  AppColors.secondaryPrimary,
+                                  backgroundColor: AppColors.secondaryPrimary,
                                   child: Center(
                                     child: Text(
                                       connection.myNumUnreadMessage.toString(),
-                                      style: StyleText.fontSize10Weight600.copyWith(color: Colors.white)
+                                      style: StyleText.fontSize10Weight600
+                                          .copyWith(color: Colors.white)
                                           .copyWith(
-                                          color: AppColors.textButton),
+                                              color: AppColors.textButton),
                                     ),
                                   ),
                                 ),
@@ -218,19 +228,19 @@ class ConnectionTile extends StatelessWidget {
       case MessageTypes.deleted:
         return S.current.deletedMessage;
       case MessageTypes.cameraImage:
-        return S.current.send + ' ' + S.current.image;
+        return '${S.current.send} ${S.current.image}';
       case MessageTypes.video:
-        return S.current.send + ' ' + S.current.video;
+        return '${S.current.send} ${S.current.video}';
       case MessageTypes.audio:
-        return S.current.send + ' ' + S.current.audio;
+        return '${S.current.send} ${S.current.audio}';
       case MessageTypes.location:
-        return S.current.send + ' ' + S.current.location;
+        return '${S.current.send} ${S.current.location}';
       case MessageTypes.contact:
-        return S.current.send + ' ' + S.current.contact;
+        return '${S.current.send} ${S.current.contact}';
       case MessageTypes.poll:
         return S.current.poll;
       case MessageTypes.doc:
-        return S.current.send + ' ' + S.current.document;
+        return '${S.current.send} ${S.current.document}';
       case MessageTypes.text:
         final raw = connection.messageContent ?? '';
         if (raw.isEmpty) return raw;

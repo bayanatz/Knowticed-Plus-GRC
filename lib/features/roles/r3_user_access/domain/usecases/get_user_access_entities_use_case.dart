@@ -6,6 +6,7 @@
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
 /// Updated: 25/8/2026 - Bucketing mirrors UserAccessCard._displayStatus.
+library;
 
 import 'package:dartz/dartz.dart';
 import 'package:grc_module/features/roles/r3_user_access/data/repository/user_access_repository.dart';
@@ -28,7 +29,7 @@ class GetUserAccessEntitiesUseCase {
   ///                                - Failure: if there is an error in the process or  [Map< EmployeeStatusEnum,UserAccessEntity>] data.
   Future<Either<Failure, dynamic>> execute() async {
     Either<Failure, dynamic> result =
-    await repository.getAccountsStatusEntities();
+        await repository.getAccountsStatusEntities();
     // Was `if (result.isLeft()) result;` — an expression statement with no
     // `return`, so a repository failure fell through and the caller received
     // an empty-but-successful map instead of the error.
@@ -39,7 +40,6 @@ class GetUserAccessEntitiesUseCase {
     for (EmployeeStatusEnum status in EmployeeStatusEnum.values) {
       map[status] = [];
     }
-
 
     for (UserAccessEntity entity in entities) {
       final EmployeeStatusEnum primaryCategory = _bucketFor(entity);

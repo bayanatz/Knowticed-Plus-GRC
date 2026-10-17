@@ -32,21 +32,31 @@
 ///
 /// Anything else that differs between the three lists is a bug in one of them,
 /// not a reason to fork this widget.
+///
+/// Updated: 7/10/2026 - Owner round 4: the body shows the FULL message up to
+///          3 lines (ellipsis only past the 3rd); action buttons and the
+///          module icon box use corner radius 2; To-Do notifications never
+///          draw the sender section ([hasSenderSection]) — a to-do is the
+///          reader's own card.
 library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/custom/6-custom_button_with_svg.dart';
-import 'package:grc_module/core/custom/41-custom_button_sizing.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
-import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
+import 'package:grc_module/core/custom/buttons/custom_button_with_svg.dart';
+import 'package:grc_module/core/custom/buttons/custom_button_sizing.dart';
+import 'package:grc_module/core/helper/format_title.dart';
+import 'package:grc_module/core/helper/access/main_core_employee_controller.dart';
+import 'package:grc_module/core/helper/access/modules_enum.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
+import 'package:grc_module/core/enums/app_module.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/features/notification/data/models/notification_data_model.dart';
 import 'package:grc_module/features/notification/presentation/ui/widgets/notification_routing.dart';
+import 'package:grc_module/features/notification/presentation/ui/widgets/notification_sender_info.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
 /// One button in a card's action area.
 ///
@@ -138,7 +148,7 @@ class NotificationCard extends StatelessWidget {
     final Modules? module =
         NotificationRouting.moduleForStoredKey(storedModuleKey);
     return module?.iconPath ??
-        "assets/icons_assets/notification_assets/document_search.svg";
+        "assets/icons_assets/notification_assets/ic_action_view_document.svg";
   }
 
   /// The reader's language — NOT the sender's.
@@ -151,12 +161,53 @@ class NotificationCard extends StatelessWidget {
   static bool _isArabic(BuildContext context) =>
       Localizations.localeOf(context).languageCode == 'ar';
 
+  /// Lines of body text a card shows before it ellipsises. Owner round 4
+  /// (7/10/2026): "make it fit as a sentence, max 3 lines".
+  static const int bodyMaxLines = 3;
+
+  /// Corner radius of the action buttons and the module icon box (owner
+  /// round 4, 7/10/2026).
+  static double get _smallRadius => 2.r;
+
+  /// Function Name: [hasSenderSection]
+  ///
+  /// Purpose: Whether a card draws the sender section (avatar chip and the
+  /// Message button). The three notification pages use this too, so the card
+  /// and the page's `primaryAction` can never disagree.
+  ///
+  /// False for a system sender, and ALWAYS false for a To-Do notification:
+  /// to-dos are personal, so the card is the reader's own (owner, 7/10/2026)
+  /// — including To-Do notifications written before they were system-sent,
+  /// whose sender is the reader themself.
+  ///
+  /// Parameters:
+  ///   [NotificationModelSystem] notification
+  ///   [MainCoreEmployeeController] employeeController
+  ///
+  /// Return type: [bool]
+  static bool hasSenderSection(
+    NotificationModelSystem notification,
+    MainCoreEmployeeController employeeController,
+  ) {
+    if (notification.nameOfModule.trim().toLowerCase() == AppModule.todo.key) {
+      return false;
+    }
+    return employeeController.isKnownEmployee(notification.senderEmail);
+  }
+
   @override
   Widget build(BuildContext context) {
     final String senderName =
         employeeController.getEmployeeName(notification.senderEmail);
-    final String senderDepartment =
-        employeeController.getEmployeeDepartmentName(notification.senderEmail);
+    // NotificationSenderInfo, not getEmployeeDepartmentName — FIXED 7/10/2026.
+    // The core helper bangs a null department id / name, which threw inside
+    // this build for every notification the company owner (no department)
+    // sent: the red "Null check operator" box on all To-Do notifications.
+    final String senderDepartment = NotificationSenderInfo.departmentName(
+      employeeController,
+      notification.senderEmail,
+      isEnglish: !_isArabic(context),
+    );
     final String senderJobTitle =
         employeeController.getEmployeeJobTitle(notification.senderEmail);
 
@@ -166,10 +217,10 @@ class NotificationCard extends StatelessWidget {
     // person variant for everything is what produced the empty "No Name / No
     // Department / No Job" chip on every account-status alert.
     final bool hasHumanSender =
-        employeeController.isKnownEmployee(notification.senderEmail);
+        hasSenderSection(notification, employeeController);
 
     return GestureDetector(
-      onTap: onTap,
+      onTap: withHaptic(onTap, HapticLevel.low),
       child: Container(
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
@@ -189,81 +240,84 @@ class NotificationCard extends StatelessWidget {
             Container(width: 4.w, color: AppColors.primary),
             Expanded(
               child: Padding(
-                    padding: EdgeInsets.all(8.r),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                padding: EdgeInsets.all(8.r),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Text(
-                              NotificationRouting.formatTimestamp(
-                                  context, notification.timestamp),
-                              style: StyleText.fontSize10Weight500
-                                  .copyWith(color: AppColors.secondaryText),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 2.sp),
-                        _titleRow(context),
-                        SizedBox(height: 5.sp),
-                        // Expanded, not a fixed height: the card lives in a
-                        // grid tile of a fixed mainAxisExtent, so the body has
-                        // to absorb whatever room is left over instead of
-                        // forcing the column past the tile.
-                        // The body is always TWO lines, ellipsised at the
-                        // end of the second — never one.
-                        //
-                        // FIXED 13/9/2026, twice. First: `Expanded` hands the
-                        // Text a TIGHT height, and a Text whose lines do not
-                        // fit that height is CLIPPED — `maxLines` and
-                        // `overflow` act on the line COUNT, never on the box —
-                        // so at `height: 1.6` the second line was drawn and
-                        // then sliced in half. Then: capping maxLines to what
-                        // fit turned that into a single line ending in "…",
-                        // which loses half the sentence.
-                        //
-                        // So the room is guaranteed instead of the line count
-                        // negotiated: 1.35 line height here, and the grid tile
-                        // in the three notification pages is 195.sp rather
-                        // than 185.sp.
-                        //
-                        // CHANGED 13/9/2026 — Flexible, not Expanded. Expanded
-                        // is TIGHT: it forced this box to eat every spare
-                        // pixel in the tile, and since the text sits at the
-                        // top of that box the slack showed up UNDER the
-                        // message as a gap far wider than the 8.sp below.
-                        // Flexible is loose, so the box is two lines tall, the
-                        // 8.sp gap is the real distance to the sender row, and
-                        // what slack the tile still has falls to the bottom of
-                        // the card. It keeps Expanded's guarantee that the
-                        // column can never overflow the tile.
-                        Flexible(
-                          child: Text(
-                            // displayBodyFor — the "Reason: …" clause is not
-                            // shown on cards in any module, and the language
-                            // follows the READER. See the model.
-                            notification.displayBodyFor(_isArabic(context)),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: StyleText.fontSize12Weight500.copyWith(
-                              height: 1.35,
-                              color: AppColors.text,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 8.sp),
-                        _actions(
-                          hasHumanSender: hasHumanSender,
-                          senderName: senderName,
-                          senderDepartment: senderDepartment,
-                          senderJobTitle: senderJobTitle,
+                        Text(
+                          NotificationRouting.formatTimestamp(
+                              context, notification.timestamp),
+                          style: StyleText.fontSize10Weight500
+                              .copyWith(color: AppColors.secondaryText),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),
-                  ),
+                    SizedBox(height: 2.sp),
+                    _titleRow(context),
+                    SizedBox(height: 5.sp),
+                    // Expanded, not a fixed height: the card lives in a
+                    // grid tile of a fixed mainAxisExtent, so the body has
+                    // to absorb whatever room is left over instead of
+                    // forcing the column past the tile.
+                    // The body shows up to [bodyMaxLines] (3) lines and
+                    // is ellipsised only at the end of the third — owner
+                    // round 4, 7/10/2026 (was a fixed two). The grid
+                    // tiles in the three notification pages grew by one
+                    // line (172/195 → 190/212.sp) to guarantee the room.
+                    //
+                    // FIXED 13/9/2026, twice. First: `Expanded` hands the
+                    // Text a TIGHT height, and a Text whose lines do not
+                    // fit that height is CLIPPED — `maxLines` and
+                    // `overflow` act on the line COUNT, never on the box —
+                    // so at `height: 1.6` the second line was drawn and
+                    // then sliced in half. Then: capping maxLines to what
+                    // fit turned that into a single line ending in "…",
+                    // which loses half the sentence.
+                    //
+                    // So the room is guaranteed instead of the line count
+                    // negotiated: 1.35 line height here, and the grid tile
+                    // in the three notification pages is 195.sp rather
+                    // than 185.sp.
+                    //
+                    // CHANGED 13/9/2026 — Flexible, not Expanded. Expanded
+                    // is TIGHT: it forced this box to eat every spare
+                    // pixel in the tile, and since the text sits at the
+                    // top of that box the slack showed up UNDER the
+                    // message as a gap far wider than the 8.sp below.
+                    // Flexible is loose, so the box is two lines tall, the
+                    // 8.sp gap is the real distance to the sender row, and
+                    // what slack the tile still has falls to the bottom of
+                    // the card. It keeps Expanded's guarantee that the
+                    // column can never overflow the tile.
+                    Flexible(
+                      child: Text(
+                        // displayBodyFor — the "Reason: …" clause is not
+                        // shown on cards in any module, and the language
+                        // follows the READER. See the model.
+                        notification.displayBodyFor(_isArabic(context)),
+                        maxLines: bodyMaxLines,
+                        overflow: TextOverflow.ellipsis,
+                        style: StyleText.fontSize12Weight500.copyWith(
+                          height: 1.35,
+                          color: AppColors.text,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 8.sp),
+                    _actions(
+                      hasHumanSender: hasHumanSender,
+                      senderName: senderName,
+                      senderDepartment: senderDepartment,
+                      senderJobTitle: senderJobTitle,
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),
@@ -287,7 +341,8 @@ class NotificationCard extends StatelessWidget {
             height: 30.h,
             decoration: BoxDecoration(
               color: AppColors.primary,
-              shape: BoxShape.circle,
+              // Radius 2 (owner round 4, 7/10/2026) — was a circle.
+              borderRadius: BorderRadius.circular(_smallRadius),
             ),
             // Center, not a bare child: a Container with an explicit
             // width/height hands its child TIGHT constraints, and
@@ -312,13 +367,12 @@ class NotificationCard extends StatelessWidget {
           Expanded(
             child: Text(
               notification.titleFor(_isArabic(context)),
-              style: StyleText.fontSize12Weight500
-                  .copyWith(color: AppColors.text),
+              style:
+                  StyleText.fontSize12Weight500.copyWith(color: AppColors.text),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
           ),
-
         ],
       );
 
@@ -473,7 +527,8 @@ class NotificationCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(4.r),
         ),
         child: Padding(
-          padding: EdgeInsetsDirectional.only(start: isMobile ? 4.sp : 11.sp,end:isMobile ? 4.sp: 20.sp),
+          padding: EdgeInsetsDirectional.only(
+              start: isMobile ? 4.sp : 11.sp, end: isMobile ? 4.sp : 20.sp),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -498,7 +553,7 @@ class NotificationCard extends StatelessWidget {
                 child: ClipOval(
                   child: CustomSvgImage(
                     assetPath:
-                        "assets/icons_assets/main_icons_assets/male_avatar.svg",
+                        "assets/icons_assets/main_icons_assets/ic_user_avatar_male.png",
                     width: isMobile ? 30.sp : 60.sp,
                     height: isMobile ? 30.sp : 60.sp,
                     fit: BoxFit.cover,
@@ -570,25 +625,27 @@ class NotificationCard extends StatelessWidget {
   /// [_actions] measures whatever the button column comes to and stretches the
   /// chip to it, so shrinking these pulls the chip down with them and the two
   /// stay level.
-  double? get _mobileButtonHeight => isMobile ? ButtonSizing.height * 0.75 : null;
+  double? get _mobileButtonHeight =>
+      isMobile ? ButtonSizing.height * 0.75 : null;
 
   /// The wide button. No fixed width — the enclosing IntrinsicWidth stretches
   /// it to the width of the pair below.
   Widget _primaryButton(NotificationCardAction action) => customButtonWithSvg(
         title: action.title,
         function: action.onTap,
-        height:isMobile ? 20.sp : 25.h,
+        height: isMobile ? 20.sp : 25.h,
         fixedHeight: _mobileButtonHeight,
         color: action.background ?? AppColors.primary,
         svgColor: action.foreground ?? AppColors.textButton,
-        textStyle: isMobile ?
-        StyleText.fontSize12Weight500
-            .copyWith(color: action.foreground ?? AppColors.textButton):
-
-        StyleText.fontSize14Weight500
-            .copyWith(color: action.foreground ?? AppColors.textButton),
+        textStyle: isMobile
+            ? StyleText.fontSize12Weight500
+                .copyWith(color: action.foreground ?? AppColors.textButton)
+            : StyleText.fontSize14Weight500
+                .copyWith(color: action.foreground ?? AppColors.textButton),
         space: 8,
-        radius: 4.r,
+        // `radius:` is ignored by customButtonWithSvg (ButtonSizing
+        // enforces 8); `fixedRadius` is its documented opt-out.
+        fixedRadius: _smallRadius,
         image: action.iconPath,
         widthImage: 16.sp,
         heightImage: 16.sp,
@@ -617,7 +674,9 @@ class NotificationCard extends StatelessWidget {
           textStyle: StyleText.fontSize14Weight500
               .copyWith(color: action.foreground ?? AppColors.textButton),
           space: _actionIconGap,
-          radius: 4.r,
+          // `radius:` is ignored by customButtonWithSvg (ButtonSizing
+          // enforces 8); `fixedRadius` is its documented opt-out.
+          fixedRadius: _smallRadius,
           image: action.iconPath,
           widthImage: _actionIconSize,
           heightImage: _actionIconSize,

@@ -4,12 +4,13 @@
 /// Purpose: Connections repository — messaging Connections sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+library;
 
 import 'package:dartz/dartz.dart';
 
-import 'package:grc_module/core/network/message_module/services/error_handler.dart';
-import '../../../../../core/helper/message_module/interface/entity/base_messaging_interface_parameters.dart';
-import '../../../../../core/helper/message_module/interface/entity/user_category.dart';
+import 'package:grc_module/core/network/failure_model.dart';
+import 'package:grc_module/features/messaging/helpers/messaging_bridge/interface/entity/base_messaging_interface_parameters.dart';
+import 'package:grc_module/features/messaging/helpers/messaging_bridge/interface/entity/user_category.dart';
 
 abstract class ConnectionsRepositoryInterface {
   Future<Either<Failure, void>> createNewConnection({

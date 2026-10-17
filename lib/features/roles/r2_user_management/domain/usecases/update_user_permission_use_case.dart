@@ -5,13 +5,12 @@
 /// Purpose: Declares `UpdateUserPermissionUseCase`.
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'package:dartz/dartz.dart';
 import 'package:grc_module/features/roles/r2_user_management/data/repository/user_role_repository.dart';
-import 'package:grc_module/features/roles/r1_role_management/domain/entities/new_permission_entity.dart';
 
 import 'package:grc_module/core/network/failure_model.dart';
-
 
 class UpdateUserPermissionUseCase {
   final UserManagementAccessRepository repository;

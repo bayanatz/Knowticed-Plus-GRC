@@ -2,50 +2,51 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: user_management_export_dialog.dart
-/// Purpose: Declares `UserManagementExportDialog`.
-/// Author: Knowticed Plus team
+/// Description: Declares `UserManagementExportDialog`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
-import 'package:grc_module/core/custom/2-custom_textfield.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
+import 'package:grc_module/core/custom/inputs/custom_textfield.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
+import 'package:grc_module/core/custom/dialogs/custom_dialog_manager.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 // REMOVED_MODULE: import 'package:grc_module/core/helper/data_grc_module/core/extensions/extensions.dart';
 import 'package:grc_module/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
 import 'package:dartz/dartz.dart' show Either;
-import 'package:grc_module/core/helper/main_helper/csv_helper.dart';
+import 'package:grc_module/core/helper/csv_helper.dart';
 
 import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/features/roles/r4_active_directory/domain/entities/employee_entity.dart';
-import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
-import 'package:grc_module/core/helper/main_helper/employee_helper.dart';
-import 'package:grc_module/core/helper/main_helper/localized_date.dart';
+import 'package:grc_module/core/helper/employee_helper.dart';
+import 'package:grc_module/core/helper/localized_date.dart';
 import 'package:grc_module/features/roles/r2_user_management/domain/entities/user_permission_entity.dart';
 
-import 'package:grc_module/core/custom/5-custom_button.dart';
+import 'package:grc_module/core/custom/buttons/custom_button.dart';
 // ADDED 8/9/2026: the in-row export spinner — same as the roles export dialog.
-import 'package:grc_module/core/custom/66-circle_progress.dart';
+import 'package:grc_module/core/custom/feedback/circle_progress.dart';
 import 'package:grc_module/core/di/app_controllers.dart';
 import 'package:collection/collection.dart';
+import 'package:grc_module/features/roles/r1_role_management/data/models/role_model.dart'
+    show RoleHistoryModelMethods;
+
 class UserManagementExportDialog extends StatefulWidget {
   final List<UserPermissionEntity> userPermissions;
 
-  const UserManagementExportDialog({
-    Key? key,
-    required this.userPermissions,
-  }) : super(key: key);
+  const UserManagementExportDialog({super.key, required this.userPermissions});
 
   @override
-  State<UserManagementExportDialog> createState() => _UserManagementExportDialogState();
+  State<UserManagementExportDialog> createState() =>
+      _UserManagementExportDialogState();
 }
 
-class _UserManagementExportDialogState extends State<UserManagementExportDialog> {
+class _UserManagementExportDialogState
+    extends State<UserManagementExportDialog> {
   final TextEditingController controller = TextEditingController();
   // REMOVED 8/9/2026: `_overlayEntry` — the full-screen loading overlay it held
   // is gone; the wait is drawn in the button row instead, matching the roles
@@ -108,12 +109,11 @@ class _UserManagementExportDialogState extends State<UserManagementExportDialog>
     });
   }
 
-
   EmployeeEntityPro? _getEmployee(String employeeId) {
     try {
-      return AppControllers.employee
-          .allEmployeesEntities!
-          .firstWhere((element) => element.id == employeeId);
+      return AppControllers.employee.allEmployeesEntities!.firstWhere(
+        (element) => element.id == employeeId,
+      );
     } catch (e) {
       return null;
     }
@@ -132,18 +132,18 @@ class _UserManagementExportDialogState extends State<UserManagementExportDialog>
       final target = access.trim().toLowerCase();
 
       final role = roleCubit.roles.firstWhereOrNull(
-            (r) =>
-        (r.roleId?.toString().trim().toLowerCase() == target) ||
-            (r.currentRoleName?.trim().toLowerCase() == target),
+        (r) =>
+            (r.roleId.toString().trim().toLowerCase() == target) ||
+            (r.currentRoleName.trim().toLowerCase() == target),
       );
 
       if (role != null) {
         if (context.isArabic) {
           final ar = role.currentRoleNameAr;
-          if (ar != null && ar.trim().isNotEmpty) return ar;
+          if (ar.trim().isNotEmpty) return ar;
         }
         final en = role.currentRoleName;
-        if (en != null && en.trim().isNotEmpty) return en;
+        if (en.trim().isNotEmpty) return en;
       }
     } catch (e) {
       // RoleCubit not available -> fall back to raw access name.
@@ -179,10 +179,11 @@ class _UserManagementExportDialogState extends State<UserManagementExportDialog>
     final mobile = employee?.mobilePhone;
     if (mobile?.phone == null) return '-';
 
-    final phone = (mobile!.phone ?? '').replaceAll(RegExp(r'[\[\]]'), '').trim();
+    final phone = (mobile!.phone).replaceAll(RegExp(r'[\[\]]'), '').trim();
     if (phone.isEmpty) return '-';
 
-    final rawCode = (mobile.countryCode ?? '').replaceAll(RegExp(r'[\[\]]'), '').trim();
+    final rawCode =
+        (mobile.countryCode).replaceAll(RegExp(r'[\[\]]'), '').trim();
     if (rawCode.isEmpty) return phone;
 
     final code = rawCode.startsWith('+') ? rawCode : '+$rawCode';
@@ -198,7 +199,9 @@ class _UserManagementExportDialogState extends State<UserManagementExportDialog>
   }
 
   String _getSupervisor(EmployeeEntityPro? employee, BuildContext context) {
-    if (employee == null || employee.supervisor == null || employee.supervisor!.isEmpty) {
+    if (employee == null ||
+        employee.supervisor == null ||
+        employee.supervisor!.isEmpty) {
       return '-';
     }
 
@@ -210,14 +213,16 @@ class _UserManagementExportDialogState extends State<UserManagementExportDialog>
       }
 
       EmployeeEntityPro? supervisor = allEmployees.firstWhereOrNull(
-            (element) => element.email?.toLowerCase().trim() == employee.supervisor?.toLowerCase().trim(),
+        (element) =>
+            element.email?.toLowerCase().trim() ==
+            employee.supervisor?.toLowerCase().trim(),
       );
 
-      if (supervisor == null) {
-        supervisor = allEmployees.firstWhereOrNull(
-              (element) => element.id?.toLowerCase().trim() == employee.supervisor?.toLowerCase().trim(),
-        );
-      }
+      supervisor ??= allEmployees.firstWhereOrNull(
+        (element) =>
+            element.id?.toLowerCase().trim() ==
+            employee.supervisor?.toLowerCase().trim(),
+      );
 
       if (supervisor == null) {
         return '-';
@@ -235,9 +240,10 @@ class _UserManagementExportDialogState extends State<UserManagementExportDialog>
   String _getTitle(EmployeeEntityPro? employee, BuildContext context) {
     if (employee == null) return '-';
     return EmployeeHelper.getEmployeeLocalizedTitle(
-      employee: employee,
-      context: context,
-    ) ?? '-';
+          employee: employee,
+          context: context,
+        ) ??
+        '-';
   }
 
   Future<void> _exportData(BuildContext context) async {
@@ -261,9 +267,10 @@ class _UserManagementExportDialogState extends State<UserManagementExportDialog>
     final DateTime progressShownAt = DateTime.now();
 
     try {
-
       if (widget.userPermissions.isEmpty) {
         await _finishProgress(progressShownAt);
+        if (!context.mounted) return;
+        if (!context.mounted) return;
         _showMessage(
           context,
           title: S.of(context).noData,
@@ -296,26 +303,33 @@ class _UserManagementExportDialogState extends State<UserManagementExportDialog>
       // popping this dialog — once the export dialog is popped, this widget's
       // `context` is deactivated and can't be used to show another dialog or
       // resolve `S.of(context)`.
+      if (!context.mounted) return;
       final successTitle = S.of(context).exportSuccessful;
+      if (!context.mounted) return;
       final successSubtitle = S.of(context).exportSuccess;
+      if (!context.mounted) return;
       final navigator = Navigator.of(context, rootNavigator: true);
 
+      if (!context.mounted) return;
       if (Navigator.canPop(context)) {
+        if (!context.mounted) return;
         Navigator.pop(context);
       }
 
       if (navigator.mounted) {
         await CustomDialogManager.showSuccess(
           context: navigator.context,
-          lottiePath: 'assets/lottie_assets/main_lottie_assets/approved.json',
+          lottiePath:
+              'assets/lottie_assets/main_lottie_assets/lot_status_success.json',
           title: successTitle,
           subtitle: successSubtitle,
         );
       }
-
     } catch (e) {
       await _finishProgress(progressShownAt);
 
+      if (!context.mounted) return;
+      if (!context.mounted) return;
       _showMessage(
         context,
         title: S.of(context).exportFailed,
@@ -361,7 +375,6 @@ class _UserManagementExportDialogState extends State<UserManagementExportDialog>
         ),
       );
   }
-
 
   String _generateCSVContent() {
     List<List<dynamic>> rows = [
@@ -425,14 +438,15 @@ class _UserManagementExportDialogState extends State<UserManagementExportDialog>
 
   bool isTabletLandscape(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
     return size.width >= 900 && isLandscape;
   }
 
   @override
   Widget build(BuildContext context) {
-    final lightMode = Theme.of(context).brightness == Brightness.light;
-    var isMobile = ContextExtension(context).isPhone;
+    Theme.of(context).brightness == Brightness.light;
+    ContextExtension(context).isPhone;
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
@@ -445,7 +459,8 @@ class _UserManagementExportDialogState extends State<UserManagementExportDialog>
         child: Padding(
           padding: EdgeInsets.all(20.sp), // ✅ Equal padding on all sides
           child: Column(
-            mainAxisSize: MainAxisSize.min, // ✅ Dialog now fits its content height
+            mainAxisSize:
+                MainAxisSize.min, // ✅ Dialog now fits its content height
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
@@ -465,7 +480,7 @@ class _UserManagementExportDialogState extends State<UserManagementExportDialog>
                       // colour every other icon on a primary background uses.
                       child: CustomSvgImage(
                         assetPath:
-                            "assets/icons_assets/main_icons_assets/assets_export.svg",
+                            "assets/icons_assets/main_icons_assets/ic_export.svg",
                         width: 16.sp,
                         height: 16.sp,
                         color: AppColors.textButton,
@@ -476,7 +491,7 @@ class _UserManagementExportDialogState extends State<UserManagementExportDialog>
                   Text(
                     S.of(context).exportUserManagement,
                     style: StyleText.fontSize16Weight500.copyWith(
-                     color: AppColors.text
+                      color: AppColors.text,
                     ),
                   ),
                 ],
@@ -509,16 +524,18 @@ class _UserManagementExportDialogState extends State<UserManagementExportDialog>
                         ),
                       )
                     : Row(
+                        textDirection: TextDirection
+                            .ltr, // X-73: Cancel left, action right in both languages
+
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           customButton(
                             title: S.of(context).discard,
                             width: context.isPhone ? 120.sp : 150.sp,
-                            color: AppColors.secondaryButton,
+                            color: AppColors.darkGrey,
                             height: 38,
-                            textStyle:
-                                StyleText.fontSize16Weight500.copyWith(
-                              color: AppColors.blackButton,
+                            textStyle: StyleText.fontSize16Weight500.copyWith(
+                              color: AppColors.text,
                             ),
                             radius: 8.r,
                             function: () => Navigator.pop(context),
@@ -528,8 +545,7 @@ class _UserManagementExportDialogState extends State<UserManagementExportDialog>
                             width: context.isPhone ? 120.sp : 150.sp,
                             color: AppColors.primary,
                             height: 38.sp,
-                            textStyle:
-                                StyleText.fontSize16Weight500.copyWith(
+                            textStyle: StyleText.fontSize16Weight500.copyWith(
                               color: AppColors.textButton,
                             ),
                             radius: 8.r,

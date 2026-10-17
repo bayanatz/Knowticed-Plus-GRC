@@ -8,6 +8,7 @@
 ///
 /// Added for CR-SKEL-SE3-N26. `Timestamp` conversion lives here so the domain
 /// entity can be infrastructure-free.
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 

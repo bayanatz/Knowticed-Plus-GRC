@@ -2,10 +2,10 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: logs_mobile_export_details_page.dart
-/// Purpose: Declares `LogsMobileExportDetailsPage` — the PHONE BODY of the
+/// Description: Declares `LogsMobileExportDetailsPage` — the PHONE BODY of the
 ///          System Logs tab.
-/// Author: Knowticed Plus team
-/// Created At: 9/9/2026
+/// Author: Amr Mesbah
+/// Created at: 9/9/2026
 /// Updated: 9/9/2026 - This is now what the System Logs TAB renders on a phone
 ///          (see `SystemLogsTable`), not a page pushed from an Export button.
 ///          The frame is the tab's content, so the widget draws no Scaffold,
@@ -26,27 +26,28 @@
 /// re-filter the screen the user came from, so this page derives its own
 /// matching list from `systemLogsData` and hands it to the next step. Nothing
 /// here changes what the table shows.
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:grc_module/core/custom/3-custom_dropdown_calander.dart';
-import 'package:grc_module/core/custom/31-custom_multi_select_dropdown.dart';
-import 'package:grc_module/core/custom/35-custom_search_widget_custom.dart';
+import 'package:grc_module/core/custom/pickers/custom_date_field.dart';
+import 'package:grc_module/core/custom/dropdowns/custom_multi_select_dropdown.dart';
+import 'package:grc_module/core/custom/inputs/custom_search_widget_custom.dart';
 import 'package:grc_module/core/di/app_controllers.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
+import 'package:grc_module/core/helper/access/modules_enum.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/features/roles/r4_active_directory/domain/entities/employee_entity.dart';
 import 'package:grc_module/features/roles/r4_active_directory/presentation/controller/main_core_department_cubit.dart';
-import 'package:grc_module/features/roles/shared_mobile_export/mobile_export_person.dart';
+import 'package:grc_module/features/roles/presentation/ui/widgets/shared_mobile_export/mobile_export_person.dart';
 import 'package:grc_module/features/roles/r5_system_logs/data/models/system_logs_model.dart';
 import 'package:grc_module/features/roles/r5_system_logs/domain/enums/system_logs_items.dart';
 import 'package:grc_module/features/roles/r5_system_logs/presentation/controller/system_logs_controller.dart';
 import 'package:grc_module/features/roles/r5_system_logs/presentation/ui/pages/logs_mobile_employees_page.dart';
-import 'package:grc_module/features/roles/shared_mobile_export/mobile_export_widgets.dart';
+import 'package:grc_module/features/roles/presentation/ui/widgets/shared_mobile_export/mobile_export_widgets.dart';
 import 'package:grc_module/generated/l10n.dart';
 
 /// The four preset ranges of the Date Range block, in the frame's reading
@@ -174,13 +175,17 @@ class _LogsMobileExportDetailsPageState
 
     final List<MobileExportPerson> people = [];
 
-    AppControllers.employee.mapOfEmployeesWithEmailKey
-        .forEach((String email, EmployeeEntityPro employee) {
+    AppControllers.employee.mapOfEmployeesWithEmailKey.forEach((
+      String email,
+      EmployeeEntityPro employee,
+    ) {
       final String name = [
-        isArabic ? (employee.firstNameInArabic ?? employee.firstName)
-                 : employee.firstName,
-        isArabic ? (employee.lastNameInArabic ?? employee.lastName)
-                 : employee.lastName,
+        isArabic
+            ? (employee.firstNameInArabic ?? employee.firstName)
+            : employee.firstName,
+        isArabic
+            ? (employee.lastNameInArabic ?? employee.lastName)
+            : employee.lastName,
       ].whereType<String>().where((part) => part.trim().isNotEmpty).join(' ');
 
       final String department = (employee.departmentId ?? '').isEmpty
@@ -197,11 +202,11 @@ class _LogsMobileExportDetailsPageState
           // never blank and can still be searched for.
           name: name.isEmpty ? email : name,
           department: department,
-          jobTitle:
-              (isArabic ? (employee.titleInArabic ?? employee.title)
-                        : employee.title) ??
-                  employee.role ??
-                  '',
+          jobTitle: (isArabic
+                  ? (employee.titleInArabic ?? employee.title)
+                  : employee.title) ??
+              employee.role ??
+              '',
           imagePath: employee.photo ?? '',
           gender: employee.gender?.toLowerCase(),
         ),
@@ -222,8 +227,10 @@ class _LogsMobileExportDetailsPageState
     final String q = _query.trim().toLowerCase();
     if (q.isEmpty) return const <MobileExportPerson>[];
     return _directory
-        .where((person) =>
-            !_picked.containsKey(person.id) && person.searchIndex.contains(q))
+        .where(
+          (person) =>
+              !_picked.containsKey(person.id) && person.searchIndex.contains(q),
+        )
         .toList();
   }
 
@@ -267,8 +274,7 @@ class _LogsMobileExportDetailsPageState
   }
 
   /// Inclusive end of the selected range. The presets all run up to now.
-  DateTime? get _to =>
-      _range == _DateRange.custom ? _customTo : DateTime.now();
+  DateTime? get _to => _range == _DateRange.custom ? _customTo : DateTime.now();
 
   // ── Matching ──────────────────────────────────────────────────────────────
 
@@ -299,8 +305,11 @@ class _LogsMobileExportDetailsPageState
     // runs against the following midnight rather than the picked instant —
     // otherwise a "to" of 12 Sept excludes everything logged that afternoon.
     if (to != null) {
-      final DateTime endOfDay =
-          DateTime(to.year, to.month, to.day).add(const Duration(days: 1));
+      final DateTime endOfDay = DateTime(
+        to.year,
+        to.month,
+        to.day,
+      ).add(const Duration(days: 1));
       if (!stamp.isBefore(endOfDay)) return false;
     }
     return true;
@@ -356,12 +365,7 @@ class _LogsMobileExportDetailsPageState
     final List<SystemLogsModel> logs = _matchingLogs;
 
     return SingleChildScrollView(
-      padding: EdgeInsets.fromLTRB(
-        0,
-        0,
-        0,
-        MobileExportMetrics.pagePadding.h,
-      ),
+      padding: EdgeInsets.fromLTRB(0, 0, 0, MobileExportMetrics.pagePadding.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -403,8 +407,7 @@ class _LogsMobileExportDetailsPageState
             // while the next page lists EMPLOYEES — so "Next (201)" opened a
             // list of 4. It now counts the distinct employees, the same key
             // (the log's e-mail) the next page groups by.
-            primaryLabel:
-                '${s.next} (${logs.map(_keyOf).toSet().length})',
+            primaryLabel: '${s.next} (${logs.map(_keyOf).toSet().length})',
             primaryEnabled: logs.isNotEmpty,
             onPrimary: () => _openEmployees(logs),
           ),
@@ -471,7 +474,7 @@ class _LogsMobileExportDetailsPageState
             Row(
               children: [
                 Expanded(
-                  child: CustomDropdownCalendar(
+                  child: CustomDateField(
                     label: s.from,
                     hint: s.selectStartDate,
                     value: _customFrom,
@@ -485,7 +488,7 @@ class _LogsMobileExportDetailsPageState
                 ),
                 SizedBox(width: MobileExportMetrics.chipGap.w),
                 Expanded(
-                  child: CustomDropdownCalendar(
+                  child: CustomDateField(
                     label: s.to,
                     hint: s.selectEndDate,
                     value: _customTo,

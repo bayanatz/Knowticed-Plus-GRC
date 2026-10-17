@@ -2,9 +2,10 @@
 ///
 /// ************************ FILE INFO ****************************
 /// File: active_directory_repository.dart
-/// purpose: handle the business logic of the active directory file uploading
-/// Author: Mohamed Elrashidy
-/// created at: 16/12/2024
+/// Description: handle the business logic of the active directory file uploading
+/// Author: Amr Mesbah
+/// Created at: 16/12/2024
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
@@ -12,7 +13,7 @@ import 'package:grc_module/core/di/app_controllers.dart';
 import 'package:intl/intl.dart';
 
 import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/core/helper/main_helper/single_value_model.dart';
+import 'package:grc_module/core/helper/single_value_model.dart';
 import 'package:grc_module/features/roles/r4_active_directory/data/data_source/remote_data_source/active_directory_remote_data_source.dart';
 import 'package:grc_module/features/roles/r4_active_directory/domain/enums/employee_data_functions.dart';
 import 'package:grc_module/features/roles/r4_active_directory/data/models/department_model.dart';
@@ -20,23 +21,21 @@ import 'package:grc_module/features/roles/r4_active_directory/data/models/depart
 import 'package:grc_module/features/onboarding/o3_authentication/data/models/demo_company_model.dart';
 import 'package:grc_module/features/onboarding/o3_authentication/data/models/demo_user_account_overview.dart';
 
-import 'package:grc_module/features/roles/r4_active_directory/data/models/edit_by_model.dart';
 import 'package:grc_module/features/roles/r1_role_management/data/models/role_access_model.dart';
 import 'package:grc_module/features/roles/r4_active_directory/data/models/employees_model/mobile_phone_model.dart';
 import 'package:grc_module/features/roles/r4_active_directory/data/models/employees_model/new_employee_model.dart';
 import 'package:grc_module/features/roles/r4_active_directory/domain/enums/employee_data.dart';
-import 'package:grc_module/core/helper/main_helper/temporary_password_generator.dart';
-import 'package:flutter/foundation.dart';
+import 'package:grc_module/features/roles/helpers/temporary_password_generator.dart';
 
 class ActiveDirectoryRepository {
   final ActiveDirectoryRemoteDataSource remoteDataSource =
-  ActiveDirectoryRemoteDataSource();
+      ActiveDirectoryRemoteDataSource();
 
   // ─────────────────────────────────────────────────────────────────────────
   // UPLOAD CSV FILE DATA
   // ─────────────────────────────────────────────────────────────────────────
 
-  uploadCsvFileData({
+  Future<Either<Failure, void>> uploadCsvFileData({
     required List<dynamic> validData,
     required List<dynamic> invalidData,
     required List<String> departmentIds,
@@ -45,34 +44,32 @@ class ActiveDirectoryRepository {
     required List<String> employeesEmails,
     required String currentUserEmail,
   }) async {
-
     try {
       remoteDataSource.startTransaction();
 
       _uploadWrongData(invalidData: invalidData);
 
       List<NewEmployeeModelHistory> employees = _uploadValidData(
-          validData: validData,
-          employeesIds: employeesIds,
-          companyId: companyId,
-          employeesEmails: employeesEmails);
+        validData: validData,
+        employeesIds: employeesIds,
+        companyId: companyId,
+        employeesEmails: employeesEmails,
+      );
 
-      _addUserAccess(
-          employees: employees, currentUserEmail: currentUserEmail);
+      _addUserAccess(employees: employees, currentUserEmail: currentUserEmail);
 
       _addDepartment(
-          validData: validData,
-          departmentsIdsList: departmentIds,
-          currentUserEmail: currentUserEmail);
+        validData: validData,
+        departmentsIdsList: departmentIds,
+        currentUserEmail: currentUserEmail,
+      );
 
       _removeAdminData();
 
       var result = await remoteDataSource.endTransaction();
 
-
-
       return result;
-    } catch (e, stackTrace) {
+    } catch (e) {
       rethrow;
     }
   }
@@ -88,11 +85,10 @@ class ActiveDirectoryRepository {
   }) async {
     try {
       remoteDataSource.startTransaction();
-      remoteDataSource.removeEmployeeWithinTransaction(
-          employeeId: employeeId);
+      remoteDataSource.removeEmployeeWithinTransaction(employeeId: employeeId);
       final result = await remoteDataSource.endTransaction();
       return result;
-    } catch (e, st) {
+    } catch (e) {
       return Left(FirebaseFailure(e.toString()));
     }
   }
@@ -109,7 +105,6 @@ class ActiveDirectoryRepository {
     required NewEmployeeModelHistory employee,
     required String currentUserEmail,
   }) async {
-
     try {
       // Step 1 — build the updated model
       NewEmployeeModelHistory employeeModel = _createEditedEmployeeModel(
@@ -122,8 +117,7 @@ class ActiveDirectoryRepository {
       remoteDataSource.startTransaction();
 
       // Step 3 — queue employee write
-      remoteDataSource.uploadEmployeeWithinTransaction(
-          employee: employeeModel);
+      remoteDataSource.uploadEmployeeWithinTransaction(employee: employeeModel);
 
       // Step 4 — queue department write
       _addDepartment(
@@ -134,11 +128,10 @@ class ActiveDirectoryRepository {
 
       // Step 6 — COMMIT
       final Either<Failure, void> result =
-      await remoteDataSource.endTransaction();
-
+          await remoteDataSource.endTransaction();
 
       return result;
-    } catch (e, stackTrace) {
+    } catch (e) {
       return Left(FirebaseFailure(e.toString()));
     }
   }
@@ -159,15 +152,11 @@ class ActiveDirectoryRepository {
     required NewEmployeeModelHistory employee,
     required bool isWrongEmployee,
   }) {
-
     final int now = DateTime.now().millisecondsSinceEpoch;
 
     // ── Helper: copy existing array and append new string value ────────────
-    List<String> _append(List<dynamic>? existing, String newValue) {
-      return [
-        ...(existing ?? []).map((e) => e?.toString() ?? ''),
-        newValue,
-      ];
+    List<String> append(List<dynamic>? existing, String newValue) {
+      return [...(existing ?? []).map((e) => e?.toString() ?? ''), newValue];
     }
 
     // ── Typed row from UI ───────────────────────────────────────────────────
@@ -182,106 +171,155 @@ class ActiveDirectoryRepository {
     // 25:supervisorEmail  26:role  27:englishTitle  28:arabicTitle
     // 29:workLocation  30:none
     final List<String> row =
-    validDataRow.map((e) => e?.toString() ?? '').toList();
+        validDataRow.map((e) => e?.toString() ?? '').toList();
 
     final updated = NewEmployeeModelHistory(
       // ── Identity (never changed from UI) ─────────────────────────────────
       id: employee.id,
-      timestamps: List<int>.from(employee.timestamps ?? [])..add(now),
+      timestamps: List<int>.from(employee.timestamps)..add(now),
 
       // ── Names ─────────────────────────────────────────────────────────────
-      firstName:          _append(employee.firstName,          row[EmployeeDataItems.firstName.index]),
-      middleName:         _append(employee.middleName,         row[EmployeeDataItems.middleName.index]),
-      lastName:           _append(employee.lastName,           row[EmployeeDataItems.lastName.index]),
-      firstNameInArabic:  _append(employee.firstNameInArabic,  row[EmployeeDataItems.firstNameArabic.index]),
-      middleNameInArabic: _append(employee.middleNameInArabic, row[EmployeeDataItems.middleNameArabic.index]),
-      lastNameInArabic:   _append(employee.lastNameInArabic,   row[EmployeeDataItems.lastNameArabic.index]),
+      firstName: append(
+        employee.firstName,
+        row[EmployeeDataItems.firstName.index],
+      ),
+      middleName: append(
+        employee.middleName,
+        row[EmployeeDataItems.middleName.index],
+      ),
+      lastName: append(
+        employee.lastName,
+        row[EmployeeDataItems.lastName.index],
+      ),
+      firstNameInArabic: append(
+        employee.firstNameInArabic,
+        row[EmployeeDataItems.firstNameArabic.index],
+      ),
+      middleNameInArabic: append(
+        employee.middleNameInArabic,
+        row[EmployeeDataItems.middleNameArabic.index],
+      ),
+      lastNameInArabic: append(
+        employee.lastNameInArabic,
+        row[EmployeeDataItems.lastNameArabic.index],
+      ),
 
       // ── Contact (email protected — copy as-is) ────────────────────────────
-      email:       List<String>.from(employee.email?.map((e) => e?.toString() ?? '') ?? []),
-      officePhone: _append(employee.officePhone, row[EmployeeDataItems.officeNumber.index]),
-      homePhone:   _append(employee.homePhone,   row[EmployeeDataItems.homeNumber.index]),
-      extension:   _append(employee.extension,   row[EmployeeDataItems.extension.index]),
+      email: List<String>.from(
+        employee.email.map((e) => e.toString()),
+      ),
+      officePhone: append(
+        employee.officePhone,
+        row[EmployeeDataItems.officeNumber.index],
+      ),
+      homePhone: append(
+        employee.homePhone,
+        row[EmployeeDataItems.homeNumber.index],
+      ),
+      extension: append(
+        employee.extension,
+        row[EmployeeDataItems.extension.index],
+      ),
 
       // Mobile phone is a complex nested object — keep existing
       mobilePhone: employee.mobilePhone,
 
       // ── Personal ──────────────────────────────────────────────────────────
-      gender:        _append(employee.gender,        row[EmployeeDataItems.gender.index]),
-      country:       _append(employee.country,       row[EmployeeDataItems.country.index]),
-      province:      _append(employee.province,      row[EmployeeDataItems.province.index]),
-      city:          _append(employee.city,          row[EmployeeDataItems.city.index]),
-      postalCode:    _append(employee.postalCode,    row[EmployeeDataItems.postalCode.index]),
-      street:        _append(employee.street,        row[EmployeeDataItems.street.index]),
-      language:      _append(employee.language,      row[EmployeeDataItems.language.index]),
+      gender: append(employee.gender, row[EmployeeDataItems.gender.index]),
+      country: append(employee.country, row[EmployeeDataItems.country.index]),
+      province: append(
+        employee.province,
+        row[EmployeeDataItems.province.index],
+      ),
+      city: append(employee.city, row[EmployeeDataItems.city.index]),
+      postalCode: append(
+        employee.postalCode,
+        row[EmployeeDataItems.postalCode.index],
+      ),
+      street: append(employee.street, row[EmployeeDataItems.street.index]),
+      language: append(
+        employee.language,
+        row[EmployeeDataItems.language.index],
+      ),
 
       // Not in the edit table — keep as-is
-      birthDay:                 employee.birthDay,
-      maritalStatus:            employee.maritalStatus,
-      nationality:              employee.nationality,
-      nationalId:               employee.nationalId,
+      birthDay: employee.birthDay,
+      maritalStatus: employee.maritalStatus,
+      nationality: employee.nationality,
+      nationalId: employee.nationalId,
       nationalIdExpirationDate: employee.nationalIdExpirationDate,
-      passport:                 employee.passport,
-      passportExpirationDate:   employee.passportExpirationDate,
+      passport: employee.passport,
+      passportExpirationDate: employee.passportExpirationDate,
 
       // ── Work ──────────────────────────────────────────────────────────────
-      departmentId:  _append(employee.departmentId,  row[EmployeeDataItems.departmentId.index]),
-      supervisor:    _append(employee.supervisor,    row[EmployeeDataItems.supervisorEmail.index]),
-      role:          _append(employee.role,          row[EmployeeDataItems.role.index]),
-      title:         _append(employee.title,         row[EmployeeDataItems.englishTitle.index]),
-      titleInArabic: _append(employee.titleInArabic, row[EmployeeDataItems.arabicTitle.index]),
-      workLocation:  _append(employee.workLocation,  row[EmployeeDataItems.workLocation.index]),
+      departmentId: append(
+        employee.departmentId,
+        row[EmployeeDataItems.departmentId.index],
+      ),
+      supervisor: append(
+        employee.supervisor,
+        row[EmployeeDataItems.supervisorEmail.index],
+      ),
+      role: append(employee.role, row[EmployeeDataItems.role.index]),
+      title: append(employee.title, row[EmployeeDataItems.englishTitle.index]),
+      titleInArabic: append(
+        employee.titleInArabic,
+        row[EmployeeDataItems.arabicTitle.index],
+      ),
+      workLocation: append(
+        employee.workLocation,
+        row[EmployeeDataItems.workLocation.index],
+      ),
 
       // ── Complex fields — keep as-is ───────────────────────────────────────
       drivingLicenseId: employee.drivingLicenseId,
-      carPlates:        employee.carPlates,
-      academicHistory:  employee.academicHistory,
-      bio:              employee.bio,
-      photo:            employee.photo,
-      skills:           employee.skills,
-      hobbies:          employee.hobbies,
+      carPlates: employee.carPlates,
+      academicHistory: employee.academicHistory,
+      bio: employee.bio,
+      photo: employee.photo,
+      skills: employee.skills,
+      hobbies: employee.hobbies,
 
       // ── Status — never changed from edit table ────────────────────────────
       status: employee.status,
 
       // ── Insurance — not in edit table ────────────────────────────────────
-      insuranceName:         employee.insuranceName,
+      insuranceName: employee.insuranceName,
       insurancePolicyNumber: employee.insurancePolicyNumber,
 
       // ── Emergency contacts — not in edit table ────────────────────────────
-      firstContactFirstName:    employee.firstContactFirstName,
-      firstContactLastName:     employee.firstContactLastName,
+      firstContactFirstName: employee.firstContactFirstName,
+      firstContactLastName: employee.firstContactLastName,
       firstContactRelationship: employee.firstContactRelationship,
-      firstContactEmail:        employee.firstContactEmail,
-      firstContactPhone:        employee.firstContactPhone,
-      firstContactLanguage:     employee.firstContactLanguage,
-      firstContactCountry:      employee.firstContactCountry,
-      firstContactProvince:     employee.firstContactProvince,
-      firstContactCity:         employee.firstContactCity,
-      firstContactStreet:       employee.firstContactStreet,
+      firstContactEmail: employee.firstContactEmail,
+      firstContactPhone: employee.firstContactPhone,
+      firstContactLanguage: employee.firstContactLanguage,
+      firstContactCountry: employee.firstContactCountry,
+      firstContactProvince: employee.firstContactProvince,
+      firstContactCity: employee.firstContactCity,
+      firstContactStreet: employee.firstContactStreet,
 
-      secondContactFirstName:    employee.secondContactFirstName,
-      secondContactLastName:     employee.secondContactLastName,
+      secondContactFirstName: employee.secondContactFirstName,
+      secondContactLastName: employee.secondContactLastName,
       secondContactRelationship: employee.secondContactRelationship,
-      secondContactEmail:        employee.secondContactEmail,
-      secondContactPhone:        employee.secondContactPhone,
-      secondContactLanguage:     employee.secondContactLanguage,
-      secondContactCountry:      employee.secondContactCountry,
-      secondContactProvince:     employee.secondContactProvince,
-      secondContactCity:         employee.secondContactCity,
-      secondContactStreet:       employee.secondContactStreet,
+      secondContactEmail: employee.secondContactEmail,
+      secondContactPhone: employee.secondContactPhone,
+      secondContactLanguage: employee.secondContactLanguage,
+      secondContactCountry: employee.secondContactCountry,
+      secondContactProvince: employee.secondContactProvince,
+      secondContactCity: employee.secondContactCity,
+      secondContactStreet: employee.secondContactStreet,
 
       // ── Auth — never changed from edit table ──────────────────────────────
-      password:               employee.password,
-      defaultPassword:        employee.defaultPassword,
+      password: employee.password,
+      defaultPassword: employee.defaultPassword,
       passwordExpirationTime: employee.passwordExpirationTime,
       passwordExpirationUnit: employee.passwordExpirationUnit,
-      firstLogin:             employee.firstLogin,
-      lastLogin:              employee.lastLogin,
-      activationDate:         employee.activationDate,
-      deactivationDate:       employee.deactivationDate,
+      firstLogin: employee.firstLogin,
+      lastLogin: employee.lastLogin,
+      activationDate: employee.activationDate,
+      deactivationDate: employee.deactivationDate,
     );
-
 
     return updated;
   }
@@ -290,15 +328,15 @@ class ActiveDirectoryRepository {
   // UPLOAD WRONG DATA
   // ─────────────────────────────────────────────────────────────────────────
 
-  _uploadWrongData({required List<dynamic> invalidData}) {
-
+  void _uploadWrongData({required List<dynamic> invalidData}) {
     for (int i = 0; i < invalidData.length; i++) {
       List<dynamic> row = invalidData[i];
       try {
         var employeeModel = _createEmployeeModel(row, true);
         remoteDataSource.uploadWrongEmployeeWithinTransaction(
-            employee: employeeModel);
-      } catch (e, stackTrace) {
+          employee: employeeModel,
+        );
+      } catch (e) {
         rethrow;
       }
     }
@@ -309,7 +347,9 @@ class ActiveDirectoryRepository {
   // ─────────────────────────────────────────────────────────────────────────
 
   NewEmployeeModelHistory _createEmployeeModel(
-      List<dynamic> row, bool isWrongEmployee) {
+    List<dynamic> row,
+    bool isWrongEmployee,
+  ) {
     NewEmployeeModelHistory employee = initEmployeeModel();
 
     for (int i = 0; i < EmployeeDataItems.values.length; i++) {
@@ -317,8 +357,11 @@ class ActiveDirectoryRepository {
       if (item == EmployeeDataItems.none) continue;
       try {
         item.updateFieldDirectly(
-            employee: employee, data: row, isWrongEmployee: isWrongEmployee);
-      } catch (e, stackTrace) {
+          employee: employee,
+          data: row,
+          isWrongEmployee: isWrongEmployee,
+        );
+      } catch (e) {
         rethrow;
       }
     }
@@ -423,7 +466,6 @@ class ActiveDirectoryRepository {
   }) {
     List<NewEmployeeModelHistory> employees = [];
 
-
     // Each row is guarded rather than force-unwrapped. A short row used to
     // throw RangeError and a null/empty email or id used to throw on `!`,
     // aborting the whole import part-way through — some employees written,
@@ -451,7 +493,7 @@ class ActiveDirectoryRepository {
       remoteDataSource.uploadEmployeeWithinTransaction(employee: employee);
 
       if (!isAdminEmployee) {
-        final String? email = employee.email?.lastOrNull;
+        final String? email = employee.email.lastOrNull;
         if (email != null && email.trim().isNotEmpty) {
           final DemoUserAccountOverview demoUserAccountOverview =
               DemoUserAccountOverview(
@@ -462,12 +504,14 @@ class ActiveDirectoryRepository {
             demoActivated: null,
           );
           remoteDataSource.uploadDemoUserOverviewWithinTransaction(
-              employee: demoUserAccountOverview);
+            employee: demoUserAccountOverview,
+          );
         }
       }
 
       remoteDataSource.removeWrongEmployeeWithinTransaction(
-          employeeId: employeeId);
+        employeeId: employeeId,
+      );
     }
 
     return employees;
@@ -477,37 +521,44 @@ class ActiveDirectoryRepository {
   // USER ACCESS
   // ─────────────────────────────────────────────────────────────────────────
 
-  void _addUserAccess(
-      {required List<NewEmployeeModelHistory> employees,
-        required String currentUserEmail}) {
+  void _addUserAccess({
+    required List<NewEmployeeModelHistory> employees,
+    required String currentUserEmail,
+  }) {
     Timestamp timestamp = Timestamp.now();
     for (NewEmployeeModelHistory employee in employees) {
       // Guarded for the same reason as _uploadValidData: a null id or an empty
       // role list used to throw on `!` and abort the remaining employees.
       final String? employeeId = employee.id;
       if (employeeId == null || employeeId.isEmpty) continue;
-      final String role = employee.role?.lastOrNull?.trim() ?? '';
+      final String role = employee.role.lastOrNull?.trim() ?? '';
 
       UserPermissionModel userPermissionModel = UserPermissionModel(
         employeeId: employeeId,
         role: SingleValueModel(
-            values: [role.toLowerCase()],
-            timestamps: [timestamp]),
+          values: [role.toLowerCase()],
+          timestamps: [timestamp],
+        ),
         fromDate: SingleValueModel(
-            values: [DateFormat('MMM dd, yyyy').format(DateTime.now())],
-            timestamps: [timestamp]),
-        toDate: SingleValueModel(values: [
-          DateFormat('MMM dd, yyyy')
-              .format(DateTime.now().add(const Duration(days: 180)))
-        ], timestamps: [
-          timestamp
-        ]),
+          values: [DateFormat('MMM dd, yyyy').format(DateTime.now())],
+          timestamps: [timestamp],
+        ),
+        toDate: SingleValueModel(
+          values: [
+            DateFormat('MMM dd, yyyy')
+                .format(DateTime.now().add(const Duration(days: 180))),
+          ],
+          timestamps: [timestamp],
+        ),
         editBy: SingleValueModel(
-            values: [currentUserEmail.trim().toLowerCase()],
-            timestamps: [timestamp]),
+          values: [currentUserEmail.trim().toLowerCase()],
+          timestamps: [timestamp],
+        ),
       );
       remoteDataSource.uploadUserAccessWithinTransaction(
-          usersAccessModel: userPermissionModel, employeeId: employeeId);
+        usersAccessModel: userPermissionModel,
+        employeeId: employeeId,
+      );
     }
   }
 
@@ -515,36 +566,38 @@ class ActiveDirectoryRepository {
   // DEPARTMENTS
   // ─────────────────────────────────────────────────────────────────────────
 
-  void _addDepartment(
-      {required List<dynamic> validData,
-        required List<String> departmentsIdsList,
-        required String currentUserEmail}) {
+  void _addDepartment({
+    required List<dynamic> validData,
+    required List<String> departmentsIdsList,
+    required String currentUserEmail,
+  }) {
     Set<String> departmentsIds = Set.from(departmentsIdsList);
 
     for (List<dynamic> row in validData) {
-      if (!departmentsIds
-          .contains(row[EmployeeDataItems.departmentId.index])) {
+      if (!departmentsIds.contains(row[EmployeeDataItems.departmentId.index])) {
         remoteDataSource.uploadDepartmentWithinTransaction(
-            department: DepartmentModelPro(
-              departmentID: row[EmployeeDataItems.departmentId.index]
-                  .toString()
-                  .trim()
-                  .toLowerCase(),
-              departmentName:
-              row[EmployeeDataItems.departmentEnglishName.index]
-                  .trim()
-                  .toLowerCase(),
-              departmentNameInArabic:
-              row[EmployeeDataItems.departmentArabicName.index]
-                  .trim()
-                  .toLowerCase(),
-              creationDate: Timestamp.now(),
-              addedBy: currentUserEmail.trim().toLowerCase(),
-            ));
-        departmentsIds.add(row[EmployeeDataItems.departmentId.index]
-            .toString()
-            .trim()
-            .toLowerCase());
+          department: DepartmentModelPro(
+            departmentID: row[EmployeeDataItems.departmentId.index]
+                .toString()
+                .trim()
+                .toLowerCase(),
+            departmentName: row[EmployeeDataItems.departmentEnglishName.index]
+                .trim()
+                .toLowerCase(),
+            departmentNameInArabic:
+                row[EmployeeDataItems.departmentArabicName.index]
+                    .trim()
+                    .toLowerCase(),
+            creationDate: Timestamp.now(),
+            addedBy: currentUserEmail.trim().toLowerCase(),
+          ),
+        );
+        departmentsIds.add(
+          row[EmployeeDataItems.departmentId.index]
+              .toString()
+              .trim()
+              .toLowerCase(),
+        );
       }
     }
   }
@@ -553,38 +606,34 @@ class ActiveDirectoryRepository {
   // ACCESS TYPES
   // ─────────────────────────────────────────────────────────────────────────
 
-
   // REMOVED 12/8/2026: dead code with 0 call sites. `_createAccessType` was
-// the sole root of this chain, so `_getDefaultModulesPermissions`,
-// `_convertEnumListToStringList` and `_moduleEnumToString` went with it —
-// and with them the `ModulesCubit()` construction that made this data-layer
-// file depend on a presentation cubit (§3 auto-reject).
+  // the sole root of this chain, so `_getDefaultModulesPermissions`,
+  // `_convertEnumListToStringList` and `_moduleEnumToString` went with it —
+  // and with them the `ModulesCubit()` construction that made this data-layer
+  // file depend on a presentation cubit (§3 auto-reject).
 
   // ─────────────────────────────────────────────────────────────────────────
   // DEMO NUMBER OF USERS
   // ─────────────────────────────────────────────────────────────────────────
 
-  getDemoNumberOfUsers({required String currentUserEmail}) async {
+  Future<Either<Failure, dynamic>> getDemoNumberOfUsers({required String currentUserEmail}) async {
     Either<Failure, dynamic> result = await remoteDataSource
         .getDemoUserAccountOverview(currentUserEmail: currentUserEmail);
     if (result.isLeft()) return result;
     DemoUserAccountOverview demoUserAccountOverview =
-    DemoUserAccountOverview.fromMap(result.getOrElse(() => {}));
+        DemoUserAccountOverview.fromMap(result.getOrElse(() => {}));
     result = await remoteDataSource.getDemoDetails(
-        companyName: demoUserAccountOverview.companyId);
+      companyName: demoUserAccountOverview.companyId,
+    );
     if (result.isLeft()) return result;
     Map<String, dynamic> demos = result.getOrElse(() => null);
     DemoCompanyModel companyModel = DemoCompanyModel.fromMap(demos);
-    return result =
-        Right(companyModel.demoDetails!.numberOfUsers!.values.last);
+    return result = Right(companyModel.demoDetails!.numberOfUsers!.values.last);
   }
 
   // ─────────────────────────────────────────────────────────────────────────
   // MODULES HELPERS
   // ─────────────────────────────────────────────────────────────────────────
-
-
-
 
   // ─────────────────────────────────────────────────────────────────────────
   // ADMIN HELPERS
@@ -593,9 +642,9 @@ class ActiveDirectoryRepository {
   void updateAdminData(NewEmployeeModelHistory employee) {
     NewEmployeeModelHistory? admin;
     try {
-      admin = AppControllers.employeeDirectory
-          .allEmployees
-          ?.firstWhere((element) => element.id == '1');
+      admin = AppControllers.employeeDirectory.allEmployees?.firstWhere(
+        (element) => element.id == '1',
+      );
     } catch (e) {
       return;
     }
@@ -611,16 +660,15 @@ class ActiveDirectoryRepository {
     employee.defaultPassword = admin.defaultPassword;
     if (admin.status.isNotEmpty) employee.status = List.from(admin.status);
     if (admin.role.isNotEmpty) employee.role = List.from(admin.role);
-
   }
 
   bool isAdmin(NewEmployeeModelHistory employee) {
     if (employee.email.isEmpty) return false;
     NewEmployeeModelHistory? admin;
     try {
-      admin = AppControllers.employeeDirectory
-          .allEmployees
-          ?.firstWhere((element) => element.id == '1');
+      admin = AppControllers.employeeDirectory.allEmployees?.firstWhere(
+        (element) => element.id == '1',
+      );
     } catch (e) {
       return false;
     }
@@ -629,23 +677,19 @@ class ActiveDirectoryRepository {
   }
 
   void _removeAdminData() {
-
     NewEmployeeModelHistory? existingAdmin;
     try {
-      existingAdmin = AppControllers.employeeDirectory
-          .allEmployees
-          ?.firstWhere((element) => element.id == '1');
+      existingAdmin = AppControllers.employeeDirectory.allEmployees?.firstWhere(
+        (element) => element.id == '1',
+      );
     } catch (e) {
       // Was an empty `catch {}` — the failure is deliberately
       // non-fatal here, but it must not vanish silently (§11.5).
-      debugPrint('active_directory_repository.dart: non-fatal failure: $e');
     }
 
     if (existingAdmin == null ||
-        existingAdmin.email == null ||
-        existingAdmin.email!.isEmpty ||
-        existingAdmin.email!.last == null ||
-        existingAdmin.email!.last!.isEmpty) {
+        existingAdmin.email.isEmpty ||
+        existingAdmin.email.last.isEmpty) {
       remoteDataSource.removeEmployeeAdminDefaultModel();
       remoteDataSource.removeUserAccessAdminDefaultModel();
     }

@@ -1,8 +1,8 @@
 /// Module: messaging / chat / data/models/message/poll_message_model.dart
+library;
 //Youssef Ashraf
 
-
-import '../../../../m2_connections/data/models/member_model.dart';
+import 'package:grc_module/features/messaging/m2_connections/data/models/member_model.dart';
 
 class PollMessageModel {
   List<String> options;

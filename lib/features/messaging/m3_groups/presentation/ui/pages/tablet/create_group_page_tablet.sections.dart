@@ -1,4 +1,5 @@
-part of './create_group_page_tablet.dart';
+part of 'create_group_page_tablet.dart';
+
 /// Module: messaging / groups / presentation/ui/pages/tablet/create_group_page_tablet.sections.dart
 
 /// Fields + helper/builder methods for the screen, split out to keep
@@ -6,9 +7,7 @@ part of './create_group_page_tablet.dart';
 mixin _CreateGroupPageTabletSections on State<CreateGroupPageTablet> {
   final TextEditingController searchController = TextEditingController();
 
-
   bool _isFormValid = false;
-
 
   // ── Language validation error states ─────────────────────────────────────
   String? _nameEnLangError;
@@ -19,7 +18,6 @@ mixin _CreateGroupPageTabletSections on State<CreateGroupPageTablet> {
 
   String? _descArLangError;
 
-
   // ── Validate language for EN field ──────────────────────────────────────
   String? _validateEnLanguage(String? value) {
     if (value == null || value.trim().isEmpty) return null;
@@ -29,7 +27,6 @@ mixin _CreateGroupPageTabletSections on State<CreateGroupPageTablet> {
     return null;
   }
 
-
   // ── Validate language for AR field ──────────────────────────────────────
   String? _validateArLanguage(String? value) {
     if (value == null || value.trim().isEmpty) return null;
@@ -38,7 +35,6 @@ mixin _CreateGroupPageTabletSections on State<CreateGroupPageTablet> {
     }
     return null;
   }
-
 
   void _validateForm(GroupsCubit controller) {
     final nameEn = controller.groupNameController.text.trim();
@@ -80,7 +76,6 @@ mixin _CreateGroupPageTabletSections on State<CreateGroupPageTablet> {
     }
   }
 
-
   // ── Combine empty + language check into one error string ────────────────
   String? _getEnFieldError(String value, String validationLabel) {
     if (value.trim().isEmpty) {
@@ -92,7 +87,6 @@ mixin _CreateGroupPageTabletSections on State<CreateGroupPageTablet> {
     return null;
   }
 
-
   String? _getArFieldError(String value, String validationLabel) {
     if (value.trim().isEmpty) {
       return Validator.isEmpty('', validationLabel);
@@ -102,7 +96,6 @@ mixin _CreateGroupPageTabletSections on State<CreateGroupPageTablet> {
     }
     return null;
   }
-
 
   // ── EN field: LTR direction ─────────────────────────────────────────────
   Widget _buildEnField({
@@ -151,8 +144,10 @@ mixin _CreateGroupPageTabletSections on State<CreateGroupPageTablet> {
             hideCounter: !showCounter,
             fillColor: AppColors.background,
             controller: controller,
-            hintStyle: StyleText.fontSize12Weight400.copyWith(color: AppColors.grey.withOpacity(.5)),
-            contentPadding: EdgeInsetsDirectional.symmetric(vertical: 12.sp,horizontal: 12.sp),
+            hintStyle: StyleText.fontSize12Weight400
+                .copyWith(color: AppColors.grey.withValues(alpha: .5)),
+            contentPadding: EdgeInsetsDirectional.symmetric(
+                vertical: 12.sp, horizontal: 12.sp),
             onChanged: (_) => _validateForm(cubit),
             // Error goes through CustomTextField: red border + message on the
             // SAME row as the char counter (message start, counter end).
@@ -162,7 +157,6 @@ mixin _CreateGroupPageTabletSections on State<CreateGroupPageTablet> {
       ),
     );
   }
-
 
   // ── AR field: RTL direction ─────────────────────────────────────────────
   Widget _buildArField({
@@ -210,8 +204,10 @@ mixin _CreateGroupPageTabletSections on State<CreateGroupPageTablet> {
             hideCounter: !showCounter,
             fillColor: AppColors.background,
             controller: controller,
-            hintStyle: StyleText.fontSize12Weight400.copyWith(color: AppColors.grey.withOpacity(.5)),
-            contentPadding: EdgeInsetsDirectional.symmetric(vertical: 12.sp,horizontal: 12.sp),
+            hintStyle: StyleText.fontSize12Weight400
+                .copyWith(color: AppColors.grey.withValues(alpha: .5)),
+            contentPadding: EdgeInsetsDirectional.symmetric(
+                vertical: 12.sp, horizontal: 12.sp),
 
             onChanged: (_) => _validateForm(cubit),
             // Error goes through CustomTextField: red border + message on the
@@ -222,5 +218,4 @@ mixin _CreateGroupPageTabletSections on State<CreateGroupPageTablet> {
       ),
     );
   }
-
 }

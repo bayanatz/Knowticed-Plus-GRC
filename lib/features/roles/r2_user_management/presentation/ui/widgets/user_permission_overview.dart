@@ -2,36 +2,41 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: user_permission_overview.dart
-/// Purpose: Declares `UserPermissionOverview`.
-/// Author: Knowticed Plus team
+/// Description: Declares `UserPermissionOverview`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
 /// Updated: 25/8/2026 - The card's status line now renders a localized name.
 /// Updated: 29/8/2026 - Access dates render through LocalizedDate, so every
 ///          card shows the same "23 Aug 2023" / "٢٣ أغسطس ٢٠٢٣" shape.
+library;
 
+import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
+import 'package:grc_module/core/helper/format_title.dart';
 // REMOVED_MODULE: import 'package:grc_module/features/external/services_mangment_module/core/new_theme.dart';
 
-import 'package:grc_module/core/helper/main_helper/employee_helper.dart';
-import 'package:grc_module/core/helper/main_helper/localized_date.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/custom/75-custom_title_value_widget.dart';
+import 'package:grc_module/core/helper/employee_helper.dart';
+import 'package:grc_module/core/helper/localized_date.dart';
+import 'package:grc_module/core/custom/cards/custom_title_value_widget.dart';
 import 'package:grc_module/features/roles/r2_user_management/domain/entities/user_permission_entity.dart';
 import 'package:grc_module/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
 import 'package:grc_module/features/roles/r2_user_management/presentation/ui/pages/employee_details.dart';
 import 'package:grc_module/features/roles/r2_user_management/presentation/ui/widgets/user_access_status_label.dart';
 
-import 'package:grc_module/core/custom/32-custom_svg.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
 import 'package:collection/collection.dart';
+import 'package:grc_module/features/roles/r1_role_management/data/models/role_model.dart'
+    show RoleHistoryModelMethods;
+import 'package:grc_module/core/theme/haptic_controller.dart';
+
 class UserPermissionOverview extends StatelessWidget {
-  UserPermissionOverview({super.key, required this.userPermissionEntity});
+  const UserPermissionOverview({super.key, required this.userPermissionEntity});
 
   final UserPermissionEntity userPermissionEntity;
 
@@ -45,8 +50,9 @@ class UserPermissionOverview extends StatelessWidget {
     try {
       final roleCubit = context.read<RoleCubit>();
       final role = roleCubit.roles.firstWhereOrNull(
-              (r) => r.roleId == userPermissionEntity.accessName ||
-              r.currentRoleName == userPermissionEntity.accessName
+        (r) =>
+            r.roleId == userPermissionEntity.accessName ||
+            r.currentRoleName == userPermissionEntity.accessName,
       );
 
       if (role != null) {
@@ -111,7 +117,7 @@ class UserPermissionOverview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var lightMode = Theme.of(context).brightness == Brightness.light;
+    Theme.of(context).brightness == Brightness.light;
 
     var isMobile = ContextExtension(context).isPhone;
 
@@ -121,108 +127,110 @@ class UserPermissionOverview extends StatelessWidget {
       // was still a DRAFT, so tapping a person landed on "Adding New Role"
       // (reported with the "Compliance Policy Review" cards). Drafts are
       // edited from Role Management, where they are listed as roles.
+      onTapDown: (_) => HapticController.low(),
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => RoleEmployeeDetailsPage(
-              userPermission: userPermissionEntity,
-            ),
+            builder: (context) =>
+                RoleEmployeeDetailsPage(userPermission: userPermissionEntity),
           ),
         );
       },
       child: Container(
-          padding: EdgeInsets.all(10.sp),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8.r),
-              color: AppColors.card
-          ),
-          child: Column(
-              spacing: 10.sp,
-              mainAxisSize: MainAxisSize.min,
-              children: [
+        padding: EdgeInsets.all(10.sp),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8.r),
+          color: AppColors.card,
+        ),
+        child: Column(
+          spacing: 10.sp,
+          mainAxisSize: MainAxisSize.min,
+          children: [
             // No fixed height here: the name/role/status stack is taller than
             // the 52.sp this used to hard-code, which clipped it. The grid's
             // mainAxisExtent sizes the card instead.
-            Container(
-              child: Row(
-                spacing: 5.sp,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  userImage(),
-                  SizedBox(width: 3.sp),
-                  // Expanded so long employee names ellipsize instead of
-                  // overflowing the card horizontally.
-                  Expanded(
-                    child: Column(
+            Row(
+              spacing: 5.sp,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                userImage(),
+                SizedBox(width: 3.sp),
+                // Expanded so long employee names ellipsize instead of
+                // overflowing the card horizontally.
+                Expanded(
+                  child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-
-                      Text(  FormatHelper.capitalize(EmployeeHelper.getEmployeeLocalizedNameWithId(
-                          employeeId: userPermissionEntity.employeeId,
-                          context: context)),
+                      Text(
+                        FormatHelper.capitalize(
+                          EmployeeHelper.getEmployeeLocalizedNameWithId(
+                            employeeId: userPermissionEntity.employeeId,
+                            context: context,
+                          ),
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: StyleText.fontSize14Weight500.copyWith(
-                            color: AppColors.text
+                          color: AppColors.text,
                         ),
-
                       ),
-
 
                       isMobile ? SizedBox() : SizedBox(height: 3.h),
 
                       // ✅ UPDATED: Use localized role name
                       CustomTitleValueWidget(
-                          title: "${S.of(context).roleType}: ",
-                          value: FormatHelper.capitalize(_getLocalizedRoleName(context))
+                        title: "${S.of(context).roleType}: ",
+                        value: FormatHelper.capitalize(
+                          _getLocalizedRoleName(context),
+                        ),
                       ),
 
-                      isMobile ? SizedBox() :   SizedBox(height: 2.h),
+                      isMobile ? SizedBox() : SizedBox(height: 2.h),
 
                       Builder(
-                          builder: (context) {
-                            // LOCALIZED 25/8/2026: the card printed
-                            // `FormatHelper.capitalize(accessStatus.name)` — the
-                            // raw enum identifier — so an Arabic user read
-                            // "Active" / "Scheduled" on a translated card.
-                            //
-                            // `_getStatusColor` still keys off the enum NAME,
-                            // and must: it matches identifiers, not display
-                            // text, so it has to stay locale-independent.
-                            final statusName =
-                                userPermissionEntity.accessStatus.name;
-                            final statusLabel =
-                                userPermissionEntity.accessStatus.label(context);
-                            final statusColor = _getStatusColor(statusName);
+                        builder: (context) {
+                          // LOCALIZED 25/8/2026: the card printed
+                          // `FormatHelper.capitalize(accessStatus.name)` — the
+                          // raw enum identifier — so an Arabic user read
+                          // "Active" / "Scheduled" on a translated card.
+                          //
+                          // `_getStatusColor` still keys off the enum NAME,
+                          // and must: it matches identifiers, not display
+                          // text, so it has to stay locale-independent.
+                          final statusName =
+                              userPermissionEntity.accessStatus.name;
+                          final statusLabel =
+                              userPermissionEntity.accessStatus.label(context);
+                          final statusColor = _getStatusColor(statusName);
 
-
-
-                            return Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text("${S.of(context).status}: ",style: StyleText.fontSize12Weight400.copyWith(
-                                  color: AppColors.secondaryText
-                                ),),
-
-                                Flexible(
-                                  child: Text(statusLabel,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: StyleText.fontSize12Weight400.copyWith(
-                                    color: statusColor
-                                ),),
+                          return Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                "${S.of(context).status}: ",
+                                style: StyleText.fontSize12Weight400.copyWith(
+                                  color: AppColors.secondaryText,
                                 ),
-                              ],
-                            );
-                          }
-                      )
+                              ),
+                              Flexible(
+                                child: Text(
+                                  statusLabel,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: StyleText.fontSize12Weight400
+                                      .copyWith(color: statusColor),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
                     ],
                   ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
             // Flexible (not Spacer) so the two date pairs share the row and
             // ellipsize when the card is narrow, instead of overflowing right.
@@ -231,80 +239,92 @@ class UserPermissionOverview extends StatelessWidget {
               children: [
                 Flexible(
                   child: CustomTitleValueWidget(
-                      title: "${S.of(context).access_granted}: ",
-                      titleStyle: StyleText.fontSize10Weight400.copyWith(
-                        color: AppColors.secondaryText
-                      ),
-                      valueStyle: StyleText.fontSize10Weight400.copyWith(
-                          color: AppColors.text
-                      ),
-                      value: _getLocalizedDate(context, userPermissionEntity.startDate)),
+                    title: "${S.of(context).access_granted}: ",
+                    titleStyle: StyleText.fontSize10Weight400.copyWith(
+                      color: AppColors.secondaryText,
+                    ),
+                    valueStyle: StyleText.fontSize10Weight400.copyWith(
+                      color: AppColors.text,
+                    ),
+                    value: _getLocalizedDate(
+                      context,
+                      userPermissionEntity.startDate,
+                    ),
+                  ),
                 ),
                 SizedBox(width: 4.sp),
                 Flexible(
                   child: CustomTitleValueWidget(
-                      title: "${S.of(context).access_revoked}: ",
-                      titleStyle: StyleText.fontSize10Weight400.copyWith(
-                          color: AppColors.secondaryText
-                      ),
-                      valueStyle:  StyleText.fontSize10Weight400.copyWith(
-                          color: AppColors.text
-                      ),
-                      value: _getLocalizedDate(context, userPermissionEntity.endDate)),
+                    title: "${S.of(context).access_revoked}: ",
+                    titleStyle: StyleText.fontSize10Weight400.copyWith(
+                      color: AppColors.secondaryText,
+                    ),
+                    valueStyle: StyleText.fontSize10Weight400.copyWith(
+                      color: AppColors.text,
+                    ),
+                    value: _getLocalizedDate(
+                      context,
+                      userPermissionEntity.endDate,
+                    ),
+                  ),
                 ),
               ],
-            )
-          ])),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
   Widget userImage() {
     String imageUrl = EmployeeHelper.getEmployeeImageWithId(
-        employeeId: userPermissionEntity.employeeId);
+      employeeId: userPermissionEntity.employeeId,
+    );
 
     // ✅ Handle empty, null, or invalid image paths
-    bool isValidUrl = imageUrl.isNotEmpty &&
-        imageUrl != "[]" &&
-        imageUrl.contains('http');
+    bool isValidUrl =
+        imageUrl.isNotEmpty && imageUrl != "[]" && imageUrl.contains('http');
 
-    bool isValidAsset = imageUrl.isNotEmpty &&
-        imageUrl != "[]" &&
-        !imageUrl.contains('http');
+    bool isValidAsset =
+        imageUrl.isNotEmpty && imageUrl != "[]" && !imageUrl.contains('http');
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(50.r),
       child: isValidUrl
           ? Image.network(
-        imageUrl,
-        width: 50.sp,
-        height: 50.sp,
-        errorBuilder: (context, error, stackTrace) {
-          return _buildFallbackImage();
-        },
-      )
+              imageUrl,
+              width: 50.sp,
+              height: 50.sp,
+              errorBuilder: (context, error, stackTrace) {
+                return _buildFallbackImage();
+              },
+            )
           : isValidAsset
-          ? Image.asset(
-        imageUrl,
-        width: 50.sp,
-        height: 50.sp,
-        errorBuilder: (context, error, stackTrace) {
-          return _buildFallbackImage();
-        },
-      )
-          : _buildFallbackImage(),
+              ? Image.asset(
+                  imageUrl,
+                  width: 50.sp,
+                  height: 50.sp,
+                  errorBuilder: (context, error, stackTrace) {
+                    return _buildFallbackImage();
+                  },
+                )
+              : _buildFallbackImage(),
     );
   }
 
   // ✅ Add fallback image widget
   Widget _buildFallbackImage() {
     return Container(
-        width: 50.sp,
-        height: 50.sp,
-        decoration: BoxDecoration(
-          color: AppColors.primary.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(50.r),
-        ),
-        child: CustomSvgImage(assetPath: "assets/icons_assets/main_icons_assets/male_avatar.svg")
+      width: 50.sp,
+      height: 50.sp,
+      decoration: BoxDecoration(
+        color: AppColors.primary.withValues(alpha: 0.2),
+        borderRadius: BorderRadius.circular(50.r),
+      ),
+      child: CustomSvgImage(
+        assetPath:
+            "assets/icons_assets/main_icons_assets/ic_user_avatar_male.png",
+      ),
     );
   }
 }

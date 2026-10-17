@@ -18,6 +18,7 @@
 /// `roles/r3_user_access` as well as by auth. Its natural home is
 /// `core/theme/`; it sits with the enum's own feature because this pass is not
 /// permitted to add files under `lib/core`.
+library;
 
 import 'package:flutter/material.dart';
 

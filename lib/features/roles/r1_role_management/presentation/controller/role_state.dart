@@ -6,7 +6,7 @@
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
 
-part of './role_cubit.dart';
+part of 'role_cubit.dart';
 
 @immutable
 sealed class RoleState {}
@@ -30,7 +30,7 @@ final class RoleAdded extends RoleState {}
 
 final class RoleError extends RoleState {
   final String message;
-  RoleError(this.message);  // Remove 'const' here
+  RoleError(this.message); // Remove 'const' here
 }
 
 final class RolePermissionUpdated extends RoleState {}

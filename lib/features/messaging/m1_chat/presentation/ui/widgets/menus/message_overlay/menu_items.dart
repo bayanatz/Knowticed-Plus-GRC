@@ -38,7 +38,7 @@ class MessageMenuItems extends StatelessWidget {
       section: MessagesPermissionsSections.messagesPermissions,
     );
 
-    final bool hasReactionsPermission = mainController.isHasPermission(
+    mainController.isHasPermission(
       module: Modules.messages,
       permission: MessagesPermissions.reactions,
       section: MessagesPermissionsSections.messagesPermissions,
@@ -46,18 +46,18 @@ class MessageMenuItems extends StatelessWidget {
 
     final bool hasForwardPermission = mainController.isHasPermission(
       module: Modules.messages,
-      permission: MessagesPermissions.forwardMessage,
+      permission: MessagesPermissions.forwardMessages,
       section: MessagesPermissionsSections.messagesPermissions,
     );
 
     return Container(
       width: 154.w,
       decoration: BoxDecoration(
-        color: AppColors.field,
+        color: AppColors.card,
         borderRadius: BorderRadius.circular(8.r),
         boxShadow: [
           BoxShadow(
-            color: AppColors.black.withOpacity(0.08),
+            color: AppColors.black.withValues(alpha: 0.08),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -73,7 +73,8 @@ class MessageMenuItems extends StatelessWidget {
                 messageModel.messageType == MessageTypes.text &&
                 hasEditPermission)
               _MenuItem(
-                svgPath: "assets/icons_assets/main_icons_assets/assets_edit.svg",
+                svgPath:
+                    "assets/icons_assets/main_icons_assets/ic_action_edit.svg",
                 label: S.of(context).Edit,
                 onTap: () {
                   overlayEntry?.remove();
@@ -122,7 +123,8 @@ class MessageMenuItems extends StatelessWidget {
                 hasForwardPermission)
               _MenuItem(
                 // The design's forward glyph, not a Material icon.
-                svgPath: 'assets/icons_assets/main_icons_assets/arrow_back_curved.svg',
+                svgPath:
+                    'assets/icons_assets/main_icons_assets/ic_nav_back_curved.svg',
                 label: S.of(context).forwardMessage,
                 onTap: () {
                   overlayEntry?.remove();
@@ -136,8 +138,7 @@ class MessageMenuItems extends StatelessWidget {
                       !Get.isPrepared<ConnectionsCubit>()) {
                     return;
                   }
-                  final connections =
-                      Get.find<ConnectionsCubit>().connections;
+                  final connections = Get.find<ConnectionsCubit>().connections;
                   if (connections.isEmpty) return;
 
                   ForwardMessageDialog.show(
@@ -167,7 +168,7 @@ class MessageMenuItems extends StatelessWidget {
 
             // ── Star / Unstar (everyone) ──────────────────────────────
             _MenuItem(
-              svgPath: "assets/icons_assets/messaging_assets/star.svg",
+              svgPath: "assets/icons_assets/messaging_assets/ic_star.svg",
               label: messageModel.isStarred
                   ? S.of(context).unStar
                   : S.of(context).star,
@@ -181,12 +182,13 @@ class MessageMenuItems extends StatelessWidget {
             // ── Pin / Unpin (everyone) ────────────────────────────────
             _MenuItem(
               svgPath: AppAssets.pin,
-              label: messageModel.isPinned ? S.of(context).unpin : S.of(context).pin,
+              label: messageModel.isPinned
+                  ? S.of(context).unpin
+                  : S.of(context).pin,
               onTap: () {
                 cubit.pinnedMessageCubit.updatePinMessage(messageModel);
                 overlayEntry?.remove();
                 overlayEntry?.dispose();
-
               },
             ),
 
@@ -207,7 +209,8 @@ class MessageMenuItems extends StatelessWidget {
                   );
                   CustomDialogManager.showDialogFlow(
                     context: context,
-                    confirmWidth: 411, // narrower confirm dialog (bug report #7)
+                    confirmWidth:
+                        411, // narrower confirm dialog (bug report #7)
                     confirmLottie: AppAssets.trashGif,
                     confirmTitle: S.of(context).DeleteMessage,
                     confirmSubtitle:
@@ -259,9 +262,9 @@ class _MenuItem extends StatelessWidget {
     this.svgPath,
     this.labelColor,
   }) : assert(
-  icon != null || svgPath != null,
-  '_MenuItem needs either icon or svgPath',
-  );
+          icon != null || svgPath != null,
+          '_MenuItem needs either icon or svgPath',
+        );
 
   @override
   Widget build(BuildContext context) {
@@ -269,9 +272,9 @@ class _MenuItem extends StatelessWidget {
       type: MaterialType.transparency,
       child: InkWell(
         overlayColor: WidgetStatePropertyAll(
-          AppColors.primary.withOpacity(0.15),
+          AppColors.primary.withValues(alpha: 0.15),
         ),
-        onTap: onTap,
+        onTap: withHaptic(onTap, HapticLevel.low),
         child: SizedBox(
           height: 40.h,
           child: Row(
@@ -280,8 +283,8 @@ class _MenuItem extends StatelessWidget {
               if (icon != null)
                 Icon(icon, color: AppColors.secondaryBlack, size: 18.sp)
               else
-                SvgPicture.asset(
-                  svgPath!,
+                CustomSvgImage.natural(
+                  assetPath: svgPath!,
                   width: 18.w,
                   height: 18.h,
                 ),

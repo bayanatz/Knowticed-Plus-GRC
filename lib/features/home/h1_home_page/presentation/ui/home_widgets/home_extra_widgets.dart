@@ -2,10 +2,10 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: home_extra_widgets.dart
-/// Purpose: The four Adding Widget cards Figma shows that had no
+/// Description: The four Adding Widget cards Figma shows that had no
 ///          `HomeComponents` value at all — `EmployeeMessagesWidget`,
 ///          `GroupMessagesWidget`, `FormsSubmission` and `LowStocks`.
-/// Author: Knowticed Plus team
+/// Author: Amr Mesbah
 /// Created at: 23/8/2026
 ///
 /// Source: Figma file BuJXLizpGcK5eHVBqQomXc, Settings > Home Layout >
@@ -13,25 +13,15 @@
 /// placeholder values from the Figma frames, like the rest of the picker.
 library;
 
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/custom/16-custom_card_styles.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
+import 'package:grc_module/core/custom/cards/custom_card_styles.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:grc_module/features/home/h1_home_page/data/models/home_component_model.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/home_widgets/home_widget_shell.dart';
 import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
-import 'package:grc_module/features/home/h1_home_page/presentation/controller/forms_submission_summary.dart';
-import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/module_widget/forms/forms_actions.dart';
-import 'package:grc_module/features/home/main_controller/helper/form_builder/form_builder_shortcut_stub.dart';
-import 'package:grc_module/core/constants/app_assets.dart';
-import 'package:grc_module/features/notification/presentation/ui/widgets/notification_routing.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
 
 /// Placeholder employee name shown in the preview rows.
 const String _kSampleEmployee = 'Moataz Handousa';
@@ -133,182 +123,6 @@ class GroupMessagesWidget extends StatelessWidget {
   }
 }
 
-/// Figma: "Forms Submission" — a completion ring plus the two form actions.
-///
-/// CHANGED 26/9/2026 (form bug report #25): was a static Figma placeholder
-/// (75%, "Form Name", buttons with no onTap). It now shows the user's latest
-/// published form with its real submitted / sent ratio; "View Submissions"
-/// opens that form's Results inside the Form Builder module and "Remind All"
-/// sends the reminders exactly like the Pending tab does.
-class FormsSubmission extends StatefulWidget {
-  final HomeComponentModel model;
-
-  const FormsSubmission({super.key, required this.model});
-
-  @override
-  State<FormsSubmission> createState() => _FormsSubmissionState();
-}
-
-class _FormsSubmissionState extends State<FormsSubmission>
-    with TickerProviderStateMixin {
-  final FormsSubmissionSummary _summary = FormsSubmissionSummary();
-  bool _loading = true;
-  bool _hasForm = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _summary.load(this).then((ok) {
-      if (!mounted) return;
-      setState(() {
-        _loading = false;
-        _hasForm = ok;
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    _summary.dispose();
-    super.dispose();
-  }
-
-  void _viewSubmissions() {
-    final form = _summary.form;
-    if (form == null) {
-      // Bug report p.2: with no published form both buttons used to be
-      // disabled (onTap: null), which read as "not working". Open the Form
-      // Builder on its Publish tab instead.
-      openFormBuilderFromHome(context, shortcut: FormBuilderShortcut.publish);
-      return;
-    }
-
-    if (MediaQuery.of(context).size.width >= 600) {
-      final drawer = NotificationRouting.drawerCubit();
-      final index = drawer.allowedDrawerModules.indexOf(Modules.formBuilder);
-      if (index == -1) {
-        return;
-      }
-      drawer.updateSelectedIndex(index);
-    } else {
-      Navigator.of(context).push(
-        MaterialPageRoute<void>(builder: (_) => Modules.formBuilder.widget),
-      );
-    }
-  }
-
-  Future<void> _remindAll() async {
-    if (_summary.form == null) {
-      CustomDialogManager.showMessage(
-        context: context,
-        lottiePath: AppAssets.lottieWarning,
-        title: Directionality.of(context) == ui.TextDirection.rtl
-            ? 'لا توجد نماذج منشورة'
-            : 'No Published Forms',
-        subtitle: Directionality.of(context) == ui.TextDirection.rtl
-            ? 'انشر نموذجًا أولًا لإرسال التذكيرات.'
-            : 'Publish a form first to send reminders.',
-      );
-      return;
-    }
-    final sent = await _summary.remindAll();
-    if (!mounted) return;
-    setState(() {});
-    if (sent > 0) {
-      CustomDialogManager.showSuccess(
-        context: context,
-        lottiePath:
-            'assets/lottie_assets/main_lottie_assets/lottie_approved.json',
-        title: Directionality.of(context) == ui.TextDirection.rtl
-            ? 'تم إرسال التذكير بنجاح'
-            : 'Reminder Sent Successfully',
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final S l = S.of(context);
-    final double completion = _summary.completion;
-    final String formTitle = _loading
-        ? '...'
-        : (_hasForm ? (_summary.form?.getTitle ?? l.formName) : l.formName);
-
-    return HomeWidgetCard(
-      title: l.formsSubmission,
-      icon: HomeWidgetSvg.serviceRequest,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      formTitle,
-                      style: CardStyles.value(11),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    if (_hasForm)
-                      Text(
-                        '${_summary.submitted}/${_summary.submitted + _summary.pending}',
-                        style: CardStyles.label(9),
-                      ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                width: 38.r,
-                height: 38.r,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: <Widget>[
-                    CircleProgressMaster.inline(
-                      value: _loading ? null : completion,
-                      strokeWidth: 4,
-                      backgroundColor: AppColors.background,
-                      valueColor:
-                          AlwaysStoppedAnimation<Color>(AppColors.green),
-                    ),
-                    if (!_loading)
-                      Text(
-                        '${(completion * 100).round()}%',
-                        style: CardStyles.value(9),
-                      ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 8.h),
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: HomeCardButton(
-                  label: l.viewSubmissions,
-                  onTap: _loading ? null : _viewSubmissions,
-                ),
-              ),
-              SizedBox(width: 6.w),
-              Expanded(
-                child: HomeCardButton(
-                  label: l.remindAll,
-                  icon: HomeWidgetSvg.bell,
-                  onTap: _loading ? null : _remindAll,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 /// Figma: "Low Stocks" — reorder thresholds, a remaining-stock bar, and the
 /// products currently under their reorder level.
 class LowStocks extends StatelessWidget {
@@ -394,8 +208,10 @@ class LowStocks extends StatelessWidget {
                 if (i > 0) SizedBox(width: 4.w),
                 Expanded(
                   child: Container(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 4.w, vertical: 3.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 4.w,
+                      vertical: 3.h,
+                    ),
                     decoration: BoxDecoration(
                       color: i == 0 ? AppColors.primary : AppColors.background,
                       borderRadius: BorderRadius.circular(4.r),

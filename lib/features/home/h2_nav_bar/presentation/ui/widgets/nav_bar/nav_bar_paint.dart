@@ -5,6 +5,7 @@
 /// Purpose: Declares `CurvedBazier`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'package:flutter/material.dart';
 
@@ -14,8 +15,8 @@ class CurvedBazier extends StatefulWidget {
     required this.index,
     required this.numberOfTabItems,
     required this.padding,
-    final Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final Color color;
   final int index;

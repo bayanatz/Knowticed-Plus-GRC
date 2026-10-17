@@ -2,13 +2,13 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: database_notification_service.dart
-/// Purpose: Notifications raised by the Database Management module.
-/// Author: Knowticed Plus team
+/// Description: Notifications raised by the Database Management module.
+/// Author: Amr Mesbah
 /// Created at: 17/8/2026
 ///
 /// ************************* FILE INFO ************************* ///
 /// File Name: database_notification_service.dart
-/// Purpose: ALL thirteen notifications the Database Management module can
+/// Description: ALL thirteen notifications the Database Management module can
 ///          raise — the §1.7 table of "Knowticed Plus — Notification &
 ///          Validation" — behind one intent-named method each.
 ///
@@ -39,11 +39,11 @@
 /// the only thing that calls this class.
 ///
 /// ─── LANGUAGE ────────────────────────────────────────────────────────
-/// `isArabic` defaults to false, matching the User Access service. One call
-/// sends ONE language, so a notification going to several people goes out in
-/// one language; there is no per-recipient saved language preference to read
-/// yet. Pass the receiver's preference at the call site once there is one.
-///
+/// BOTH LANGUAGES, EVERY TIME (DB-CREATE-06). Each name arrives as a
+/// [LocalizedName] and the English and Arabic texts are built from their own
+/// values; the notification card then shows the one in the READER's language
+/// (`NotificationModelSystem.displayBodyFor`). The sender's language plays no
+/// part, so an admin working in English no longer sends English to everyone.
 /// ─── THE TWO EVENTS WITH NO CALL SITE ────────────────────────────────
 /// [accessExpired] and [commentAdded] are complete and callable but nothing
 /// invokes them today, deliberately:
@@ -60,13 +60,18 @@
 ///
 /// Both are kept here rather than added later so the file matches the spec
 /// table one-for-one and the gap is documented instead of silent.
+library;
 
 import 'package:grc_module/core/enums/app_module.dart';
 import 'package:grc_module/core/enums/template_variable.dart';
-import 'package:grc_module/core/helper/main_helper/date_time_helper.dart';
-import 'package:grc_module/features/notification/domain/enums/database_module/database_events.dart';
-import 'package:grc_module/features/notification/domain/enums/database_module/database_notification_pages.dart';
-import 'package:grc_module/features/notification/services/app_notification_sender.dart';
+import 'package:intl/intl.dart';
+import 'package:grc_module/features/notification/domain/enums/database/database_events.dart';
+import 'package:grc_module/features/notification/domain/enums/database/database_notification_pages.dart';
+import 'package:grc_module/features/notification/helpers/services/app_notification_sender.dart';
+
+/// A name in both languages. Each notification is stored in English and in
+/// Arabic, and each reader sees their own (DB-CREATE-06).
+typedef LocalizedName = ({String en, String ar});
 
 abstract final class DatabaseNotificationService {
   const DatabaseNotificationService._();
@@ -92,19 +97,19 @@ abstract final class DatabaseNotificationService {
   /// It is NOT a claim about Viewable Fields. Field-level restriction lives on
   /// a table grant (`DatabaseAccessGrant.viewableFields`) and has its own
   /// event, [viewableFieldsUpdated].
-  static String allTablesLabel({required bool isArabic}) =>
-      isArabic ? 'كل الجداول' : 'All Tables';
+  /// The scope of a database-wide grant, in both languages.
+  static const LocalizedName allTables = (en: 'All Tables', ar: 'كل الجداول');
 
-  /// Dates in these bodies are formatted in ONE place so a grant's window
-  /// prints identically in the notification, on the calendar card and in the
-  /// Access table — `DateTimeHelper.formatDateTimeMMMDDYYYY` is what the other
-  /// two already use.
+  /// Dates in these bodies are formatted in ONE place, once per language:
+  /// [locale] is the language of the text being built, never the sender's
+  /// (DB-CREATE-06). Same "MMM dd, yyyy" pattern the calendar card and the
+  /// Access table use.
   ///
   /// A null date renders as an em dash rather than the literal "null". A
   /// complete grant always has both dates (`DatabaseAccessGrant.isComplete`),
   /// so this only shows up if a legacy document is missing one.
-  static String _date(DateTime? value) =>
-      value == null ? '—' : DateTimeHelper.formatDateTimeMMMDDYYYY(value);
+  static String _date(DateTime? value, String locale) =>
+      value == null ? '—' : DateFormat('MMM dd, yyyy', locale).format(value);
 
   // ═══════════════════════════════════════════════════════════
   // Structural events — sent to the people who hold access
@@ -118,62 +123,72 @@ abstract final class DatabaseNotificationService {
   /// Filtering that out is the dispatcher's job, not this method's.
   static Future<int> databaseCreated({
     required String actorEmail,
-    required String actorName,
-    required String databaseName,
+    required LocalizedName actorName,
+    required LocalizedName databaseName,
     required Iterable<String> recipients,
-    bool isArabic = false,
   }) =>
       AppNotificationSender.sendEventToAll(
         event: DatabaseNotificationEvent.databaseCreated,
         pageKey: DatabaseNotificationPage.databaseBuilderPage.key,
         senderEmail: actorEmail,
         receiverEmails: recipients,
-        isArabic: isArabic,
+        isArabic: false,
         variables: <TemplateVariable, String>{
-          TemplateVariable.employeeName: actorName,
-          TemplateVariable.databaseName: databaseName,
+          TemplateVariable.employeeName: actorName.en,
+          TemplateVariable.databaseName: databaseName.en,
+        },
+        variablesAr: <TemplateVariable, String>{
+          TemplateVariable.employeeName: actorName.ar,
+          TemplateVariable.databaseName: databaseName.ar,
         },
       );
 
   /// Trigger: Table Created. Spec §1.7 row 2.
   static Future<int> tableCreated({
     required String actorEmail,
-    required String actorName,
-    required String databaseName,
-    required String tableName,
+    required LocalizedName actorName,
+    required LocalizedName databaseName,
+    required LocalizedName tableName,
     required Iterable<String> recipients,
-    bool isArabic = false,
   }) =>
       AppNotificationSender.sendEventToAll(
         event: DatabaseNotificationEvent.tableCreated,
         pageKey: DatabaseNotificationPage.databaseDetailsPage.key,
         senderEmail: actorEmail,
         receiverEmails: recipients,
-        isArabic: isArabic,
+        isArabic: false,
         variables: <TemplateVariable, String>{
-          TemplateVariable.employeeName: actorName,
-          TemplateVariable.tableName: tableName,
-          TemplateVariable.databaseName: databaseName,
+          TemplateVariable.employeeName: actorName.en,
+          TemplateVariable.tableName: tableName.en,
+          TemplateVariable.databaseName: databaseName.en,
+        },
+        variablesAr: <TemplateVariable, String>{
+          TemplateVariable.employeeName: actorName.ar,
+          TemplateVariable.tableName: tableName.ar,
+          TemplateVariable.databaseName: databaseName.ar,
         },
       );
 
   /// Trigger: Table Updated. Spec §1.7 row 3 — name, description or metadata.
   static Future<int> tableUpdated({
     required String actorEmail,
-    required String actorName,
-    required String tableName,
+    required LocalizedName actorName,
+    required LocalizedName tableName,
     required Iterable<String> recipients,
-    bool isArabic = false,
   }) =>
       AppNotificationSender.sendEventToAll(
         event: DatabaseNotificationEvent.tableUpdated,
         pageKey: DatabaseNotificationPage.databaseDetailsPage.key,
         senderEmail: actorEmail,
         receiverEmails: recipients,
-        isArabic: isArabic,
+        isArabic: false,
         variables: <TemplateVariable, String>{
-          TemplateVariable.employeeName: actorName,
-          TemplateVariable.tableName: tableName,
+          TemplateVariable.employeeName: actorName.en,
+          TemplateVariable.tableName: tableName.en,
+        },
+        variablesAr: <TemplateVariable, String>{
+          TemplateVariable.employeeName: actorName.ar,
+          TemplateVariable.tableName: tableName.ar,
         },
       );
 
@@ -184,18 +199,20 @@ abstract final class DatabaseNotificationService {
   /// Both can fire for the same save; the dispatcher decides which apply.
   static Future<int> tableStructureUpdated({
     required String actorEmail,
-    required String tableName,
+    required LocalizedName tableName,
     required Iterable<String> recipients,
-    bool isArabic = false,
   }) =>
       AppNotificationSender.sendEventToAll(
         event: DatabaseNotificationEvent.tableStructureUpdated,
         pageKey: DatabaseNotificationPage.databaseDetailsPage.key,
         senderEmail: actorEmail,
         receiverEmails: recipients,
-        isArabic: isArabic,
+        isArabic: false,
         variables: <TemplateVariable, String>{
-          TemplateVariable.tableName: tableName,
+          TemplateVariable.tableName: tableName.en,
+        },
+        variablesAr: <TemplateVariable, String>{
+          TemplateVariable.tableName: tableName.ar,
         },
       );
 
@@ -208,19 +225,22 @@ abstract final class DatabaseNotificationService {
   static Future<int> columnAdded({
     required String actorEmail,
     required String columnName,
-    required String tableName,
+    required LocalizedName tableName,
     required Iterable<String> recipients,
-    bool isArabic = false,
   }) =>
       AppNotificationSender.sendEventToAll(
         event: DatabaseNotificationEvent.columnAdded,
         pageKey: DatabaseNotificationPage.databaseDetailsPage.key,
         senderEmail: actorEmail,
         receiverEmails: recipients,
-        isArabic: isArabic,
+        isArabic: false,
         variables: <TemplateVariable, String>{
           TemplateVariable.columnName: columnName,
-          TemplateVariable.tableName: tableName,
+          TemplateVariable.tableName: tableName.en,
+        },
+        variablesAr: <TemplateVariable, String>{
+          TemplateVariable.columnName: columnName,
+          TemplateVariable.tableName: tableName.ar,
         },
       );
 
@@ -233,21 +253,24 @@ abstract final class DatabaseNotificationService {
   /// find again after the fact.
   static Future<int> tableDeleted({
     required String actorEmail,
-    required String databaseName,
-    required String tableName,
+    required LocalizedName databaseName,
+    required LocalizedName tableName,
     required Iterable<String> recipients,
-    bool isArabic = false,
   }) =>
       AppNotificationSender.sendEventToAll(
         event: DatabaseNotificationEvent.tableDeleted,
         pageKey: DatabaseNotificationPage.databaseDetailsPage.key,
         senderEmail: actorEmail,
         receiverEmails: recipients,
-        isArabic: isArabic,
+        isArabic: false,
         isPinned: true,
         variables: <TemplateVariable, String>{
-          TemplateVariable.tableName: tableName,
-          TemplateVariable.databaseName: databaseName,
+          TemplateVariable.tableName: tableName.en,
+          TemplateVariable.databaseName: databaseName.en,
+        },
+        variablesAr: <TemplateVariable, String>{
+          TemplateVariable.tableName: tableName.ar,
+          TemplateVariable.databaseName: databaseName.ar,
         },
       );
 
@@ -268,25 +291,31 @@ abstract final class DatabaseNotificationService {
   static Future<bool> accessGranted({
     required String actorEmail,
     required String recipientEmail,
-    required String databaseName,
-    required String tableName,
-    required String permissionLabel,
+    required LocalizedName databaseName,
+    required LocalizedName tableName,
+    required LocalizedName permissionLabel,
     required DateTime? startDate,
     required DateTime? endDate,
-    bool isArabic = false,
   }) =>
       AppNotificationSender.sendEvent(
         event: DatabaseNotificationEvent.accessGranted,
         pageKey: DatabaseNotificationPage.databaseAccessPage.key,
         senderEmail: actorEmail,
         receiverEmail: recipientEmail,
-        isArabic: isArabic,
+        isArabic: false,
         variables: <TemplateVariable, String>{
-          TemplateVariable.permissionLevel: permissionLabel,
-          TemplateVariable.databaseName: databaseName,
-          TemplateVariable.tableName: tableName,
-          TemplateVariable.startDate: _date(startDate),
-          TemplateVariable.endDate: _date(endDate),
+          TemplateVariable.permissionLevel: permissionLabel.en,
+          TemplateVariable.databaseName: databaseName.en,
+          TemplateVariable.tableName: tableName.en,
+          TemplateVariable.startDate: _date(startDate, 'en'),
+          TemplateVariable.endDate: _date(endDate, 'en'),
+        },
+        variablesAr: <TemplateVariable, String>{
+          TemplateVariable.permissionLevel: permissionLabel.ar,
+          TemplateVariable.databaseName: databaseName.ar,
+          TemplateVariable.tableName: tableName.ar,
+          TemplateVariable.startDate: _date(startDate, 'ar'),
+          TemplateVariable.endDate: _date(endDate, 'ar'),
         },
       );
 
@@ -295,19 +324,22 @@ abstract final class DatabaseNotificationService {
   static Future<bool> accessUpdated({
     required String actorEmail,
     required String recipientEmail,
-    required String databaseName,
-    required String tableName,
-    bool isArabic = false,
+    required LocalizedName databaseName,
+    required LocalizedName tableName,
   }) =>
       AppNotificationSender.sendEvent(
         event: DatabaseNotificationEvent.accessUpdated,
         pageKey: DatabaseNotificationPage.databaseAccessPage.key,
         senderEmail: actorEmail,
         receiverEmail: recipientEmail,
-        isArabic: isArabic,
+        isArabic: false,
         variables: <TemplateVariable, String>{
-          TemplateVariable.databaseName: databaseName,
-          TemplateVariable.tableName: tableName,
+          TemplateVariable.databaseName: databaseName.en,
+          TemplateVariable.tableName: tableName.en,
+        },
+        variablesAr: <TemplateVariable, String>{
+          TemplateVariable.databaseName: databaseName.ar,
+          TemplateVariable.tableName: tableName.ar,
         },
       );
 
@@ -317,23 +349,27 @@ abstract final class DatabaseNotificationService {
   /// the body names who did it, which is what they will look for afterwards.
   static Future<bool> accessRevoked({
     required String actorEmail,
-    required String actorName,
+    required LocalizedName actorName,
     required String recipientEmail,
-    required String databaseName,
-    required String tableName,
-    bool isArabic = false,
+    required LocalizedName databaseName,
+    required LocalizedName tableName,
   }) =>
       AppNotificationSender.sendEvent(
         event: DatabaseNotificationEvent.accessRevoked,
         pageKey: DatabaseNotificationPage.databaseAccessPage.key,
         senderEmail: actorEmail,
         receiverEmail: recipientEmail,
-        isArabic: isArabic,
+        isArabic: false,
         isPinned: true,
         variables: <TemplateVariable, String>{
-          TemplateVariable.databaseName: databaseName,
-          TemplateVariable.tableName: tableName,
-          TemplateVariable.employeeName: actorName,
+          TemplateVariable.databaseName: databaseName.en,
+          TemplateVariable.tableName: tableName.en,
+          TemplateVariable.employeeName: actorName.en,
+        },
+        variablesAr: <TemplateVariable, String>{
+          TemplateVariable.databaseName: databaseName.ar,
+          TemplateVariable.tableName: tableName.ar,
+          TemplateVariable.employeeName: actorName.ar,
         },
       );
 
@@ -345,19 +381,22 @@ abstract final class DatabaseNotificationService {
   /// months ago would misrepresent what happened.
   static Future<bool> accessExpired({
     required String recipientEmail,
-    required String databaseName,
-    required String tableName,
-    bool isArabic = false,
+    required LocalizedName databaseName,
+    required LocalizedName tableName,
   }) =>
       AppNotificationSender.sendEvent(
         event: DatabaseNotificationEvent.accessExpired,
         pageKey: DatabaseNotificationPage.databaseAccessPage.key,
         senderEmail: systemSender,
         receiverEmail: recipientEmail,
-        isArabic: isArabic,
+        isArabic: false,
         variables: <TemplateVariable, String>{
-          TemplateVariable.databaseName: databaseName,
-          TemplateVariable.tableName: tableName,
+          TemplateVariable.databaseName: databaseName.en,
+          TemplateVariable.tableName: tableName.en,
+        },
+        variablesAr: <TemplateVariable, String>{
+          TemplateVariable.databaseName: databaseName.ar,
+          TemplateVariable.tableName: tableName.ar,
         },
       );
 
@@ -369,18 +408,20 @@ abstract final class DatabaseNotificationService {
   /// says the scope "has been adjusted", which is true in both directions.
   static Future<int> viewableFieldsUpdated({
     required String actorEmail,
-    required String tableName,
+    required LocalizedName tableName,
     required Iterable<String> recipients,
-    bool isArabic = false,
   }) =>
       AppNotificationSender.sendEventToAll(
         event: DatabaseNotificationEvent.viewableFieldsUpdated,
         pageKey: DatabaseNotificationPage.tableAccessPage.key,
         senderEmail: actorEmail,
         receiverEmails: recipients,
-        isArabic: isArabic,
+        isArabic: false,
         variables: <TemplateVariable, String>{
-          TemplateVariable.tableName: tableName,
+          TemplateVariable.tableName: tableName.en,
+        },
+        variablesAr: <TemplateVariable, String>{
+          TemplateVariable.tableName: tableName.ar,
         },
       );
 
@@ -389,22 +430,26 @@ abstract final class DatabaseNotificationService {
   /// NO CALL SITE YET — Comments is unbuilt. See the header.
   static Future<int> commentAdded({
     required String actorEmail,
-    required String actorName,
-    required String databaseName,
-    required String tableName,
+    required LocalizedName actorName,
+    required LocalizedName databaseName,
+    required LocalizedName tableName,
     required Iterable<String> recipients,
-    bool isArabic = false,
   }) =>
       AppNotificationSender.sendEventToAll(
         event: DatabaseNotificationEvent.commentAdded,
         pageKey: DatabaseNotificationPage.databaseDetailsPage.key,
         senderEmail: actorEmail,
         receiverEmails: recipients,
-        isArabic: isArabic,
+        isArabic: false,
         variables: <TemplateVariable, String>{
-          TemplateVariable.employeeName: actorName,
-          TemplateVariable.databaseName: databaseName,
-          TemplateVariable.tableName: tableName,
+          TemplateVariable.employeeName: actorName.en,
+          TemplateVariable.databaseName: databaseName.en,
+          TemplateVariable.tableName: tableName.en,
+        },
+        variablesAr: <TemplateVariable, String>{
+          TemplateVariable.employeeName: actorName.ar,
+          TemplateVariable.databaseName: databaseName.ar,
+          TemplateVariable.tableName: tableName.ar,
         },
       );
 
@@ -419,21 +464,25 @@ abstract final class DatabaseNotificationService {
   /// telling nine people what the previous thirteen just did.
   static Future<bool> bulkAccessUpdate({
     required String actorEmail,
-    required String actorName,
-    required String databaseName,
-    required String tableName,
-    bool isArabic = false,
+    required LocalizedName actorName,
+    required LocalizedName databaseName,
+    required LocalizedName tableName,
   }) =>
       AppNotificationSender.sendEvent(
         event: DatabaseNotificationEvent.bulkAccessUpdate,
         pageKey: DatabaseNotificationPage.databaseAccessPage.key,
         senderEmail: actorEmail,
         receiverEmail: actorEmail,
-        isArabic: isArabic,
+        isArabic: false,
         variables: <TemplateVariable, String>{
-          TemplateVariable.databaseName: databaseName,
-          TemplateVariable.tableName: tableName,
-          TemplateVariable.employeeName: actorName,
+          TemplateVariable.databaseName: databaseName.en,
+          TemplateVariable.tableName: tableName.en,
+          TemplateVariable.employeeName: actorName.en,
+        },
+        variablesAr: <TemplateVariable, String>{
+          TemplateVariable.databaseName: databaseName.ar,
+          TemplateVariable.tableName: tableName.ar,
+          TemplateVariable.employeeName: actorName.ar,
         },
       );
 

@@ -2,19 +2,20 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: edit_select.dart
-/// Purpose: Declares `EditAccessDetails`.
-/// Author: Knowticed Plus team
+/// Description: Declares `EditAccessDetails`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
 /// Updated: 25/8/2026 - Access dates now render in Arabic (month + numerals).
+library;
 
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
-import 'package:grc_module/core/custom/1-custom_dropdown.dart';
+import 'package:grc_module/core/custom/dropdowns/custom_dropdown.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:grc_module/core/custom/53-custom_date_pic.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:grc_module/core/custom/pickers/custom_date_pic.dart';
 // REMOVED_MODULE: import 'package:grc_module/features/external/knowledge_hub_module/core/theming/new_theme.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
@@ -22,7 +23,11 @@ import 'package:grc_module/features/roles/r2_user_management/presentation/contro
 import 'package:grc_module/features/settings/se1_profile/data/utils/localized_digits.dart';
 import 'package:intl/intl.dart';
 
-import 'package:grc_module/core/custom/32-custom_svg.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
+import 'package:grc_module/features/roles/r1_role_management/data/models/role_model.dart'
+    show RoleHistoryModelMethods;
+import 'package:grc_module/core/theme/haptic_controller.dart';
+
 class EditAccessDetails extends StatefulWidget {
   const EditAccessDetails({super.key});
 
@@ -59,24 +64,21 @@ class _EditAccessDetailsState extends State<EditAccessDetails> {
         });
       }
 
-      if (userAccessCubit.accessGranted != null) {
-        setState(() {
-          _grantedDateController.text = _formatDateForDisplay(
-              userAccessCubit.accessGranted!,
-              isArabic: _isArabic);
-        });
-      }
+      setState(() {
+        _grantedDateController.text = _formatDateForDisplay(
+          userAccessCubit.accessGranted,
+          isArabic: _isArabic,
+        );
+      });
 
-      if (userAccessCubit.accessRevoked != null) {
-        setState(() {
-          _revokedDateController.text = _formatDateForDisplay(
-              userAccessCubit.accessRevoked!,
-              isArabic: _isArabic);
-        });
-      }
-    } catch (e, stackTrace) {
+      setState(() {
+        _revokedDateController.text = _formatDateForDisplay(
+          userAccessCubit.accessRevoked,
+          isArabic: _isArabic,
+        );
+      });
+    } catch (e) {
       // Was an empty `catch {}` — the date fields silently stayed blank.
-      debugPrint('edit_select: prefilling access dates failed: $e\n$stackTrace');
     }
   }
 
@@ -107,9 +109,7 @@ class _EditAccessDetailsState extends State<EditAccessDetails> {
     try {
       final roles = context.read<RoleCubit>().roles;
       if (roles.isEmpty) return [];
-      final sorted = roles
-          .where((r) => r.currentRoleName.isNotEmpty)
-          .toList()
+      final sorted = roles.where((r) => r.currentRoleName.isNotEmpty).toList()
         ..sort((a, b) => a.currentRoleName.compareTo(b.currentRoleName));
       return sorted.map((r) => r.currentRoleNameAr).toList();
     } catch (e) {
@@ -182,7 +182,6 @@ class _EditAccessDetailsState extends State<EditAccessDetails> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 // ── Access Revoked Date ───────────────────────────────────
                 Text(
                   isArabic ? 'تاريخ إلغاء الوصول' : 'Access Revoked Date',
@@ -194,17 +193,19 @@ class _EditAccessDetailsState extends State<EditAccessDetails> {
 
                 GestureDetector(
                   onTap: () async {
+                    HapticController.low(); // list row: on the tap (X-117)
                     final pickedDate = await _openDatePicker(
                       currentDate: userAccessCubit.accessRevoked,
                     );
                     if (pickedDate != null) {
                       setState(() {
-                        _revokedDateController.text =
-                            _formatDateForDisplay(pickedDate,
-                                isArabic: isArabic);
+                        _revokedDateController.text = _formatDateForDisplay(
+                          pickedDate,
+                          isArabic: isArabic,
+                        );
                         userAccessCubit.accessRevoked = pickedDate;
                       });
-                      userAccessCubit.emit(UserPermissionsDataLoaded());
+                      userAccessCubit.emitState(UserPermissionsDataLoaded());
                     }
                   },
                   child: Container(
@@ -233,7 +234,8 @@ class _EditAccessDetailsState extends State<EditAccessDetails> {
                           ),
                         ),
                         CustomSvgImage(
-                          assetPath: 'assets/icons_assets/roles_assets/calendar.svg',
+                          assetPath:
+                              'assets/icons_assets/main_icons_assets/ic_time_calendar.svg',
                           width: 15.w,
                           height: 15.h,
                           fit: BoxFit.fill,
@@ -256,17 +258,19 @@ class _EditAccessDetailsState extends State<EditAccessDetails> {
 
                 GestureDetector(
                   onTap: () async {
+                    HapticController.low(); // list row: on the tap (X-117)
                     final pickedDate = await _openDatePicker(
                       currentDate: userAccessCubit.accessGranted,
                     );
                     if (pickedDate != null) {
                       setState(() {
-                        _grantedDateController.text =
-                            _formatDateForDisplay(pickedDate,
-                                isArabic: isArabic);
+                        _grantedDateController.text = _formatDateForDisplay(
+                          pickedDate,
+                          isArabic: isArabic,
+                        );
                         userAccessCubit.accessGranted = pickedDate;
                       });
-                      userAccessCubit.emit(UserPermissionsDataLoaded());
+                      userAccessCubit.emitState(UserPermissionsDataLoaded());
                     }
                   },
                   child: Container(
@@ -295,7 +299,8 @@ class _EditAccessDetailsState extends State<EditAccessDetails> {
                           ),
                         ),
                         CustomSvgImage(
-                          assetPath: 'assets/icons_assets/roles_assets/calendar.svg',
+                          assetPath:
+                              'assets/icons_assets/main_icons_assets/ic_time_calendar.svg',
                           width: 15.w,
                           height: 15.h,
                           fit: BoxFit.fill,
@@ -334,7 +339,7 @@ class _EditAccessDetailsState extends State<EditAccessDetails> {
                       _selectedRole = value;
                       userAccessCubit.newAccessSelectedRole = value;
                     });
-                    userAccessCubit.emit(UserPermissionsDataLoaded());
+                    userAccessCubit.emitState(UserPermissionsDataLoaded());
                   },
                   itemStyle: StyleText.fontSize14Weight500.copyWith(
                     color: AppColors.text,

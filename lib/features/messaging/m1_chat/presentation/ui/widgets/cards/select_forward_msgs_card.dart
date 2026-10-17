@@ -21,11 +21,11 @@ class SelectForwardMsgsCard extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 16.w),
           height: ContextExtension(context).isTablet ? 100.h : 80.h,
           decoration: BoxDecoration(
-            color: AppTheme.isDark ?? false
+            color: AppTheme.isDark
                 ? AppColors.background
                 : ContextExtension(context).isPhone
-                ? AppColors.white
-                : AppColors.field,
+                    ? AppColors.white
+                    : AppColors.card,
             borderRadius: BorderRadius.only(
               topRight: Radius.circular(16.r),
               topLeft: Radius.circular(16.r),
@@ -37,23 +37,25 @@ class SelectForwardMsgsCard extends StatelessWidget {
               GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () {
+                  HapticController.low(); // list row: on the tap (X-117)
                   messageCubit.toggleSelectMessages(false);
                 },
                 child: Icon(
                   Icons.close,
-                  color: AppTheme.isDark ?? false ? AppColors.white : null,
+                  color: AppTheme.isDark ? AppColors.white : null,
                   size: 24.w,
                 ),
               ),
               Text(
                 '$selectedMsgsCount ${S.of(context).selected}',
                 style: StyleText.fontSize18Weight500.copyWith(
-                  color: AppTheme.isDark ?? false ? AppColors.white : null,
+                  color: AppTheme.isDark ? AppColors.white : null,
                 ),
               ),
               GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () {
+                  HapticController.low(); // list row: on the tap (X-117)
                   if (selectedMsgsCount == 0) {
                     return;
                   }
@@ -74,11 +76,11 @@ class SelectForwardMsgsCard extends StatelessWidget {
                     );
                   }
                 },
-                child: SvgPicture.asset(
-                  AppAssets.forward,
+                child: CustomSvgImage.natural(
+                  assetPath: AppAssets.forward,
                   width: 24.w,
                   height: 24.h,
-                  color: AppTheme.isDark ?? false ? AppColors.white : null,
+                  color: AppTheme.isDark ? AppColors.white : null,
                 ),
               ),
             ],

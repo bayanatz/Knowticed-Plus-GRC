@@ -2,50 +2,44 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: filter.dart
-/// Purpose: Declares `Filter` — the department/date filter dialog for the
+/// Description: Declares `Filter` — the department/date filter dialog for the
 ///          user-access list.
-/// Author: Knowticed Plus team
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header;
 ///          removed GetX and two dead methods.
 /// Updated: 29/8/2026 - "Discard" replaced by "Reset", which clears the selected
 ///          department here and on the cubit and re-runs the list.
+library;
 
-import 'package:grc_module/core/constants/app_assets.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:intl/intl.dart';
 // REMOVED_MODULE: import 'package:grc_module/core/helper/data_grc_module/core/extensions/extensions.dart';
 import 'package:grc_module/features/roles/r3_user_access/domain/entities/user_access_entity.dart';
-import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
-import 'package:grc_module/core/custom/53-custom_date_pic.dart';
-import 'package:grc_module/core/custom/1-custom_dropdown.dart';
-import 'package:grc_module/core/custom/5-custom_button.dart';
+import 'package:grc_module/core/helper/format_title.dart';
+import 'package:grc_module/core/custom/dropdowns/custom_dropdown.dart';
+import 'package:grc_module/core/custom/buttons/custom_button.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/features/roles/r4_active_directory/presentation/controller/main_core_department_cubit.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/helper/role/constants.dart';
 import 'package:grc_module/features/roles/r3_user_access/presentation/controller/user_access_cubit.dart';
 import 'package:grc_module/generated/l10n.dart';
+
 class Filter extends StatefulWidget {
-   Filter({
-     super.key});
-   
+  const Filter({super.key});
 
   @override
   State<Filter> createState() => _FilterState();
 }
 
 class _FilterState extends State<Filter> {
-   late UserAccessCubit controller;
-   String? selectedDepartment;
-   String? selectedTitle;
+  late UserAccessCubit controller;
+  String? selectedDepartment;
+  String? selectedTitle;
 
   @override
   void initState() {
@@ -67,28 +61,31 @@ class _FilterState extends State<Filter> {
       byTitle.putIfAbsent(key.toLowerCase(), () => e);
     }
     final List<UserAccessEntity> unique = byTitle.values.toList()
-      ..sort((a, b) => a.englishTitle
-          .toLowerCase()
-          .compareTo(b.englishTitle.toLowerCase()));
+      ..sort(
+        (a, b) => a.englishTitle.toLowerCase().compareTo(
+              b.englishTitle.toLowerCase(),
+            ),
+      );
     return unique
-        .map((e) => DropdownItem<String>(
-              value: e.englishTitle.trim(),
-              label: context.isArabic && e.arabicTitle.trim().isNotEmpty
-                  ? e.arabicTitle.trim()
-                  : FormatHelper.capitalize(e.englishTitle.trim()),
-            ))
+        .map(
+          (e) => DropdownItem<String>(
+            value: e.englishTitle.trim(),
+            label: context.isArabic && e.arabicTitle.trim().isNotEmpty
+                ? e.arabicTitle.trim()
+                : FormatHelper.capitalize(e.englishTitle.trim()),
+          ),
+        )
         .toList();
   }
+
   @override
   Widget build(BuildContext context) {
-
     // REMOVED 12/8/2026: unused `lightMode` local.
-    bool isTablet = MediaQuery.of(context).size.width > 600;
+    bool isTablet = !kpIsPhoneLayout(context);
     return Container(
-
       padding: EdgeInsets.all(15.sp),
       decoration: BoxDecoration(
-        color:  AppColors.card,
+        color: AppColors.card,
         borderRadius: BorderRadius.circular(8.sp),
       ),
       width: isTablet ? 400.sp : 300.sp,
@@ -97,7 +94,6 @@ class _FilterState extends State<Filter> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-
           Row(
             spacing: 5.sp,
             children: [
@@ -106,16 +102,21 @@ class _FilterState extends State<Filter> {
                 backgroundColor: AppColors.primary,
                 child: Container(
                   padding: EdgeInsets.all(4.sp),
-                  child: CustomSvgImage(assetPath: 'assets/icons_assets/main_icons_assets/filter_sliders.svg',
-                  width: 16.sp,
+                  child: CustomSvgImage(
+                    assetPath:
+                        'assets/icons_assets/main_icons_assets/ic_action_filter.svg',
+                    width: 16.sp,
                     height: 16.sp,
                     color: AppColors.textButton,
                   ),
                 ),
               ),
-              Text(S.of(context).Filter, style: StyleText.fontSize12Weight400.copyWith(
-                color: AppColors.text
-              )),
+              Text(
+                S.of(context).Filter,
+                style: StyleText.fontSize12Weight400.copyWith(
+                  color: AppColors.text,
+                ),
+              ),
             ],
           ),
           SizedBox(
@@ -129,19 +130,23 @@ class _FilterState extends State<Filter> {
               // wrapping SizedBox, which squeezed the whole label+field Column
               // and hid the field; `CustomDropdown.height` pins just the box.
               height: 36,
-              items: context.read<MainCoreDepartmentCubit>()
-                  .departmentIds
-                  .map((String department) {
+              items: context.read<MainCoreDepartmentCubit>().departmentIds.map((
+                String department,
+              ) {
                 return DropdownItem<String>(
                   value: department,
                   label: FormatHelper.capitalize(
                     context.isArabic
-                        ? context.read<MainCoreDepartmentCubit>()
+                        ? context
+                            .read<MainCoreDepartmentCubit>()
                             .getArabicDepartmentNameFromDepartmentId(
-                                departmentId: department)!
-                        : context.read<MainCoreDepartmentCubit>()
+                              departmentId: department,
+                            )!
+                        : context
+                            .read<MainCoreDepartmentCubit>()
                             .getEnglishDepartmentNameFromDepartmentId(
-                                departmentId: department)!,
+                              departmentId: department,
+                            )!,
                   ),
                 );
               }).toList(),
@@ -192,43 +197,50 @@ class _FilterState extends State<Filter> {
               // still dismisses the dialog.
               Expanded(
                 child: customButton(
-                    color: AppColors.secondaryButton,
-                    textStyle: StyleText.fontSize16Weight500
-                        .copyWith(color: AppColors.blackButton),
-                    title: S.of(context).reset,
-                    function: () {
-                      setState(() {
-                        selectedDepartment = null;
-                        selectedTitle = null;
-                      });
-                      controller.selectedDepartment = null;
-                      controller.selectedTitle = null;
-                      controller.searchAccountsStatusEntities(
-                          controller.searchTerm, controller.selectedSortOption);
-                    }),
+                  color: AppColors.darkGrey,
+                  textStyle: StyleText.fontSize16Weight500.copyWith(
+                    color: AppColors.text,
+                  ),
+                  title: S.of(context).reset,
+                  function: () {
+                    setState(() {
+                      selectedDepartment = null;
+                      selectedTitle = null;
+                    });
+                    controller.selectedDepartment = null;
+                    controller.selectedTitle = null;
+                    controller.searchAccountsStatusEntities(
+                      controller.searchTerm,
+                      controller.selectedSortOption,
+                    );
+                  },
+                ),
               ),
               SizedBox(width: 20.sp),
               Expanded(
                 child: customButton(
-                    title:  S.of(context).Save,
-                    function: () {
+                  title: S.of(context).Save,
+                  function: () {
                     controller.selectedDepartment = selectedDepartment;
                     controller.selectedTitle = selectedTitle;
                     controller.searchAccountsStatusEntities(
-                        controller.searchTerm, controller.selectedSortOption);
+                      controller.searchTerm,
+                      controller.selectedSortOption,
+                    );
                     Navigator.of(context).pop();
-                    }),
+                  },
+                ),
               ),
             ],
-          )
+          ),
         ],
       ),
     );
   }
 
-   // REMOVED 12/8/2026:
-   //   - `scheduleCalendar(BuildContext)` — never referenced; its onTap was
-   //     empty and it rendered an empty Text("").
-   //   - `_buildDropdownText()` — never referenced (analyzer dead code) and it
-   //     carried a hardcoded 'Department' literal instead of an ARB key.
+  // REMOVED 12/8/2026:
+  //   - `scheduleCalendar(BuildContext)` — never referenced; its onTap was
+  //     empty and it rendered an empty Text("").
+  //   - `_buildDropdownText()` — never referenced (analyzer dead code) and it
+  //     carried a hardcoded 'Department' literal instead of an ARB key.
 }

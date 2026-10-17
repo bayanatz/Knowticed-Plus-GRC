@@ -15,6 +15,7 @@
 /// `S.of(context)` in the widget. That means the repository returning the
 /// *type* rather than a formatted string, and 12 new key pairs — a change to
 /// the failure plumbing across 25 call sites, staged rather than done here.
+library;
 
 import 'package:intl/intl.dart';
 
@@ -101,16 +102,11 @@ enum FailureAuthenticationType {
             ? 'تم تقليل عدد المستخدمين النشطين. يرجى مراجعة وتحديث سجلات الموظفين في Active Directory لتعكس الحد الجديد.'
             : 'The number of active users has been reduced. Please review and update the employee records in the Active Directory to reflect the new limit.';
 
-    // ✅ NEW
+      // ✅ NEW
       case FailureAuthenticationType.moduleUserLimitReached:
         return isArabic
             ? 'تم الوصول للحد الأقصى لعدد المستخدمين في أحد الوحدات أو أكثر في هذا الدور. يرجى التواصل مع المسؤول.'
             : 'The user limit for one or more modules in this role has been reached. Please contact your administrator.';
-
-      default:
-        return isArabic
-            ? 'حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.'
-            : 'An unexpected error occurred. Please try again.';
     }
   }
 
@@ -129,19 +125,13 @@ enum FailureAuthenticationType {
 
     switch (this) {
       case FailureAuthenticationType.emailNotFound:
-        return isArabic
-            ? 'البريد الإلكتروني غير موجود'
-            : 'Email Not Found';
+        return isArabic ? 'البريد الإلكتروني غير موجود' : 'Email Not Found';
 
       case FailureAuthenticationType.wrongPassword:
-        return isArabic
-            ? 'كلمة مرور غير صحيحة'
-            : 'Incorrect Password';
+        return isArabic ? 'كلمة مرور غير صحيحة' : 'Incorrect Password';
 
       case FailureAuthenticationType.demoCancelled:
-        return isArabic
-            ? 'تم إلغاء النسخة التجريبية'
-            : 'Demo Trial Canceled';
+        return isArabic ? 'تم إلغاء النسخة التجريبية' : 'Demo Trial Canceled';
 
       case FailureAuthenticationType.beforActivationDate:
         return isArabic
@@ -154,9 +144,7 @@ enum FailureAuthenticationType {
             : 'Login Credentials Unrecognized';
 
       case FailureAuthenticationType.subscriptionError:
-        return isArabic
-            ? 'خطأ في الاشتراك'
-            : 'Subscription Error';
+        return isArabic ? 'خطأ في الاشتراك' : 'Subscription Error';
 
       case FailureAuthenticationType.subscriptionExpired:
         return isArabic
@@ -174,25 +162,16 @@ enum FailureAuthenticationType {
             : 'Account Configuration Error';
 
       case FailureAuthenticationType.dontHavePermission:
-        return isArabic
-            ? 'تم رفض الوصول'
-            : 'Access Denied';
+        return isArabic ? 'تم رفض الوصول' : 'Access Denied';
 
       case FailureAuthenticationType.tooManyUsers:
         return isArabic
             ? 'مطلوب تعديل حد المستخدمين'
             : 'User Limit Adjustment Required';
 
-    // ✅ NEW
+      // ✅ NEW
       case FailureAuthenticationType.moduleUserLimitReached:
-        return isArabic
-            ? 'تم الوصول للحد الأقصى'
-            : 'Module User Limit Reached';
-
-      default:
-        return isArabic
-            ? 'خطأ'
-            : 'Error';
+        return isArabic ? 'تم الوصول للحد الأقصى' : 'Module User Limit Reached';
     }
   }
 

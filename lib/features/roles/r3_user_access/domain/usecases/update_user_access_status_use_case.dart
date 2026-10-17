@@ -14,6 +14,7 @@
 ///          was checked, so a failed write still told the employee their
 ///          account had changed. The notification moved to
 ///          `UserAccessCubit._notifyStatusChanged`, which only runs on success.
+library;
 
 import 'package:dartz/dartz.dart';
 

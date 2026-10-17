@@ -2,10 +2,10 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: csv_restore_dialog.dart
-/// Purpose: Declares `_RestoreBackupDialog` — the Restore card on the Active
+/// Description: Declares `_RestoreBackupDialog` — the Restore card on the Active
 ///          Directory page.
-/// Author: Knowticed Plus team
-/// Created: 30/8/2026
+/// Author: Amr Mesbah
+/// Created at: 30/8/2026
 ///
 /// Why this exists: the Restore button in csv_table_builders1.dart opened the
 /// "the backup has been restored successfully" message and did nothing else —
@@ -75,10 +75,12 @@ Future<void> _showRestoreBackupDialog(BuildContext context) async {
   // Let the card finish closing before the confirmation opens on top of it.
   await Future.delayed(const Duration(milliseconds: 120));
 
+  if (!context.mounted) return;
+  if (!context.mounted) return;
   await CustomDialogManager.showDialogFlow(
     context: context,
     confirmLottie:
-        'assets/lottie_assets/main_lottie_assets/lottie_confirmation.json',
+        'assets/lottie_assets/main_lottie_assets/lot_status_confirmation.json',
     confirmTitle: S.of(context).restore,
     confirmSubtitle: S.of(context).areYouSureRestore,
     confirmYesText: S.of(context).yes,
@@ -86,7 +88,7 @@ Future<void> _showRestoreBackupDialog(BuildContext context) async {
     onConfirm: () =>
         AppControllers.activeDirectory.restoreBackup(backupVersion),
     successLottie:
-        'assets/lottie_assets/main_lottie_assets/lottie_successful.json',
+        'assets/lottie_assets/main_lottie_assets/lot_status_success.json',
     successTitle: S.of(context).Successful,
     successSubtitle: S.of(context).theBackupHasBeenRestoredSuccessfully,
   );
@@ -98,7 +100,7 @@ Future<void> _showRestoreBackupDialog(BuildContext context) async {
 
 /// Pops with the chosen backup version string, or `null` when dismissed.
 class _RestoreBackupDialog extends StatefulWidget {
-  const _RestoreBackupDialog({Key? key}) : super(key: key);
+  const _RestoreBackupDialog();
 
   @override
   State<_RestoreBackupDialog> createState() => _RestoreBackupDialogState();
@@ -142,10 +144,12 @@ class _RestoreBackupDialogState extends State<_RestoreBackupDialog> {
 
   Future<void> _loadBackups() async {
     // Both reads are plain collection gets; nothing here writes.
-    final List<List<dynamic>> one =
-        await _controller.getBackupTableData(_kBackupOneKey);
-    final List<List<dynamic>> second =
-        await _controller.getBackupTableData(_kBackupSecondKey);
+    final List<List<dynamic>> one = await _controller.getBackupTableData(
+      _kBackupOneKey,
+    );
+    final List<List<dynamic>> second = await _controller.getBackupTableData(
+      _kBackupSecondKey,
+    );
 
     if (!mounted) return;
     setState(() {
@@ -171,8 +175,12 @@ class _RestoreBackupDialogState extends State<_RestoreBackupDialog> {
     if (_searchQuery.trim().isEmpty) return _selectedRows;
     final String query = _searchQuery.trim().toLowerCase();
     return _selectedRows
-        .where((List<dynamic> row) => row.any((dynamic cell) =>
-            cell?.toString().toLowerCase().contains(query) ?? false))
+        .where(
+          (List<dynamic> row) => row.any(
+            (dynamic cell) =>
+                cell?.toString().toLowerCase().contains(query) ?? false,
+          ),
+        )
         .toList();
   }
 
@@ -238,7 +246,7 @@ class _RestoreBackupDialogState extends State<_RestoreBackupDialog> {
           ),
           child: Center(
             child: CustomSvgImage(
-              assetPath: 'assets/icons_assets/watermark/restore.svg',
+              assetPath: 'assets/icons_assets/main_icons_assets/ic_restore.svg',
               width: 18.w,
               height: 18.h,
               fit: BoxFit.contain,
@@ -259,12 +267,16 @@ class _RestoreBackupDialogState extends State<_RestoreBackupDialog> {
           ),
         ),
         InkWell(
+          onTapDown: (_) => HapticController.low(),
           onTap: () => Navigator.of(context, rootNavigator: true).pop(),
           borderRadius: BorderRadius.circular(8.r),
           child: Padding(
             padding: EdgeInsets.all(4.sp),
-            child: Icon(Icons.close_rounded,
-                size: 20.sp, color: AppColors.secondaryText),
+            child: Icon(
+              Icons.close_rounded,
+              size: 20.sp,
+              color: AppColors.secondaryText,
+            ),
           ),
         ),
       ],
@@ -350,8 +362,8 @@ class _RestoreBackupDialogState extends State<_RestoreBackupDialog> {
           _selectedRows.isEmpty
               ? S.of(context).noData
               : S.of(context).noMatchesFound,
-          style: AppFontStyle.cairoRegularStyle.copyWith(
-            fontSize: FontConstants.fontSize014.w,
+          style: StyleText.fontSize16Weight400.copyWith(
+            fontSize: 10.sp,
             color: AppColors.secondaryText,
           ),
         ),
@@ -380,8 +392,10 @@ class _RestoreBackupDialogState extends State<_RestoreBackupDialog> {
                 color: AppColors.card,
                 child: Row(
                   children: _columns
-                      .map((EmployeeDataItems item) => _headerCell(
-                          item.getLocalizedName(languageCode)))
+                      .map(
+                        (EmployeeDataItems item) =>
+                            _headerCell(item.getLocalizedName(languageCode)),
+                      )
                       .toList(),
                 ),
               ),
@@ -401,8 +415,10 @@ class _RestoreBackupDialogState extends State<_RestoreBackupDialog> {
                           : AppColors.transparent,
                       child: Row(
                         children: _columns
-                            .map((EmployeeDataItems item) =>
-                                _bodyCell(_cell(row, item)))
+                            .map(
+                              (EmployeeDataItems item) =>
+                                  _bodyCell(_cell(row, item)),
+                            )
                             .toList(),
                       ),
                     );
@@ -427,8 +443,8 @@ class _RestoreBackupDialogState extends State<_RestoreBackupDialog> {
             label,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: AppFontStyle.cairoRegularStyle.copyWith(
-              fontSize: FontConstants.fontSize013.w,
+            style: StyleText.fontSize16Weight400.copyWith(
+              fontSize: 10.sp,
               fontWeight: FontWeight.w700,
               color: AppColors.text,
             ),
@@ -449,8 +465,8 @@ class _RestoreBackupDialogState extends State<_RestoreBackupDialog> {
             value,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: AppFontStyle.cairoRegularStyle.copyWith(
-              fontSize: FontConstants.fontSize013.w,
+            style: StyleText.fontSize16Weight400.copyWith(
+              fontSize: 10.sp,
               color: AppColors.text,
             ),
           ),
@@ -470,32 +486,36 @@ class _RestoreBackupDialogState extends State<_RestoreBackupDialog> {
     return Row(
       children: [
         InkWell(
+          onTapDown: (_) => HapticController.medium(),
           onTap: () => Navigator.of(context, rootNavigator: true).pop(),
           borderRadius: BorderRadius.circular(8.r),
           child: Container(
             width: isMobile ? 120.sp : 150.sp,
             height: 44.sp,
             decoration: BoxDecoration(
-              color: AppColors.secondaryButton,
+              color: AppColors.darkGrey,
               borderRadius: BorderRadius.circular(8.r),
             ),
             child: Center(
               child: Text(
                 S.of(context).discard,
-                style: StyleText.fontSize15Weight400
-                    .copyWith(color: AppColors.blackButton),
+                style: StyleText.fontSize15Weight400.copyWith(
+                  color: AppColors.text,
+                ),
               ),
             ),
           ),
         ),
         const Spacer(),
         InkWell(
-          onTap: canRestore
-              // Pops with the selected version; the caller runs the
-              // confirmation and the restore itself.
-              ? () => Navigator.of(context, rootNavigator: true)
-                  .pop(_selectedKey)
-              : null,
+          onTap: withHaptic(
+              canRestore
+                  // Pops with the selected version; the caller runs the
+                  // confirmation and the restore itself.
+                  ? () => Navigator.of(context, rootNavigator: true)
+                      .pop(_selectedKey)
+                  : null,
+              HapticLevel.medium),
           borderRadius: BorderRadius.circular(8.r),
           child: Container(
             width: isMobile ? 120.sp : 150.sp,
@@ -508,8 +528,7 @@ class _RestoreBackupDialogState extends State<_RestoreBackupDialog> {
               child: Text(
                 S.of(context).restore,
                 style: StyleText.fontSize15Weight400.copyWith(
-                  color:
-                      canRestore ? AppColors.textButton : AppColors.white,
+                  color: canRestore ? AppColors.textButton : AppColors.white,
                 ),
               ),
             ),

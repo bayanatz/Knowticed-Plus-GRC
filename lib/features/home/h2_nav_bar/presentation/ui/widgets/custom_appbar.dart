@@ -6,36 +6,31 @@
 /// Purpose: Declares `CustomAppBar`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
-
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:grc_module/core/theme/app_font_size.dart';
 import 'package:grc_module/features/notification/presentation/controller/app_notification_cubit.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:grc_module/features/notification/presentation/ui/widgets/notification_routing.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/custom/76-date_time_in_arabic.dart';
 import 'package:grc_module/core/theme/haptic_controller.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-
 
 // REMOVED_MODULE: import 'package:grc_module/features/skeleton/controllers/notification_controller.dart';
 // REMOVED_MODULE: import 'package:grc_module/core/helper/data_grc_module/core/extensions/extensions.dart';
 // REMOVED_MODULE: import 'package:grc_module/core/helper/inventory_module/core/navigate.dart';
 // REMOVED_MODULE: import 'package:grc_module/features/external/services_mangment_module/core/new_theme.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/ui/pages/settings_screen.dart';
+import 'package:grc_module/features/settings/presentation/ui/pages/settings_screen.dart';
 
 import 'package:grc_module/features/home/h3_app_drawer/presentation/controller/app_drawer_cubit.dart';
-import 'package:grc_module/features/notification/presentation/ui/pages/notification_page.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
-import 'package:grc_module/core/helper/main_helper/arabic_number_format.dart';
-import 'package:grc_module/core/helper/main_helper/extensions.dart' hide ContextExtension;
+import 'package:grc_module/core/helper/format_title.dart';
+import 'package:grc_module/core/helper/arabic_number_format.dart';
 
 // ignore: must_be_immutable
 class CustomAppBar extends StatefulWidget {
@@ -43,17 +38,17 @@ class CustomAppBar extends StatefulWidget {
   ValueChanged<bool>? isNotState;
 
   CustomAppBar({
-    Key? key,
+    super.key,
     this.isNotifications = false,
     this.isNotState,
-  }) : super(key: key);
+  });
 
   @override
   State<CustomAppBar> createState() => _CustomAppBarState();
 }
 
 AppNotificationCubit appNotificationController =
-Get.put(AppNotificationCubit());
+    Get.put(AppNotificationCubit());
 
 class _CustomAppBarState extends State<CustomAppBar> {
   final HapticController hapticController = Get.put(HapticController());
@@ -61,7 +56,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
   AppDrawerCubit drawerController = Get.find();
   @override
   Widget build(BuildContext context) {
-    var lightMode = Theme.of(context).brightness == Brightness.light;
+    Theme.of(context).brightness == Brightness.light;
     bool isPortrait =
         MediaQuery.of(context).orientation == Orientation.portrait;
     bool orientation =
@@ -83,7 +78,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-
               GestureDetector(
                 onTap: () {
                   hapticController.triggerHapticFeedback(
@@ -91,13 +85,15 @@ class _CustomAppBarState extends State<CustomAppBar> {
                       hapticFeedback: HapticFeedback.mediumImpact);
 
                   // Update the drawer to show notifications instead of navigating
-                  drawerController.updateSelectedIndex(19);
+                  drawerController
+                      .updateSelectedIndex(NotificationRouting.inboxShellIndex);
                 },
                 child: Container(
                   width: (isPortrait ? 40.h : 60.h),
                   height: (isPortrait ? 40.h : 60.h),
                   decoration: BoxDecoration(
-                      color: drawerController.selectedIndex == 19
+                      color: drawerController.selectedIndex ==
+                              NotificationRouting.inboxShellIndex
                           ? AppColors.transparent
                           : null,
                       borderRadius: BorderRadius.circular(8)),
@@ -105,15 +101,16 @@ class _CustomAppBarState extends State<CustomAppBar> {
                     stream: appNotificationController
                         .getUnseenNotificationsStream(),
                     builder: (context, snapshot) {
-                      if (snapshot.connectionState ==
-                          ConnectionState.waiting) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
                         return Center(
-                          child: SvgPicture.asset(
+                          child: CustomSvgImage.natural(
+                            assetPath:
+                                'assets/icons_assets/main_icons_assets/ic_comms_notification_badge.svg',
                             width: 35.w,
                             height: 35.h,
                             fit: BoxFit.fill,
-                            'assets/icons_assets/main_icons_assets/notification_bell_badge_red.svg',
-                            color: drawerController.selectedIndex == 19
+                            color: drawerController.selectedIndex ==
+                                    NotificationRouting.inboxShellIndex
                                 ? AppColors.textButton
                                 : Theme.of(context).colorScheme.scrim,
                           ),
@@ -121,14 +118,15 @@ class _CustomAppBarState extends State<CustomAppBar> {
                       } else if (snapshot.hasError ||
                           snapshot.data?.docs.isEmpty == true) {
                         return Center(
-                          child: SvgPicture.asset(
+                          child: CustomSvgImage.natural(
+                            assetPath:
+                                'assets/icons_assets/main_icons_assets/ic_comms_notification_badge.svg',
                             width: 35.w,
                             height: 35.h,
                             fit: BoxFit.fill,
-                            'assets/icons_assets/main_icons_assets/notification_bell_badge_red.svg',
-                            // color: drawerController.selectedIndex == 19
+                            // color: drawerController.selectedIndex == NotificationRouting.inboxShellIndex
                             //     ? AppColors.textButton
-                            //     : Theme.of(context).colorScheme.scrim,
+                            //     : Theme.of(context).colorScheme.scrim,,
                           ),
                         );
                       } else {
@@ -138,29 +136,28 @@ class _CustomAppBarState extends State<CustomAppBar> {
                           label: Text(
                             context.isEnglish
                                 ? '$unseenCount'
-                                : ArabicDigits('$unseenCount').toArabicNumbers(),
+                                : ArabicDigits('$unseenCount')
+                                    .toArabicNumbers(),
                           ),
                           largeSize: isPortrait
                               ? 19
                               : 25.h, //  largeSize:isPortrait? 0.02.h : 0.025.h,
-                          textStyle: AppFontStyle.cairoRegularStyle.copyWith(
-                            fontSize: isPortrait
-                                ? FontConstants.fontSize012.h
-                                : FontConstants.fontSize018.h,
+                          textStyle: StyleText.fontSize16Weight400.copyWith(
+                            fontSize: isPortrait ? 10.sp : 14.sp,
                             fontWeight: FontWeight.w600,
                             height: isPortrait ? 1.3 : 1.2,
-                            color:
-                            Theme.of(context).colorScheme.inverseSurface,
+                            color: Theme.of(context).colorScheme.inverseSurface,
                           ),
                           child: Center(
-                            child: SvgPicture.asset(
+                            child: CustomSvgImage.natural(
+                              assetPath:
+                                  'assets/icons_assets/main_icons_assets/ic_comms_notification_bell.svg',
                               width: 35.w,
                               height: 35.h,
                               fit: BoxFit.fill,
-                              'assets/icons_assets/main_icons_assets/notification_bell.svg',
-                              // color: drawerController.selectedIndex == 19
+                              // color: drawerController.selectedIndex == NotificationRouting.inboxShellIndex
                               //     ? AppColors.textButton
-                              //     : Theme.of(context).colorScheme.scrim,
+                              //     : Theme.of(context).colorScheme.scrim,,
                             ),
                           ),
                         );
@@ -179,43 +176,37 @@ class _CustomAppBarState extends State<CustomAppBar> {
                     spacing: 10.sp,
                     children: [
                       Text(
-                        '${context.isEnglish ? employee!.firstName!.last!.capitalize : employee!.firstNameInArabic!.last!} ${context.isEnglish ? employee!.lastName!.last!.capitalize : employee!.lastNameInArabic!.last!}',
-                          style:StyleText.fontSize18Weight500.copyWith(
-                              color: AppColors.text
-                          )
-                      ),
+                          '${context.isEnglish ? employee!.firstName.last.capitalize : employee!.firstNameInArabic.last} ${context.isEnglish ? employee!.lastName.last.capitalize : employee!.lastNameInArabic.last}',
+                          style: StyleText.fontSize18Weight500
+                              .copyWith(color: AppColors.text)),
                       Text(
-                        FormatHelper.capitalize(
-                          ContextExtension(context).isArabic
-                              ? employee!.titleInArabic
-                              ?.lastOrNull ??
-                              ''
-                              : employee!.title?.lastOrNull ?? '',
-                        ),
-                        style:StyleText.fontSize16Weight500.copyWith(
-                          color: AppColors.text
-                        )
-                      ),
+                          FormatHelper.capitalize(
+                            ContextExtension(context).isArabic
+                                ? employee!.titleInArabic.lastOrNull ?? ''
+                                : employee!.title.lastOrNull ?? '',
+                          ),
+                          style: StyleText.fontSize16Weight500
+                              .copyWith(color: AppColors.text)),
                     ],
                   ),
                   SizedBox(width: 20.h),
                   employee?.photo == null ||
-                      employee!.photo!.isEmpty ||
-                      employee!.photo!.last == null ||
-                      employee!.photo!.last!.isEmpty
+                          employee!.photo.isEmpty ||
+                          employee!.photo.last.isEmpty
                       ? CircleAvatar(
-                    radius: orientation ? 20.h : 30.h,
-                    backgroundColor: AppColors.transparent,
-                    backgroundImage: AssetImage(
-                        employee!.gender?.lastOrNull == 'female'
-                            ? 'assets/icons_assets/main_icons_assets/female_avatar.png'
-                            : 'assets/icons_assets/main_icons_assets/male_avatar.png'),
-                  )
+                          radius: orientation ? 20.h : 30.h,
+                          backgroundColor: AppColors.transparent,
+                          backgroundImage: AssetImage(employee!
+                                      .gender.lastOrNull ==
+                                  'female'
+                              ? 'assets/icons_assets/main_icons_assets/ic_user_avatar_female.png'
+                              : 'assets/icons_assets/main_icons_assets/ic_user_avatar_male.png'),
+                        )
                       : CircleAvatar(
-                    backgroundColor: AppColors.transparent,
-                    radius: orientation ? 20.h : 30.h,
-                    backgroundImage: NetworkImage(employee!.photo!.last!),
-                  )
+                          backgroundColor: AppColors.transparent,
+                          radius: orientation ? 20.h : 30.h,
+                          backgroundImage: NetworkImage(employee!.photo.last),
+                        )
 
                   // Texts
                 ],

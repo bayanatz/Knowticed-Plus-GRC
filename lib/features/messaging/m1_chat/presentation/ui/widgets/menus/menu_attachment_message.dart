@@ -1,4 +1,5 @@
 /// Module: messaging / chat / presentation/ui/widgets/menus/menu_attachment_message.dart
+library;
 // Date: 18/8/2024
 // By: Youssef Ashraf,  Nada Mohammed
 // Last update: 18/2/2026
@@ -8,21 +9,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
-import 'package:grc_module/core/enums/message_module/permissions/messages_more_permissions.dart';
-import 'package:grc_module/core/enums/message_module/permissions/messages_permissions_sections.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
+import 'package:grc_module/core/helper/access/main_core_employee_controller.dart';
+import 'package:grc_module/features/roles/r1_role_management/domain/enums/messages/more_permissions_enum.dart';
+import 'package:grc_module/features/roles/r1_role_management/domain/enums/messages/messages_sections_enum.dart';
+import 'package:grc_module/core/helper/access/modules_enum.dart';
 
 import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/constants/message_module/app_assets.dart';
-import 'package:grc_module/core/enums/message_module/message_types.dart';
-import 'package:grc_module/core/helper/main_helper/haptic_feedback_helper.dart';
-import '../../../controller/main_controllers/master_chat_cubit.dart';
-import '../../../../../../../core/helper/message_module/main_helper/message_action_types.dart';
-import '../../../../../../../core/helper/message_module/interface/controller/messaging_init_controller.dart';
-import '../buttons/menu_icon_button.dart';
-import 'share_location_contact.dart';
-import '../dialogs/poll_dialog.dart';
+import 'package:grc_module/features/messaging/helpers/constants/messaging_assets.dart';
+import 'package:grc_module/features/messaging/helpers/enums/message_types.dart';
+import 'package:grc_module/features/messaging/helpers/haptic_feedback_helper.dart';
+import 'package:grc_module/features/messaging/m1_chat/presentation/controller/main_controllers/master_chat_cubit.dart';
+import 'package:grc_module/features/messaging/helpers/messaging_bridge/main_helper/message_action_types.dart';
+import 'package:grc_module/features/messaging/m1_chat/presentation/ui/widgets/buttons/menu_icon_button.dart';
+import 'package:grc_module/features/messaging/m1_chat/presentation/ui/widgets/menus/share_location_contact.dart';
+import 'package:grc_module/features/messaging/m1_chat/presentation/ui/widgets/dialogs/poll_dialog.dart';
 import 'package:grc_module/generated/l10n.dart';
 
 class MenuAttachmentMessage extends StatelessWidget {
@@ -35,38 +35,36 @@ class MenuAttachmentMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final mainController = Get.find<MainCoreEmployeeController>();
 
     final bool showContact = mainController.isHasPermission(
       module: Modules.messages,
-      permission: MessagesMorePermissions.contact,
+      permission: MoreMessagesPermissions.contact,
       section: MessagesPermissionsSections.morePermissions,
     );
 
     final bool showLocation = mainController.isHasPermission(
       module: Modules.messages,
-      permission: MessagesMorePermissions.location,
+      permission: MoreMessagesPermissions.location,
       section: MessagesPermissionsSections.morePermissions,
     );
 
     final bool showPhoto = mainController.isHasPermission(
       module: Modules.messages,
-      permission: MessagesMorePermissions.photo,
+      permission: MoreMessagesPermissions.photo,
       section: MessagesPermissionsSections.morePermissions,
     );
 
     final bool showDocuments = mainController.isHasPermission(
       module: Modules.messages,
-      permission: MessagesMorePermissions.documents,
+      permission: MoreMessagesPermissions.documents,
       section: MessagesPermissionsSections.morePermissions,
     );
-
 
     // Figma 6799:5666 — Poll.
     final bool showPoll = mainController.isHasPermission(
       module: Modules.messages,
-      permission: MessagesMorePermissions.poll,
+      permission: MoreMessagesPermissions.poll,
       section: MessagesPermissionsSections.morePermissions,
     );
 
@@ -140,7 +138,8 @@ class MenuAttachmentMessage extends StatelessWidget {
                           Get.back();
                           shareCurrentLocation(hostContext, masterChatCubit);
                         },
-                        icon: "assets/icons_assets/messaging_assets/location_svg.svg",
+                        icon:
+                            "assets/icons_assets/messaging_assets/ic_place_map.svg",
                         text: S.of(context).location,
                       ),
                   ],
@@ -169,10 +168,10 @@ class MenuAttachmentMessage extends StatelessWidget {
                         icon: AppAssets.galleryImage,
                         // Bug report #15: "Gallery" → "Photos" (images
                         // only — see ImageMessageCubit.getImageGallery).
-                        text: Localizations.localeOf(context).languageCode ==
-                                'ar'
-                            ? 'الصور'
-                            : 'Photos',
+                        text:
+                            Localizations.localeOf(context).languageCode == 'ar'
+                                ? 'الصور'
+                                : 'Photos',
                       ),
                   ],
                 ),

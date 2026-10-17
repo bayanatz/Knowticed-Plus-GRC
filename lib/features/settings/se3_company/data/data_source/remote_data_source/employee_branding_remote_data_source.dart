@@ -9,6 +9,7 @@
 /// Added for CR-SKEL-SE3-N01 / N19. `EmployeeBrandingRepository` held
 /// `FirebaseFirestore.instance` itself and built its collection paths inline;
 /// se4 and se5 already split this correctly and this brings se3 into line.
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 

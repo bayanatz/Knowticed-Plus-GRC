@@ -4,19 +4,20 @@
 /// Purpose: Sort enum — messaging Home sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+library;
 
 import 'package:flutter/cupertino.dart';
 
 enum SortEnum {
-  UnRead,
-  ReadMessages;
+  unRead,
+  readMessages;
 
   String label(BuildContext context) {
     final isAr = Localizations.localeOf(context).languageCode == 'ar';
     switch (this) {
-      case SortEnum.UnRead:
+      case SortEnum.unRead:
         return isAr ? 'غير مقروء' : 'Unread';
-      case SortEnum.ReadMessages:
+      case SortEnum.readMessages:
         return isAr ? 'الرسائل المقروءة' : 'Read Messages';
     }
   }

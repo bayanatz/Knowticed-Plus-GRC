@@ -6,17 +6,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 
-
-
-
-import 'package:grc_module/core/helper/main_helper/spacing_helper.dart';
+import 'package:grc_module/features/messaging/helpers/spacing_helper.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
-import '../../../data/models/message/message_model.dart';
-import '../../../../m3_groups/presentation/ui/widgets/avatar_chat.dart';
-import '../../controller/message_controller.dart';
+import 'package:grc_module/features/messaging/m1_chat/data/models/message/message_model.dart';
+import 'package:grc_module/features/messaging/m3_groups/presentation/ui/widgets/avatar_chat.dart';
+import 'package:grc_module/features/messaging/m1_chat/presentation/controller/message_controller.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
 
@@ -60,55 +56,57 @@ class StarredMessageCard extends StatelessWidget {
           children: [
             (!messageModel.isMeLastMessage)
                 ? Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                AvatarChat(
-                  imageUrl: sentUser.avatarUrl,
-                ),
-                horizontalSpace(12),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsetsDirectional.only(bottom: 20.h),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          isGroup
-                              ? '${sentUser.firstName} - $title'
-                              : title,
-                          style: isTablet
-                              ? StyleText.fontSize23Weight500
-                              : StyleText.fontSize18Weight500,
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              ],
-            )
-                : Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsetsDirectional.only(bottom: 20.h),
-                      child: Text(
-                        isGroup ? '${S.of(context).you} - $title' : S.of(context).you,
-                        style: isTablet
-                            ? StyleText.fontSize23Weight500
-                            : StyleText.fontSize18Weight500,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      AvatarChat(
+                        imageUrl: sentUser.avatarUrl,
                       ),
-                    ),
-                    horizontalSpace(12),
-                    AvatarChat(
-                      imageUrl: sentUser.avatarUrl,
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                      horizontalSpace(12),
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsetsDirectional.only(bottom: 20.h),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                isGroup
+                                    ? '${sentUser.firstName} - $title'
+                                    : title,
+                                style: isTablet
+                                    ? StyleText.fontSize23Weight500
+                                    : StyleText.fontSize18Weight500,
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  )
+                : Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Row(
+                        children: [
+                          Padding(
+                            padding: EdgeInsetsDirectional.only(bottom: 20.h),
+                            child: Text(
+                              isGroup
+                                  ? '${S.of(context).you} - $title'
+                                  : S.of(context).you,
+                              style: isTablet
+                                  ? StyleText.fontSize23Weight500
+                                  : StyleText.fontSize18Weight500,
+                            ),
+                          ),
+                          horizontalSpace(12),
+                          AvatarChat(
+                            imageUrl: sentUser.avatarUrl,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
             IgnorePointer(child: getMessageBubble(messageModel)),
             Divider(
               color: AppColors.black,

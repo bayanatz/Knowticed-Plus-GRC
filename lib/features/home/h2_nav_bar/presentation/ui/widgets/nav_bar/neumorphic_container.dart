@@ -5,6 +5,7 @@
 /// Purpose: Enum `CurveType` used by this feature.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 /// Based on the code by Ivan Cherepanov
 /// https://medium.com/flutter-community/neumorphic-designs-in-flutter-eab9a4de2059
@@ -32,13 +33,12 @@ class NeumorphicContainer extends StatelessWidget {
     this.margin,
     this.padding,
     this.transform,
-    final Key? key,
+    super.key,
   })  : decoration = decoration ?? NeumorphicDecoration(color: color),
         constraints = (width != null || height != null)
             ? constraints?.tighten(width: width, height: height) ??
                 BoxConstraints.tightFor(width: width, height: height)
-            : constraints,
-        super(key: key);
+            : constraints;
 
   final Widget? child;
 
@@ -134,9 +134,9 @@ class NeumorphicContainer extends StatelessWidget {
 
   Color _getAdjustColor(final Color baseColor, final double amount) {
     Map<String, int> colors = {
-      "r": baseColor.red,
-      "g": baseColor.green,
-      "b": baseColor.blue
+      "r": (baseColor.r * 255.0).round().clamp(0, 255),
+      "g": (baseColor.g * 255.0).round().clamp(0, 255),
+      "b": (baseColor.b * 255.0).round().clamp(0, 255)
     };
 
     colors = colors.map((final key, final value) {

@@ -2,19 +2,21 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: user_data_tab.dart
-/// Purpose: Declares `UserData`.
-/// Author: Knowticed Plus team
+/// Description: Declares `UserData`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
+import 'package:grc_module/core/custom/dialogs/custom_dialog_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:grc_module/core/theme/app_font_size.dart';import 'package:grc_module/core/theme/app_colors.dart';
+import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
-import 'package:grc_module/core/helper/role/id_constants.dart';
+import 'package:grc_module/core/helper/format_title.dart';
 import 'package:grc_module/features/roles/r4_active_directory/domain/enums/employee_data.dart';
 import 'package:grc_module/features/roles/r4_active_directory/presentation/controller/active_directory_controller.dart';
 import 'package:grc_module/features/roles/r4_active_directory/presentation/ui/widgets/user_data_widgets/text_widget.dart';
@@ -22,10 +24,7 @@ import 'package:grc_module/features/roles/r4_active_directory/presentation/ui/wi
 import 'package:grc_module/features/roles/r4_active_directory/presentation/ui/widgets/table/default_data_table.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/core/di/app_controllers.dart';
-import 'package:grc_module/core/theme/app_animations.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
-
-
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
 /// Was `extends GetView<ActiveDirectoryController>`, whose inherited
 /// `controller` getter is a GetX service-locator lookup. Now a plain
@@ -44,9 +43,7 @@ class UserData extends StatelessWidget {
   const UserData(this.isVertical, {super.key, this.data});
 
   TextStyle get _headerStyle {
-    return StyleText.fontSize14Weight600.copyWith(
-      color: AppColors.white,
-    );
+    return StyleText.fontSize14Weight600.copyWith(color: AppColors.white);
   }
 
   @override
@@ -74,7 +71,7 @@ class UserData extends StatelessWidget {
               ),
             ),
           ...dataColumnNames.map(
-                (name) => DataColumn(
+            (name) => DataColumn(
               label: Container(
                 padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 8.w),
                 child: Text(name, style: _headerStyle),
@@ -85,7 +82,7 @@ class UserData extends StatelessWidget {
 
         final List<DataRow> rows = List.generate(
           displayData.length,
-              (rowIndex) => _buildRow(
+          (rowIndex) => _buildRow(
             displayIndex: rowIndex,
             displayData: displayData,
             controller: controller,
@@ -97,10 +94,7 @@ class UserData extends StatelessWidget {
         return Expanded(
           child: ClipRRect(
             borderRadius: BorderRadius.circular(10.sp),
-            child: DefaultDataTable(
-              columns: columns,
-              rows: rows,
-            ),
+            child: DefaultDataTable(columns: columns, rows: rows),
           ),
         );
       },
@@ -122,9 +116,7 @@ class UserData extends StatelessWidget {
     return DataRow(
       color: WidgetStatePropertyAll(
         displayIndex % 2 == 0
-            ? (isLightMode
-            ? AppColors.evenRowColor
-            : AppColors.oddRowColor)
+            ? (isLightMode ? AppColors.evenRowColor : AppColors.oddRowColor)
             : (isLightMode ? AppColors.white : AppColors.black),
       ),
       cells: _buildCells(
@@ -159,23 +151,24 @@ class UserData extends StatelessWidget {
                 return const SizedBox.shrink();
               }
 
-              final bool rowEditing =
-                  realIndex < ctrl.isEditable.length &&
-                      ctrl.isEditable[realIndex];
+              final bool rowEditing = realIndex < ctrl.isEditable.length &&
+                  ctrl.isEditable[realIndex];
 
               return Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   // ── Pencil (edit / save) ─────────────────────────────────
                   GestureDetector(
+                    onTapDown: (_) => HapticController.medium(),
                     onTap: () {
                       if (rowEditing && ctrl.isChanged[realIndex]) {
                         ctrl.saveChanges(rowIndex: realIndex);
                       }
                       ctrl.toggleRowEdit(realIndex);
                     },
-                    child: SvgPicture.asset(
-                      'assets/icons_assets/main_icons_assets/edit_pencil_square.svg',
+                    child: CustomSvgImage.natural(
+                      assetPath:
+                          'assets/icons_assets/main_icons_assets/ic_action_edit.svg',
                       width: 16.w,
                       height: 16.h,
                     ),
@@ -184,55 +177,66 @@ class UserData extends StatelessWidget {
 
                   // ── Restore (while editing) OR Delete (while not editing) ─
                   GestureDetector(
+                    onTapDown: (_) => HapticController.high(),
                     onTap: () {
                       if (rowEditing) {
                         // Restore: discard this row's unsaved changes
-                        ctrl.changedFields[realIndex] =
-                            List.from(ctrl.usersData[realIndex]);
+                        ctrl.changedFields[realIndex] = List.from(
+                          ctrl.usersData[realIndex],
+                        );
                         ctrl.isChanged[realIndex] = false;
                         ctrl.isEditable[realIndex] = false;
                         ctrl.refresh();
                       } else {
-                        // Delete: show confirmation dialog
-                        showAppDialog(
-      destructive: true,
+                        // Delete: shared Are You Sure → Removed flow
+                        CustomDialogManager.showDialogFlow(
                           context: context,
-                          builder: (_) => _RemoveConfirmDialog(
-                            onConfirm: () async {
-                              await ctrl.removeValidEmployee(realIndex);
-                              if (context.mounted) Navigator.pop(context);
-                            },
-                          ),
+                          destructive: true,
+                          confirmLottie:
+                              'assets/lottie_assets/main_lottie_assets/lot_action_delete.json',
+                          confirmTitle: S.of(context).removingEmployee,
+                          confirmSubtitle: S
+                              .of(context)
+                              .areYouSureYouWantToRemoveThisEmployee,
+                          confirmYesText: S.of(context).yes,
+                          confirmNoText: S.of(context).no,
+                          onConfirm: () => ctrl.removeValidEmployee(realIndex),
+                          successLottie:
+                              'assets/lottie_assets/main_lottie_assets/lot_status_success.json',
+                          successTitle: S.of(context).employeeRemoved,
+                          successSubtitle:
+                              S.of(context).youSuccessfullyRemovedEmployee,
                         );
                       }
                     },
                     child: rowEditing
                         ? Container(
-                      decoration: BoxDecoration(
-                        color: AppColors.primary,
-                        borderRadius: BorderRadius.circular(4.r),
-                      ),
-                      padding: EdgeInsets.all(6.w),
-                      child: SvgPicture.asset(
-                        'assets/icons_assets/main_icons_assets/clock_circle.svg',
-                        width: 10.sp,
-                        height: 10.sp,
-                        color: AppColors.textButton,
-                      ),
-                    )
+                            decoration: BoxDecoration(
+                              color: AppColors.primary,
+                              borderRadius: BorderRadius.circular(4.r),
+                            ),
+                            padding: EdgeInsets.all(6.w),
+                            child: CustomSvgImage.natural(
+                              assetPath:
+                                  'assets/icons_assets/main_icons_assets/ic_time_clock.svg',
+                              width: 10.sp,
+                              height: 10.sp,
+                              color: AppColors.textButton,
+                            ),
+                          )
                         : Container(
-                      width: 18.w,
-                      height: 18.w,
-                      decoration:  BoxDecoration(
-                        color: AppColors.red,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.remove,
-                        color: AppColors.white,
-                        size: 12.w,
-                      ),
-                    ),
+                            width: 18.w,
+                            height: 18.w,
+                            decoration: BoxDecoration(
+                              color: AppColors.red,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.remove,
+                              color: AppColors.white,
+                              size: 12.w,
+                            ),
+                          ),
                   ),
                 ],
               );
@@ -248,9 +252,8 @@ class UserData extends StatelessWidget {
     for (int column = 0; column < dataColumnCount; column++) {
       final int col = column;
 
-      final bool isProtectedColumn =
-          col == EmployeeDataItems.id.index ||
-              col == EmployeeDataItems.email.index;
+      final bool isProtectedColumn = col == EmployeeDataItems.id.index ||
+          col == EmployeeDataItems.email.index;
 
       cells.add(
         DataCell(
@@ -264,7 +267,9 @@ class UserData extends StatelessWidget {
               }
 
               final String displayText = col != 12 && col != 29
-                  ? FormatHelper.capitalize(ctrl.usersData[realIndex][col] ?? '')
+                  ? FormatHelper.capitalize(
+                      ctrl.usersData[realIndex][col] ?? '',
+                    )
                   : (ctrl.usersData[realIndex][col] ?? '');
 
               return Align(
@@ -273,14 +278,12 @@ class UserData extends StatelessWidget {
                   key: ValueKey('cell_${realIndex}_$col'),
                   text: displayText,
                   isEditable:
-                  isProtectedColumn ? false : ctrl.isEditable[realIndex],
-                  titleValidator:
-                  EmployeeDataItems.values[col].validateTitle,
+                      isProtectedColumn ? false : ctrl.isEditable[realIndex],
+                  titleValidator: EmployeeDataItems.values[col].validateTitle,
                   onChanged: (value) {
                     ctrl.isChanged[realIndex] = true;
                     ctrl.isSaved[realIndex] = false;
-                    ctrl.changedFields[realIndex][col] =
-                        value.toLowerCase();
+                    ctrl.changedFields[realIndex][col] = value.toLowerCase();
                   },
                   validator: EmployeeDataItems.values[col].validate,
                 ),
@@ -292,88 +295,5 @@ class UserData extends StatelessWidget {
     }
 
     return cells;
-  }
-}
-
-// ─── Confirm remove dialog ────────────────────────────────────────────────────
-
-class _RemoveConfirmDialog extends StatefulWidget {
-  final Future<void> Function() onConfirm;
-  const _RemoveConfirmDialog({required this.onConfirm});
-
-  @override
-  State<_RemoveConfirmDialog> createState() => _RemoveConfirmDialogState();
-}
-
-class _RemoveConfirmDialogState extends State<_RemoveConfirmDialog> {
-  bool _isLoading = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      title: Text(
-        S.of(context).removingEmployee,
-        textAlign: TextAlign.center,
-        style: AppFontStyle.cairoRegularStyle.copyWith(
-          fontWeight: FontWeight.w600,
-          fontSize: FontConstants.fontSize018.w,
-        ),
-      ),
-      content: Text(
-        S.of(context).areYouSureYouWantToRemoveThisEmployee,
-        textAlign: TextAlign.center,
-        style: AppFontStyle.cairoRegularStyle.copyWith(
-          fontSize: FontConstants.fontSize014.w,
-        ),
-      ),
-      actionsAlignment: MainAxisAlignment.spaceEvenly,
-      actions: [
-        // ── No ────────────────────────────────────────────────────────────
-        TextButton(
-          onPressed: _isLoading ? null : () => Navigator.pop(context),
-          child: Text(
-            S.of(context).no,
-            style: AppFontStyle.cairoRegularStyle.copyWith(
-              fontWeight: FontWeight.w600,
-              fontSize: FontConstants.fontSize014.w,
-            ),
-          ),
-        ),
-
-        // ── Yes ───────────────────────────────────────────────────────────
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.delete,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8)),
-          ),
-          onPressed: _isLoading
-              ? null
-              : () async {
-            setState(() => _isLoading = true);
-            await widget.onConfirm();
-            if (mounted) setState(() => _isLoading = false);
-          },
-          child: _isLoading
-              ? SizedBox(
-            width: 18.w,
-            height: 18.w,
-            child: CircleProgressMaster.inline(
-              strokeWidth: 2,
-              color: AppColors.white,
-            ),
-          )
-              : Text(
-            S.of(context).yes,
-            style: AppFontStyle.cairoRegularStyle.copyWith(
-              fontWeight: FontWeight.w600,
-              fontSize: FontConstants.fontSize014.w,
-              color: AppColors.white,
-            ),
-          ),
-        ),
-      ],
-    );
   }
 }

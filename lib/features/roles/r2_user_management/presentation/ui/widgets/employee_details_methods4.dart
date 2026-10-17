@@ -2,13 +2,13 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: employee_details_methods4.dart
-/// Purpose: Declares `EmployeeDetailsMethods4`.
+/// Purpose: Declares `_EmployeeDetailsMethods4`.
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
 
 part of '../pages/employee_details.dart';
 
-extension EmployeeDetailsMethods4 on _RoleEmployeeDetailsPageState {
+extension _EmployeeDetailsMethods4 on _RoleEmployeeDetailsPageState {
   /// Function Name: [_openMessages]
   ///
   /// Purpose: The header's Chat button — takes the admin to the Messages
@@ -49,17 +49,17 @@ extension EmployeeDetailsMethods4 on _RoleEmployeeDetailsPageState {
   }
 
   Widget _buildEmployeeHeader(
-      bool lightMode,
-      bool isArabic,
-      bool isMobile,
-      bool isTablet,
-      bool isLandscape,
-      ) {
+    bool lightMode,
+    bool isArabic,
+    bool isMobile,
+    bool isTablet,
+    bool isLandscape,
+  ) {
     final fullName = isArabic
         ? "${currentEmployeeEntity?.firstNameInArabic ?? ''} ${currentEmployeeEntity?.middleNameInArabic ?? ''} ${currentEmployeeEntity?.lastNameInArabic ?? ''}"
-        .trim()
+            .trim()
         : "${currentEmployeeEntity?.firstName ?? ''} ${currentEmployeeEntity?.middleName ?? ''} ${currentEmployeeEntity?.lastName ?? ''}"
-        .trim();
+            .trim();
 
     final title = isArabic
         ? currentEmployeeEntity?.titleInArabic ?? '-'
@@ -67,23 +67,19 @@ extension EmployeeDetailsMethods4 on _RoleEmployeeDetailsPageState {
 
     final departmentName = currentEmployeeEntity?.departmentId != null
         ? employeeController.departmentController
-        .getDepartmentName(currentEmployeeEntity!.departmentId!, !isArabic)
+            .getDepartmentName(currentEmployeeEntity!.departmentId!, !isArabic)
         : '-';
 
     final email = currentEmployeeEntity?.email ?? '-';
 
     String phoneNumber = '-';
     if (currentEmployeeEntity?.mobilePhone != null) {
-      final countryCode =
-          currentEmployeeEntity!.mobilePhone!.countryCode ?? '';
-      final phone = currentEmployeeEntity!.mobilePhone!.phone ?? '';
-      final cleanCC = countryCode
-          .toString()
-          .replaceAll('[', '')
-          .replaceAll(']', '')
-          .trim();
+      final countryCode = currentEmployeeEntity!.mobilePhone!.countryCode;
+      final phone = currentEmployeeEntity!.mobilePhone!.phone;
+      final cleanCC =
+          countryCode.toString().replaceAll('[', '').replaceAll(']', '').trim();
       final cleanPhone =
-      phone.toString().replaceAll('[', '').replaceAll(']', '').trim();
+          phone.toString().replaceAll('[', '').replaceAll(']', '').trim();
       if (cleanCC.isNotEmpty && cleanPhone.isNotEmpty) {
         phoneNumber = '+$cleanCC $cleanPhone';
       } else if (cleanPhone.isNotEmpty) {
@@ -152,9 +148,10 @@ extension EmployeeDetailsMethods4 on _RoleEmployeeDetailsPageState {
                     heightImage: 16.sp,
                     widthImage: 16.sp,
                     svgColor: AppColors.textButton,
-                    image: "assets/icons_assets/main_icons_assets/chat_bubble_dots.svg",
+                    image: "assets/icons_assets/main_icons_assets/ic_messages_new.svg",
                     space: isMobile ? 0.sp : 8.sp,
-                    colorBorder: AppColors.transparent,),
+                    colorBorder: AppColors.transparent,
+                  ),
                 ],
               ),
               SizedBox(height: 10.sp),
@@ -166,13 +163,15 @@ extension EmployeeDetailsMethods4 on _RoleEmployeeDetailsPageState {
                       itemTextProduct(
                         value: phoneNumber,
                         label: "${S.of(context).phoneNumber}: ",
-                        image: "assets/icons_assets/services_assets/phone_handset.svg",
+                        image:
+                            "assets/icons_assets/main_icons_assets/ic_comms_phone_rounded.svg",
                       ),
                       SizedBox(height: 10.sp),
                       itemTextProduct(
                         value: email,
                         label: "${S.of(context).email}: ",
-                        image: "assets/icons_assets/main_icons_assets/email_envelope.svg",
+                        image:
+                            "assets/icons_assets/main_icons_assets/ic_comms_email.svg",
                       ),
                     ],
                   ),
@@ -185,9 +184,7 @@ extension EmployeeDetailsMethods4 on _RoleEmployeeDetailsPageState {
     } else if (isTablet && !isLandscape) {
       return Container(
         decoration: BoxDecoration(
-          color: lightMode
-              ? AppColors.white
-              : AppColors.chatBackground,
+          color: AppColors.card,
           borderRadius: BorderRadius.circular(8.r),
         ),
         child: Padding(
@@ -215,9 +212,7 @@ extension EmployeeDetailsMethods4 on _RoleEmployeeDetailsPageState {
                       Text(
                         fullName.isEmpty ? 'Unknown' : fullName,
                         style: StyleText.fontSize16Weight500.copyWith(
-                          color: lightMode
-                              ? AppColors.blackButton
-                              : AppColors.white,
+                          color: AppColors.blackButton,
                         ),
                       ),
                       SizedBox(height: 10.sp),
@@ -229,12 +224,14 @@ extension EmployeeDetailsMethods4 on _RoleEmployeeDetailsPageState {
                               itemTextProduct(
                                   value: title,
                                   label: "Title: ",
-                                  image: "assets/icons_assets/main_icons_assets/doc_file_blue.svg"),
+                                  image:
+                                      "assets/icons_assets/main_icons_assets/ic_file_doc.svg"),
                               SizedBox(height: 10.sp),
                               itemTextProduct(
                                   value: email,
                                   label: "Email: ",
-                                  image: "assets/icons_assets/main_icons_assets/email_envelope.svg"),
+                                  image:
+                                      "assets/icons_assets/main_icons_assets/ic_comms_email.svg"),
                             ],
                           ),
                           SizedBox(width: 38.sp),
@@ -244,12 +241,14 @@ extension EmployeeDetailsMethods4 on _RoleEmployeeDetailsPageState {
                               itemTextProduct(
                                   value: departmentName,
                                   label: "Department: ",
-                                  image: "assets/icons_assets/services_assets/department_hierarchy_people.svg"),
+                                  image:
+                                      "assets/icons_assets/main_icons_assets/ic_org_department_people_yellow.svg"),
                               SizedBox(height: 10.sp),
                               itemTextProduct(
                                   value: phoneNumber,
                                   label: "Phone Number: ",
-                                  image: "assets/icons_assets/services_assets/phone_handset.svg"),
+                                  image:
+                                      "assets/icons_assets/main_icons_assets/ic_comms_phone_rounded.svg"),
                             ],
                           ),
                         ],
@@ -265,9 +264,7 @@ extension EmployeeDetailsMethods4 on _RoleEmployeeDetailsPageState {
     } else {
       return Container(
         decoration: BoxDecoration(
-          color: lightMode
-              ? AppColors.white
-              : AppColors.chatBackground,
+          color: AppColors.card,
           borderRadius: BorderRadius.circular(8.r),
         ),
         child: Padding(
@@ -278,7 +275,7 @@ extension EmployeeDetailsMethods4 on _RoleEmployeeDetailsPageState {
                 radius: 40.sp,
                 backgroundColor: AppColors.transparent,
                 child:
-                ClipOval(child: _buildEmployeeImage(gender, size: 80.sp)),
+                    ClipOval(child: _buildEmployeeImage(gender, size: 80.sp)),
               ),
               SizedBox(width: 10.sp),
               Column(
@@ -288,9 +285,7 @@ extension EmployeeDetailsMethods4 on _RoleEmployeeDetailsPageState {
                     FormatHelper.capitalize(
                         fullName.isEmpty ? 'Unknown' : fullName),
                     style: StyleText.fontSize16Weight500.copyWith(
-                      color: lightMode
-                          ? AppColors.blackButton
-                          : AppColors.white,
+                      color: AppColors.blackButton,
                     ),
                   ),
                   SizedBox(height: 10.sp),
@@ -302,12 +297,14 @@ extension EmployeeDetailsMethods4 on _RoleEmployeeDetailsPageState {
                           itemTextProduct(
                               value: title,
                               label: "${S.of(context).title}: ",
-                              image: "assets/icons_assets/main_icons_assets/Case.svg"),
+                              image:
+                                  "assets/icons_assets/main_icons_assets/ic_org_briefcase.svg"),
                           SizedBox(height: 10.sp),
                           itemTextProduct(
                               value: email,
                               label: "${S.of(context).email}: ",
-                              image: "assets/icons_assets/main_icons_assets/email_envelope.svg"),
+                              image:
+                                  "assets/icons_assets/main_icons_assets/ic_comms_email.svg"),
                         ],
                       ),
                       SizedBox(width: 38.sp),
@@ -317,12 +314,14 @@ extension EmployeeDetailsMethods4 on _RoleEmployeeDetailsPageState {
                           itemTextProduct(
                               value: departmentName,
                               label: "${S.of(context).department}: ",
-                              image: "assets/icons_assets/main_icons_assets/hierarchy_nodes.svg"),
+                              image:
+                                  "assets/icons_assets/main_icons_assets/ic_org_hierarchy.svg"),
                           SizedBox(height: 10.sp),
                           itemTextProduct(
                               value: phoneNumber,
                               label: "${S.of(context).phoneNumber}: ",
-                              image: "assets/icons_assets/services_assets/phone_handset.svg"),
+                              image:
+                                  "assets/icons_assets/main_icons_assets/ic_comms_phone_rounded.svg"),
                         ],
                       ),
                     ],
@@ -340,8 +339,7 @@ extension EmployeeDetailsMethods4 on _RoleEmployeeDetailsPageState {
                 textStyle: StyleText.fontSize14Weight500
                     .copyWith(color: AppColors.textButton),
                 svgColor: AppColors.textButton,
-                image:
-                    "assets/icons_assets/main_icons_assets/chat_bubble_dots.svg",
+                image: "assets/icons_assets/main_icons_assets/ic_messages_new.svg",
                 widthImage: 16.sp,
                 heightImage: 16.sp,
                 space: 8.sp,
@@ -354,6 +352,7 @@ extension EmployeeDetailsMethods4 on _RoleEmployeeDetailsPageState {
       );
     }
   }
+
   Widget _buildEmployeeImage(String gender, {double? size}) {
     final imageSize = size ?? 45.sp;
 
@@ -383,11 +382,12 @@ extension EmployeeDetailsMethods4 on _RoleEmployeeDetailsPageState {
 
     return _buildDefaultAvatar(gender, imageSize);
   }
+
   Widget _buildDefaultAvatar(String gender, double size) {
-    return CustomSvgImage(assetPath: 
-      gender.toLowerCase() == 'female'
-          ? 'assets/icons_assets/main_icons_assets/female_avatar.svg'
-          : 'assets/icons_assets/main_icons_assets/male_avatar.svg',
+    return CustomSvgImage(
+      assetPath: gender.toLowerCase() == 'female'
+          ? 'assets/icons_assets/main_icons_assets/ic_user_avatar_female.png'
+          : 'assets/icons_assets/main_icons_assets/ic_user_avatar_male.png',
       semanticsLabel: 'Gender Icon',
       fit: BoxFit.cover,
       width: size,

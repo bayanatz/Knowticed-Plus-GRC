@@ -8,6 +8,7 @@
 ///
 /// Extracted from `nav_bar_cubit`, which used to call
 /// `FirebaseFirestore.instance.collection('Demo_Requests')` directly.
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 

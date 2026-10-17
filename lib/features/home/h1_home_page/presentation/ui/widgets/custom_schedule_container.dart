@@ -5,16 +5,17 @@
 /// Purpose: Declares `CustomScheduleContainer`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:get/get.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/get_photo_asset.dart';
-import 'package:grc_module/core/custom/76-date_time_in_arabic.dart';
+import 'package:grc_module/core/custom/helpers/date_time_in_arabic.dart';
 
-
-import 'package:grc_module/core/theme/app_font_size.dart';
-import 'package:grc_module/core/theme/theme_controller.dart';
+import 'package:grc_module/core/extensions/screen_fraction_extension.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
 
@@ -29,7 +30,6 @@ String capitalizeMonth(String date) {
   }
   return parts.join(' ');
 }
-
 
 /// Date Created : 11/Sep/2024
 /// Developer Name : Bassem Mohamed
@@ -56,18 +56,19 @@ class CustomScheduleContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isTablet = MediaQuery.of(context).size.shortestSide > 600;
+    bool isTablet = !kpIsPhoneLayout(context);
     bool isPortrait =
         MediaQuery.of(context).orientation == Orientation.portrait;
 
     double imageHight = 0.018.h;
-    double imageSize = isTablet ? (isPortrait? 0.05.w :0.02.w) : 0.08.w;
+    double imageSize = isTablet ? (isPortrait ? 0.05.w : 0.02.w) : 0.08.w;
     // Convert the totalImagesNum to a string, handling the 1000+ case
-    
+
     String displayTotalImagesNum = '';
     if (imagesList != null && imagesList!.isNotEmpty) {
-      displayTotalImagesNum =
-          imagesList!.length >= 1000 ? S.of(context).k1k : '+${imagesList!.length - 2}';
+      displayTotalImagesNum = imagesList!.length >= 1000
+          ? S.of(context).k1k
+          : '+${imagesList!.length - 2}';
     }
     return Stack(
       children: [
@@ -76,13 +77,14 @@ class CustomScheduleContainer extends StatelessWidget {
           child: Container(
             width: double.infinity,
             padding: EdgeInsets.symmetric(
-                vertical: 0.015.h, horizontal: isTablet ? ( isPortrait? 0.02.w :0.008.w) : 0.03.w),
+                vertical: 0.015.h,
+                horizontal:
+                    isTablet ? (isPortrait ? 0.02.w : 0.008.w) : 0.03.w),
             decoration: BoxDecoration(
-              // ignore: unrelated_type_equality_checks
               color: isPortrait
-                  ? (themeController.currentTheme == AppColors.lightTheme
+                  ? (!AppTheme.isDark
                       ? AppColors.colorWhite
-                      : AppColors.dark)
+                      : AppColors.greyDark)
                   : (Theme.of(context).colorScheme.inversePrimary),
               borderRadius: BorderRadius.circular(8.0),
             ),
@@ -95,22 +97,21 @@ class CustomScheduleContainer extends StatelessWidget {
                     getPhotoAsset(eventType),
                   ],
                 ),
-                SizedBox(width: isTablet ? (isPortrait? 0.02.w : 0.01.w) : 0.02.w),
+                SizedBox(
+                    width: isTablet ? (isPortrait ? 0.02.w : 0.01.w) : 0.02.w),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                  //    color: Colors.amber,
-                      width: isTablet ? (isPortrait? 0.68.w : 0.17.w) : 0.73.w,
+                    SizedBox(
+                      //    color: Colors.amber,
+                      width: isTablet ? (isPortrait ? 0.68.w : 0.17.w) : 0.73.w,
                       child: Text(
                         cardTitle.capitalize as String,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: AppFontStyle.cairoRegularStyle.copyWith(
-                            fontSize: FontConstants.fontSize018.h,
-                            // ignore: unrelated_type_equality_checks
-                            color: themeController.currentTheme ==
-                                    AppColors.lightTheme
+                        style: StyleText.fontSize16Weight400.copyWith(
+                            fontSize: 14.sp,
+                            color: !AppTheme.isDark
                                 ? AppColors.colorBlack
                                 : AppColors.colorWhiteDark,
                             fontWeight: FontWeight.w600,
@@ -118,40 +119,34 @@ class CustomScheduleContainer extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 0.005.h),
-                    Container(
+                    SizedBox(
                       //   color: Colors.amber,
-                      width: isTablet ? (isPortrait? 0.68.w : 0.17.w) : 0.73.w,
+                      width: isTablet ? (isPortrait ? 0.68.w : 0.17.w) : 0.73.w,
                       child: Text(
                         description.capitalize!,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: AppFontStyle.cairoRegularStyle.copyWith(
-                          fontSize: FontConstants.fontSize016.h,
-                          // ignore: unrelated_type_equality_checks
-                          color: themeController.currentTheme ==
-                                  AppColors.lightTheme
-                              ? AppColors.colorDarkGrey
-                              : AppColors.colorGreydark,
+                        style: StyleText.fontSize16Weight400.copyWith(
+                          fontSize: 12.sp,
+                          color: AppColors.secondaryText,
                           fontWeight: FontWeight.w600,
                           height: 1.4,
                         ),
                       ),
                     ),
                     SizedBox(height: 0.03.h),
-                    Container(
+                    SizedBox(
                       // color: Colors.amber,
-                      width: isTablet ? (isPortrait? 0.4.w : 0.14.w) : 0.5.w,
+                      width: isTablet ? (isPortrait ? 0.4.w : 0.14.w) : 0.5.w,
                       child: Text(
                         context.isEnglish
                             ? "${"Due Date"} ${capitalizeMonth("$dueDate")}"
                             : "${S.of(context).dueDate} ${translateDate(capitalizeMonth("$dueDate"))}",
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: AppFontStyle.cairoRegularStyle.copyWith(
-                          fontSize: FontConstants.fontSize015.h,
-                          // ignore: unrelated_type_equality_checks
-                          color: themeController.currentTheme ==
-                                  AppColors.lightTheme
+                        style: StyleText.fontSize16Weight400.copyWith(
+                          fontSize: 12.sp,
+                          color: !AppTheme.isDark
                               ? AppColors.colorBlack
                               : AppColors.colorWhiteDark,
                           fontWeight: FontWeight.w600,
@@ -169,8 +164,12 @@ class CustomScheduleContainer extends StatelessWidget {
             imagesList!.isNotEmpty)
           Positioned(
             bottom: imageHight,
-            right: context.isEnglish ? ((isTablet && isPortrait)? 0.015.h : 0.01.h) : null,
-            left: context.isArabic ? ((isTablet && isPortrait)? 0.015.h : 0.01.h) : null,
+            right: context.isEnglish
+                ? ((isTablet && isPortrait) ? 0.015.h : 0.01.h)
+                : null,
+            left: context.isArabic
+                ? ((isTablet && isPortrait) ? 0.015.h : 0.01.h)
+                : null,
             child: Container(
               width: imageSize,
               height: imageSize,
@@ -183,14 +182,15 @@ class CustomScheduleContainer extends StatelessWidget {
                 children: [
                   Text(
                     localizeNumber(displayTotalImagesNum),
-                    style: AppFontStyle.cairoRegularStyle.copyWith(
-                        fontSize: FontConstants.fontSize010.h,
+                    style: StyleText.fontSize16Weight400.copyWith(
+                        fontSize: 10.sp,
                         color: AppColors.textButton,
                         fontWeight: FontWeight.w600,
                         height: isTablet ? (1.5) : 2),
                   ),
                   SizedBox(
-                    width: isTablet ? (isPortrait? 0.006.w : 0.003.w) : 0.012.w,
+                    width:
+                        isTablet ? (isPortrait ? 0.006.w : 0.003.w) : 0.012.w,
                   ),
                 ],
               ),

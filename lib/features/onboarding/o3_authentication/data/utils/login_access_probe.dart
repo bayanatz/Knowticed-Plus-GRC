@@ -2,9 +2,9 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: login_access_probe.dart
-/// Purpose: Debug-only probe that names the exact Firestore path a sign-in was
+/// Description: Debug-only probe that names the exact Firestore path a sign-in was
 ///          refused on.
-/// Author: Knowticed Plus team
+/// Author: Amr Mesbah
 /// Created at: 7/9/2026
 ///
 /// WHY THIS EXISTS
@@ -47,6 +47,7 @@
 /// Debug builds only: `debugPrint` is NOT stripped from release builds, and
 /// these lines carry the tenant path and the employee id. Same gating as
 /// `DemoRemoteDataSource.getEmployeePermission`.
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
@@ -54,7 +55,6 @@ import 'package:grc_module/core/network/api_constants.dart';
 import 'package:grc_module/features/onboarding/o3_authentication/data/models/demo_user_account_overview.dart';
 
 abstract class LoginAccessProbe {
-  static const String _tag = '[login-probe]';
 
   /// Function Name: [run]
   ///
@@ -72,28 +72,18 @@ abstract class LoginAccessProbe {
 
     final FirebaseFirestore db = FirebaseFirestore.instance;
 
-    debugPrint('$_tag ───────────────────────────────────────────────');
-    debugPrint('$_tag probing sign-in reads for "$email"');
-    debugPrint('$_tag project: ${db.app.options.projectId}');
-    debugPrint('$_tag app id : ${db.app.options.appId}');
     // No FirebaseAuth in this codebase — stated explicitly, because it is the
     // single most likely cause of a blanket permission-denied.
-    debugPrint('$_tag auth   : none (all reads are unauthenticated)');
 
     // ── 1. Demo_Users_Accounts/{email} ────────────────────────────────────
-    final String accountPath =
-        '${ApiConstants.demoUsersAccounts}/$email';
-    final Map<String, dynamic>? account =
-        await _readDoc(db, accountPath, label: 'account overview');
+    final String accountPath = '${ApiConstants.demoUsersAccounts}/$email';
+    final Map<String, dynamic>? account = await _readDoc(
+      db,
+      accountPath,
+      label: 'account overview',
+    );
 
     if (account == null) {
-      debugPrint(
-        '$_tag stopped after step 1 — no readable account document, so the '
-        'company id is unknown and steps 2-7 cannot be addressed. If step 1 '
-        'says DENIED the rules on ${ApiConstants.demoUsersAccounts} are the '
-        'cause; if it says MISSING the email simply is not registered.',
-      );
-      debugPrint('$_tag ───────────────────────────────────────────────');
       return;
     }
 
@@ -101,18 +91,7 @@ abstract class LoginAccessProbe {
         account[DemoUserAccountOverview.companyIdField];
     final String companyId = rawCompanyId?.toString() ?? '';
 
-    debugPrint(
-      '$_tag companyId = "$companyId"  '
-      'Is_Activated = ${account[DemoUserAccountOverview.isActivatedField]}',
-    );
-
     if (companyId.isEmpty) {
-      debugPrint(
-        '$_tag stopped after step 1 — the account document has no '
-        '"${DemoUserAccountOverview.companyIdField}" field, so every '
-        'Demo/{companyId}/... path below would be malformed.',
-      );
-      debugPrint('$_tag ───────────────────────────────────────────────');
       return;
     }
 
@@ -155,14 +134,7 @@ abstract class LoginAccessProbe {
         'Demo/$companyId/Users_Access/$employeeId',
         label: 'access date window for employee $employeeId',
       );
-    } else {
-      debugPrint(
-        '$_tag SKIP  Demo/$companyId/Users_Access/{employeeId}  '
-        '— no employee document resolved in step 4, so there is no id to read.',
-      );
-    }
-
-    debugPrint('$_tag ───────────────────────────────────────────────');
+    } else {}
   }
 
   /// One document read, reported rather than thrown.
@@ -180,19 +152,13 @@ abstract class LoginAccessProbe {
           await db.doc(path).get();
 
       if (!snapshot.exists) {
-        debugPrint('$_tag MISSING  $path  — $label (rules allowed the read; '
-            'the document does not exist)');
         return null;
       }
 
-      debugPrint('$_tag OK       $path  — $label');
       return snapshot.data();
-    } on FirebaseException catch (e) {
-      debugPrint('$_tag ${_verdict(e)}  $path  — $label  [${e.code}] '
-          '${e.message}');
+    } on FirebaseException {
       return null;
     } catch (e) {
-      debugPrint('$_tag ERROR    $path  — $label  $e');
       return null;
     }
   }
@@ -205,15 +171,10 @@ abstract class LoginAccessProbe {
   }) async {
     try {
       final QuerySnapshot<Map<String, dynamic>> snapshot = await query.get();
-      debugPrint(
-          '$_tag OK       $path  — $label (${snapshot.docs.length} docs)');
       return snapshot.docs;
-    } on FirebaseException catch (e) {
-      debugPrint('$_tag ${_verdict(e)}  $path  — $label  [${e.code}] '
-          '${e.message}');
+    } on FirebaseException {
       return null;
     } catch (e) {
-      debugPrint('$_tag ERROR    $path  — $label  $e');
       return null;
     }
   }
@@ -227,21 +188,12 @@ abstract class LoginAccessProbe {
     required String label,
   }) async {
     try {
-      final AggregateQuerySnapshot snapshot =
-          await db.collection(path).count().get();
-      debugPrint(
-          '$_tag OK       $path  — $label (count = ${snapshot.count})');
-    } on FirebaseException catch (e) {
-      debugPrint('$_tag ${_verdict(e)}  $path  — $label  [${e.code}] '
-          '${e.message}');
+      await db.collection(path).count().get();
+    } on FirebaseException {
+      // Ignored on purpose: nothing to do when this fails.
     } catch (e) {
-      debugPrint('$_tag ERROR    $path  — $label  $e');
+      debugPrint('Ignored error: $e');
     }
   }
 
-  /// `permission-denied` is the one this hunt is about; everything else
-  /// (`unavailable`, `failed-precondition` for a missing index, …) is a
-  /// different problem and must not be mistaken for a rules refusal.
-  static String _verdict(FirebaseException e) =>
-      e.code == 'permission-denied' ? 'DENIED ' : 'FAILED ';
 }

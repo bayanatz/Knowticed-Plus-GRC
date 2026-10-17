@@ -6,6 +6,7 @@
 /// Author: Amr Mesbah
 /// Created at: 21/9/2025
 /// Updated: 11/8/2026 - Fields made final, explicit toMap() type, copyWith.
+library;
 
 import 'package:grc_module/features/home/h1_home_page/domain/enums/home_components.dart';
 

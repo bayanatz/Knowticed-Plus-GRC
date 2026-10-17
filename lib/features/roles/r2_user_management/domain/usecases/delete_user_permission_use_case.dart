@@ -5,15 +5,13 @@
 /// Purpose: Declares `DeleteUserPermissionUseCase`.
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'package:dartz/dartz.dart';
-import 'package:intl/intl.dart';
 
 import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/features/notification/presentation/controller/app_notification_cubit.dart';
 import 'package:grc_module/features/roles/r2_user_management/data/repository/user_role_repository.dart';
 import 'package:grc_module/features/roles/r2_user_management/domain/entities/user_permission_entity.dart';
-
 
 class DeleteUserPermissionUseCase {
   final UserManagementAccessRepository repository;

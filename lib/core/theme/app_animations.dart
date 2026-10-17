@@ -1,4 +1,9 @@
 // ******************* FILE INFO *******************
+/// Description: `SlideFrom` enum, `SlideInContent` widget, state and UI of the `SlideInContent` widget and 21 more.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
+library;
+
 // File Name: app_animations
 // Description: Reusable, drop-in animation widgets used across the app.
 //              These wrappers are PURELY visual. They never change business
@@ -19,10 +24,11 @@
 
 import 'dart:math' as math;
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'app_colors.dart';
-import 'haptic_controller.dart';
+import 'package:grc_module/core/theme/app_colors.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
 // ============================================================================
 // 1. SLIDE  ->  PAGE COMPONENTS
@@ -31,6 +37,84 @@ import 'haptic_controller.dart';
 // is first built (i.e. the page opens) the child slides into place while
 // fading in. Direction and timing are configurable.
 // ============================================================================
+
+/// The house motion values (X-72, shared with SpaCareTime). Every wrapper in
+/// this file takes its default curve from here.
+abstract final class KpMotion {
+  /// Everything except bounce and scale: `cubic-bezier(.22,.85,.30,1)`.
+  static const Curve ease = Cubic(0.22, 0.85, 0.30, 1.0);
+
+  /// List ↔ Grid bounce: `cubic-bezier(.30,1.40,.50,1)`.
+  static const Curve bounce = Cubic(0.30, 1.40, 0.50, 1.0);
+
+  /// Dialog scale-in: `cubic-bezier(.20,.90,.28,1.06)`.
+  static const Curve scale = Cubic(0.20, 0.90, 0.28, 1.06);
+
+  /// Page slide.
+  static const Duration page = Duration(milliseconds: 400);
+}
+
+/// The ONE page transition (X-15 / X-72): every route slides in over 400 ms.
+/// Set as `ThemeData.pageTransitionsTheme`, so every `MaterialPageRoute` in
+/// the app inherits it; `appSlideRoute` and GetX routes use the same values.
+///
+/// On iOS the native Cupertino slide is kept (only its timing changes) so the
+/// swipe-from-the-edge back gesture still works; elsewhere the content slides
+/// a little from the reading side while it fades in.
+class KpPageTransitionsBuilder extends PageTransitionsBuilder {
+  const KpPageTransitionsBuilder();
+
+  @override
+  Duration get transitionDuration => KpMotion.page;
+
+  @override
+  Duration get reverseTransitionDuration => const Duration(milliseconds: 300);
+
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    if (Theme.of(context).platform == TargetPlatform.iOS) {
+      return const CupertinoPageTransitionsBuilder().buildTransitions(
+          route, context, animation, secondaryAnimation, child);
+    }
+    return kpSlideFade(context, animation, child);
+  }
+}
+
+/// Slide + fade used by [KpPageTransitionsBuilder] and `appSlideRoute`.
+Widget kpSlideFade(
+  BuildContext context,
+  Animation<double> animation,
+  Widget child,
+) {
+  final bool rtl = Directionality.of(context) == TextDirection.rtl;
+  final Animation<double> curved =
+      CurvedAnimation(parent: animation, curve: KpMotion.ease);
+  return SlideTransition(
+    position: Tween<Offset>(
+      begin: Offset(rtl ? -0.15 : 0.15, 0),
+      end: Offset.zero,
+    ).animate(curved),
+    child: FadeTransition(opacity: curved, child: child),
+  );
+}
+
+/// The page transition for every platform, for `ThemeData`.
+const PageTransitionsTheme kpPageTransitionsTheme = PageTransitionsTheme(
+  builders: <TargetPlatform, PageTransitionsBuilder>{
+    TargetPlatform.android: KpPageTransitionsBuilder(),
+    TargetPlatform.iOS: KpPageTransitionsBuilder(),
+    TargetPlatform.macOS: KpPageTransitionsBuilder(),
+    TargetPlatform.windows: KpPageTransitionsBuilder(),
+    TargetPlatform.linux: KpPageTransitionsBuilder(),
+    TargetPlatform.fuchsia: KpPageTransitionsBuilder(),
+  },
+);
 
 enum SlideFrom { left, right, top, bottom }
 
@@ -44,15 +128,15 @@ class SlideInContent extends StatefulWidget {
   final bool fade;
 
   const SlideInContent({
-    Key? key,
+    super.key,
     required this.child,
     this.from = SlideFrom.bottom,
-    this.duration = const Duration(milliseconds: 600),
+    this.duration = const Duration(milliseconds: 400),
     this.delay = Duration.zero,
     this.offset = 0.25,
-    this.curve = Curves.easeOutCubic,
+    this.curve = KpMotion.ease,
     this.fade = true,
-  }) : super(key: key);
+  });
 
   @override
   State<SlideInContent> createState() => _SlideInContentState();
@@ -81,10 +165,14 @@ class _SlideInContentState extends State<SlideInContent>
   void initState() {
     super.initState();
     _controller = AnimationController(duration: widget.duration, vsync: this);
-    _slide = Tween<Offset>(begin: _beginOffset, end: Offset.zero)
-        .animate(CurvedAnimation(parent: _controller, curve: widget.curve));
-    _fade = Tween<double>(begin: 0.0, end: 1.0)
-        .animate(CurvedAnimation(parent: _controller, curve: widget.curve));
+    _slide = Tween<Offset>(
+      begin: _beginOffset,
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _controller, curve: widget.curve));
+    _fade = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: widget.curve));
 
     if (widget.delay == Duration.zero) {
       _controller.forward();
@@ -125,11 +213,11 @@ class BounceSwitcher extends StatefulWidget {
   final Duration duration;
 
   const BounceSwitcher({
-    Key? key,
+    super.key,
     required this.child,
     required this.triggerValue,
-    this.duration = const Duration(milliseconds: 700),
-  }) : super(key: key);
+    this.duration = const Duration(milliseconds: 420),
+  });
 
   @override
   State<BounceSwitcher> createState() => _BounceSwitcherState();
@@ -144,8 +232,10 @@ class _BounceSwitcherState extends State<BounceSwitcher>
   void initState() {
     super.initState();
     _controller = AnimationController(duration: widget.duration, vsync: this);
-    _bounce = Tween<double>(begin: 0.92, end: 1.0)
-        .animate(CurvedAnimation(parent: _controller, curve: Curves.bounceOut));
+    _bounce = Tween<double>(
+      begin: 0.92,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: KpMotion.bounce));
     _controller.forward();
   }
 
@@ -177,11 +267,11 @@ class BounceTap extends StatefulWidget {
   final Duration duration;
 
   const BounceTap({
-    Key? key,
+    super.key,
     required this.child,
     this.onTap,
     this.duration = const Duration(milliseconds: 500),
-  }) : super(key: key);
+  });
 
   @override
   State<BounceTap> createState() => _BounceTapState();
@@ -196,8 +286,10 @@ class _BounceTapState extends State<BounceTap>
   void initState() {
     super.initState();
     _controller = AnimationController(duration: widget.duration, vsync: this);
-    _scale = Tween<double>(begin: 1.0, end: 1.2)
-        .animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
+    _scale = Tween<double>(
+      begin: 1.0,
+      end: 1.2,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
   }
 
   @override
@@ -239,12 +331,12 @@ class ShakeOnce extends StatefulWidget {
   final double magnitude; // max horizontal travel in logical pixels
 
   const ShakeOnce({
-    Key? key,
+    super.key,
     required this.child,
     this.autoPlay = true,
-    this.duration = const Duration(milliseconds: 500),
-    this.magnitude = 12.0,
-  }) : super(key: key);
+    this.duration = const Duration(milliseconds: 520),
+    this.magnitude = 9.0, // X-72: ±9 px, damped, one pass
+  });
 
   @override
   State<ShakeOnce> createState() => ShakeOnceState();
@@ -308,13 +400,13 @@ class ScaleInContent extends StatefulWidget {
   final bool fade;
 
   const ScaleInContent({
-    Key? key,
+    super.key,
     required this.child,
-    this.duration = const Duration(milliseconds: 350),
-    this.beginScale = 0.85,
-    this.curve = Curves.easeOutBack,
+    this.duration = const Duration(milliseconds: 300),
+    this.beginScale = 0.84,
+    this.curve = KpMotion.scale,
     this.fade = true,
-  }) : super(key: key);
+  });
 
   @override
   State<ScaleInContent> createState() => _ScaleInContentState();
@@ -330,10 +422,14 @@ class _ScaleInContentState extends State<ScaleInContent>
   void initState() {
     super.initState();
     _controller = AnimationController(duration: widget.duration, vsync: this);
-    _scale = Tween<double>(begin: widget.beginScale, end: 1.0)
-        .animate(CurvedAnimation(parent: _controller, curve: widget.curve));
-    _fade = Tween<double>(begin: 0.0, end: 1.0)
-        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+    _scale = Tween<double>(
+      begin: widget.beginScale,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: widget.curve));
+    _fade = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
     _controller.forward();
   }
 
@@ -346,9 +442,7 @@ class _ScaleInContentState extends State<ScaleInContent>
   @override
   Widget build(BuildContext context) {
     final scaled = ScaleTransition(scale: _scale, child: widget.child);
-    return widget.fade
-        ? FadeTransition(opacity: _fade, child: scaled)
-        : scaled;
+    return widget.fade ? FadeTransition(opacity: _fade, child: scaled) : scaled;
   }
 }
 
@@ -364,20 +458,15 @@ Future<T?> showScaleDialog<T>({
   return showGeneralDialog<T>(
     context: context,
     barrierDismissible: barrierDismissible,
-    barrierLabel:
-        MaterialLocalizations.of(context).modalBarrierDismissLabel,
+    barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
     barrierColor: barrierColor ?? Colors.black54,
     transitionDuration: duration,
     pageBuilder: (ctx, a1, a2) => builder(ctx),
     transitionBuilder: (ctx, anim, secondary, child) {
-      final curved =
-          CurvedAnimation(parent: anim, curve: Curves.easeOutBack);
+      final curved = CurvedAnimation(parent: anim, curve: KpMotion.scale);
       return Transform.scale(
-        scale: Tween<double>(begin: 0.85, end: 1.0).evaluate(curved),
-        child: Opacity(
-          opacity: anim.value.clamp(0.0, 1.0),
-          child: child,
-        ),
+        scale: Tween<double>(begin: 0.84, end: 1.0).evaluate(curved),
+        child: Opacity(opacity: anim.value.clamp(0.0, 1.0), child: child),
       );
     },
   );
@@ -397,12 +486,12 @@ class AnimatedSizeWrap extends StatelessWidget {
   final Alignment alignment;
 
   const AnimatedSizeWrap({
-    Key? key,
+    super.key,
     required this.child,
-    this.duration = const Duration(milliseconds: 400),
-    this.curve = Curves.easeInOut,
+    this.duration = const Duration(milliseconds: 340),
+    this.curve = KpMotion.ease,
     this.alignment = Alignment.topCenter,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -432,11 +521,11 @@ class ShrinkOnTap extends StatefulWidget {
   final Duration duration;
 
   const ShrinkOnTap({
-    Key? key,
+    super.key,
     required this.child,
-    this.scale = 0.92,
-    this.duration = const Duration(milliseconds: 120),
-  }) : super(key: key);
+    this.scale = 0.90,
+    this.duration = const Duration(milliseconds: 130),
+  });
 
   @override
   State<ShrinkOnTap> createState() => _ShrinkOnTapState();
@@ -458,7 +547,7 @@ class _ShrinkOnTapState extends State<ShrinkOnTap> {
       child: AnimatedScale(
         scale: _pressed ? widget.scale : 1.0,
         duration: widget.duration,
-        curve: Curves.easeOut,
+        curve: KpMotion.ease,
         child: widget.child,
       ),
     );
@@ -480,13 +569,13 @@ class ImplicitExpand extends StatelessWidget {
   final Alignment alignment;
 
   const ImplicitExpand({
-    Key? key,
+    super.key,
     required this.expanded,
     required this.child,
-    this.duration = const Duration(milliseconds: 350),
-    this.curve = Curves.easeInOut,
+    this.duration = const Duration(milliseconds: 340),
+    this.curve = KpMotion.ease,
     this.alignment = Alignment.topCenter,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -509,7 +598,9 @@ class ImplicitExpand extends StatelessWidget {
 // 8. DIALOG HELPER  ->  SCALE (normal dialogs) / SHAKE ONCE (destructive)
 // ----------------------------------------------------------------------------
 // Drop-in for showDialog. Normal dialogs scale in; "are you sure" dialogs
-// (delete / remove / log out) shake ONCE and give a HIGH haptic instead.
+// (delete / remove / log out) shake ONCE instead. Opening a dialog is SILENT
+// (X-105): the tap that opened it already fired its own haptic — except a
+// login-error style [ErrorFeedbackDialog], which fires HIGH with its shake.
 // A dialog widget is destructive when it implements [DestructiveDialog] or
 // when `destructive: true` is passed.
 // ============================================================================
@@ -518,6 +609,13 @@ class ImplicitExpand extends StatelessWidget {
 /// that implement it shake once (no scale) when shown with [showAppDialog].
 abstract class DestructiveDialog {
   bool get isDestructive;
+}
+
+/// Marker for an error-status dialog (e.g. `ResponseDialog` with the error
+/// Lottie). Shown with `destructive: true` it is a LOGIN-ERROR style alert:
+/// it shakes AND fires the one tap-less haptic, HIGH (X-105).
+abstract class ErrorFeedbackDialog {
+  bool get isErrorFeedback;
 }
 
 Future<T?> showAppDialog<T>({
@@ -532,7 +630,7 @@ Future<T?> showAppDialog<T>({
   Offset? anchorPoint,
   bool? destructive,
 }) {
-  bool hapticDone = false;
+  bool errorHapticDone = false;
   return showDialog<T>(
     context: context,
     barrierDismissible: barrierDismissible,
@@ -544,14 +642,18 @@ Future<T?> showAppDialog<T>({
     anchorPoint: anchorPoint,
     builder: (ctx) {
       final Widget child = builder(ctx);
-      final bool isDestructive =
-          destructive ??
-              (child is DestructiveDialog
-                  ? (child as DestructiveDialog).isDestructive
-                  : child is ShakeOnce);
-      if (isDestructive && !hapticDone) {
-        hapticDone = true;
-        HapticController.high();
+      final bool isDestructive = destructive ??
+          (child is DestructiveDialog
+              ? (child as DestructiveDialog).isDestructive
+              : child is ShakeOnce);
+      // X-105: an error dialog the caller marked destructive (a login error)
+      // is the one tap-less haptic — HIGH once, with the shake.
+      if (destructive == true &&
+          child is ErrorFeedbackDialog &&
+          (child as ErrorFeedbackDialog).isErrorFeedback &&
+          !errorHapticDone) {
+        errorHapticDone = true;
+        HapticController.error();
       }
       if (child is ShakeOnce || child is ScaleInContent) return child;
       return isDestructive
@@ -567,7 +669,9 @@ Future<T?> showAppDialog<T>({
 
 /// True when [color] is the app's yellow (primary) button colour.
 bool isYellowButton(Color? color) =>
-    color == null || color == AppColors.primary || color == AppColors.yellow;
+    color == null ||
+    color == AppColors.primary ||
+    color == AppColors.secondaryPrimary;
 
 /// Wraps a button so that, when it is yellow, it gets smaller while pressed.
 Widget appPressFeedback({required Color? color, required Widget child}) =>
@@ -590,12 +694,12 @@ class SlideSwitcher extends StatefulWidget {
   final double offset;
 
   const SlideSwitcher({
-    Key? key,
+    super.key,
     required this.child,
     required this.triggerValue,
-    this.duration = const Duration(milliseconds: 350),
+    this.duration = const Duration(milliseconds: 400),
     this.offset = 0.06,
-  }) : super(key: key);
+  });
 
   @override
   State<SlideSwitcher> createState() => _SlideSwitcherState();
@@ -603,10 +707,14 @@ class SlideSwitcher extends StatefulWidget {
 
 class _SlideSwitcherState extends State<SlideSwitcher>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _controller =
-      AnimationController(duration: widget.duration, vsync: this)..value = 1;
-  late final Animation<double> _curve =
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic);
+  late final AnimationController _controller = AnimationController(
+    duration: widget.duration,
+    vsync: this,
+  )..value = 1;
+  late final Animation<double> _curve = CurvedAnimation(
+    parent: _controller,
+    curve: KpMotion.ease,
+  );
 
   @override
   void didUpdateWidget(covariant SlideSwitcher oldWidget) {
@@ -636,11 +744,22 @@ class _SlideSwitcherState extends State<SlideSwitcher>
 
 /// Wraps a tap callback with a standard haptic (default LOW: widgets/cards).
 /// Returns null when [callback] is null so disabled widgets stay disabled.
-void Function()? withHaptic(void Function()? callback,
-    [HapticLevel level = HapticLevel.low]) {
+void Function()? withHaptic(
+  void Function()? callback, [
+  HapticLevel level = HapticLevel.low,
+]) {
   if (callback == null) return null;
   return () {
     HapticController.level(level);
     callback();
   };
 }
+
+/// Finger-down haptic (X-104) for a tappable whose tap callback is passed in:
+///   `onTapDown: hapticDown(widget.onTap, HapticLevel.medium), onTap: widget.onTap`
+/// Returns null when [callback] is null, so a disabled control stays silent.
+GestureTapDownCallback? hapticDown(
+  Object? callback, [
+  HapticLevel level = HapticLevel.low,
+]) =>
+    callback == null ? null : (_) => HapticController.level(level);

@@ -6,7 +6,6 @@ class DocsCard extends StatelessWidget {
   final DocInfoModel model;
   const DocsCard({super.key, required this.model});
 
-
   @override
   Widget build(BuildContext context) {
     final isXls = model.fileName.split('.')[1].toLowerCase() == 'xls';
@@ -19,7 +18,9 @@ class DocsCard extends StatelessWidget {
         top: 8.h,
       ),
       decoration: BoxDecoration(
-          color: ContextExtension(context).isTablett ? AppColors.background : AppColors.field,
+          color: ContextExtension(context).isTablett
+              ? AppColors.background
+              : AppColors.card,
           borderRadius: BorderRadius.circular(16.r),
           border: Border.all(color: Colors.transparent)),
       child: Stack(
@@ -48,7 +49,8 @@ class DocsCard extends StatelessWidget {
                     Flexible(
                       child: Text(
                         model.fileInfo,
-                        style: StyleText.fontSize10Weight400.copyWith(color: AppColors.lightGrey),
+                        style: StyleText.fontSize10Weight400
+                            .copyWith(color: AppColors.lightGrey),
                       ),
                     ),
                   ],
@@ -66,7 +68,8 @@ class DocsCard extends StatelessWidget {
                     model.date,
                   )
                   .toLowerCase(),
-              style: StyleText.fontSize12Weight400.copyWith(color: AppColors.mediumGrey),
+              style: StyleText.fontSize12Weight400
+                  .copyWith(color: AppColors.mediumGrey),
             ),
           ),
         ],

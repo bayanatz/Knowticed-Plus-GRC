@@ -13,6 +13,7 @@
 /// copies of the same 12 string keys, which is how the older single-field shape
 /// (`whatChanged` / `oldValue` / `newValue`) and the newer `changes` array came
 /// to be read differently in different screens.
+library;
 
 import 'package:flutter/foundation.dart';
 

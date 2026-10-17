@@ -10,6 +10,7 @@
 /// three pages and the GetX controller. They are collected here unchanged in
 /// behaviour — same collections, same document shapes — so the pages can be
 /// reduced to dispatching intents.
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
@@ -68,9 +69,8 @@ class RequestsRemoteDataSource {
   ///
   /// Purpose: Whether the employee profile document is present.
   Future<bool> employeeExists(String employeeId) async {
-    final DocumentSnapshot<Map<String, dynamic>> doc = await _db
-        .doc(RequestCollectionPaths.employeeDoc(employeeId))
-        .get();
+    final DocumentSnapshot<Map<String, dynamic>> doc =
+        await _db.doc(RequestCollectionPaths.employeeDoc(employeeId)).get();
     return doc.exists;
   }
 
@@ -134,9 +134,44 @@ class RequestsRemoteDataSource {
       throw StateError('Employee document not found for id $employeeId');
     }
 
-    NewEmployeeModelHistory history =
-        NewEmployeeModelHistory.fromMap(snapshot.data());
+    // CHANGED 9/10/2026 — the append loop moved, unchanged, into the pure
+    // [applyChangesToHistory] so the Health / Emergency-contact approval can
+    // be unit-tested without Firestore. This method still reads, applies and
+    // writes exactly as before.
+    final ({NewEmployeeModelHistory history, List<String> skipped}) applied =
+        applyChangesToHistory(
+      NewEmployeeModelHistory.fromMap(snapshot.data()),
+      changes,
+    );
 
+    await employeeRef.update(applied.history.toMap());
+
+    return applied.skipped;
+  }
+
+  /// Function Name: [applyChangesToHistory]
+  ///
+  /// Purpose: Append every approved change to an employee history — the pure
+  ///          half of [applyChangesToEmployee] (ADDED 9/10/2026).
+  ///
+  /// Each change goes through `updateFieldSynchronized`, the Employees_Info
+  /// append helper: ONE new revision per change, i.e. one new entry in
+  /// `timestamps` and one in EVERY synchronized field list (the new value for
+  /// the changed field, the last value repeated for the rest). The current
+  /// value of every field is therefore its last element, and the lists stay
+  /// as long as `timestamps`.
+  ///
+  /// Parameters:
+  /// - [history]: the employee document as read.
+  /// - [changes]: the request's field changes.
+  ///
+  /// Returns: the appended history, and the request field names that could
+  ///          not be applied (empty when everything was written).
+  static ({NewEmployeeModelHistory history, List<String> skipped})
+      applyChangesToHistory(
+    NewEmployeeModelHistory history,
+    List<FieldChange> changes,
+  ) {
     final List<String> skipped = <String>[];
 
     // Phone members are collected first: `phones`, `countryCode` and
@@ -175,9 +210,8 @@ class RequestsRemoteDataSource {
       );
     }
 
-    await employeeRef.update(history.toMap());
-
-    return skipped;
+    // 9/10/2026: the write moved back into [applyChangesToEmployee].
+    return (history: history, skipped: skipped);
   }
 
   /// Function Name: [_mergedMobilePhone]
@@ -189,7 +223,10 @@ class RequestsRemoteDataSource {
   /// displayed, so a change appends rather than replaces. Mirrors
   /// `_updateMobilePhoneField` in the user-management approval screen, which is
   /// the only other place that writes this object correctly.
-  MobilePhone _mergedMobilePhone(
+  ///
+  /// `static` since 9/10/2026 (it never used instance state) so the pure
+  /// [applyChangesToHistory] can call it.
+  static MobilePhone _mergedMobilePhone(
     NewEmployeeModelHistory history,
     Map<String, String> members,
   ) {

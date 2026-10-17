@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_utils/get_utils.dart';
-import 'package:grc_module/core/custom/58-default_switch_button.dart';
+import 'package:grc_module/core/custom/inputs/default_switch_button.dart';
 
 import 'package:grc_module/core/theme/app_theme.dart';
 

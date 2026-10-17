@@ -24,7 +24,7 @@ library;
 import 'package:dartz/dartz.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:grc_module/core/helper/role/constants.dart';
+import 'package:grc_module/core/helper/access/constants.dart';
 import 'package:grc_module/core/network/failure_model.dart';
 import 'package:grc_module/features/roles/r1_role_management/data/models/role_model.dart';
 import 'package:grc_module/features/roles/r2_user_management/data/repository/user_role_repository.dart';

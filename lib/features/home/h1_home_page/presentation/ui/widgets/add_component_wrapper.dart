@@ -2,19 +2,19 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: add_component_wrapper.dart
-/// Purpose: Declares `AddComponentWrapper`.
-/// Author: Knowticed Plus team
+/// Description: Declares `AddComponentWrapper`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
-import 'dart:ui' as ui;
+library;
 
-import 'package:grc_module/core/custom/2-custom_textfield.dart';
+import 'package:grc_module/core/theme/app_colors.dart';
+import 'package:grc_module/core/custom/inputs/custom_textfield.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
 // REMOVED_MODULE: import 'package:grc_module/features/external/services_mangment_module/core/new_theme.dart';
 import 'package:grc_module/features/home/h1_home_page/data/models/home_component_model.dart';
 
@@ -22,16 +22,20 @@ import 'package:grc_module/generated/l10n.dart';
 // REMOVED_MODULE: import 'package:grc_module/core/helper/inventory_module/core/custom_button_widget.dart';
 // REMOVED_MODULE: import 'package:grc_module/core/helper/inventory_module/core/text_field.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/controller/home_cubit.dart';
-import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/module_widget/edit_dialogs/open_edit_dialog.dart';
 
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/custom/5-custom_button.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
+import 'package:grc_module/core/custom/buttons/custom_button.dart';
 import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
+
 class AddComponentWrapper extends StatelessWidget {
-  AddComponentWrapper(
-      {required this.component, required this.model, super.key});
-  Widget component;
-  HomeComponentModel model;
+  const AddComponentWrapper({
+    required this.component,
+    required this.model,
+    super.key,
+  });
+  final Widget component;
+  final HomeComponentModel model;
 
   void _showSLADialog(BuildContext context) {
     final TextEditingController textController = TextEditingController();
@@ -57,18 +61,24 @@ class AddComponentWrapper extends StatelessWidget {
                       height: 26.sp,
                       decoration: BoxDecoration(
                         color: AppColors.primary,
-                        shape: BoxShape.circle
+                        shape: BoxShape.circle,
                       ),
                       child: Center(
-                        child: CustomSvgImage(assetPath: "assets/icons_assets/home_assets/sla_stopwatch.svg",width: 16.w,height: 14.h,fit: BoxFit.scaleDown,)
+                        child: CustomSvgImage(
+                          assetPath:
+                              "assets/icons_assets/home_assets/ic_time_sla.svg",
+                          width: 16.w,
+                          height: 14.h,
+                          fit: BoxFit.scaleDown,
+                        ),
                       ),
                     ),
                     SizedBox(width: 6.w),
                     Text(
                       'SLA',
-                        style: StyleText.fontSize12Weight500.copyWith(
-                            color: Theme.of(context).brightness==Brightness.light?AppColors.blackButton : AppColors.white
-                        )
+                      style: StyleText.fontSize12Weight500.copyWith(
+                        color: AppColors.blackButton,
+                      ),
                     ),
                   ],
                 ),
@@ -80,7 +90,7 @@ class AddComponentWrapper extends StatelessWidget {
                   hint: S.of(context).textHere,
                   controller: textController,
                   keyboardType: TextInputType.number,
-                  textDirection: ui.TextDirection.ltr,
+                  textDirection: TextDirection.ltr,
                   textAlign: TextAlign.start,
                 ),
 
@@ -88,6 +98,9 @@ class AddComponentWrapper extends StatelessWidget {
 
                 // Buttons
                 Row(
+                  textDirection: TextDirection
+                      .ltr, // X-73: Cancel left, action right in both languages
+
                   children: [
                     customButton(
                       title: S.of(context).discard,
@@ -97,7 +110,7 @@ class AddComponentWrapper extends StatelessWidget {
                       width: 135.w,
                       height: 38.h,
                       radius: 8,
-                      color: Colors.grey.shade300,
+                      color: AppColors.darkGrey,
                       textStyle: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w500,
@@ -109,7 +122,6 @@ class AddComponentWrapper extends StatelessWidget {
                       title: S.of(context).save,
                       function: () {
                         // Handle save action
-                        String value = textController.text;
                         // Add your save logic here
                         // Example: context.read<HomeCubit>().updateSLAPercentage(model, value);
                         Navigator.pop(dialogContext);
@@ -136,17 +148,18 @@ class AddComponentWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: InkWell(
-        splashColor: AppColors.transparent,
-        hoverColor: AppColors.transparent,
-        onTap: () {
-          if (!model.component.isEditable) {
-            context.read<AppHomeCubit>().editComponent(model);
-            Navigator.pop(context);
-          }
-        },
-        child: Stack(children: [
+    return InkWell(
+      splashColor: AppColors.transparent,
+      hoverColor: AppColors.transparent,
+      onTapDown: (_) => HapticController.low(),
+      onTap: () {
+        if (!model.component.isEditable) {
+          context.read<AppHomeCubit>().editComponent(model);
+          Navigator.pop(context);
+        }
+      },
+      child: Stack(
+        children: [
           Padding(
             // .w/.h rather than .sp so this padding scales on the same
             // axis as the card widths it sits between — together with
@@ -159,9 +172,7 @@ class AddComponentWrapper extends StatelessWidget {
             bottom: 0,
             left: 0,
             right: 0,
-            child: Container(
-              color: AppColors.transparent,
-            ),
+            child: Container(color: AppColors.transparent),
           ),
           if (model.component.isEditable)
             PositionedDirectional(
@@ -170,6 +181,7 @@ class AddComponentWrapper extends StatelessWidget {
               child: InkWell(
                 splashColor: AppColors.transparent,
                 hoverColor: AppColors.transparent,
+                onTapDown: (_) => HapticController.low(),
                 onTap: () {
                   _showSLADialog(context);
                 },
@@ -178,15 +190,18 @@ class AddComponentWrapper extends StatelessWidget {
                   height: 25.sp,
                   padding: EdgeInsets.all(4.sp),
                   decoration: BoxDecoration(
-                      shape: BoxShape.circle, color: AppColors.greyIcon),
-                  child: SvgPicture.asset(
-                    'assets/icons_assets/roles_assets/settings_gear.svg',
+                    shape: BoxShape.circle,
+                    color: AppColors.greyIcon,
+                  ),
+                  child: CustomSvgImage.natural(
+                    assetPath:
+                        'assets/icons_assets/main_icons_assets/ic_module_settings.svg',
                     color: AppColors.text,
                   ),
                 ),
               ),
-            )
-        ]),
+            ),
+        ],
       ),
     );
   }

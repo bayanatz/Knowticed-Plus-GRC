@@ -5,9 +5,11 @@
 /// Purpose: Declares `RoleManagement`.
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 // REMOVED_MODULE: import 'package:grc_module/features/external/services_app_module/core/constants/strings.dart';
 import 'package:grc_module/features/roles/r1_role_management/domain/entities/module_permissions_sections_permissions.dart';
+
 enum RoleManagement implements ModulePermissionsSectionsPermission {
   createRoleManagement,
   editRole,

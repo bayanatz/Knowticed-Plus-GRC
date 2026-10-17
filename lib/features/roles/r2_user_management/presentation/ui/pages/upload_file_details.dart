@@ -3,35 +3,28 @@
 /// ******************* FILE INFO *******************
 /// File Name: upload_file_details.dart
 /// Description: upload and edit data which come from bulk upload
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Created by: Amr Mesbah
-import 'dart:ui' as ui;
-import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
-import 'package:grc_module/features/roles/r2_user_management/presentation/controller/user_management_controller.dart';
-import 'package:grc_module/core/custom/2-custom_textfield.dart';
-import 'package:grc_module/core/custom/23-custom_check_box.dart';
+library;
 
-import 'dart:convert';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'dart:io';
+import 'package:grc_module/features/roles/r2_user_management/presentation/controller/user_management_controller.dart';
+import 'package:grc_module/core/custom/inputs/custom_textfield.dart';
+import 'package:grc_module/core/custom/inputs/custom_check_box.dart';
+
+
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
+
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:grc_module/core/network/api_constants.dart';
-import 'package:grc_module/core/custom/50-custom_side_frame_master.dart';
-import 'package:grc_module/core/custom/37-custom_navigate.dart';
+import 'package:grc_module/core/custom/navigation/custom_side_frame_master.dart';
 
 import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:excel/excel.dart' hide Border;
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:grc_module/features/roles/r2_user_management/presentation/ui/widgets/upload_file_details_toggle.dart';
 import 'package:lottie/lottie.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 // REMOVED: company_contact_info not available
 import 'package:grc_module/generated/l10n.dart';
@@ -43,11 +36,14 @@ import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/core/network/get_base_url.dart';
 import 'package:grc_module/core/theme/app_colors.dart' show AppColors;
 import 'package:grc_module/features/roles/r4_active_directory/data/models/employees_model/new_employee_model.dart';
-import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
 
-import 'package:grc_module/core/custom/5-custom_button.dart';
-import 'package:grc_module/core/custom/6-custom_button_with_svg.dart';
+import 'package:grc_module/core/custom/buttons/custom_button.dart';
+import 'package:grc_module/core/custom/buttons/custom_button_with_svg.dart';
+// ADDED 9/10/2026 — user-limit pre-check in `uploadToFirebase`.
+import 'package:grc_module/features/roles/r2_user_management/data/repository/user_role_repository.dart';
+import 'package:grc_module/features/roles/r2_user_management/domain/services/module_user_limit_rule.dart';
 import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 part '../widgets/upload_methods1.dart';
 part '../widgets/upload_methods2.dart';
 part '../widgets/upload_customexceltextfield.dart';
@@ -55,19 +51,28 @@ part '../widgets/upload_build_page.dart';
 part '../widgets/upload_build_b.dart';
 part '../widgets/upload_build_c.dart';
 
-
 class UploadFileDetailsTabletRoles extends StatefulWidget {
-  const UploadFileDetailsTabletRoles({super.key, required this.formData, required this.validationErrors,this.selectedFileName});
+  const UploadFileDetailsTabletRoles({
+    super.key,
+    required this.formData,
+    required this.validationErrors,
+    this.selectedFileName,
+  });
 
   final List<Map<String, TextEditingController>> formData;
   final List<Map<String, String>> validationErrors;
   final String? selectedFileName;
 
   @override
-  State<UploadFileDetailsTabletRoles> createState() => _UploadFileDetailsTabletRolesState();
+  State<UploadFileDetailsTabletRoles> createState() =>
+      _UploadFileDetailsTabletRolesState();
 }
 
-class _UploadFileDetailsTabletRolesState extends State<UploadFileDetailsTabletRoles> {
+class _UploadFileDetailsTabletRolesState
+    extends State<UploadFileDetailsTabletRoles> {
+  /// Lets this screen's builder/logic extensions refresh it (setState
+  /// itself may only be called inside the State class).
+  void rebuild(VoidCallback fn) => setState(fn);
 
   List<Map<String, GlobalKey>> fieldKeys = [];
 
@@ -119,10 +124,6 @@ class _UploadFileDetailsTabletRolesState extends State<UploadFileDetailsTabletRo
 
   int currentPage = 0;
 
-
-
-
-
   String? selectedFileName;
 
   final ScrollController _scrollController = ScrollController();
@@ -136,26 +137,14 @@ class _UploadFileDetailsTabletRolesState extends State<UploadFileDetailsTabletRo
     'Status': 'status',
   };
 
-
-
-
-
-
-
-
-
   //////////////////////////////////////////////////////////////////////////////////
 
   List<Map<String, FocusNode>> focusNodes = [];
   List<MapEntry<int, String>> errorLocations = [];
   int currentErrorIndex = -1; // Start with -1 to indicate no selection
 
-
-
   @override
   Widget build(BuildContext context) {
     return _buildPage(context);
   }
-
-
 }

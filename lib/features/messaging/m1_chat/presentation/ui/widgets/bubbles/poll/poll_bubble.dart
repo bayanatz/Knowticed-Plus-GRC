@@ -19,7 +19,6 @@ class PollBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var isMe = messageModel.isMeLastMessage;
 
     return BlocBuilder<MessageCubit, MessageState>(
       builder: (context, state) {
@@ -73,6 +72,7 @@ class PollBubble extends StatelessWidget {
               Align(
                 alignment: Alignment.center,
                 child: GestureDetector(
+                  onTapDown: (_) => HapticController.low(),
                   onTap: () {
                     Navigator.of(context).pushNamed(
                       Routes.pollDetails,
@@ -92,7 +92,7 @@ class PollBubble extends StatelessWidget {
             ],
           ),
         );*/
-          Container();
+            Container();
       },
     );
   }

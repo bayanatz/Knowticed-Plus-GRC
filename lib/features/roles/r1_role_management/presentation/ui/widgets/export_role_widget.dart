@@ -2,8 +2,9 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: export_role_widget.dart
-/// Purpose: Declares `RoleExportDialog`.
-/// Author: Knowticed Plus team
+/// Description: Declares `RoleExportDialog`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
 /// Updated: 25/8/2026 - A finished export now ends on the app's shared success
 ///                      dialog (CustomDialogManager) instead of a bare
@@ -14,12 +15,12 @@
 ///                      Messages are dialogs now. A dismissed system save sheet
 ///                      (phones) is treated as neither success nor failure, and
 ///                      the desktop success message names the written file.
-import 'dart:ui' as ui;
+library;
 
 import 'package:get/get.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/custom/2-custom_textfield.dart';
-import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
+import 'package:grc_module/core/custom/inputs/custom_textfield.dart';
+import 'package:grc_module/core/custom/dialogs/custom_dialog_manager.dart';
 
 // REMOVED 25/8/2026: `success_dialog.dart` — its static `show()` was the
 // AlertDialog this screen no longer uses. The SuccessDialog *widget* itself is
@@ -29,28 +30,20 @@ import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/custom/5-custom_button.dart';
+import 'package:grc_module/core/custom/buttons/custom_button.dart';
 // ADDED 8/9/2026: the in-row export spinner — see the button row in build().
-import 'package:grc_module/core/custom/66-circle_progress.dart';
+import 'package:grc_module/core/custom/feedback/circle_progress.dart';
 import 'package:grc_module/generated/l10n.dart';
 
-
-import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/features/roles/r1_role_management/data/models/role_model.dart';
-import 'package:grc_module/features/roles/r1_role_management/presentation/controller/modules_cubit.dart';
 import 'package:grc_module/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
 
 class RoleExportDialog extends StatefulWidget {
   final List<RoleHistoryModel> roles;
 
-  const RoleExportDialog({
-    Key? key,
-    required this.roles,
-  }) : super(key: key);
+  const RoleExportDialog({super.key, required this.roles});
 
   @override
   State<RoleExportDialog> createState() => _RoleExportDialogState();
@@ -61,7 +54,6 @@ class _RoleExportDialogState extends State<RoleExportDialog> {
   // REMOVED 8/9/2026: `_overlayEntry` — the full-screen loading overlay it held
   // is gone; the wait is drawn in the button row instead.
   bool _isExporting = false;
-  bool _submitted = false;
 
   @override
   void initState() {
@@ -120,11 +112,11 @@ class _RoleExportDialogState extends State<RoleExportDialog> {
 
   /// Lottie shown beside a blocking validation message.
   static const String _warningLottie =
-      'assets/lottie_assets/main_lottie_assets/warning.json';
+      'assets/lottie_assets/main_lottie_assets/lot_status_warning.json';
 
   /// Lottie shown when the export itself failed.
   static const String _errorLottie =
-      'assets/lottie_assets/main_lottie_assets/error.json';
+      'assets/lottie_assets/main_lottie_assets/lot_status_error.json';
 
   /// Shows a message ON TOP of this dialog.
   ///
@@ -160,10 +152,6 @@ class _RoleExportDialogState extends State<RoleExportDialog> {
   /// Either the cubit returns.
   Future<void> _exportData(BuildContext context) async {
     if (_isExporting) return;
-
-    setState(() {
-      _submitted = true;
-    });
 
     final fileName = controller.text.trim();
     if (fileName.isEmpty) {
@@ -222,6 +210,8 @@ class _RoleExportDialogState extends State<RoleExportDialog> {
     );
 
     if (error != null) {
+      if (!context.mounted) return;
+      if (!context.mounted) return;
       await _showMessage(
         context,
         title: S.of(context).exportFailed,
@@ -241,6 +231,7 @@ class _RoleExportDialogState extends State<RoleExportDialog> {
     );
     if (savedPath == RoleCubit.exportCancelled) return;
 
+    if (!context.mounted) return;
     await _showExportSuccess(context, savedPath);
   }
 
@@ -254,7 +245,7 @@ class _RoleExportDialogState extends State<RoleExportDialog> {
   ///
   /// The strings and the navigator are resolved BEFORE the pop. Once this
   /// dialog is gone its `context` is defunct, and both `S.of()` and
-  /// `showDialog()` would then be reading a dead element — which is why the old
+  /// `showAppDialog()` would then be reading a dead element — which is why the old
   /// code's `SuccessDialog.show(context)` ran on a context that had just been
   /// popped out from under it.
   ///
@@ -263,9 +254,14 @@ class _RoleExportDialogState extends State<RoleExportDialog> {
   /// "It said success and I found nothing" is the whole history of this
   /// feature. On phones the user picked the destination in the system sheet and
   /// the returned path is an opaque content URI, so it is left out there.
-  Future<void> _showExportSuccess(BuildContext context, String savedPath) async {
-    final BuildContext rootContext =
-        Navigator.of(context, rootNavigator: true).context;
+  Future<void> _showExportSuccess(
+    BuildContext context,
+    String savedPath,
+  ) async {
+    final BuildContext rootContext = Navigator.of(
+      context,
+      rootNavigator: true,
+    ).context;
     final String successTitle = S.of(context).success;
     final bool isPhonePlatform =
         defaultTargetPlatform == TargetPlatform.android ||
@@ -280,7 +276,8 @@ class _RoleExportDialogState extends State<RoleExportDialog> {
 
     await CustomDialogManager.showSuccess(
       context: rootContext,
-      lottiePath: 'assets/lottie_assets/main_lottie_assets/approved.json',
+      lottiePath:
+          'assets/lottie_assets/main_lottie_assets/lot_status_success.json',
       title: successTitle,
       subtitle: successSubtitle,
     );
@@ -349,17 +346,17 @@ class _RoleExportDialogState extends State<RoleExportDialog> {
   String _extractNameFromEmail(String? email) {
     if (email == null || email.isEmpty) return '';
     String username = email.split('@').first;
-    username = username
-        .replaceAll('.', ' ')
-        .replaceAll('_', ' ')
-        .replaceAll('-', ' ');
+    username =
+        username.replaceAll('.', ' ').replaceAll('_', ' ').replaceAll('-', ' ');
     username = username.replaceAll(RegExp(r'\d'), '');
     List<String> words =
-    username.split(' ').where((word) => word.isNotEmpty).toList();
+        username.split(' ').where((word) => word.isNotEmpty).toList();
     return words
-        .map((word) => word.isNotEmpty
-        ? '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}'
-        : '')
+        .map(
+          (word) => word.isNotEmpty
+              ? '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}'
+              : '',
+        )
         .join(' ');
   }
 
@@ -381,9 +378,11 @@ class _RoleExportDialogState extends State<RoleExportDialog> {
   String _formatModuleName(String moduleName) {
     return moduleName
         .split('_')
-        .map((word) => word.isNotEmpty
-        ? '${word[0].toUpperCase()}${word.substring(1)}'
-        : '')
+        .map(
+          (word) => word.isNotEmpty
+              ? '${word[0].toUpperCase()}${word.substring(1)}'
+              : '',
+        )
         .join(' ');
   }
 
@@ -392,8 +391,18 @@ class _RoleExportDialogState extends State<RoleExportDialog> {
     // produced an Arabic month beside Latin digits — a mixed AR/EN cell. The
     // CSV date is now a single consistent English form, e.g. "25 Feb 2023".
     const List<String> months = <String>[
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     return "${date.day} ${months[date.month - 1]} ${date.year}";
   }
@@ -423,12 +432,11 @@ class _RoleExportDialogState extends State<RoleExportDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final lightMode = Theme.of(context).brightness == Brightness.light;
+    Theme.of(context).brightness == Brightness.light;
     // FIXED 29/8/2026: the file-name field was hard-forced to LTR / start, so
     // the Arabic default name rendered left-aligned in AR mode. It now follows
     // the active locale.
-    final bool isArabic =
-        Localizations.localeOf(context).languageCode == 'ar';
+    final bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
@@ -453,8 +461,9 @@ class _RoleExportDialogState extends State<RoleExportDialog> {
                     color: AppColors.primary,
                   ),
                   child: Center(
-                    child: CustomSvgImage(assetPath: 
-                      "assets/icons_assets/main_icons_assets/export_arrow.svg",
+                    child: CustomSvgImage(
+                      assetPath:
+                          "assets/icons_assets/main_icons_assets/ic_action_export.svg",
                       width: 16.sp,
                       height: 16.sp,
                       color: AppColors.textButton,
@@ -474,8 +483,7 @@ class _RoleExportDialogState extends State<RoleExportDialog> {
               hint: S.of(context).enterFileName,
               controller: controller,
               onChanged: (_) => setState(() {}),
-              textDirection:
-                  isArabic ? ui.TextDirection.rtl : ui.TextDirection.ltr,
+              textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
               textAlign: isArabic ? TextAlign.right : TextAlign.start,
             ),
             SizedBox(height: 15.sp),
@@ -495,6 +503,9 @@ class _RoleExportDialogState extends State<RoleExportDialog> {
                       ),
                     )
                   : Row(
+                      textDirection: TextDirection
+                          .ltr, // X-73: Cancel left, action right in both languages
+
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         customButton(
@@ -502,13 +513,9 @@ class _RoleExportDialogState extends State<RoleExportDialog> {
                           title: S.of(context).discard,
                           function: () => Navigator.pop(context),
                           height: 38,
-                          color: lightMode
-                              ? AppColors.lightGrey
-                              : AppColors.darkGrey,
+                          color: AppColors.darkGrey,
                           textStyle: StyleText.fontSize14Weight400.copyWith(
-                            color: lightMode
-                                ? AppColors.black
-                                : AppColors.white,
+                            color: AppColors.text,
                           ),
                         ),
                         Spacer(),

@@ -4,14 +4,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grc_module/features/messaging/m1_chat/presentation/controller/main_controllers/group_chat_cubit.dart';
 import 'package:grc_module/features/messaging/m1_chat/presentation/controller/main_controllers/single_chat_cubit.dart';
 
-import 'package:grc_module/core/helper/main_helper/spacing_helper.dart';
-import '../../../../../m1_chat/presentation/controller/main_controllers/master_chat_cubit.dart';
-import '../../../../../m1_chat/presentation/ui/widgets/contact_info_widget.dart';
-import '../../../../../m1_chat/presentation/ui/widgets/media_links_widget.dart';
-import '../../../controller/connections_controller.dart';
-import '../../../../../m3_groups/presentation/controller/groups_controller.dart';
-import './widgets/tablet_chat_side.dart';
-import './widgets/tablet_chats_list.dart';
+import 'package:grc_module/features/messaging/helpers/spacing_helper.dart';
+import 'package:grc_module/features/messaging/m1_chat/presentation/controller/main_controllers/master_chat_cubit.dart';
+import 'package:grc_module/features/messaging/m1_chat/presentation/ui/widgets/contact_info_widget.dart';
+import 'package:grc_module/features/messaging/m1_chat/presentation/ui/widgets/media_links_widget.dart';
+import 'package:grc_module/features/messaging/m2_connections/presentation/controller/connections_controller.dart';
+import 'package:grc_module/features/messaging/m3_groups/presentation/controller/groups_controller.dart';
+import 'package:grc_module/features/messaging/m2_connections/presentation/ui/widgets/layouts/widgets/tablet_chat_side.dart';
+import 'package:grc_module/features/messaging/m2_connections/presentation/ui/widgets/layouts/widgets/tablet_chats_list.dart';
 
 class TabletLayoutBody extends StatelessWidget {
   const TabletLayoutBody({super.key});
@@ -29,7 +29,7 @@ class TabletLayoutBody extends StatelessWidget {
               return _buildLayout(
                 context: context,
                 isShowMedia: chatState.isShowMedia,
-                isShowContactInfo: chatState.isShowContactInfo,  // ✅ NEW
+                isShowContactInfo: chatState.isShowContactInfo, // ✅ NEW
                 isExpansionTabletChat: chatState.isExpansionTabletChat,
                 activeCubit: context.read<SingleChatCubit>(),
               );
@@ -48,7 +48,7 @@ class TabletLayoutBody extends StatelessWidget {
                   return _buildLayout(
                     context: context,
                     isShowMedia: chatState.isShowMedia,
-                    isShowContactInfo: chatState.isShowContactInfo,  // ✅ NEW
+                    isShowContactInfo: chatState.isShowContactInfo, // ✅ NEW
                     isExpansionTabletChat: chatState.isExpansionTabletChat,
                     activeCubit: context.read<GroupChatCubit>(),
                   );
@@ -59,7 +59,7 @@ class TabletLayoutBody extends StatelessWidget {
             return _buildLayout(
               context: context,
               isShowMedia: false,
-              isShowContactInfo: false,  // ✅ NEW
+              isShowContactInfo: false, // ✅ NEW
               isExpansionTabletChat: false,
             );
           },
@@ -71,7 +71,7 @@ class TabletLayoutBody extends StatelessWidget {
   Widget _buildLayout({
     required BuildContext context,
     required bool isShowMedia,
-    required bool isShowContactInfo,  // ✅ NEW
+    required bool isShowContactInfo, // ✅ NEW
     required bool isExpansionTabletChat,
     MasterChatCubit? activeCubit,
   }) {
@@ -84,8 +84,6 @@ class TabletLayoutBody extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
-
           // ── Chat list (hidden when contact info or media is showing) ──
           if (!hideChatList)
             SizedBox(
@@ -112,7 +110,8 @@ class TabletLayoutBody extends StatelessWidget {
           // 16 matches the start/end padding home_tablet_page.dart puts on the
           // whole screen, so the chat list now has the same gap on both sides
           // in both languages.
-          if (!hideChatList || isShowContactInfo) horizontalSpace(20), // matches the 20.sp page gutter
+          if (!hideChatList || isShowContactInfo)
+            horizontalSpace(20), // matches the 20.sp page gutter
 
           // ── Chat area (always visible) ──
           const Expanded(child: TabletChatSide()),

@@ -6,7 +6,7 @@
 // Author: Knowticed Plus team
 // Updated: 11/8/2026 - Added the standard module + FILE INFO header.
 
-part of './app_drawer_cubit.dart';
+part of 'app_drawer_cubit.dart';
 
 sealed class AppDrawerState {
   const AppDrawerState();

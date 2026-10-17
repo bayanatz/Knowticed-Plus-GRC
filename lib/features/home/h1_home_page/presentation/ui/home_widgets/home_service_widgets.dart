@@ -33,10 +33,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/custom/16-custom_card_styles.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
+import 'package:grc_module/core/custom/cards/custom_card_styles.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
-import 'package:grc_module/core/helper/main_helper/localized_number.dart';
+import 'package:grc_module/core/helper/localized_number.dart';
 import 'package:grc_module/features/home/h1_home_page/data/models/home_component_model.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/controller/services_home_stats_cubit.dart';
 import 'package:grc_module/features/home/h1_home_page/presentation/controller/services_home_stats_state.dart';
@@ -208,8 +208,7 @@ class ServicesStatus extends StatelessWidget {
                 HomeProgressRow(
                   label: label,
                   value: format(stats.statusCounts[key] ?? 0),
-                  fraction:
-                      ready ? (stats.statusCounts[key] ?? 0) / peak : 0,
+                  fraction: ready ? (stats.statusCounts[key] ?? 0) / peak : 0,
                   color: color,
                 ),
             ],

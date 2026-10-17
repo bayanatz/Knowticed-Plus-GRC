@@ -2,9 +2,11 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: user_management_cubit.dart
-/// Purpose: Declares `UserManagementAccessCubit`.
-/// Author: Knowticed Plus team
+/// Description: Declares `UserManagementAccessCubit`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
@@ -14,14 +16,19 @@ import 'package:grc_module/features/roles/r2_user_management/domain/usecases/del
 import 'package:grc_module/core/di/app_controllers.dart';
 
 import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
 import 'package:grc_module/features/roles/r2_user_management/data/repository/user_role_repository.dart';
 import 'package:grc_module/features/roles/r2_user_management/domain/entities/user_permission_entity.dart';
 import 'package:grc_module/features/roles/r2_user_management/domain/usecases/update_selected_members_use_case.dart';
-import 'package:grc_module/core/helper/role/constants.dart';
+import 'package:grc_module/core/helper/access/constants.dart';
 import 'package:grc_module/features/roles/r2_user_management/domain/enums/user_access_status.dart';
 
-part './user_management_state.dart';
+// ADDED 9/10/2026 — per-module user limits on the Add Access / Edit flows.
+import 'dart:async';
+
+import 'package:grc_module/features/roles/r2_user_management/data/services/module_user_limit_messages.dart';
+import 'package:grc_module/features/roles/r2_user_management/domain/services/module_user_limit_rule.dart';
+
+part 'user_management_state.dart';
 
 /// App-wide shared UserManagementAccessCubit instance.
 ///
@@ -31,6 +38,10 @@ part './user_management_state.dart';
 UserManagementAccessCubit userManagementCubit = UserManagementAccessCubit();
 
 class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
+  /// Public [emit] for this cubit's extension / part files and widgets
+  /// ([emit] itself is protected).
+  void emitState(UserManagementAccessState state) => emit(state);
+
   UserManagementAccessCubit() : super(UserManagementInitial());
 
   /// Function Name: [emitSafely]
@@ -54,7 +65,7 @@ class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
   UserManagementAccessRepository repository = UserManagementAccessRepository();
   Map<String, List<UserPermissionEntity>> roleFilteredUsersPermissions = {};
   Map<UserAccessStatus, List<UserPermissionEntity>>
-  accessStatusFilteredUsersPermissions = {};
+      accessStatusFilteredUsersPermissions = {};
   String selectedRole = 'all';
   UserAccessStatus selectedUserAccessStatus = UserAccessStatus.all;
   List<UserPermissionEntity> filteredUsersPermissions = [];
@@ -86,7 +97,8 @@ class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
     try {
       emitSafely(UserPermissionsDataLoading());
 
-      Either<Failure, dynamic> result = await repository.getUsersPermissionsData();
+      Either<Failure, dynamic> result =
+          await repository.getUsersPermissionsData();
 
       if (result.isLeft()) {
         Failure failure = result.fold((l) => l, (r) => null)!;
@@ -99,14 +111,14 @@ class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
       getUsersPermissionFilteredMaps(userPermissions);
 
       filterHomePageUser(homePageSearchController.text);
-    } catch (e, stackTrace) {
-      debugPrint('getUserAccess failed: $e\n$stackTrace');
+    } catch (e) {
       emitSafely(UserPermissionsDataError(e.toString()));
     }
   }
 
-  void getUsersPermissionFilteredMaps(List<UserPermissionEntity> userPermissions) {
-
+  void getUsersPermissionFilteredMaps(
+    List<UserPermissionEntity> userPermissions,
+  ) {
     try {
       roleFilteredUsersPermissions = {};
       accessStatusFilteredUsersPermissions = {};
@@ -124,8 +136,12 @@ class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
         roleFilteredUsersPermissions[roleKey]!.add(userPermission);
 
         // Add to status filters
-        accessStatusFilteredUsersPermissions[userPermission.accessStatus]!.add(userPermission);
-        accessStatusFilteredUsersPermissions[UserAccessStatus.all]!.add(userPermission);
+        accessStatusFilteredUsersPermissions[userPermission.accessStatus]!.add(
+          userPermission,
+        );
+        accessStatusFilteredUsersPermissions[UserAccessStatus.all]!.add(
+          userPermission,
+        );
 
         // GROUPING chips (29/8/2026): "Access Granted" collects everyone who
         // currently holds access (active / scheduled / expiring soon), and
@@ -143,14 +159,13 @@ class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
               .add(userPermission);
         }
       }
-
-    } catch (e, stackTrace) {
+    } catch (e) {
       // Was an empty `catch {}` — a failure here left the filter maps
       // half-built and the UI silently showed a truncated roster (§11.5).
-      debugPrint('getUsersPermissionFilteredMaps failed: $e\n$stackTrace');
       emitSafely(UserPermissionsDataError(e.toString()));
     }
   }
+
   void selectNewRole(String role) {
     selectedRole = role;
     filterHomePageUser(homePageSearchController.text);
@@ -162,7 +177,6 @@ class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
   }
 
   void filterHomePageUser(String searchText) {
-
     try {
       filteredUsersPermissions = [];
       Map<UserPermissionEntity, int> userPermissionCount = {};
@@ -170,54 +184,55 @@ class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
       // Get users based on selected role
       List<UserPermissionEntity> roleUsers = [];
       if (selectedRole == 'all') {
-        int totalFromRoles = 0;
         roleFilteredUsersPermissions.forEach((key, value) {
           roleUsers.addAll(value);
-          totalFromRoles += value.length;
         });
       } else {
         roleUsers = roleFilteredUsersPermissions[selectedRole] ?? [];
       }
 
       // Filter by role and search text
-      int roleMatchCount = 0;
       for (UserPermissionEntity permission in roleUsers) {
-        if (permission.arabicName.toLowerCase().contains(searchText.toLowerCase()) ||
-            permission.englishName.toLowerCase().contains(searchText.toLowerCase())) {
+        if (permission.arabicName.toLowerCase().contains(
+                  searchText.toLowerCase(),
+                ) ||
+            permission.englishName.toLowerCase().contains(
+                  searchText.toLowerCase(),
+                )) {
           userPermissionCount.putIfAbsent(permission, () => 0);
-          userPermissionCount[permission] = userPermissionCount[permission]! + 1;
-          roleMatchCount++;
+          userPermissionCount[permission] =
+              userPermissionCount[permission]! + 1;
         }
       }
 
       // Filter by access status and search text
-      int statusMatchCount = 0;
       List<UserPermissionEntity> statusUsers =
           accessStatusFilteredUsersPermissions[selectedUserAccessStatus] ?? [];
 
       for (UserPermissionEntity permission in statusUsers) {
-        if (permission.arabicName.toLowerCase().contains(searchText.toLowerCase()) ||
-            permission.englishName.toLowerCase().contains(searchText.toLowerCase())) {
+        if (permission.arabicName.toLowerCase().contains(
+                  searchText.toLowerCase(),
+                ) ||
+            permission.englishName.toLowerCase().contains(
+                  searchText.toLowerCase(),
+                )) {
           userPermissionCount.putIfAbsent(permission, () => 0);
-          userPermissionCount[permission] = userPermissionCount[permission]! + 1;
-          statusMatchCount++;
+          userPermissionCount[permission] =
+              userPermissionCount[permission]! + 1;
         }
       }
 
       // Add users that match both role and status filters (count == 2)
-      int finalCount = 0;
       userPermissionCount.forEach((key, value) {
         if (value == 2) {
           filteredUsersPermissions.add(key);
-          finalCount++;
         }
       });
 
       emitSafely(UserPermissionsDataLoaded());
-    } catch (e, stackTrace) {
+    } catch (e) {
       // Was an empty `catch {}`: the filter blew up, no state was emitted and
       // the list stayed frozen on its previous contents (§11.5).
-      debugPrint('filterHomePageUser failed: $e\n$stackTrace');
       emitSafely(UserPermissionsDataError(e.toString()));
     }
   }
@@ -227,8 +242,13 @@ class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
     selectedUserAccessStatus = UserAccessStatus.all;
   }
 
-  initNewAccessController(List<String> roles, List<String> rolesAr, // ✅ Add rolesAr
-          {String? selectedRole, DateTime? creationDate}) {
+  void initNewAccessController(
+    List<String> roles,
+    List<String> rolesAr, {
+    // ✅ Add rolesAr
+    String? selectedRole,
+    DateTime? creationDate,
+  }) {
     accessGranted = DateTime.now();
     accessRevoked = DateTime.now().add(Duration(days: 30 * 6));
     newAccessSelectedRole = null;
@@ -243,7 +263,94 @@ class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
     } else {
       getSelectedRoleUsers(selectedRole);
     }
+    // 9/10/2026 — fresh limits + usage every time the page opens.
+    unawaited(loadLicenceUsage());
   }
+
+  // ══════════════════════════════════════════════════════════════════
+  //  USER LIMITS — ADDED 9/10/2026
+  //
+  //  The limits Knowticed Admin sets (per module + company total), shown
+  //  under the Role Type once a role is picked, and checked against the
+  //  employees selected so the Grant button can refuse BEFORE Save. This is
+  //  a convenience read: the repository re-checks inside the transaction
+  //  that writes the grant, so a seat taken meanwhile by someone else is
+  //  still refused there with the same message.
+  // ══════════════════════════════════════════════════════════════════
+
+  /// The last snapshot read; null while loading or after a failed read.
+  LicenceUsageSnapshot? licenceUsage;
+  bool licenceUsageLoading = false;
+  bool licenceUsageFailed = false;
+  int _licenceUsageRequest = 0;
+
+  /// Function Name: [loadLicenceUsage]
+  ///
+  /// Purpose: (Re)read the limits and current usage.
+  ///
+  /// Returns: [Future<void>] — never throws; a failed read leaves
+  /// [licenceUsageFailed] set, which BLOCKS granting until a retry succeeds.
+  Future<void> loadLicenceUsage() async {
+    final int request = ++_licenceUsageRequest;
+    licenceUsageLoading = true;
+    licenceUsageFailed = false;
+    emitSafely(UserLimitUsageUpdated());
+
+    final Either<Failure, LicenceUsageSnapshot> result =
+        await repository.readLicenceUsage();
+    if (request != _licenceUsageRequest) return; // a newer read superseded it
+
+    result.fold((Failure _) {
+      licenceUsage = null;
+      licenceUsageFailed = true;
+    }, (LicenceUsageSnapshot snapshot) => licenceUsage = snapshot);
+    licenceUsageLoading = false;
+    emitSafely(UserLimitUsageUpdated());
+  }
+
+  /// Usage of every limited module of the selected role ("Time Tracker: 8 of
+  /// 10 users"), then the company total ("Users: 18 of 20", `module == null`)
+  /// — empty until a role is picked and the snapshot has loaded.
+  List<ModuleUsage> get selectedRoleUsage {
+    final String? role = newAccessSelectedRole;
+    final LicenceUsageSnapshot? usage = licenceUsage;
+    if (role == null || role.isEmpty || usage == null) {
+      return const <ModuleUsage>[];
+    }
+    final ModuleUsage? total = usage.totalUsage();
+    return <ModuleUsage>[...usage.usageForRole(role), if (total != null) total];
+  }
+
+  /// Function Name: [limitMessageFor]
+  ///
+  /// Purpose: Why giving [role] to [employeeIds] would be refused, or null
+  /// when it would not.
+  ///
+  /// Fails closed: while the snapshot is loading, or when it could not be
+  /// read, the answer is a message (so the Grant button stays disabled).
+  String? limitMessageFor(Iterable<String> employeeIds, String role) {
+    if (licenceUsageLoading) return ModuleUserLimitMessages.checking;
+    final LicenceUsageSnapshot? usage = licenceUsage;
+    if (licenceUsageFailed || usage == null) {
+      return ModuleUserLimitMessages.checkFailed;
+    }
+    final LimitVerdict verdict = usage.check(<ProposedAssignment>[
+      for (final String id in employeeIds)
+        ProposedAssignment(employeeId: id, role: role),
+    ]);
+    return verdict.allowed ? null : ModuleUserLimitMessages.verdict(verdict);
+  }
+
+  /// [limitMessageFor] the current Add Access selection; null when there is
+  /// nothing to refuse (no role or nobody selected yet, or within limits).
+  String? get selectionLimitMessage {
+    final String? role = newAccessSelectedRole;
+    if (role == null || role.isEmpty || selectedUsersIdToChangeAccess.isEmpty) {
+      return null;
+    }
+    return limitMessageFor(selectedUsersIdToChangeAccess, role);
+  }
+
   void getUsersToGiveAccess() {
     employeeToGiveAccess = [];
 
@@ -261,21 +368,18 @@ class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
             user.employeeId,
     };
 
-    AppControllers.employee
-        .allEmployeesEntities!
-        .forEach((element) {
-      if (alreadyAssignedIds.contains(element.id)) return;
-      if (element.email !=
-          AppControllers.employee.employeeEntity!.email) {
-        employeeToGiveAccess
-            .add(UserPermissionEntity.fromEmployeeEntity(element));
+    for (var element in AppControllers.employee.allEmployeesEntities!) {
+      if (alreadyAssignedIds.contains(element.id)) continue;
+      if (element.email != AppControllers.employee.employeeEntity!.email) {
+        employeeToGiveAccess.add(
+          UserPermissionEntity.fromEmployeeEntity(element),
+        );
       }
-    });
+    }
     filterEmployeesToGiveAccess("");
   }
 
   void filterEmployeesToGiveAccess(String searchText) {
-
     filteredEmployeeToGiveAccess = [];
 
     // ✅ Check current employee email
@@ -291,8 +395,12 @@ class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
         var element = employeeToGiveAccess[i];
 
         // Search filter
-        bool matchesSearch = element.arabicName.toLowerCase().contains(searchText.toLowerCase()) ||
-            element.englishName.toLowerCase().contains(searchText.toLowerCase());
+        bool matchesSearch = element.arabicName.toLowerCase().contains(
+                  searchText.toLowerCase(),
+                ) ||
+            element.englishName.toLowerCase().contains(
+                  searchText.toLowerCase(),
+                );
 
         // Department filter
         bool matchesDepartment = (addNewAccessDepartmentId == null) ||
@@ -300,8 +408,10 @@ class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
 
         if (matchesSearch && matchesDepartment) {
           // ✅ Safe comparison
-          bool isCurrentEmployee = element.employeeEmail == currentEmployeeEmail;
-          bool isCompanyEmail = companyEmail != null && element.employeeEmail == companyEmail;
+          bool isCurrentEmployee =
+              element.employeeEmail == currentEmployeeEmail;
+          bool isCompanyEmail =
+              companyEmail != null && element.employeeEmail == companyEmail;
 
           if (isCurrentEmployee || isCompanyEmail) {
             continue;
@@ -312,13 +422,12 @@ class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
       }
 
       emitSafely(EmployeeToGiveAccessDataLoaded());
-
-    } catch (e, stackTrace) {
+    } catch (e) {
       rethrow;
     }
   }
 
-  selectUserToChangeAccess(String employeeId) {
+  void selectUserToChangeAccess(String employeeId) {
     if (selectedUsersIdToChangeAccess.contains(employeeId)) {
       selectedUsersIdToChangeAccess.remove(employeeId);
     } else {
@@ -343,35 +452,32 @@ class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
     filterEmployeesToGiveAccess("");
   }
 
-  removeUserAccess(UserPermissionEntity userPermission) async {
+  Future<void> removeUserAccess(UserPermissionEntity userPermission) async {
     Either<Failure, dynamic> result =
-    await DeleteUserPermissionUseCase(repository).execute(
-        permission: userPermission,
-        employeeEmail: userPermission.employeeEmail,
-        currentUserEmail:
-        AppControllers.employee.employeeEntity!.email!);
+        await DeleteUserPermissionUseCase(repository).execute(
+      permission: userPermission,
+      employeeEmail: userPermission.employeeEmail,
+      currentUserEmail: AppControllers.employee.employeeEntity!.email!,
+    );
     if (result.isRight()) {
       getUserAccess();
       getSelectedRoleUsers(selectedRole);
     }
   }
 
-  updateSelectedMembersAccess() async {
-
+  Future<void> updateSelectedMembersAccess() async {
     Either<Failure, dynamic> result =
-    await UpdateSelectedMembersUseCase(repository).execute(
+        await UpdateSelectedMembersUseCase(repository).execute(
       accessName: newAccessSelectedRole!,
       startDate:
-      DateFormat(Constants.userAccessDateFormat).format(accessGranted),
+          DateFormat(Constants.userAccessDateFormat).format(accessGranted),
       endDate: DateFormat(Constants.userAccessDateFormat).format(accessRevoked),
-      selectedMembers: AppControllers.employee
-          .allEmployeesEntities!
+      selectedMembers: AppControllers.employee.allEmployeesEntities!
           .where(
             (element) => selectedUsersIdToChangeAccess.contains(element.id),
-      )
+          )
           .toList(),
-      currentUserEmail:
-      AppControllers.employee.employeeEntity!.email!,
+      currentUserEmail: AppControllers.employee.employeeEntity!.email!,
     );
 
     if (result.isRight()) {
@@ -383,11 +489,15 @@ class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
 
       // Emit error state to show in UI
       emitSafely(UserManagementAccessError(failure.errMessage));
+      // 9/10/2026 — a refusal at commit means the usage moved since the page
+      // read it (someone else took the seats); show the current numbers.
+      unawaited(loadLicenceUsage());
     }
   }
 
   Future<List<Map<String, dynamic>>> getUserAccessHistory(
-      String userEmail) async {
+    String userEmail,
+  ) async {
     return [];
   }
 
@@ -412,19 +522,21 @@ class UserManagementAccessCubit extends Cubit<UserManagementAccessState> {
 
   List<Map<String, dynamic>> exportUserAccessData() {
     return filteredUsersPermissions
-        .map((user) => {
-      'employeeEmail': user.employeeEmail,
-      'englishName': user.englishName,
-      'arabicName': user.arabicName,
-      'accessName': user.accessName,
-      'accessStatus': user.accessStatus.toString(),
-      'startDate': user.startDate,
-      'endDate': user.endDate,
-      'grantorEnglishName': user.grantorEnglishName,
-      'grantorArabicName': user.grantorArabicName,
-      'departmentId': user.departmentId,
-      'jobTitle': user.englishJobTitle,
-    })
+        .map(
+          (user) => {
+            'employeeEmail': user.employeeEmail,
+            'englishName': user.englishName,
+            'arabicName': user.arabicName,
+            'accessName': user.accessName,
+            'accessStatus': user.accessStatus.toString(),
+            'startDate': user.startDate,
+            'endDate': user.endDate,
+            'grantorEnglishName': user.grantorEnglishName,
+            'grantorArabicName': user.grantorArabicName,
+            'departmentId': user.departmentId,
+            'jobTitle': user.englishJobTitle,
+          },
+        )
         .toList();
   }
 

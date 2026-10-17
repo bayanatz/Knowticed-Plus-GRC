@@ -2,8 +2,8 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: request_error_dialog.dart
-/// Purpose: The "could not submit" dialog shown when a request fails.
-/// Author: Knowticed Plus team
+/// Description: The "could not submit" dialog shown when a request fails.
+/// Author: Amr Mesbah
 /// Created at: 11/8/2026
 ///
 /// Added for CR-SKEL-SE6-N05. This 60-line inline `Dialog` was duplicated
@@ -12,6 +12,7 @@
 /// title, a hardcoded `'Close'` button and the raw exception text interpolated
 /// into the body. One copy now, localized, and the raw failure text is no
 /// longer put in front of the user.
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,7 +20,7 @@ import 'package:lottie/lottie.dart';
 
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/custom/5-custom_button.dart';
+import 'package:grc_module/core/custom/buttons/custom_button.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/core/theme/app_animations.dart';
 
@@ -34,11 +35,8 @@ abstract class RequestErrorDialog {
       context: context,
       barrierDismissible: true,
       builder: (BuildContext dialogContext) => Dialog(
-        backgroundColor:
-            lightMode ? AppColors.white : AppColors.background,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4.r),
-        ),
+        backgroundColor: lightMode ? AppColors.white : AppColors.background,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.r)),
         child: Padding(
           padding: EdgeInsets.all(20.r),
           child: SizedBox(
@@ -47,7 +45,7 @@ abstract class RequestErrorDialog {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Lottie.asset(
-                  'assets/lottie_assets/main_lottie_assets/lottie_warning.json',
+                  'assets/lottie_assets/main_lottie_assets/lot_action_delete_role.json',
                   width: 70.sp,
                   height: 70.sp,
                   fit: BoxFit.scaleDown,
@@ -56,8 +54,7 @@ abstract class RequestErrorDialog {
                 Text(
                   S.of(context).error,
                   style: StyleText.fontSize20Weight500.copyWith(
-                    color:
-                        lightMode ? AppColors.blackButton : AppColors.white,
+                    color: AppColors.blackButton,
                   ),
                 ),
                 SizedBox(height: 18.sp),
@@ -65,8 +62,7 @@ abstract class RequestErrorDialog {
                   S.of(context).errorOccurred,
                   textAlign: TextAlign.center,
                   style: StyleText.fontSize14Weight500.copyWith(
-                    color:
-                        lightMode ? AppColors.secondaryText : AppColors.grey,
+                    color: AppColors.secondaryText,
                   ),
                 ),
                 SizedBox(height: 15.sp),

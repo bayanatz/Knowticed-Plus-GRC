@@ -10,6 +10,7 @@
 /// screen. Follows the shape of `RequestCollectionPaths`: the module document
 /// is resolved through `getBaseUrl` so the company id is never hardcoded, and
 /// the submissions hang off it as a sub-collection.
+library;
 
 import 'package:grc_module/core/constants/firebase_collections.dart';
 import 'package:grc_module/core/network/get_base_url.dart';

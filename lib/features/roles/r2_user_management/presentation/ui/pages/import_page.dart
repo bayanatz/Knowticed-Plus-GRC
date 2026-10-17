@@ -3,34 +3,35 @@
 /// ******************* FILE INFO *******************
 /// File Name: upload_file.dart
 /// Description: can make bulk upload of file by drag and drop here
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Created by: Amr Mesbah
 /// Last Update: 30/8/2025
+library;
 
+import 'package:grc_module/core/custom/dialogs/custom_dialog_manager.dart';
 import 'dart:io';
 
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/custom/37-custom_navigate.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
+import 'package:grc_module/core/custom/navigation/custom_navigate.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart' hide Border, BorderStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:grc_module/core/custom/50-custom_side_frame_master.dart';
+import 'package:grc_module/core/custom/navigation/custom_side_frame_master.dart';
 // REMOVED_MODULE: import 'package:grc_module/core/helper/inventory_module/core/navigate.dart';
 import 'package:grc_module/features/roles/r2_user_management/presentation/ui/pages/upload_file_details.dart';
-import 'package:lottie/lottie.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter/services.dart';
 import 'package:desktop_drop/desktop_drop.dart'; // Add this dependency
-
 
 import 'package:grc_module/generated/l10n.dart';
 
-import 'package:grc_module/core/custom/5-custom_button.dart';
+import 'package:grc_module/core/custom/buttons/custom_button.dart';
 import 'package:grc_module/core/theme/app_animations.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
+import 'package:grc_module/core/custom/feedback/circle_progress.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 part '../widgets/import_page_methods1.dart';
 part '../widgets/import_page_methods2.dart';
 
@@ -38,7 +39,6 @@ part '../widgets/import_page_methods2.dart';
 // REMOVED_MODULE: import '../../../../../../external/services_mangment_module/Category/presentation/ui/service_department_manager/tablet/s1_create_service/data_upload/upload_file_details_toggle.dart';
 // REMOVED_MODULE: import '../../../../../../external/services_mangment_module/Category/presentation/ui/services_admin/Widget/W3_Frame_Screen_tablet.dart' show SideFrameMasterServices;
 // REMOVED_MODULE: import '../../../../../../external/services_mangment_module/core/new_theme.dart';
-
 
 class UploadFileTabletRoles extends StatefulWidget {
   const UploadFileTabletRoles({super.key});
@@ -48,18 +48,14 @@ class UploadFileTabletRoles extends StatefulWidget {
 }
 
 class _UploadFileTabletRolesState extends State<UploadFileTabletRoles> {
+  /// Lets this screen's builder/logic extensions refresh it (setState
+  /// itself may only be called inside the State class).
+  void rebuild(VoidCallback fn) => setState(fn);
+
   // Add drag and drop state variables
   bool _isDragging = false;
   // REMOVED 12/8/2026: `_isHovering` — assigned in the two drag handlers but
   // never read, so the flag drove nothing (analyzer: unused_field).
-
-
-
-
-
-
-
-
 
   List<Map<String, TextEditingController>> formData = [];
   List<Map<String, TextEditingController>> filteredData = [];
@@ -77,15 +73,14 @@ class _UploadFileTabletRolesState extends State<UploadFileTabletRoles> {
 
   String? selectedFileName;
 
-
-
-
   // File picker method (your existing method but simplified)
   Future<void> pickAndParseExcel() async {
     try {
       bool hasPermission = await requestStoragePermission();
       if (!hasPermission) {
-        _showErrorDialog('Storage permission denied. Please grant permission to access files.');
+        _showErrorDialog(
+          'Storage permission denied. Please grant permission to access files.',
+        );
         return;
       }
 
@@ -117,13 +112,10 @@ class _UploadFileTabletRolesState extends State<UploadFileTabletRoles> {
       }
 
       await processFile(bytes, file.name);
-
     } catch (e) {
       _showErrorDialog('Failed to pick file: ${e.toString()}');
     }
   }
-
-
 
   void _onDragUpdate(DropEventDetails details) {
     // Intentionally empty: this used to set the unused `_isHovering` flag.
@@ -157,20 +149,13 @@ class _UploadFileTabletRolesState extends State<UploadFileTabletRoles> {
     }
   }
 
-
-
-
-
-
-
-
   @override
   Widget build(BuildContext context) {
     var lightMode = Theme.of(context).brightness == Brightness.light;
 
     return SideFrameMasterServices(
       titleText: S.of(context).service,
-      onFirstTap: (){
+      onFirstTap: () {
         Navigator.pop(context);
       },
       secondTitle: S.of(context).bulkUpload,
@@ -178,92 +163,92 @@ class _UploadFileTabletRolesState extends State<UploadFileTabletRoles> {
         padding: EdgeInsets.only(right: 7.sp),
         child: Column(
           children: [
-            Container(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  // Enhanced Upload box with drag and drop
-                  DropTarget(
-                    onDragEntered: (_) => _onDragEntered(),
-                    onDragExited: (_) => _onDragExited(),
-                    onDragUpdated: _onDragUpdate,
-                    onDragDone: _onDragDone,
-                    child: GestureDetector(
-                      onTap: pickAndParseExcel,
-                      child: AnimatedContainer(
-                        duration: Duration(milliseconds: 200),
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: _isDragging
-                              ? (lightMode
-                              ? AppColors.primary.withOpacity(0.1)
-                              : AppColors.primary.withOpacity(0.2))
-                              : (AppColors.card),
-                          borderRadius: BorderRadius.circular(8.r),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                // Enhanced Upload box with drag and drop
+                DropTarget(
+                  onDragEntered: (_) => _onDragEntered(),
+                  onDragExited: (_) => _onDragExited(),
+                  onDragUpdated: _onDragUpdate,
+                  onDragDone: _onDragDone,
+                  child: GestureDetector(
+                    onTapDown: hapticDown(pickAndParseExcel, HapticLevel.low),
+                    onTap: pickAndParseExcel,
+                    child: AnimatedContainer(
+                      duration: Duration(milliseconds: 200),
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: _isDragging
+                            ? (lightMode
+                                ? AppColors.primary.withValues(alpha: 0.1)
+                                : AppColors.primary.withValues(alpha: 0.2))
+                            : (AppColors.card),
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 60.sp),
 
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            SizedBox(height: 60.sp),
+                          // Animated icon based on drag state
+                          AnimatedSwitcher(
+                            duration: Duration(milliseconds: 300),
+                            child: _isDragging
+                                ? Icon(
+                                    Icons.cloud_upload_outlined,
+                                    key: ValueKey('dragging'),
+                                    size: 100.sp,
+                                    color: AppColors.primary,
+                                  )
+                                : CustomSvgImage(
+                                    assetPath:
+                                        "assets/icons_assets/main_icons_assets/ic_action_upload_rounded.svg",
+                                    key: ValueKey('normal'),
+                                    width: 100.sp,
+                                    height: 100.sp,
+                                    fit: BoxFit.scaleDown,
+                                    semanticsLabel: 'Upload Icon',
+                                  ),
+                          ),
 
-                            // Animated icon based on drag state
-                            AnimatedSwitcher(
-                              duration: Duration(milliseconds: 300),
-                              child: _isDragging
-                                  ? Icon(
-                                Icons.cloud_upload_outlined,
-                                key: ValueKey('dragging'),
-                                size: 100.sp,
-                                color: AppColors.primary,
-                              )
-                                  : CustomSvgImage(assetPath: 
-                                "assets/icons_assets/form_builder_assets/upload_arrow_rounded.svg",
-                                key: ValueKey('normal'),
-                                width: 100.sp,
-                                height: 100.sp,
-                                fit: BoxFit.scaleDown,
-                                semanticsLabel: 'Upload Icon',
+                          SizedBox(height: 27.sp),
+
+                          // Dynamic text based on drag state
+                          AnimatedSwitcher(
+                            duration: Duration(milliseconds: 200),
+                            child: Text(
+                              _isDragging
+                                  ? "Drop your Excel file here"
+                                  : S.of(context).dragDropFilesHere,
+                              key: ValueKey(_isDragging ? 'drop' : 'drag'),
+                              style: StyleText.fontSize20Weight500.copyWith(
+                                color: _isDragging
+                                    ? AppColors.primary
+                                    : (AppColors.text),
                               ),
+                              textAlign: TextAlign.center,
                             ),
+                          ),
 
-                            SizedBox(height: 27.sp),
+                          SizedBox(height: 25.sp),
 
-                            // Dynamic text based on drag state
-                            AnimatedSwitcher(
-                              duration: Duration(milliseconds: 200),
-                              child: Text(
-                                _isDragging
-                                    ?  "Drop your Excel file here"
-                                    : S.of(context).dragDropFilesHere,
-                                key: ValueKey(_isDragging ? 'drop' : 'drag'),
-                                style: StyleText.fontSize20Weight500.copyWith(
-                                  color: _isDragging
-                                      ? AppColors.primary
-                                      : (AppColors.text),
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-
-                            SizedBox(height: 25.sp),
-
-
-
-                            SizedBox(height: 60.sp),
-                          ],
-                        ),
+                          SizedBox(height: 60.sp),
+                        ],
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
 
             SizedBox(height: 26.sp),
 
             // Discard And Browse buttons
             Row(
+              textDirection: TextDirection
+                  .ltr, // X-73: Cancel left, action right in both languages
+
               children: [
                 customButton(
                   title: S.of(context).discard,
@@ -280,11 +265,9 @@ class _UploadFileTabletRolesState extends State<UploadFileTabletRoles> {
                   width: 150.sp,
                   height: 38.sp,
                   radius: 8.r,
-                  color: AppColors.secondaryText,
+                  color: AppColors.darkGrey,
                 ),
-
                 Spacer(),
-
                 customButton(
                   title: S.of(context).browseFiles,
                   function: pickAndParseExcel,
@@ -305,7 +288,7 @@ class _UploadFileTabletRolesState extends State<UploadFileTabletRoles> {
               Container(
                 padding: EdgeInsets.all(12.sp),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
+                  color: AppColors.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Row(
@@ -326,6 +309,7 @@ class _UploadFileTabletRolesState extends State<UploadFileTabletRoles> {
                     ),
                     IconButton(
                       onPressed: () {
+                        HapticController.high();
                         setState(() {
                           selectedFileName = null;
                         });

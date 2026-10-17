@@ -5,13 +5,15 @@
 /// Purpose: Declares `DashedIconContainer`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
-import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 // REMOVED_MODULE: import 'package:grc_module/features/external/services_mangment_module/core/new_theme.dart';
 
 class DashedIconContainer extends StatelessWidget {
@@ -53,8 +55,8 @@ class DashedIconContainer extends StatelessWidget {
               borderRadius: BorderRadius.circular(8.r),
             ),
             child: Center(
-              child: SvgPicture.asset(
-                svgAssetPath,
+              child: CustomSvgImage.natural(
+                assetPath: svgAssetPath,
                 width: 26.sp,
                 fit: BoxFit.fill,
                 height: 26.sp,
@@ -69,6 +71,7 @@ class DashedIconContainer extends StatelessWidget {
           top: -3.h,
           right: -4.w,
           child: GestureDetector(
+            onTapDown: hapticDown(onMinusTap, HapticLevel.high),
             onTap: onMinusTap,
             child: Container(
               width: 15.w,

@@ -2,9 +2,11 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: persistent_tab_view.dart
-/// Purpose: Declares `PersistentTabView`.
-/// Author: Knowticed Plus team
+/// Description: Declares `PersistentTabView`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 // Author: Bilal Shahid
 // For queries, contact me at bilalscheema@gmail.com
@@ -15,8 +17,13 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:grc_module/features/home/h2_nav_bar/persistent_nav_bar.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
+
+part 'persistent_tab_view/persistent_tab_view_base.dart';
+part 'persistent_tab_view/assert_mid_button_styles.dart';
 
 ///A highly customizable persistent navigation bar for flutter.
 ///
@@ -25,32 +32,32 @@ import 'package:grc_module/core/theme/app_colors.dart';
 class PersistentTabView extends PersistentTabViewBase {
   PersistentTabView(this.context,
       {required this.screens,
-      final Key? key,
-      final List<PersistentBottomNavBarItem>? items,
+      super.key,
+      super.items,
       this.controller,
-      final double navBarHeight = kBottomNavigationBarHeight,
+      double super.navBarHeight = kBottomNavigationBarHeight,
       this.margin = EdgeInsets.zero,
       this.backgroundColor = CupertinoColors.white,
-      final ValueChanged<int>? onItemSelected,
-      final NeumorphicProperties? neumorphicProperties,
+      super.onItemSelected,
+      super.neumorphicProperties,
       this.floatingActionButton,
-      final NavBarPadding padding = const NavBarPadding.all(null),
-      final NavBarDecoration decoration = const NavBarDecoration(),
+      NavBarPadding super.padding = const NavBarPadding.all(null),
+      NavBarDecoration super.decoration = const NavBarDecoration(),
       this.resizeToAvoidBottomInset = false,
       this.bottomScreenMargin,
       this.selectedTabScreenContext,
       this.hideNavigationBarWhenKeyboardShows = true,
-      final bool popAllScreensOnTapOfSelectedTab = true,
-      final bool popAllScreensOnTapAnyTabs = false,
-      final PopActionScreensType popActionScreens = PopActionScreensType.all,
+      bool super.popAllScreensOnTapOfSelectedTab = true,
+      bool super.popAllScreensOnTapAnyTabs = false,
+      PopActionScreensType super.popActionScreens = PopActionScreensType.all,
       this.confineInSafeArea = true,
       this.onWillPop,
       this.stateManagement = true,
       this.handleAndroidBackButtonPress = true,
-      final ItemAnimationProperties? itemAnimationProperties,
+      super.itemAnimationProperties,
       this.hideNavigationBar,
       this.screenTransitionAnimation = const ScreenTransitionAnimation(),
-      final NavBarStyle navBarStyle = NavBarStyle.style1})
+      NavBarStyle super.navBarStyle = NavBarStyle.style1})
       : assert(items != null,
             "Items can only be null in case of custom navigation bar style. Please add the items!"),
         assert(assertMidButtonStyles(navBarStyle, items!.length),
@@ -62,25 +69,13 @@ class PersistentTabView extends PersistentTabViewBase {
         assert(handleAndroidBackButtonPress && onWillPop == null,
             "If you declare the onWillPop function, you will have to handle the back function functionality yourself as your onWillPop function will override the default function."),
         super(
-          key: key,
           context: context,
           screens: screens,
           controller: controller,
           margin: margin,
-          items: items,
-          padding: padding,
-          decoration: decoration,
           hideNavigationBarWhenKeyboardShows:
               hideNavigationBarWhenKeyboardShows,
-          itemAnimationProperties: itemAnimationProperties,
-          navBarStyle: navBarStyle,
-          popActionScreens: popActionScreens,
-          popAllScreensOnTapOfSelectedTab: popAllScreensOnTapOfSelectedTab,
-          popAllScreensOnTapAnyTabs: popAllScreensOnTapAnyTabs,
-          navBarHeight: navBarHeight,
           backgroundColor: backgroundColor,
-          onItemSelected: onItemSelected,
-          neumorphicProperties: neumorphicProperties,
           floatingActionButton: floatingActionButton,
           resizeToAvoidBottomInset: resizeToAvoidBottomInset,
           bottomScreenMargin: bottomScreenMargin,
@@ -95,10 +90,10 @@ class PersistentTabView extends PersistentTabViewBase {
 
   const PersistentTabView.custom(
     this.context, {
-    required final Widget customWidget,
-    required final int itemCount,
+    required Widget super.customWidget,
+    required int super.itemCount,
     required this.screens,
-    final Key? key,
+    super.key,
     this.controller,
     this.margin = EdgeInsets.zero,
     this.floatingActionButton,
@@ -107,7 +102,7 @@ class PersistentTabView extends PersistentTabViewBase {
     this.selectedTabScreenContext,
     this.hideNavigationBarWhenKeyboardShows = true,
     this.backgroundColor = CupertinoColors.white,
-    final CustomWidgetRouteAndNavigatorSettings routeAndNavigatorSettings =
+    CustomWidgetRouteAndNavigatorSettings super.routeAndNavigatorSettings =
         const CustomWidgetRouteAndNavigatorSettings(),
     this.confineInSafeArea = true,
     this.onWillPop,
@@ -120,16 +115,12 @@ class PersistentTabView extends PersistentTabViewBase {
         assert(handleAndroidBackButtonPress && onWillPop != null,
             "If you declare the onWillPop function, you will have to handle the back function functionality yourself as your onWillPop function will override the defualt function."),
         super(
-          key: key,
           context: context,
           screens: screens,
           controller: controller,
           margin: margin,
-          routeAndNavigatorSettings: routeAndNavigatorSettings,
           backgroundColor: backgroundColor,
           floatingActionButton: floatingActionButton,
-          customWidget: customWidget,
-          itemCount: itemCount,
           resizeToAvoidBottomInset: resizeToAvoidBottomInset,
           bottomScreenMargin: bottomScreenMargin,
           onWillPop: onWillPop,
@@ -212,147 +203,6 @@ class PersistentTabView extends PersistentTabViewBase {
 
   @override
   final BuildContext context;
-}
-
-class PersistentTabViewBase extends StatefulWidget {
-  const PersistentTabViewBase({
-    final Key? key,
-    this.screens,
-    this.controller,
-    this.floatingActionButton,
-    this.margin,
-    this.confineInSafeArea,
-    this.handleAndroidBackButtonPress,
-    this.bottomScreenMargin,
-    this.resizeToAvoidBottomInset,
-    this.stateManagement,
-    this.screenTransitionAnimation,
-    this.hideNavigationBar,
-    this.context,
-    this.items,
-    this.backgroundColor,
-    this.onItemSelected,
-    this.decoration,
-    this.padding,
-    this.navBarStyle,
-    this.neumorphicProperties,
-    this.navBarHeight,
-    this.customWidget,
-    this.itemCount,
-    this.popAllScreensOnTapOfSelectedTab,
-    this.popAllScreensOnTapAnyTabs,
-    this.popActionScreens,
-    this.onWillPop,
-    this.hideNavigationBarWhenKeyboardShows,
-    this.itemAnimationProperties,
-    this.isCustomWidget,
-    this.selectedTabScreenContext,
-    this.routeAndNavigatorSettings,
-  }) : super(key: key);
-
-  ///List of persistent bottom navigation bar items to be displayed in the navigation bar.
-  final List<PersistentBottomNavBarItem>? items;
-
-  ///Screens that will be displayed on tapping of persistent bottom navigation bar items.
-  final List<Widget>? screens;
-
-  ///Controller for persistent bottom navigation bar. Will be declared if left empty.
-  final PersistentTabController? controller;
-
-  ///Background color of bottom navigation bar. `white` by default.
-  final Color? backgroundColor;
-
-  ///Callback when page or tab change is detected.
-  final ValueChanged<int>? onItemSelected;
-
-  ///Specifies the curve properties of the NavBar.
-  final NavBarDecoration? decoration;
-
-  ///`padding` for the persistent navigation bar content. Accepts `NavBarPadding` instead of `EdgeInsets`.
-  ///
-  ///`USE WITH CAUTION, MAY CAUSE LAYOUT ISSUES`.
-  final NavBarPadding? padding;
-
-  ///Style for persistent bottom navigation bar. Accepts `NavBarStyle` to determine the theme.
-  final NavBarStyle? navBarStyle;
-
-  ///Style the `neumorphic` navigation bar item.
-  ///
-  ///Works only with style `neumorphic`.
-  final NeumorphicProperties? neumorphicProperties;
-
-  ///A custom widget which is displayed at the bottom right of the display at all times.
-  final Widget? floatingActionButton;
-
-  ///Specifies the navBarHeight
-  ///
-  ///Defaults to `kBottomNavigationBarHeight` which is `56.0`.
-  final double? navBarHeight;
-
-  ///The margin around the navigation bar.
-  final EdgeInsets? margin;
-
-  ///Custom navigation bar widget. To be only used when `navBarStyle` is set to `NavBarStyle.custom`.
-  final Widget? customWidget;
-
-  ///If using `custom` navBarStyle, define this instead of the `items` property
-  final int? itemCount;
-
-  ///Will confine the NavBar's items in the safe area defined by the device.
-  final bool? confineInSafeArea;
-
-  ///Handles android back button actions. Defaults to `true`.
-  ///
-  ///Action based on scenarios:
-  ///1. If the you are on the first tab with all screens popped of the given tab, the app will close.
-  ///2. If you are on another tab with all screens popped of that given tab, you will be switched to first tab.
-  ///3. If there are screens pushed on the selected tab, a screen will pop on a respective back button press.
-  final bool? handleAndroidBackButtonPress;
-
-  ///Bottom margin of the screen.
-  final double? bottomScreenMargin;
-
-  ///If an already selected tab is pressed/tapped again, all the screens pushed on that particular tab will pop until the first screen in the stack. Defaults to `true`.
-  final bool? popAllScreensOnTapOfSelectedTab;
-
-  ///All the screens pushed on that particular tab will pop until the first screen in the stack, whether the tab is already selected or not. Defaults to `false`.
-  final bool? popAllScreensOnTapAnyTabs;
-
-  ///If set all pop until to first screen else set once pop once
-  final PopActionScreensType? popActionScreens;
-
-  final bool? resizeToAvoidBottomInset;
-
-  ///Preserves the state of each tab's screen. `true` by default.
-  final bool? stateManagement;
-
-  ///If you want to perform a custom action on Android when exiting the app, you can write your logic here.
-  final Future<bool> Function(BuildContext)? onWillPop;
-
-  ///Screen transition animation properties when switching tabs.
-  final ScreenTransitionAnimation? screenTransitionAnimation;
-
-  final bool? hideNavigationBarWhenKeyboardShows;
-
-  ///This controls the animation properties of the items of the NavBar.
-  final ItemAnimationProperties? itemAnimationProperties;
-
-  ///Hides the navigation bar with an transition animation. Use it in conjuction with [Provider](https://pub.dev/packages/provider) for better results.
-  final bool? hideNavigationBar;
-
-  ///Define navigation bar route name and settings here.
-  ///
-  ///If you want to programmatically pop to initial screen on a specific use this route name when popping.
-  final CustomWidgetRouteAndNavigatorSettings? routeAndNavigatorSettings;
-
-  final bool? isCustomWidget;
-
-  final BuildContext? context;
-
-  final Function(BuildContext)? selectedTabScreenContext;
-
-  @override
-  _PersistentTabViewState createState() => _PersistentTabViewState();
 }
 
 class _PersistentTabViewState extends State<PersistentTabView> {
@@ -476,6 +326,7 @@ class _PersistentTabViewState extends State<PersistentTabView> {
                           _navBarHeight! + widget.margin.top))
                   .abs(),
               child: GestureDetector(
+                onTapDown: (_) => HapticController.low(),
                 onTap: () {
                   if (widget.items![(widget.items!.length / 2).floor()]
                           .onPressed !=
@@ -542,6 +393,7 @@ class _PersistentTabViewState extends State<PersistentTabView> {
                           _navBarHeight! + widget.margin.top))
                   .abs(),
               child: GestureDetector(
+                onTapDown: (_) => HapticController.low(),
                 onTap: () {
                   if (widget.items![(widget.items!.length / 2).floor()]
                           .onPressed !=
@@ -697,40 +549,57 @@ class _PersistentTabViewState extends State<PersistentTabView> {
     }
 
     if (widget.handleAndroidBackButtonPress || widget.onWillPop != null) {
-      return WillPopScope(
-        onWillPop: !widget.handleAndroidBackButtonPress &&
-                widget.onWillPop != null
-            ? widget.onWillPop!(_contextList[_controller!.index])
-                as Future<bool> Function()?
-            : widget.handleAndroidBackButtonPress && widget.onWillPop != null
-                ? () async {
-                    if (_controller!.index == 0 &&
-                        !Navigator.canPop(_contextList.first!)) {
-                      return widget.onWillPop!(_contextList.first);
+      // PopScope needs the answer up front, so back is always intercepted
+      // here and the old onWillPop decides; `true` pops this route, or
+      // leaves the app when it is the first one, as WillPopScope did.
+      final Future<bool> Function()? onWillPop = !widget
+                  .handleAndroidBackButtonPress &&
+              widget.onWillPop != null
+          ? widget.onWillPop!(_contextList[_controller!.index]) as Future<bool>
+              Function()?
+          : widget.handleAndroidBackButtonPress && widget.onWillPop != null
+              ? () async {
+                  if (_controller!.index == 0 &&
+                      !Navigator.canPop(_contextList.first!)) {
+                    return widget.onWillPop!(_contextList.first);
+                  } else {
+                    if (Navigator.canPop(_contextList[_controller!.index]!)) {
+                      Navigator.pop(_contextList[_controller!.index]!);
                     } else {
-                      if (Navigator.canPop(_contextList[_controller!.index]!)) {
-                        Navigator.pop(_contextList[_controller!.index]!);
-                      } else {
-                        widget.onItemSelected?.call(0);
-                        _controller!.index = 0;
-                      }
-                      return false;
+                      widget.onItemSelected?.call(0);
+                      _controller!.index = 0;
                     }
+                    return false;
                   }
-                : () async {
-                    if (_controller!.index == 0 &&
-                        !Navigator.canPop(_contextList.first!)) {
-                      return true;
+                }
+              : () async {
+                  if (_controller!.index == 0 &&
+                      !Navigator.canPop(_contextList.first!)) {
+                    return true;
+                  } else {
+                    if (Navigator.canPop(_contextList[_controller!.index]!)) {
+                      Navigator.pop(_contextList[_controller!.index]!);
                     } else {
-                      if (Navigator.canPop(_contextList[_controller!.index]!)) {
-                        Navigator.pop(_contextList[_controller!.index]!);
-                      } else {
-                        widget.onItemSelected?.call(0);
-                        _controller!.index = 0;
-                      }
-                      return false;
+                      widget.onItemSelected?.call(0);
+                      _controller!.index = 0;
                     }
-                  },
+                    return false;
+                  }
+                };
+      return PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, result) async {
+          if (didPop || onWillPop == null) return;
+          final bool allowPop = await onWillPop();
+          if (!allowPop) return;
+          if (!context.mounted) return;
+          final NavigatorState navigator = Navigator.of(context);
+          if (navigator.canPop()) {
+            navigator.pop(result);
+          } else {
+            await SystemNavigator.pop();
+          }
+        },
         child: navigationBarWidget(),
       );
     } else {
@@ -766,20 +635,4 @@ class _PersistentTabViewState extends State<PersistentTabView> {
       }
     }
   }
-}
-
-//asserts
-
-bool assertMidButtonStyles(final NavBarStyle navBarStyle, final int itemCount) {
-  if (navBarStyle == NavBarStyle.style15 ||
-      navBarStyle == NavBarStyle.style16 ||
-      navBarStyle == NavBarStyle.style17 ||
-      navBarStyle == NavBarStyle.style18) {
-    if (itemCount % 2 != 0) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-  return true;
 }

@@ -2,14 +2,15 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: active_directory_controller_export.dart
-/// Purpose: Declares `ActiveDirectoryControllerExport`.
-/// Author: Knowticed Plus team
+/// Description: Declares `ActiveDirectoryControllerExport`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
 
-part of './active_directory_controller.dart';
-extension ActiveDirectoryControllerExport on ActiveDirectoryController {
-  saveChanges({required int rowIndex}) async {
+part of 'active_directory_controller.dart';
 
+extension ActiveDirectoryControllerExport on ActiveDirectoryController {
+  Future<void> saveChanges({required int rowIndex}) async {
     try {
       hapticController.triggerHapticFeedback(
         vibration: VibrateType.mediumImpact,
@@ -20,10 +21,9 @@ extension ActiveDirectoryControllerExport on ActiveDirectoryController {
         await CustomDialogManager.showDialogFlow(
           context: globalNavigatorKey.currentContext!,
           confirmLottie:
-              "assets/lottie_assets/main_lottie_assets/lottie_confirmation.json",
+              "assets/lottie_assets/main_lottie_assets/lot_status_confirmation.json",
           confirmTitle: S.current.saveChanges,
-          confirmSubtitle:
-              S.current.youHaveUnsavedChangesDoYouWantToSaveThem,
+          confirmSubtitle: S.current.youHaveUnsavedChangesDoYouWantToSaveThem,
           confirmYesText: S.current.yes,
           confirmNoText: S.current.no,
           onNoPressed: () {
@@ -33,26 +33,27 @@ extension ActiveDirectoryControllerExport on ActiveDirectoryController {
             emitState(ActiveDirectoryUpdated());
           },
           onConfirm: () async {
-            await saveEdits(rowIndex: rowIndex, context: globalNavigatorKey.currentContext!);
+            await saveEdits(
+              rowIndex: rowIndex,
+              context: globalNavigatorKey.currentContext!,
+            );
             return true;
           },
           successLottie:
-              "assets/lottie_assets/main_lottie_assets/lottie_successful.json",
+              "assets/lottie_assets/main_lottie_assets/lot_status_success.json",
           successTitle: S.current.Successful,
           successSubtitle: S.current.dataHasBeenSavedSuccessfully,
         );
-        isSaved[rowIndex]   = false;
+        isSaved[rowIndex] = false;
         isChanged[rowIndex] = false;
-    }
-    } catch (e, stackTrace) {
+      }
+    } catch (e) {
       // Was an empty `catch {}` — the failure is deliberately
       // non-fatal here, but it must not vanish silently (§11.5).
-      debugPrint('active_directory_controller_export.dart: non-fatal failure: $e');
     }
   }
 
-  saveInvalidChanges({required int rowIndex}) async {
-
+  Future<void> saveInvalidChanges({required int rowIndex}) async {
     try {
       hapticController.triggerHapticFeedback(
         vibration: VibrateType.mediumImpact,
@@ -63,10 +64,9 @@ extension ActiveDirectoryControllerExport on ActiveDirectoryController {
         await CustomDialogManager.showDialogFlow(
           context: globalNavigatorKey.currentContext!,
           confirmLottie:
-              "assets/lottie_assets/main_lottie_assets/lottie_confirmation.json",
+              "assets/lottie_assets/main_lottie_assets/lot_status_confirmation.json",
           confirmTitle: S.current.saveChanges,
-          confirmSubtitle:
-              S.current.youHaveUnsavedChangesDoYouWantToSaveThem,
+          confirmSubtitle: S.current.youHaveUnsavedChangesDoYouWantToSaveThem,
           confirmYesText: S.current.yes,
           confirmNoText: S.current.no,
           onNoPressed: () {
@@ -76,21 +76,23 @@ extension ActiveDirectoryControllerExport on ActiveDirectoryController {
             emitState(ActiveDirectoryUpdated());
           },
           onConfirm: () async {
-            await saveEdits(rowIndex: rowIndex, context: globalNavigatorKey.currentContext!);
+            await saveEdits(
+              rowIndex: rowIndex,
+              context: globalNavigatorKey.currentContext!,
+            );
             return true;
           },
           successLottie:
-              "assets/lottie_assets/main_lottie_assets/lottie_successful.json",
+              "assets/lottie_assets/main_lottie_assets/lot_status_success.json",
           successTitle: S.current.Successful,
           successSubtitle: S.current.dataHasBeenSavedSuccessfully,
         );
-        isInvalidSaved[rowIndex]   = false;
+        isInvalidSaved[rowIndex] = false;
         isInvalidChanged[rowIndex] = false;
-    }
-    } catch (e, stackTrace) {
+      }
+    } catch (e) {
       // Was an empty `catch {}` — the failure is deliberately
       // non-fatal here, but it must not vanish silently (§11.5).
-      debugPrint('active_directory_controller_export.dart: non-fatal failure: $e');
     }
   }
 
@@ -98,7 +100,7 @@ extension ActiveDirectoryControllerExport on ActiveDirectoryController {
   // EXPORT
   // ══════════════════════════════════════════════════════════════════════════
 
-  _getRowDataFromModel({
+  void _getRowDataFromModel({
     required List<dynamic> row,
     required NewEmployeeModelHistory employee,
     required bool isWrongEmployee,
@@ -106,23 +108,26 @@ extension ActiveDirectoryControllerExport on ActiveDirectoryController {
     try {
       for (EmployeeDataItems item in EmployeeDataItems.values) {
         item.getRowDataFromModelItem(
-            row: row,
-            employee: employee,
-            isWrongEmployee: isWrongEmployee,
-          departmentName: (id, {required arabic}) => (arabic
+          row: row,
+          employee: employee,
+          isWrongEmployee: isWrongEmployee,
+          departmentName: (id, {required arabic}) =>
+              (arabic
                   ? departmentCubit.getArabicDepartmentNameFromDepartmentId(
-                      departmentId: id)
+                      departmentId: id,
+                    )
                   : departmentCubit.getEnglishDepartmentNameFromDepartmentId(
-                      departmentId: id)) ??
+                      departmentId: id,
+                    )) ??
               '',
         );
       }
-    } catch (e, stackTrace) {
+    } catch (e) {
       rethrow;
     }
   }
 
-  exportToCSV(String fileName) async {
+  Future<void> exportToCSV(String fileName) async {
     showLoadingIndicator();
     try {
       List<List> rows = await _getExportData();
@@ -133,15 +138,17 @@ extension ActiveDirectoryControllerExport on ActiveDirectoryController {
         context: globalNavigatorKey.currentContext!,
         title: "SuccessFul",
         subtitle: "Your Data Has Been Saved To Download Folder",
-        lottiePath: "assets/lottie_assets/main_lottie_assets/lottie_successful.json",
+        lottiePath:
+            "assets/lottie_assets/main_lottie_assets/lot_status_success.json",
       );
-    } catch (e, stackTrace) {
+    } catch (e) {
       hideLoadingIndicator();
       await CustomDialogManager.showMessage(
         context: globalNavigatorKey.currentContext!,
         title: "Error",
         subtitle: "Error At Saving The File",
-        lottiePath: "assets/lottie_assets/main_lottie_assets/error.json",
+        lottiePath:
+            "assets/lottie_assets/main_lottie_assets/lot_status_error.json",
       );
     }
   }
@@ -159,7 +166,7 @@ extension ActiveDirectoryControllerExport on ActiveDirectoryController {
   // this file's `_getExportData` uses — and saves through
   // `CSVHelper.exportForUser`, which hands the file to the system save sheet.
 
-  _getExportData() async {
+  Future<List<List>> _getExportData() async {
     try {
       List<List> rows = [];
       rows.add(EmployeeDataItems.values.map((e) => e.name).toList());
@@ -168,7 +175,7 @@ extension ActiveDirectoryControllerExport on ActiveDirectoryController {
         rows.add(usersData[i]);
       }
       return rows;
-    } catch (e, stackTrace) {
+    } catch (e) {
       rethrow;
     }
   }

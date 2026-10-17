@@ -1,20 +1,21 @@
 /// Module: messaging / chat / domain/use_cases/group_chat_use_cases/get_group_chat_message_use_case.dart
+library;
+
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grc_module/core/network/message_module/services/error_handler.dart';
-import 'package:grc_module/core/enums/message_module/message_types.dart';
-import 'package:grc_module/core/helper/message_module/main_helper/file_handler.dart';
-import '../../../../m3_groups/domain/entities/group_entity.dart';
-import '../../../../m3_groups/domain/entities/member_entity.dart';
-import '../../../../m3_groups/presentation/controller/groups_controller.dart';
-import '../../../data/models/group_chat_message_model.dart';
-import '../../../data/models/group_member_seen_model.dart';
-import '../../../data/models/message/video_message_model.dart';
-import '../../enum/reacts.dart';
-import '../../entity/group_message_entity.dart';
-import '../../repository/chat_repository/base_chat_repository.dart';
+import 'package:grc_module/core/network/failure_model.dart';
+import 'package:grc_module/features/messaging/helpers/enums/message_types.dart';
+import 'package:grc_module/features/messaging/helpers/messaging_bridge/main_helper/file_handler.dart';
+import 'package:grc_module/features/messaging/m3_groups/domain/entities/group_entity.dart';
+import 'package:grc_module/features/messaging/m3_groups/domain/entities/member_entity.dart';
+import 'package:grc_module/features/messaging/m3_groups/presentation/controller/groups_controller.dart';
+import 'package:grc_module/features/messaging/m1_chat/data/models/group_chat_message_model.dart';
+import 'package:grc_module/features/messaging/m1_chat/data/models/group_member_seen_model.dart';
+import 'package:grc_module/features/messaging/m1_chat/data/models/message/video_message_model.dart';
+import 'package:grc_module/features/messaging/m1_chat/domain/enum/reacts.dart';
+import 'package:grc_module/features/messaging/m1_chat/domain/entity/group_message_entity.dart';
+import 'package:grc_module/features/messaging/m1_chat/domain/repository/chat_repository/base_chat_repository.dart';
 
 class GetGroupChatMessageUseCase {
   final BaseChatRepository chatRepository;
@@ -25,10 +26,10 @@ class GetGroupChatMessageUseCase {
 
   Stream<Either<Failure, List<GroupMessageEntity>>> execute(
       {required String chatId,
-        required GroupEntity groupEntity,
-        required String currentUserId}) async* {
+      required GroupEntity groupEntity,
+      required String currentUserId}) async* {
     Stream<Either<Failure, dynamic>> chatMessages =
-    chatRepository.getChatMessages(chatId);
+        chatRepository.getChatMessages(chatId);
 
     await for (final chatMessage in chatMessages) {
       Either<Failure, List<GroupMessageEntity>> messages;
@@ -55,9 +56,8 @@ class GetGroupChatMessageUseCase {
 
   Stream<Either<Failure, List<GroupMessageEntity>>> _getMessageEntities(
       {required List<GroupChatMessageModel> messages,
-        required GroupEntity group,
-        required String currentUserId}) async* {
-    Either<Failure, List<GroupMessageEntity>> result;
+      required GroupEntity group,
+      required String currentUserId}) async* {
     List<GroupMessageEntity> messageEntities = [];
     Map<String, GroupMessageEntity> messageEntitiesMap = {};
 
@@ -85,15 +85,14 @@ class GetGroupChatMessageUseCase {
         messageId: message.messageId,
         videoMessageModel: message.video,
         time: message.sendTime,
-        isPinned: message.pinModel != null
-            ? message.pinModel!.isPinned.last
-            : false,
+        isPinned:
+            message.pinModel != null ? message.pinModel!.isPinned.last : false,
         docMessageModel: message.docMessageModel,
         senderImage: group.members
             .firstWhere(
               (element) => element.memberId == message.senderId,
-          orElse: () => group.members.first, // ✅ safe fallback
-        )
+              orElse: () => group.members.first, // ✅ safe fallback
+            )
             .memberImage,
         isMe: message.senderId == currentUserId,
         isSeen: isSeen,
@@ -114,7 +113,6 @@ class GetGroupChatMessageUseCase {
       );
 
       if (messageEntity.messageType == MessageTypes.text) {
-
         // ✅ FIXED: use injected groupsCubit instead of Get.find<GroupsCubit>()
         final selectedGroup = groupsCubit.selectedGroup;
         if (selectedGroup != null) {
@@ -123,9 +121,9 @@ class GetGroupChatMessageUseCase {
                 message.mentionedMembers!.contains(member.memberId)) {
               messageEntity.messageContent =
                   messageEntity.messageContent!.replaceAll(
-                    '@${member.memberId.replaceAll('@', '_')}',
-                    '@${member.primaryLanguageName} ',
-                  );
+                '@${member.memberId.replaceAll('@', '_')}',
+                '@${member.primaryLanguageName} ',
+              );
             }
           }
         }
@@ -140,15 +138,13 @@ class GetGroupChatMessageUseCase {
       } catch (_) {}
       messageEntitiesMap[message.messageId] = messageEntity;
     }
-    yield result = Right(messageEntities);
+    yield Right(messageEntities);
   }
 
   bool _checkIfMessageIsSeen(List<GroupMemberSeenModel> seenBy,
       List<MemberEntity> members, Timestamp messageTime) {
-    int i = 0;
     bool isSeen = true;
     for (MemberEntity member in members) {
-      i++;
       if (!seenBy.any((element) => element.memberId == member.memberId)) {
         // ✅ FIXED: null-safe addedTime check
         final addedTime = member.addedTime;
@@ -162,7 +158,7 @@ class GetGroupChatMessageUseCase {
     return isSeen;
   }
 
-  Set<String> _getSeenBy(message) {
+  Set<String> _getSeenBy(GroupChatMessageModel message) {
     Set<String> seenBy = {};
     for (GroupMemberSeenModel seen in message.seenBy) {
       seenBy.add(seen.memberId);
@@ -172,8 +168,7 @@ class GetGroupChatMessageUseCase {
 
   Future<void> handleMediaMessage({required GroupMessageEntity message}) async {
     if (message.messageType == MessageTypes.audio) {
-      File file = await FileHandler().downloadFile(
-          message.audio!.audioPath,
+      File file = await FileHandler().downloadFile(message.audio!.audioPath,
           '${message.time}.${message.audio!.audioPath.split('.').last.split('?').first}');
       message.audio!.audioPath = file.path;
       message.mediaLink = message.audio!.audioPath;

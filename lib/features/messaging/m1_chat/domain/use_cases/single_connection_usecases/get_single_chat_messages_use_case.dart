@@ -1,23 +1,26 @@
 /// Module: messaging / chat / domain/use_cases/single_connection_usecases/get_single_chat_messages_use_case.dart
+library;
+
 import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 
-import 'package:grc_module/core/network/message_module/services/error_handler.dart';
-import 'package:grc_module/core/enums/message_module/message_types.dart';
-import 'package:grc_module/core/helper/message_module/main_helper/file_handler.dart';
-import '../../../data/models/message/video_message_model.dart';
-import '../../entity/message_entity.dart';
-import '../../repository/chat_repository/base_chat_repository.dart';
+import 'package:grc_module/core/network/failure_model.dart';
+import 'package:grc_module/features/messaging/helpers/enums/message_types.dart';
+import 'package:grc_module/features/messaging/helpers/messaging_bridge/main_helper/file_handler.dart';
+import 'package:grc_module/features/messaging/m1_chat/data/models/message/video_message_model.dart';
+import 'package:grc_module/features/messaging/m1_chat/data/models/single_chat_message_model.dart';
+import 'package:grc_module/features/messaging/m1_chat/domain/entity/message_entity.dart';
+import 'package:grc_module/features/messaging/m1_chat/domain/repository/chat_repository/base_chat_repository.dart';
 
 class GetSingleChatMessages {
   final BaseChatRepository repository;
   GetSingleChatMessages({required this.repository});
 
   // ✅ FIX: added currentUserId parameter
-  execute(String chatId, {required String currentUserId}) async* {
+  Stream<dynamic> execute(String chatId, {required String currentUserId}) async* {
     Stream<Either<Failure, dynamic>> chatMessages =
-    repository.getChatMessages(chatId);
+        repository.getChatMessages(chatId);
     await for (final chatMessage in chatMessages) {
       Either<Failure, List<MessageEntity>> messages;
       if (chatMessage.isLeft()) {
@@ -34,8 +37,8 @@ class GetSingleChatMessages {
     }
   }
 
-  _getMessageEntities({
-    required fetchedMessages,
+  Stream<Either<Failure, List<MessageEntity>>> _getMessageEntities({
+    required List<SingleChatMessageModel> fetchedMessages,
     required String chatId,
     required String currentUserId, // ✅ added
   }) async* {
@@ -77,11 +80,8 @@ class GetSingleChatMessages {
 
   Future<void> handleMediaMessage({required MessageEntity message}) async {
     if (message.messageType == MessageTypes.audio) {
-      File file = await FileHandler().downloadFile(
-          message.audio!.audioPath,
-          message.time.toString() +
-              '.' +
-              message.audio!.audioPath.split('.').last.split('?').first);
+      File file = await FileHandler().downloadFile(message.audio!.audioPath,
+          '${message.time}.${message.audio!.audioPath.split('.').last.split('?').first}');
       message.audio!.audioPath = file.path;
       message.mediaLink = message.audio!.audioPath;
     }
@@ -96,13 +96,7 @@ class GetSingleChatMessages {
     if (message.messageType == MessageTypes.video) {
       File file = await FileHandler().downloadFile(
           message.videoMessageModel!.videoFilePath,
-          message.time.toString() +
-              '.' +
-              message.videoMessageModel!.videoFilePath
-                  .split('.')
-                  .last
-                  .split('?')
-                  .first);
+          '${message.time}.${message.videoMessageModel!.videoFilePath.split('.').last.split('?').first}');
       message.videoMessageModel!.videoFilePath = file.path;
       VideoMessageModel videoMessageModel = VideoMessageModel(
           videoFilePath: message.videoMessageModel!.videoFilePath);

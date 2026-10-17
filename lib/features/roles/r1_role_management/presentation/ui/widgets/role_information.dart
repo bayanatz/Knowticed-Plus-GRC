@@ -2,35 +2,35 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: role_information.dart
-/// Purpose: Declares `RoleInformation`.
-/// Author: Knowticed Plus team
+/// Description: Declares `RoleInformation`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
-import 'package:grc_module/core/constants/app_assets.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 // REMOVED_MODULE: import 'package:grc_module/core/helper/data_grc_module/core/extensions/extensions.dart';
 // REMOVED_MODULE: import 'package:grc_module/features/external/services_mangment_module/core/new_theme.dart';
 import 'package:grc_module/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
 
-import 'package:grc_module/core/helper/main_helper/employee_helper.dart';
-import 'package:grc_module/core/helper/main_helper/localized_date.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
-import 'package:grc_module/core/custom/5-custom_button.dart';
-import 'package:grc_module/core/custom/6-custom_button_with_svg.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
-import 'package:grc_module/core/helper/message_module/main_helper/messaging_interface_implementation.dart';
-import 'package:grc_module/core/custom/75-custom_title_value_widget.dart';
+import 'package:grc_module/core/helper/employee_helper.dart';
+import 'package:grc_module/core/helper/localized_date.dart';
+import 'package:grc_module/core/helper/format_title.dart';
+import 'package:grc_module/core/custom/buttons/custom_button_with_svg.dart';
+import 'package:grc_module/core/custom/feedback/circle_progress.dart';
+import 'package:grc_module/features/messaging/helpers/messaging_bridge/main_helper/messaging_interface_implementation.dart';
+import 'package:grc_module/core/custom/cards/custom_title_value_widget.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
 import 'package:grc_module/core/di/app_controllers.dart';
+import 'package:grc_module/features/roles/r1_role_management/data/models/role_model.dart'
+    show RoleHistoryModelMethods;
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
 class RoleInformation extends StatefulWidget {
   const RoleInformation({super.key});
@@ -43,7 +43,7 @@ class RoleInformation extends StatefulWidget {
 /// [EmployeeHelper.getEmployeeImage] already returns the female variant where
 /// it applies, so this is only the fallback of last resort.
 const String _defaultAvatarAsset =
-    'assets/icons_assets/main_icons_assets/male_avatar.svg';
+    'assets/icons_assets/main_icons_assets/ic_user_avatar_male.png';
 
 class _RoleInformationState extends State<RoleInformation> {
   late bool isTablet;
@@ -53,11 +53,11 @@ class _RoleInformationState extends State<RoleInformation> {
   @override
   Widget build(BuildContext context) {
     controller = context.read<RoleCubit>();
-    isTablet = MediaQuery.of(context).size.width > 600;
+    isTablet = !kpIsPhoneLayout(context);
     return roleInformation();
   }
 
-  roleInformation() {
+  Column roleInformation() {
     return Column(
       spacing: 8.sp,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,6 +72,7 @@ class _RoleInformationState extends State<RoleInformation> {
             InkWell(
               splashColor: AppColors.transparent,
               hoverColor: AppColors.transparent,
+              onTapDown: (_) => HapticController.low(),
               onTap: () {
                 setState(() {
                   isHide = !isHide;
@@ -89,10 +90,7 @@ class _RoleInformationState extends State<RoleInformation> {
                       ),
                     ),
                     SizedBox(height: 3.h),
-                    Container(
-                      height: 1,
-                      color: AppColors.blue,
-                    ),
+                    Container(height: 1, color: AppColors.blue),
                   ],
                 ),
               ),
@@ -103,11 +101,11 @@ class _RoleInformationState extends State<RoleInformation> {
           Container(
             padding: EdgeInsets.all(15.sp),
             decoration: BoxDecoration(
-              color: AppColors.field,
+              color: AppColors.card,
               borderRadius: BorderRadius.circular(8.sp),
             ),
             child: isTablet ? tabletInformation() : mobileInformation(),
-          )
+          ),
       ],
     );
   }
@@ -116,8 +114,9 @@ class _RoleInformationState extends State<RoleInformation> {
     // ✅ FIXED: Use firstWhereOrNull to handle missing employees gracefully
     // Lookup moved to RoleCubit.employeeByEmail — `firstWhereOrNull` came from
     // `package:get`, which is banned and no longer imported here.
-    var creatorEmployee =
-        controller.employeeByEmail(controller.selectedRole!.currentCreatedBy);
+    var creatorEmployee = controller.employeeByEmail(
+      controller.selectedRole!.currentCreatedBy,
+    );
 
     // ✅ FIXED: Provide fallback values if employee not found
     String image = creatorEmployee != null
@@ -126,7 +125,9 @@ class _RoleInformationState extends State<RoleInformation> {
 
     String name = creatorEmployee != null
         ? EmployeeHelper.getEmployeeLocalizedName(
-        employee: creatorEmployee, context: context)
+            employee: creatorEmployee,
+            context: context,
+          )
         : controller.selectedRole!.currentCreatedBy; // Show email as fallback
     final isArabic = context.isArabic;
 
@@ -146,26 +147,39 @@ class _RoleInformationState extends State<RoleInformation> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                      isArabic ?  FormatHelper.capitalize(controller.selectedRole!.currentRoleNameAr) :
-                      FormatHelper.capitalize(controller.selectedRole!.currentRoleName),
-
+                        isArabic
+                            ? FormatHelper.capitalize(
+                                controller.selectedRole!.currentRoleNameAr,
+                              )
+                            : FormatHelper.capitalize(
+                                controller.selectedRole!.currentRoleName,
+                              ),
                         style: StyleText.fontSize16Weight600,
                       ),
                       CustomTitleValueWidget(
                         title: "${S.of(context).creationDate}: ",
                         value: _creationDate(),
-                      )
+                      ),
                     ],
                   ),
                   SizedBox(height: 10.sp),
                   CustomTitleValueWidget(
-                      value: controller.selectedRole!.currentRoleDescription.isNotEmpty
-                          ? isArabic ? FormatHelper.capitalize(controller.selectedRole!.currentRoleDescriptionAr) :FormatHelper.capitalize(controller.selectedRole!.currentRoleDescription)
-                          : "",
-                      title: "${S.of(context).role_description}: "),
+                    value: controller
+                            .selectedRole!.currentRoleDescription.isNotEmpty
+                        ? isArabic
+                            ? FormatHelper.capitalize(
+                                controller
+                                    .selectedRole!.currentRoleDescriptionAr,
+                              )
+                            : FormatHelper.capitalize(
+                                controller.selectedRole!.currentRoleDescription,
+                              )
+                        : "",
+                    title: "${S.of(context).role_description}: ",
+                  ),
                 ],
               ),
-            )
+            ),
           ],
         ),
         SizedBox(height: 10.sp),
@@ -204,13 +218,14 @@ class _RoleInformationState extends State<RoleInformation> {
     );
   }
 
-  mobileInformation() {
+  Column mobileInformation() {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
     // ✅ FIXED: Use firstWhereOrNull to handle missing employees gracefully
     // Lookup moved to RoleCubit.employeeByEmail — `firstWhereOrNull` came from
     // `package:get`, which is banned and no longer imported here.
-    var creatorEmployee =
-        controller.employeeByEmail(controller.selectedRole!.currentCreatedBy);
+    var creatorEmployee = controller.employeeByEmail(
+      controller.selectedRole!.currentCreatedBy,
+    );
 
     // ✅ FIXED: Provide fallback values if employee not found
     String image = creatorEmployee != null
@@ -219,7 +234,9 @@ class _RoleInformationState extends State<RoleInformation> {
 
     String name = creatorEmployee != null
         ? EmployeeHelper.getEmployeeLocalizedName(
-        employee: creatorEmployee, context: context)
+            employee: creatorEmployee,
+            context: context,
+          )
         : controller.selectedRole!.currentCreatedBy;
 
     return Column(
@@ -229,38 +246,43 @@ class _RoleInformationState extends State<RoleInformation> {
           children: [
             roleImage(50.sp),
             SizedBox(width: 10.sp),
-            Container(
+            SizedBox(
               height: 50.sp,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    !isArabic ?
-                    FormatHelper.capitalize(controller.selectedRole!.currentRoleName) :
-                    FormatHelper.capitalize(controller.selectedRole!.currentRoleNameAr),
+                    !isArabic
+                        ? FormatHelper.capitalize(
+                            controller.selectedRole!.currentRoleName,
+                          )
+                        : FormatHelper.capitalize(
+                            controller.selectedRole!.currentRoleNameAr,
+                          ),
                     style: StyleText.fontSize16Weight600,
                   ),
                   CustomTitleValueWidget(
                     title: "${S.of(context).creationDate}: ",
                     value: _creationDate(),
-                  )
+                  ),
                 ],
               ),
-            )
+            ),
           ],
         ),
         SizedBox(height: 10.sp),
         CustomTitleValueWidget(
-            value:      ! isArabic ?  controller.selectedRole!.currentRoleDescription:
-            controller.selectedRole!.currentRoleDescriptionAr,
-            title: "${S.of(context).role_description}: "),
-
+          value: !isArabic
+              ? controller.selectedRole!.currentRoleDescription
+              : controller.selectedRole!.currentRoleDescriptionAr,
+          title: "${S.of(context).role_description}: ",
+        ),
         SizedBox(height: 10.sp),
         Text(
           S.of(context).createdBy,
           style: StyleText.fontSize10Weight400.copyWith(
-              color: Theme.of(context).brightness == Brightness.light ? AppColors.blackButton:AppColors.white
+            color: AppColors.blackButton,
           ),
         ),
         SizedBox(height: 10.sp),
@@ -315,10 +337,11 @@ class _RoleInformationState extends State<RoleInformation> {
           heightImage: 20.sp,
           widthImage: 20.sp,
           colorBorder: AppColors.transparent,
-          image: 'assets/icons_assets/roles_assets/chat_messages_bubbles.svg',
+          image: 'assets/icons_assets/main_icons_assets/ic_comms_chat_double.svg',
           svgColor: AppColors.textButton,
-          textStyle: StyleText.fontSize14Weight400
-              .copyWith(color: AppColors.textButton),
+          textStyle: StyleText.fontSize14Weight400.copyWith(
+            color: AppColors.textButton,
+          ),
         ),
       ),
     ];
@@ -427,8 +450,9 @@ class _RoleInformationState extends State<RoleInformation> {
               ),
               width: imageSize,
               height: imageSize,
-              child: CustomSvgImage(assetPath: 
-                'assets/icons_assets/roles_assets/roles_people_gear.svg',
+              child: CustomSvgImage(
+                assetPath:
+                    'assets/icons_assets/main_icons_assets/ic_module_roles.svg',
                 width: imageSize - 20.sp,
                 height: imageSize - 20.sp,
                 color: AppColors.text,
@@ -439,18 +463,19 @@ class _RoleInformationState extends State<RoleInformation> {
       );
     }
     return Container(
-        padding: EdgeInsets.all(10.sp),
-        decoration: BoxDecoration(
-          color: AppColors.background,
-          borderRadius: BorderRadius.circular(8.sp),
-        ),
-        width: imageSize,
-        height: imageSize,
-        child: CustomSvgImage(assetPath: 
-          'assets/icons_assets/roles_assets/roles_people_gear.svg',
-          width: imageSize - 20.sp,
-          height: imageSize - 20.sp,
-          color: AppColors.text,
-        ));
+      padding: EdgeInsets.all(10.sp),
+      decoration: BoxDecoration(
+        color: AppColors.background,
+        borderRadius: BorderRadius.circular(8.sp),
+      ),
+      width: imageSize,
+      height: imageSize,
+      child: CustomSvgImage(
+        assetPath: 'assets/icons_assets/main_icons_assets/ic_module_roles.svg',
+        width: imageSize - 20.sp,
+        height: imageSize - 20.sp,
+        color: AppColors.text,
+      ),
+    );
   }
 }

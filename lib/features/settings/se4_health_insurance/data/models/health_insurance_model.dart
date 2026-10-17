@@ -6,12 +6,13 @@
 /// Author: Amr Mesbah
 /// Created at: 20/11/2024
 /// Updated: 11/8/2026 - Added the standard header (Docs).
+library;
 
 // PORTED into services_app under features/settings.
 // Source: services_app features/employees/data/models/health_insurance_model/health_insurance_model.dart
 // Imports rewired to the equivalents that already exist in services_app.
 
-import 'package:grc_module/core/helper/main_helper/single_value_model.dart';
+import 'package:grc_module/core/helper/single_value_model.dart';
 import 'package:grc_module/features/roles/r4_active_directory/data/models/employees_model/mobile_phone_model.dart';
 
 /// **************************** FILE INFO **************************** ///

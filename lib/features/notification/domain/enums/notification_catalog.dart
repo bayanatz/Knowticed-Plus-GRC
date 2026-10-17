@@ -6,6 +6,7 @@
 /// Author: Knowticed Plus team
 /// Created at: 2026
 /// Updated: 12/8/2026 - Added the standard header (Docs).
+library;
 
 /// ************************* FILE INFO *************************
 /// File Name: notification_catalog.dart
@@ -25,20 +26,20 @@
 ///   2. create `<module>_module/<module>_events.dart`
 ///   3. register it in `_registry` below.
 
-import './database_module/database_events.dart';
-import './grc_module/grc_events.dart';
-import './knowledge_hub_module/knowledge_hub_events.dart';
-import './messages_module/messages_events.dart';
-import './notification_control_module/notification_control_events.dart';
-import './qiyas_module/qiyas_events.dart';
-import './role_module/role_management_module/role_management_events.dart';
-import './services_module/services_events.dart';
-import './settings_module/settings_events.dart';
-import './time_tracker_module/time_tracker_events.dart';
-import './todo_module/todo_events.dart';
-import './role_module/user_access_module/user_access_events.dart';
-import './role_module/user_management_module/user_management_events.dart';
-import './notification_event.dart';
+import 'package:grc_module/features/notification/domain/enums/database/database_events.dart';
+import 'package:grc_module/features/notification/domain/enums/grc/grc_events.dart';
+import 'package:grc_module/features/notification/domain/enums/knowledge_hub/knowledge_hub_events.dart';
+import 'package:grc_module/features/notification/domain/enums/messages/messages_events.dart';
+import 'package:grc_module/features/notification/domain/enums/notification_control/notification_control_events.dart';
+import 'package:grc_module/features/notification/domain/enums/qiyas/qiyas_events.dart';
+import 'package:grc_module/features/notification/domain/enums/roles/role_management_module/role_management_events.dart';
+import 'package:grc_module/features/notification/domain/enums/services/services_events.dart';
+import 'package:grc_module/features/notification/domain/enums/settings/settings_events.dart';
+import 'package:grc_module/features/notification/domain/enums/time_tracker/time_tracker_events.dart';
+import 'package:grc_module/features/notification/domain/enums/todo/todo_events.dart';
+import 'package:grc_module/features/notification/domain/enums/roles/user_access_module/user_access_events.dart';
+import 'package:grc_module/features/notification/domain/enums/roles/user_management_module/user_management_events.dart';
+import 'package:grc_module/features/notification/domain/enums/notification_event.dart';
 import 'package:grc_module/core/enums/app_module.dart';
 
 abstract final class NotificationCatalog {
@@ -54,8 +55,7 @@ abstract final class NotificationCatalog {
     AppModule.qiyas: QiyasNotificationEvent.values,
     AppModule.grc: GrcNotificationEvent.values,
     AppModule.settings: SettingsNotificationEvent.values,
-    AppModule.notificationControl:
-        NotificationControlNotificationEvent.values,
+    AppModule.notificationControl: NotificationControlNotificationEvent.values,
     // ADDED 2/9/2026. Registering it here is what puts a Messages tab in the
     // Notification Control screen and gives its eleven events default
     // templates — see the "Adding a whole module" note above.

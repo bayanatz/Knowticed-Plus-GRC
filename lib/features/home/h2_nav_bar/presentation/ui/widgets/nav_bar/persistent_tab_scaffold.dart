@@ -6,18 +6,17 @@
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Extracted from the oversized model.dart as part of
 ///          breaking up the vendored persistent-nav-bar god files.
+library;
 
 import 'dart:math';
-import 'dart:ui';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:grc_module/features/home/h2_nav_bar/persistent_nav_bar.dart';
 
 class PersistentTabScaffold extends StatefulWidget {
   PersistentTabScaffold({
     required this.tabBar,
     required this.tabBuilder,
-    final Key? key,
+    super.key,
     this.controller,
     this.backgroundColor,
     this.resizeToAvoidBottomInset = true,
@@ -27,11 +26,10 @@ class PersistentTabScaffold extends StatefulWidget {
     this.hideNavigationBarWhenKeyboardShows,
     this.itemCount,
     this.animatePadding = false,
-  })  : assert(
+  }) : assert(
             controller == null || controller.index < itemCount!,
             "The PersistentTabController's current index ${controller.index} is "
-            "out of bounds for the tab bar with ${tabBar.navBarEssentials!.items!.length} tabs"),
-        super(key: key);
+            "out of bounds for the tab bar with ${tabBar.navBarEssentials!.items!.length} tabs");
 
   final PersistentBottomNavBar tabBar;
 
@@ -56,7 +54,7 @@ class PersistentTabScaffold extends StatefulWidget {
   final bool animatePadding;
 
   @override
-  _PersistentTabScaffoldState createState() => _PersistentTabScaffoldState();
+  State<PersistentTabScaffold> createState() => _PersistentTabScaffoldState();
 }
 
 class _PersistentTabScaffoldState extends State<PersistentTabScaffold> {
@@ -198,18 +196,18 @@ class _PersistentTabScaffoldState extends State<PersistentTabScaffold> {
     }
 
     return DecoratedBox(
-      decoration:
-          widget.tabBar.navBarDecoration!.borderRadius != BorderRadius.zero
-              ? BoxDecoration(
-                  color: CupertinoColors.black.withOpacity(0),
-                  borderRadius: widget.tabBar.navBarDecoration!.borderRadius,
-                )
-              : BoxDecoration(color: CupertinoColors.black.withOpacity(1)),
+      decoration: widget.tabBar.navBarDecoration!.borderRadius !=
+              BorderRadius.zero
+          ? BoxDecoration(
+              color: CupertinoColors.black.withValues(alpha: 0),
+              borderRadius: widget.tabBar.navBarDecoration!.borderRadius,
+            )
+          : BoxDecoration(color: CupertinoColors.black.withValues(alpha: 1)),
       child: Stack(
         children: <Widget>[
           content,
           MediaQuery(
-            data: existingMediaQuery.copyWith(textScaleFactor: 1),
+            data: existingMediaQuery.copyWith(textScaler: TextScaler.linear(1)),
             child: Align(
               alignment: Alignment.bottomCenter,
               child: widget.tabBar.copyWith(

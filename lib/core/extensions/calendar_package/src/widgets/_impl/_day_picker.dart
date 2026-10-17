@@ -132,11 +132,12 @@ class _DayPickerState extends State<_DayPicker> {
         MaterialLocalizations.of(context);
     final TextTheme textTheme = Theme.of(context).textTheme;
     final TextStyle? headerStyle = textTheme.bodySmall?.apply(
-      color: colorScheme.onSurface.withOpacity(0.60),
+      color: colorScheme.onSurface.withValues(alpha: 0.60),
     );
     final TextStyle dayStyle = textTheme.bodySmall!;
-    final Color enabledDayColor = colorScheme.onSurface.withOpacity(0.87);
-    final Color disabledDayColor = colorScheme.onSurface.withOpacity(0.38);
+    final Color enabledDayColor = colorScheme.onSurface.withValues(alpha: 0.87);
+    final Color disabledDayColor =
+        colorScheme.onSurface.withValues(alpha: 0.38);
     final Color selectedDayColor = colorScheme.onPrimary;
     final Color selectedDayBackground = colorScheme.primary;
     final Color todayColor = colorScheme.primary;
@@ -262,7 +263,7 @@ class _DayPickerState extends State<_DayPicker> {
             color: widget.config.selectedRangeHighlightColor ??
                 (widget.config.selectedDayHighlightColor ??
                         selectedDayBackground)
-                    .withOpacity(0.15),
+                    .withValues(alpha: 0.15),
           );
 
           if (DateUtils.isSameDay(
@@ -327,7 +328,7 @@ class _DayPickerState extends State<_DayPicker> {
             focusNode: _dayFocusNodes[day - 1],
             onTap: () => widget.onChanged(dayToBuild),
             radius: _dayPickerRowHeight / 2 + 4,
-            splashColor: selectedDayBackground.withOpacity(0.38),
+            splashColor: selectedDayBackground.withValues(alpha: 0.38),
             child: Semantics(
               // We want the day of month to be spoken first irrespective of the
               // locale-specific preferences or TextDirection. This is because

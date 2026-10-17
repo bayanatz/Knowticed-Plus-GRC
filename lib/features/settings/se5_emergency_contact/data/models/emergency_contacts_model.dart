@@ -7,12 +7,13 @@
 /// Created at: 20/11/2024
 /// Updated: 11/8/2026 - CR-SKEL-SE5-N03: the Dart identifier `provionce` is spelled `province`;
 ///          the Firestore *key* keeps the original spelling.
+library;
 
 // PORTED into services_app under features/settings.
 // Source: services_app features/employees/data/models/emergency_contacts_model/emergency_contacts_model.dart
 // Imports rewired to the equivalents that already exist in services_app.
 
-import 'package:grc_module/core/helper/main_helper/single_value_model.dart';
+import 'package:grc_module/core/helper/single_value_model.dart';
 
 import 'package:grc_module/features/roles/r4_active_directory/data/models/employees_model/mobile_phone_model.dart';
 
@@ -132,7 +133,7 @@ class EmergencyContactModel {
           map[cityKey] as Map<String, dynamic>),
       street: SingleValueModel<String>.fromMap(
           map[streetKey] as Map<String, dynamic>),
-      language: SingleValueModel<String>.fromMap( // ADD THIS
+      language: SingleValueModel<String>.fromMap(// ADD THIS
           map[languageKey] as Map<String, dynamic>),
     );
   }

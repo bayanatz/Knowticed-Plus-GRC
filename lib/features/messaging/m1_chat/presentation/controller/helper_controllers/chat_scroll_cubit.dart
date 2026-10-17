@@ -1,4 +1,6 @@
 /// Module: messaging / chat / presentation/controller/helper_controllers/chat_scroll_cubit.dart
+library;
+
 import 'dart:async';
 
 import 'package:flutter/animation.dart';
@@ -62,7 +64,6 @@ class ChatScrollCubit extends Cubit<ChatScrollState> {
   /// Method Name: scrollAndHighlight
   /// Purpose: Scroll to a specific message index and optionally highlight it
   Future<void> scrollAndHighlight(int index) async {
-
     // CHECK 1: Verify scroll controller is attached — retry if not
     if (!scrollController.isAttached) {
       if (_retryCount >= _maxRetries) {
@@ -91,8 +92,7 @@ class ChatScrollCubit extends Cubit<ChatScrollState> {
     }
 
     final clampedIndex = index.clamp(0, messages.length - 1);
-    if (clampedIndex != index) {
-    }
+    if (clampedIndex != index) {}
 
     try {
       emit(state.copyWith(isScrolling: true));
@@ -102,7 +102,6 @@ class ChatScrollCubit extends Cubit<ChatScrollState> {
         duration: const Duration(milliseconds: 280),
         curve: Curves.decelerate,
       );
-
 
       emit(state.copyWith(
         highlightedMessageIndex: () => clampedIndex,
@@ -123,10 +122,10 @@ class ChatScrollCubit extends Cubit<ChatScrollState> {
   /// Purpose: Called when visible items change - updates pinned messages
   void _onItemPositionsChanged() {
     final List<ItemPosition> positions =
-    scrollPositionsListener.itemPositions.value.toList();
+        scrollPositionsListener.itemPositions.value.toList();
 
     final List<int> visibleIndices =
-    positions.map((position) => position.index).toList();
+        positions.map((position) => position.index).toList();
 
     masterChatCubit.pinnedMessageCubit.updatePinMessageRow(visibleIndices);
   }
@@ -146,7 +145,7 @@ class ChatScrollCubit extends Cubit<ChatScrollState> {
 
     _scrollTimer = Timer(
       const Duration(milliseconds: 520),
-          () {
+      () {
         if (messages.isNotEmpty) {
           final lastVisible = checkVisibleIndex(messages.length - 1);
           emit(state.copyWith(lastIndexVisible: lastVisible));
@@ -173,7 +172,6 @@ class ChatScrollCubit extends Cubit<ChatScrollState> {
   /// Method Name: scrollToLatest
   /// Purpose: Scroll to the latest message if not already visible
   Future<void> scrollToLatest(int index, {int? milliseconds}) async {
-
     if (!scrollController.isAttached) {
       SchedulerBinding.instance.addPostFrameCallback((_) {
         scrollToLatest(index, milliseconds: milliseconds);
@@ -199,7 +197,6 @@ class ChatScrollCubit extends Cubit<ChatScrollState> {
         curve: Curves.decelerate,
       );
 
-
       emit(state.copyWith(
         isScrolling: false,
         lastIndexVisible: true,
@@ -210,7 +207,6 @@ class ChatScrollCubit extends Cubit<ChatScrollState> {
   /// Method Name: scrollToIndex
   /// Purpose: Scroll to any specific index
   Future<void> scrollToIndex(int index, {int? milliseconds}) async {
-
     if (!scrollController.isAttached) {
       SchedulerBinding.instance.addPostFrameCallback((_) {
         scrollToIndex(index, milliseconds: milliseconds);
@@ -228,8 +224,7 @@ class ChatScrollCubit extends Cubit<ChatScrollState> {
     }
 
     final clampedIndex = index.clamp(0, messages.length - 1);
-    if (clampedIndex != index) {
-    }
+    if (clampedIndex != index) {}
 
     emit(state.copyWith(isScrolling: true));
 
@@ -245,7 +240,6 @@ class ChatScrollCubit extends Cubit<ChatScrollState> {
   /// Method Name: jumpToIndex
   /// Purpose: Jump to index without animation
   void jumpToIndex(int index) {
-
     if (!scrollController.isAttached) {
       return;
     }
@@ -260,8 +254,7 @@ class ChatScrollCubit extends Cubit<ChatScrollState> {
     }
 
     final clampedIndex = index.clamp(0, messages.length - 1);
-    if (clampedIndex != index) {
-    }
+    if (clampedIndex != index) {}
 
     scrollController.jumpTo(index: clampedIndex);
   }

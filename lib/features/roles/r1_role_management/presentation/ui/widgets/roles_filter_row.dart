@@ -5,26 +5,27 @@
 /// Purpose: Declares `RolesFilterRow`.
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
+import 'package:grc_module/core/extensions/context_extensions.dart'
+    show kpIsPhoneLayout;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 
-import 'package:grc_module/core/custom/5-custom_button.dart';
+import 'package:grc_module/core/custom/buttons/custom_button.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/features/roles/r1_role_management/domain/enums/role_status.dart';
 import 'package:grc_module/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
 
 class RolesFilterRow extends StatelessWidget {
-  RolesFilterRow({super.key});
-  late RoleCubit controller;
+  const RolesFilterRow({super.key});
 
   @override
   Widget build(BuildContext context) {
-    bool isTablet = MediaQuery.of(context).size.width > 600;
-    controller = context.read<RoleCubit>();
+    !kpIsPhoneLayout(context);
+    final RoleCubit controller = context.read<RoleCubit>();
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -37,11 +38,11 @@ class RolesFilterRow extends StatelessWidget {
                 contentHorizontalPadding: 10.sp,
                 color: controller.selectedRoleStatus == status
                     ? AppColors.primary
-                    : AppColors.field,
+                    : AppColors.card,
                 textStyle: controller.selectedRoleStatus == status
                     ? null
                     : StyleText.fontSize14Weight400
-                    .copyWith(color: status.color),
+                        .copyWith(color: status.color),
                 title: status.localizedName(context),
                 function: () {
                   controller.updateSelectedRoleStatus(status);

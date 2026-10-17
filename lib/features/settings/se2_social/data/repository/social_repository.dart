@@ -10,6 +10,7 @@
 /// the cubit never sees a `FirebaseException` — the old code caught the raw
 /// error in the controller and interpolated `error.toString()` straight into a
 /// user-facing snackbar.
+library;
 
 import 'package:dartz/dartz.dart';
 

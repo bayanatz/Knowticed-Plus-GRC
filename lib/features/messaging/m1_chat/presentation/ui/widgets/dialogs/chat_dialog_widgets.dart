@@ -1,8 +1,9 @@
 /// Module: messaging / chat / presentation/ui/widgets/dialogs/chat_dialog_widgets.dart
-/// Purpose: Building blocks shared by the chat dialogs from Figma section
+/// Description: Building blocks shared by the chat dialogs from Figma section
 ///          6290:740 — Schedule Message, Mute Notifications, Disappearing
 ///          Messages, Contact and Poll.
-/// Created At: 30/9/2026
+/// Author: Amr Mesbah
+/// Created at: 30/9/2026
 library;
 
 import 'package:flutter/material.dart';
@@ -10,10 +11,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
+import 'package:grc_module/core/custom/dialogs/custom_dialog_manager.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
 bool chatDialogIsAr(BuildContext context) =>
     Localizations.localeOf(context).languageCode == 'ar';
@@ -62,8 +65,9 @@ class ChatDialogSubtitle extends StatelessWidget {
   Widget build(BuildContext context) => Text(
         text,
         textAlign: TextAlign.center,
-        style: StyleText.fontSize12Weight400
-            .copyWith(color: AppColors.secondaryBlack),
+        style: StyleText.fontSize12Weight400.copyWith(
+          color: AppColors.secondaryBlack,
+        ),
       );
 }
 
@@ -82,24 +86,28 @@ class ChatDialogBadgeHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Container(
-          width: 30.r,
-          height: 30.r,
-          padding: EdgeInsets.all(6.r),
-          decoration: BoxDecoration(
-            color: AppColors.primary,
-            borderRadius: BorderRadius.circular(4.r),
+        // An empty [icon] drops the badge (contact dialog: icon removed 17/10/2026).
+        if (icon.isNotEmpty) ...[
+          Container(
+            width: 30.r,
+            height: 30.r,
+            padding: EdgeInsets.all(6.r),
+            decoration: BoxDecoration(
+              color: AppColors.primary,
+              borderRadius: BorderRadius.circular(4.r),
+            ),
+            child: CustomSvgImage(
+              assetPath: icon,
+              fit: BoxFit.contain,
+              color: AppColors.textButton,
+            ),
           ),
-          child: CustomSvgImage(
-            assetPath: icon,
-            fit: BoxFit.contain,
-            color: AppColors.textButton,
-          ),
+          SizedBox(width: 8.w),
+        ],
+        Text(
+          title,
+          style: StyleText.fontSize16Weight500.copyWith(color: AppColors.text),
         ),
-        SizedBox(width: 8.w),
-        Text(title,
-            style:
-                StyleText.fontSize16Weight500.copyWith(color: AppColors.text)),
       ],
     );
   }
@@ -125,6 +133,7 @@ class ChatRadioOption<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool selected = value == groupValue;
     return InkWell(
+      onTapDown: (_) => HapticController.low(),
       onTap: () => onChanged(value),
       borderRadius: BorderRadius.circular(4.r),
       child: Padding(
@@ -191,8 +200,8 @@ class ChatDialogButtons extends StatelessWidget {
         Flexible(
           child: _button(
             label: isAr ? 'إلغاء' : 'Cancel',
-            color: AppColors.disabledButton.withValues(alpha: 0.8),
-            textColor: AppColors.black,
+            color: AppColors.darkGrey,
+            textColor: AppColors.text,
             onTap: onCancel ?? () => Navigator.of(context).pop(),
           ),
         ),
@@ -216,6 +225,7 @@ class ChatDialogButtons extends StatelessWidget {
     required VoidCallback onTap,
   }) {
     return InkWell(
+      onTapDown: hapticDown(onTap, HapticLevel.low),
       onTap: onTap,
       borderRadius: BorderRadius.circular(8.r),
       child: Container(
@@ -226,8 +236,10 @@ class ChatDialogButtons extends StatelessWidget {
           color: color,
           borderRadius: BorderRadius.circular(8.r),
         ),
-        child: Text(label,
-            style: StyleText.fontSize14Weight500.copyWith(color: textColor)),
+        child: Text(
+          label,
+          style: StyleText.fontSize14Weight500.copyWith(color: textColor),
+        ),
       ),
     );
   }
@@ -241,9 +253,10 @@ class ChatFieldLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Padding(
         padding: EdgeInsets.only(bottom: 6.h),
-        child: Text(text,
-            style:
-                StyleText.fontSize14Weight500.copyWith(color: AppColors.text)),
+        child: Text(
+          text,
+          style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
+        ),
       );
 }
 
@@ -279,10 +292,11 @@ class ChatTextField extends StatelessWidget {
       decoration: InputDecoration(
         isDense: true,
         filled: true,
-        fillColor: AppColors.field,
+        fillColor: AppColors.card,
         hintText: hint,
-        hintStyle: StyleText.fontSize12Weight400
-            .copyWith(color: AppColors.secondaryBlack),
+        hintStyle: StyleText.fontSize12Weight400.copyWith(
+          color: AppColors.secondaryBlack,
+        ),
         prefixIcon: prefix,
         prefixIconConstraints: BoxConstraints(minWidth: 32.w),
         contentPadding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
@@ -310,7 +324,7 @@ class ChatDateField extends StatelessWidget {
           ? (isAr ? 'اختر التاريخ' : 'Choose Date')
           : DateFormat('dd MMM yyyy').format(value!),
       hasValue: value != null,
-      icon: 'assets/icons_assets/roles_assets/calendar.svg',
+      icon: 'assets/icons_assets/main_icons_assets/ic_time_calendar.svg',
       onTap: () async {
         final DateTime now = DateTime.now();
         final DateTime? d = await showDatePicker(
@@ -339,7 +353,7 @@ class ChatTimeField extends StatelessWidget {
           ? (isAr ? 'اختر الوقت' : 'Choose time')
           : value!.format(context),
       hasValue: value != null,
-      icon: 'assets/icons_assets/main_icons_assets/clock_circle.svg',
+      icon: 'assets/icons_assets/main_icons_assets/ic_time_clock.svg',
       onTap: () async {
         final TimeOfDay? t = await showTimePicker(
           context: context,
@@ -367,13 +381,14 @@ class _PickerBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      onTapDown: hapticDown(onTap, HapticLevel.low),
       onTap: onTap,
       borderRadius: BorderRadius.circular(4.r),
       child: Container(
         height: 36.h,
         padding: EdgeInsets.symmetric(horizontal: 10.w),
         decoration: BoxDecoration(
-          color: AppColors.field,
+          color: AppColors.card,
           borderRadius: BorderRadius.circular(4.r),
         ),
         child: Row(

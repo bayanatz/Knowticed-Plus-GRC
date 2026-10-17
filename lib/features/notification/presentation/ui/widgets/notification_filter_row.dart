@@ -2,9 +2,9 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: notification_filter_row.dart
-/// Purpose: The Sender Type / By Type / Department / Time filter row shared by
+/// Description: The Sender Type / By Type / Department / Time filter row shared by
 ///          the three notification inboxes, plus the predicate that applies it.
-/// Author: Knowticed Plus team
+/// Author: Amr Mesbah
 /// Created at: 26/8/2026
 ///
 /// WHY THIS EXISTS
@@ -21,15 +21,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import 'package:grc_module/core/constants/app_constants.dart';
-import 'package:grc_module/core/custom/5-custom_button.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
+import 'package:grc_module/core/custom/buttons/custom_button.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:grc_module/core/constants/app_assets.dart';
-import 'package:grc_module/core/custom/1-custom_dropdown.dart';
+import 'package:grc_module/core/custom/dropdowns/custom_dropdown.dart';
 import 'package:grc_module/core/enums/app_module.dart';
-import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
+import 'package:grc_module/core/helper/access/main_core_employee_controller.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:grc_module/features/notification/data/models/notification_data_model.dart';
+import 'package:grc_module/features/notification/presentation/ui/widgets/notification_sender_info.dart';
 import 'package:grc_module/generated/l10n.dart';
 import 'package:grc_module/core/theme/app_animations.dart';
 
@@ -44,6 +45,10 @@ abstract class NotificationFilters {
 
   /// Whether [value] narrows the list. "All" and `null` never do.
   static bool isFiltering(String? value) => value != null && value != all;
+
+  /// The language department names are compared in. Get.locale, as the old
+  /// `getEmployeeDepartmentName` used, so the menu and the predicate agree.
+  static bool get _isEnglish => Get.locale.toString().contains('en');
 
   /// Function Name: [apply]
   ///
@@ -67,8 +72,11 @@ abstract class NotificationFilters {
     if (isFiltering(senderType)) {
       final bool wantEmployee = senderType == 'employee';
       filtered = filtered
-          .where((n) =>
-              employeeController.isKnownEmployee(n.senderEmail) == wantEmployee)
+          .where(
+            (n) =>
+                employeeController.isKnownEmployee(n.senderEmail) ==
+                wantEmployee,
+          )
           .toList();
     }
 
@@ -82,9 +90,15 @@ abstract class NotificationFilters {
 
     if (isFiltering(department)) {
       filtered = filtered
-          .where((n) =>
-              employeeController.getEmployeeDepartmentName(n.senderEmail) ==
-              department)
+          .where(
+            (n) =>
+                NotificationSenderInfo.departmentName(
+                  employeeController,
+                  n.senderEmail,
+                  isEnglish: _isEnglish,
+                ) ==
+                department,
+          )
           .toList();
     }
 
@@ -98,8 +112,9 @@ abstract class NotificationFilters {
         _ => 0,
       };
       if (days > 0) {
-        final int cutoff =
-            DateTime.now().subtract(Duration(days: days)).millisecondsSinceEpoch;
+        final int cutoff = DateTime.now()
+            .subtract(Duration(days: days))
+            .millisecondsSinceEpoch;
         filtered = filtered.where((n) => n.timestamp >= cutoff).toList();
       }
     }
@@ -208,17 +223,21 @@ class NotificationFilterRow extends StatelessWidget {
     final Widget rows = isMobile
         ? Column(
             children: [
-              Row(children: [
-                Expanded(child: senderTypeField),
-                SizedBox(width: 8.w),
-                Expanded(child: byTypeField),
-              ]),
+              Row(
+                children: [
+                  Expanded(child: senderTypeField),
+                  SizedBox(width: 8.w),
+                  Expanded(child: byTypeField),
+                ],
+              ),
               SizedBox(height: 8.h),
-              Row(children: [
-                Expanded(child: departmentField),
-                SizedBox(width: 8.w),
-                Expanded(child: timeField),
-              ]),
+              Row(
+                children: [
+                  Expanded(child: departmentField),
+                  SizedBox(width: 8.w),
+                  Expanded(child: timeField),
+                ],
+              ),
             ],
           )
         : Row(
@@ -234,7 +253,7 @@ class NotificationFilterRow extends StatelessWidget {
           );
 
     return Padding(
-      padding: EdgeInsets.only(bottom: context.isPhone ? 0.sp :  0.h),
+      padding: EdgeInsets.only(bottom: context.isPhone ? 0.sp : 0.h),
       child: rows,
     );
   }
@@ -265,10 +284,9 @@ class NotificationFilterRow extends StatelessWidget {
       // as being interpreted in .sp and is scaled inside the widget, so a
       // pre-scaled value would be scaled a second time.
       height: 38,
-      fillColor: context.isPhone ?  AppColors.background : AppColors.card,
+      fillColor: context.isPhone ? AppColors.background : AppColors.card,
       hintStyle: StyleText.fontSize12Weight400,
-      valueStyle:
-          StyleText.fontSize12Weight400.copyWith(color: AppColors.text),
+      valueStyle: StyleText.fontSize12Weight400.copyWith(color: AppColors.text),
       itemStyle: StyleText.fontSize12Weight400.copyWith(color: AppColors.text),
       items: options
           .map((e) => DropdownItem<String?>(value: e.key, label: e.value))
@@ -306,7 +324,14 @@ class NotificationFilterRow extends StatelessWidget {
   List<MapEntry<String?, String>> _departmentOptions(S s) {
     final Set<String> names = notifications
         .where((n) => employeeController.isKnownEmployee(n.senderEmail))
-        .map((n) => employeeController.getEmployeeDepartmentName(n.senderEmail))
+        // Null-safe lookup — see notification_sender_info.dart (7/10/2026).
+        .map(
+          (n) => NotificationSenderInfo.departmentName(
+            employeeController,
+            n.senderEmail,
+            isEnglish: NotificationFilters._isEnglish,
+          ),
+        )
         .where((d) => d.trim().isNotEmpty)
         .toSet();
 
@@ -329,7 +354,6 @@ class NotificationFilterRow extends StatelessWidget {
         MapEntry('month', s.month),
       ];
 }
-
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Mobile: the four dropdowns move into a dialog behind a Filter button
@@ -414,9 +438,7 @@ class _NotificationFilterDialogState extends State<_NotificationFilterDialog> {
     return Dialog(
       backgroundColor: AppColors.card,
       insetPadding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.r),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
       child: Padding(
         padding: EdgeInsets.all(12.sp),
         // SingleChildScrollView: four fields plus the buttons do not fit a
@@ -434,7 +456,7 @@ class _NotificationFilterDialogState extends State<_NotificationFilterDialog> {
                     height: 30.sp,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: AppColors.primary
+                      color: AppColors.primary,
                     ),
                     child: CustomSvgImage(
                       assetPath: AppAssets.filter,
@@ -446,8 +468,9 @@ class _NotificationFilterDialogState extends State<_NotificationFilterDialog> {
                   SizedBox(width: 8.w),
                   Text(
                     s.filter,
-                    style: StyleText.fontSize16Weight600
-                        .copyWith(color: AppColors.text),
+                    style: StyleText.fontSize16Weight600.copyWith(
+                      color: AppColors.text,
+                    ),
                   ),
                 ],
               ),
@@ -483,10 +506,9 @@ class _NotificationFilterDialogState extends State<_NotificationFilterDialog> {
                       title: s.reset,
                       fullWidth: true,
                       color: AppColors.darkGrey,
-                      textColor: AppColors.white,
-                      function: () => Navigator.of(context).pop(
-                        const NotificationFilterSelection.cleared(),
-                      ),
+                      textColor: AppColors.text,
+                      function: () => Navigator.of(context)
+                          .pop(const NotificationFilterSelection.cleared()),
                     ),
                   ),
                   SizedBox(width: 12.w),
@@ -512,45 +534,6 @@ class _NotificationFilterDialogState extends State<_NotificationFilterDialog> {
                 ],
               ),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// The button that replaces Sort on mobile.
-class NotificationFilterButton extends StatelessWidget {
-  const NotificationFilterButton({
-    super.key,
-    required this.onTap,
-    this.isActive = false,
-  });
-
-  final VoidCallback onTap;
-
-  /// Whether any filter is currently narrowing the list — the button picks up
-  /// the primary colour so it is obvious the list is not showing everything.
-  final bool isActive;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 38.w,
-        height: 38.h,
-        decoration: BoxDecoration(
-          color: isActive ? AppColors.primary : AppColors.card,
-          borderRadius: BorderRadius.circular(8.r),
-        ),
-        child: Center(
-          child: CustomSvgImage(
-            assetPath: AppAssets.filter,
-            width: 20.w,
-            height: 20.h,
-            fit: BoxFit.scaleDown,
-            color: isActive ? AppColors.textButton : AppColors.secondaryText,
           ),
         ),
       ),

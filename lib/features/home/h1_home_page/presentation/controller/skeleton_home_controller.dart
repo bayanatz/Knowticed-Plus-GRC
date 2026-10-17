@@ -7,9 +7,9 @@
 /// Author: Amr Mesbah
 /// Updated: 11/8/2026 - Locale is passed in from the widget layer instead of
 ///          read from GetX; start-up work moved out of the constructor.
+library;
 
 import 'package:bloc/bloc.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -17,12 +17,10 @@ import 'package:intl/intl.dart';
 import 'package:grc_module/core/constants/quotes_list.dart';
 import 'package:grc_module/features/home/h3_app_drawer/presentation/controller/app_drawer_cubit.dart';
 import 'package:grc_module/features/home/h2_nav_bar/presentation/controller/nav_bar_cubit.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
-import 'package:grc_module/features/roles/r1_role_management/presentation/controller/modules_cubit.dart';
-import 'package:grc_module/features/home/h1_home_page/presentation/controller/schedule_controller.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
+import 'package:grc_module/core/helper/access/modules_enum.dart';
+import 'package:grc_module/core/helper/format_title.dart';
 
-part './skeleton_home_state.dart';
+part 'skeleton_home_state.dart';
 
 /// Converted from GetxController to Cubit.
 ///

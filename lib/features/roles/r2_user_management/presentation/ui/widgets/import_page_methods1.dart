@@ -2,13 +2,14 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: import_page_methods1.dart
-/// Purpose: Declares `ImportPageMethods1`.
-/// Author: Knowticed Plus team
+/// Description: Declares `_ImportPageMethods1`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
 
 part of '../pages/import_page.dart';
 
-extension ImportPageMethods1 on _UploadFileTabletRolesState {
+extension _ImportPageMethods1 on _UploadFileTabletRolesState {
   // NOTE: the cell-validation predicates (isArabic/isEnglish/hasSpecialChars/
   // hasNumbers/containsArabic/containsEnglish) live inside [validateCell].
   // An extension-level copy used to be declared here too, but every call site
@@ -16,14 +17,11 @@ extension ImportPageMethods1 on _UploadFileTabletRolesState {
   // outer set was unreachable, and its hasSpecialChars additionally treated
   // digits as special characters, so keeping it around was misleading.
 
-  bool validateHeaders(List<String> headers) {
-    if (headers.length != expectedHeaders.length) return false;
-    for (int i = 0; i < headers.length; i++) {
-      if (headers[i].trim() != expectedHeaders[i].trim()) return false;
-    }
-    return true;
-  }
-  String? validateCell(String key, String? value, {Map<String, TextEditingController>? rowData}) {
+  String? validateCell(
+    String key,
+    String? value, {
+    Map<String, TextEditingController>? rowData,
+  }) {
     // Handle conditional fields that can be empty based on other field values
     if (key == 'Access Granted') {
       final statusCtrl = rowData?['Status'];
@@ -52,9 +50,11 @@ extension ImportPageMethods1 on _UploadFileTabletRolesState {
     bool hasExtraSpaces(String val) => RegExp(r'\s{2,}').hasMatch(val);
     // REMOVED 12/8/2026: dead code (analyzer: unused member, 0 call sites).
     bool isEnglish(String text) => RegExp(r'^[a-zA-Z\s]+$').hasMatch(text);
-    bool hasSpecialChars(String text) => RegExp(r'[!@#<>?":_~;\[\]\\|=+)(*&^%$]').hasMatch(text);
+    bool hasSpecialChars(String text) =>
+        RegExp(r'[!@#<>?":_~;\[\]\\|=+)(*&^%$]').hasMatch(text);
     bool hasNumbers(String text) => RegExp(r'\d').hasMatch(text);
-    bool containsArabic(String text) => RegExp(r'[\u0600-\u06FF]').hasMatch(text);
+    bool containsArabic(String text) =>
+        RegExp(r'[\u0600-\u06FF]').hasMatch(text);
     // REMOVED 12/8/2026: dead code (analyzer: unused member, 0 call sites).
 
     // ✅ Detect duplicate for Employee ID only
@@ -72,7 +72,7 @@ extension ImportPageMethods1 on _UploadFileTabletRolesState {
 
     switch (key.trim()) {
       case 'Employee ID':
-      // Employee ID should be alphanumeric, no special chars, no spaces
+        // Employee ID should be alphanumeric, no special chars, no spaces
         if (value.contains(' ')) return 'Warning Format Issue';
         if (RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%$]').hasMatch(value)) {
           return 'Warning Format Issue';
@@ -84,7 +84,7 @@ extension ImportPageMethods1 on _UploadFileTabletRolesState {
         break;
 
       case 'Current Role Type':
-      // Should be English text only, no numbers, no Arabic, allow spaces
+        // Should be English text only, no numbers, no Arabic, allow spaces
         if (containsArabic(value)) return 'Warning Language Check';
         if (hasNumbers(value)) return 'Warning Format Issue';
         if (hasSpecialChars(value)) return 'Warning Format Issue';
@@ -94,7 +94,7 @@ extension ImportPageMethods1 on _UploadFileTabletRolesState {
         break;
 
       case 'Desired Role Type':
-      // Should be English text only, no numbers, no Arabic, allow spaces
+        // Should be English text only, no numbers, no Arabic, allow spaces
         if (containsArabic(value)) return 'Warning Language Check';
         if (hasNumbers(value)) return 'Warning Format Issue';
         if (hasSpecialChars(value)) return 'Warning Format Issue';
@@ -201,6 +201,7 @@ extension ImportPageMethods1 on _UploadFileTabletRolesState {
 
     return null;
   }
+
   // Enhanced method to handle both file picker and drag-drop
   Future<void> processFile(List<int> bytes, String fileName) async {
     selectedFileName = fileName;
@@ -250,7 +251,7 @@ extension ImportPageMethods1 on _UploadFileTabletRolesState {
         List<String> actualHeaders = [];
         if (rows.isNotEmpty && rows[0].isNotEmpty) {
           actualHeaders = rows[0]
-              .map((cell) => cell?.value?.toString()?.trim() ?? '')
+              .map((cell) => cell?.value?.toString().trim() ?? '')
               .where((header) => header.isNotEmpty)
               .toList();
         }
@@ -259,13 +260,10 @@ extension ImportPageMethods1 on _UploadFileTabletRolesState {
           continue;
         }
 
-        List<String> missingHeaders = expectedHeaders
-            .where((h) => !actualHeaders.contains(h))
-            .toList();
-        List<String> unknownHeaders = actualHeaders
-            .where((h) => !expectedHeaders.contains(h))
-            .toList();
-
+        List<String> missingHeaders =
+            expectedHeaders.where((h) => !actualHeaders.contains(h)).toList();
+        List<String> unknownHeaders =
+            actualHeaders.where((h) => !expectedHeaders.contains(h)).toList();
 
         if (missingHeaders.length >= 3) {
           Navigator.of(context, rootNavigator: true).pop(); // Close loading
@@ -301,7 +299,11 @@ extension ImportPageMethods1 on _UploadFileTabletRolesState {
 
             rowControllers[header] = TextEditingController(text: cellValue);
 
-            String? error = validateCell(header, cellValue.isEmpty ? null : cellValue, rowData: rowControllers);
+            String? error = validateCell(
+              header,
+              cellValue.isEmpty ? null : cellValue,
+              rowData: rowControllers,
+            );
             if (error != null) {
               rowErrors[header] = error;
             }
@@ -336,11 +338,10 @@ extension ImportPageMethods1 on _UploadFileTabletRolesState {
       if (!mounted) return;
 
       // Set formData for future reference
-      setState(() {
+      rebuild(() {
         formData = parsedFormData;
         validationErrors = parsedValidationErrors;
       });
-
 
       // Navigate to details page
       navigateTo(
@@ -351,63 +352,36 @@ extension ImportPageMethods1 on _UploadFileTabletRolesState {
           selectedFileName: selectedFileName,
         ),
       );
-
     } catch (e) {
+      if (!mounted) return;
       Navigator.of(context, rootNavigator: true).pop(); // Close loading
       await Future.delayed(Duration(milliseconds: 100));
       _showErrorDialog('Failed to process Excel file: ${e.toString()}');
     }
   }
+
   // Drag and drop handlers
   void _onDragEntered() {
-    setState(() {
+    rebuild(() {
       _isDragging = true;
     });
   }
+
   void _onDragExited() {
-    setState(() {
+    rebuild(() {
       _isDragging = false;
     });
   }
+
   // REMOVED 12/8/2026: dead code (analyzer: unused member, 0 call sites).
   void _showErrorDialog(String message) {
-    showAppDialog(
+    CustomDialogManager.showMessage(
       context: context,
-      barrierDismissible: true,
-      builder: (context) => AlertDialog(
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Lottie.asset(
-              'assets/lottie_assets/roles_lottie_assets/rejected.json',
-              width: 90.sp,
-              height: 90.sp,
-              fit: BoxFit.contain,
-            ),
-            SizedBox(height: 16.sp),
-            Text(
-              "Error",
-              style: StyleText.fontSize20Weight500.copyWith(
-                  color: AppColors.text
-              ),
-            ),
-            SizedBox(height: 16.sp),
-            Text(
-              message,
-              style: StyleText.fontSize12Weight500.copyWith(
-                  color: AppColors.secondaryText
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text("OK"),
-          ),
-        ],
-      ),
+      lottiePath:
+          'assets/lottie_assets/main_lottie_assets/lot_status_error.json',
+      title: S.of(context).error,
+      subtitle: message,
+      closeAfter: const Duration(seconds: 5),
     );
   }
 }

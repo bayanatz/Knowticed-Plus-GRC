@@ -4,17 +4,20 @@
 /// Distinct from home/h1_home_page's PersonStateView, which takes an
 /// EmployeeEntityPro. This one takes a MemberEntity, so it lives in the
 /// messaging feature.
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:grc_module/core/custom/23-custom_check_box.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/helper/main_helper/spacing_helper.dart';
+import 'package:grc_module/core/custom/inputs/custom_check_box.dart';
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
+import 'package:grc_module/features/messaging/helpers/spacing_helper.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
 
-import '../../../domain/entities/member_entity.dart';
+import 'package:grc_module/features/messaging/m3_groups/domain/entities/member_entity.dart';
+import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
 class PersonStateView extends StatelessWidget {
   const PersonStateView({
@@ -34,10 +37,10 @@ class PersonStateView extends StatelessWidget {
   Widget build(BuildContext context) {
     return MouseRegion(
       child: GestureDetector(
-        onTap: onTap ?? () {},
+        onTap: withHaptic(onTap ?? () {}, HapticLevel.low),
         child: Container(
           decoration: BoxDecoration(
-            color: color ?? AppColors.field,
+            color: color ?? AppColors.card,
             borderRadius: BorderRadius.circular(8),
           ),
           padding: const EdgeInsetsDirectional.all(10),
@@ -48,7 +51,7 @@ class PersonStateView extends StatelessWidget {
                 borderRadius: BorderRadius.circular(30.r),
                 child: CustomSvgImage(
                   assetPath:
-                      "assets/icons_assets/main_icons_assets/assets_male.svg",
+                      "assets/icons_assets/main_icons_assets/ic_user_avatar_male.png",
                   width: 50.w,
                   height: 50.w,
                   fit: BoxFit.fill,
@@ -65,20 +68,22 @@ class PersonStateView extends StatelessWidget {
                     Expanded(
                       child: Text(
                         person.fullName,
-                        style: StyleText.fontSize14Weight500
-                            .copyWith(height: 1),
+                        style:
+                            StyleText.fontSize14Weight500.copyWith(height: 1),
                       ),
                     ),
                     Expanded(
                       child: Text(
                         person.departmentName,
-                        style: StyleText.fontSize12Weight400.copyWith(color: AppColors.secondaryBlack),
+                        style: StyleText.fontSize12Weight400
+                            .copyWith(color: AppColors.secondaryBlack),
                       ),
                     ),
                     Expanded(
                       child: Text(
                         person.subInfo,
-                        style: StyleText.fontSize12Weight400.copyWith(color: AppColors.secondaryBlack),
+                        style: StyleText.fontSize12Weight400
+                            .copyWith(color: AppColors.secondaryBlack),
                       ),
                     ),
                   ],
@@ -89,7 +94,7 @@ class PersonStateView extends StatelessWidget {
                   alignment: AlignmentDirectional.topEnd,
                   child: CustomCheckBox(
                     isSelected: person.isSelected,
-                    borderColor: AppColors.secondaryText.withOpacity(.5),
+                    borderColor: AppColors.secondaryText.withValues(alpha: .5),
                   ),
                 ),
             ],

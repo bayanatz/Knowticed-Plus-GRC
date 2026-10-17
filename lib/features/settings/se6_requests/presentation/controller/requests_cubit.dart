@@ -2,13 +2,14 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: requests_cubit.dart
-/// Purpose: Loads, submits and decides change requests for the settings pages.
-/// Author: Knowticed Plus team
+/// Description: Loads, submits and decides change requests for the settings pages.
+/// Author: Amr Mesbah
 /// Created at: 11/8/2026
 ///
 /// Added for CR-SKEL-SE6-N02 / N04. Replaces the Firestore chains and `try`
 /// blocks the four pages held, and the `GetxController` + `StateMixin` +
 /// `RxStatus` controller beside them.
+library;
 
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
@@ -21,8 +22,10 @@ import 'package:grc_module/features/settings/se6_requests/domain/base_repository
 import 'package:grc_module/features/settings/se6_requests/domain/entities/change_request.dart';
 import 'package:grc_module/features/settings/se6_requests/domain/entities/field_change.dart';
 import 'package:grc_module/features/settings/se6_requests/domain/enums/request_status.dart';
+// ADDED 9/10/2026 — SelfApprovalFailure → RequestsState.userMessage.
+import 'package:grc_module/features/settings/se6_requests/domain/rules/self_approval_rule.dart';
 
-part './requests_state.dart';
+part 'requests_state.dart';
 
 class RequestsCubit extends Cubit<RequestsState> {
   RequestsCubit({RequestsBaseRepository? repository})
@@ -50,16 +53,16 @@ class RequestsCubit extends Cubit<RequestsState> {
     final Either<Failure, List<ChangeRequest>> result =
         await repository.getRequestsForEmployee(employeeId);
 
-    emit(result.fold(
-      (Failure failure) => state.copyWith(
-        status: RequestsStatus.failure,
-        errorMessage: failure.errMessage,
+    emit(
+      result.fold(
+        (Failure failure) => state.copyWith(
+          status: RequestsStatus.failure,
+          errorMessage: failure.errMessage,
+        ),
+        (List<ChangeRequest> requests) =>
+            state.copyWith(status: RequestsStatus.success, requests: requests),
       ),
-      (List<ChangeRequest> requests) => state.copyWith(
-        status: RequestsStatus.success,
-        requests: requests,
-      ),
-    ));
+    );
   }
 
   /// Function Name: [loadRequest]
@@ -68,19 +71,20 @@ class RequestsCubit extends Cubit<RequestsState> {
   Future<void> loadRequest(String requestId) async {
     emit(state.copyWith(status: RequestsStatus.loading));
 
-    final Either<Failure, ChangeRequest?> result =
-        await repository.getRequest(requestId);
+    final Either<Failure, ChangeRequest?> result = await repository.getRequest(
+      requestId,
+    );
 
-    emit(result.fold(
-      (Failure failure) => state.copyWith(
-        status: RequestsStatus.failure,
-        errorMessage: failure.errMessage,
+    emit(
+      result.fold(
+        (Failure failure) => state.copyWith(
+          status: RequestsStatus.failure,
+          errorMessage: failure.errMessage,
+        ),
+        (ChangeRequest? request) =>
+            state.copyWith(status: RequestsStatus.success, selected: request),
       ),
-      (ChangeRequest? request) => state.copyWith(
-        status: RequestsStatus.success,
-        selected: request,
-      ),
-    ));
+    );
   }
 
   /// Function Name: [submit]
@@ -124,17 +128,16 @@ class RequestsCubit extends Cubit<RequestsState> {
 
     final bool ok = result.fold(
       (Failure failure) {
-        emit(state.copyWith(
-          status: RequestsStatus.failure,
-          errorMessage: failure.errMessage,
-        ));
+        emit(
+          state.copyWith(
+            status: RequestsStatus.failure,
+            errorMessage: failure.errMessage,
+          ),
+        );
         return false;
       },
       (_) {
-        emit(state.copyWith(
-          status: RequestsStatus.success,
-          submitted: true,
-        ));
+        emit(state.copyWith(status: RequestsStatus.success, submitted: true));
         return true;
       },
     );
@@ -188,10 +191,15 @@ class RequestsCubit extends Cubit<RequestsState> {
   /// - [approverEmail] / [isArabic]: passed through to the employee's
   ///   notification. Optional so existing callers keep compiling; without an
   ///   approver email there is no sender, so no notification is sent.
+  ///
+  /// CHANGED 9/10/2026: [approverEmail] (and [approverEmployeeId]) now also go
+  /// to the repository's self-approval check. Without an approver email the
+  /// approval is REFUSED (fail closed), not just left un-notified.
   Future<bool> approve({
     required ChangeRequest request,
     required String employeeId,
     String approverEmail = '',
+    String approverEmployeeId = '',
     bool isArabic = false,
     String approvalReason = '',
   }) async {
@@ -200,6 +208,8 @@ class RequestsCubit extends Cubit<RequestsState> {
     final Either<Failure, void> result = await repository.approveRequest(
       request: request,
       employeeId: employeeId,
+      approverEmail: approverEmail,
+      approverEmployeeId: approverEmployeeId,
       reason: approvalReason,
     );
 
@@ -216,10 +226,14 @@ class RequestsCubit extends Cubit<RequestsState> {
   ///
   /// Purpose: Move a request to [status] — reject or cancel. The employee
   ///          profile is untouched; only [approve] writes it.
+  ///
+  /// CHANGED 9/10/2026: a reject is checked by the repository's self-approval
+  /// rule with [approverEmail] / [approverEmployeeId]; cancel is not.
   Future<bool> setStatus(
     ChangeRequest request,
     RequestStatus status, {
     String approverEmail = '',
+    String approverEmployeeId = '',
     bool isArabic = false,
     String rejectionReason = '-',
   }) async {
@@ -229,6 +243,8 @@ class RequestsCubit extends Cubit<RequestsState> {
       requestId: request.id,
       status: status,
       reason: rejectionReason == '-' ? '' : rejectionReason,
+      deciderEmail: approverEmail,
+      deciderEmployeeId: approverEmployeeId,
     );
 
     return _finishDecision(
@@ -247,6 +263,7 @@ class RequestsCubit extends Cubit<RequestsState> {
   Future<bool> reject(
     ChangeRequest request, {
     String approverEmail = '',
+    String approverEmployeeId = '',
     bool isArabic = false,
     String rejectionReason = '-',
   }) =>
@@ -254,6 +271,7 @@ class RequestsCubit extends Cubit<RequestsState> {
         request,
         RequestStatus.rejected,
         approverEmail: approverEmail,
+        approverEmployeeId: approverEmployeeId,
         isArabic: isArabic,
         rejectionReason: rejectionReason,
       );
@@ -268,22 +286,30 @@ class RequestsCubit extends Cubit<RequestsState> {
   }) async {
     final bool ok = result.fold(
       (Failure failure) {
-        emit(state.copyWith(
-          status: RequestsStatus.failure,
-          errorMessage: failure.errMessage,
-        ));
+        emit(
+          state.copyWith(
+            status: RequestsStatus.failure,
+            errorMessage: failure.errMessage,
+            // 9/10/2026 — a blocked self-approval carries a localized message
+            // the screen shows as-is.
+            userMessage:
+                failure is SelfApprovalFailure ? failure.errMessage : null,
+          ),
+        );
         return false;
       },
       (_) {
         final ChangeRequest updated = request.copyWith(status: status);
-        emit(state.copyWith(
-          status: RequestsStatus.success,
-          selected: updated,
-          requests: state.requests
-              .map((ChangeRequest r) => r.id == updated.id ? updated : r)
-              .toList(),
-          decided: true,
-        ));
+        emit(
+          state.copyWith(
+            status: RequestsStatus.success,
+            selected: updated,
+            requests: state.requests
+                .map((ChangeRequest r) => r.id == updated.id ? updated : r)
+                .toList(),
+            decided: true,
+          ),
+        );
         return true;
       },
     );
@@ -321,22 +347,11 @@ class RequestsCubit extends Cubit<RequestsState> {
     required String rejectionReason,
   }) async {
     if (approverEmail.isEmpty || request.employeeEmail.isEmpty) {
-      if (kDebugMode) {
-        debugPrint(
-          '[settings-notify] decision "${status.wireValue}" on '
-          '"${request.section}" NOT announced — '
-          '${approverEmail.isEmpty ? 'no approver email' : 'no employee email'}.',
-        );
-      }
+      if (kDebugMode) {}
       return;
     }
 
-    if (kDebugMode) {
-      debugPrint(
-        '[settings-notify] "${request.section}" ${status.wireValue} by '
-        '$approverEmail → telling ${request.employeeEmail}',
-      );
-    }
+    if (kDebugMode) {}
 
     try {
       if (status == RequestStatus.approved) {

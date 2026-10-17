@@ -2,9 +2,9 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: watermark_cubit.dart
-/// Purpose: Declares `WatermarkState` and `WatermarkCubit` — the edit session
+/// Description: Declares `WatermarkState` and `WatermarkCubit` — the edit session
 ///          behind the Watermark settings screen.
-/// Author: Knowticed Plus team
+/// Author: Amr Mesbah
 /// Created at: 25/8/2026
 ///
 /// Holds TWO copies of the settings: [WatermarkState.saved] (what is stored)
@@ -18,7 +18,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:grc_module/core/helper/role/modules_enum.dart';
+import 'package:grc_module/core/helper/access/modules_enum.dart';
 import 'package:grc_module/features/settings/se8_watermark/data/repository/watermark_repository.dart';
 import 'package:grc_module/features/settings/se8_watermark/domain/entities/watermark_settings.dart';
 
@@ -66,10 +66,12 @@ class WatermarkState {
 class WatermarkCubit extends Cubit<WatermarkState> {
   WatermarkCubit({WatermarkRepository? repository})
       : _repository = repository ?? WatermarkRepository(),
-        super(const WatermarkState(
-          saved: WatermarkSettings.initial,
-          draft: WatermarkSettings.initial,
-        ));
+        super(
+          const WatermarkState(
+            saved: WatermarkSettings.initial,
+            draft: WatermarkSettings.initial,
+          ),
+        );
 
   final WatermarkRepository _repository;
 
@@ -114,8 +116,7 @@ class WatermarkCubit extends Cubit<WatermarkState> {
     try {
       final WatermarkSettings stored = await _repository.load();
       emitSafely(WatermarkState(saved: stored, draft: stored));
-    } catch (e, stackTrace) {
-      debugPrint('WatermarkCubit.load failed: $e\n$stackTrace');
+    } catch (e) {
       emitSafely(state.copyWith(busy: false, error: e.toString()));
     }
   }
@@ -123,7 +124,8 @@ class WatermarkCubit extends Cubit<WatermarkState> {
   // ── Draft edits ───────────────────────────────────────────────────────────
   // Each one is a copyWith on the draft only. None of them touch `saved`.
 
-  void selectField(WatermarkField field) => _edit(state.draft.copyWith(field: field));
+  void selectField(WatermarkField field) =>
+      _edit(state.draft.copyWith(field: field));
 
   void toggleDate(bool value) => _edit(state.draft.copyWith(showDate: value));
 
@@ -133,7 +135,8 @@ class WatermarkCubit extends Cubit<WatermarkState> {
 
   void setDensity(int value) => _edit(state.draft.copyWith(density: value));
 
-  void setFontSize(double value) => _edit(state.draft.copyWith(fontSize: value));
+  void setFontSize(double value) =>
+      _edit(state.draft.copyWith(fontSize: value));
 
   void setAngle(double value) => _edit(state.draft.copyWith(angle: value));
 
@@ -166,9 +169,11 @@ class WatermarkCubit extends Cubit<WatermarkState> {
   ///
   /// Fifteen tiles is a lot of tapping to reach "all but one", which is the
   /// usual shape of this setting.
-  void setAllModules(bool selected) => _edit(state.draft.copyWith(
-        modules: selected ? WatermarkSettings.allModuleNames : <String>{},
-      ));
+  void setAllModules(bool selected) => _edit(
+        state.draft.copyWith(
+          modules: selected ? WatermarkSettings.allModuleNames : <String>{},
+        ),
+      );
 
   void _edit(WatermarkSettings draft) =>
       emitSafely(state.copyWith(draft: draft));
@@ -211,8 +216,7 @@ class WatermarkCubit extends Cubit<WatermarkState> {
       await _repository.save(state.draft);
       emitSafely(WatermarkState(saved: state.draft, draft: state.draft));
       return true;
-    } catch (e, stackTrace) {
-      debugPrint('WatermarkCubit.save failed: $e\n$stackTrace');
+    } catch (e) {
       emitSafely(state.copyWith(busy: false, error: e.toString()));
       return false;
     }

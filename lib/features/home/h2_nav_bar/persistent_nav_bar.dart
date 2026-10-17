@@ -10,6 +10,7 @@
 /// single import for consumers and lets the split files see each other.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026
+library;
 
 export 'package:grc_module/features/home/h2_nav_bar/data/models/custom_widget_route_and_navigator_settings.dart';
 export 'package:grc_module/features/home/h2_nav_bar/data/models/item_animation_properties.dart';

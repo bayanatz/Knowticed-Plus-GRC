@@ -12,6 +12,7 @@
 /// presentation/ui/ (§20/§21), so it belongs here. The catch was also empty:
 /// a denied permission looked identical to the user tapping cancel. This
 /// returns a result the caller can tell apart.
+library;
 
 import 'dart:io';
 

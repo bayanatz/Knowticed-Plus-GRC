@@ -6,20 +6,22 @@
 /// Author: Knowticed Plus team
 /// Created at: 2026
 /// Updated: 12/8/2026 - Added the standard header (Docs).
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
-import 'package:grc_module/core/services/firebase/repository/firebase_repository.dart';
+import 'package:grc_module/core/app_services/firebase/repository/firebase_repository.dart';
 
 import 'package:grc_module/core/network/failure_model.dart';
 import 'package:grc_module/core/network/get_base_url.dart';
 
-import '../models/notification_model_core.dart' show NotificationModel;
+import 'package:grc_module/features/notification/data/models/notification_model_core.dart'
+    show NotificationModel;
 
 class NotificationRemoteDataSource {
   WriteBatch _batch = FirebaseFirestore.instance.batch();
 
-  addNotificationToFirebase({
+  Future<Either<Failure, dynamic>> addNotificationToFirebase({
     required NotificationModel model,
     required List<String> emails,
     required String currentUserEmail,

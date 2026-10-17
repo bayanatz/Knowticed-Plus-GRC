@@ -7,6 +7,7 @@
 /// Created at: 11/8/2026
 ///
 /// Added for CR-SKEL-SE3-N02.
+library;
 
 import 'package:dartz/dartz.dart';
 

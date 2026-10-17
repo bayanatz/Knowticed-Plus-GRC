@@ -10,6 +10,7 @@
 /// `'pending'` / `'approved'` / `'rejected'` literals in four pages and the
 /// controller, so a typo in any one of them silently produced a request no
 /// screen could filter.
+library;
 
 enum RequestStatus {
   pending('pending'),

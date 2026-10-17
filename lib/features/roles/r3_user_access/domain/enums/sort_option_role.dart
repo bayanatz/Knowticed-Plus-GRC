@@ -10,6 +10,7 @@
 ///          reaching into `presentation/ui/widgets/` for its vocabulary. Its
 ///          hardcoded English/Arabic label pairs were replaced by an
 ///          `S.of(context)` lookup that lives with the widget that renders it.
+library;
 
 /// Sort keys the user-access list can be ordered by.
 enum SortOptionRole {

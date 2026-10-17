@@ -6,17 +6,23 @@
 /// Author: Knowticed Plus team
 /// Created at: 2026
 /// Updated: 12/8/2026 - Added the standard header (Docs).
+/// Updated: 9/10/2026 - Time Tracker QA KP-TT-011: [getTemplate] reads a
+///          stored body that is exactly a SUPERSEDED old default (seeded,
+///          never edited) with today's default ([withoutSupersededText]).
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:grc_module/core/network/get_base_url.dart';
-import '../models/notification_model.dart';
-import '../../domain/enums/notification_catalog.dart';
-import '../../domain/enums/notification_event.dart';
+import 'package:grc_module/features/notification/data/models/notification_model.dart';
+import 'package:grc_module/features/notification/domain/enums/notification_catalog.dart';
+import 'package:grc_module/features/notification/domain/enums/notification_event.dart';
+import 'package:grc_module/features/notification/domain/enums/time_tracker/time_tracker_events.dart';
 import 'package:grc_module/core/enums/app_module.dart';
 import 'package:grc_module/core/enums/template_variable.dart';
 
 class NotificationTemplateService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   /// `Demo/{companyId}/Modules/notification/notification_templates`.
   /// MOVED 24/9/2026 off the top-level `notification_templates` collection,
   /// which mixed every company's templates in one bucket. The tenant prefix
@@ -33,14 +39,14 @@ class NotificationTemplateService {
     try {
       final templateId = '${module}_$eventType';
 
-      final doc = await _firestore
-          .collection(_collectionPath)
-          .doc(templateId)
-          .get();
+      final doc =
+          await _firestore.collection(_collectionPath).doc(templateId).get();
 
       if (doc.exists) {
         final template = NotificationTemplateModel.fromFirestore(doc);
-        return template;
+        // 9/10/2026 (Time Tracker QA KP-TT-011): a seeded old default is
+        // read with today's wording; an admin-edited text is kept.
+        return withoutSupersededText(template);
       } else {
         // Return default template if not found
         return _getDefaultTemplate(module: module, eventType: eventType);
@@ -50,10 +56,41 @@ class NotificationTemplateService {
     }
   }
 
-  // Get all templates for a module
-  Future<List<NotificationTemplateModel>> getTemplatesByModule(String module) async {
-    try {
+  /// Function Name: [withoutSupersededText]
+  ///
+  /// Purpose: ADDED 9/10/2026 (Time Tracker QA KP-TT-011) — a stored body
+  /// that is EXACTLY an old catalogue default the catalogue has since
+  /// replaced (e.g. "You currently have {{count}} requests pending…", which
+  /// read "1 requests") becomes today's default; anything an admin edited
+  /// stays. Status, channels and subject are never touched. Pure — no
+  /// Firestore.
+  ///
+  /// Return type: [NotificationTemplateModel]
+  static NotificationTemplateModel withoutSupersededText(
+      NotificationTemplateModel template) {
+    final List<String> old = template.module == AppModule.timeTracker.key
+        ? (TimeTrackerNotificationEvent.supersededBodies[template.eventType] ??
+            const <String>[])
+        : const <String>[];
+    if (old.isEmpty) return template;
+    final bool en = old.contains(template.bodyEnglish.trim());
+    final bool ar = old.contains(template.bodyArabic.trim());
+    if (!en && !ar) return template;
+    final NotificationEvent? event = NotificationCatalog.findByKeys(
+      moduleKey: template.module,
+      eventKey: template.eventType,
+    );
+    if (event == null) return template;
+    return template.copyWith(
+      bodyEnglish: en ? event.bodyEn : null,
+      bodyArabic: ar ? event.bodyAr : null,
+    );
+  }
 
+  // Get all templates for a module
+  Future<List<NotificationTemplateModel>> getTemplatesByModule(
+      String module) async {
+    try {
       final querySnapshot = await _firestore
           .collection(_collectionPath)
           .where('module', isEqualTo: module)
@@ -72,7 +109,6 @@ class NotificationTemplateService {
   // ✅ Save or update template with selected notification types
   Future<bool> saveTemplate(NotificationTemplateModel template) async {
     try {
-
       final updatedTemplate = template.copyWith(
         updatedAt: DateTime.now(),
       );
@@ -97,10 +133,7 @@ class NotificationTemplateService {
     try {
       final templateId = '${module}_$eventType';
 
-      await _firestore
-          .collection(_collectionPath)
-          .doc(templateId)
-          .set({
+      await _firestore.collection(_collectionPath).doc(templateId).set({
         'selectedNotificationTypes': selectedTypes,
         'updatedAt': Timestamp.fromDate(DateTime.now()),
       }, SetOptions(merge: true));
@@ -114,11 +147,7 @@ class NotificationTemplateService {
   // Delete template
   Future<bool> deleteTemplate(String templateId) async {
     try {
-
-      await _firestore
-          .collection(_collectionPath)
-          .doc(templateId)
-          .delete();
+      await _firestore.collection(_collectionPath).doc(templateId).delete();
 
       return true;
     } catch (e) {
@@ -224,14 +253,15 @@ class NotificationTemplateService {
   Future<int> seedModuleDefaults(AppModule module) async {
     var written = 0;
     for (final event in NotificationCatalog.eventsOf(module)) {
-      final doc =
-          await _firestore.collection(_collectionPath).doc(event.templateId).get();
+      final doc = await _firestore
+          .collection(_collectionPath)
+          .doc(event.templateId)
+          .get();
       if (doc.exists) continue;
       if (await saveTemplate(templateFromEvent(event))) written++;
     }
     return written;
   }
-
 
   // Process template variables (replace placeholders)
   String processTemplate(String template, Map<String, String> variables) {

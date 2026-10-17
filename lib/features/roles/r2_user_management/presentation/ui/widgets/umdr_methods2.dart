@@ -2,8 +2,9 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: umdr_methods2.dart
-/// Purpose: Declares `UmdrMethods2`.
-/// Author: Knowticed Plus team
+/// Description: Declares `_UmdrMethods2`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 23/8/2026 - `_buildCommentsSection` added and hung under the
 ///          request note card in `_buildContent`.
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
@@ -11,7 +12,7 @@
 
 part of '../pages/user_management_details_request.dart';
 
-extension UmdrMethods2 on _UserManagementDetailsRequestSettingsState {
+extension _UmdrMethods2 on _UserManagementDetailsRequestSettingsState {
   /// Open the one-to-one chat with the colleague who filed this request.
   ///
   /// ADDED 25/8/2026. The "Message" button had an empty callback.
@@ -27,7 +28,9 @@ extension UmdrMethods2 on _UserManagementDetailsRequestSettingsState {
   /// usually empty and the method waits for Firestore's first batch, which can
   /// take a moment.
   Future<void> _openChatWithCreator(
-      BuildContext context, String creatorEmail) async {
+    BuildContext context,
+    String creatorEmail,
+  ) async {
     showLoadingIndicator();
     bool loading = true;
     void stopLoading() {
@@ -40,8 +43,8 @@ extension UmdrMethods2 on _UserManagementDetailsRequestSettingsState {
     // (`beforeNavigate`); it used to stay up until the chat was closed again.
     // A failure now says why, localized, and closes itself after 3 s (the old
     // title was the raw key "couldNotOpenChatWithThisUser").
-    final OpenChatResult result = await MessagingInterfaceImplementation()
-        .tryOpenChatWithUser(
+    final OpenChatResult result =
+        await MessagingInterfaceImplementation().tryOpenChatWithUser(
       context: context,
       userEmail: creatorEmail,
       beforeNavigate: stopLoading,
@@ -88,9 +91,7 @@ extension UmdrMethods2 on _UserManagementDetailsRequestSettingsState {
       );
       return Row(
         mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          if (fullWidth) Expanded(child: badge) else badge,
-        ],
+        children: [if (fullWidth) Expanded(child: badge) else badge],
       );
     }
 
@@ -101,12 +102,43 @@ extension UmdrMethods2 on _UserManagementDetailsRequestSettingsState {
       return SizedBox(height: 38.h);
     }
 
+    // ── Pending, but not mine to decide (ADDED 9/10/2026) ───────────────────
+    // Owner decision: a request is approved by ANOTHER Users_Requests holder,
+    // never by the requester. Approve / Reject are not shown on your own
+    // request (or when you cannot be identified); the repository checks the
+    // same rule again before any write.
+    final SelfApprovalVerdict verdict = SelfApprovalRule.check(
+      requesterEmail: createdByEmail,
+      requesterId: createdByID,
+      deciderEmail: AppControllers.employee.employeeEntity?.email ?? '',
+      deciderId: AppControllers.employee.employeeEntity?.id ?? '',
+    );
+    if (!verdict.isAllowed) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Flexible(
+            child: Text(
+              verdict == SelfApprovalVerdict.ownRequest
+                  ? S.of(context).ownRequestReviewNote
+                  : S.of(context).requestDecisionUnverifiable,
+              textAlign: TextAlign.end,
+              style: StyleText.fontSize14Weight500.copyWith(
+                color: AppColors.secondaryText,
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
     // ── Pending → Approve + Reject buttons ───────────────────────────────────
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         // Reject
         GestureDetector(
+          onTapDown: (_) => HapticController.high(),
           onTap: () => _showConfirmDialog(action: 'rejected'),
           child: Container(
             width: 150.w,
@@ -119,15 +151,18 @@ extension UmdrMethods2 on _UserManagementDetailsRequestSettingsState {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 CustomSvgImage(
-                    assetPath: "assets/icons_assets/main_icons_assets/status_rejected_stamp_red.svg",
-                    width: 18.w,
-                    height: 18.h,
-                    fit: BoxFit.scaleDown),
+                  assetPath:
+                      "assets/icons_assets/main_icons_assets/ic_status_rejected.svg",
+                  width: 18.w,
+                  height: 18.h,
+                  fit: BoxFit.scaleDown,
+                ),
                 SizedBox(width: 6.w),
                 Text(
                   S.of(context).reject,
-                  style: StyleText.fontSize16Weight500
-                      .copyWith(color: AppColors.red),
+                  style: StyleText.fontSize16Weight500.copyWith(
+                    color: AppColors.red,
+                  ),
                 ),
               ],
             ),
@@ -136,6 +171,7 @@ extension UmdrMethods2 on _UserManagementDetailsRequestSettingsState {
         SizedBox(width: 12.w),
         // Approve
         GestureDetector(
+          onTapDown: (_) => HapticController.medium(),
           onTap: () => _showConfirmDialog(action: 'approved'),
           child: Container(
             width: 150.w,
@@ -148,15 +184,18 @@ extension UmdrMethods2 on _UserManagementDetailsRequestSettingsState {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 CustomSvgImage(
-                    assetPath: "assets/icons_assets/main_icons_assets/status_approved_check_green.svg",
-                    width: 18.w,
-                    height: 18.h,
-                    fit: BoxFit.scaleDown),
+                  assetPath:
+                      "assets/icons_assets/main_icons_assets/ic_status_approved_circle.svg",
+                  width: 18.w,
+                  height: 18.h,
+                  fit: BoxFit.scaleDown,
+                ),
                 SizedBox(width: 6.w),
                 Text(
                   S.of(context).approve,
-                  style: StyleText.fontSize16Weight500
-                      .copyWith(color: AppColors.statusApproved),
+                  style: StyleText.fontSize16Weight500.copyWith(
+                    color: AppColors.statusApproved,
+                  ),
                 ),
               ],
             ),
@@ -165,18 +204,19 @@ extension UmdrMethods2 on _UserManagementDetailsRequestSettingsState {
       ],
     );
   }
+
   Widget _buildContent(
-      bool lightMode,
-      bool isMobile,
-      bool isArabic,
-      String creatorName,
-      String creatorTitle,
-      String creatorDepartment,
-      String creatorPhone,
-      String creatorEmail,
-      String creatorPhoto,
-      bool isNetworkPhoto,
-      ) {
+    bool lightMode,
+    bool isMobile,
+    bool isArabic,
+    String creatorName,
+    String creatorTitle,
+    String creatorDepartment,
+    String creatorPhone,
+    String creatorEmail,
+    String creatorPhoto,
+    bool isNetworkPhoto,
+  ) {
     if (isLoading) {
       return Center(
         child: Padding(
@@ -240,25 +280,26 @@ extension UmdrMethods2 on _UserManagementDetailsRequestSettingsState {
                       child: ClipOval(
                         child: !isNetworkPhoto
                             ? Image.network(
-                          creatorPhoto,
-                          width: 80.sp,
-                          height: 80.sp,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return CustomSvgImage(
-                              assetPath: "assets/icons_assets/main_icons_assets/male_avatar.svg",
-                              width: 80.sp,
-                              height: 80.sp,
-                              fit: BoxFit.cover,
-                            );
-                          },
-                        )
+                                creatorPhoto,
+                                width: 80.sp,
+                                height: 80.sp,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return CustomSvgImage(
+                                    assetPath:
+                                        "assets/icons_assets/main_icons_assets/ic_user_avatar_male.png",
+                                    width: 80.sp,
+                                    height: 80.sp,
+                                    fit: BoxFit.cover,
+                                  );
+                                },
+                              )
                             : CustomSvgImage(
-                          assetPath: creatorPhoto,
-                          width: 80.w,
-                          height: 80.h,
-                          fit: BoxFit.cover,
-                        ),
+                                assetPath: creatorPhoto,
+                                width: 80.w,
+                                height: 80.h,
+                                fit: BoxFit.cover,
+                              ),
                       ),
                     ),
                     SizedBox(width: 14.sp),
@@ -276,78 +317,86 @@ extension UmdrMethods2 on _UserManagementDetailsRequestSettingsState {
                           SizedBox(height: 16.sp),
                           isMobile
                               ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _buildDetailRow(
-                                  lightMode,
-                                  "assets/icons_assets/main_icons_assets/Case.svg",
-                                  S.of(context).title,
-                                  creatorTitle),
-                              SizedBox(height: 12.h),
-                              _buildDetailRow(
-                                  lightMode,
-                                  "assets/icons_assets/services_assets/department_hierarchy_people.svg",
-                                  S.of(context).department,
-                                  creatorDepartment),
-                              SizedBox(height: 12.h),
-                              _buildDetailRow(
-                                  lightMode,
-                                  "assets/icons_assets/services_assets/phone_handset.svg",
-                                  S.of(context).phoneNumber,
-                                  creatorPhone),
-                              SizedBox(height: 12.h),
-                              _buildDetailRow(
-                                  lightMode,
-                                  "assets/icons_assets/main_icons_assets/email_envelope.svg",
-                                  S.of(context).email,
-                                  creatorEmail),
-                            ],
-                          )
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    _buildDetailRow(
+                                      lightMode,
+                                      "assets/icons_assets/main_icons_assets/ic_org_briefcase.svg",
+                                      S.of(context).title,
+                                      creatorTitle,
+                                    ),
+                                    SizedBox(height: 12.h),
+                                    _buildDetailRow(
+                                      lightMode,
+                                      "assets/icons_assets/main_icons_assets/ic_org_department_people_yellow.svg",
+                                      S.of(context).department,
+                                      creatorDepartment,
+                                    ),
+                                    SizedBox(height: 12.h),
+                                    _buildDetailRow(
+                                      lightMode,
+                                      "assets/icons_assets/main_icons_assets/ic_comms_phone_rounded.svg",
+                                      S.of(context).phoneNumber,
+                                      creatorPhone,
+                                    ),
+                                    SizedBox(height: 12.h),
+                                    _buildDetailRow(
+                                      lightMode,
+                                      "assets/icons_assets/main_icons_assets/ic_comms_email.svg",
+                                      S.of(context).email,
+                                      creatorEmail,
+                                    ),
+                                  ],
+                                )
                               : Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    _buildDetailRow(
-                                        lightMode,
-                                        "assets/icons_assets/main_icons_assets/Case.svg",
-                                        S.of(context).title,
-                                        creatorTitle),
-                                    SizedBox(height: 18.h),
-                                    _buildDetailRow(
-                                        lightMode,
-                                        "assets/icons_assets/services_assets/department_hierarchy_people.svg",
-                                        S.of(context).department,
-                                        creatorDepartment),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          _buildDetailRow(
+                                            lightMode,
+                                            "assets/icons_assets/main_icons_assets/ic_org_briefcase.svg",
+                                            S.of(context).title,
+                                            creatorTitle,
+                                          ),
+                                          SizedBox(height: 18.h),
+                                          _buildDetailRow(
+                                            lightMode,
+                                            "assets/icons_assets/main_icons_assets/ic_org_department_people_yellow.svg",
+                                            S.of(context).department,
+                                            creatorDepartment,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(width: 24.sp),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          _buildDetailRow(
+                                            lightMode,
+                                            "assets/icons_assets/main_icons_assets/ic_comms_phone_rounded.svg",
+                                            S.of(context).phoneNumber,
+                                            creatorPhone,
+                                          ),
+                                          SizedBox(height: 18.h),
+                                          _buildDetailRow(
+                                            lightMode,
+                                            "assets/icons_assets/main_icons_assets/ic_comms_email.svg",
+                                            S.of(context).email,
+                                            creatorEmail,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ],
                                 ),
-                              ),
-                              SizedBox(width: 24.sp),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.start,
-                                  children: [
-                                    _buildDetailRow(
-                                        lightMode,
-                                        "assets/icons_assets/services_assets/phone_handset.svg",
-                                        S.of(context).phoneNumber,
-                                        creatorPhone),
-                                    SizedBox(height: 18.h),
-                                    _buildDetailRow(
-                                        lightMode,
-                                        "assets/icons_assets/main_icons_assets/email_envelope.svg",
-                                        S.of(context).email,
-                                        creatorEmail),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
                         ],
                       ),
                     ),
@@ -373,10 +422,13 @@ extension UmdrMethods2 on _UserManagementDetailsRequestSettingsState {
                 heightImage: 25.sp,
                 colorBorder: AppColors.transparent,
                 widthImage: 25.sp,
-                image: 'assets/icons_assets/roles_assets/chat_messages_bubbles.svg',
+                image:
+                    'assets/icons_assets/main_icons_assets/ic_comms_chat_double.svg',
                 svgColor: AppColors.textButton,
-                textStyle: StyleText.fontSize14Weight400
-                    .copyWith(color: AppColors.textButton),),
+                textStyle: StyleText.fontSize14Weight400.copyWith(
+                  color: AppColors.textButton,
+                ),
+              ),
             ),
           ],
         ),
@@ -431,9 +483,7 @@ extension UmdrMethods2 on _UserManagementDetailsRequestSettingsState {
     if (requestId.isEmpty) return const SizedBox.shrink();
 
     return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8.r),
-      ),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(8.r)),
       child: UniversalCommentSection(
         collectionPath: RequestCollectionPaths.requestCommentsCollection,
         // Written onto every new comment as well as filtering the stream —
@@ -447,7 +497,7 @@ extension UmdrMethods2 on _UserManagementDetailsRequestSettingsState {
         // See the note in `_buildContent`.
         onExpandChanged: (bool expanded) {
           if (!mounted) return;
-          setState(() => commentsExpanded = expanded);
+          rebuild(() => commentsExpanded = expanded);
         },
       ),
     );
@@ -459,22 +509,33 @@ extension UmdrMethods2 on _UserManagementDetailsRequestSettingsState {
       ? (AppControllers.employee.employeeEntity?.email ?? '')
       : '';
   Widget _buildDetailRow(
-      bool lightMode, String iconPath, String label, String value) {
+    bool lightMode,
+    String iconPath,
+    String label,
+    String value,
+  ) {
     return Row(
       children: [
         CustomSvgImage(
-            assetPath: iconPath, width: 15.w, height: 15.h, fit: BoxFit.fill,color: AppColors.secondaryText,),
+          assetPath: iconPath,
+          width: 15.w,
+          height: 15.h,
+          fit: BoxFit.fill,
+          color: AppColors.secondaryText,
+        ),
         SizedBox(width: 8.sp),
         Text(
           "$label: ",
-          style: StyleText.fontSize14Weight500
-              .copyWith(color: AppColors.secondaryText),
+          style: StyleText.fontSize14Weight500.copyWith(
+            color: AppColors.secondaryText,
+          ),
         ),
         Expanded(
           child: Text(
             FormatHelper.capitalize(value),
-            style:
-            StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
+            style: StyleText.fontSize14Weight500.copyWith(
+              color: AppColors.text,
+            ),
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
           ),
@@ -482,6 +543,7 @@ extension UmdrMethods2 on _UserManagementDetailsRequestSettingsState {
       ],
     );
   }
+
   Widget _buildHeader(bool lightMode) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -489,26 +551,20 @@ extension UmdrMethods2 on _UserManagementDetailsRequestSettingsState {
         Text(
           S.of(context).requestDetails,
           style: StyleText.fontSize16Weight600.copyWith(
-            color: lightMode
-                ? AppColors.blackButton
-                : AppColors.white,
+            color: AppColors.blackButton,
           ),
         ),
         Spacer(),
         Text(
           "${S.of(context).requestedDate}: ",
           style: StyleText.fontSize12Weight400.copyWith(
-            color: lightMode
-                ? AppColors.secondaryText
-                : AppColors.grey,
+            color: AppColors.secondaryText,
           ),
         ),
         Text(
           _formatDate(requestTime),
           style: StyleText.fontSize12Weight400.copyWith(
-            color: lightMode
-                ? AppColors.blackButton
-                : AppColors.white,
+            color: AppColors.blackButton,
           ),
         ),
       ],

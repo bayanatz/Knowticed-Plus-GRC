@@ -125,7 +125,7 @@ class _CommentsAndFeedbacksWidgetState
 
         return HomeWidgetCard(
           title: l.commentsAndFeedbacks,
-          icon: "assets/icons_assets/roles_assets/settings_gear.svg",
+          icon: "assets/icons_assets/main_icons_assets/ic_module_settings.svg",
           // ADDED 28/8/2026. Neither card passed a width, so both fell back to
           // HomeWidgetCard's default (kHomeWidgetWidth, 320) and came out wider
           // than the three-stat cards beside them. Three tiles, so this takes
@@ -215,7 +215,7 @@ class _MySettingsRequestsWidgetState extends State<MySettingsRequestsWidget> {
 
         return HomeWidgetCard(
           title: l.myRequests,
-          icon: "assets/icons_assets/roles_assets/settings_gear.svg",
+          icon: "assets/icons_assets/main_icons_assets/ic_module_settings.svg",
           // Three tiles — the compact width, as above.
           width: kHomeWidgetCompactWidth,
           child: HomeStatTileRow(

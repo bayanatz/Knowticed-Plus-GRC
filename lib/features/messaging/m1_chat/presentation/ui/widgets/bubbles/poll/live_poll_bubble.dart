@@ -26,7 +26,8 @@ class LivePollBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final PollPayload? poll = PollPayload.tryDecode(messageModel.messageContent);
+    final PollPayload? poll =
+        PollPayload.tryDecode(messageModel.messageContent);
     final bool isMe = messageModel.isMe;
     final bool isAr = context.isArabic;
     final Color textColor = isMe ? AppColors.textButton : AppColors.text;
@@ -70,7 +71,7 @@ class LivePollBubble extends StatelessWidget {
                     children: [
                       CustomSvgImage(
                         assetPath:
-                            'assets/icons_assets/messaging_assets/poll_bars.svg',
+                            'assets/icons_assets/messaging_assets/ic_comms_poll.svg',
                         width: 16.r,
                         height: 16.r,
                         fit: BoxFit.contain,
@@ -118,7 +119,9 @@ class LivePollBubble extends StatelessWidget {
                     ),
                   SizedBox(height: 2.h),
                   Text(
-                    isAr ? '$voters صوت' : '$voters ${voters == 1 ? 'vote' : 'votes'}',
+                    isAr
+                        ? '$voters صوت'
+                        : '$voters ${voters == 1 ? 'vote' : 'votes'}',
                     style: StyleText.fontSize10Weight400
                         .copyWith(color: textColor.withValues(alpha: 0.7)),
                   ),
@@ -167,6 +170,7 @@ class _LivePollOption extends StatelessWidget {
   Widget build(BuildContext context) {
     final double share = total == 0 ? 0 : count / total;
     return InkWell(
+      onTapDown: hapticDown(onTap, HapticLevel.low),
       onTap: onTap,
       borderRadius: BorderRadius.circular(4.r),
       child: Padding(
@@ -197,8 +201,8 @@ class _LivePollOption extends StatelessWidget {
                 value: share,
                 minHeight: 4.h,
                 backgroundColor: textColor.withValues(alpha: 0.15),
-                valueColor: AlwaysStoppedAnimation<Color>(
-                    AppColors.secondaryPrimary),
+                valueColor:
+                    AlwaysStoppedAnimation<Color>(AppColors.secondaryPrimary),
               ),
             ),
             if (voters.isNotEmpty)

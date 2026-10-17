@@ -1,25 +1,25 @@
 /// Module: messaging / chat / presentation/ui/pages/all_chat_view_tablet.dart
+library;
 // by : mohamed ashraf
 // date : 19/9/2024
 
+import 'package:grc_module/core/custom/helpers/custom_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
 import 'package:grc_module/features/messaging/m2_connections/presentation/controller/community_controller.dart';
 import 'package:grc_module/features/messaging/m1_chat/data/models/chat/chat_model.dart';
 
-import 'package:grc_module/core/constants/message_module/app_assets.dart';
-import 'package:grc_module/core/helper/main_helper/spacing_helper.dart';
+import 'package:grc_module/features/messaging/helpers/constants/messaging_assets.dart';
+import 'package:grc_module/features/messaging/helpers/spacing_helper.dart';
 import 'package:grc_module/core/theme/app_colors.dart';
 import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import '../../../data/models/message/message_model.dart';
-import '../widgets/all_chats_tile.dart';
+import 'package:grc_module/features/messaging/m1_chat/data/models/message/message_model.dart';
+import 'package:grc_module/features/messaging/m1_chat/presentation/ui/widgets/all_chats_tile.dart';
 import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/core/custom/2-custom_textfield.dart';
+import 'package:grc_module/core/custom/inputs/custom_textfield.dart';
 import 'package:grc_module/core/extensions/context_extensions.dart';
+import 'package:grc_module/core/theme/haptic_controller.dart';
 
 class AllChatViewTablet extends StatelessWidget {
   final List<MessageModel> message;
@@ -34,7 +34,7 @@ class AllChatViewTablet extends StatelessWidget {
     var isTablet = ContextExtension(context).isTablet;
 
     return PopScope(
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, result) {
         if (didPop) {
           context.read<CommunityCubit>().resetSelectedChats();
         }
@@ -50,12 +50,10 @@ class AllChatViewTablet extends StatelessWidget {
             final frequentlyContacted = state is CommunityLoaded
                 ? state.frequentlyContacted
                 : <ChatModel>[];
-            final allChats = state is CommunityLoaded
-                ? state.allChats
-                : <ChatModel>[];
-            final isSelectedChat = state is CommunityLoaded
-                ? state.isSelectedChat
-                : false;
+            final allChats =
+                state is CommunityLoaded ? state.allChats : <ChatModel>[];
+            final isSelectedChat =
+                state is CommunityLoaded ? state.isSelectedChat : false;
 
             return Padding(
               padding: EdgeInsetsDirectional.symmetric(
@@ -71,6 +69,8 @@ class AllChatViewTablet extends StatelessWidget {
                         children: [
                           GestureDetector(
                               onTap: () {
+                                HapticController
+                                    .low(); // list row: on the tap (X-117)
                                 Navigator.of(context).pop();
                               },
                               child: const Icon(
@@ -86,13 +86,15 @@ class AllChatViewTablet extends StatelessWidget {
                                     style: StyleText.fontSize18Weight500),
                                 GestureDetector(
                                   onTap: () {
+                                    HapticController
+                                        .low(); // list row: on the tap (X-117)
                                     if (isSelectedChat) {
                                       cubit.forwardMessage(message, context);
                                       Navigator.of(context).pop();
                                     }
                                   },
-                                  child: SvgPicture.asset(
-                                    AppAssets.forward,
+                                  child: CustomSvgImage.natural(
+                                    assetPath: AppAssets.forward,
                                     width: 24.w,
                                     height: 24.h,
                                     color: isSelectedChat
@@ -111,12 +113,15 @@ class AllChatViewTablet extends StatelessWidget {
                       hint: S.of(context).search,
                       fillColor: AppColors.background,
                       hintStyle: isTablet
-                          ? StyleText.fontSize23Weight500.copyWith(color: AppColors.lightGrey)
-                          : StyleText.fontSize16Weight500.copyWith(color: AppColors.lightGrey),
+                          ? StyleText.fontSize23Weight500
+                              .copyWith(color: AppColors.lightGrey)
+                          : StyleText.fontSize16Weight500
+                              .copyWith(color: AppColors.lightGrey),
                       controller: cubit.searchController,
-                      prefixIcon: SvgPicture.asset(
-                        AppAssets.search,
-                      ),),
+                      prefixIcon: CustomSvgImage.natural(
+                        assetPath: AppAssets.search,
+                      ),
+                    ),
                     verticalSpace(16.h),
                     Align(
                       alignment: AlignmentDirectional.centerStart,
@@ -129,8 +134,8 @@ class AllChatViewTablet extends StatelessWidget {
                     Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        color: AppTheme.isDark ?? false
-                            ? AppColors.field
+                        color: AppTheme.isDark
+                            ? AppColors.card
                             : AppColors.background,
                       ),
                       child: ListView.builder(
@@ -156,8 +161,8 @@ class AllChatViewTablet extends StatelessWidget {
                     Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        color: AppTheme.isDark ?? false
-                            ? AppColors.field
+                        color: AppTheme.isDark
+                            ? AppColors.card
                             : AppColors.background,
                       ),
                       child: ListView.builder(

@@ -5,6 +5,7 @@
 /// Purpose: Turns the raw demo-request document into a module-licence map.
 /// Author: Knowticed Plus team
 /// Created at: 11/8/2026
+library;
 
 import 'package:grc_module/core/constants/firebase_collections.dart';
 import 'package:grc_module/features/home/h3_app_drawer/data/data_source/remote_data_source/app_drawer_remote_data_source.dart';

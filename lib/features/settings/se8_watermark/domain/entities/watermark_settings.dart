@@ -17,7 +17,7 @@ library;
 
 import 'package:flutter/material.dart';
 
-import 'package:grc_module/core/helper/role/modules_enum.dart';
+import 'package:grc_module/core/helper/access/modules_enum.dart';
 
 /// How the stamp is drawn: bare text, or text inside a rounded pill.
 ///
@@ -298,7 +298,7 @@ class WatermarkSettings {
         'angle': angle,
         // Stored as an int so the document stays readable in the console and
         // survives a JSON round trip; `Color.value` is ARGB.
-        'color': color.value,
+        'color': color.toARGB32(),
         'styleMode': styleMode.key,
         // Sorted so two identical selections serialise to the same list and the
         // document stops showing a spurious diff every time the set's iteration
@@ -337,7 +337,7 @@ class WatermarkSettings {
       angle: asDouble(map['angle'], initial.angle)
           .clamp(minAngle, maxAngle)
           .toDouble(),
-      color: Color(asInt(map['color'], initial.color.value)),
+      color: Color(asInt(map['color'], initial.color.toARGB32())),
       styleMode: WatermarkStyleMode.fromKey(map['styleMode'] as String?),
       // A document written before this field existed has NO 'modules' key, and
       // it belonged to a company whose watermark covered everything — so a
