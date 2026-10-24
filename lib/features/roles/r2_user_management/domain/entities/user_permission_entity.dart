@@ -2,16 +2,20 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: user_permission_entity.dart
-/// Purpose: Declares `UserPermissionEntity`.
-/// Author: Knowticed Plus team
+/// Description: Declares `UserPermissionEntity`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
-import 'package:grc_module/core/helper/main_helper/employee_helper.dart';
-import 'package:grc_module/features/roles/r2_user_management/domain/enums/user_access_status.dart';
-import 'package:grc_module/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
+import 'package:knowticed_plus/core/helper/employee_helper.dart';
+import 'package:knowticed_plus/features/roles/r2_user_management/domain/enums/user_access_status.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
 
-import 'package:grc_module/features/roles/r4_active_directory/presentation/controller/main_core_department_cubit.dart';
-import 'package:grc_module/features/roles/r4_active_directory/domain/entities/employee_entity.dart';
+import 'package:knowticed_plus/features/roles/r4_active_directory/presentation/controller/main_core_department_cubit.dart';
+import 'package:knowticed_plus/features/roles/r4_active_directory/domain/entities/employee_entity.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/data/models/role_model.dart'
+    show RoleHistoryModelMethods;
 
 class UserPermissionEntity {
   String employeeEmail;
@@ -30,22 +34,23 @@ class UserPermissionEntity {
   String? arabicJobTitle;
   String? englishJobTitle;
 
-  UserPermissionEntity(
-      {required this.imagePath,
-        required this.employeeEmail,
-        required this.employeeId,
-        required this.gender,
-        required this.englishName,
-        required this.arabicName,
-        required this.accessName,
-        required this.grantorEnglishName,
-        required this.grantorArabicName,
-        required this.startDate,
-        required this.accessStatus,
-        this.departmentId,
-        this.arabicJobTitle,
-        this.englishJobTitle,
-        required this.endDate});
+  UserPermissionEntity({
+    required this.imagePath,
+    required this.employeeEmail,
+    required this.employeeId,
+    required this.gender,
+    required this.englishName,
+    required this.arabicName,
+    required this.accessName,
+    required this.grantorEnglishName,
+    required this.grantorArabicName,
+    required this.startDate,
+    required this.accessStatus,
+    this.departmentId,
+    this.arabicJobTitle,
+    this.englishJobTitle,
+    required this.endDate,
+  });
 
   /// The employee's name in the caller's language.
   ///
@@ -94,9 +99,9 @@ class UserPermissionEntity {
       employeeId: employee.id!,
       gender: employee.gender,
       imagePath: EmployeeHelper.getEmployeeImage(employee: employee),
-      englishName: employee.firstName! + ' ' + employee.lastName!,
+      englishName: '${employee.firstName!} ${employee.lastName!}',
       arabicName:
-      employee.firstNameInArabic! + ' ' + employee.lastNameInArabic!,
+          '${employee.firstNameInArabic!} ${employee.lastNameInArabic!}',
       accessName: null,
       grantorEnglishName: null,
       grantorArabicName: null,
@@ -115,14 +120,16 @@ class UserPermissionEntity {
     if (departmentId == null) return '';
     return isArabic
         ? (departments.getArabicDepartmentNameFromDepartmentId(
-                departmentId: departmentId!) ??
+              departmentId: departmentId!,
+            ) ??
             "")
         : (departments.getEnglishDepartmentNameFromDepartmentId(
-                departmentId: departmentId!) ??
+              departmentId: departmentId!,
+            ) ??
             "");
   }
 
-  String jobTitle (bool isArabic){
-    return (isArabic ? arabicJobTitle : englishJobTitle)??'';
+  String jobTitle(bool isArabic) {
+    return (isArabic ? arabicJobTitle : englishJobTitle) ?? '';
   }
 }

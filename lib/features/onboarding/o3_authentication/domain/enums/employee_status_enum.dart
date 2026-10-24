@@ -11,6 +11,7 @@
 ///          moved to `presentation/ui/theme/employee_status_style.dart`. The
 ///          domain must not emit UI (§3). Call sites are unchanged — both are
 ///          extension members with the same names.
+library;
 
 enum EmployeeStatusEnum {
   all,

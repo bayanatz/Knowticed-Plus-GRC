@@ -6,10 +6,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import '../../../../data/models/legacy_group_model.dart';
-import 'package:grc_module/core/custom/46-custom_image_picker.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/data/models/legacy_group_model.dart';
+import 'package:knowticed_plus/core/custom/pickers/custom_image_picker.dart';
 
 class CommonGroupTile extends StatelessWidget {
   final GroupModel group;
@@ -30,12 +30,14 @@ class CommonGroupTile extends StatelessWidget {
       subtitle: Text(
         group.groupMembers.map((e) => e.firstName).join(', '),
         overflow: TextOverflow.ellipsis,
-        style: StyleText.fontSize12Weight400.copyWith(color: AppColors.secondaryBlack),
+        style: StyleText.fontSize12Weight400
+            .copyWith(color: AppColors.secondaryBlack),
       ),
       leading: CircleAvatar(
         backgroundColor: AppColors.mediumGrey,
-        backgroundImage:
-            group.groupImage != null ? appImageProvider(group.groupImage!) : null,
+        backgroundImage: group.groupImage != null
+            ? appImageProvider(group.groupImage!)
+            : null,
         child: group.groupImage == null
             ? Icon(
                 Icons.person,

@@ -9,12 +9,13 @@
 /// Added for CR-SKEL-SE6-N01 / N03. Parsing lived in three pages; this is the
 /// single copy, including the fallback that reads the pre-`changes` documents
 /// (one field per document, under `whatChanged` / `oldValue` / `newValue`).
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:grc_module/features/settings/se6_requests/domain/entities/change_request.dart';
-import 'package:grc_module/features/settings/se6_requests/domain/entities/field_change.dart';
-import 'package:grc_module/features/settings/se6_requests/domain/enums/request_status.dart';
+import 'package:knowticed_plus/features/settings/se6_requests/domain/entities/change_request.dart';
+import 'package:knowticed_plus/features/settings/se6_requests/domain/entities/field_change.dart';
+import 'package:knowticed_plus/features/settings/se6_requests/domain/enums/request_status.dart';
 
 abstract class ChangeRequestMapper {
   /// Firestore keys on a request document.
@@ -27,6 +28,7 @@ abstract class ChangeRequestMapper {
 
   /// Reviewer's reason for approving / rejecting (added 30/9/2026).
   static const String keyDecisionReason = 'decision_reason';
+  static const String keyLastReminderAt = 'last_reminder_at';
   static const String keyEmployeeId = 'employeeId';
   static const String keyEmployeeEmail = 'employeeEmail';
   static const String keyEmployeeName = 'employeeName';
@@ -53,6 +55,8 @@ abstract class ChangeRequestMapper {
       employeeEmail: data[keyEmployeeEmail]?.toString() ?? '',
       employeeName: data[keyEmployeeName]?.toString() ?? '',
       changes: _changes(data),
+      decisionReason: data[keyDecisionReason]?.toString() ?? '',
+      lastReminderAt: _requestDate(data[keyLastReminderAt]),
     );
   }
 
@@ -91,8 +95,7 @@ abstract class ChangeRequestMapper {
     required String formattedDate,
   }) {
     return <String, dynamic>{
-      keyChanges:
-          request.changes.map((FieldChange c) => c.toMap()).toList(),
+      keyChanges: request.changes.map((FieldChange c) => c.toMap()).toList(),
       keySection: request.section,
       keyRequestDate: FieldValue.serverTimestamp(),
       keyRequestDateFormatted: formattedDate,

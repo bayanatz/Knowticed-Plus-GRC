@@ -12,32 +12,32 @@
 ///          `Get.snackbar` at it; the messages are localized and themed; the
 ///          hardcoded "Social" title comes from S.of(context); the RTL padding
 ///          reads the locale from the tree instead of `Get.locale`.
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-import 'package:grc_module/core/extensions/context_extensions.dart';
-import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_font_size.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/custom/50-custom_side_frame_master.dart';
-import 'package:grc_module/core/custom/5-custom_button.dart';
-import 'package:grc_module/features/roles/r1_role_management/domain/enums/settings/settings_permissions_sections.dart';
-import 'package:grc_module/features/roles/r1_role_management/domain/enums/settings/social_permissions.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/controller/settings_controller.dart';
-import 'package:grc_module/features/settings/se2_social/domain/entities/academic_entry.dart';
-import 'package:grc_module/features/settings/se2_social/domain/entities/skill_entry.dart';
-import 'package:grc_module/features/settings/se2_social/presentation/controller/social_controller.dart';
-import 'package:grc_module/features/settings/se2_social/presentation/ui/widgets/sections/academic_history.dart';
-import 'package:grc_module/features/settings/se2_social/presentation/ui/widgets/sections/bio.dart';
-import 'package:grc_module/features/settings/se2_social/presentation/ui/widgets/sections/hobbies.dart';
-import 'package:grc_module/features/settings/se2_social/presentation/ui/widgets/sections/skills.dart';
-import 'package:grc_module/features/settings/se2_social/presentation/ui/widgets/social_saved_dialog.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/core/helper/access/main_core_employee_controller.dart';
+import 'package:knowticed_plus/core/helper/access/modules_enum.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_button_with_svg.dart';
+import 'package:knowticed_plus/core/custom/dialogs/custom_dialog_manager.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/custom/navigation/custom_side_frame_master.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/settings/settings_permissions_sections.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/settings/social_permissions.dart';
+import 'package:knowticed_plus/features/settings/presentation/controller/settings_controller.dart';
+import 'package:knowticed_plus/features/settings/se2_social/domain/entities/academic_entry.dart';
+import 'package:knowticed_plus/features/settings/se2_social/domain/entities/skill_entry.dart';
+import 'package:knowticed_plus/features/settings/se2_social/presentation/controller/social_controller.dart';
+import 'package:knowticed_plus/features/settings/se2_social/presentation/ui/widgets/sections/academic_history.dart';
+import 'package:knowticed_plus/features/settings/se2_social/presentation/ui/widgets/sections/bio.dart';
+import 'package:knowticed_plus/features/settings/se2_social/presentation/ui/widgets/sections/hobbies.dart';
+import 'package:knowticed_plus/features/settings/se2_social/presentation/ui/widgets/sections/skills.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
 class SocialScreen extends StatefulWidget {
   const SocialScreen({super.key});
@@ -59,6 +59,8 @@ class _SocialScreenState extends State<SocialScreen> {
 
     if (_settingsController.employee == null) {
       _settingsController.getEmployee().then((_) {
+        // Owner 21/10/2026: the page may have closed while the employee loaded.
+        if (!mounted) return;
         _socialController.restartController();
         _syncHasChanges();
       });
@@ -129,7 +131,18 @@ class _SocialScreenState extends State<SocialScreen> {
   /// One permission covers both sections — Skills and Hobbies travel together.
   bool get _canSeeSkillsHobbies => _can(SocialPermissions.skillsHobbies);
 
+  /// 21/10/2026 (Moataz): set by a press on Update while an academic row the
+  /// user started is still missing a field — only then do its empty fields
+  /// turn red. Opening the page no longer shows errors.
+  bool _submitted = false;
+
   Future<void> _onUpdatePressed() async {
+    if (_socialController.incompleteAcademicRows.isNotEmpty) {
+      setState(() => _submitted = true);
+      _showMessage(
+          context, S.of(context).fillAllRequiredFields, AppColors.primary);
+      return;
+    }
     await _socialController.updateAllSocialInformation();
 
     // Cross-feature refresh: the org-chart profile card renders the same
@@ -151,15 +164,23 @@ class _SocialScreenState extends State<SocialScreen> {
 
     switch (state) {
       case SocialSaved():
-        SocialSavedDialog.show(context);
+        if (_submitted) setState(() => _submitted = false);
+        // X-136 / item 107: the core success dialog (5 s), not a page copy.
+        CustomDialogManager.showSuccess(
+          context: context,
+          lottiePath:
+              'assets/lottie_assets/main_lottie_assets/lot_status_success.json',
+          title: S.of(context).Successful,
+          subtitle: S.of(context).dataHasBeenSavedSuccessfully,
+        );
         break;
       case SocialNoChanges():
-        _showMessage(context, S.of(context).noChangeFound, AppColors.warning);
+        _showMessage(context, S.of(context).noChangeFound, AppColors.orange);
         break;
       case SocialError():
         // The raw failure text is not shown: it is a Firestore message, not
         // something a user can act on.
-        _showMessage(context, S.of(context).error, AppColors.signOut);
+        _showMessage(context, S.of(context).error, AppColors.primary);
         break;
       case SocialInitial():
       case SocialEditing():
@@ -208,17 +229,29 @@ class _SocialScreenState extends State<SocialScreen> {
 
   Widget _bio() => Bio(
         bio: _socialController.profile.bio,
+        bioInArabic: _socialController.profile.bioInArabic,
         onChanged: (String value) {
           _socialController.setBio(value);
+          _syncHasChanges();
+        },
+        // 21/10/2026 (Moataz): the Arabic bio has its own field.
+        onArabicChanged: (String value) {
+          _socialController.setBioInArabic(value);
           _syncHasChanges();
         },
       );
 
   Widget _academicHistory() => AcademicHistory(
         entries: _socialController.academicHistory,
+        errorRows: _submitted
+            ? _socialController.incompleteAcademicRows
+            : const <int>{},
         onEntryChanged: (int index, AcademicEntry entry) {
           _socialController.setAcademicEntry(index, entry);
           _syncHasChanges();
+          // X-136 (21/10/2026): the setter does not emit, so the page did
+          // not rebuild and the dropdown / date fell back to "Choose…".
+          setState(() {});
         },
         onAdd: _socialController.addAcademicEntry,
         onRemove: _socialController.removeAcademicEntry,
@@ -249,43 +282,35 @@ class _SocialScreenState extends State<SocialScreen> {
   /// Opacity + IgnorePointer + a grey fill — the same disabled treatment the
   /// request preview pages and the health edit page use, so a dead button looks
   /// the same everywhere in Settings.
-  Widget _buildUpdateButton({
-    required bool isSaving,
-    required Color enabledColor,
-    required TextStyle textStyle,
-    // Non-nullable with the same default customButton itself declares — its
-    // `radius` parameter is `double radius = 8`, so a nullable one would not
-    // type-check here.
-    double radius = 8,
-    double? width,
-    double? height,
-
-    /// Size the button to its label instead of the fixed ButtonSizing width.
-    ///
-    /// "Update Social Information" does not fit customButton's fixed box
-    /// (135.sp on phone), and the label has no maxLines — so it wrapped onto
-    /// a second line inside the button. `wrapContent` makes the box hug the
-    /// text, which keeps the title on one row at every width.
-    bool wrapContent = false,
-  }) {
+  /// X-138 (21/10/2026): required fields — Graduation From, University and
+  /// Graduation Year of every academic record.
+  Widget _buildUpdateButton({required bool isSaving}) {
+    final bool isPhone = kpIsPhoneLayout(context);
     return ValueListenableBuilder<bool>(
       valueListenable: _hasChanges,
       builder: (BuildContext context, bool hasChanges, _) {
+        // 21/10/2026: enabled on any change; an incomplete academic row is
+        // caught on press (see [_onUpdatePressed]) instead of greying the
+        // button out with no reason shown.
         final bool enabled = hasChanges && !isSaving;
-
+        // R-3: disabled = grey, black text, 50% opacity.
         return Opacity(
           opacity: enabled ? 1.0 : 0.5,
           child: IgnorePointer(
             ignoring: !enabled,
-            child: customButton(
+            child: customButtonWithSvg(
+              fixedWidth: isPhone ? 200.sp : 250.w,
               title: S.of(context).updateSocialInformation,
               function: _onUpdatePressed,
-              color: enabled ? enabledColor : AppColors.grey,
-              radius: radius,
-              width: width,
-              height: height,
-              wrapContent: wrapContent,
-              textStyle: textStyle,
+              color: enabled ? AppColors.primary : AppColors.grey,
+              colorBorder: AppColors.transparent,
+              textStyle: StyleText.fontSize16Weight500.copyWith(
+                color: AppColors.textButton,
+              ),
+              image: 'assets/icons_assets/main_icons_assets/ic_action_edit.svg',
+              svgColor: AppColors.textButton,
+              widthImage: 18.w,
+              heightImage: 18.h,
             ),
           ),
         );
@@ -295,7 +320,7 @@ class _SocialScreenState extends State<SocialScreen> {
 
   /// Thin line between two sections inside the shared phone card.
   Widget _sectionDivider() => Padding(
-        padding: EdgeInsets.symmetric(horizontal: 15.sp),
+        padding: EdgeInsets.symmetric(horizontal: 16.sp),
         child: Divider(
           height: 1,
           thickness: 1,
@@ -305,100 +330,68 @@ class _SocialScreenState extends State<SocialScreen> {
 
   /// Phone design (formerly social_screen_mobile.dart)
   Widget _buildPhone(BuildContext context, SocialState state) {
-    final Orientation orientation = MediaQuery.of(context).orientation;
-    final bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
     final bool isSaving = state is SocialSaving;
 
-    // SideFrameMasterServices supplies the mobile Scaffold, the breadcrumb
-    // header (back chevron + page title) and the scroll view, so this method
-    // only provides the page body.
+    // D-202 / X-138 (21/10/2026): the sections scroll, the single page
+    // action is PINNED at the bottom, centred.
     return SideFrameMasterServices(
       titleText: S.of(context).settings,
       onFirstTap: () => Navigator.of(context).maybePop(),
       secondTitle: S.of(context).socialInformation,
-      child: Column(
+      child: SideFrameBoundedBody(
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: SingleChildScrollView(
+                physics: const ClampingScrollPhysics(
+                  parent: BouncingScrollPhysics(),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        if (_canSeeSocial) ...<Widget>[
-                          _bio(),
-                          SizedBox(height: 0.02.h),
-                          // Bug report (Settings mobile p.6): Academic
-                          // History, Skills and Hobbies were three separate
-                          // cards with a gap between each. On a phone they now
-                          // share ONE card, split by a thin divider — the same
-                          // single card the tablet layout uses.
-                          if (_canSeeAcademicHistory || _canSeeSkillsHobbies)
-                            Container(
-                              clipBehavior: Clip.antiAlias,
-                              decoration: BoxDecoration(
-                                color: AppColors.card,
-                                borderRadius: BorderRadius.circular(8.r),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  if (_canSeeAcademicHistory)
-                                    _academicHistory(),
-                                  if (_canSeeAcademicHistory &&
-                                      _canSeeSkillsHobbies)
-                                    _sectionDivider(),
-                                  if (_canSeeSkillsHobbies) ...<Widget>[
-                                    _skills(),
-                                    _sectionDivider(),
-                                    _hobbies(),
-                                  ],
-                                ],
-                              ),
-                            ),
-                          SizedBox(height: 0.02.h),
-                        ],
-                        // Was UpdateInformationButton, a wrapper that only
-                        // called customButton(); inlined here on removal.
-                        if (_canSeeSocial)
-                        Padding(
-                          padding: isArabic
-                              ? (orientation == Orientation.portrait
-                                  ? EdgeInsets.only(top: 0.015.w, bottom: 0.0.h)
-                                  : EdgeInsets.only(
-                                      top: 0.025.h, bottom: 0.0.w))
-                              : EdgeInsets.only(
-                                  top: orientation == Orientation.portrait
-                                      ? 0.02.w
-                                      : 0.025.h,
-                                  bottom: 0.0,
-                                ),
-                          // Centred: the surrounding Column is
-                          // CrossAxisAlignment.start, so the button used to sit
-                          // against the leading edge. The Row centres it, and
-                          // wrapContent keeps the label on one line.
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              _buildUpdateButton(
-                                isSaving: isSaving,
-                                enabledColor: AppColors.signOut,
-                                wrapContent: true,
-                                textStyle:
-                                    AppFontStyle.cairoRegularStyle.copyWith(
-                                  fontSize: orientation == Orientation.portrait
-                                      ? FontConstants.fontSize020.h
-                                      : FontConstants.fontSize025.h,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.textButton,
-                                ),
-                              ),
-                            ],
-                          ),
+                    if (_canSeeSocial) ...<Widget>[
+                      // D-223 / item 115 (21/10/2026): ONE box with Bio,
+                      // Academic History, Skills and Hobbies inside, split
+                      // by thin dividers.
+                      Container(
+                        clipBehavior: Clip.antiAlias,
+                        decoration: BoxDecoration(
+                          color: AppColors.card,
+                          borderRadius: BorderRadius.circular(8.r),
                         ),
-                        SizedBox(height: 15.h),
-                      ],
-                    ),
-                    SizedBox(height: 0.02.h),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            _bio(),
+                            if (_canSeeAcademicHistory || _canSeeSkillsHobbies)
+                              _sectionDivider(),
+                            if (_canSeeAcademicHistory) _academicHistory(),
+                            if (_canSeeAcademicHistory && _canSeeSkillsHobbies)
+                              _sectionDivider(),
+                            if (_canSeeSkillsHobbies) ...<Widget>[
+                              _skills(),
+                              _sectionDivider(),
+                              _hobbies(),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ],
                   ],
                 ),
+              ),
+            ),
+            if (_canSeeSocial) ...<Widget>[
+              SizedBox(height: 16.sp),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[_buildUpdateButton(isSaving: isSaving)],
+              ),
+              SizedBox(height: 16.sp),
+            ],
+          ],
+        ),
+      ),
     );
   }
 
@@ -416,9 +409,20 @@ class _SocialScreenState extends State<SocialScreen> {
         // but clamps to what is left instead of overflowing. The height is
         // unchanged; the inner scroll view keeps the content reachable either
         // way.
+        // CHANGED 18/10/2026 (Moataz: big empty area under the button on
+        // iPad / desktop): the card is Expanded instead of a fixed height,
+        // so it fills the right-hand pane and the button sits 15 above the
+        // bottom edge. The inner scroll view keeps every field reachable.
+        // D-183 (18/10/2026): the card ends after its last field (D-146
+        // inset) — Flexible, not Expanded; it still scrolls when longer.
         Flexible(
-          child: SizedBox(
-            height: 490.h,
+          child: Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: AppColors.card,
+              borderRadius: BorderRadius.circular(8.r),
+            ),
+            clipBehavior: Clip.antiAlias,
             child: ScrollConfiguration(
               behavior: const ScrollBehavior().copyWith(scrollbars: false),
               child: SingleChildScrollView(
@@ -436,20 +440,20 @@ class _SocialScreenState extends State<SocialScreen> {
                         children: <Widget>[
                           if (_canSeeSocial) ...<Widget>[
                             _bio(),
-                            SizedBox(height: 15.sp),
+                            SizedBox(height: 16.sp),
                             if (_canSeeAcademicHistory)
                               Padding(
                                 padding:
-                                    EdgeInsets.symmetric(horizontal: 15.sp),
+                                    EdgeInsets.symmetric(horizontal: 16.sp),
                                 child: _academicHistory(),
                               ),
                             if (_canSeeSkillsHobbies) ...<Widget>[
                               Padding(
-                                padding: EdgeInsets.all(15.sp),
+                                padding: EdgeInsets.all(16.sp),
                                 child: _skills(),
                               ),
                               Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 15.w),
+                                padding: EdgeInsets.symmetric(horizontal: 16.w),
                                 child: _hobbies(),
                               ),
                             ],
@@ -463,27 +467,15 @@ class _SocialScreenState extends State<SocialScreen> {
             ),
           ),
         ),
-        SizedBox(height: 15.h),
+        SizedBox(height: 16.h),
         if (_canSeeSocial)
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            _buildUpdateButton(
-              isSaving: isSaving,
-              enabledColor: AppColors.primary,
-              radius: 4.r,
-              // Was `width: 250.w`, which pinned the box and let the label
-              // wrap onto a second line whenever it did not fit. Hugging the
-              // text keeps the title on one row here too.
-              wrapContent: true,
-              height: 36,
-              textStyle: StyleText.fontSize16Weight500.copyWith(
-                color: AppColors.textButton,
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: 15.h),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              _buildUpdateButton(isSaving: isSaving),
+            ],
+          ),
+        SizedBox(height: 16.h),
       ],
     );
   }

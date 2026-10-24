@@ -6,6 +6,7 @@
 /// Author: Knowticed Plus team
 /// Created at: 2026
 /// Updated: 12/8/2026 - Added the standard header (Docs).
+library;
 
 ///************************** FILE INFO **************************///
 /// File Name: company_information_model.dart
@@ -13,11 +14,11 @@
 /// Author: Amr Mesbah
 /// Created At: 31/12/2024
 
-import 'package:grc_module/core/helper/main_helper/enum_single_value_tracking_model.dart';
+import 'package:knowticed_plus/features/onboarding/helpers/enum_single_value_tracking_model.dart';
 
-import 'package:grc_module/features/onboarding/o3_authentication/domain/enums/company_size_list.dart';
-import 'package:grc_module/features/onboarding/o3_authentication/domain/enums/industry.dart';
-import 'package:grc_module/core/helper/main_helper/single_value_model.dart';
+import 'package:knowticed_plus/features/onboarding/o3_authentication/domain/enums/company_size_list.dart';
+import 'package:knowticed_plus/features/onboarding/o3_authentication/domain/enums/industry.dart';
+import 'package:knowticed_plus/core/helper/single_value_model.dart';
 
 class CompanyInformationModel {
   SingleValueModel<String> companyName;
@@ -42,44 +43,43 @@ class CompanyInformationModel {
     required this.companySize,
   });
 
-  static const String COMPANY_NAME = 'Company_Name';
-  static const String COMPANY_ADDRESS = 'Company_Address';
-  static const String TAX_NUMBER = 'Tax_Number';
-  static const String COUNTRY = 'Country';
-  static const String CITY = 'City';
-  static const String PROVINCE = 'Province';
-  static const String ZIP_CODE = 'Zip_Code';
-  static const String COMPANY_INDUSTRY = 'Company_Industry';
-  static const String COMPANY_SIZE = 'Company_Size';
+  static const String kCompanyName = 'Company_Name';
+  static const String kCompanyAddress = 'Company_Address';
+  static const String kTaxNumber = 'Tax_Number';
+  static const String kCountry = 'Country';
+  static const String kCity = 'City';
+  static const String kProvince = 'Province';
+  static const String kZipCode = 'Zip_Code';
+  static const String kCompanyIndustry = 'Company_Industry';
+  static const String kCompanySize = 'Company_Size';
 
   Map<String, dynamic> toMap() {
     return {
-      COMPANY_NAME: companyName.toMap(),
-      COMPANY_ADDRESS: companyAddress.toMap(),
-      TAX_NUMBER: taxNumber.toMap(),
-      COUNTRY: country.toMap(),
-      CITY: city.toMap(),
-      PROVINCE: province.toMap(),
-      ZIP_CODE: zipCode.toMap(),
-      COMPANY_INDUSTRY: companyIndustry.toMap(),
-      COMPANY_SIZE: companySize.toMap(),
+      kCompanyName: companyName.toMap(),
+      kCompanyAddress: companyAddress.toMap(),
+      kTaxNumber: taxNumber.toMap(),
+      kCountry: country.toMap(),
+      kCity: city.toMap(),
+      kProvince: province.toMap(),
+      kZipCode: zipCode.toMap(),
+      kCompanyIndustry: companyIndustry.toMap(),
+      kCompanySize: companySize.toMap(),
     };
   }
 
   factory CompanyInformationModel.fromMap(Map<String, dynamic> map) {
     return CompanyInformationModel(
-      companyName: SingleValueModel<String>.fromMap(map[COMPANY_NAME]),
-      companyAddress:
-          SingleValueModel<String>.fromMap(map[COMPANY_ADDRESS]),
-      taxNumber: SingleValueModel<String>.fromMap(map[TAX_NUMBER]),
-      country: SingleValueModel<String>.fromMap(map[COUNTRY]),
-      city: SingleValueModel<String>.fromMap(map[CITY]),
-      province: SingleValueModel<String>.fromMap(map[PROVINCE]),
-      zipCode: SingleValueModel<String>.fromMap(map[ZIP_CODE]),
+      companyName: SingleValueModel<String>.fromMap(map[kCompanyName]),
+      companyAddress: SingleValueModel<String>.fromMap(map[kCompanyAddress]),
+      taxNumber: SingleValueModel<String>.fromMap(map[kTaxNumber]),
+      country: SingleValueModel<String>.fromMap(map[kCountry]),
+      city: SingleValueModel<String>.fromMap(map[kCity]),
+      province: SingleValueModel<String>.fromMap(map[kProvince]),
+      zipCode: SingleValueModel<String>.fromMap(map[kZipCode]),
       companyIndustry:
-          EnumSingleValueTrackingModel<Industry>.fromMap(map[COMPANY_INDUSTRY]),
+          EnumSingleValueTrackingModel<Industry>.fromMap(map[kCompanyIndustry]),
       companySize:
-          EnumSingleValueTrackingModel<CompanySize>.fromMap(map[COMPANY_SIZE]),
+          EnumSingleValueTrackingModel<CompanySize>.fromMap(map[kCompanySize]),
     );
   }
 }

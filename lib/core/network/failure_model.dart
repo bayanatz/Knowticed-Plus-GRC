@@ -5,6 +5,7 @@
 /// Purpose: Declares `Failure`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 /// Base Failure class for error handling
 abstract class Failure {
@@ -37,4 +38,16 @@ class ValidationError extends Failure {
 /// Network failures (API/connectivity errors)
 class NetworkFailure extends Failure {
   const NetworkFailure(String message) : super(message: message);
+}
+
+/// Server failures. ADDED 17/10/2026 from Messaging's duplicate Failure
+/// file (one Failure type for the whole app).
+class ServerFailure extends Failure {
+  const ServerFailure(String message) : super(message: message);
+}
+
+/// Someone else changed the record after this screen read it, so the write was
+/// refused rather than overwrite their change (DB-TABLE-01, DB-DETAILS-04).
+class ConflictFailure extends Failure {
+  const ConflictFailure(String message) : super(message: message);
 }

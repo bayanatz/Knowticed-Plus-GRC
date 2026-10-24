@@ -11,6 +11,7 @@
 /// `PackageInfo.fromPlatform()` genuinely can throw (a missing platform
 /// channel on a cold start), so the handling belongs in a data-layer read, not
 /// in the page.
+library;
 
 import 'package:package_info_plus/package_info_plus.dart';
 

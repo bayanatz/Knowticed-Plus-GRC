@@ -3,7 +3,6 @@ part of '../../pages/chat_mobile_view.dart';
 
 //Youssef Ashraf
 
-
 class DefaultBubble extends StatelessWidget {
   final MessageEntity messageModel;
   final bool isGroup;
@@ -31,12 +30,11 @@ class DefaultBubble extends StatelessWidget {
     var isMe = messageModel.isMe;
 
     // ── DEBUG ──
-    if (isMe) {
-    }
+    if (isMe) {}
 
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, result) {
         if (didPop) return;
 
         final cubit = context.read<MasterChatCubit>();
@@ -60,9 +58,20 @@ class DefaultBubble extends StatelessWidget {
         builder: (context, state) {
           final cubit = context.read<MasterChatCubit>();
 
+          final bool selecting = state.selectMessages && isOverlay == null;
+          final bool showSender = !isMe && isOverlay == null;
+          final ({String name, String image}) sender = _sender(state);
+
           return GestureDetector(
+            onTap: selecting && MasterChatCubit.isForwardable(messageModel)
+                ? () {
+                    HapticController.low();
+                    cubit.toggleMessageSelected(messageModel);
+                  }
+                : null,
             onLongPress: () {
               if (isOverlay ?? false) return;
+              if (selecting) return;
 
               cubit.overlayCubit.showMessageOverlay(
                 content: content,
@@ -75,164 +84,107 @@ class DefaultBubble extends StatelessWidget {
             child: Column(
               children: [
                 // ── WhatsApp-style date separator ──
-                if (isOverlay == null)
-                  _buildDateSeparatorIfNeeded(cubit),
+                if (isOverlay == null) _buildDateSeparatorIfNeeded(cubit),
 
-                Stack(
-                  alignment: AlignmentDirectional.topStart,
-                  children: [
-                    Row(
-                      mainAxisAlignment: isMe
-                          ? MainAxisAlignment.end
-                          : MainAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsetsDirectional.only(
-                            bottom: noMargin ?? false
-                                ? 0
-                                : ContextExtension(context).isPhone
-                                ? 24.h
-                                : 16.h,
-                          ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // ── Select checkbox (receiver side) ──
-                              if (state.selectMessages && !isMe)
-                                FrowardCheckBox(isMe: isMe, index: index),
-
-                              // ── Group avatar (receiver side) ──
-                              // ── Group avatar (receiver side) ──
-                              if (!isMe && messageModel.isGroup)
-                                Padding(
-                                  padding: EdgeInsetsDirectional.only(end: 8.w),
-                                  child: messageModel is GroupMessageEntity
-                                      ? AvatarChat(
-                                    imageUrl: (messageModel as GroupMessageEntity).senderImage,
-                                  )
-                                      : ClipRRect(
-                                    borderRadius: BorderRadius.circular(30.r),
-                                    child: CustomSvgImage(
-                                      assetPath: "assets/icons_assets/main_icons_assets/assets_male.svg",
-                                      fit: BoxFit.fill,
-                                      width: 40.w,
-                                      height: 40.h,
-                                    ),
-                                  ),
-                                ),
-
-                              // ── Bubble ──
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Stack(
-                                    clipBehavior: Clip.none,
-                                    alignment:
-                                    AlignmentDirectional.bottomStart,
-                                    children: [
-                                      Container(
-                                        constraints: constraints ??
-                                            BoxConstraints(
-                                              minHeight: 41.h,
-                                              maxWidth: 186.w,
-                                              minWidth: 186.w,
-                                            ),
-                                        padding:
-                                        EdgeInsetsDirectional.only(
-                                          start: 8.w,
-                                          end: 8.w,
-                                          top: 8.h,
-                                          bottom: 8.h,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                          BorderRadius.circular(4.r),
-                                          color: messageModel.isMe
-                                              ? AppColors.primary
-                                              : AppColors.background,
-                                        ),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          children: [
-                                            // ── Replied message ──
-                                            if (messageModel
-                                                .repliedMessage !=
-                                                null)
-                                              GestureDetector(
-                                                onTap: () {
-                                                  cubit.chatScrollCubit
-                                                      .scrollAndHighlight(
-                                                    messageModel
-                                                        .repliedMessage!
-                                                        .index,
-                                                  );
-                                                },
-                                                child: Padding(
-                                                  padding: EdgeInsets
-                                                      .symmetric(
-                                                      horizontal: 0.w),
-                                                  child: ReplyContent(
-                                                    model: messageModel
-                                                        .repliedMessage!,
-                                                  ),
-                                                ),
-                                              ),
-
-                                            // ── Main content ──
-                                            content,
-
-                                            // ── Time + seen row ──
-                                            if (!(hideSeen ?? false))
-                                              _buildTimeAndSeenRow(
-                                                  context, isMe),
-                                          ],
-                                        ),
-                                      ),
-
-                                      // ── Reacts ──
-                                      if (messageModel.reacts.isNotEmpty &&
-                                          isOverlay == null)
-                                        PositionedDirectional(
-                                          bottom: -8.h,
-                                          child: CustomStackedAvatars(
-                                            avatars: messageModel.reacts
-                                                .map((e) => e.getReact)
-                                                .toList(),
-                                          ),
-                                        ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-
-                              // ── Group avatar (sender side) ──
-                              if (isMe && messageModel.isGroup)
-                                Padding(
-                                  padding: EdgeInsetsDirectional.only(
-                                      start: 8.w),
-                                  child: ClipRRect(
-                                    borderRadius:
-                                    BorderRadius.circular(30.r),
-                                    child: CustomSvgImage(
-                                      assetPath: "assets/icons_assets/main_icons_assets/assets_male.svg",
-                                      fit: BoxFit.fill,
-                                      width: 40.w,
-                                      height: 40.h,
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ),
+                // REBUILT 18/10/2026 (D-184 + Figma "2 Selected"):
+                // [tick] [sender avatar] bubble   …   bubble [tick]
+                // Mine on the right, theirs on the left; a bubble plus what
+                // sits beside it never crosses the middle of the panel
+                // (bubble_width.dart). Incoming bubbles show who sent them.
+                Padding(
+                  padding: EdgeInsetsDirectional.only(
+                    bottom: noMargin ?? false
+                        ? 0
+                        : ContextExtension(context).isPhone
+                            ? 24.h
+                            : 16.h,
+                  ),
+                  child: Row(
+                    mainAxisAlignment:
+                        isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      if (selecting && !isMe) _tick(cubit),
+                      if (showSender) ...[
+                        _SenderAvatar(image: sender.image, name: sender.name),
+                        SizedBox(width: 8.w),
                       ],
-                    ),
+                      Stack(
+                        clipBehavior: Clip.none,
+                        alignment: AlignmentDirectional.bottomStart,
+                        children: [
+                          Container(
+                            constraints: constraints ??
+                                kpBubbleConstraints(
+                                  context,
+                                  reserve: (showSender ? 28.r + 8.w : 0) +
+                                      (selecting ? _kTick + 8.w : 0),
+                                ),
+                            padding: EdgeInsets.all(8.sp),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4.r),
+                              color: isMe
+                                  ? AppColors.primary
+                                  : AppColors.background,
+                            ),
+                            // 18/10/2026: a TEXT bubble is as wide as its
+                            // text (up to the responsive max).
+                            child: _hugIfText(Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // ── Who sent it (incoming only) ──
+                                if (showSender && sender.name.isNotEmpty)
+                                  Padding(
+                                    padding: EdgeInsets.only(bottom: 4.h),
+                                    child: Text(
+                                      sender.name,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: StyleText.fontSize12Weight500
+                                          .copyWith(color: AppColors.blue),
+                                    ),
+                                  ),
 
-                    // ── Select checkbox (sender side) ──
-                    if (state.selectMessages && isMe)
-                      FrowardCheckBox(isMe: isMe, index: index),
-                  ],
+                                // ── Replied message ──
+                                if (messageModel.repliedMessage != null)
+                                  GestureDetector(
+                                    onTapDown: (_) => HapticController.low(),
+                                    onTap: () {
+                                      cubit.chatScrollCubit.scrollAndHighlight(
+                                        messageModel.repliedMessage!.index,
+                                      );
+                                    },
+                                    child: ReplyContent(
+                                      model: messageModel.repliedMessage!,
+                                    ),
+                                  ),
+
+                                // ── Main content ──
+                                content,
+
+                                // ── Time + seen row ──
+                                if (!(hideSeen ?? false))
+                                  _buildTimeAndSeenRow(context, isMe),
+                              ],
+                            )),
+                          ),
+
+                          // ── Reacts ──
+                          if (messageModel.reacts.isNotEmpty &&
+                              isOverlay == null)
+                            PositionedDirectional(
+                              bottom: -8.h,
+                              child: CustomStackedAvatars(
+                                avatars: messageModel.reacts
+                                    .map((e) => e.getReact)
+                                    .toList(),
+                              ),
+                            ),
+                        ],
+                      ),
+                      if (selecting && isMe) _tick(cubit),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -240,6 +192,58 @@ class DefaultBubble extends StatelessWidget {
         },
       ),
     );
+  }
+
+  static double get _kTick => 22.sp;
+
+  /// Selection tick (Figma "2 Selected"). A message that cannot be forwarded
+  /// keeps the slot empty so the column of ticks stays straight.
+  Widget _tick(MasterChatCubit cubit) {
+    final bool can = MasterChatCubit.isForwardable(messageModel);
+    return Padding(
+      padding: EdgeInsetsDirectional.symmetric(horizontal: 4.w),
+      child: SizedBox.square(
+        dimension: _kTick,
+        child: can
+            ? CustomCheckBox(
+                isSelected:
+                    cubit.selectedMessageIds.contains(messageModel.messageId),
+                size: _kTick,
+              )
+            : null,
+      ),
+    );
+  }
+
+  /// The sender of an incoming message: the other person in a direct chat,
+  /// the matching member in a group (name read from the email as a last
+  /// resort).
+  ({String name, String image}) _sender(MasterChatState state) {
+    final ChatTypeEntity? side = state.otherConnectionSide;
+    if (side is SingleConnectionEntity) {
+      return (name: side.name, image: side.imageUri);
+    }
+    if (side is GroupEntity) {
+      final String id = (messageModel.senderId ?? '').toLowerCase();
+      for (final MemberEntity m in side.members) {
+        if (m.memberId.toLowerCase() == id) {
+          return (
+            name: LocalizedTextHelper.formatString(
+              secondaryLanguageText: m.secondaryLanguageName,
+              primaryLanguageText: m.primaryLanguageName,
+            ),
+            image: m.memberImage,
+          );
+        }
+      }
+      return (
+        name: FormatHelper.formatEmailToName(messageModel.senderId),
+        image: messageModel is GroupMessageEntity
+            ? (messageModel as GroupMessageEntity).senderImage
+            : '',
+      );
+    }
+    return (name: '', image: '');
   }
 
   // ── WhatsApp-style date separator logic ──
@@ -263,9 +267,25 @@ class DefaultBubble extends StatelessWidget {
     return const SizedBox.shrink();
   }
 
+  /// The bubble's time: "1:07 PM" today, otherwise the day and the time —
+  /// "Yesterday 10:58 PM", "14/10/2026 9:15 AM" (20/10/2026, owner: the day
+  /// alone did not say when it was sent).
+  String _bubbleTime(BuildContext context, DateTime t) {
+    final String day = DateTimeHelper.formatTime(t);
+    final String time =
+        DateFormat('h:mm a', Localizations.localeOf(context).toString())
+            .format(t);
+    return day == time ? time : '$day $time';
+  }
+
   bool _isSameDay(DateTime a, DateTime b) {
     return a.year == b.year && a.month == b.month && a.day == b.day;
   }
+
+  Widget _hugIfText(Widget child) =>
+      messageModel.messageType == MessageTypes.text
+          ? IntrinsicWidth(child: child)
+          : child;
 
   Widget _buildTimeAndSeenRow(BuildContext context, bool isMe) {
     final seenAndUnseenEnabled = Get.find<MessagingInitController>()
@@ -273,28 +293,14 @@ class DefaultBubble extends StatelessWidget {
         .seenAndUnseen;
 
     // ── DEBUG ──
-    if (isMe) {
-    }
+    if (isMe) {}
 
     return Row(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        // Star icon (reserved)
-        if (false)
-          Padding(
-            padding: EdgeInsetsDirectional.only(end: 4.w, bottom: 2.h),
-            child: Icon(
-              Icons.star,
-              color: !isMe
-                  ? AppColors.secondaryPrimary
-                  : AppTheme.contrastGreyColor(),
-              size: 12.r,
-            ),
-          ),
-
         // Edited label
-        if (messageModel.isEdited ?? false)
+        if (messageModel.isEdited)
           Text(
             S.of(context).edited,
             style: StyleText.fontSize10Weight400.copyWith(
@@ -307,19 +313,17 @@ class DefaultBubble extends StatelessWidget {
 
         // Time
         Text(
-          DateTimeHelper.formatTime(messageModel.time.toDate()),
-          style: StyleText.fontSize8Weight500.copyWith(color: AppColors.secondaryBlack).copyWith(
-            color: !isMe
-                ? AppColors.inverseBase
-                : AppColors.textButton,
-          ),
+          _bubbleTime(context, messageModel.time.toDate()),
+          style: StyleText.fontSize8Weight500
+              .copyWith(color: AppColors.secondaryBlack)
+              .copyWith(
+                color: !isMe ? AppColors.secondaryBlack : AppColors.textButton,
+              ),
         ),
 
         SizedBox(width: 4.w),
 
         // ── Seen / Sent icon ──
-
-
 
         if (isMe &&
             Get.find<MainCoreEmployeeController>().isHasPermission(
@@ -337,6 +341,34 @@ class DefaultBubble extends StatelessWidget {
             size: ContextExtension(context).isTablet ? 18.sp : 16.sp,
           ),
       ],
+    );
+  }
+}
+
+/// 28 avatar beside an incoming bubble (D-184): the photo, or the initials.
+class _SenderAvatar extends StatelessWidget {
+  const _SenderAvatar({required this.image, required this.name});
+
+  final String image;
+  final String name;
+
+  @override
+  Widget build(BuildContext context) {
+    final String initials = name
+        .trim()
+        .split(RegExp(r'\s+'))
+        .where((String w) => w.isNotEmpty)
+        .take(2)
+        .map((String w) => w[0].toUpperCase())
+        .join();
+    return CircleAvatar(
+      radius: 14.r,
+      backgroundColor: AppColors.mediumGrey,
+      foregroundImage: image.isEmpty ? null : appImageProvider(image),
+      child: Text(
+        initials,
+        style: StyleText.fontSize10Weight500.copyWith(color: AppColors.text),
+      ),
     );
   }
 }

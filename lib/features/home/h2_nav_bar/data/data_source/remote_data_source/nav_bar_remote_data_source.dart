@@ -8,10 +8,11 @@
 ///
 /// Extracted from `nav_bar_cubit`, which used to call
 /// `FirebaseFirestore.instance.collection('Demo_Requests')` directly.
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:grc_module/core/constants/firebase_collections.dart';
+import 'package:knowticed_plus/core/constants/firebase_collections.dart';
 
 class NavBarRemoteDataSource {
   NavBarRemoteDataSource({FirebaseFirestore? firestore})

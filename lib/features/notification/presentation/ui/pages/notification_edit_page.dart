@@ -2,8 +2,8 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: notification_edit_page.dart
-/// Purpose: Edits one notification template.
-/// Author: Knowticed Plus team
+/// Description: Edits one notification template.
+/// Author: Amr Mesbah
 /// Created at: 2026
 /// Updated: 12/8/2026 - CR-SKEL-NOTIF-N13: the two dead private methods are deleted.
 /// Updated: 2/9/2026 - This screen is where the five Notification Control role
@@ -14,38 +14,48 @@
 ///          everyone and made inert without the matching right, because
 ///          reading a notification's configuration and changing it are
 ///          different things and only the second is gated.
-import 'dart:ui' as ui;
+/// Updated: 9/10/2026 - Time Tracker QA KP-TT-018 (shared module → Amr's
+///          handover): the status row and the Preview / Save row always fit
+///          (`NotificationStatusHeader` / `NotificationEditActions`) — Reset
+///          Default (190.w) overflowed the status row on a phone.
+library;
 
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:knowticed_plus/core/custom/dialogs/custom_dialog_manager.dart';
+import 'package:knowticed_plus/core/custom/inputs/field_sizing.dart';
+import 'package:knowticed_plus/features/settings/se8_watermark/presentation/ui/widgets/watermark_layer.dart';
+import 'package:knowticed_plus/core/custom/dropdowns/custom_multi_select_dropdown.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_button_sizing.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_button_with_svg.dart';
+import 'package:knowticed_plus/core/custom/navigation/custom_segmented_toggle.dart';
+import 'package:knowticed_plus/features/notification/presentation/ui/widgets/notification_template_editor.dart';
+import 'package:knowticed_plus/features/notification/presentation/ui/pages/notification_preview_page.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_switch/flutter_switch.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
-import 'package:grc_module/core/custom/6-custom_button_with_svg.dart';
-// REMOVED_MODULE: import 'package:grc_module/core/helper/inventory_module/core/svg_custom.dart';
-// REMOVED_MODULE: import 'package:grc_module/features/external/services_mangment_module/Category/presentation/ui/services_admin/Widget/W3_Frame_Screen_tablet.dart';
-import 'package:grc_module/features/notification/data/repository/notification_template_service.dart';
+import 'package:knowticed_plus/core/custom/inputs/default_switch_button.dart';
+import 'package:knowticed_plus/core/custom/feedback/circle_progress.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/core/helper/inventory_module/core/svg_custom.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/features/external/services_mangment_module/Category/presentation/ui/services_admin/Widget/W3_Frame_Screen_tablet.dart';
+import 'package:knowticed_plus/features/notification/data/repository/notification_template_service.dart';
 
-import 'package:grc_module/generated/l10n.dart';
-// REMOVED_MODULE: import 'package:grc_module/external/qiyas/core/widgets/multi_select_dropdown_widget.dart';
-// REMOVED_MODULE: import 'package:grc_module/external/grc/core/widgets/custom_botton.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-// REMOVED_MODULE: import 'package:grc_module/external/todo_module/core/components/other_components/flutter_switch.dart';
-import 'package:grc_module/features/notification/data/models/notification_model.dart';
-import 'package:grc_module/features/notification/domain/enums/notification_catalog.dart';
-import 'package:grc_module/features/notification/presentation/ui/pages/notification_control.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/external/qiyas/core/widgets/multi_select_dropdown_widget.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/external/grc/core/widgets/custom_botton.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/external/todo_module/core/components/other_components/flutter_switch.dart';
+import 'package:knowticed_plus/features/notification/data/models/notification_model.dart';
+import 'package:knowticed_plus/features/notification/presentation/ui/pages/notification_control.dart';
 
-import 'package:grc_module/core/custom/5-custom_button.dart';
-import 'package:grc_module/core/custom/2-custom_textfield.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_button.dart';
 // ADDED 2/9/2026 — the Notification Control role permissions. This screen is
 // where all five of them actually bite; see the header note above.
 import 'package:get/get.dart';
-import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
-import 'package:grc_module/features/roles/r1_role_management/domain/enums/notification/notification_permissions_enum.dart';
-import 'package:grc_module/features/roles/r1_role_management/domain/enums/notification/notification_sections_enum.dart';
-import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:knowticed_plus/core/helper/access/main_core_employee_controller.dart';
+import 'package:knowticed_plus/core/helper/access/modules_enum.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/notification/notification_permissions_enum.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/notification/notification_sections_enum.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
 
 class NotificationEditPage extends StatefulWidget {
   final NotificationItem notificationItem;
@@ -70,13 +80,21 @@ class _NotificationEditPageState extends State<NotificationEditPage> {
 
   List<String> selectedNotificationTypes = [];
 
-  TextEditingController subjectEn = TextEditingController();
-  TextEditingController subjectAr = TextEditingController();
-  TextEditingController bodyArController = TextEditingController();
-  TextEditingController bodyEnController = TextEditingController();
+  /// Email (Subject + Body) and Push (Title + Description), EN and AR.
+  final NotificationTemplateControllers templateText =
+      NotificationTemplateControllers();
+
+  /// Owner 22/10/2026: the Email | Notifications switch picks which set of
+  /// fields is shown — each channel keeps its own text.
+  bool isEmailView = true;
+
+  /// Owner 22/10/2026 (Figma iPhone): the page opens read-only with an edit
+  /// button; edit turns it into "Editing …" + the name.
+  bool isEditMode = false;
 
   NotificationTemplateModel? currentTemplate;
-  final NotificationTemplateService _templateService = NotificationTemplateService();
+  final NotificationTemplateService _templateService =
+      NotificationTemplateService();
 
   // ADDED 2/9/2026 — Notification Control role permissions.
   //
@@ -103,22 +121,18 @@ class _NotificationEditPageState extends State<NotificationEditPage> {
   /// the copy is read-only whatever the two channel rights say. When no
   /// channel is selected yet there is nothing to protect, so either channel
   /// right is enough.
-  bool get _canEditMessages {
-    if (!_canEditNotification) return false;
-
-    final bool push = selectedNotificationTypes.contains('push');
-    final bool email = selectedNotificationTypes.contains('email');
-
-    if (!push && !email) {
-      return _canEditPushMessages || _canEditEmailMessages;
-    }
-
-    return (push && _canEditPushMessages) || (email && _canEditEmailMessages);
-  }
+  ///
+  /// CHANGED 22/10/2026: Email and Push now keep their own text, so each right
+  /// guards its own fields — the email copy needs the email right, the push
+  /// copy the push right.
+  bool get _canEditEmailCopy => _canEditNotification && _canEditEmailMessages;
+  bool get _canEditPushCopy => _canEditNotification && _canEditPushMessages;
+  bool get _canEditMessages => _canEditEmailCopy || _canEditPushCopy;
 
   /// Save writes status, channels and copy in one go, so it is offered when
   /// the member may change ANY of the three — not only the copy.
-  bool get _canSave => _canEditMessages || _canChangeStatus || _canChangeChannel;
+  bool get _canSave =>
+      _canEditMessages || _canChangeStatus || _canChangeChannel;
 
   @override
   void initState() {
@@ -145,18 +159,19 @@ class _NotificationEditPageState extends State<NotificationEditPage> {
     }
 
     _canEditNotification = has(NotificationPermissions.editNotification);
-    _canEditPushMessages = has(NotificationPermissions.editPushNotificationMessages);
-    _canEditEmailMessages = has(NotificationPermissions.editEmailNotificationMessages);
+    _canEditPushMessages = has(
+      NotificationPermissions.editPushNotificationMessages,
+    );
+    _canEditEmailMessages = has(
+      NotificationPermissions.editEmailNotificationMessages,
+    );
     _canChangeStatus = has(NotificationPermissions.changeNotificationStatus);
     _canChangeChannel = has(NotificationPermissions.changeNotificationChannel);
   }
 
   @override
   void dispose() {
-    subjectEn.dispose();
-    subjectAr.dispose();
-    bodyArController.dispose();
-    bodyEnController.dispose();
+    templateText.dispose();
     super.dispose();
   }
 
@@ -166,23 +181,28 @@ class _NotificationEditPageState extends State<NotificationEditPage> {
       isLoadingTemplate = true;
     });
 
-
     NotificationTemplateModel? template = await _templateService.getTemplate(
       module: widget.moduleName,
       eventType: widget.notificationItem.eventType,
     );
 
     if (template != null) {
-
       setState(() {
+        _submitted = false;
         currentTemplate = template;
         isNotificationEnabled = template.isEnabled;
-        selectedNotificationTypes = List.from(template.selectedNotificationTypes);
+        selectedNotificationTypes = List.from(
+          template.selectedNotificationTypes,
+        );
 
-        subjectEn.text = template.subjectEnglish;
-        subjectAr.text = template.subjectArabic;
-        bodyEnController.text = template.bodyEnglish;
-        bodyArController.text = template.bodyArabic;
+        templateText.subjectEn.text = template.subjectEnglish;
+        templateText.subjectAr.text = template.subjectArabic;
+        templateText.bodyEn.text = template.bodyEnglish;
+        templateText.bodyAr.text = template.bodyArabic;
+        templateText.pushTitleEn.text = template.pushTitleEn;
+        templateText.pushTitleAr.text = template.pushTitleAr;
+        templateText.pushBodyEn.text = template.pushBodyEn;
+        templateText.pushBodyAr.text = template.pushBodyAr;
 
         isLoadingTemplate = false;
       });
@@ -198,44 +218,47 @@ class _NotificationEditPageState extends State<NotificationEditPage> {
         isLoadingTemplate = false;
       });
     }
-
   }
 
   // ✅ Save template to Firestore
-  Future<void> _saveTemplate() async {
-    if (subjectEn.text.trim().isEmpty ||
-        subjectAr.text.trim().isEmpty ||
-        bodyEnController.text.trim().isEmpty ||
-        bodyArController.text.trim().isEmpty) {
-      // Snackbar removed: the guard now just aborts the save.
-      return;
-    }
+  Future<bool> _saveTemplate() async {
+    // Every one of the eight texts is needed (Email and Push, EN and AR).
+    if (templateText.invalidChannel() != null) return false;
 
     setState(() {
       isSaving = true;
     });
 
     final templateToSave = currentTemplate?.copyWith(
-      subjectEnglish: subjectEn.text.trim(),
-      subjectArabic: subjectAr.text.trim(),
-      bodyEnglish: bodyEnController.text.trim(),
-      bodyArabic: bodyArController.text.trim(),
-      isEnabled: isNotificationEnabled,
-      selectedNotificationTypes: selectedNotificationTypes,
-      updatedAt: DateTime.now(),
-    ) ?? NotificationTemplateModel(
-      id: '${widget.moduleName}_${widget.notificationItem.eventType}',
-      module: widget.moduleName,
-      eventType: widget.notificationItem.eventType,
-      subjectEnglish: subjectEn.text.trim(),
-      subjectArabic: subjectAr.text.trim(),
-      bodyEnglish: bodyEnController.text.trim(),
-      bodyArabic: bodyArController.text.trim(),
-      isEnabled: isNotificationEnabled,
-      selectedNotificationTypes: selectedNotificationTypes,
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-    );
+          subjectEnglish: templateText.subjectEn.text.trim(),
+          subjectArabic: templateText.subjectAr.text.trim(),
+          bodyEnglish: templateText.bodyEn.text.trim(),
+          bodyArabic: templateText.bodyAr.text.trim(),
+          pushTitleEnglish: templateText.pushTitleEn.text.trim(),
+          pushTitleArabic: templateText.pushTitleAr.text.trim(),
+          pushBodyEnglish: templateText.pushBodyEn.text.trim(),
+          pushBodyArabic: templateText.pushBodyAr.text.trim(),
+          isEnabled: isNotificationEnabled,
+          selectedNotificationTypes: selectedNotificationTypes,
+          updatedAt: DateTime.now(),
+        ) ??
+        NotificationTemplateModel(
+          id: '${widget.moduleName}_${widget.notificationItem.eventType}',
+          module: widget.moduleName,
+          eventType: widget.notificationItem.eventType,
+          subjectEnglish: templateText.subjectEn.text.trim(),
+          subjectArabic: templateText.subjectAr.text.trim(),
+          bodyEnglish: templateText.bodyEn.text.trim(),
+          bodyArabic: templateText.bodyAr.text.trim(),
+          pushTitleEnglish: templateText.pushTitleEn.text.trim(),
+          pushTitleArabic: templateText.pushTitleAr.text.trim(),
+          pushBodyEnglish: templateText.pushBodyEn.text.trim(),
+          pushBodyArabic: templateText.pushBodyAr.text.trim(),
+          isEnabled: isNotificationEnabled,
+          selectedNotificationTypes: selectedNotificationTypes,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
 
     final success = await _templateService.saveTemplate(templateToSave);
 
@@ -245,436 +268,463 @@ class _NotificationEditPageState extends State<NotificationEditPage> {
 
     // Snackbars removed. On success the page closes, which is the feedback;
     // a failure now leaves the user on the editor with their input intact.
-    if (success) {
-      Navigator.pop(context);
+    // CHANGED 22/10/2026 (Figma phone flow): Save returns to the view page
+    // of this notification instead of closing it.
+    if (success && mounted) {
+      setState(() {
+        currentTemplate = templateToSave;
+        isEditMode = false;
+        _submitted = false;
+      });
     }
+    return success;
+  }
+
+  /// Owner 22/10/2026: true once Save was pressed — the fields then show
+  /// their errors (R-6). Reset whenever the template is loaded.
+  bool _submitted = false;
+
+  /// Save is offered only when something differs from the stored template.
+  bool get _hasChanges {
+    final NotificationTemplateModel? t = currentTemplate;
+    if (t == null) return false;
+    final Set<String> now = selectedNotificationTypes.toSet();
+    final Set<String> was = t.selectedNotificationTypes.toSet();
+    return templateText.differsFrom(t) ||
+        isNotificationEnabled != t.isEnabled ||
+        now.length != was.length ||
+        !now.containsAll(was);
+  }
+
+  /// Save: show the errors (and the channel that has them) if anything is
+  /// missing; otherwise confirm → save → success, the app's standard flow.
+  Future<void> _onSavePressed() async {
+    if (!_hasChanges || isSaving) return;
+    setState(() => _submitted = true);
+    final String? bad = templateText.invalidChannel();
+    if (bad != null) {
+      setState(() => isEmailView = bad == 'email');
+      return;
+    }
+    final bool isAr = Directionality.of(context) == TextDirection.rtl;
+    await CustomDialogManager.showDialogFlow(
+      context: context,
+      confirmLottie:
+          'assets/lottie_assets/main_lottie_assets/lot_status_confirmation.json',
+      confirmTitle: S.of(context).saveChanges,
+      confirmSubtitle: isAr
+          ? 'هل تريد حفظ التغييرات على هذا الإشعار؟'
+          : 'Do you want to save the changes to this notification?',
+      confirmYesText: S.of(context).confirm,
+      confirmNoText: S.of(context).cancel,
+      onConfirm: _saveTemplate,
+      successLottie:
+          'assets/lottie_assets/main_lottie_assets/lot_status_success.json',
+      successTitle: S.of(context).Successful,
+      successSubtitle:
+          isAr ? 'تم حفظ الإشعار بنجاح' : 'The notification was saved.',
+    );
   }
 
   // ✅ Reset to default
+  //
+  // 23/10/2026 (Moataz): Reset overwrites the whole template, so it asks first
+  // ("Are you sure?") like Save does, then resets and says it worked. It used
+  // to reset the moment the button was tapped.
   Future<void> _resetToDefault() async {
-    final success = await _templateService.resetToDefault(
-      module: widget.moduleName,
-      eventType: widget.notificationItem.eventType,
+    final bool isAr = Directionality.of(context) == TextDirection.rtl;
+    await CustomDialogManager.showDialogFlow(
+      context: context,
+      confirmLottie:
+          'assets/lottie_assets/main_lottie_assets/lot_action_restore.json',
+      confirmTitle: isAr ? 'استعادة الرسائل الافتراضية' : 'Reset to default',
+      confirmSubtitle: isAr
+          ? 'هل أنت متأكد أنك تريد استعادة الرسائل الافتراضية لهذا الإشعار؟ ستُستبدل رسائلك الحالية.'
+          : 'Are you sure you want to reset this notification to its default messages? Your current messages will be replaced.',
+      confirmYesText: S.of(context).confirm,
+      confirmNoText: S.of(context).cancel,
+      confirmWidth: 411,
+      successWidth: 411,
+      onConfirm: () async {
+        final bool success = await _templateService.resetToDefault(
+          module: widget.moduleName,
+          eventType: widget.notificationItem.eventType,
+        );
+        // A successful reset repaints the fields from the reloaded template.
+        if (success) await _loadTemplate();
+        return success;
+      },
+      successLottie:
+          'assets/lottie_assets/main_lottie_assets/lot_status_success.json',
+      successTitle: S.of(context).Successful,
+      successSubtitle: isAr
+          ? 'تمت استعادة الرسائل الافتراضية.'
+          : 'The default messages were restored.',
     );
-
-    // Snackbars removed: a successful reset repaints the fields from the
-    // reloaded template, which is the visible confirmation.
-    if (success) {
-      await _loadTemplate();
-    }
   }
 
-  // ✅ Show preview dialog
+  /// Owner 22/10/2026: Preview is its own page (Figma › Preview
+  /// Notification) — the message beside a phone showing how it arrives.
   void _showPreviewDialog(BuildContext context) {
-    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
-
-    showAppDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(isArabic ? "معاينة الإشعار" : "Notification Preview"),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              isArabic ? "العنوان:" : "Subject:",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 4),
-            Text(isArabic ? subjectAr.text : subjectEn.text),
-            SizedBox(height: 16),
-            Text(
-              isArabic ? "النص:" : "Body:",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 4),
-            Text(isArabic ? bodyArController.text : bodyEnController.text),
-            SizedBox(height: 16),
-            Container(
-              padding: EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: AppColors.moreLightGrey,
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Text(
-                isArabic
-                    ? "ملاحظة: سيتم استبدال المتغيرات مثل {{serviceName}} بالقيم الفعلية عند إرسال الإشعار"
-                    : "Note: Variables like {{serviceName}} will be replaced with actual values when sending notifications",
-                style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
-              ),
-            ),
-          ],
+    Navigator.push(
+      context,
+      MaterialPageRoute<void>(
+        builder: (_) => NotificationPreviewPage(
+          controllers: templateText,
+          module: widget.currentTab.module,
+          isEmail: isEmailView,
+          onSave: _canSave && _hasChanges ? _onSavePressed : null,
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(isArabic ? "إغلاق" : "Close"),
-          ),
-        ],
       ),
     );
-  }
-
-  /// Available-placeholder hint, derived from the selected catalog event.
-  /// Replaces a ~140-line switch that had to be updated by hand for every
-  /// new module and drifted from the actual template text.
-  String _getVariablesHintText(bool isRTL) {
-    final module = widget.currentTab.module;
-    final event = module == null
-        ? null
-        : NotificationCatalog.find(
-            module: module,
-            key: widget.notificationItem.eventType,
-          );
-
-    final tokens = event?.variables.map((v) => v.token).join(', ') ?? '';
-    if (tokens.isEmpty) {
-      return isRTL
-          ? "لا توجد متغيرات لهذا الإشعار"
-          : "This notification has no variables";
-    }
-    return isRTL ? "المتغيرات المتاحة: $tokens" : "Available variables: $tokens";
   }
 
   // ✅ Helper method to get display text for selected items
 
   // ✅ Helper to convert display name to key
 
-  @override
-  Widget build(BuildContext context) {
-    final isRTL = Directionality.of(context) == ui.TextDirection.rtl;
-    final lightMode = Theme.of(context).brightness == Brightness.light;
+  /// Throw away unsaved edits: reload the stored template, back to view.
+  Future<void> _discardChanges() async {
+    await _loadTemplate();
+    if (!mounted) return;
+    setState(() => isEditMode = false);
+  }
 
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      body: SafeArea(
-        child: Column(
+  String _channelLabel(String key, bool isRTL) => key == 'email'
+      ? (isRTL ? 'البريد الإلكتروني' : 'Email')
+      : (isRTL ? 'إشعار الهاتف' : 'Push Notification');
+
+  Widget _toggle(BuildContext context) => CustomSegmentedToggle(
+        compact: true,
+        height: ButtonSizing.height,
+        tabs: [S.of(context).email, S.of(context).notifications],
+        selectedIndex: isEmailView ? 0 : 1,
+        onChanged: (int index) => setState(() => isEmailView = index == 0),
+      );
+
+  Widget _card(Widget child) => Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(15.sp),
+        decoration: BoxDecoration(
+          color: AppColors.card,
+          borderRadius: BorderRadius.circular(8.r),
+        ),
+        child: child,
+      );
+
+  /// Figma "Editing …": status + channel + Reset Default Messages.
+  Widget _statusCard(bool isRTL) {
+    final List<String> labels = <String>['email', 'push']
+        .map((String k) => _channelLabel(k, isRTL))
+        .toList();
+    return _card(
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // GATED 2/9/2026 — Reset overwrites the whole template, so it
+          // needs every right Save needs. Hidden rather than disabled.
+          // 23/10/2026 (Moataz): first in the card, then the status, then the
+          // channel — the same order as the iPad in portrait.
+          if (_canSave) ...[
+            SizedBox(
+              width: double.infinity,
+              child: customButton(
+                title: isRTL
+                    ? "استعادة الرسائل الافتراضية"
+                    : "Reset Default Messages",
+                function: _resetToDefault,
+                color: AppColors.darkGrey,
+                radius: 4.r,
+                height: 30.h,
+                textStyle: StyleText.fontSize14Weight500
+                    .copyWith(color: AppColors.text),
+              ),
+            ),
+            SizedBox(height: 15.sp),
+          ],
+          Row(
+            children: [
+              CustomSvgImage(
+                assetPath:
+                    "assets/icons_assets/main_icons_assets/ic_status.svg",
+                width: 16.sp,
+                height: 16.sp,
+                color: AppColors.secondaryText,
+              ),
+              SizedBox(width: 8.sp),
+              Text(
+                isRTL ? "حالة الإشعار" : "Notification Status",
+                style: StyleText.fontSize14Weight500
+                    .copyWith(color: AppColors.text),
+              ),
+              // Figma: the switch sits at the far end of the row.
+              const Spacer(),
+              // GATED 2/9/2026 — changeNotificationStatus: shown, inert
+              // without the right.
+              AbsorbPointer(
+                absorbing: !_canChangeStatus,
+                child: Opacity(
+                  opacity: _canChangeStatus ? 1.0 : 0.5,
+                  child: DefaultSwitchButton(
+                    value: isNotificationEnabled,
+                    onChanged: (bool v) =>
+                        setState(() => isNotificationEnabled = v),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 15.sp),
+          Text(
+            isRTL ? "قناة الإشعار" : "Notification Channel",
+            style:
+                StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
+          ),
+          SizedBox(height: 8.sp),
+          // GATED 2/9/2026 — changeNotificationChannel.
+          AbsorbPointer(
+            absorbing: !_canChangeChannel,
+            child: Opacity(
+              opacity: _canChangeChannel ? 1.0 : 0.5,
+              child: CustomMultiSelectFilter<String>(
+                values: selectedNotificationTypes
+                    .map((String k) => _channelLabel(k, isRTL))
+                    .toList(),
+                items: labels
+                    .map((String e) =>
+                        MultiSelectDropdownItem<String>(value: e, label: e))
+                    .toList(),
+                selectedTextBuilder: (_) => selectedNotificationTypes.isEmpty
+                    ? (isRTL ? "اختر القناة" : "Select Channel")
+                    : selectedNotificationTypes
+                        .map((String k) => _channelLabel(k, isRTL))
+                        .join(", "),
+                hint: isRTL ? "اختر القناة" : "Select Channel",
+                onChanged: (List<String> selected) => setState(() {
+                  selectedNotificationTypes
+                    ..clear()
+                    ..addAll(selected
+                        .map((String l) => l == labels[0] ? 'email' : 'push'));
+                }),
+                fillColor: AppColors.background,
+                // Owner 22/10/2026: as tall as the 36 text fields.
+                height: FieldSizing.height,
+                heightSizesWholeTrigger: true,
+                valueStyle: StyleText.fontSize12Weight400
+                    .copyWith(color: AppColors.text),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _footer(BuildContext context, bool isRTL) {
+    Widget button(String key, String title, VoidCallback onTap, Color color,
+            Color textColor) =>
+        KeyedSubtree(
+          key: ValueKey<String>(key),
+          child: customButton(
+            title: title,
+            function: onTap,
+            color: color,
+            radius: 8.r,
+            textStyle: StyleText.fontSize16Weight500.copyWith(color: textColor),
+          ),
+        );
+    // Figma iPhone: Preview | Save, Discard under Preview.
+    return Column(
+      children: [
+        Row(
           children: [
-            // App bar row
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-              child: Row(
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                  Text(S.of(context).notificationControl,
-                      style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600)),
-                  const Spacer(),
-                  Text(widget.notificationItem.title,
-                      style: TextStyle(fontSize: 14.sp, color: AppColors.secondaryText)),
-                ],
-              ),
-            ),
             Expanded(
-              child: isLoadingTemplate
-              ? Center(child: CircleProgressMaster())
-              : ScrollConfiguration(
-            behavior: const ScrollBehavior().copyWith(scrollbars: false),
-            child: SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(
-                parent: BouncingScrollPhysics(),
-              ),
-              child: Column(
-                children: [
-                  // Status & Notification Type Container
-                  Container(
-                    padding: EdgeInsets.all(15.r),
-                    decoration: BoxDecoration(
-                      color: AppColors.card,
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Status Row
-                        Row(
-                          children: [
-                            SvgPicture.asset(
-                              "assets/icons_assets/main_icons_assets/status_pulse_line.svg",
-                              width: 16.w,
-                              height: 16.h,
-                              fit: BoxFit.fill,
-                              colorFilter: ColorFilter.mode(AppColors.secondaryText, BlendMode.srcIn),
-                            ),
-                            SizedBox(width: 8.w),
-                            Text(
-                              isRTL ? "حالة الإشعار" : "Notification Status",
-                              style: StyleText.fontSize18Weight500.copyWith(
-                                color: AppColors.text,
-                              ),
-                            ),
-                            SizedBox(width: 8.w),
-                            // GATED 2/9/2026 — NotificationPermissions
-                            // .changeNotificationStatus.
-                            //
-                            // Shown but inert without the right, not hidden:
-                            // whether a notification is on or off is
-                            // information a reader needs even when they may
-                            // not change it. AbsorbPointer rather than
-                            // FlutterSwitch's own disabled flag so the
-                            // behaviour does not depend on the package
-                            // version.
-                            AbsorbPointer(
-                              absorbing: !_canChangeStatus,
-                              child: Opacity(
-                                opacity: _canChangeStatus ? 1.0 : 0.5,
-                                child: FlutterSwitch(
-                                  activeColor: AppColors.secondaryPrimary,
-                                  height: 22.sp,
-                                  width: 38.sp,
-                                  padding: 3.sp,
-                                  borderRadius: 20.sp,
-                                  toggleSize: 16.sp,
-                                  toggleColor: AppColors.white,
-                                  inactiveColor: AppColors.switchTrackOff.withOpacity(0.16),
-                                  value: isNotificationEnabled,
-                                  onToggle: (newValue) {
-                                    setState(() {
-                                      isNotificationEnabled = newValue;
-                                    });
-                                  },
-                                ),
-                              ),
-                            ),
-                            Spacer(),
-                            // GATED 2/9/2026 — Reset Default overwrites the
-                            // whole template (status, channels and copy), so
-                            // it needs every right Save needs. Hidden rather
-                            // than disabled: a button that cannot be pressed
-                            // is worse than no button.
-                            if (_canSave)
-                              customButton(
-                                title: isRTL ? "إعادة تعيين الافتراضي" : "Reset Default",
-                                function: _resetToDefault,
-                                color: AppColors.primary,
-                                radius: 4.r,
-                                width: 190.w,
-                                height: 30.h,
-                                textStyle: StyleText.fontSize14Weight500.copyWith(
-                                  color: AppColors.textButton,
-                                ),
-                              ),
-                          ],
-                        ),
-
-                        SizedBox(height: 15.h),
-
-                        // Notification Type Dropdown
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(bottom: 8.h),
-                              child: Text(
-                                isRTL ? "نوع الإشعار" : "Notification Type",
-                                style: StyleText.fontSize12Weight400.copyWith(
-                                  color: AppColors.secondaryText,
-                                ),
-                              ),
-                            ),
-                            // Multi-select: Email and Push
-                            Column(
-                              children: ['email', 'push'].map((key) {
-                                final label = key == 'email'
-                                    ? (isRTL ? 'البريد الإلكتروني' : 'Email')
-                                    : (isRTL ? 'إشعار الهاتف' : 'Push Notification');
-                                // GATED 2/9/2026 — NotificationPermissions
-                                // .changeNotificationChannel. A null
-                                // `onChanged` is how Flutter renders a
-                                // checkbox as disabled, so the member still
-                                // sees WHICH channels this notification goes
-                                // out on without being able to move it.
-                                return CheckboxListTile(
-                                  dense: true,
-                                  contentPadding: EdgeInsets.zero,
-                                  title: Text(label, style: StyleText.fontSize12Weight400.copyWith(color: AppColors.text)),
-                                  value: selectedNotificationTypes.contains(key),
-                                  activeColor: AppColors.secondaryPrimary,
-                                  onChanged: !_canChangeChannel
-                                      ? null
-                                      : (checked) {
-                                          setState(() {
-                                            if (checked == true) {
-                                              selectedNotificationTypes.add(key);
-                                            } else {
-                                              selectedNotificationTypes.remove(key);
-                                            }
-                                          });
-                                        },
-                                );
-                              }).toList(),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  SizedBox(height: 15.h),
-
-                  // Form Fields Container
-                  Container(
-                    padding: EdgeInsets.all(15.r),
-                    decoration: BoxDecoration(
-                      color: AppColors.card,
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // GATED 2/9/2026 — the four copy fields below are
-                        // read-only unless `_canEditMessages`, which folds
-                        // `editNotification` together with the push/email
-                        // rights for the channels THIS notification uses. See
-                        // the getter for why the channel matters.
-                        //
-                        // `readOnly` rather than `enabled: false`: the text
-                        // stays selectable and legible, which is the point —
-                        // someone who may not rewrite the copy usually still
-                        // needs to read it.
-                        // Subject Fields
-                        CustomTextField(
-        label: "Subject",
-        hint: "Text Here",
-        maxLines: 1,
-        height: 36,
-        readOnly: !_canEditMessages,
-        textDirection: ui.TextDirection.ltr,
-        controller: subjectEn,
-        onChanged: (_) => setState(() {}),
-      ),
-
-                        SizedBox(height: 15.h),
-
-                        CustomTextField(
-        label: "عنوان",
-        hint: "اكتب هنا",
-        maxLines: 1,
-        height: 36,
-        readOnly: !_canEditMessages,
-        textDirection: ui.TextDirection.rtl,
-        controller: subjectAr,
-        onChanged: (_) => setState(() {}),
-      ),
-
-                        SizedBox(height: 15.h),
-
-                        // Helper text for variables
-                        Container(
-                          padding: EdgeInsets.all(8.r),
-                          decoration: BoxDecoration(
-                            color: AppColors.blue.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(4.r),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.info_outline,
-                                size: 16.sp,
-                                color: AppColors.blue,
-                              ),
-                              SizedBox(width: 8.w),
-                              Expanded(
-                                child: Text(
-                                  _getVariablesHintText(isRTL),
-                                  style: StyleText.fontSize12Weight400.copyWith(
-                                    color: AppColors.blue,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        SizedBox(height: 15.h),
-
-                        // Body Field EN
-                        CustomTextField(
-        label: "Body",
-        hint: "Text Here",
-        maxLines: 7,
-        minLines: 7,
-        height: 150.h,
-        maxLength: 500,
-        showCharCount: true,
-        readOnly: !_canEditMessages,
-        textDirection: ui.TextDirection.ltr,
-        controller: bodyEnController,
-        onChanged: (_) => setState(() {}),
-      ),
-
-                        SizedBox(height: 15.h),
-
-                        // Body Field AR
-                        CustomTextField(
-        label: "نص الرسالة",
-        hint: "اكتب هنا",
-        maxLines: 7,
-        minLines: 7,
-        height: 150.h,
-        maxLength: 500,
-        showCharCount: true,
-        readOnly: !_canEditMessages,
-        textDirection: ui.TextDirection.rtl,
-        controller: bodyArController,
-        onChanged: (_) => setState(() {}),
-      ),
-
-                        SizedBox(height: 15.h),
-
-                        // Bottom Buttons Row
-                        Row(
-                          children: [
-                            customButton(
-                              title: S.of(context).preview,
-                              textStyle: StyleText.fontSize16Weight500.copyWith(
-                                color: lightMode ? AppColors.colorBlack : AppColors.white,
-                              ),
-                              function: () {
-                                _showPreviewDialog(context);
-                              },
-                              height: 38.h,
-                              width: 150.w,
-                              color: lightMode ? AppColors.grey : AppColors.darkGrey,
-                              radius: 8.r,
-                            ),
-                            Spacer(),
-                            // GATED 2/9/2026 — Save writes status, channels
-                            // and copy together, so it is offered whenever the
-                            // member may change any one of the three. Preview
-                            // above stays ungated: it only renders what is
-                            // already on screen.
-                            if (_canSave)
-                              customButton(
-                                title: isSaving
-                                    ? (isRTL ? "جاري الحفظ..." : "Saving...")
-                                    : S.of(context).save,
-                                textStyle: StyleText.fontSize16Weight500.copyWith(
-                                  color: AppColors.textButton,
-                                ),
-                                function: () {
-                                  if (!isSaving) {
-                                    _saveTemplate();
-                                  }
-                                },
-                                height: 38.h,
-                                width: 150.w,
-                                color: AppColors.primary,
-                                radius: 8.r,
-                              ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+              child: button(
+                  'notificationEditPagePreview',
+                  S.of(context).preview,
+                  () => _showPreviewDialog(context),
+                  AppColors.primary,
+                  AppColors.textButton),
             ),
-              ),
+            SizedBox(width: 16.sp),
+            Expanded(
+              child: _canSave
+                  // R-3: grey, 50%, not tappable until something changed.
+                  ? Opacity(
+                      opacity: _hasChanges ? 1 : 0.5,
+                      child: AbsorbPointer(
+                        absorbing: !_hasChanges,
+                        child: button(
+                          'notificationEditPageSave',
+                          S.of(context).save,
+                          _onSavePressed,
+                          _hasChanges ? AppColors.primary : AppColors.grey,
+                          AppColors.textButton,
+                        ),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
             ),
           ],
+        ),
+        SizedBox(height: 12.sp),
+        Row(
+          children: [
+            Expanded(
+              child: button(
+                  'notificationEditPageDiscard',
+                  S.of(context).discard,
+                  _discardChanges,
+                  AppColors.darkGrey,
+                  AppColors.text),
+            ),
+            SizedBox(width: 16.sp),
+            const Expanded(child: SizedBox.shrink()),
+          ],
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isRTL = Directionality.of(context) == TextDirection.rtl;
+
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      // Owner 22/10/2026: a pushed page draws the watermark itself (like
+      // every pushed settings page in get_pages.dart).
+      body: WatermarkLayer(
+        module: Modules.notification,
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 23/10/2026 (Moataz: "do it exactly like Calendar"): the same
+              // header as SideFrameMasterServices' phone branch — a 24 chevron,
+              // 12 / 3 either side of it, then the title at 24 semibold, 15
+              // down. The cards below use the frame's 15 inset.
+              Row(
+                textDirection: isRTL ? TextDirection.rtl : TextDirection.ltr,
+                children: [
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTapDown: (_) => HapticController.low(),
+                    onTap: () {
+                      if (isEditMode) {
+                        _discardChanges();
+                      } else {
+                        Navigator.pop(context);
+                      }
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        right: 3.sp,
+                        top: 15.sp,
+                        left: 12.sp,
+                      ),
+                      child: Transform.rotate(
+                        angle: isRTL ? 0 : 3.1416,
+                        child: CustomSvgImage.natural(
+                          assetPath:
+                              'assets/icons_assets/main_icons_assets/ic_nav_chevron_right.svg',
+                          width: 24.sp,
+                          height: 24.sp,
+                          color: AppColors.text,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 15.sp),
+                      child: Text(
+                        // Owner 22/10/2026: a fixed page title — a long
+                        // notification name wrapped and clashed with the row.
+                        isEditMode
+                            ? (isRTL ? "تعديل التفاصيل" : "Edit Details")
+                            : (isRTL
+                                ? "تفاصيل الإشعار"
+                                : "Notification Details"),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: StyleText.fontSize24Weight600
+                            .copyWith(color: AppColors.text),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 20.sp),
+              // 23/10/2026 (Moataz): the Edit button and the Email | Notifications
+              // switch stay pinned while the page scrolls under them.
+              if (!isEditMode && !isLoadingTemplate)
+                Padding(
+                  padding: EdgeInsets.fromLTRB(15.sp, 0, 15.sp, 10.sp),
+                  child: Row(
+                    children: [
+                      if (_canSave)
+                        customButtonWithSvg(
+                          title: "",
+                          function: () => setState(() => isEditMode = true),
+                          width: 38,
+                          color: AppColors.primary,
+                          textStyle: StyleText.fontSize16Weight500,
+                          radius: 8.r,
+                          heightImage: 20,
+                          widthImage: 20,
+                          svgColor: AppColors.textButton,
+                          image:
+                              "assets/icons_assets/main_icons_assets/ic_action_edit.svg",
+                          space: 0,
+                          colorBorder: AppColors.transparent,
+                        ),
+                      const Spacer(),
+                      _toggle(context),
+                    ],
+                  ),
+                ),
+              Expanded(
+                child: isLoadingTemplate
+                    ? Center(child: CircleProgressMaster())
+                    : SingleChildScrollView(
+                        physics: const ClampingScrollPhysics(),
+                        padding: EdgeInsets.fromLTRB(15.sp, 0, 15.sp, 16.sp),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            if (isEditMode) ...[
+                              _statusCard(isRTL),
+                              SizedBox(height: 10.sp),
+                              Align(
+                                alignment: AlignmentDirectional.centerEnd,
+                                child: _toggle(context),
+                              ),
+                            ],
+                            SizedBox(height: 10.sp),
+                            NotificationTemplateEditor(
+                              controllers: templateText,
+                              isEmail: isEmailView,
+                              enabled: isEditMode &&
+                                  (isEmailView
+                                      ? _canEditEmailCopy
+                                      : _canEditPushCopy),
+                              module: widget.currentTab.module,
+                              onChanged: () => setState(() {}),
+                              stackTitles: true,
+                              showVariables: isEditMode,
+                              submitted: _submitted,
+                            ),
+                            if (isEditMode) ...[
+                              SizedBox(height: 16.sp),
+                              _footer(context, isRTL),
+                            ],
+                          ],
+                        ),
+                      ),
+              ),
+            ],
+          ),
         ),
       ),
     );

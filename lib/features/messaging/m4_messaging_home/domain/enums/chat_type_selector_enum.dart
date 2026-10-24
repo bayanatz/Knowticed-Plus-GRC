@@ -4,10 +4,11 @@
 /// Purpose: Chat type selector enum — messaging Home sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+library;
 
 import 'package:flutter/widgets.dart';
 
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
 enum ChatTypeSelectorEnum {
   all,

@@ -11,18 +11,18 @@
 ///          goes through EmployeeDateFormatter (intl) rather than the
 ///          hand-rolled ArabicDigits replacement (N13), and Colors.transparent
 ///          is routed through AppColors (N15).
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:grc_module/core/helper/main_helper/extensions.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/custom/1-custom_dropdown.dart';
-import 'package:grc_module/core/custom/2-custom_textfield.dart';
-import 'package:grc_module/core/custom/3-custom_dropdwon_calander.dart';
-import 'package:grc_module/features/settings/se1_profile/data/utils/employee_date_formatter.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/custom/dropdowns/custom_dropdown.dart';
+import 'package:knowticed_plus/core/custom/inputs/custom_textfield.dart';
+import 'package:knowticed_plus/core/custom/pickers/custom_date_field.dart';
+import 'package:knowticed_plus/features/settings/se1_profile/data/utils/employee_date_formatter.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
 class ThreeTextSection extends StatefulWidget {
   // ── Gender ────────────────────────────────────────────────────────────────
@@ -231,7 +231,7 @@ class _ThreeTextSectionState extends State<ThreeTextSection> {
       );
     }
 
-    return CustomDropdownCalendar(
+    return CustomDateField(
       label: S.of(context).birthday,
       hint: widget.birthDateHint ?? S.of(context).enterbirthday,
       value: _birthDate,
@@ -311,14 +311,13 @@ class _ThreeTextSectionState extends State<ThreeTextSection> {
     // This file imports core/helper/main_helper/extensions.dart, whose
     // extension is ALSO called ContextExtension — and its `isPhone` is
     //
-    //     bool get isPhone => MediaQuery.of(this).size.width >= 600;
+    //     bool get isPhone => !kpIsPhoneLayout(this);
     //
     // i.e. true on WIDE screens, the exact inverse of
     // core/extensions/context_extensions.dart's `shortestSide < 600`. Same
     // name, same target type, opposite meaning, and the file's own comment
     // admits it. Every `isPhone` here was therefore reading FALSE on a phone.
     // Computed inline so it cannot bind to the wrong extension again.
-    final bool isPhone = MediaQuery.of(context).size.shortestSide < 600;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -326,7 +325,7 @@ class _ThreeTextSectionState extends State<ThreeTextSection> {
         for (int i = 0; i < fields.length; i++) ...<Widget>[
           fields[i],
           // Mobile only: matches the 16.h the edit page uses between fields.
-          if (i != fields.length - 1) SizedBox(height: isPhone ? 10.sp : 16.h),
+          if (i != fields.length - 1) SizedBox(height: 12.sp),
         ],
       ],
     );
@@ -339,7 +338,7 @@ class _ThreeTextSectionState extends State<ThreeTextSection> {
       children: <Widget>[
         for (int i = 0; i < fields.length; i++) ...<Widget>[
           Expanded(child: fields[i]),
-          if (i != fields.length - 1) SizedBox(width: 12.w),
+          if (i != fields.length - 1) SizedBox(width: 16.w),
         ],
       ],
     );

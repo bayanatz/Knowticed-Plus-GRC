@@ -5,11 +5,11 @@
 /// Purpose: Get base url.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
-import 'package:grc_module/core/network/api_constants.dart';
+import 'package:knowticed_plus/core/network/api_constants.dart';
 
 String getBaseUrl(String path) {
- // print("base Uri is ${ApiConstants.baseUri}");
+  // print("base Uri is ${ApiConstants.baseUri}");
   return "${ApiConstants.baseUri}/$path";
 }
-

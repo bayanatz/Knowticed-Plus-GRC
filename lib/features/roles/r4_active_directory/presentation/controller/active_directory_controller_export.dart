@@ -2,14 +2,15 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: active_directory_controller_export.dart
-/// Purpose: Declares `ActiveDirectoryControllerExport`.
-/// Author: Knowticed Plus team
+/// Description: Declares `ActiveDirectoryControllerExport`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
 
-part of './active_directory_controller.dart';
-extension ActiveDirectoryControllerExport on ActiveDirectoryController {
-  saveChanges({required int rowIndex}) async {
+part of 'active_directory_controller.dart';
 
+extension ActiveDirectoryControllerExport on ActiveDirectoryController {
+  Future<void> saveChanges({required int rowIndex}) async {
     try {
       hapticController.triggerHapticFeedback(
         vibration: VibrateType.mediumImpact,
@@ -20,39 +21,39 @@ extension ActiveDirectoryControllerExport on ActiveDirectoryController {
         await CustomDialogManager.showDialogFlow(
           context: globalNavigatorKey.currentContext!,
           confirmLottie:
-              "assets/lottie_assets/main_lottie_assets/lottie_confirmation.json",
+              "assets/lottie_assets/main_lottie_assets/lot_status_confirmation.json",
           confirmTitle: S.current.saveChanges,
-          confirmSubtitle:
-              S.current.youHaveUnsavedChangesDoYouWantToSaveThem,
+          confirmSubtitle: S.current.youHaveUnsavedChangesDoYouWantToSaveThem,
           confirmYesText: S.current.yes,
           confirmNoText: S.current.no,
           onNoPressed: () {
-            changedFields =
-                usersData.map((subList) => List.from(subList)).toList();
+            // Owner 21/10/2026: "No" resets only this row — other rows keep their unsaved edits.
+            changedFields[rowIndex] = List.from(usersData[rowIndex]);
             isEditable[rowIndex] = false;
             emitState(ActiveDirectoryUpdated());
           },
           onConfirm: () async {
-            await saveEdits(rowIndex: rowIndex, context: globalNavigatorKey.currentContext!);
+            await saveEdits(
+              rowIndex: rowIndex,
+              context: globalNavigatorKey.currentContext!,
+            );
             return true;
           },
           successLottie:
-              "assets/lottie_assets/main_lottie_assets/lottie_successful.json",
+              "assets/lottie_assets/main_lottie_assets/lot_status_success.json",
           successTitle: S.current.Successful,
           successSubtitle: S.current.dataHasBeenSavedSuccessfully,
         );
-        isSaved[rowIndex]   = false;
+        isSaved[rowIndex] = false;
         isChanged[rowIndex] = false;
-    }
-    } catch (e, stackTrace) {
+      }
+    } catch (e) {
       // Was an empty `catch {}` — the failure is deliberately
       // non-fatal here, but it must not vanish silently (§11.5).
-      debugPrint('active_directory_controller_export.dart: non-fatal failure: $e');
     }
   }
 
-  saveInvalidChanges({required int rowIndex}) async {
-
+  Future<void> saveInvalidChanges({required int rowIndex}) async {
     try {
       hapticController.triggerHapticFeedback(
         vibration: VibrateType.mediumImpact,
@@ -63,42 +64,71 @@ extension ActiveDirectoryControllerExport on ActiveDirectoryController {
         await CustomDialogManager.showDialogFlow(
           context: globalNavigatorKey.currentContext!,
           confirmLottie:
-              "assets/lottie_assets/main_lottie_assets/lottie_confirmation.json",
+              "assets/lottie_assets/main_lottie_assets/lot_status_confirmation.json",
           confirmTitle: S.current.saveChanges,
-          confirmSubtitle:
-              S.current.youHaveUnsavedChangesDoYouWantToSaveThem,
+          confirmSubtitle: S.current.youHaveUnsavedChangesDoYouWantToSaveThem,
           confirmYesText: S.current.yes,
           confirmNoText: S.current.no,
           onNoPressed: () {
             isInvalidEditable[rowIndex] = false;
-            invalidChangedFields =
-                rowInvalid.map((subList) => List.from(subList)).toList();
+            // Owner 21/10/2026: "No" resets only this row — other rows keep their unsaved edits.
+            invalidChangedFields[rowIndex] = List.from(rowInvalid[rowIndex]);
             emitState(ActiveDirectoryUpdated());
           },
           onConfirm: () async {
-            await saveEdits(rowIndex: rowIndex, context: globalNavigatorKey.currentContext!);
+            await saveEdits(
+              rowIndex: rowIndex,
+              context: globalNavigatorKey.currentContext!,
+            );
             return true;
           },
           successLottie:
-              "assets/lottie_assets/main_lottie_assets/lottie_successful.json",
+              "assets/lottie_assets/main_lottie_assets/lot_status_success.json",
           successTitle: S.current.Successful,
           successSubtitle: S.current.dataHasBeenSavedSuccessfully,
         );
-        isInvalidSaved[rowIndex]   = false;
+        isInvalidSaved[rowIndex] = false;
         isInvalidChanged[rowIndex] = false;
-    }
-    } catch (e, stackTrace) {
+      }
+    } catch (e) {
       // Was an empty `catch {}` — the failure is deliberately
       // non-fatal here, but it must not vanish silently (§11.5).
-      debugPrint('active_directory_controller_export.dart: non-fatal failure: $e');
     }
+  }
+
+  /// Owner 21/10/2026: Invalid Data tab bottom-bar Save — uploads every changed invalid
+  /// row through the same path as the per-row save (updateWrongRow), then reloads once.
+  /// Returns null when nothing was changed, true when every row saved, false otherwise.
+  Future<bool?> saveAllInvalidChanges() async {
+    final List<int> changedRows = <int>[
+      for (int i = 0; i < isInvalidChanged.length; i++)
+        if (isInvalidChanged[i] && i < invalidChangedFields.length) i,
+    ];
+    if (changedRows.isEmpty) return null;
+    bool allSaved = true;
+    for (final int i in changedRows) {
+      try {
+        final List<dynamic> row = invalidChangedFields[i];
+        final bool allValid = EmployeesCsvFileUploader().validateRowValues(row);
+        final result = await uploadEmployeesData(
+          companyId: ApiConstants.baseUri.split("/").last,
+          validData: allValid ? [row] : [],
+          invalidData: allValid ? [] : [row],
+        );
+        if (result.isLeft()) allSaved = false;
+      } catch (_) {
+        allSaved = false;
+      }
+    }
+    await init();
+    return allSaved;
   }
 
   // ══════════════════════════════════════════════════════════════════════════
   // EXPORT
   // ══════════════════════════════════════════════════════════════════════════
 
-  _getRowDataFromModel({
+  void _getRowDataFromModel({
     required List<dynamic> row,
     required NewEmployeeModelHistory employee,
     required bool isWrongEmployee,
@@ -106,42 +136,60 @@ extension ActiveDirectoryControllerExport on ActiveDirectoryController {
     try {
       for (EmployeeDataItems item in EmployeeDataItems.values) {
         item.getRowDataFromModelItem(
-            row: row,
-            employee: employee,
-            isWrongEmployee: isWrongEmployee,
-          departmentName: (id, {required arabic}) => (arabic
+          row: row,
+          employee: employee,
+          isWrongEmployee: isWrongEmployee,
+          departmentName: (id, {required arabic}) =>
+              (arabic
                   ? departmentCubit.getArabicDepartmentNameFromDepartmentId(
-                      departmentId: id)
+                      departmentId: id,
+                    )
                   : departmentCubit.getEnglishDepartmentNameFromDepartmentId(
-                      departmentId: id)) ??
+                      departmentId: id,
+                    )) ??
               '',
         );
       }
-    } catch (e, stackTrace) {
+    } catch (e) {
       rethrow;
     }
   }
 
-  exportToCSV(String fileName) async {
+  /// Owner 21/10/2026: saves through CSVHelper.exportRowsForUser (like System Logs) and
+  /// no longer pops a route — the File Name dialog has already closed itself.
+  Future<void> exportToCSV(String fileName) async {
     showLoadingIndicator();
     try {
-      List<List> rows = await _getExportData();
-      await CSVHelper().exportToCSV(rows, fileName);
-      hideLoadingIndicator();
-      Navigator.pop(globalNavigatorKey.currentContext!);
-      await CustomDialogManager.showMessage(
-        context: globalNavigatorKey.currentContext!,
-        title: "SuccessFul",
-        subtitle: "Your Data Has Been Saved To Download Folder",
-        lottiePath: "assets/lottie_assets/main_lottie_assets/lottie_successful.json",
+      final List<List> rows = _getExportData();
+      final saved = await CSVHelper().exportRowsForUser(
+        fileName: fileName,
+        rows: rows,
       );
-    } catch (e, stackTrace) {
+      hideLoadingIndicator();
+      final String? error = saved.fold((l) => l, (_) => null);
+      if (error != null) throw Exception(error);
+      final String path = saved.fold((_) => '', (r) => r);
+      // The user dismissed the system save sheet — nothing was written.
+      if (path == CSVHelper.exportCancelled) return;
+      // Owner 21/10/2026: truthful message — the file is where the user/OS put it; desktop shows the path.
+      final bool isPhone = Platform.isAndroid || Platform.isIOS;
+      await CustomDialogManager.showMessage(
+        context: globalNavigatorKey.currentContext!,
+        title: S.current.Successful,
+        subtitle: isPhone
+            ? S.current.fileSavedSuccessfully
+            : '${S.current.fileSavedSuccessfully}\n$path',
+        lottiePath:
+            "assets/lottie_assets/main_lottie_assets/lot_status_success.json",
+      );
+    } catch (e) {
       hideLoadingIndicator();
       await CustomDialogManager.showMessage(
         context: globalNavigatorKey.currentContext!,
-        title: "Error",
-        subtitle: "Error At Saving The File",
-        lottiePath: "assets/lottie_assets/main_lottie_assets/error.json",
+        title: S.current.error,
+        subtitle: S.current.downloadFailed,
+        lottiePath:
+            "assets/lottie_assets/main_lottie_assets/lot_status_error.json",
       );
     }
   }
@@ -159,17 +207,14 @@ extension ActiveDirectoryControllerExport on ActiveDirectoryController {
   // this file's `_getExportData` uses — and saves through
   // `CSVHelper.exportForUser`, which hands the file to the system save sheet.
 
-  _getExportData() async {
-    try {
-      List<List> rows = [];
-      rows.add(EmployeeDataItems.values.map((e) => e.name).toList());
-      await getEmployeesTableData();
-      for (int i = 0; i < usersData.length; i++) {
-        rows.add(usersData[i]);
-      }
-      return rows;
-    } catch (e, stackTrace) {
-      rethrow;
+  /// Owner 21/10/2026: exports what the table shows now (current filter + search) without
+  /// reloading — the old getEmployeesTableData() call wiped in-progress edits.
+  List<List> _getExportData() {
+    final List<List> rows = [];
+    rows.add(EmployeeDataItems.values.map((e) => e.name).toList());
+    for (final dynamic row in filteredUsersData) {
+      rows.add(List.from(row as List));
     }
+    return rows;
   }
 }

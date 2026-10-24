@@ -5,91 +5,53 @@
 /// Purpose: Declares `MyRequestInventory`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
-import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/standard_container.dart';
 
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/home_component_model.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/core/helper/access/modules_enum.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/home_component_model.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/home_widgets/home_widget_shell.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
 class MyRequestInventory extends StatelessWidget {
-  MyRequestInventory({required this.model, super.key});
-  HomeComponentModel model;
+  const MyRequestInventory({required this.model, super.key});
+  final HomeComponentModel model;
+
+  /// Placeholder figure — this card has no inventory data source yet (it
+  /// showed "Total: 100" and three 10s before the restyle).
+  static const String _placeholder = '10';
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-        width: 130.sp,
-        child: StandardContainer(
-            child: Column(
-          spacing: 8.sp,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  S.of(context).myRequest,
-                  style: StyleText.fontSize14Weight500
-                      .copyWith(fontWeight: FontWeight.bold),
-                ),
-                SvgPicture.asset(
-                  'assets/icons_assets/roles_assets/inventory_warehouse.svg',
-                  width: 20,
-                  height: 20,
-                  color: AppColors.primary,
-                )
-              ],
-            ),
-            Container(),
-            Text(
-              S.of(context).total + 100.toString(),
-              style: StyleText.fontSize14Weight600
-                  .copyWith(color: AppColors.secondaryText),
-            ),
-            Column(
-              spacing: 10.sp,
-              children: [
-                item(
-                    color: AppColors.green,
-                    number: '10',
-                    icon: 'assets/icons_assets/home_assets/approved_stamp_green.svg'),
-                item(
-                    color: AppColors.yellow,
-                    number: '10',
-                    icon: 'assets/icons_assets/home_assets/hourglass_pending.svg'),
-                item(
-                    color: AppColors.red,
-                    number: '10',
-                    icon: 'assets/icons_assets/home_assets/rejected_ribbon_stamp.svg'),
-              ],
-            )
-          ],
-        )));
-  }
-
-  Widget item(
-      {required Color color, required String number, required String icon}) {
-    return Row(
-      spacing: 4.sp,
-      children: [
-        SvgPicture.asset(
-          icon,
-          width: 15,
-          height: 15,
-          color: color,
-        ),
-        Text(
-          number,
-          style: StyleText.fontSize12Weight400
-              .copyWith(fontWeight: FontWeight.bold, color: color),
-        )
-      ],
+    final S l = S.of(context);
+    // Owner 21/10/2026: reference home-card style — the Services "My
+    // Request" card (MyRequestServices): narrow, Approved · Pending ·
+    // Rejected counter tiles with the same three icons.
+    return HomeWidgetCard(
+      hugContent: true,
+      title: l.myRequest,
+      icon: Modules.inventory.iconPath,
+      width: kHomeWidgetNarrowWidth,
+      child: HomeStatTileRow(
+        tiles: <HomeStatTile>[
+          HomeStatTile(
+            icon: HomeWidgetSvg.approved,
+            label: l.approved,
+            value: _placeholder,
+          ),
+          HomeStatTile(
+            icon: HomeWidgetSvg.pending,
+            label: l.pending,
+            value: _placeholder,
+          ),
+          HomeStatTile(
+            icon: HomeWidgetSvg.rejected,
+            label: l.rejected,
+            value: _placeholder,
+          ),
+        ],
+      ),
     );
   }
 }

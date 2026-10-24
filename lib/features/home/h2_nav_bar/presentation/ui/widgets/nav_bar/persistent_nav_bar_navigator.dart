@@ -5,9 +5,10 @@
 /// Purpose: Declares `PersistentNavBarNavigator`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'package:flutter/material.dart';
-import 'package:grc_module/features/home/h2_nav_bar/persistent_nav_bar.dart';
+import 'package:knowticed_plus/features/home/h2_nav_bar/persistent_nav_bar.dart';
 
 class PersistentNavBarNavigator {
   PersistentNavBarNavigator._();

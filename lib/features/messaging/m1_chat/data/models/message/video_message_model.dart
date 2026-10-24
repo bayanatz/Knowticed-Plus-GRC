@@ -1,4 +1,6 @@
 /// Module: messaging / chat / data/models/message/video_message_model.dart
+library;
+
 import 'dart:io';
 
 import 'package:video_player/video_player.dart';
@@ -17,14 +19,13 @@ class VideoMessageModel {
   String? caption;
   VideoMessageModel({
     required this.videoFilePath,
-     this.caption,
+    this.caption,
   }) {
     initializeVideo();
   }
 
   void initializeVideo() async {
-    if(videoFilePath.contains('http')){
-
+    if (videoFilePath.contains('http')) {
       playerController = VideoPlayerController.file(
         File(videoFilePath),
         videoPlayerOptions: VideoPlayerOptions(allowBackgroundPlayback: false),
@@ -33,17 +34,15 @@ class VideoMessageModel {
             duration = formatDuration(playerController.value.duration);
           },
         );
-
-    }
-    else {
+    } else {
       playerController = VideoPlayerController.file(
-      File(videoFilePath),
-      videoPlayerOptions: VideoPlayerOptions(allowBackgroundPlayback: false),
-    )..initialize().then(
-        (value) {
-          duration = formatDuration(playerController.value.duration);
-        },
-      );
+        File(videoFilePath),
+        videoPlayerOptions: VideoPlayerOptions(allowBackgroundPlayback: false),
+      )..initialize().then(
+          (value) {
+            duration = formatDuration(playerController.value.duration);
+          },
+        );
     }
   }
 

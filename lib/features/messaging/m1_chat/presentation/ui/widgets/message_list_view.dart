@@ -20,93 +20,100 @@ class MessageListView extends StatelessWidget {
         return Stack(
           alignment: Alignment.topCenter,
           children: [
-            ScrollablePositionedList.builder(
-              itemScrollController: cubit.chatScrollCubit.scrollController,
-              itemPositionsListener:
-              cubit.chatScrollCubit.scrollPositionsListener,
-              itemCount: state.messages.length,
-              // ✅ Clamp initialScrollIndex to valid range on chat switch
-              initialScrollIndex: state.messages.isEmpty
-                  ? 0
-                  : cubit.chatScrollCubit.initialIndex
-                  .clamp(0, state.messages.length - 1),
-              itemBuilder: (context, index) {
-                // ✅ Guard against stale index during chat switch
-                if (index < 0 || index >= state.messages.length) {
-                  return const SizedBox.shrink();
-                }
+            // 18/10/2026 (D-184): publish the panel width so every bubble
+            // caps itself at under half of THIS panel (bubble_width.dart).
+            LayoutBuilder(
+              builder: (context, constraints) => KpChatPanelWidth(
+                width: constraints.maxWidth,
+                child: ScrollablePositionedList.builder(
+                  itemScrollController: cubit.chatScrollCubit.scrollController,
+                  itemPositionsListener:
+                      cubit.chatScrollCubit.scrollPositionsListener,
+                  itemCount: state.messages.length,
+                  // ✅ Clamp initialScrollIndex to valid range on chat switch
+                  initialScrollIndex: state.messages.isEmpty
+                      ? 0
+                      : cubit.chatScrollCubit.initialIndex
+                          .clamp(0, state.messages.length - 1),
+                  itemBuilder: (context, index) {
+                    // ✅ Guard against stale index during chat switch
+                    if (index < 0 || index >= state.messages.length) {
+                      return const SizedBox.shrink();
+                    }
 
-                final message = state.messages[index];
+                    final message = state.messages[index];
 
-                if (message.isDeleted) {
-                  return DeletedBubble(
-                    index: index,
-                    messageModel: message,
-                    isGroup: isGroup,
-                  );
-                }
-                if (message.audio != null) {
-                  return AudioBubble(
-                    index: index,
-                    messageModel: message,
-                    isGroup: isGroup,
-                  );
-                }
-                if (message.messageType == MessageTypes.video) {
-                  return VideoBubble(
-                    index: index,
-                    message: message,
-                    isGroup: isGroup,
-                  );
-                }
-                if (message.messageType == MessageTypes.cameraImage) {
-                  return ImageBubble(
-                    index: index,
-                    messageModel: message,
-                    isGroup: isGroup,
-                    masterChatCubit: cubit,
-                  );
-                }
-                if (message.messageType == MessageTypes.doc) {
-                  return DocBubble(
-                    index: index,
-                    messageModel: message,
-                    isGroup: isGroup,
-                  );
-                }
-                // Bug report #23 — shared location / contact cards.
-                if (message.messageType == MessageTypes.location) {
-                  return SharedLocationBubble(
-                    index: index,
-                    messageModel: message,
-                    isGroup: isGroup,
-                  );
-                }
-                // Figma 6799:5666 — polls sent from the Poll dialog.
-                if (message.messageType == MessageTypes.poll) {
-                  return LivePollBubble(
-                    index: index,
-                    messageModel: message,
-                    isGroup: isGroup,
-                  );
-                }
-                if (message.messageType == MessageTypes.contact) {
-                  return SharedContactBubble(
-                    index: index,
-                    messageModel: message,
-                    isGroup: isGroup,
-                  );
-                }
-                if (message.messageContent != null) {
-                  return MessageBubble(
-                    index: index,
-                    messageModel: message,
-                    isGroup: isGroup,
-                  );
-                }
+                    if (message.isDeleted) {
+                      return DeletedBubble(
+                        index: index,
+                        messageModel: message,
+                        isGroup: isGroup,
+                      );
+                    }
+                    if (message.audio != null) {
+                      return AudioBubble(
+                        index: index,
+                        messageModel: message,
+                        isGroup: isGroup,
+                      );
+                    }
+                    if (message.messageType == MessageTypes.video) {
+                      return VideoBubble(
+                        index: index,
+                        message: message,
+                        isGroup: isGroup,
+                      );
+                    }
+                    if (message.messageType == MessageTypes.cameraImage) {
+                      return ImageBubble(
+                        index: index,
+                        messageModel: message,
+                        isGroup: isGroup,
+                        masterChatCubit: cubit,
+                      );
+                    }
+                    if (message.messageType == MessageTypes.doc) {
+                      return DocBubble(
+                        index: index,
+                        messageModel: message,
+                        isGroup: isGroup,
+                      );
+                    }
+                    // Bug report #23 — shared location / contact cards.
+                    if (message.messageType == MessageTypes.location) {
+                      return SharedLocationBubble(
+                        index: index,
+                        messageModel: message,
+                        isGroup: isGroup,
+                      );
+                    }
+                    // Figma 6799:5666 — polls sent from the Poll dialog.
+                    if (message.messageType == MessageTypes.poll) {
+                      return LivePollBubble(
+                        index: index,
+                        messageModel: message,
+                        isGroup: isGroup,
+                      );
+                    }
+                    if (message.messageType == MessageTypes.contact) {
+                      return SharedContactBubble(
+                        index: index,
+                        messageModel: message,
+                        isGroup: isGroup,
+                      );
+                    }
+                    if (message.messageContent != null) {
+                      return MessageBubble(
+                        index: index,
+                        messageModel: message,
+                        isGroup: isGroup,
+                      );
+                    }
 
-                return const SizedBox();
-              },
+                    return const SizedBox();
+                  },
+                ),
+              ),
             ),
             Positioned.directional(
               bottom: 20.h,
@@ -121,6 +128,7 @@ class MessageListView extends StatelessWidget {
                     child: GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: () {
+                        HapticController.low(); // list row: on the tap (X-117)
                         cubit.chatScrollCubit.scrollToLatest(
                           state.messages.length - 1,
                         );
@@ -133,11 +141,14 @@ class MessageListView extends StatelessWidget {
                           color: AppColors.primary,
                           borderRadius: BorderRadius.circular(8.r),
                         ),
-                        child: SvgPicture.asset(
-                          AppAssets.scroll,
+                        // 20/10/2026 (owner): the arrow is the text colour
+                        // OF the yellow (black) — `AppColors.icon` is light
+                        // grey in dark mode and vanished on the yellow.
+                        child: CustomSvgImage.natural(
+                          assetPath: AppAssets.scroll,
                           height: 16.h,
                           width: 16.w,
-                          color: AppColors.icon,
+                          color: AppColors.textButton,
                         ),
                       ),
                     ),

@@ -3,24 +3,23 @@
 // Last update: 5/9/2024
 // Objectives: This file is responsible for providing a group members tile used in the group chat profile screen.
 
+import 'package:knowticed_plus/core/extensions/context_extensions.dart'
+    show kpIsPhoneLayout;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
 
-
-import 'package:grc_module/core/constants/message_module/app_assets.dart';
-import 'package:grc_module/core/helper/main_helper/spacing_helper.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import '../../../../domain/entities/member_entity.dart';
-import '../../../../domain/enums/group_member_status.dart';
-import '../../../controller/groups_controller.dart';
-import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/core/custom/1-custom_dropdown.dart';
+import 'package:knowticed_plus/features/messaging/helpers/constants/messaging_assets.dart';
+import 'package:knowticed_plus/features/messaging/helpers/spacing_helper.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/domain/entities/member_entity.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/domain/enums/group_member_status.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/presentation/controller/groups_controller.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
+import 'package:knowticed_plus/core/custom/dropdowns/custom_dropdown.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
 
 class GroupMemberTile extends StatelessWidget {
   final MemberEntity groupMember;
@@ -57,7 +56,8 @@ class GroupMemberTile extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(30.r),
                 child: CustomSvgImage(
-                  assetPath: "assets/icons_assets/main_icons_assets/assets_male.svg",
+                  assetPath:
+                      "assets/icons_assets/main_icons_assets/ic_user_avatar_male.png",
                   width: 50.w,
                   height: 50.w,
                   fit: BoxFit.fill,
@@ -75,22 +75,23 @@ class GroupMemberTile extends StatelessWidget {
                   children: [
                     Text(
                       groupMember.fullName,
-                      style: StyleText.fontSize14Weight500
-                          .copyWith(height: 1),
+                      style: StyleText.fontSize14Weight500.copyWith(height: 1),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     SizedBox(height: 2.h),
                     Text(
                       groupMember.departmentName,
-                      style: StyleText.fontSize12Weight400.copyWith(color: AppColors.secondaryBlack),
+                      style: StyleText.fontSize12Weight400
+                          .copyWith(color: AppColors.secondaryBlack),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     SizedBox(height: 2.h),
                     Text(
                       groupMember.subInfo,
-                      style: StyleText.fontSize12Weight400.copyWith(color: AppColors.secondaryBlack),
+                      style: StyleText.fontSize12Weight400
+                          .copyWith(color: AppColors.secondaryBlack),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -102,17 +103,19 @@ class GroupMemberTile extends StatelessWidget {
 
               // ── Actions (role/remove/add) ────────────────────
               Column(
-                mainAxisSize: MainAxisSize.min,  // ✅ Changed from max
+                mainAxisSize: MainAxisSize.min, // ✅ Changed from max
                 crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.center,  // ✅ Added
+                mainAxisAlignment: MainAxisAlignment.center, // ✅ Added
                 children: [
                   if (showPopup &&
                       groupMember.memberId != controller.currentUser.userId &&
                       isMember)
                     InkWell(
-                      onTap: () => controller.setRole(index, S.of(context).remove),
-                      child: SvgPicture.asset(
-                        AppAssets.minusCircle,
+                      onTapDown: (_) => HapticController.high(),
+                      onTap: () =>
+                          controller.setRole(index, S.of(context).remove),
+                      child: CustomSvgImage.natural(
+                        assetPath: AppAssets.minusCircle,
                         width: 20.sp,
                         height: 20.sp,
                       ),
@@ -121,15 +124,14 @@ class GroupMemberTile extends StatelessWidget {
                   if (showPopup &&
                       groupMember.memberId != controller.currentUser.userId &&
                       isMember)
-                    SizedBox(height: 8.h),  // ✅ Changed from Spacer()
+                    SizedBox(height: 8.h), // ✅ Changed from Spacer()
 
                   if (showPopup &&
                       groupMember.memberId != controller.currentUser.userId &&
                       isMember)
                     userRolePopupTile(index, context, state, controller),
 
-                  if (!isMember)
-                    _addButton(context, controller),
+                  if (!isMember) _addButton(context, controller),
                 ],
               ),
             ],
@@ -140,16 +142,16 @@ class GroupMemberTile extends StatelessWidget {
   }
 
   Widget userRolePopupTile(
-      int index,
-      BuildContext context,
-      GroupsLoaded state,
-      GroupsCubit controller,
-      ) {
+    int index,
+    BuildContext context,
+    GroupsLoaded state,
+    GroupsCubit controller,
+  ) {
     // Prepare items for dropdown
     final dropdownItems = GroupMemberStatus.values
         .map((status) => DropdownItem<String>(
               value: status.name,
-              label: status.name,
+              label: status.label(context),
             ))
         .toList();
 
@@ -158,16 +160,16 @@ class GroupMemberTile extends StatelessWidget {
     if (state.selectedRole[index] != null) {
       // Find the key that matches the translated value
       final matchingStatus = GroupMemberStatus.values.firstWhere(
-            (element) => element.name == state.selectedRole[index],
+        (element) => element.name == state.selectedRole[index],
         orElse: () => groupMember.isAdmin
-            ? GroupMemberStatus.Admin
-            : GroupMemberStatus.Member,
+            ? GroupMemberStatus.admin
+            : GroupMemberStatus.member,
       );
       currentValue = matchingStatus.name;
     } else {
       currentValue = groupMember.isAdmin
-          ? GroupMemberStatus.Admin.name
-          : GroupMemberStatus.Member.name;
+          ? GroupMemberStatus.admin.name
+          : GroupMemberStatus.member.name;
     }
 
     return SizedBox(
@@ -176,7 +178,7 @@ class GroupMemberTile extends StatelessWidget {
       child: CustomDropdown<String>(
         value: currentValue,
         items: dropdownItems,
-        fillColor: AppColors.field,
+        fillColor: AppColors.card,
         borderRadius: BorderRadius.circular(2.r),
         triggerPadding: EdgeInsets.symmetric(horizontal: 4.w),
         itemHeight: 20.sp,
@@ -192,8 +194,9 @@ class GroupMemberTile extends StatelessWidget {
   }
 
   Widget _addButton(BuildContext context, GroupsCubit controller) {
-    bool isTablet = MediaQuery.of(context).size.shortestSide > 600;
+    bool isTablet = !kpIsPhoneLayout(context);
     return GestureDetector(
+      onTapDown: (_) => HapticController.medium(),
       onTap: () {
         controller.addGroupMember(groupMember);
       },
@@ -211,13 +214,15 @@ class GroupMemberTile extends StatelessWidget {
             Icon(
               Icons.person_outline,
               size: isTablet ? 18.sp : 16.sp,
-              color: AppTheme.contrastColor(),
+              color: AppTheme.readableOn(AppColors.primary),
             ),
             Text(
               S.of(context).add,
               style: isTablet
-                  ? StyleText.fontSize16Weight500.copyWith(color: AppColors.textButton)
-                  : StyleText.fontSize12Weight500.copyWith(color: AppColors.textButton),
+                  ? StyleText.fontSize16Weight500
+                      .copyWith(color: AppColors.textButton)
+                  : StyleText.fontSize12Weight500
+                      .copyWith(color: AppColors.textButton),
             ),
           ],
         ),

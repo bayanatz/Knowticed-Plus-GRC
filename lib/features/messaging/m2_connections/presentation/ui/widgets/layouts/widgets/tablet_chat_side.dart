@@ -1,27 +1,29 @@
+import 'package:knowticed_plus/core/extensions/context_extensions.dart'
+    show kpIsPhoneLayout;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:lottie/lottie.dart';
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
 
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import '../../../../../../m1_chat/presentation/controller/main_controllers/group_chat_cubit.dart';
-import '../../../../../../m1_chat/presentation/controller/main_controllers/master_chat_cubit.dart';
-import '../../../../../../m1_chat/presentation/controller/main_controllers/single_chat_cubit.dart';
-import '../../../../../../m1_chat/presentation/controller/message_types_controllers/record_and_audio_cubit.dart';
-import '../../../../../../m1_chat/presentation/ui/pages/chat_tablet_view.dart';
-import '../../../../controller/connections_controller.dart';
-import '../../../../../../m3_groups/presentation/controller/groups_controller.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/main_controllers/group_chat_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/main_controllers/master_chat_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/main_controllers/single_chat_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/message_types_controllers/record_and_audio_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/ui/pages/chat_tablet_view.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/presentation/controller/connections_controller.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/presentation/controller/groups_controller.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
+import 'package:knowticed_plus/core/theme/app_animations.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
 
 class TabletChatSide extends StatelessWidget {
   const TabletChatSide({super.key});
 
   @override
   Widget build(BuildContext context) {
-    bool isTablet = MediaQuery.of(context).size.width >= 600;
+    bool isTablet = !kpIsPhoneLayout(context);
 
     return BlocBuilder<ConnectionsCubit, ConnectionsState>(
       builder: (context, connectionsState) {
@@ -67,7 +69,7 @@ class TabletChatSide extends StatelessWidget {
             providers: [
               BlocProvider<MasterChatCubit>.value(value: singleChatCubit),
               BlocProvider<RecordAndAudioCubit>.value(
-                value: singleChatCubit.recordAndAudioCubit),
+                  value: singleChatCubit.recordAndAudioCubit),
             ],
             child: const _ChatTabletViewWrapper(),
           ),
@@ -92,7 +94,7 @@ class TabletChatSide extends StatelessWidget {
             providers: [
               BlocProvider<MasterChatCubit>.value(value: groupChatCubit),
               BlocProvider<RecordAndAudioCubit>.value(
-                value: groupChatCubit.recordAndAudioCubit),
+                  value: groupChatCubit.recordAndAudioCubit),
             ],
             child: const _ChatTabletViewWrapper(),
           ),
@@ -110,64 +112,78 @@ class TabletChatSide extends StatelessWidget {
     required Widget child,
   }) {
     return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (!chatState.isShowMedia)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Theme(
-                  data: Theme.of(context).copyWith(
-                    splashColor: Colors.transparent,
-                    hoverColor: Colors.transparent,
-                  ),
-                  child: Column(
-                    children: [
-                      SizedBox(height: 20.sp),
-                      InkWell(
-                        onTap: onToggleExpansion,
-                        splashColor: Colors.transparent,
-                        child: Center(
-                          child: Text(
-                            chatState.isExpansionTabletChat
-                                ? S.of(context).collapse
-                                : S.of(context).expand,
-                            style: StyleText.fontSize10Weight400
-                                .copyWith(
-                              height: 1,
-                              decoration: TextDecoration.underline,
-                              decorationColor: AppColors.blue,
-                              color: AppColors.blue,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (!chatState.isShowMedia)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Theme(
+                data: Theme.of(context).copyWith(
+                  splashColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                ),
+                child: Column(
+                  children: [
+                    SizedBox(height: 20.sp),
+                    InkWell(
+                      onTapDown: hapticDown(onToggleExpansion, HapticLevel.low),
+                      onTap: onToggleExpansion,
+                      splashColor: Colors.transparent,
+                      // 20/10/2026 (owner): the underline is a line drawn
+                      // under the word with the same small gap as See More
+                      // (the text underline sat on the letters).
+                      child: IntrinsicWidth(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              chatState.isExpansionTabletChat
+                                  ? S.of(context).collapse
+                                  : S.of(context).expand,
+                              // 18/10/2026: same 14/500 Expand as Inquiries
+                              // and Comments (was a 10 pt label).
+                              style: StyleText.fontSize14Weight500.copyWith(
+                                color: AppColors.blue,
+                              ),
                             ),
-                          ),
+                            SizedBox(height: 1.sp),
+                            Container(height: 0.8, color: AppColors.blue),
+                          ],
                         ),
                       ),
-                      SizedBox(height: 8.sp),
-                    ],
-                  ),
+                    ),
+                    SizedBox(height: 8.sp),
+                  ],
                 ),
-              ],
-            )
-          else
-            Container(height: 25.h),
-          Expanded(
-            child: Container(
-              margin: EdgeInsets.only(top: isTablet ? 0 : 24.h),
-              decoration: BoxDecoration(
-                color: AppColors.field,
-                borderRadius: BorderRadius.circular(8.r),
               ),
-              child: child,
+            ],
+          )
+        else
+          Container(height: 25.h),
+        Expanded(
+          child: Container(
+            margin: EdgeInsets.only(top: isTablet ? 0 : 24.h),
+            decoration: BoxDecoration(
+              color: AppColors.card,
+              borderRadius: BorderRadius.circular(8.r),
             ),
+            child: child,
           ),
-        ],
-      );
+        ),
+      ],
+    );
   }
 
   Widget _buildEmptyState(BuildContext context) {
     return Center(
-      child: CustomSvgImage(assetPath: "assets/icons_assets/messaging_assets/assets_msg.svg",width: 250.w,height: 250.h,fit: BoxFit.fill,)
-    );
+        child: CustomSvgImage(
+      assetPath:
+          "assets/icons_assets/main_icons_assets/ic_comms_chat_yellow.svg",
+      width: 250.w,
+      height: 250.h,
+      fit: BoxFit.fill,
+    ));
   }
 }
 

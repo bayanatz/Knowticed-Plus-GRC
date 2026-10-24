@@ -9,6 +9,7 @@
 ///          icon catalog (`headerIconForSvgPath`) rather than through the
 ///          placeholder the cubit rebuilds.
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 /// ************************ FILe INFO ********************************///
 /// File Name: home_appbar_section.dart
@@ -16,38 +17,34 @@
 /// Author: Amr Mesbah
 /// Refactored at: 9/2/2025
 
-import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/helper/format_title.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
-import 'package:flutter/services.dart';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
-// REMOVED_MODULE: import 'package:grc_module/core/helper/inventory_module/core/navigate.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/header_icon_item.dart';
-import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/gradient_container.dart';
-import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/icon_selector_dialog_widget.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/ui/pages/settings_screen.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/core/helper/inventory_module/core/navigate.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/header_icon_item.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/widgets/gradient_container.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/widgets/icon_selector_dialog_widget.dart';
+import 'package:knowticed_plus/features/settings/presentation/ui/pages/settings_screen.dart';
 
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-// REMOVED_MODULE: import 'package:grc_module/external/services_mangment_module/core/new_theme.dart';
-// REMOVED_MODULE: import 'package:grc_module/external/todo_new_module/external/tasks_module/category/presentation/screens/to_do_list/details_screen/hr_module/add_new_employee_screen.dart';
-// REMOVED_MODULE: import 'package:grc_module/external/todo_new_module/external/tasks_module/category/presentation/screens/to_do_list/details_screen/hr_module/hr_dashboard.dart';
-import 'package:grc_module/features/home/h3_app_drawer/presentation/controller/app_drawer_cubit.dart';
-import 'package:grc_module/core/services/twilio/twilio_constants.dart';
-import 'package:grc_module/core/services/twilio/twilio_repository.dart';
-import 'package:grc_module/features/home/h1_home_page/presentation/controller/home_cubit.dart';
-import 'package:grc_module/features/home/h1_home_page/presentation/controller/skeleton_home_controller.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/external/services_mangment_module/core/new_theme.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/external/todo_new_module/external/tasks_module/category/presentation/screens/to_do_list/details_screen/hr_module/add_new_employee_screen.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/external/todo_new_module/external/tasks_module/category/presentation/screens/to_do_list/details_screen/hr_module/hr_dashboard.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/presentation/controller/home_cubit.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/presentation/controller/skeleton_home_controller.dart';
 
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
+
 class HomeAppbarSection extends StatelessWidget {
-  HomeAppbarSection({Key? key}) : super(key: key);
-  SkeletonHomeController controller = Get.find();
+  HomeAppbarSection({super.key});
+  final SkeletonHomeController controller = Get.find();
 
   /// Function Name: [_openHeaderIcon]
   ///
@@ -94,8 +91,6 @@ class HomeAppbarSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var lightMode = Theme.of(context).brightness == Brightness.light;
-
     final homeCubit = context.read<AppHomeCubit>();
     bool orientation =
         MediaQuery.of(context).orientation == Orientation.portrait;
@@ -108,31 +103,27 @@ class HomeAppbarSection extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                child: Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () {},
-                      child: SvgPicture.asset(
-                        "assets/icons_assets/roles_assets/calendar.svg",
+              Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {},
+                    child: CustomSvgImage.natural(
+                        assetPath:
+                            "assets/icons_assets/main_icons_assets/ic_time_calendar.svg",
                         height: orientation ? 20.h : 25.h,
-                        color: lightMode ? AppColors.blackButton : AppColors.white
-                      ),
-                    ),
-                    SizedBox(width: 10.sp),
-                    GestureDetector(
-                      onTap: (){
-                     //   navigateTo(context, AnimationsShowcaseScreen());
-                      },
-                      child: Text(
+                        color: AppColors.blackButton),
+                  ),
+                  SizedBox(width: 10.sp),
+                  GestureDetector(
+                    onTap: () {
+                      //   navigateTo(context, AnimationsShowcaseScreen());
+                    },
+                    child: Text(
                         controller.getCurrentDate(isEnglish: context.isEnglish),
-                        style: StyleText.fontSize20Weight600.copyWith(
-                          color: lightMode ? AppColors.blackButton : AppColors.white
-                        )
-                      ),
-                    ),
-                  ],
-                ),
+                        style: StyleText.fontSize20Weight600
+                            .copyWith(color: AppColors.blackButton)),
+                  ),
+                ],
               ),
 
               Spacer(),
@@ -143,6 +134,7 @@ class HomeAppbarSection extends StatelessWidget {
                   children: [
                     for (var icon in homeCubit.selectedHeaderIcons)
                       InkWell(
+                        onTapDown: (_) => HapticController.low(),
                         onTap: () => _openHeaderIcon(context, icon),
                         borderRadius: BorderRadius.circular(8.r),
                         child: Tooltip(
@@ -156,7 +148,8 @@ class HomeAppbarSection extends StatelessWidget {
                               borderRadius: BorderRadius.circular(8.r),
                             ),
                             child: CustomSvgImage(
-                              assetPath: icon.svgPath,
+                              assetPath:
+                                  HeaderIconItem.displaySvgPath(icon.svgPath),
                               fit: BoxFit.contain,
                               color: AppColors.textButton,
                             ),
@@ -176,21 +169,20 @@ class HomeAppbarSection extends StatelessWidget {
             //   );
             // },
             child: Text(
-              "${DateTime.now().hour < 12 ? S.of(context).goodMorning : DateTime.now().hour < 14 ? S.of(context).goodAfternoon : S.of(context).goodEvening} ${context.isEnglish ? employee!.firstName!.last!.capitalize : employee!.firstNameInArabic!.last!}",
-              style: StyleText.fontSize24Weight600.copyWith(
-                color: lightMode ? AppColors.blackButton : AppColors.white
-              )
-            ),
+                "${DateTime.now().hour < 12 ? S.of(context).goodMorning : DateTime.now().hour < 14 ? S.of(context).goodAfternoon : S.of(context).goodEvening} ${FormatHelper.capitalize(FormatHelper.currentTitle(preferred: context.isEnglish ? employee!.firstName : employee!.firstNameInArabic, fallback: context.isEnglish ? employee!.firstNameInArabic : employee!.firstName))}",
+                style: StyleText.fontSize24Weight600
+                    .copyWith(color: AppColors.blackButton)),
           ),
           SizedBox(height: 20.h),
           GestureDetector(
+              onTapDown: (_) => HapticController.low(),
               onTap: () async {
-               // // final locale = context.read<ThemeCubit>().isArabic ? 'ar' : 'en';
-               //  await TwilioRepository().sendOTP("amrmesbah33@gmail.com", "email", 'en');
-               //  await TwilioRepository().sendOTP("+201124753420", "sms", 'en');
-               //
-               //
-               //  //  await TwilioRepository().testTwilioAuth();
+                // // final locale = context.read<ThemeCubit>().isArabic ? 'ar' : 'en';
+                //  await TwilioRepository().sendOTP("amrmesbah33@gmail.com", "email", 'en');
+                //  await TwilioRepository().sendOTP("+201124753420", "sms", 'en');
+                //
+                //
+                //  //  await TwilioRepository().testTwilioAuth();
               },
               child: GradientContainer()),
         ],

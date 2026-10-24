@@ -6,6 +6,7 @@
 /// Author: Knowticed Plus team
 /// Created at: 2026
 /// Updated: 12/8/2026 - Added the standard header (Docs).
+library;
 
 // custom_tab_underline.dart
 import 'dart:ui' as ui;

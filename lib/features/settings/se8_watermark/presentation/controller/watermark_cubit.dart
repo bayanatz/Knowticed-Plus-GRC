@@ -2,9 +2,9 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: watermark_cubit.dart
-/// Purpose: Declares `WatermarkState` and `WatermarkCubit` — the edit session
+/// Description: Declares `WatermarkState` and `WatermarkCubit` — the edit session
 ///          behind the Watermark settings screen.
-/// Author: Knowticed Plus team
+/// Author: Amr Mesbah
 /// Created at: 25/8/2026
 ///
 /// Holds TWO copies of the settings: [WatermarkState.saved] (what is stored)
@@ -15,12 +15,19 @@
 /// discard back to.
 library;
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
+import 'package:knowticed_plus/core/app_services/firebase/live_refresh.dart';
+import 'package:knowticed_plus/core/network/get_base_url.dart';
 
-import 'package:grc_module/core/helper/role/modules_enum.dart';
-import 'package:grc_module/features/settings/se8_watermark/data/repository/watermark_repository.dart';
-import 'package:grc_module/features/settings/se8_watermark/domain/entities/watermark_settings.dart';
+import 'package:knowticed_plus/core/di/app_controllers.dart';
+import 'package:knowticed_plus/core/helper/access/modules_enum.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/settings/settings_permissions.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/settings/settings_permissions_sections.dart';
+import 'package:knowticed_plus/features/settings/se8_watermark/data/repository/watermark_repository.dart';
+import 'package:knowticed_plus/features/settings/se8_watermark/domain/entities/watermark_settings.dart';
 
 @immutable
 class WatermarkState {
@@ -66,12 +73,33 @@ class WatermarkState {
 class WatermarkCubit extends Cubit<WatermarkState> {
   WatermarkCubit({WatermarkRepository? repository})
       : _repository = repository ?? WatermarkRepository(),
-        super(const WatermarkState(
-          saved: WatermarkSettings.initial,
-          draft: WatermarkSettings.initial,
-        ));
+        super(
+          WatermarkState(
+            saved: WatermarkSettings.initial,
+            draft: WatermarkSettings.initial,
+          ),
+        );
 
   final WatermarkRepository _repository;
+  final LiveRefresh _live = LiveRefresh();
+
+  /// The signed-in employee's Settings › Watermark permission. Tests and the
+  /// cold-start path (no employee controller yet) are treated as allowed so
+  /// the cubit can still be exercised; the real gate is the role.
+  bool get _canEdit {
+    if (!AppControllers.isEmployeeRegistered) return true;
+    return AppControllers.employee.isHasPermission(
+      module: Modules.settings,
+      section: SettingsPermissionsSections.settings,
+      permission: SettingsPermissions.watermark,
+    );
+  }
+
+  @override
+  Future<void> close() {
+    _live.dispose();
+    return super.close();
+  }
 
   void emitSafely(WatermarkState state) {
     if (isClosed) return;
@@ -114,16 +142,36 @@ class WatermarkCubit extends Cubit<WatermarkState> {
     try {
       final WatermarkSettings stored = await _repository.load();
       emitSafely(WatermarkState(saved: stored, draft: stored));
-    } catch (e, stackTrace) {
-      debugPrint('WatermarkCubit.load failed: $e\n$stackTrace');
-      emitSafely(state.copyWith(busy: false, error: e.toString()));
+      _live.watchQuery(
+        'watermark_settings_doc',
+        FirebaseFirestore.instance
+            .collection(getBaseUrl('Modules'))
+            .where(FieldPath.documentId, isEqualTo: 'settings'),
+        _refreshSilently,
+      );
+    } catch (_) {
+      // Owner 21/10/2026: a localized generic message, never the raw exception.
+      emitSafely(
+          state.copyWith(busy: false, error: S.current.errorLoadingData));
     }
+  }
+
+  /// Live reload after the settings document changed elsewhere. Never runs over
+  /// unsaved edits or an in-flight save.
+  Future<void> _refreshSilently() async {
+    if (state.isDirty || state.busy) return;
+    try {
+      final WatermarkSettings stored = await _repository.load();
+      if (state.isDirty || state.busy) return;
+      emitSafely(WatermarkState(saved: stored, draft: stored));
+    } catch (_) {}
   }
 
   // ── Draft edits ───────────────────────────────────────────────────────────
   // Each one is a copyWith on the draft only. None of them touch `saved`.
 
-  void selectField(WatermarkField field) => _edit(state.draft.copyWith(field: field));
+  void selectField(WatermarkField field) =>
+      _edit(state.draft.copyWith(field: field));
 
   void toggleDate(bool value) => _edit(state.draft.copyWith(showDate: value));
 
@@ -133,7 +181,8 @@ class WatermarkCubit extends Cubit<WatermarkState> {
 
   void setDensity(int value) => _edit(state.draft.copyWith(density: value));
 
-  void setFontSize(double value) => _edit(state.draft.copyWith(fontSize: value));
+  void setFontSize(double value) =>
+      _edit(state.draft.copyWith(fontSize: value));
 
   void setAngle(double value) => _edit(state.draft.copyWith(angle: value));
 
@@ -166,9 +215,11 @@ class WatermarkCubit extends Cubit<WatermarkState> {
   ///
   /// Fifteen tiles is a lot of tapping to reach "all but one", which is the
   /// usual shape of this setting.
-  void setAllModules(bool selected) => _edit(state.draft.copyWith(
-        modules: selected ? WatermarkSettings.allModuleNames : <String>{},
-      ));
+  void setAllModules(bool selected) => _edit(
+        state.draft.copyWith(
+          modules: selected ? WatermarkSettings.allModuleNames : <String>{},
+        ),
+      );
 
   void _edit(WatermarkSettings draft) =>
       emitSafely(state.copyWith(draft: draft));
@@ -206,14 +257,25 @@ class WatermarkCubit extends Cubit<WatermarkState> {
   /// not happen.
   Future<bool> save() async {
     if (!state.isDirty || state.busy) return false;
+    // CR-KNP-SET-APP-03 (20/10/2026): the screen hides Save for read-only
+    // users, but the cubit is the write path and must not trust the screen.
+    if (!_canEdit) {
+      // Owner 21/10/2026: localized permission message.
+      emitSafely(state.copyWith(error: S.current.watermarkNoPermission));
+      return false;
+    }
     emitSafely(state.copyWith(busy: true));
+    // Owner 21/10/2026: save what was written; edits made during the write
+    // stay in the draft (and so stay dirty).
+    final WatermarkSettings toSave = state.draft;
     try {
-      await _repository.save(state.draft);
-      emitSafely(WatermarkState(saved: state.draft, draft: state.draft));
+      await _repository.save(toSave);
+      emitSafely(WatermarkState(saved: toSave, draft: state.draft));
       return true;
-    } catch (e, stackTrace) {
-      debugPrint('WatermarkCubit.save failed: $e\n$stackTrace');
-      emitSafely(state.copyWith(busy: false, error: e.toString()));
+    } catch (_) {
+      // Owner 21/10/2026: a localized generic message, never the raw exception.
+      emitSafely(state.copyWith(
+          busy: false, error: S.current.errorOccuredPleaseTryAgain));
       return false;
     }
   }

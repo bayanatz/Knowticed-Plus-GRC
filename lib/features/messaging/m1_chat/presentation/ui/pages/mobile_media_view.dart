@@ -1,27 +1,35 @@
+/// Module: messaging/m1_chat
+///
+///*************************** FILE INFO ****************************///
+/// File Name: mobile_media_view.dart
+/// Description: `MobileMediaView` page.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
+library;
+
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 
+import 'package:knowticed_plus/features/messaging/helpers/constants/messaging_assets.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/features/messaging/helpers/messaging_app_bar.dart';
 
-import 'package:grc_module/core/constants/message_module/app_assets.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/helper/main_helper/custom_app_bar.dart';
-import '../../../data/models/media/doc_info_model.dart';
-import '../../../data/models/media/link_model.dart';
-import '../../../data/models/media/media_model.dart';
-import '../../controller/media_controller.dart';
-import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
-import 'package:grc_module/core/custom/82-image_grid_card.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/media/doc_info_model.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/media/link_model.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/media/media_model.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/media_controller.dart';
+
+import 'package:knowticed_plus/generated/l10n.dart';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/core/custom/cards/image_grid_card.dart';
+import 'package:knowticed_plus/core/custom/feedback/circle_progress.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
 
 part '../widgets/media/media_tabbar.dart';
 part '../widgets/media/cards/link_card.dart';
@@ -135,7 +143,8 @@ class MobileMediaView extends StatelessWidget {
                     child: Column(
                       children: [
                         SizedBox(
-                          height: ContextExtension(context).isTablett ? 32.h : 24.h,
+                          height:
+                              ContextExtension(context).isTablett ? 32.h : 24.h,
                         ),
                         Expanded(
                           child: Padding(
@@ -147,64 +156,71 @@ class MobileMediaView extends StatelessWidget {
                                 duration: const Duration(milliseconds: 500),
                                 child: Column(
                                   children: mediaCubit
-                                      .filterDates(
-                                    model: model,
-                                    tab: selectedMediaTab,
-                                  )
-                                      ?.map(
-                                        (sortedDateLabel) {
-                                      return Column(
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            sortedDateLabel,
-                                            style: ContextExtension(context).isTablett
-                                                ? StyleText.fontSize23Weight500.copyWith(color: AppColors.darkGrey)
-                                                : StyleText.fontSize16Weight500.copyWith(color: AppColors.darkGrey),
-                                          ),
-                                          SizedBox(
-                                            height: ContextExtension(context).isTablett
-                                                ? 24.h
-                                                : 16.h,
-                                          ),
-                                          StaggeredGrid.count(
-                                            mainAxisSpacing: 16.h,
-                                            crossAxisSpacing:
-                                            isTablet ? 16.w : 8.w,
-                                            crossAxisCount:
-                                            selectedMediaTab ==
-                                                S.of(context).media
-                                                ? isTablet
-                                                ? 5
-                                                : 4
-                                                : 1,
-                                            children: mediaCubit
-                                                .filterTabs(
-                                              model: model,
-                                              sortedDateLabel:
+                                          .filterDates(
+                                        model: model,
+                                        tab: selectedMediaTab,
+                                      )
+                                          ?.map((sortedDateLabel) {
+                                        return Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
                                               sortedDateLabel,
-                                              tab: selectedMediaTab,
-                                            )
-                                                ?.map(
-                                                  (obj) {
-                                                return FilterCard(
-                                                  tab: selectedMediaTab,
-                                                  obj: obj,
-                                                );
-                                              },
-                                            ).toList() ??
-                                                [],
-                                          ),
-                                          SizedBox(
-                                            height: ContextExtension(context).isTablett
-                                                ? 40.h
-                                                : 24.h,
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  ).toList() ??
+                                              style: ContextExtension(context)
+                                                      .isTablett
+                                                  ? StyleText
+                                                      .fontSize23Weight500
+                                                      .copyWith(
+                                                      color: AppColors.darkGrey,
+                                                    )
+                                                  : StyleText
+                                                      .fontSize16Weight500
+                                                      .copyWith(
+                                                      color: AppColors.darkGrey,
+                                                    ),
+                                            ),
+                                            SizedBox(
+                                              height: ContextExtension(context)
+                                                      .isTablett
+                                                  ? 24.h
+                                                  : 16.h,
+                                            ),
+                                            StaggeredGrid.count(
+                                              mainAxisSpacing: 16.h,
+                                              crossAxisSpacing:
+                                                  isTablet ? 16.w : 8.w,
+                                              crossAxisCount:
+                                                  selectedMediaTab ==
+                                                          S.of(context).media
+                                                      ? isTablet
+                                                          ? 5
+                                                          : 4
+                                                      : 1,
+                                              children: mediaCubit
+                                                      .filterTabs(
+                                                    model: model,
+                                                    sortedDateLabel:
+                                                        sortedDateLabel,
+                                                    tab: selectedMediaTab,
+                                                  )
+                                                      ?.map((obj) {
+                                                    return FilterCard(
+                                                      tab: selectedMediaTab,
+                                                      obj: obj,
+                                                    );
+                                                  }).toList() ??
+                                                  [],
+                                            ),
+                                            SizedBox(
+                                              height: ContextExtension(context)
+                                                      .isTablett
+                                                  ? 40.h
+                                                  : 24.h,
+                                            ),
+                                          ],
+                                        );
+                                      }).toList() ??
                                       [],
                                 ),
                               ),

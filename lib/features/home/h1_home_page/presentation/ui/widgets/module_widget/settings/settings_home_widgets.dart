@@ -49,17 +49,17 @@ library;
 
 import 'package:flutter/material.dart';
 
-import 'package:grc_module/core/di/app_controllers.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/home_component_model.dart';
-import 'package:grc_module/features/home/h1_home_page/presentation/ui/home_widgets/home_widget_shell.dart';
-import 'package:grc_module/features/settings/se6_requests/data/repository/requests_repository.dart';
-import 'package:grc_module/features/settings/se6_requests/domain/base_repository/requests_base_repository.dart';
-import 'package:grc_module/features/settings/se6_requests/domain/entities/change_request.dart';
-import 'package:grc_module/features/settings/se6_requests/domain/enums/request_status.dart';
-import 'package:grc_module/features/settings/se7_app_info/data/repository/feedback_repository.dart';
-import 'package:grc_module/features/settings/se7_app_info/domain/base_repository/feedback_base_repository.dart';
-import 'package:grc_module/features/settings/se7_app_info/domain/entities/app_feedback.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/core/di/app_controllers.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/home_component_model.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/home_widgets/home_widget_shell.dart';
+import 'package:knowticed_plus/features/settings/se6_requests/data/repository/requests_repository.dart';
+import 'package:knowticed_plus/features/settings/se6_requests/domain/base_repository/requests_base_repository.dart';
+import 'package:knowticed_plus/features/settings/se6_requests/domain/entities/change_request.dart';
+import 'package:knowticed_plus/features/settings/se6_requests/domain/enums/request_status.dart';
+import 'package:knowticed_plus/features/settings/se7_app_info/data/repository/feedback_repository.dart';
+import 'package:knowticed_plus/features/settings/se7_app_info/domain/base_repository/feedback_base_repository.dart';
+import 'package:knowticed_plus/features/settings/se7_app_info/domain/entities/app_feedback.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
 /// The signed-in employee's id, or empty when the directory has not loaded.
 ///
@@ -124,8 +124,9 @@ class _CommentsAndFeedbacksWidgetState
         final Map<FeedbackStatus, int> counts = snapshot.data ?? _zeros;
 
         return HomeWidgetCard(
+          hugContent: true,
           title: l.commentsAndFeedbacks,
-          icon: "assets/icons_assets/roles_assets/settings_gear.svg",
+          icon: "assets/icons_assets/main_icons_assets/ic_module_settings.svg",
           // ADDED 28/8/2026. Neither card passed a width, so both fell back to
           // HomeWidgetCard's default (kHomeWidgetWidth, 320) and came out wider
           // than the three-stat cards beside them. Three tiles, so this takes
@@ -214,8 +215,9 @@ class _MySettingsRequestsWidgetState extends State<MySettingsRequestsWidget> {
         final Map<RequestStatus, int> counts = snapshot.data ?? _zeros;
 
         return HomeWidgetCard(
+          hugContent: true,
           title: l.myRequests,
-          icon: "assets/icons_assets/roles_assets/settings_gear.svg",
+          icon: "assets/icons_assets/main_icons_assets/ic_module_settings.svg",
           // Three tiles — the compact width, as above.
           width: kHomeWidgetCompactWidth,
           child: HomeStatTileRow(

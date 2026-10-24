@@ -5,6 +5,7 @@
 /// Purpose: Space helper.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 // Date: 6/8/2024
 // By: Nada Mohammed

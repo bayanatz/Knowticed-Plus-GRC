@@ -2,20 +2,22 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: feedback_attachment_remote_data_source.dart
-/// Purpose: Uploads one feedback attachment to Firebase Storage.
-/// Author: Knowticed Plus team
+/// Description: Uploads one feedback attachment to Firebase Storage.
+/// Author: Amr Mesbah
 /// Created at: 24/8/2026
 ///
 /// Separate from `feedback_remote_data_source.dart` because it talks to a
 /// different backend: that one writes Firestore documents, this one writes
 /// bytes to the storage bucket. The Firestore document only ever holds the
 /// descriptor this returns.
+library;
 
 import 'dart:typed_data';
 
 import 'package:firebase_storage/firebase_storage.dart';
 
-import 'package:grc_module/features/settings/se7_app_info/domain/entities/app_feedback.dart';
+import 'package:knowticed_plus/features/settings/se7_app_info/domain/entities/app_feedback.dart';
+import 'package:knowticed_plus/core/network/get_base_url.dart';
 
 class FeedbackAttachmentRemoteDataSource {
   FeedbackAttachmentRemoteDataSource({FirebaseStorage? storage})
@@ -25,7 +27,7 @@ class FeedbackAttachmentRemoteDataSource {
 
   /// Root folder in the bucket. One sub-folder per feedback kind, so bug
   /// screenshots and feature-request mockups do not end up in one heap.
-  static const String _root = 'app_feedback';
+  static String get _root => '${getBaseUrl('Modules/settings')}/app_feedback';
 
   /// Hard ceiling on a single upload.
   ///
@@ -50,7 +52,9 @@ class FeedbackAttachmentRemoteDataSource {
     String? contentType,
   }) async {
     if (bytes.lengthInBytes > maxSizeInBytes) {
-      throw StateError('Attachment is larger than the ${maxSizeInBytes ~/ (1024 * 1024)}MB limit.');
+      throw StateError(
+        'Attachment is larger than the ${maxSizeInBytes ~/ (1024 * 1024)}MB limit.',
+      );
     }
 
     final String safeName = _sanitise(fileName);
@@ -59,10 +63,7 @@ class FeedbackAttachmentRemoteDataSource {
 
     final Reference ref = _storage.ref().child(path);
 
-    await ref.putData(
-      bytes,
-      SettableMetadata(contentType: contentType),
-    );
+    await ref.putData(bytes, SettableMetadata(contentType: contentType));
 
     return FeedbackAttachment(
       url: await ref.getDownloadURL(),
@@ -76,8 +77,10 @@ class FeedbackAttachmentRemoteDataSource {
   /// Strips anything that would create an accidental folder or an unreadable
   /// object name. A `/` in the picked name would silently nest the file.
   String _sanitise(String fileName) {
-    final String cleaned =
-        fileName.replaceAll(RegExp(r'[^A-Za-z0-9._-]+'), '_');
+    final String cleaned = fileName.replaceAll(
+      RegExp(r'[^A-Za-z0-9._-]+'),
+      '_',
+    );
     return cleaned.isEmpty ? 'attachment' : cleaned;
   }
 }

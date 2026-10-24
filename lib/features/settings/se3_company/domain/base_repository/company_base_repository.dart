@@ -7,11 +7,12 @@
 /// Created at: 11/8/2026
 ///
 /// Added for CR-SKEL-SE3-N02.
+library;
 
 import 'package:dartz/dartz.dart';
 
-import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/features/settings/se3_company/data/models/company_model/company_model.dart';
+import 'package:knowticed_plus/core/network/failure_model.dart';
+import 'package:knowticed_plus/features/settings/se3_company/data/models/company_model/company_model.dart';
 
 abstract class CompanyBaseRepository {
   /// The company document. `Right(null)` means "no such company"; a `Left`

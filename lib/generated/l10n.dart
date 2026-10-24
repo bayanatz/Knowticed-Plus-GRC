@@ -1,6 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -2429,16 +2430,6 @@ class S {
     );
   }
 
-  /// `Are You Sure You Want To Delete This List To Do?`
-  String get areYouSureYouWantToDeleteThisListToDo {
-    return Intl.message(
-      'Are You Sure You Want To Delete This List To Do?',
-      name: 'areYouSureYouWantToDeleteThisListToDo',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Are you sure you want to delete this message?`
   String get AreYousureYouWanttoDeleteThisMessage {
     return Intl.message(
@@ -2679,16 +2670,6 @@ class S {
     );
   }
 
-  /// `Are You Sure You Want To Restore This List To Do?`
-  String get areYouSureYouWantToRestoreThisListToDo {
-    return Intl.message(
-      'Are You Sure You Want To Restore This List To Do?',
-      name: 'areYouSureYouWantToRestoreThisListToDo',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Are you sure you want to restore this module?`
   String get areYouSureYouWantToRestoreThisModule {
     return Intl.message(
@@ -2764,26 +2745,6 @@ class S {
     return Intl.message(
       'Are you sure you want to submit this reassignment request?',
       name: 'areYouSureYouWantToSubmitThisReassignmentRequest',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Are you sure you would like to proceed with creating this to-do?`
-  String get areYouSureYouWouldLikeToProceedWithCreatingToDo {
-    return Intl.message(
-      'Are you sure you would like to proceed with creating this to-do?',
-      name: 'areYouSureYouWouldLikeToProceedWithCreatingToDo',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Are you sure you would like to proceed with editing this to-do?`
-  String get areYouSureYouWouldLikeToProceedWithEditingToDo {
-    return Intl.message(
-      'Are you sure you would like to proceed with editing this to-do?',
-      name: 'areYouSureYouWouldLikeToProceedWithEditingToDo',
       desc: '',
       args: [],
     );
@@ -6244,11 +6205,6 @@ class S {
     return Intl.message('Create', name: 'createTitle', desc: '', args: []);
   }
 
-  /// `Create To Do`
-  String get createToDo {
-    return Intl.message('Create To Do', name: 'createToDo', desc: '', args: []);
-  }
-
   /// `Creating Knowledge Hub`
   String get creating_knowledge_hub {
     return Intl.message(
@@ -6344,26 +6300,6 @@ class S {
     return Intl.message(
       'Creating Service',
       name: 'creatingService',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Creating To Do`
-  String get creatingToDodialoge {
-    return Intl.message(
-      'Creating To Do',
-      name: 'creatingToDodialoge',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Creating To Do`
-  String get creatingToDoTitle {
-    return Intl.message(
-      'Creating To Do',
-      name: 'creatingToDoTitle',
       desc: '',
       args: [],
     );
@@ -6539,11 +6475,6 @@ class S {
   /// `Czech`
   String get czech {
     return Intl.message('Czech', name: 'czech', desc: '', args: []);
-  }
-
-  /// `Daily`
-  String get daily {
-    return Intl.message('Daily', name: 'daily', desc: '', args: []);
   }
 
   /// `Damaged`
@@ -7031,16 +6962,6 @@ class S {
     return Intl.message(
       'Deleting Request Type',
       name: 'deletingRequestType',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Deleting To Do List`
-  String get deletingToDoList {
-    return Intl.message(
-      'Deleting To Do List',
-      name: 'deletingToDoList',
       desc: '',
       args: [],
     );
@@ -7799,6 +7720,61 @@ class S {
   /// `Done`
   String get done {
     return Intl.message('Done', name: 'done', desc: '', args: []);
+  }
+
+  /// `Reorder`
+  String get drawerReorder {
+    return Intl.message('Reorder', name: 'drawerReorder', desc: '', args: []);
+  }
+
+  /// `Done`
+  String get drawerReorderDone {
+    return Intl.message('Done', name: 'drawerReorderDone', desc: '', args: []);
+  }
+
+  /// `Available modules`
+  String get bottomBarAvailable {
+    return Intl.message(
+      'Available modules',
+      name: 'bottomBarAvailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tap + to add a module. Drag the handle to reorder.`
+  String get bottomBarHint {
+    return Intl.message(
+      'Tap + to add a module. Drag the handle to reorder.',
+      name: 'bottomBarHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The bar is full — remove one to add another.`
+  String get bottomBarFull {
+    return Intl.message(
+      'The bar is full — remove one to add another.',
+      name: 'bottomBarFull',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `In the bar`
+  String get bottomBarInBar {
+    return Intl.message(
+      'In the bar',
+      name: 'bottomBarInBar',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bottom bar`
+  String get bottomBar {
+    return Intl.message('Bottom bar', name: 'bottomBar', desc: '', args: []);
   }
 
   /// `Done Projects`
@@ -8621,26 +8597,6 @@ class S {
     return Intl.message(
       'Editing Supplier Details',
       name: 'editingSupplierDetails',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Editing To Do`
-  String get editingToDodialog {
-    return Intl.message(
-      'Editing To Do',
-      name: 'editingToDodialog',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Editing To Do`
-  String get editingToDoTitle {
-    return Intl.message(
-      'Editing To Do',
-      name: 'editingToDoTitle',
       desc: '',
       args: [],
     );
@@ -11191,16 +11147,6 @@ class S {
     );
   }
 
-  /// `First Reminder`
-  String get firstReminder {
-    return Intl.message(
-      'First Reminder',
-      name: 'firstReminder',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Fixed`
   String get fixed {
     return Intl.message('Fixed', name: 'fixed', desc: '', args: []);
@@ -11726,10 +11672,10 @@ class S {
     );
   }
 
-  /// `Graduation From`
+  /// `Graduated From`
   String get graduationFrom {
     return Intl.message(
-      'Graduation From',
+      'Graduated From',
       name: 'graduationFrom',
       desc: '',
       args: [],
@@ -12071,9 +12017,9 @@ class S {
     return Intl.message('Hobbies', name: 'hobbies', desc: '', args: []);
   }
 
-  /// `Hobbys`
+  /// `Hobbies`
   String get hobbys {
-    return Intl.message('Hobbys', name: 'hobbys', desc: '', args: []);
+    return Intl.message('Hobbies', name: 'hobbys', desc: '', args: []);
   }
 
   /// `Home`
@@ -12166,16 +12112,6 @@ class S {
     return Intl.message(
       'Start Date',
       name: 'homeScreenStartDateTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `To-Do List`
-  String get homeScreenToDoListTitle {
-    return Intl.message(
-      'To-Do List',
-      name: 'homeScreenToDoListTitle',
       desc: '',
       args: [],
     );
@@ -12351,10 +12287,10 @@ class S {
     return Intl.message('Image', name: 'image', desc: '', args: []);
   }
 
-  /// `assets/icons_assets/main_icons_assets/check_circle_green.svg`
+  /// `assets/icons_assets/main_icons_assets/ic_status_success_small.svg`
   String get imageAsset {
     return Intl.message(
-      'assets/icons_assets/main_icons_assets/check_circle_green.svg',
+      'assets/icons_assets/main_icons_assets/ic_status_success_small.svg',
       name: 'imageAsset',
       desc: '',
       args: [],
@@ -12536,9 +12472,9 @@ class S {
     );
   }
 
-  /// `In progress`
+  /// `In Progress`
   String get Inprogress {
-    return Intl.message('In progress', name: 'Inprogress', desc: '', args: []);
+    return Intl.message('In Progress', name: 'Inprogress', desc: '', args: []);
   }
 
   /// `In Progress`
@@ -13114,11 +13050,6 @@ class S {
       desc: '',
       args: [],
     );
-  }
-
-  /// `Item`
-  String get item {
-    return Intl.message('Item', name: 'item', desc: '', args: []);
   }
 
   /// `Item added successfully`
@@ -14911,11 +14842,6 @@ class S {
     return Intl.message('Month', name: 'month2', desc: '', args: []);
   }
 
-  /// `Monthly`
-  String get monthly {
-    return Intl.message('Monthly', name: 'monthly', desc: '', args: []);
-  }
-
   /// `Monthly Comparison`
   String get monthlyComparison {
     return Intl.message(
@@ -15716,6 +15642,26 @@ class S {
     );
   }
 
+  /// `Please select at least one filter.`
+  String get pleaseSelectAtLeastOneFilter {
+    return Intl.message(
+      'Please select at least one filter.',
+      name: 'pleaseSelectAtLeastOneFilter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The User ID and Email cannot be changed.`
+  String get userIdAndEmailCannotBeChanged {
+    return Intl.message(
+      'The User ID and Email cannot be changed.',
+      name: 'userIdAndEmailCannotBeChanged',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `No Media`
   String get noMedia {
     return Intl.message('No Media', name: 'noMedia', desc: '', args: []);
@@ -16066,6 +16012,16 @@ class S {
     return Intl.message(
       'This is not allowed.',
       name: 'notAllowed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Partial Assignation`
+  String get partialAssignation {
+    return Intl.message(
+      'Partial Assignation',
+      name: 'partialAssignation',
       desc: '',
       args: [],
     );
@@ -20411,16 +20367,6 @@ class S {
     );
   }
 
-  /// `Restoring To Do`
-  String get restoringToDo {
-    return Intl.message(
-      'Restoring To Do',
-      name: 'restoringToDo',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Restricted Location`
   String get restrictedLocation {
     return Intl.message(
@@ -20623,6 +20569,66 @@ class S {
       name: 'roleDeletedSuccessfully',
       desc: '',
       args: [],
+    );
+  }
+
+  /// `Role In Use`
+  String get roleInUse {
+    return Intl.message('Role In Use', name: 'roleInUse', desc: '', args: []);
+  }
+
+  /// `Load Demo Data`
+  String get roleDemoLoad {
+    return Intl.message(
+      'Load Demo Data',
+      name: 'roleDemoLoad',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove Demo Data`
+  String get roleDemoRemove {
+    return Intl.message(
+      'Remove Demo Data',
+      name: 'roleDemoRemove',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Working`
+  String get roleDemoWorking {
+    return Intl.message('Working', name: 'roleDemoWorking', desc: '', args: []);
+  }
+
+  /// `Demo Data Loaded`
+  String get roleDemoDone {
+    return Intl.message(
+      'Demo Data Loaded',
+      name: 'roleDemoDone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Demo Data Removed`
+  String get roleDemoRemoved {
+    return Intl.message(
+      'Demo Data Removed',
+      name: 'roleDemoRemoved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count} Employees Still Hold This Role. Move Them To Another Role In User Management, Then Delete It.`
+  String roleInUseMessage(int count) {
+    return Intl.message(
+      '$count Employees Still Hold This Role. Move Them To Another Role In User Management, Then Delete It.',
+      name: 'roleInUseMessage',
+      desc: '',
+      args: [count],
     );
   }
 
@@ -22311,16 +22317,6 @@ class S {
     return Intl.message('Set Date', name: 'setDate', desc: '', args: []);
   }
 
-  /// `Set Frequency`
-  String get setFrequency {
-    return Intl.message(
-      'Set Frequency',
-      name: 'setFrequency',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Set Time`
   String get setTime {
     return Intl.message('Set Time', name: 'setTime', desc: '', args: []);
@@ -22821,10 +22817,10 @@ class S {
     return Intl.message('hours', name: 'sm_hours', desc: '', args: []);
   }
 
-  /// `Inprogress`
+  /// `In Progress`
   String get sm_inprogress {
     return Intl.message(
-      'Inprogress',
+      'In Progress',
       name: 'sm_inprogress',
       desc: '',
       args: [],
@@ -23266,10 +23262,10 @@ class S {
     return Intl.message('Done', name: 'status_done', desc: '', args: []);
   }
 
-  /// `In progress`
+  /// `In Progress`
   String get status_inprogress {
     return Intl.message(
-      'In progress',
+      'In Progress',
       name: 'status_inprogress',
       desc: '',
       args: [],
@@ -24331,14 +24327,9 @@ class S {
     );
   }
 
-  /// `Systems Logs`
+  /// `System Logs`
   String get systemsLogs {
-    return Intl.message(
-      'Systems Logs',
-      name: 'systemsLogs',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('System Logs', name: 'systemsLogs', desc: '', args: []);
   }
 
   /// `Table`
@@ -24874,26 +24865,6 @@ class S {
   /// `Today`
   String get today {
     return Intl.message('Today', name: 'today', desc: '', args: []);
-  }
-
-  /// `To-Do`
-  String get toDo {
-    return Intl.message('To-Do', name: 'toDo', desc: '', args: []);
-  }
-
-  /// `To Do List`
-  String get todo {
-    return Intl.message('To Do List', name: 'todo', desc: '', args: []);
-  }
-
-  /// `To Do List`
-  String get toDoListTitle {
-    return Intl.message(
-      'To Do List',
-      name: 'toDoListTitle',
-      desc: '',
-      args: [],
-    );
   }
 
   /// `Togolese`
@@ -26586,6 +26557,26 @@ class S {
     );
   }
 
+  /// `You do not have permission to change the watermark.`
+  String get watermarkNoPermission {
+    return Intl.message(
+      'You do not have permission to change the watermark.',
+      name: 'watermarkNoPermission',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Personal Branding Has Been Reset To Company Defaults`
+  String get personalBrandingResetToCompanyDefaults {
+    return Intl.message(
+      'Personal Branding Has Been Reset To Company Defaults',
+      name: 'personalBrandingResetToCompanyDefaults',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Watermark Style`
   String get watermarkStyle {
     return Intl.message(
@@ -27301,16 +27292,6 @@ class S {
     );
   }
 
-  /// `You Successfully Created New To Do`
-  String get youSuccessfullyCreatedNewToDo {
-    return Intl.message(
-      'You Successfully Created New To Do',
-      name: 'youSuccessfullyCreatedNewToDo',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `You successfully created this control`
   String get youSuccessfullyCreatedThisControl {
     return Intl.message(
@@ -27421,16 +27402,6 @@ class S {
     );
   }
 
-  /// `You Successfully Deleted This To Do`
-  String get youSuccessfullyDeletedThisToDo {
-    return Intl.message(
-      'You Successfully Deleted This To Do',
-      name: 'youSuccessfullyDeletedThisToDo',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `You Successfully Downloaded This Form as Excel`
   String get youSuccessfullyDownloadedThisFormAsExcel {
     return Intl.message(
@@ -27476,16 +27447,6 @@ class S {
     return Intl.message(
       'You Successfully Edited This Group',
       name: 'youSuccessfullyEditedGroup',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `You Successfully Edited The To Do`
-  String get youSuccessfullyEditedTheToDo {
-    return Intl.message(
-      'You Successfully Edited The To Do',
-      name: 'youSuccessfullyEditedTheToDo',
       desc: '',
       args: [],
     );
@@ -27566,16 +27527,6 @@ class S {
     return Intl.message(
       'You Successfully Restored This Form',
       name: 'youSuccessfullyRestoredThisForm',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `You Successfully Restored This To Do`
-  String get youSuccessfullyRestoredThisToDo {
-    return Intl.message(
-      'You Successfully Restored This To Do',
-      name: 'youSuccessfullyRestoredThisToDo',
       desc: '',
       args: [],
     );
@@ -28463,6 +28414,11 @@ class S {
   /// `Pie Chart`
   String get pieChart {
     return Intl.message('Pie Chart', name: 'pieChart', desc: '', args: []);
+  }
+
+  /// `Line Chart`
+  String get lineChart {
+    return Intl.message('Line Chart', name: 'lineChart', desc: '', args: []);
   }
 
   /// `Donut Chart`
@@ -34450,6 +34406,56 @@ class S {
     return Intl.message('Select City', name: 'selectCity', desc: '', args: []);
   }
 
+  /// `Editing Company Information`
+  String get editingCompanyInformation {
+    return Intl.message(
+      'Editing Company Information',
+      name: 'editingCompanyInformation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open File`
+  String get openFile {
+    return Intl.message('Open File', name: 'openFile', desc: '', args: []);
+  }
+
+  /// `Show In Folder`
+  String get showInFolder {
+    return Intl.message(
+      'Show In Folder',
+      name: 'showInFolder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Saved To`
+  String get savedTo {
+    return Intl.message('Saved To', name: 'savedTo', desc: '', args: []);
+  }
+
+  /// `Select Marital Status`
+  String get selectMaritalStatus {
+    return Intl.message(
+      'Select Marital Status',
+      name: 'selectMaritalStatus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select State Or Province`
+  String get selectStateOrProvince {
+    return Intl.message(
+      'Select State Or Province',
+      name: 'selectStateOrProvince',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Select Action`
   String get selectAction {
     return Intl.message(
@@ -34515,6 +34521,16365 @@ class S {
     return Intl.message(
       'Control Name (Arabic)',
       name: 'controlNameArabic',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To Do List`
+  String get todo {
+    return Intl.message('To Do List', name: 'todo', desc: '', args: []);
+  }
+
+  /// `To Do List`
+  String get toDoListTitle {
+    return Intl.message(
+      'To Do List',
+      name: 'toDoListTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To-Do List`
+  String get homeScreenToDoListTitle {
+    return Intl.message(
+      'To-Do List',
+      name: 'homeScreenToDoListTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To-Do`
+  String get toDo {
+    return Intl.message('To-Do', name: 'toDo', desc: '', args: []);
+  }
+
+  /// `To Do Permissions`
+  String get toDoPermissions {
+    return Intl.message(
+      'To Do Permissions',
+      name: 'toDoPermissions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View To Do`
+  String get viewToDo {
+    return Intl.message('View To Do', name: 'viewToDo', desc: '', args: []);
+  }
+
+  /// `Create To Do`
+  String get createToDo {
+    return Intl.message('Create To Do', name: 'createToDo', desc: '', args: []);
+  }
+
+  /// `Edit To Do`
+  String get editToDo {
+    return Intl.message('Edit To Do', name: 'editToDo', desc: '', args: []);
+  }
+
+  /// `Delete To Do`
+  String get deleteToDo {
+    return Intl.message('Delete To Do', name: 'deleteToDo', desc: '', args: []);
+  }
+
+  /// `Restore To Do`
+  String get restoreToDo {
+    return Intl.message(
+      'Restore To Do',
+      name: 'restoreToDo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To Do List Details`
+  String get toDoListDetails {
+    return Intl.message(
+      'To Do List Details',
+      name: 'toDoListDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Completion Date`
+  String get todoCompletionDate {
+    return Intl.message(
+      'Completion Date',
+      name: 'todoCompletionDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Deletion Date`
+  String get todoDeletionDate {
+    return Intl.message(
+      'Deletion Date',
+      name: 'todoDeletionDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Scheduled: {date} At {time}`
+  String todoScheduledAt(Object date, Object time) {
+    return Intl.message(
+      'Scheduled: $date At $time',
+      name: 'todoScheduledAt',
+      desc: '',
+      args: [date, time],
+    );
+  }
+
+  /// `Frequency: {value}`
+  String todoFrequencyBadge(Object value) {
+    return Intl.message(
+      'Frequency: $value',
+      name: 'todoFrequencyBadge',
+      desc: '',
+      args: [value],
+    );
+  }
+
+  /// `Every {count} {unit}`
+  String todoEveryInterval(Object count, Object unit) {
+    return Intl.message(
+      'Every $count $unit',
+      name: 'todoEveryInterval',
+      desc: '',
+      args: [count, unit],
+    );
+  }
+
+  /// `Mark as done`
+  String get todoMarkDone {
+    return Intl.message(
+      'Mark as done',
+      name: 'todoMarkDone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add an item`
+  String get todoItemHint {
+    return Intl.message(
+      'Add an item',
+      name: 'todoItemHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove item`
+  String get todoRemoveItem {
+    return Intl.message(
+      'Remove item',
+      name: 'todoRemoveItem',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This to-do no longer exists.`
+  String get todoNotFound {
+    return Intl.message(
+      'This to-do no longer exists.',
+      name: 'todoNotFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Creating To Do List`
+  String get creatingToDoList {
+    return Intl.message(
+      'Creating To Do List',
+      name: 'creatingToDoList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Creating To Do`
+  String get creatingToDoTitle {
+    return Intl.message(
+      'Creating To Do',
+      name: 'creatingToDoTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Creating To Do`
+  String get creatingToDodialoge {
+    return Intl.message(
+      'Creating To Do',
+      name: 'creatingToDodialoge',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Editing To Do List`
+  String get editingToDoList {
+    return Intl.message(
+      'Editing To Do List',
+      name: 'editingToDoList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Editing To Do`
+  String get editingToDoTitle {
+    return Intl.message(
+      'Editing To Do',
+      name: 'editingToDoTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Editing To Do`
+  String get editingToDodialog {
+    return Intl.message(
+      'Editing To Do',
+      name: 'editingToDodialog',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose`
+  String get todoChoose {
+    return Intl.message('Choose', name: 'todoChoose', desc: '', args: []);
+  }
+
+  /// `DD/MM/YYYY`
+  String get todoDateHint {
+    return Intl.message('DD/MM/YYYY', name: 'todoDateHint', desc: '', args: []);
+  }
+
+  /// `00:00`
+  String get todoTimeHint {
+    return Intl.message('00:00', name: 'todoTimeHint', desc: '', args: []);
+  }
+
+  /// `The end date must be after the start date.`
+  String get todoEndAfterStart {
+    return Intl.message(
+      'The end date must be after the start date.',
+      name: 'todoEndAfterStart',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Start and end dates are required.`
+  String get todoDatesRequired {
+    return Intl.message(
+      'Start and end dates are required.',
+      name: 'todoDatesRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select at least one day.`
+  String get todoWeekDaysRequired {
+    return Intl.message(
+      'Select at least one day.',
+      name: 'todoWeekDaysRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Week`
+  String get todoWeekUnit {
+    return Intl.message('Week', name: 'todoWeekUnit', desc: '', args: []);
+  }
+
+  /// `Day`
+  String get todoDayUnit {
+    return Intl.message('Day', name: 'todoDayUnit', desc: '', args: []);
+  }
+
+  /// `Set Frequency`
+  String get setFrequency {
+    return Intl.message(
+      'Set Frequency',
+      name: 'setFrequency',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `First Reminder`
+  String get firstReminder {
+    return Intl.message(
+      'First Reminder',
+      name: 'firstReminder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Daily`
+  String get daily {
+    return Intl.message('Daily', name: 'daily', desc: '', args: []);
+  }
+
+  /// `Monthly`
+  String get monthly {
+    return Intl.message('Monthly', name: 'monthly', desc: '', args: []);
+  }
+
+  /// `Item`
+  String get item {
+    return Intl.message('Item', name: 'item', desc: '', args: []);
+  }
+
+  /// `Are you sure you would like to proceed with creating this to-do?`
+  String get areYouSureYouWouldLikeToProceedWithCreatingToDo {
+    return Intl.message(
+      'Are you sure you would like to proceed with creating this to-do?',
+      name: 'areYouSureYouWouldLikeToProceedWithCreatingToDo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Successfully Created New To Do`
+  String get youSuccessfullyCreatedNewToDo {
+    return Intl.message(
+      'You Successfully Created New To Do',
+      name: 'youSuccessfullyCreatedNewToDo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you would like to proceed with editing this to-do?`
+  String get areYouSureYouWouldLikeToProceedWithEditingToDo {
+    return Intl.message(
+      'Are you sure you would like to proceed with editing this to-do?',
+      name: 'areYouSureYouWouldLikeToProceedWithEditingToDo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Successfully Edited The To Do`
+  String get youSuccessfullyEditedTheToDo {
+    return Intl.message(
+      'You Successfully Edited The To Do',
+      name: 'youSuccessfullyEditedTheToDo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Deleting To Do List`
+  String get deletingToDoList {
+    return Intl.message(
+      'Deleting To Do List',
+      name: 'deletingToDoList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Delete This List To Do?`
+  String get areYouSureYouWantToDeleteThisListToDo {
+    return Intl.message(
+      'Are You Sure You Want To Delete This List To Do?',
+      name: 'areYouSureYouWantToDeleteThisListToDo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Successfully Deleted This To Do`
+  String get youSuccessfullyDeletedThisToDo {
+    return Intl.message(
+      'You Successfully Deleted This To Do',
+      name: 'youSuccessfullyDeletedThisToDo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restoring To Do`
+  String get restoringToDo {
+    return Intl.message(
+      'Restoring To Do',
+      name: 'restoringToDo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Restore This List To Do?`
+  String get areYouSureYouWantToRestoreThisListToDo {
+    return Intl.message(
+      'Are You Sure You Want To Restore This List To Do?',
+      name: 'areYouSureYouWantToRestoreThisListToDo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Successfully Restored This To Do`
+  String get youSuccessfullyRestoredThisToDo {
+    return Intl.message(
+      'You Successfully Restored This To Do',
+      name: 'youSuccessfullyRestoredThisToDo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No open to-dos`
+  String get todoHomeNoOpen {
+    return Intl.message(
+      'No open to-dos',
+      name: 'todoHomeNoOpen',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You don't have access to the To Do List.`
+  String get todoNoAccess {
+    return Intl.message(
+      'You don\'t have access to the To Do List.',
+      name: 'todoNoAccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You don't have permission for this action.`
+  String get todoNoPermission {
+    return Intl.message(
+      'You don\'t have permission for this action.',
+      name: 'todoNoPermission',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not load your to-dos.`
+  String get todoLoadError {
+    return Intl.message(
+      'Could not load your to-dos.',
+      name: 'todoLoadError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not save the to-do. Please try again.`
+  String get todoSaveError {
+    return Intl.message(
+      'Could not save the to-do. Please try again.',
+      name: 'todoSaveError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Demo tools`
+  String get todoDebugTools {
+    return Intl.message(
+      'Demo tools',
+      name: 'todoDebugTools',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Available in debug builds only. Due reminders arrive about three minutes after loading the demo to-dos.`
+  String get todoDebugToolsHint {
+    return Intl.message(
+      'Available in debug builds only. Due reminders arrive about three minutes after loading the demo to-dos.',
+      name: 'todoDebugToolsHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Load demo to-dos`
+  String get todoDebugLoad {
+    return Intl.message(
+      'Load demo to-dos',
+      name: 'todoDebugLoad',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count} demo to-dos added. Reminders will arrive in about three minutes.`
+  String todoDebugLoadDone(Object count) {
+    return Intl.message(
+      '$count demo to-dos added. Reminders will arrive in about three minutes.',
+      name: 'todoDebugLoadDone',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Send due reminders now`
+  String get todoDebugSweep {
+    return Intl.message(
+      'Send due reminders now',
+      name: 'todoDebugSweep',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count} reminders sent.`
+  String todoDebugSweepDone(Object count) {
+    return Intl.message(
+      '$count reminders sent.',
+      name: 'todoDebugSweepDone',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Remove demo to-dos`
+  String get todoDebugRemove {
+    return Intl.message(
+      'Remove demo to-dos',
+      name: 'todoDebugRemove',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count} demo to-dos removed.`
+  String todoDebugRemoveDone(Object count) {
+    return Intl.message(
+      '$count demo to-dos removed.',
+      name: 'todoDebugRemoveDone',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `The action could not be completed. Please try again.`
+  String get todoDebugFailed {
+    return Intl.message(
+      'The action could not be completed. Please try again.',
+      name: 'todoDebugFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check In & Out`
+  String get timeTrackerCheckInPermissions {
+    return Intl.message(
+      'Check In & Out',
+      name: 'timeTrackerCheckInPermissions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dashboard`
+  String get timeTrackerDashboardPermissions {
+    return Intl.message(
+      'Dashboard',
+      name: 'timeTrackerDashboardPermissions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Attendance`
+  String get timeTrackerAttendancePermissions {
+    return Intl.message(
+      'Attendance',
+      name: 'timeTrackerAttendancePermissions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Requests`
+  String get timeTrackerRequestPermissions {
+    return Intl.message(
+      'Requests',
+      name: 'timeTrackerRequestPermissions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Approvals`
+  String get timeTrackerApprovalPermissions {
+    return Intl.message(
+      'Approvals',
+      name: 'timeTrackerApprovalPermissions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request Types`
+  String get timeTrackerRequestTypePermissions {
+    return Intl.message(
+      'Request Types',
+      name: 'timeTrackerRequestTypePermissions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Locations`
+  String get timeTrackerLocationPermissions {
+    return Intl.message(
+      'Locations',
+      name: 'timeTrackerLocationPermissions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Employees`
+  String get timeTrackerEmployeePermissions {
+    return Intl.message(
+      'Employees',
+      name: 'timeTrackerEmployeePermissions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Groups`
+  String get timeTrackerGroupPermissions {
+    return Intl.message(
+      'Groups',
+      name: 'timeTrackerGroupPermissions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vacation Balance`
+  String get timeTrackerVacationBalancePermissions {
+    return Intl.message(
+      'Vacation Balance',
+      name: 'timeTrackerVacationBalancePermissions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check In And Out`
+  String get timeTrackerCheckInAndOut {
+    return Intl.message(
+      'Check In And Out',
+      name: 'timeTrackerCheckInAndOut',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Work From A Different Location`
+  String get timeTrackerWorkFromDifferentLocation {
+    return Intl.message(
+      'Work From A Different Location',
+      name: 'timeTrackerWorkFromDifferentLocation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Personal Dashboard`
+  String get timeTrackerPersonalDashboard {
+    return Intl.message(
+      'Personal Dashboard',
+      name: 'timeTrackerPersonalDashboard',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `HR Dashboard`
+  String get timeTrackerHrDashboard {
+    return Intl.message(
+      'HR Dashboard',
+      name: 'timeTrackerHrDashboard',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `HR Dashboard — All Departments`
+  String get timeTrackerHrDashboardAllDepartments {
+    return Intl.message(
+      'HR Dashboard — All Departments',
+      name: 'timeTrackerHrDashboardAllDepartments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `HR Dashboard — Filter By Employee`
+  String get timeTrackerHrDashboardFilterByEmployee {
+    return Intl.message(
+      'HR Dashboard — Filter By Employee',
+      name: 'timeTrackerHrDashboardFilterByEmployee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View Attendance`
+  String get timeTrackerViewAttendance {
+    return Intl.message(
+      'View Attendance',
+      name: 'timeTrackerViewAttendance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request Transaction`
+  String get timeTrackerRequestTransaction {
+    return Intl.message(
+      'Request Transaction',
+      name: 'timeTrackerRequestTransaction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel Transaction`
+  String get timeTrackerCancelTransaction {
+    return Intl.message(
+      'Cancel Transaction',
+      name: 'timeTrackerCancelTransaction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export Attendance`
+  String get timeTrackerExportAttendance {
+    return Intl.message(
+      'Export Attendance',
+      name: 'timeTrackerExportAttendance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View Requests`
+  String get timeTrackerViewRequests {
+    return Intl.message(
+      'View Requests',
+      name: 'timeTrackerViewRequests',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create Request`
+  String get timeTrackerCreateRequest {
+    return Intl.message(
+      'Create Request',
+      name: 'timeTrackerCreateRequest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel Request`
+  String get timeTrackerCancelRequest {
+    return Intl.message(
+      'Cancel Request',
+      name: 'timeTrackerCancelRequest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Send Reminder`
+  String get timeTrackerSendRequestReminder {
+    return Intl.message(
+      'Send Reminder',
+      name: 'timeTrackerSendRequestReminder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Comment On Requests`
+  String get timeTrackerCommentOnRequests {
+    return Intl.message(
+      'Comment On Requests',
+      name: 'timeTrackerCommentOnRequests',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export Requests`
+  String get timeTrackerExportRequests {
+    return Intl.message(
+      'Export Requests',
+      name: 'timeTrackerExportRequests',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View Approvals`
+  String get timeTrackerViewApprovals {
+    return Intl.message(
+      'View Approvals',
+      name: 'timeTrackerViewApprovals',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Approve And Reject`
+  String get timeTrackerApproveAndReject {
+    return Intl.message(
+      'Approve And Reject',
+      name: 'timeTrackerApproveAndReject',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel Request After Approving`
+  String get timeTrackerCancelRequestAfterApproving {
+    return Intl.message(
+      'Cancel Request After Approving',
+      name: 'timeTrackerCancelRequestAfterApproving',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Approvals — All Departments`
+  String get timeTrackerApprovalsAllDepartments {
+    return Intl.message(
+      'Approvals — All Departments',
+      name: 'timeTrackerApprovalsAllDepartments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Comment On Approvals`
+  String get timeTrackerCommentOnApprovals {
+    return Intl.message(
+      'Comment On Approvals',
+      name: 'timeTrackerCommentOnApprovals',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View Request Types`
+  String get timeTrackerViewRequestTypes {
+    return Intl.message(
+      'View Request Types',
+      name: 'timeTrackerViewRequestTypes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create Request Type`
+  String get timeTrackerCreateRequestType {
+    return Intl.message(
+      'Create Request Type',
+      name: 'timeTrackerCreateRequestType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Request Type`
+  String get timeTrackerEditRequestType {
+    return Intl.message(
+      'Edit Request Type',
+      name: 'timeTrackerEditRequestType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Change Request Type Status`
+  String get timeTrackerChangeRequestTypeStatus {
+    return Intl.message(
+      'Change Request Type Status',
+      name: 'timeTrackerChangeRequestTypeStatus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove Request Type`
+  String get timeTrackerRemoveRequestType {
+    return Intl.message(
+      'Remove Request Type',
+      name: 'timeTrackerRemoveRequestType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export Request Types`
+  String get timeTrackerExportRequestTypes {
+    return Intl.message(
+      'Export Request Types',
+      name: 'timeTrackerExportRequestTypes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View Locations`
+  String get timeTrackerViewLocations {
+    return Intl.message(
+      'View Locations',
+      name: 'timeTrackerViewLocations',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create Location`
+  String get timeTrackerCreateLocation {
+    return Intl.message(
+      'Create Location',
+      name: 'timeTrackerCreateLocation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Location`
+  String get timeTrackerEditLocation {
+    return Intl.message(
+      'Edit Location',
+      name: 'timeTrackerEditLocation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Change Location Status`
+  String get timeTrackerChangeLocationStatus {
+    return Intl.message(
+      'Change Location Status',
+      name: 'timeTrackerChangeLocationStatus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete Location`
+  String get timeTrackerDeleteLocation {
+    return Intl.message(
+      'Delete Location',
+      name: 'timeTrackerDeleteLocation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export Locations`
+  String get timeTrackerExportLocations {
+    return Intl.message(
+      'Export Locations',
+      name: 'timeTrackerExportLocations',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import Locations`
+  String get timeTrackerImportLocations {
+    return Intl.message(
+      'Import Locations',
+      name: 'timeTrackerImportLocations',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View Employees`
+  String get timeTrackerViewEmployees {
+    return Intl.message(
+      'View Employees',
+      name: 'timeTrackerViewEmployees',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Employees — All Departments`
+  String get timeTrackerEmployeesAllDepartments {
+    return Intl.message(
+      'Employees — All Departments',
+      name: 'timeTrackerEmployeesAllDepartments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Assign Employee`
+  String get timeTrackerAssignEmployee {
+    return Intl.message(
+      'Assign Employee',
+      name: 'timeTrackerAssignEmployee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reassign Employee Location`
+  String get timeTrackerReassignEmployeeLocation {
+    return Intl.message(
+      'Reassign Employee Location',
+      name: 'timeTrackerReassignEmployeeLocation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove Employee Assignment`
+  String get timeTrackerRemoveEmployeeAssignment {
+    return Intl.message(
+      'Remove Employee Assignment',
+      name: 'timeTrackerRemoveEmployeeAssignment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export Employees`
+  String get timeTrackerExportEmployees {
+    return Intl.message(
+      'Export Employees',
+      name: 'timeTrackerExportEmployees',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View Groups`
+  String get timeTrackerViewGroups {
+    return Intl.message(
+      'View Groups',
+      name: 'timeTrackerViewGroups',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create Group`
+  String get timeTrackerCreateGroup {
+    return Intl.message(
+      'Create Group',
+      name: 'timeTrackerCreateGroup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Group`
+  String get timeTrackerEditGroup {
+    return Intl.message(
+      'Edit Group',
+      name: 'timeTrackerEditGroup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete Group`
+  String get timeTrackerDeleteGroup {
+    return Intl.message(
+      'Delete Group',
+      name: 'timeTrackerDeleteGroup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View Vacation Balances`
+  String get timeTrackerViewVacationBalances {
+    return Intl.message(
+      'View Vacation Balances',
+      name: 'timeTrackerViewVacationBalances',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Vacation Balance`
+  String get timeTrackerEditVacationBalance {
+    return Intl.message(
+      'Edit Vacation Balance',
+      name: 'timeTrackerEditVacationBalance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import Vacation Balances`
+  String get timeTrackerImportVacationBalances {
+    return Intl.message(
+      'Import Vacation Balances',
+      name: 'timeTrackerImportVacationBalances',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export Vacation Balances`
+  String get timeTrackerExportVacationBalances {
+    return Intl.message(
+      'Export Vacation Balances',
+      name: 'timeTrackerExportVacationBalances',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dashboard`
+  String get timeTrackerTabDashboard {
+    return Intl.message(
+      'Dashboard',
+      name: 'timeTrackerTabDashboard',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Overview`
+  String get timeTrackerTabOverview {
+    return Intl.message(
+      'Overview',
+      name: 'timeTrackerTabOverview',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Attendance`
+  String get timeTrackerTabAttendance {
+    return Intl.message(
+      'Attendance',
+      name: 'timeTrackerTabAttendance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Requests`
+  String get timeTrackerTabRequests {
+    return Intl.message(
+      'Requests',
+      name: 'timeTrackerTabRequests',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Approvals`
+  String get timeTrackerTabApprovals {
+    return Intl.message(
+      'Approvals',
+      name: 'timeTrackerTabApprovals',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request Types`
+  String get timeTrackerTabRequestTypes {
+    return Intl.message(
+      'Request Types',
+      name: 'timeTrackerTabRequestTypes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Locations`
+  String get timeTrackerTabLocations {
+    return Intl.message(
+      'Locations',
+      name: 'timeTrackerTabLocations',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Employees`
+  String get timeTrackerTabEmployees {
+    return Intl.message(
+      'Employees',
+      name: 'timeTrackerTabEmployees',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vacation Balances`
+  String get timeTrackerTabVacationBalances {
+    return Intl.message(
+      'Vacation Balances',
+      name: 'timeTrackerTabVacationBalances',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Time Tracker`
+  String get timeTrackerTitle {
+    return Intl.message(
+      'Time Tracker',
+      name: 'timeTrackerTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You don't have access to the Time Tracker.`
+  String get timeTrackerNoAccess {
+    return Intl.message(
+      'You don\'t have access to the Time Tracker.',
+      name: 'timeTrackerNoAccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not load the Time Tracker. Please try again.`
+  String get timeTrackerLoadError {
+    return Intl.message(
+      'Could not load the Time Tracker. Please try again.',
+      name: 'timeTrackerLoadError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your Time Tracker sections`
+  String get timeTrackerYourTabs {
+    return Intl.message(
+      'Your Time Tracker sections',
+      name: 'timeTrackerYourTabs',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You can check in and out.`
+  String get timeTrackerCheckInAvailable {
+    return Intl.message(
+      'You can check in and out.',
+      name: 'timeTrackerCheckInAvailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The Time Tracker screens are being built and will appear here soon.`
+  String get timeTrackerScreensComingSoon {
+    return Intl.message(
+      'The Time Tracker screens are being built and will appear here soon.',
+      name: 'timeTrackerScreensComingSoon',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Locations, shifts and employee assignments are managed in the HR module.`
+  String get timeTrackerHrOwnsSetup {
+    return Intl.message(
+      'Locations, shifts and employee assignments are managed in the HR module.',
+      name: 'timeTrackerHrOwnsSetup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Try Again`
+  String get timeTrackerRetry {
+    return Intl.message(
+      'Try Again',
+      name: 'timeTrackerRetry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check In`
+  String get timeTrackerCheckIn {
+    return Intl.message(
+      'Check In',
+      name: 'timeTrackerCheckIn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check Out`
+  String get timeTrackerCheckOut {
+    return Intl.message(
+      'Check Out',
+      name: 'timeTrackerCheckOut',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pause`
+  String get timeTrackerPause {
+    return Intl.message('Pause', name: 'timeTrackerPause', desc: '', args: []);
+  }
+
+  /// `Resume`
+  String get timeTrackerResume {
+    return Intl.message(
+      'Resume',
+      name: 'timeTrackerResume',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hour`
+  String get timeTrackerHourUnit {
+    return Intl.message(
+      'Hour',
+      name: 'timeTrackerHourUnit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Work Location`
+  String get timeTrackerWorkLocation {
+    return Intl.message(
+      'Work Location',
+      name: 'timeTrackerWorkLocation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose Work Location`
+  String get timeTrackerChooseWorkLocation {
+    return Intl.message(
+      'Choose Work Location',
+      name: 'timeTrackerChooseWorkLocation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Start Shift`
+  String get timeTrackerStartShift {
+    return Intl.message(
+      'Start Shift',
+      name: 'timeTrackerStartShift',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remote`
+  String get timeTrackerRemote {
+    return Intl.message(
+      'Remote',
+      name: 'timeTrackerRemote',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Client Site`
+  String get timeTrackerClientSite {
+    return Intl.message(
+      'Client Site',
+      name: 'timeTrackerClientSite',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Office`
+  String get timeTrackerOffice {
+    return Intl.message(
+      'Office',
+      name: 'timeTrackerOffice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Wrong Location`
+  String get timeTrackerWrongLocationTitle {
+    return Intl.message(
+      'Wrong Location',
+      name: 'timeTrackerWrongLocationTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your check-in location does not match the company's designated location. Please check in from the correct location.`
+  String get timeTrackerWrongLocationBody {
+    return Intl.message(
+      'Your check-in location does not match the company\'s designated location. Please check in from the correct location.',
+      name: 'timeTrackerWrongLocationBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirmed`
+  String get timeTrackerConfirmedTitle {
+    return Intl.message(
+      'Confirmed',
+      name: 'timeTrackerConfirmedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your Location Matches The Company’s Location`
+  String get timeTrackerLocationMatches {
+    return Intl.message(
+      'Your Location Matches The Company’s Location',
+      name: 'timeTrackerLocationMatches',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Successfully Checked In`
+  String get timeTrackerCheckedInSuccess {
+    return Intl.message(
+      'You Successfully Checked In',
+      name: 'timeTrackerCheckedInSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Successfully Checked Out`
+  String get timeTrackerCheckedOutSuccess {
+    return Intl.message(
+      'You Successfully Checked Out',
+      name: 'timeTrackerCheckedOutSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Checking Out`
+  String get timeTrackerCheckOutConfirmTitle {
+    return Intl.message(
+      'Checking Out',
+      name: 'timeTrackerCheckOutConfirmTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Check Out ?`
+  String get timeTrackerCheckOutConfirmBody {
+    return Intl.message(
+      'Are You Sure You Want To Check Out ?',
+      name: 'timeTrackerCheckOutConfirmBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Location Needed`
+  String get timeTrackerLocationNeededTitle {
+    return Intl.message(
+      'Location Needed',
+      name: 'timeTrackerLocationNeededTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Location access is turned off for Knowticed. Allow it in your device Settings to check in at the office, or choose Remote / Client Site if you are allowed.`
+  String get timeTrackerLocationDenied {
+    return Intl.message(
+      'Location access is turned off for Knowticed. Allow it in your device Settings to check in at the office, or choose Remote / Client Site if you are allowed.',
+      name: 'timeTrackerLocationDenied',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Location services are turned off on this device. Turn them on to check in at the office.`
+  String get timeTrackerLocationServiceOff {
+    return Intl.message(
+      'Location services are turned off on this device. Turn them on to check in at the office.',
+      name: 'timeTrackerLocationServiceOff',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We could not read your location. Please try again.`
+  String get timeTrackerLocationUnavailable {
+    return Intl.message(
+      'We could not read your location. Please try again.',
+      name: 'timeTrackerLocationUnavailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You are not assigned to a work location yet. Ask HR to assign you before checking in.`
+  String get timeTrackerNotAssigned {
+    return Intl.message(
+      'You are not assigned to a work location yet. Ask HR to assign you before checking in.',
+      name: 'timeTrackerNotAssigned',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You can't check in at this location.`
+  String get timeTrackerLocationNotAllowed {
+    return Intl.message(
+      'You can\'t check in at this location.',
+      name: 'timeTrackerLocationNotAllowed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You are not allowed to work from a different location.`
+  String get timeTrackerDifferentLocationNotAllowed {
+    return Intl.message(
+      'You are not allowed to work from a different location.',
+      name: 'timeTrackerDifferentLocationNotAllowed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Something went wrong. Please try again.`
+  String get timeTrackerActionFailed {
+    return Intl.message(
+      'Something went wrong. Please try again.',
+      name: 'timeTrackerActionFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You don't have permission to do this.`
+  String get timeTrackerNoPermission {
+    return Intl.message(
+      'You don\'t have permission to do this.',
+      name: 'timeTrackerNoPermission',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Date`
+  String get timeTrackerDate {
+    return Intl.message('Date', name: 'timeTrackerDate', desc: '', args: []);
+  }
+
+  /// `Check In Time`
+  String get timeTrackerCheckInTime {
+    return Intl.message(
+      'Check In Time',
+      name: 'timeTrackerCheckInTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check Out Time`
+  String get timeTrackerCheckOutTime {
+    return Intl.message(
+      'Check Out Time',
+      name: 'timeTrackerCheckOutTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Location`
+  String get timeTrackerLocation {
+    return Intl.message(
+      'Location',
+      name: 'timeTrackerLocation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Break`
+  String get timeTrackerBreak {
+    return Intl.message('Break', name: 'timeTrackerBreak', desc: '', args: []);
+  }
+
+  /// `{count} Minutes`
+  String timeTrackerMinutesValue(Object count) {
+    return Intl.message(
+      '$count Minutes',
+      name: 'timeTrackerMinutesValue',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `No Break`
+  String get timeTrackerNoBreak {
+    return Intl.message(
+      'No Break',
+      name: 'timeTrackerNoBreak',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Time`
+  String get timeTrackerRangeTime {
+    return Intl.message(
+      'Time',
+      name: 'timeTrackerRangeTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Day`
+  String get timeTrackerRangeDay {
+    return Intl.message('Day', name: 'timeTrackerRangeDay', desc: '', args: []);
+  }
+
+  /// `Week`
+  String get timeTrackerRangeWeek {
+    return Intl.message(
+      'Week',
+      name: 'timeTrackerRangeWeek',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Month`
+  String get timeTrackerRangeMonth {
+    return Intl.message(
+      'Month',
+      name: 'timeTrackerRangeMonth',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Year`
+  String get timeTrackerRangeYear {
+    return Intl.message(
+      'Year',
+      name: 'timeTrackerRangeYear',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Custom`
+  String get timeTrackerRangeCustom {
+    return Intl.message(
+      'Custom',
+      name: 'timeTrackerRangeCustom',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Custom Date Selector`
+  String get timeTrackerCustomDateSelector {
+    return Intl.message(
+      'Custom Date Selector',
+      name: 'timeTrackerCustomDateSelector',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Start Date`
+  String get timeTrackerStartDate {
+    return Intl.message(
+      'Start Date',
+      name: 'timeTrackerStartDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `End Date`
+  String get timeTrackerEndDate {
+    return Intl.message(
+      'End Date',
+      name: 'timeTrackerEndDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Overall`
+  String get timeTrackerOverall {
+    return Intl.message(
+      'Overall',
+      name: 'timeTrackerOverall',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Present`
+  String get timeTrackerPresent {
+    return Intl.message(
+      'Present',
+      name: 'timeTrackerPresent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Absence`
+  String get timeTrackerAbsence {
+    return Intl.message(
+      'Absence',
+      name: 'timeTrackerAbsence',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Absent`
+  String get timeTrackerAbsent {
+    return Intl.message(
+      'Absent',
+      name: 'timeTrackerAbsent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Late`
+  String get timeTrackerLate {
+    return Intl.message('Late', name: 'timeTrackerLate', desc: '', args: []);
+  }
+
+  /// `Vacations Credit`
+  String get timeTrackerVacationsCredit {
+    return Intl.message(
+      'Vacations Credit',
+      name: 'timeTrackerVacationsCredit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vacation`
+  String get timeTrackerVacation {
+    return Intl.message(
+      'Vacation',
+      name: 'timeTrackerVacation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sick Leave`
+  String get timeTrackerSickLeave {
+    return Intl.message(
+      'Sick Leave',
+      name: 'timeTrackerSickLeave',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Excused`
+  String get timeTrackerExcused {
+    return Intl.message(
+      'Excused',
+      name: 'timeTrackerExcused',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Excuse Leave`
+  String get timeTrackerExcuseLeave {
+    return Intl.message(
+      'Excuse Leave',
+      name: 'timeTrackerExcuseLeave',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Requests`
+  String get timeTrackerRequestsTitle {
+    return Intl.message(
+      'Requests',
+      name: 'timeTrackerRequestsTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Approved`
+  String get timeTrackerApproved {
+    return Intl.message(
+      'Approved',
+      name: 'timeTrackerApproved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pending`
+  String get timeTrackerPending {
+    return Intl.message(
+      'Pending',
+      name: 'timeTrackerPending',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not Yet`
+  String get timeTrackerStepNotYet {
+    return Intl.message(
+      'Not Yet',
+      name: 'timeTrackerStepNotYet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rejected`
+  String get timeTrackerRejected {
+    return Intl.message(
+      'Rejected',
+      name: 'timeTrackerRejected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Canceled`
+  String get timeTrackerCanceled {
+    return Intl.message(
+      'Canceled',
+      name: 'timeTrackerCanceled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total`
+  String get timeTrackerTotal {
+    return Intl.message('Total', name: 'timeTrackerTotal', desc: '', args: []);
+  }
+
+  /// `Late History`
+  String get timeTrackerLateHistory {
+    return Intl.message(
+      'Late History',
+      name: 'timeTrackerLateHistory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Counts`
+  String get timeTrackerCounts {
+    return Intl.message(
+      'Counts',
+      name: 'timeTrackerCounts',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Minutes`
+  String get timeTrackerMinutes {
+    return Intl.message(
+      'Minutes',
+      name: 'timeTrackerMinutes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Work Locations`
+  String get timeTrackerWorkLocations {
+    return Intl.message(
+      'Work Locations',
+      name: 'timeTrackerWorkLocations',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No data for this period yet.`
+  String get timeTrackerNoDataYet {
+    return Intl.message(
+      'No data for this period yet.',
+      name: 'timeTrackerNoDataYet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transaction`
+  String get timeTrackerTransactionButton {
+    return Intl.message(
+      'Transaction',
+      name: 'timeTrackerTransactionButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No`
+  String get timeTrackerColumnNo {
+    return Intl.message('No', name: 'timeTrackerColumnNo', desc: '', args: []);
+  }
+
+  /// `Attendance Date`
+  String get timeTrackerAttendanceDate {
+    return Intl.message(
+      'Attendance Date',
+      name: 'timeTrackerAttendanceDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Status`
+  String get timeTrackerStatus {
+    return Intl.message(
+      'Status',
+      name: 'timeTrackerStatus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Oncoming Time`
+  String get timeTrackerOncomingTime {
+    return Intl.message(
+      'Oncoming Time',
+      name: 'timeTrackerOncomingTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Leaving Time`
+  String get timeTrackerLeavingTime {
+    return Intl.message(
+      'Leaving Time',
+      name: 'timeTrackerLeavingTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Break Time`
+  String get timeTrackerBreakTime {
+    return Intl.message(
+      'Break Time',
+      name: 'timeTrackerBreakTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total Time`
+  String get timeTrackerTotalTime {
+    return Intl.message(
+      'Total Time',
+      name: 'timeTrackerTotalTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count} Mins`
+  String timeTrackerMinsValue(Object count) {
+    return Intl.message(
+      '$count Mins',
+      name: 'timeTrackerMinsValue',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `{value} Hrs`
+  String timeTrackerHrsValue(Object value) {
+    return Intl.message(
+      '$value Hrs',
+      name: 'timeTrackerHrsValue',
+      desc: '',
+      args: [value],
+    );
+  }
+
+  /// `Type`
+  String get timeTrackerFilterType {
+    return Intl.message(
+      'Type',
+      name: 'timeTrackerFilterType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Day`
+  String get timeTrackerFilterDay {
+    return Intl.message(
+      'Day',
+      name: 'timeTrackerFilterDay',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All`
+  String get timeTrackerAll {
+    return Intl.message('All', name: 'timeTrackerAll', desc: '', args: []);
+  }
+
+  /// `At Least (Hours)`
+  String get timeTrackerMinTotalHoursHint {
+    return Intl.message(
+      'At Least (Hours)',
+      name: 'timeTrackerMinTotalHoursHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Attendance Report`
+  String get timeTrackerAttendanceExportName {
+    return Intl.message(
+      'Attendance Report',
+      name: 'timeTrackerAttendanceExportName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `There is nothing to export.`
+  String get timeTrackerExportEmpty {
+    return Intl.message(
+      'There is nothing to export.',
+      name: 'timeTrackerExportEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Creating Transaction`
+  String get timeTrackerCreatingTransaction {
+    return Intl.message(
+      'Creating Transaction',
+      name: 'timeTrackerCreatingTransaction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check In Date`
+  String get timeTrackerCheckInDate {
+    return Intl.message(
+      'Check In Date',
+      name: 'timeTrackerCheckInDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check Out Date`
+  String get timeTrackerCheckOutDate {
+    return Intl.message(
+      'Check Out Date',
+      name: 'timeTrackerCheckOutDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Description`
+  String get timeTrackerDescription {
+    return Intl.message(
+      'Description',
+      name: 'timeTrackerDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transaction Document`
+  String get timeTrackerTransactionDocument {
+    return Intl.message(
+      'Transaction Document',
+      name: 'timeTrackerTransactionDocument',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Create This Transaction ?`
+  String get timeTrackerCreateTransactionConfirm {
+    return Intl.message(
+      'Are You Sure You Want To Create This Transaction ?',
+      name: 'timeTrackerCreateTransactionConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Submitted Transaction`
+  String get timeTrackerSubmittedTransaction {
+    return Intl.message(
+      'Submitted Transaction',
+      name: 'timeTrackerSubmittedTransaction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Successfully Submitted This Transaction`
+  String get timeTrackerTransactionSubmitted {
+    return Intl.message(
+      'You Successfully Submitted This Transaction',
+      name: 'timeTrackerTransactionSubmitted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose the check-in date and time.`
+  String get timeTrackerCheckInRequired {
+    return Intl.message(
+      'Choose the check-in date and time.',
+      name: 'timeTrackerCheckInRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose the check-out date and time.`
+  String get timeTrackerCheckOutRequired {
+    return Intl.message(
+      'Choose the check-out date and time.',
+      name: 'timeTrackerCheckOutRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check out must be after check in.`
+  String get timeTrackerCheckOutAfterCheckIn {
+    return Intl.message(
+      'Check out must be after check in.',
+      name: 'timeTrackerCheckOutAfterCheckIn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A transaction can't be in the future.`
+  String get timeTrackerTransactionInFuture {
+    return Intl.message(
+      'A transaction can\'t be in the future.',
+      name: 'timeTrackerTransactionInFuture',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not upload the file. Please try again.`
+  String get timeTrackerUploadFailed {
+    return Intl.message(
+      'Could not upload the file. Please try again.',
+      name: 'timeTrackerUploadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The file is larger than 10 MB.`
+  String get timeTrackerFileTooLarge {
+    return Intl.message(
+      'The file is larger than 10 MB.',
+      name: 'timeTrackerFileTooLarge',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Uploaded Date: {date}`
+  String timeTrackerUploadedOn(Object date) {
+    return Intl.message(
+      'Uploaded Date: $date',
+      name: 'timeTrackerUploadedOn',
+      desc: '',
+      args: [date],
+    );
+  }
+
+  /// `This section is coming soon.`
+  String get timeTrackerSectionComingSoon {
+    return Intl.message(
+      'This section is coming soon.',
+      name: 'timeTrackerSectionComingSoon',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Location Name`
+  String get timeTrackerLocationName {
+    return Intl.message(
+      'Location Name',
+      name: 'timeTrackerLocationName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `اسم الموقع`
+  String get timeTrackerLocationNameAr {
+    return Intl.message(
+      'اسم الموقع',
+      name: 'timeTrackerLocationNameAr',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Google Map`
+  String get timeTrackerGoogleMap {
+    return Intl.message(
+      'Google Map',
+      name: 'timeTrackerGoogleMap',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Location At Google Maps`
+  String get timeTrackerLocationAtGoogleMaps {
+    return Intl.message(
+      'Location At Google Maps',
+      name: 'timeTrackerLocationAtGoogleMaps',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `https://www.google.com/maps/place`
+  String get timeTrackerGoogleMapsHint {
+    return Intl.message(
+      'https://www.google.com/maps/place',
+      name: 'timeTrackerGoogleMapsHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Latitude`
+  String get timeTrackerLatitude {
+    return Intl.message(
+      'Latitude',
+      name: 'timeTrackerLatitude',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Longitude`
+  String get timeTrackerLongitude {
+    return Intl.message(
+      'Longitude',
+      name: 'timeTrackerLongitude',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Use My Current Location`
+  String get timeTrackerUseMyLocation {
+    return Intl.message(
+      'Use My Current Location',
+      name: 'timeTrackerUseMyLocation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Location access is turned off for Knowticed. Allow it in your device Settings, or type the latitude and longitude.`
+  String get timeTrackerLocationDeniedSetup {
+    return Intl.message(
+      'Location access is turned off for Knowticed. Allow it in your device Settings, or type the latitude and longitude.',
+      name: 'timeTrackerLocationDeniedSetup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Allow Geofence`
+  String get timeTrackerAllowGeofence {
+    return Intl.message(
+      'Allow Geofence',
+      name: 'timeTrackerAllowGeofence',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Geofencing`
+  String get timeTrackerGeofencing {
+    return Intl.message(
+      'Geofencing',
+      name: 'timeTrackerGeofencing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Geofencing Radius (Meters)`
+  String get timeTrackerGeofenceRadius {
+    return Intl.message(
+      'Geofencing Radius (Meters)',
+      name: 'timeTrackerGeofenceRadius',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Geofencing Radius`
+  String get timeTrackerGeofenceRadiusColumn {
+    return Intl.message(
+      'Geofencing Radius',
+      name: 'timeTrackerGeofenceRadiusColumn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `500`
+  String get timeTrackerRadiusHint {
+    return Intl.message(
+      '500',
+      name: 'timeTrackerRadiusHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count} m`
+  String timeTrackerMetersValue(Object count) {
+    return Intl.message(
+      '$count m',
+      name: 'timeTrackerMetersValue',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Country`
+  String get timeTrackerCountry {
+    return Intl.message(
+      'Country',
+      name: 'timeTrackerCountry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `دولة`
+  String get timeTrackerCountryAr {
+    return Intl.message(
+      'دولة',
+      name: 'timeTrackerCountryAr',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `State Or Province`
+  String get timeTrackerStateOrProvince {
+    return Intl.message(
+      'State Or Province',
+      name: 'timeTrackerStateOrProvince',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ولاية او محافظة`
+  String get timeTrackerStateOrProvinceAr {
+    return Intl.message(
+      'ولاية او محافظة',
+      name: 'timeTrackerStateOrProvinceAr',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `City`
+  String get timeTrackerCity {
+    return Intl.message('City', name: 'timeTrackerCity', desc: '', args: []);
+  }
+
+  /// `مدينة`
+  String get timeTrackerCityAr {
+    return Intl.message('مدينة', name: 'timeTrackerCityAr', desc: '', args: []);
+  }
+
+  /// `Postal Code`
+  String get timeTrackerPostalCode {
+    return Intl.message(
+      'Postal Code',
+      name: 'timeTrackerPostalCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `اكتب هنا`
+  String get timeTrackerTextHereAr {
+    return Intl.message(
+      'اكتب هنا',
+      name: 'timeTrackerTextHereAr',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Location Description`
+  String get timeTrackerLocationDescription {
+    return Intl.message(
+      'Location Description',
+      name: 'timeTrackerLocationDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Work Schedule`
+  String get timeTrackerWorkSchedule {
+    return Intl.message(
+      'Work Schedule',
+      name: 'timeTrackerWorkSchedule',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Location Setting`
+  String get timeTrackerLocationSetting {
+    return Intl.message(
+      'Location Setting',
+      name: 'timeTrackerLocationSetting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Work Start Time`
+  String get timeTrackerWorkStartTime {
+    return Intl.message(
+      'Work Start Time',
+      name: 'timeTrackerWorkStartTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Work End Time`
+  String get timeTrackerWorkEndTime {
+    return Intl.message(
+      'Work End Time',
+      name: 'timeTrackerWorkEndTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Working Days`
+  String get timeTrackerWorkingDays {
+    return Intl.message(
+      'Working Days',
+      name: 'timeTrackerWorkingDays',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Late After (Minutes)`
+  String get timeTrackerLateAfter {
+    return Intl.message(
+      'Late After (Minutes)',
+      name: 'timeTrackerLateAfter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `0`
+  String get timeTrackerLateAfterHint {
+    return Intl.message(
+      '0',
+      name: 'timeTrackerLateAfterHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Allow Breaks In Attendance`
+  String get timeTrackerAllowBreaks {
+    return Intl.message(
+      'Allow Breaks In Attendance',
+      name: 'timeTrackerAllowBreaks',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Allow Pause`
+  String get timeTrackerAllowPause {
+    return Intl.message(
+      'Allow Pause',
+      name: 'timeTrackerAllowPause',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `30`
+  String get timeTrackerBreakLengthHint {
+    return Intl.message(
+      '30',
+      name: 'timeTrackerBreakLengthHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mins`
+  String get timeTrackerUnitMins {
+    return Intl.message(
+      'Mins',
+      name: 'timeTrackerUnitMins',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hours`
+  String get timeTrackerUnitHours {
+    return Intl.message(
+      'Hours',
+      name: 'timeTrackerUnitHours',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the name.`
+  String get timeTrackerNameRequired {
+    return Intl.message(
+      'Enter the name.',
+      name: 'timeTrackerNameRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the Arabic name.`
+  String get timeTrackerArabicNameRequired {
+    return Intl.message(
+      'Enter the Arabic name.',
+      name: 'timeTrackerArabicNameRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter a latitude between -90 and 90.`
+  String get timeTrackerLatitudeInvalid {
+    return Intl.message(
+      'Enter a latitude between -90 and 90.',
+      name: 'timeTrackerLatitudeInvalid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter a longitude between -180 and 180.`
+  String get timeTrackerLongitudeInvalid {
+    return Intl.message(
+      'Enter a longitude between -180 and 180.',
+      name: 'timeTrackerLongitudeInvalid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A geofence needs the latitude and longitude.`
+  String get timeTrackerCoordinatesRequired {
+    return Intl.message(
+      'A geofence needs the latitude and longitude.',
+      name: 'timeTrackerCoordinatesRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the radius in meters (up to 50000).`
+  String get timeTrackerRadiusRequired {
+    return Intl.message(
+      'Enter the radius in meters (up to 50000).',
+      name: 'timeTrackerRadiusRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Work start and end can't be the same time.`
+  String get timeTrackerWorkTimesSame {
+    return Intl.message(
+      'Work start and end can\'t be the same time.',
+      name: 'timeTrackerWorkTimesSame',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose at least one working day.`
+  String get timeTrackerWorkingDaysRequired {
+    return Intl.message(
+      'Choose at least one working day.',
+      name: 'timeTrackerWorkingDaysRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the break length.`
+  String get timeTrackerBreakLengthRequired {
+    return Intl.message(
+      'Enter the break length.',
+      name: 'timeTrackerBreakLengthRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Creating New Location`
+  String get timeTrackerCreatingNewLocation {
+    return Intl.message(
+      'Creating New Location',
+      name: 'timeTrackerCreatingNewLocation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Editing Location`
+  String get timeTrackerEditingLocation {
+    return Intl.message(
+      'Editing Location',
+      name: 'timeTrackerEditingLocation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Create This Location ?`
+  String get timeTrackerCreateLocationConfirm {
+    return Intl.message(
+      'Are You Sure You Want To Create This Location ?',
+      name: 'timeTrackerCreateLocationConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Location Created`
+  String get timeTrackerLocationCreatedTitle {
+    return Intl.message(
+      'Location Created',
+      name: 'timeTrackerLocationCreatedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Successfully Created New Location`
+  String get timeTrackerLocationCreated {
+    return Intl.message(
+      'You Successfully Created New Location',
+      name: 'timeTrackerLocationCreated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Edit This Location ?`
+  String get timeTrackerEditLocationConfirm {
+    return Intl.message(
+      'Are You Sure You Want To Edit This Location ?',
+      name: 'timeTrackerEditLocationConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Location Edited`
+  String get timeTrackerLocationEditedTitle {
+    return Intl.message(
+      'Location Edited',
+      name: 'timeTrackerLocationEditedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Successfully Edited This Location`
+  String get timeTrackerLocationEdited {
+    return Intl.message(
+      'You Successfully Edited This Location',
+      name: 'timeTrackerLocationEdited',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Deleting Location`
+  String get timeTrackerDeletingLocation {
+    return Intl.message(
+      'Deleting Location',
+      name: 'timeTrackerDeletingLocation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Delete This Location ?`
+  String get timeTrackerDeleteLocationConfirm {
+    return Intl.message(
+      'Are You Sure You Want To Delete This Location ?',
+      name: 'timeTrackerDeleteLocationConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Location Deleted`
+  String get timeTrackerLocationDeletedTitle {
+    return Intl.message(
+      'Location Deleted',
+      name: 'timeTrackerLocationDeletedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Successfully Deleted This Location`
+  String get timeTrackerLocationDeleted {
+    return Intl.message(
+      'You Successfully Deleted This Location',
+      name: 'timeTrackerLocationDeleted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Changing Status`
+  String get timeTrackerChangingStatus {
+    return Intl.message(
+      'Changing Status',
+      name: 'timeTrackerChangingStatus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Deactivate This Location ?`
+  String get timeTrackerDeactivateLocationConfirm {
+    return Intl.message(
+      'Are You Sure You Want To Deactivate This Location ?',
+      name: 'timeTrackerDeactivateLocationConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Activate This Location ?`
+  String get timeTrackerActivateLocationConfirm {
+    return Intl.message(
+      'Are You Sure You Want To Activate This Location ?',
+      name: 'timeTrackerActivateLocationConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Successfully Changed the Status Of This Location`
+  String get timeTrackerLocationStatusChanged {
+    return Intl.message(
+      'You Successfully Changed the Status Of This Location',
+      name: 'timeTrackerLocationStatusChanged',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Status Changed`
+  String get timeTrackerStatusChangedTitle {
+    return Intl.message(
+      'Status Changed',
+      name: 'timeTrackerStatusChangedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Active`
+  String get timeTrackerActive {
+    return Intl.message(
+      'Active',
+      name: 'timeTrackerActive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Inactive`
+  String get timeTrackerInactive {
+    return Intl.message(
+      'Inactive',
+      name: 'timeTrackerInactive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Removed`
+  String get timeTrackerRemoved {
+    return Intl.message(
+      'Removed',
+      name: 'timeTrackerRemoved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Assigned Employees`
+  String get timeTrackerAssignedEmployees {
+    return Intl.message(
+      'Assigned Employees',
+      name: 'timeTrackerAssignedEmployees',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Locations Report`
+  String get timeTrackerLocationsExportName {
+    return Intl.message(
+      'Locations Report',
+      name: 'timeTrackerLocationsExportName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Download the template, fill one row per location, then upload it as CSV or Excel. A row whose name matches an existing location updates it (a blank cell keeps the current value); every other row creates a new location. Nothing is deleted.`
+  String get timeTrackerImportHelp {
+    return Intl.message(
+      'Download the template, fill one row per location, then upload it as CSV or Excel. A row whose name matches an existing location updates it (a blank cell keeps the current value); every other row creates a new location. Nothing is deleted.',
+      name: 'timeTrackerImportHelp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Download Template`
+  String get timeTrackerDownloadTemplate {
+    return Intl.message(
+      'Download Template',
+      name: 'timeTrackerDownloadTemplate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Upload File`
+  String get timeTrackerUploadFile {
+    return Intl.message(
+      'Upload File',
+      name: 'timeTrackerUploadFile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Locations Template`
+  String get timeTrackerImportTemplateName {
+    return Intl.message(
+      'Locations Template',
+      name: 'timeTrackerImportTemplateName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{create} new · {update} updated · {unchanged} unchanged · {skip} skipped`
+  String timeTrackerImportSummary(
+    Object create,
+    Object update,
+    Object unchanged,
+    Object skip,
+  ) {
+    return Intl.message(
+      '$create new · $update updated · $unchanged unchanged · $skip skipped',
+      name: 'timeTrackerImportSummary',
+      desc: '',
+      args: [create, update, unchanged, skip],
+    );
+  }
+
+  /// `Line {line}`
+  String timeTrackerImportLine(Object line) {
+    return Intl.message(
+      'Line $line',
+      name: 'timeTrackerImportLine',
+      desc: '',
+      args: [line],
+    );
+  }
+
+  /// `Unreadable value in “{column}”`
+  String timeTrackerImportUnreadable(Object column) {
+    return Intl.message(
+      'Unreadable value in “$column”',
+      name: 'timeTrackerImportUnreadable',
+      desc: '',
+      args: [column],
+    );
+  }
+
+  /// `This name appears more than once in the file`
+  String get timeTrackerImportDuplicate {
+    return Intl.message(
+      'This name appears more than once in the file',
+      name: 'timeTrackerImportDuplicate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The file has no “Location Name” column. Please use the template.`
+  String get timeTrackerImportNoNameColumn {
+    return Intl.message(
+      'The file has no “Location Name” column. Please use the template.',
+      name: 'timeTrackerImportNoNameColumn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The file could not be read. Please use the CSV or Excel template.`
+  String get timeTrackerImportFileError {
+    return Intl.message(
+      'The file could not be read. Please use the CSV or Excel template.',
+      name: 'timeTrackerImportFileError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `There is nothing to import.`
+  String get timeTrackerImportNothing {
+    return Intl.message(
+      'There is nothing to import.',
+      name: 'timeTrackerImportNothing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Import These Locations ?`
+  String get timeTrackerImportConfirm {
+    return Intl.message(
+      'Are You Sure You Want To Import These Locations ?',
+      name: 'timeTrackerImportConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Locations Imported`
+  String get timeTrackerImportDoneTitle {
+    return Intl.message(
+      'Locations Imported',
+      name: 'timeTrackerImportDoneTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Successfully Imported The Locations`
+  String get timeTrackerImportDone {
+    return Intl.message(
+      'You Successfully Imported The Locations',
+      name: 'timeTrackerImportDone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New`
+  String get timeTrackerImportActionCreate {
+    return Intl.message(
+      'New',
+      name: 'timeTrackerImportActionCreate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Update`
+  String get timeTrackerImportActionUpdate {
+    return Intl.message(
+      'Update',
+      name: 'timeTrackerImportActionUpdate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Change`
+  String get timeTrackerImportActionUnchanged {
+    return Intl.message(
+      'No Change',
+      name: 'timeTrackerImportActionUnchanged',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Skipped`
+  String get timeTrackerImportActionSkip {
+    return Intl.message(
+      'Skipped',
+      name: 'timeTrackerImportActionSkip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Access Granted`
+  String get timeTrackerAccessGrantedTitle {
+    return Intl.message(
+      'Access Granted',
+      name: 'timeTrackerAccessGrantedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Successfully Granted Access`
+  String get timeTrackerAccessGranted {
+    return Intl.message(
+      'You Successfully Granted Access',
+      name: 'timeTrackerAccessGranted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Grant Access`
+  String get timeTrackerGrantAccess {
+    return Intl.message(
+      'Grant Access',
+      name: 'timeTrackerGrantAccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose Location`
+  String get timeTrackerChooseLocation {
+    return Intl.message(
+      'Choose Location',
+      name: 'timeTrackerChooseLocation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose the location.`
+  String get timeTrackerLocationRequired {
+    return Intl.message(
+      'Choose the location.',
+      name: 'timeTrackerLocationRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose The Date`
+  String get timeTrackerChooseTheDate {
+    return Intl.message(
+      'Choose The Date',
+      name: 'timeTrackerChooseTheDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose the start date.`
+  String get timeTrackerStartDateRequired {
+    return Intl.message(
+      'Choose the start date.',
+      name: 'timeTrackerStartDateRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Allow Different Work Location`
+  String get timeTrackerAllowDifferentLocation {
+    return Intl.message(
+      'Allow Different Work Location',
+      name: 'timeTrackerAllowDifferentLocation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Location`
+  String get timeTrackerSelectLocation {
+    return Intl.message(
+      'Select Location',
+      name: 'timeTrackerSelectLocation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose at least one location.`
+  String get timeTrackerAllowedLocationsRequired {
+    return Intl.message(
+      'Choose at least one location.',
+      name: 'timeTrackerAllowedLocationsRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count} Employees Selected`
+  String timeTrackerEmployeesSelected(Object count) {
+    return Intl.message(
+      '$count Employees Selected',
+      name: 'timeTrackerEmployeesSelected',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Title`
+  String get timeTrackerTitleLabel {
+    return Intl.message(
+      'Title',
+      name: 'timeTrackerTitleLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Phone Number`
+  String get timeTrackerPhoneNumber {
+    return Intl.message(
+      'Phone Number',
+      name: 'timeTrackerPhoneNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Department`
+  String get timeTrackerDepartment {
+    return Intl.message(
+      'Department',
+      name: 'timeTrackerDepartment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Email`
+  String get timeTrackerEmail {
+    return Intl.message('Email', name: 'timeTrackerEmail', desc: '', args: []);
+  }
+
+  /// `Assign Date: {date}`
+  String timeTrackerAssignDate(Object date) {
+    return Intl.message(
+      'Assign Date: $date',
+      name: 'timeTrackerAssignDate',
+      desc: '',
+      args: [date],
+    );
+  }
+
+  /// `Location: {name}`
+  String timeTrackerLocationValue(Object name) {
+    return Intl.message(
+      'Location: $name',
+      name: 'timeTrackerLocationValue',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `Assigned`
+  String get timeTrackerAssigned {
+    return Intl.message(
+      'Assigned',
+      name: 'timeTrackerAssigned',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unassigned`
+  String get timeTrackerUnassigned {
+    return Intl.message(
+      'Unassigned',
+      name: 'timeTrackerUnassigned',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Assign`
+  String get timeTrackerAssign {
+    return Intl.message(
+      'Assign',
+      name: 'timeTrackerAssign',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reassign`
+  String get timeTrackerReassign {
+    return Intl.message(
+      'Reassign',
+      name: 'timeTrackerReassign',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove`
+  String get timeTrackerRemove {
+    return Intl.message(
+      'Remove',
+      name: 'timeTrackerRemove',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Assign ({count})`
+  String timeTrackerAssignCount(Object count) {
+    return Intl.message(
+      'Assign ($count)',
+      name: 'timeTrackerAssignCount',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Employees Report`
+  String get timeTrackerEmployeesExportName {
+    return Intl.message(
+      'Employees Report',
+      name: 'timeTrackerEmployeesExportName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Employee Name`
+  String get timeTrackerEmployeeName {
+    return Intl.message(
+      'Employee Name',
+      name: 'timeTrackerEmployeeName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Removing Assignment`
+  String get timeTrackerRemovingAssignment {
+    return Intl.message(
+      'Removing Assignment',
+      name: 'timeTrackerRemovingAssignment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Remove This Employee's Assignment ?`
+  String get timeTrackerRemoveAssignmentConfirm {
+    return Intl.message(
+      'Are You Sure You Want To Remove This Employee\'s Assignment ?',
+      name: 'timeTrackerRemoveAssignmentConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Assignment Removed`
+  String get timeTrackerAssignmentRemovedTitle {
+    return Intl.message(
+      'Assignment Removed',
+      name: 'timeTrackerAssignmentRemovedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Successfully Removed This Employee's Assignment`
+  String get timeTrackerAssignmentRemoved {
+    return Intl.message(
+      'You Successfully Removed This Employee\'s Assignment',
+      name: 'timeTrackerAssignmentRemoved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Group Information`
+  String get timeTrackerGroupInformation {
+    return Intl.message(
+      'Group Information',
+      name: 'timeTrackerGroupInformation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Group`
+  String get timeTrackerGroupButton {
+    return Intl.message(
+      'Group',
+      name: 'timeTrackerGroupButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name (A To Z)`
+  String get timeTrackerSortNameAsc {
+    return Intl.message(
+      'Name (A To Z)',
+      name: 'timeTrackerSortNameAsc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name (Z To A)`
+  String get timeTrackerSortNameDesc {
+    return Intl.message(
+      'Name (Z To A)',
+      name: 'timeTrackerSortNameDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Newest First`
+  String get timeTrackerSortNewest {
+    return Intl.message(
+      'Newest First',
+      name: 'timeTrackerSortNewest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Group Name`
+  String get timeTrackerGroupName {
+    return Intl.message(
+      'Group Name',
+      name: 'timeTrackerGroupName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Members`
+  String get timeTrackerMembers {
+    return Intl.message(
+      'Members',
+      name: 'timeTrackerMembers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose Members`
+  String get timeTrackerChooseMembers {
+    return Intl.message(
+      'Choose Members',
+      name: 'timeTrackerChooseMembers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose at least one member.`
+  String get timeTrackerMembersRequired {
+    return Intl.message(
+      'Choose at least one member.',
+      name: 'timeTrackerMembersRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Creating New Group`
+  String get timeTrackerCreatingNewGroup {
+    return Intl.message(
+      'Creating New Group',
+      name: 'timeTrackerCreatingNewGroup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Editing Group`
+  String get timeTrackerEditingGroup {
+    return Intl.message(
+      'Editing Group',
+      name: 'timeTrackerEditingGroup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Create This Group ?`
+  String get timeTrackerCreateGroupConfirm {
+    return Intl.message(
+      'Are You Sure You Want To Create This Group ?',
+      name: 'timeTrackerCreateGroupConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Group Creation`
+  String get timeTrackerGroupCreationTitle {
+    return Intl.message(
+      'Group Creation',
+      name: 'timeTrackerGroupCreationTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Successfully Created This Group`
+  String get timeTrackerGroupCreated {
+    return Intl.message(
+      'You Successfully Created This Group',
+      name: 'timeTrackerGroupCreated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Editing Group Details`
+  String get timeTrackerEditingGroupDetails {
+    return Intl.message(
+      'Editing Group Details',
+      name: 'timeTrackerEditingGroupDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Edit This Group ?`
+  String get timeTrackerEditGroupConfirm {
+    return Intl.message(
+      'Are You Sure You Want To Edit This Group ?',
+      name: 'timeTrackerEditGroupConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edited Group`
+  String get timeTrackerEditedGroupTitle {
+    return Intl.message(
+      'Edited Group',
+      name: 'timeTrackerEditedGroupTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Successfully Edited This Group`
+  String get timeTrackerGroupEdited {
+    return Intl.message(
+      'You Successfully Edited This Group',
+      name: 'timeTrackerGroupEdited',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Deleting Group`
+  String get timeTrackerDeletingGroups {
+    return Intl.message(
+      'Deleting Group',
+      name: 'timeTrackerDeletingGroups',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Delete This Group ?`
+  String get timeTrackerDeleteGroupConfirm {
+    return Intl.message(
+      'Are You Sure You Want To Delete This Group ?',
+      name: 'timeTrackerDeleteGroupConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Group Deleted`
+  String get timeTrackerDeletedGroupTitle {
+    return Intl.message(
+      'Group Deleted',
+      name: 'timeTrackerDeletedGroupTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Successfully Deleted This Group`
+  String get timeTrackerGroupDeleted {
+    return Intl.message(
+      'You Successfully Deleted This Group',
+      name: 'timeTrackerGroupDeleted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Employee Information`
+  String get timeTrackerEmployeeInformation {
+    return Intl.message(
+      'Employee Information',
+      name: 'timeTrackerEmployeeInformation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request Types Report`
+  String get timeTrackerRequestTypesExportName {
+    return Intl.message(
+      'Request Types Report',
+      name: 'timeTrackerRequestTypesExportName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request Type`
+  String get timeTrackerRequestType {
+    return Intl.message(
+      'Request Type',
+      name: 'timeTrackerRequestType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request Name`
+  String get timeTrackerRequestName {
+    return Intl.message(
+      'Request Name',
+      name: 'timeTrackerRequestName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `اسم الطلب`
+  String get timeTrackerRequestNameAr {
+    return Intl.message(
+      'اسم الطلب',
+      name: 'timeTrackerRequestNameAr',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `وصف الطلب`
+  String get timeTrackerDescriptionAr {
+    return Intl.message(
+      'وصف الطلب',
+      name: 'timeTrackerDescriptionAr',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request Description`
+  String get timeTrackerRequestDescription {
+    return Intl.message(
+      'Request Description',
+      name: 'timeTrackerRequestDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `HR Approval`
+  String get timeTrackerHrApproval {
+    return Intl.message(
+      'HR Approval',
+      name: 'timeTrackerHrApproval',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Manager Approval`
+  String get timeTrackerManagerApproval {
+    return Intl.message(
+      'Manager Approval',
+      name: 'timeTrackerManagerApproval',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Requires Description`
+  String get timeTrackerRequiresDescription {
+    return Intl.message(
+      'Requires Description',
+      name: 'timeTrackerRequiresDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Requires Attachments`
+  String get timeTrackerRequiresAttachments {
+    return Intl.message(
+      'Requires Attachments',
+      name: 'timeTrackerRequiresAttachments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Deducts From Vacation Balance`
+  String get timeTrackerDeductsFromVacation {
+    return Intl.message(
+      'Deducts From Vacation Balance',
+      name: 'timeTrackerDeductsFromVacation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Attachments`
+  String get timeTrackerAttachments {
+    return Intl.message(
+      'Attachments',
+      name: 'timeTrackerAttachments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Required`
+  String get timeTrackerRequired {
+    return Intl.message(
+      'Required',
+      name: 'timeTrackerRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not Required`
+  String get timeTrackerNotRequired {
+    return Intl.message(
+      'Not Required',
+      name: 'timeTrackerNotRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Optional`
+  String get timeTrackerOptional {
+    return Intl.message(
+      'Optional',
+      name: 'timeTrackerOptional',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Creation Date`
+  String get timeTrackerCreationDate {
+    return Intl.message(
+      'Creation Date',
+      name: 'timeTrackerCreationDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Added By`
+  String get timeTrackerAddedBy {
+    return Intl.message(
+      'Added By',
+      name: 'timeTrackerAddedBy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Last Update`
+  String get timeTrackerLastUpdate {
+    return Intl.message(
+      'Last Update',
+      name: 'timeTrackerLastUpdate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Last Update: {date}`
+  String timeTrackerLastUpdateValue(Object date) {
+    return Intl.message(
+      'Last Update: $date',
+      name: 'timeTrackerLastUpdateValue',
+      desc: '',
+      args: [date],
+    );
+  }
+
+  /// `Created Date: {date}`
+  String timeTrackerCreatedDateValue(Object date) {
+    return Intl.message(
+      'Created Date: $date',
+      name: 'timeTrackerCreatedDateValue',
+      desc: '',
+      args: [date],
+    );
+  }
+
+  /// `Limit Location Availability`
+  String get timeTrackerLimitLocationAvailability {
+    return Intl.message(
+      'Limit Location Availability',
+      name: 'timeTrackerLimitLocationAvailability',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Location Availability`
+  String get timeTrackerLocationAvailability {
+    return Intl.message(
+      'Location Availability',
+      name: 'timeTrackerLocationAvailability',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Limit Department Availability`
+  String get timeTrackerLimitDepartmentAvailability {
+    return Intl.message(
+      'Limit Department Availability',
+      name: 'timeTrackerLimitDepartmentAvailability',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Department Availability`
+  String get timeTrackerDepartmentAvailability {
+    return Intl.message(
+      'Department Availability',
+      name: 'timeTrackerDepartmentAvailability',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose Here`
+  String get timeTrackerChooseHere {
+    return Intl.message(
+      'Choose Here',
+      name: 'timeTrackerChooseHere',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose at least one location, or switch the limit off.`
+  String get timeTrackerChooseOneLocation {
+    return Intl.message(
+      'Choose at least one location, or switch the limit off.',
+      name: 'timeTrackerChooseOneLocation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose at least one department, or switch the limit off.`
+  String get timeTrackerChooseOneDepartment {
+    return Intl.message(
+      'Choose at least one department, or switch the limit off.',
+      name: 'timeTrackerChooseOneDepartment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Creating Request Type`
+  String get timeTrackerCreatingRequestType {
+    return Intl.message(
+      'Creating Request Type',
+      name: 'timeTrackerCreatingRequestType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Editing Request Type`
+  String get timeTrackerEditingRequestType {
+    return Intl.message(
+      'Editing Request Type',
+      name: 'timeTrackerEditingRequestType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Create This Request Type ?`
+  String get timeTrackerCreateRequestTypeConfirm {
+    return Intl.message(
+      'Are You Sure You Want To Create This Request Type ?',
+      name: 'timeTrackerCreateRequestTypeConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request Type Created`
+  String get timeTrackerRequestTypeCreatedTitle {
+    return Intl.message(
+      'Request Type Created',
+      name: 'timeTrackerRequestTypeCreatedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Successfully Created This Request Type`
+  String get timeTrackerRequestTypeCreated {
+    return Intl.message(
+      'You Successfully Created This Request Type',
+      name: 'timeTrackerRequestTypeCreated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Edit This Request Type ?`
+  String get timeTrackerEditRequestTypeConfirm {
+    return Intl.message(
+      'Are You Sure You Want To Edit This Request Type ?',
+      name: 'timeTrackerEditRequestTypeConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request Type Edited`
+  String get timeTrackerRequestTypeEditedTitle {
+    return Intl.message(
+      'Request Type Edited',
+      name: 'timeTrackerRequestTypeEditedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Successfully Edited This Request Type`
+  String get timeTrackerRequestTypeEdited {
+    return Intl.message(
+      'You Successfully Edited This Request Type',
+      name: 'timeTrackerRequestTypeEdited',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Removing Request Type`
+  String get timeTrackerRemovingRequestType {
+    return Intl.message(
+      'Removing Request Type',
+      name: 'timeTrackerRemovingRequestType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Remove This Request Type ?`
+  String get timeTrackerRemoveRequestTypeConfirm {
+    return Intl.message(
+      'Are You Sure You Want To Remove This Request Type ?',
+      name: 'timeTrackerRemoveRequestTypeConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request Type Removed`
+  String get timeTrackerRequestTypeRemovedTitle {
+    return Intl.message(
+      'Request Type Removed',
+      name: 'timeTrackerRequestTypeRemovedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Successfully Removed This Request Type`
+  String get timeTrackerRequestTypeRemoved {
+    return Intl.message(
+      'You Successfully Removed This Request Type',
+      name: 'timeTrackerRequestTypeRemoved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Deactivate This Request Type ?`
+  String get timeTrackerDeactivateRequestTypeConfirm {
+    return Intl.message(
+      'Are You Sure You Want To Deactivate This Request Type ?',
+      name: 'timeTrackerDeactivateRequestTypeConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Activate This Request Type ?`
+  String get timeTrackerActivateRequestTypeConfirm {
+    return Intl.message(
+      'Are You Sure You Want To Activate This Request Type ?',
+      name: 'timeTrackerActivateRequestTypeConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Successfully Changed the Status Of This Request Type`
+  String get timeTrackerRequestTypeStatusChanged {
+    return Intl.message(
+      'You Successfully Changed the Status Of This Request Type',
+      name: 'timeTrackerRequestTypeStatusChanged',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Under Review`
+  String get timeTrackerUnderReview {
+    return Intl.message(
+      'Under Review',
+      name: 'timeTrackerUnderReview',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Canceled By HR`
+  String get timeTrackerCanceledByHr {
+    return Intl.message(
+      'Canceled By HR',
+      name: 'timeTrackerCanceledByHr',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request`
+  String get timeTrackerRequestWord {
+    return Intl.message(
+      'Request',
+      name: 'timeTrackerRequestWord',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request Date`
+  String get timeTrackerRequestDate {
+    return Intl.message(
+      'Request Date',
+      name: 'timeTrackerRequestDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Period`
+  String get timeTrackerRequestedTimeframe {
+    return Intl.message(
+      'Period',
+      name: 'timeTrackerRequestedTimeframe',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{start} To {end}`
+  String timeTrackerTimeframeValue(Object start, Object end) {
+    return Intl.message(
+      '$start To $end',
+      name: 'timeTrackerTimeframeValue',
+      desc: '',
+      args: [start, end],
+    );
+  }
+
+  /// `{date}, {start} – {end}`
+  String timeTrackerSameDayTimeframe(Object date, Object start, Object end) {
+    return Intl.message(
+      '$date, $start – $end',
+      name: 'timeTrackerSameDayTimeframe',
+      desc: '',
+      args: [date, start, end],
+    );
+  }
+
+  /// `{date} At {time}`
+  String timeTrackerDateAtTime(Object date, Object time) {
+    return Intl.message(
+      '$date At $time',
+      name: 'timeTrackerDateAtTime',
+      desc: '',
+      args: [date, time],
+    );
+  }
+
+  /// `{count} Days`
+  String timeTrackerDaysValue(Object count) {
+    return Intl.message(
+      '$count Days',
+      name: 'timeTrackerDaysValue',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Requests Report`
+  String get timeTrackerRequestsExportName {
+    return Intl.message(
+      'Requests Report',
+      name: 'timeTrackerRequestsExportName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose Type`
+  String get timeTrackerChooseType {
+    return Intl.message(
+      'Choose Type',
+      name: 'timeTrackerChooseType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All Employees`
+  String get timeTrackerAllEmployees {
+    return Intl.message(
+      'All Employees',
+      name: 'timeTrackerAllEmployees',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No request type is available to you yet. Ask HR to add one.`
+  String get timeTrackerNoRequestTypesAvailable {
+    return Intl.message(
+      'No request type is available to you yet. Ask HR to add one.',
+      name: 'timeTrackerNoRequestTypesAvailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request Details`
+  String get timeTrackerRequestDetails {
+    return Intl.message(
+      'Request Details',
+      name: 'timeTrackerRequestDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Date Requested`
+  String get timeTrackerDateRequested {
+    return Intl.message(
+      'Date Requested',
+      name: 'timeTrackerDateRequested',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Requested By`
+  String get timeTrackerRequestedBy {
+    return Intl.message(
+      'Requested By',
+      name: 'timeTrackerRequestedBy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Job Title`
+  String get timeTrackerJobTitle {
+    return Intl.message(
+      'Job Title',
+      name: 'timeTrackerJobTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Approval Cycle`
+  String get timeTrackerApprovalCycle {
+    return Intl.message(
+      'Approval Cycle',
+      name: 'timeTrackerApprovalCycle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reasons Of Rejection`
+  String get timeTrackerReasonsOfRejection {
+    return Intl.message(
+      'Reasons Of Rejection',
+      name: 'timeTrackerReasonsOfRejection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reasons Of Cancellation`
+  String get timeTrackerReasonsOfCancellation {
+    return Intl.message(
+      'Reasons Of Cancellation',
+      name: 'timeTrackerReasonsOfCancellation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Manager`
+  String get timeTrackerManagerStep {
+    return Intl.message(
+      'Manager',
+      name: 'timeTrackerManagerStep',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `HR`
+  String get timeTrackerHrStep {
+    return Intl.message('HR', name: 'timeTrackerHrStep', desc: '', args: []);
+  }
+
+  /// `{role} · {decision}`
+  String timeTrackerStepDecision(Object role, Object decision) {
+    return Intl.message(
+      '$role · $decision',
+      name: 'timeTrackerStepDecision',
+      desc: '',
+      args: [role, decision],
+    );
+  }
+
+  /// `Inquiries And Comments`
+  String get timeTrackerInquiriesAndComments {
+    return Intl.message(
+      'Inquiries And Comments',
+      name: 'timeTrackerInquiriesAndComments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Write A Comment`
+  String get timeTrackerWriteComment {
+    return Intl.message(
+      'Write A Comment',
+      name: 'timeTrackerWriteComment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No comments yet.`
+  String get timeTrackerNoComments {
+    return Intl.message(
+      'No comments yet.',
+      name: 'timeTrackerNoComments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edited`
+  String get timeTrackerEdited {
+    return Intl.message(
+      'Edited',
+      name: 'timeTrackerEdited',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This request is not available.`
+  String get timeTrackerRequestNotFound {
+    return Intl.message(
+      'This request is not available.',
+      name: 'timeTrackerRequestNotFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Creating New Request`
+  String get timeTrackerCreatingNewRequest {
+    return Intl.message(
+      'Creating New Request',
+      name: 'timeTrackerCreatingNewRequest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All Day`
+  String get timeTrackerAllDay {
+    return Intl.message(
+      'All Day',
+      name: 'timeTrackerAllDay',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Start Time`
+  String get timeTrackerStartTime {
+    return Intl.message(
+      'Start Time',
+      name: 'timeTrackerStartTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `End Time`
+  String get timeTrackerEndTime {
+    return Intl.message(
+      'End Time',
+      name: 'timeTrackerEndTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request Attachments`
+  String get timeTrackerRequestAttachments {
+    return Intl.message(
+      'Request Attachments',
+      name: 'timeTrackerRequestAttachments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose the request type.`
+  String get timeTrackerRequestTypeRequired {
+    return Intl.message(
+      'Choose the request type.',
+      name: 'timeTrackerRequestTypeRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This request type needs a description.`
+  String get timeTrackerDescriptionRequired {
+    return Intl.message(
+      'This request type needs a description.',
+      name: 'timeTrackerDescriptionRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Write why this attendance needs correcting.`
+  String get timeTrackerTransactionDescriptionRequired {
+    return Intl.message(
+      'Write why this attendance needs correcting.',
+      name: 'timeTrackerTransactionDescriptionRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Attach a document that supports this correction.`
+  String get timeTrackerTransactionDocumentRequired {
+    return Intl.message(
+      'Attach a document that supports this correction.',
+      name: 'timeTrackerTransactionDocumentRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose the end date.`
+  String get timeTrackerEndDateRequired {
+    return Intl.message(
+      'Choose the end date.',
+      name: 'timeTrackerEndDateRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose the start time.`
+  String get timeTrackerStartTimeRequired {
+    return Intl.message(
+      'Choose the start time.',
+      name: 'timeTrackerStartTimeRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose the end time.`
+  String get timeTrackerEndTimeRequired {
+    return Intl.message(
+      'Choose the end time.',
+      name: 'timeTrackerEndTimeRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The end must be after the start.`
+  String get timeTrackerEndAfterStart {
+    return Intl.message(
+      'The end must be after the start.',
+      name: 'timeTrackerEndAfterStart',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This request type needs an attachment.`
+  String get timeTrackerAttachmentsRequired {
+    return Intl.message(
+      'This request type needs an attachment.',
+      name: 'timeTrackerAttachmentsRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This request needs {days} vacation days, but only {left} are left.`
+  String timeTrackerExceedsBalance(Object days, Object left) {
+    return Intl.message(
+      'This request needs $days vacation days, but only $left are left.',
+      name: 'timeTrackerExceedsBalance',
+      desc: '',
+      args: [days, left],
+    );
+  }
+
+  /// `Creating Request`
+  String get timeTrackerCreatingRequest {
+    return Intl.message(
+      'Creating Request',
+      name: 'timeTrackerCreatingRequest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Create This Request ?`
+  String get timeTrackerCreateRequestConfirm {
+    return Intl.message(
+      'Are You Sure You Want To Create This Request ?',
+      name: 'timeTrackerCreateRequestConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Successful`
+  String get timeTrackerSuccessful {
+    return Intl.message(
+      'Successful',
+      name: 'timeTrackerSuccessful',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your Request Has Been Successfully Submitted`
+  String get timeTrackerRequestSubmitted {
+    return Intl.message(
+      'Your Request Has Been Successfully Submitted',
+      name: 'timeTrackerRequestSubmitted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request To Cancellation`
+  String get timeTrackerRequestToCancellation {
+    return Intl.message(
+      'Request To Cancellation',
+      name: 'timeTrackerRequestToCancellation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Cancel This Request ?`
+  String get timeTrackerCancelRequestConfirm {
+    return Intl.message(
+      'Are You Sure You Want To Cancel This Request ?',
+      name: 'timeTrackerCancelRequestConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reason Of Cancellation`
+  String get timeTrackerReasonOfCancellation {
+    return Intl.message(
+      'Reason Of Cancellation',
+      name: 'timeTrackerReasonOfCancellation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request Cancellation`
+  String get timeTrackerRequestCancellationTitle {
+    return Intl.message(
+      'Request Cancellation',
+      name: 'timeTrackerRequestCancellationTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Successfully Requested Cancellation For This Request`
+  String get timeTrackerCancellationRequested {
+    return Intl.message(
+      'You Successfully Requested Cancellation For This Request',
+      name: 'timeTrackerCancellationRequested',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request Canceled`
+  String get timeTrackerRequestCanceledTitle {
+    return Intl.message(
+      'Request Canceled',
+      name: 'timeTrackerRequestCanceledTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Successfully Canceled This Request`
+  String get timeTrackerRequestCanceled {
+    return Intl.message(
+      'You Successfully Canceled This Request',
+      name: 'timeTrackerRequestCanceled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reminder Was Sent On {date}`
+  String timeTrackerReminderSentOn(Object date) {
+    return Intl.message(
+      'Reminder Was Sent On $date',
+      name: 'timeTrackerReminderSentOn',
+      desc: '',
+      args: [date],
+    );
+  }
+
+  /// `You Can Only Send A Reminder Once Every 24 Hours. Feel Free To Contact Your Supervisor Directly For Assistance`
+  String get timeTrackerReminderRule {
+    return Intl.message(
+      'You Can Only Send A Reminder Once Every 24 Hours. Feel Free To Contact Your Supervisor Directly For Assistance',
+      name: 'timeTrackerReminderRule',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Approve Request`
+  String get timeTrackerApproveRequest {
+    return Intl.message(
+      'Approve Request',
+      name: 'timeTrackerApproveRequest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Approve This Request ?`
+  String get timeTrackerApproveRequestConfirm {
+    return Intl.message(
+      'Are You Sure You Want To Approve This Request ?',
+      name: 'timeTrackerApproveRequestConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Successfully Approved This Request`
+  String get timeTrackerRequestApproved {
+    return Intl.message(
+      'You Successfully Approved This Request',
+      name: 'timeTrackerRequestApproved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reject Request`
+  String get timeTrackerRejectRequest {
+    return Intl.message(
+      'Reject Request',
+      name: 'timeTrackerRejectRequest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Reject This Request ?`
+  String get timeTrackerRejectRequestConfirm {
+    return Intl.message(
+      'Are You Sure You Want To Reject This Request ?',
+      name: 'timeTrackerRejectRequestConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reason Of Rejection`
+  String get timeTrackerReasonOfRejection {
+    return Intl.message(
+      'Reason Of Rejection',
+      name: 'timeTrackerReasonOfRejection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Justification`
+  String get timeTrackerApprovalJustification {
+    return Intl.message(
+      'Justification',
+      name: 'timeTrackerApprovalJustification',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{role} Justification`
+  String timeTrackerStepJustification(Object role) {
+    return Intl.message(
+      '$role Justification',
+      name: 'timeTrackerStepJustification',
+      desc: '',
+      args: [role],
+    );
+  }
+
+  /// `This approved request is being canceled — the approvers are reviewing the cancellation.`
+  String get timeTrackerCancellationReviewNote {
+    return Intl.message(
+      'This approved request is being canceled — the approvers are reviewing the cancellation.',
+      name: 'timeTrackerCancellationReviewNote',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Successfully Rejected This Request`
+  String get timeTrackerRequestRejected {
+    return Intl.message(
+      'You Successfully Rejected This Request',
+      name: 'timeTrackerRequestRejected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Approve Cancellation`
+  String get timeTrackerApproveCancellation {
+    return Intl.message(
+      'Approve Cancellation',
+      name: 'timeTrackerApproveCancellation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Approve The Cancellation Of This Request ?`
+  String get timeTrackerApproveCancellationConfirm {
+    return Intl.message(
+      'Are You Sure You Want To Approve The Cancellation Of This Request ?',
+      name: 'timeTrackerApproveCancellationConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancellation Approved`
+  String get timeTrackerCancellationApprovedTitle {
+    return Intl.message(
+      'Cancellation Approved',
+      name: 'timeTrackerCancellationApprovedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Successfully Approved The Cancellation Of This Request`
+  String get timeTrackerCancellationApproved {
+    return Intl.message(
+      'You Successfully Approved The Cancellation Of This Request',
+      name: 'timeTrackerCancellationApproved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reject Cancellation`
+  String get timeTrackerRejectCancellation {
+    return Intl.message(
+      'Reject Cancellation',
+      name: 'timeTrackerRejectCancellation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Reject The Cancellation Of This Request ?`
+  String get timeTrackerRejectCancellationConfirm {
+    return Intl.message(
+      'Are You Sure You Want To Reject The Cancellation Of This Request ?',
+      name: 'timeTrackerRejectCancellationConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancellation Rejected`
+  String get timeTrackerCancellationRejectedTitle {
+    return Intl.message(
+      'Cancellation Rejected',
+      name: 'timeTrackerCancellationRejectedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The Request Stays Approved`
+  String get timeTrackerCancellationRejected {
+    return Intl.message(
+      'The Request Stays Approved',
+      name: 'timeTrackerCancellationRejected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Deleting Comment`
+  String get timeTrackerDeletingComment {
+    return Intl.message(
+      'Deleting Comment',
+      name: 'timeTrackerDeletingComment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Delete This Comment ?`
+  String get timeTrackerDeleteCommentConfirm {
+    return Intl.message(
+      'Are You Sure You Want To Delete This Comment ?',
+      name: 'timeTrackerDeleteCommentConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Comment Deleted`
+  String get timeTrackerCommentDeletedTitle {
+    return Intl.message(
+      'Comment Deleted',
+      name: 'timeTrackerCommentDeletedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Successfully Deleted This Comment`
+  String get timeTrackerCommentDeleted {
+    return Intl.message(
+      'You Successfully Deleted This Comment',
+      name: 'timeTrackerCommentDeleted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select State Or Province`
+  String get timeTrackerSelectState {
+    return Intl.message(
+      'Select State Or Province',
+      name: 'timeTrackerSelectState',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vacations`
+  String get timeTrackerVacations {
+    return Intl.message(
+      'Vacations',
+      name: 'timeTrackerVacations',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tracker Approver`
+  String get timeTrackerTrackerApprover {
+    return Intl.message(
+      'Tracker Approver',
+      name: 'timeTrackerTrackerApprover',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pending Approvals`
+  String get timeTrackerPendingApprovals {
+    return Intl.message(
+      'Pending Approvals',
+      name: 'timeTrackerPendingApprovals',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Pending Approvals`
+  String get timeTrackerNoPendingApprovals {
+    return Intl.message(
+      'No Pending Approvals',
+      name: 'timeTrackerNoPendingApprovals',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `My Dashboard`
+  String get timeTrackerMyDashboard {
+    return Intl.message(
+      'My Dashboard',
+      name: 'timeTrackerMyDashboard',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Others`
+  String get timeTrackerOthers {
+    return Intl.message(
+      'Others',
+      name: 'timeTrackerOthers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Attendance History`
+  String get timeTrackerAttendanceHistory {
+    return Intl.message(
+      'Attendance History',
+      name: 'timeTrackerAttendanceHistory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request Timeline`
+  String get timeTrackerRequestTimeline {
+    return Intl.message(
+      'Request Timeline',
+      name: 'timeTrackerRequestTimeline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Attendance Summary`
+  String get timeTrackerChartAttendanceSummary {
+    return Intl.message(
+      'Attendance Summary',
+      name: 'timeTrackerChartAttendanceSummary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Requests By Status`
+  String get timeTrackerChartRequestsByStatus {
+    return Intl.message(
+      'Requests By Status',
+      name: 'timeTrackerChartRequestsByStatus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Work Location Distribution`
+  String get timeTrackerChartWorkLocationDistribution {
+    return Intl.message(
+      'Work Location Distribution',
+      name: 'timeTrackerChartWorkLocationDistribution',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Late Arrivals History`
+  String get timeTrackerChartLateArrivalsHistory {
+    return Intl.message(
+      'Late Arrivals History',
+      name: 'timeTrackerChartLateArrivalsHistory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Requests By Type`
+  String get timeTrackerChartRequestsByType {
+    return Intl.message(
+      'Requests By Type',
+      name: 'timeTrackerChartRequestsByType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Monthly Attendance History`
+  String get timeTrackerChartMonthlyAttendance {
+    return Intl.message(
+      'Monthly Attendance History',
+      name: 'timeTrackerChartMonthlyAttendance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Monthly Requests By Type`
+  String get timeTrackerChartMonthlyRequestsByType {
+    return Intl.message(
+      'Monthly Requests By Type',
+      name: 'timeTrackerChartMonthlyRequestsByType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Monthly Requests Volume`
+  String get timeTrackerChartMonthlyRequestsVolume {
+    return Intl.message(
+      'Monthly Requests Volume',
+      name: 'timeTrackerChartMonthlyRequestsVolume',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Main`
+  String get timeTrackerMainLocation {
+    return Intl.message(
+      'Main',
+      name: 'timeTrackerMainLocation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The first location is the main one: its hours and rules apply.`
+  String get timeTrackerWorkLocationsHint {
+    return Intl.message(
+      'The first location is the main one: its hours and rules apply.',
+      name: 'timeTrackerWorkLocationsHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Search An Address Or Place`
+  String get timeTrackerSearchAddress {
+    return Intl.message(
+      'Search An Address Or Place',
+      name: 'timeTrackerSearchAddress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Search by date, status or time`
+  String get timeTrackerSearchAttendanceHint {
+    return Intl.message(
+      'Search by date, status or time',
+      name: 'timeTrackerSearchAttendanceHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Search by employee, type or department`
+  String get timeTrackerSearchApprovalsHint {
+    return Intl.message(
+      'Search by employee, type or department',
+      name: 'timeTrackerSearchApprovalsHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No place was found for this address. Try a fuller address, or tap the map.`
+  String get timeTrackerAddressNotFound {
+    return Intl.message(
+      'No place was found for this address. Try a fuller address, or tap the map.',
+      name: 'timeTrackerAddressNotFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tap the map to place the pin. The yellow circle is the check-in area.`
+  String get timeTrackerTapMapHint {
+    return Intl.message(
+      'Tap the map to place the pin. The yellow circle is the check-in area.',
+      name: 'timeTrackerTapMapHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Location On Map`
+  String get timeTrackerGeofencePreview {
+    return Intl.message(
+      'Location On Map',
+      name: 'timeTrackerGeofencePreview',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Searching…`
+  String get timeTrackerSearching {
+    return Intl.message(
+      'Searching…',
+      name: 'timeTrackerSearching',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vacation Balance`
+  String get timeTrackerVacationBalanceShort {
+    return Intl.message(
+      'Vacation Balance',
+      name: 'timeTrackerVacationBalanceShort',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Employee Details`
+  String get timeTrackerEmployeeDetails {
+    return Intl.message(
+      'Employee Details',
+      name: 'timeTrackerEmployeeDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Current Assignment`
+  String get timeTrackerCurrentAssignment {
+    return Intl.message(
+      'Current Assignment',
+      name: 'timeTrackerCurrentAssignment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Assigned By`
+  String get timeTrackerAssignedBy {
+    return Intl.message(
+      'Assigned By',
+      name: 'timeTrackerAssignedBy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Group`
+  String get timeTrackerGroupNameLabel {
+    return Intl.message(
+      'Group',
+      name: 'timeTrackerGroupNameLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rules`
+  String get timeTrackerRulesLabel {
+    return Intl.message(
+      'Rules',
+      name: 'timeTrackerRulesLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Location History`
+  String get timeTrackerLocationHistory {
+    return Intl.message(
+      'Location History',
+      name: 'timeTrackerLocationHistory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `From {date}`
+  String timeTrackerHistoryFrom(Object date) {
+    return Intl.message(
+      'From $date',
+      name: 'timeTrackerHistoryFrom',
+      desc: '',
+      args: [date],
+    );
+  }
+
+  /// `By {name} on {date}`
+  String timeTrackerHistoryBy(Object name, Object date) {
+    return Intl.message(
+      'By $name on $date',
+      name: 'timeTrackerHistoryBy',
+      desc: '',
+      args: [name, date],
+    );
+  }
+
+  /// `Assignment Removed`
+  String get timeTrackerAssignmentRemovedEntry {
+    return Intl.message(
+      'Assignment Removed',
+      name: 'timeTrackerAssignmentRemovedEntry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No changes yet.`
+  String get timeTrackerNoHistory {
+    return Intl.message(
+      'No changes yet.',
+      name: 'timeTrackerNoHistory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Break Rule Warnings`
+  String get timeTrackerBreakWarnings {
+    return Intl.message(
+      'Break Rule Warnings',
+      name: 'timeTrackerBreakWarnings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Break {taken} min, allowed {allowed} min`
+  String timeTrackerBreakWarningLine(Object taken, Object allowed) {
+    return Intl.message(
+      'Break $taken min, allowed $allowed min',
+      name: 'timeTrackerBreakWarningLine',
+      desc: '',
+      args: [taken, allowed],
+    );
+  }
+
+  /// `Break {taken} min, breaks are not allowed`
+  String timeTrackerBreakNotAllowedLine(Object taken) {
+    return Intl.message(
+      'Break $taken min, breaks are not allowed',
+      name: 'timeTrackerBreakNotAllowedLine',
+      desc: '',
+      args: [taken],
+    );
+  }
+
+  /// `No break rule warnings in this period.`
+  String get timeTrackerNoBreakWarnings {
+    return Intl.message(
+      'No break rule warnings in this period.',
+      name: 'timeTrackerNoBreakWarnings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Employee Dashboard`
+  String get timeTrackerEmployeeDashboard {
+    return Intl.message(
+      'Employee Dashboard',
+      name: 'timeTrackerEmployeeDashboard',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not assigned to a location yet.`
+  String get timeTrackerNotAssignedYet {
+    return Intl.message(
+      'Not assigned to a location yet.',
+      name: 'timeTrackerNotAssignedYet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Map`
+  String get timeTrackerMapView {
+    return Intl.message('Map', name: 'timeTrackerMapView', desc: '', args: []);
+  }
+
+  /// `Satellite`
+  String get timeTrackerSatelliteView {
+    return Intl.message(
+      'Satellite',
+      name: 'timeTrackerSatelliteView',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Location Name`
+  String get timeTrackerEnLocationName {
+    return Intl.message(
+      'Location Name',
+      name: 'timeTrackerEnLocationName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Group Name`
+  String get timeTrackerEnGroupName {
+    return Intl.message(
+      'Group Name',
+      name: 'timeTrackerEnGroupName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request Name`
+  String get timeTrackerEnRequestName {
+    return Intl.message(
+      'Request Name',
+      name: 'timeTrackerEnRequestName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Description`
+  String get timeTrackerEnDescription {
+    return Intl.message(
+      'Description',
+      name: 'timeTrackerEnDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Text here`
+  String get timeTrackerTextHereEn {
+    return Intl.message(
+      'Text here',
+      name: 'timeTrackerTextHereEn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request Requirements`
+  String get timeTrackerSectionRequirements {
+    return Intl.message(
+      'Request Requirements',
+      name: 'timeTrackerSectionRequirements',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Availability`
+  String get timeTrackerSectionAvailability {
+    return Intl.message(
+      'Availability',
+      name: 'timeTrackerSectionAvailability',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `History`
+  String get timeTrackerSectionHistory {
+    return Intl.message(
+      'History',
+      name: 'timeTrackerSectionHistory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Updated By`
+  String get timeTrackerUpdatedBy {
+    return Intl.message(
+      'Updated By',
+      name: 'timeTrackerUpdatedBy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Removed By`
+  String get timeTrackerRemovedBy {
+    return Intl.message(
+      'Removed By',
+      name: 'timeTrackerRemovedBy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Removed Date`
+  String get timeTrackerRemovedDate {
+    return Intl.message(
+      'Removed Date',
+      name: 'timeTrackerRemovedDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restore`
+  String get timeTrackerRestore {
+    return Intl.message(
+      'Restore',
+      name: 'timeTrackerRestore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restoring Request Type`
+  String get timeTrackerRestoringRequestType {
+    return Intl.message(
+      'Restoring Request Type',
+      name: 'timeTrackerRestoringRequestType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This request type will be active again and employees can use it in new requests.`
+  String get timeTrackerRestoreRequestTypeConfirm {
+    return Intl.message(
+      'This request type will be active again and employees can use it in new requests.',
+      name: 'timeTrackerRestoreRequestTypeConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request Type Restored`
+  String get timeTrackerRequestTypeRestoredTitle {
+    return Intl.message(
+      'Request Type Restored',
+      name: 'timeTrackerRequestTypeRestoredTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The request type is active again.`
+  String get timeTrackerRequestTypeRestored {
+    return Intl.message(
+      'The request type is active again.',
+      name: 'timeTrackerRequestTypeRestored',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Yes`
+  String get timeTrackerYes {
+    return Intl.message('Yes', name: 'timeTrackerYes', desc: '', args: []);
+  }
+
+  /// `No`
+  String get timeTrackerNo {
+    return Intl.message('No', name: 'timeTrackerNo', desc: '', args: []);
+  }
+
+  /// `Checked In Now`
+  String get timeTrackerCheckedInNow {
+    return Intl.message(
+      'Checked In Now',
+      name: 'timeTrackerCheckedInNow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Late Today`
+  String get timeTrackerLateToday {
+    return Intl.message(
+      'Late Today',
+      name: 'timeTrackerLateToday',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Absent Today`
+  String get timeTrackerAbsentToday {
+    return Intl.message(
+      'Absent Today',
+      name: 'timeTrackerAbsentToday',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `On Leave Today`
+  String get timeTrackerOnLeaveToday {
+    return Intl.message(
+      'On Leave Today',
+      name: 'timeTrackerOnLeaveToday',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Needs Attention`
+  String get timeTrackerNeedsAttention {
+    return Intl.message(
+      'Needs Attention',
+      name: 'timeTrackerNeedsAttention',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nothing needs your attention right now.`
+  String get timeTrackerAllClear {
+    return Intl.message(
+      'Nothing needs your attention right now.',
+      name: 'timeTrackerAllClear',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Approvals Pending More Than 2 Days`
+  String get timeTrackerOverdueApprovals {
+    return Intl.message(
+      'Approvals Pending More Than 2 Days',
+      name: 'timeTrackerOverdueApprovals',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `3 Or More Absences This Month`
+  String get timeTrackerFrequentAbsences {
+    return Intl.message(
+      '3 Or More Absences This Month',
+      name: 'timeTrackerFrequentAbsences',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Missing Check-Outs Yesterday`
+  String get timeTrackerMissingCheckOuts {
+    return Intl.message(
+      'Missing Check-Outs Yesterday',
+      name: 'timeTrackerMissingCheckOuts',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transactions Waiting`
+  String get timeTrackerTransactionsWaiting {
+    return Intl.message(
+      'Transactions Waiting',
+      name: 'timeTrackerTransactionsWaiting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Waiting {count}`
+  String timeTrackerWaitingDays(Object count) {
+    return Intl.message(
+      'Waiting $count',
+      name: 'timeTrackerWaitingDays',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `{count} Absences`
+  String timeTrackerAbsencesCount(Object count) {
+    return Intl.message(
+      '$count Absences',
+      name: 'timeTrackerAbsencesCount',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Checked in at {time}, no check-out`
+  String timeTrackerCheckedInNoCheckOut(Object time) {
+    return Intl.message(
+      'Checked in at $time, no check-out',
+      name: 'timeTrackerCheckedInNoCheckOut',
+      desc: '',
+      args: [time],
+    );
+  }
+
+  /// `+{count} more`
+  String timeTrackerMoreItems(Object count) {
+    return Intl.message(
+      '+$count more',
+      name: 'timeTrackerMoreItems',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `HR Dashboard Report`
+  String get timeTrackerHrDashboardExportName {
+    return Intl.message(
+      'HR Dashboard Report',
+      name: 'timeTrackerHrDashboardExportName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Section`
+  String get timeTrackerExportSection {
+    return Intl.message(
+      'Section',
+      name: 'timeTrackerExportSection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Item`
+  String get timeTrackerExportItem {
+    return Intl.message(
+      'Item',
+      name: 'timeTrackerExportItem',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Value`
+  String get timeTrackerExportValue {
+    return Intl.message(
+      'Value',
+      name: 'timeTrackerExportValue',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Filters`
+  String get timeTrackerFiltersTitle {
+    return Intl.message(
+      'Filters',
+      name: 'timeTrackerFiltersTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Employees Included`
+  String get timeTrackerEmployeesInScope {
+    return Intl.message(
+      'Employees Included',
+      name: 'timeTrackerEmployeesInScope',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total Days`
+  String get timeTrackerTotalDays {
+    return Intl.message(
+      'Total Days',
+      name: 'timeTrackerTotalDays',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Used`
+  String get timeTrackerUsedDays {
+    return Intl.message(
+      'Used',
+      name: 'timeTrackerUsedDays',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remaining`
+  String get timeTrackerRemainingDays {
+    return Intl.message(
+      'Remaining',
+      name: 'timeTrackerRemainingDays',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vacation Balances Report`
+  String get timeTrackerVacationBalancesExportName {
+    return Intl.message(
+      'Vacation Balances Report',
+      name: 'timeTrackerVacationBalancesExportName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vacation Balances Template`
+  String get timeTrackerVacationTemplateName {
+    return Intl.message(
+      'Vacation Balances Template',
+      name: 'timeTrackerVacationTemplateName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the total days.`
+  String get timeTrackerTotalDaysRequired {
+    return Intl.message(
+      'Enter the total days.',
+      name: 'timeTrackerTotalDaysRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter a number of days, with at most one decimal.`
+  String get timeTrackerTotalDaysInvalid {
+    return Intl.message(
+      'Enter a number of days, with at most one decimal.',
+      name: 'timeTrackerTotalDaysInvalid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A year has at most 366 days.`
+  String get timeTrackerTotalDaysTooLarge {
+    return Intl.message(
+      'A year has at most 366 days.',
+      name: 'timeTrackerTotalDaysTooLarge',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Edit This Vacation Balance ?`
+  String get timeTrackerEditVacationConfirm {
+    return Intl.message(
+      'Are You Sure You Want To Edit This Vacation Balance ?',
+      name: 'timeTrackerEditVacationConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vacation Balance Edited`
+  String get timeTrackerVacationEditedTitle {
+    return Intl.message(
+      'Vacation Balance Edited',
+      name: 'timeTrackerVacationEditedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Successfully Edited This Vacation Balance`
+  String get timeTrackerVacationEdited {
+    return Intl.message(
+      'You Successfully Edited This Vacation Balance',
+      name: 'timeTrackerVacationEdited',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Download the template, set each employee's Total Days for {year}, then upload it. A blank Year means {year}; other years are skipped. Nothing is deleted.`
+  String timeTrackerVacationImportHelp(Object year) {
+    return Intl.message(
+      'Download the template, set each employee\'s Total Days for $year, then upload it. A blank Year means $year; other years are skipped. Nothing is deleted.',
+      name: 'timeTrackerVacationImportHelp',
+      desc: '',
+      args: [year],
+    );
+  }
+
+  /// `No employee has this email`
+  String get timeTrackerImportUnknownEmployee {
+    return Intl.message(
+      'No employee has this email',
+      name: 'timeTrackerImportUnknownEmployee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This email appears more than once in the file`
+  String get timeTrackerImportDuplicateEmail {
+    return Intl.message(
+      'This email appears more than once in the file',
+      name: 'timeTrackerImportDuplicateEmail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Only {year} can be imported`
+  String timeTrackerImportWrongYear(Object year) {
+    return Intl.message(
+      'Only $year can be imported',
+      name: 'timeTrackerImportWrongYear',
+      desc: '',
+      args: [year],
+    );
+  }
+
+  /// `The file needs the “Email” and “Total Days” columns. Please use the template.`
+  String get timeTrackerVacationImportNoColumns {
+    return Intl.message(
+      'The file needs the “Email” and “Total Days” columns. Please use the template.',
+      name: 'timeTrackerVacationImportNoColumns',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Import These Vacation Balances ?`
+  String get timeTrackerVacationImportConfirm {
+    return Intl.message(
+      'Are You Sure You Want To Import These Vacation Balances ?',
+      name: 'timeTrackerVacationImportConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vacation Balances Imported`
+  String get timeTrackerVacationImportDoneTitle {
+    return Intl.message(
+      'Vacation Balances Imported',
+      name: 'timeTrackerVacationImportDoneTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Successfully Imported The Vacation Balances`
+  String get timeTrackerVacationImportDone {
+    return Intl.message(
+      'You Successfully Imported The Vacation Balances',
+      name: 'timeTrackerVacationImportDone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import`
+  String get timeTrackerImport {
+    return Intl.message(
+      'Import',
+      name: 'timeTrackerImport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `User Limits`
+  String get userLimitsTitle {
+    return Intl.message(
+      'User Limits',
+      name: 'userLimitsTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{module}: {assigned} of {limit} users`
+  String userLimitModuleUsage(Object module, Object assigned, Object limit) {
+    return Intl.message(
+      '$module: $assigned of $limit users',
+      name: 'userLimitModuleUsage',
+      desc: '',
+      args: [module, assigned, limit],
+    );
+  }
+
+  /// `Users: {assigned} of {limit}`
+  String userLimitTotalUsage(Object assigned, Object limit) {
+    return Intl.message(
+      'Users: $assigned of $limit',
+      name: 'userLimitTotalUsage',
+      desc: '',
+      args: [assigned, limit],
+    );
+  }
+
+  /// `{module} allows {limit} users. {assigned} are already assigned.`
+  String userLimitModuleReached(Object module, Object limit, Object assigned) {
+    return Intl.message(
+      '$module allows $limit users. $assigned are already assigned.',
+      name: 'userLimitModuleReached',
+      desc: '',
+      args: [module, limit, assigned],
+    );
+  }
+
+  /// `Your plan allows {limit} users. {assigned} are already assigned.`
+  String userLimitTotalReached(Object limit, Object assigned) {
+    return Intl.message(
+      'Your plan allows $limit users. $assigned are already assigned.',
+      name: 'userLimitTotalReached',
+      desc: '',
+      args: [limit, assigned],
+    );
+  }
+
+  /// `Only {remaining} more can be added.`
+  String userLimitSeatsLeft(Object remaining) {
+    return Intl.message(
+      'Only $remaining more can be added.',
+      name: 'userLimitSeatsLeft',
+      desc: '',
+      args: [remaining],
+    );
+  }
+
+  /// `The user limit for {module} could not be read, so no access was granted.`
+  String userLimitModuleUnverifiable(Object module) {
+    return Intl.message(
+      'The user limit for $module could not be read, so no access was granted.',
+      name: 'userLimitModuleUnverifiable',
+      desc: '',
+      args: [module],
+    );
+  }
+
+  /// `The company user limit could not be read, so no access was granted.`
+  String get userLimitTotalUnverifiable {
+    return Intl.message(
+      'The company user limit could not be read, so no access was granted.',
+      name: 'userLimitTotalUnverifiable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The role "{role}" could not be found, so its user limits cannot be checked.`
+  String userLimitUnknownRole(Object role) {
+    return Intl.message(
+      'The role "$role" could not be found, so its user limits cannot be checked.',
+      name: 'userLimitUnknownRole',
+      desc: '',
+      args: [role],
+    );
+  }
+
+  /// `Could not verify the user limits, so no access was granted. Please try again.`
+  String get userLimitCheckFailed {
+    return Intl.message(
+      'Could not verify the user limits, so no access was granted. Please try again.',
+      name: 'userLimitCheckFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Checking user limits…`
+  String get userLimitChecking {
+    return Intl.message(
+      'Checking user limits…',
+      name: 'userLimitChecking',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The check-out must be on the same day as the check-in`
+  String get timeTrackerCheckOutSameDay {
+    return Intl.message(
+      'The check-out must be on the same day as the check-in',
+      name: 'timeTrackerCheckOutSameDay',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The check-out must be on the check-in day or the next day`
+  String get timeTrackerCheckOutSameOrNextDay {
+    return Intl.message(
+      'The check-out must be on the check-in day or the next day',
+      name: 'timeTrackerCheckOutSameOrNextDay',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A correction cannot be longer than 24 hours`
+  String get timeTrackerTransactionTooLong {
+    return Intl.message(
+      'A correction cannot be longer than 24 hours',
+      name: 'timeTrackerTransactionTooLong',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This request was just changed by someone else. Please check it and try again.`
+  String get timeTrackerRequestChangedMeanwhile {
+    return Intl.message(
+      'This request was just changed by someone else. Please check it and try again.',
+      name: 'timeTrackerRequestChangedMeanwhile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This employee has no vacation balance yet. Please set it in Vacation Balances first.`
+  String get timeTrackerNoBalanceApprover {
+    return Intl.message(
+      'This employee has no vacation balance yet. Please set it in Vacation Balances first.',
+      name: 'timeTrackerNoBalanceApprover',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No vacation balance has been set for you yet. Please contact HR.`
+  String get timeTrackerNoBalanceEmployee {
+    return Intl.message(
+      'No vacation balance has been set for you yet. Please contact HR.',
+      name: 'timeTrackerNoBalanceEmployee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You already have a request for this time`
+  String get timeTrackerRequestOverlaps {
+    return Intl.message(
+      'You already have a request for this time',
+      name: 'timeTrackerRequestOverlaps',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Location In Use`
+  String get timeTrackerLocationInUseTitle {
+    return Intl.message(
+      'Location In Use',
+      name: 'timeTrackerLocationInUseTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count} employees are assigned to this location. Reassign them first.`
+  String timeTrackerLocationInUse(Object count) {
+    return Intl.message(
+      '$count employees are assigned to this location. Reassign them first.',
+      name: 'timeTrackerLocationInUse',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Your device is using a fake (mock) location. Please turn it off to check in.`
+  String get timeTrackerMockedLocation {
+    return Intl.message(
+      'Your device is using a fake (mock) location. Please turn it off to check in.',
+      name: 'timeTrackerMockedLocation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You can't approve or reject your own request. Another reviewer must decide it.`
+  String get selfApprovalBlocked {
+    return Intl.message(
+      'You can\'t approve or reject your own request. Another reviewer must decide it.',
+      name: 'selfApprovalBlocked',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This decision could not be verified, so nothing was saved. Please sign in again and retry.`
+  String get requestDecisionUnverifiable {
+    return Intl.message(
+      'This decision could not be verified, so nothing was saved. Please sign in again and retry.',
+      name: 'requestDecisionUnverifiable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This is your own request. Another reviewer must approve or reject it.`
+  String get ownRequestReviewNote {
+    return Intl.message(
+      'This is your own request. Another reviewer must approve or reject it.',
+      name: 'ownRequestReviewNote',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Optional. If you add a second contact, fill in all of its fields.`
+  String get secondContactOptionalHint {
+    return Intl.message(
+      'Optional. If you add a second contact, fill in all of its fields.',
+      name: 'secondContactOptionalHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fill in every field of the second emergency contact, or leave it all empty.`
+  String get secondContactIncomplete {
+    return Intl.message(
+      'Fill in every field of the second emergency contact, or leave it all empty.',
+      name: 'secondContactIncomplete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count} selected`
+  String timeTrackerMembersSelected(Object count) {
+    return Intl.message(
+      '$count selected',
+      name: 'timeTrackerMembersSelected',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `اسم المجموعة`
+  String get timeTrackerGroupNameAr {
+    return Intl.message(
+      'اسم المجموعة',
+      name: 'timeTrackerGroupNameAr',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rules from {location}`
+  String timeTrackerRulesFromLocation(Object location) {
+    return Intl.message(
+      'Rules from $location',
+      name: 'timeTrackerRulesFromLocation',
+      desc: '',
+      args: [location],
+    );
+  }
+
+  /// `Use The Location's Rules`
+  String get timeTrackerUseLocationRules {
+    return Intl.message(
+      'Use The Location\'s Rules',
+      name: 'timeTrackerUseLocationRules',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Custom Rules For This Group`
+  String get timeTrackerCustomRulesGroup {
+    return Intl.message(
+      'Custom Rules For This Group',
+      name: 'timeTrackerCustomRulesGroup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Custom Rules For This Employee`
+  String get timeTrackerCustomRulesEmployee {
+    return Intl.message(
+      'Custom Rules For This Employee',
+      name: 'timeTrackerCustomRulesEmployee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Custom — Overrides The Location`
+  String get timeTrackerCustomOverridesLocation {
+    return Intl.message(
+      'Custom — Overrides The Location',
+      name: 'timeTrackerCustomOverridesLocation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `From Location`
+  String get timeTrackerRulesFromLocationTag {
+    return Intl.message(
+      'From Location',
+      name: 'timeTrackerRulesFromLocationTag',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Late after {minutes} min`
+  String timeTrackerLateAfterMinutes(Object minutes) {
+    return Intl.message(
+      'Late after $minutes min',
+      name: 'timeTrackerLateAfterMinutes',
+      desc: '',
+      args: [minutes],
+    );
+  }
+
+  /// `Breaks {minutes} min`
+  String timeTrackerBreaksMinutes(Object minutes) {
+    return Intl.message(
+      'Breaks $minutes min',
+      name: 'timeTrackerBreaksMinutes',
+      desc: '',
+      args: [minutes],
+    );
+  }
+
+  /// `No Breaks`
+  String get timeTrackerNoBreaks {
+    return Intl.message(
+      'No Breaks',
+      name: 'timeTrackerNoBreaks',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pause Allowed`
+  String get timeTrackerPauseAllowed {
+    return Intl.message(
+      'Pause Allowed',
+      name: 'timeTrackerPauseAllowed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Pause`
+  String get timeTrackerNoPause {
+    return Intl.message(
+      'No Pause',
+      name: 'timeTrackerNoPause',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `وصف المجموعة`
+  String get timeTrackerGroupDescriptionAr {
+    return Intl.message(
+      'وصف المجموعة',
+      name: 'timeTrackerGroupDescriptionAr',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Maximum Pause (Minutes)`
+  String get timeTrackerMaxPauseMinutes {
+    return Intl.message(
+      'Maximum Pause (Minutes)',
+      name: 'timeTrackerMaxPauseMinutes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Limit`
+  String get timeTrackerNoLimit {
+    return Intl.message(
+      'No Limit',
+      name: 'timeTrackerNoLimit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pause up to {minutes} min`
+  String timeTrackerPauseUpToMinutes(String minutes) {
+    return Intl.message(
+      'Pause up to $minutes min',
+      name: 'timeTrackerPauseUpToMinutes',
+      desc: '',
+      args: [minutes],
+    );
+  }
+
+  /// `Demo Tools`
+  String get timeTrackerDemoTools {
+    return Intl.message(
+      'Demo Tools',
+      name: 'timeTrackerDemoTools',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Available in debug builds only. Adds realistic sample records to every Time Tracker tab. Existing records are never changed.`
+  String get timeTrackerDemoToolsHint {
+    return Intl.message(
+      'Available in debug builds only. Adds realistic sample records to every Time Tracker tab. Existing records are never changed.',
+      name: 'timeTrackerDemoToolsHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Load Demo Data`
+  String get timeTrackerDemoLoad {
+    return Intl.message(
+      'Load Demo Data',
+      name: 'timeTrackerDemoLoad',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count} demo records and {files} documents added.`
+  String timeTrackerDemoLoadDone(String count, String files) {
+    return Intl.message(
+      '$count demo records and $files documents added.',
+      name: 'timeTrackerDemoLoadDone',
+      desc: '',
+      args: [count, files],
+    );
+  }
+
+  /// `The demo data is already loaded.`
+  String get timeTrackerDemoAlreadyLoaded {
+    return Intl.message(
+      'The demo data is already loaded.',
+      name: 'timeTrackerDemoAlreadyLoaded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove Demo Data`
+  String get timeTrackerDemoRemove {
+    return Intl.message(
+      'Remove Demo Data',
+      name: 'timeTrackerDemoRemove',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count} demo records removed.`
+  String timeTrackerDemoRemoveDone(String count) {
+    return Intl.message(
+      '$count demo records removed.',
+      name: 'timeTrackerDemoRemoveDone',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Attendance Updated`
+  String get timeTrackerAttendanceUpdatedTitle {
+    return Intl.message(
+      'Attendance Updated',
+      name: 'timeTrackerAttendanceUpdatedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You have already checked out. The screen now shows your latest attendance.`
+  String get timeTrackerAlreadyCheckedOut {
+    return Intl.message(
+      'You have already checked out. The screen now shows your latest attendance.',
+      name: 'timeTrackerAlreadyCheckedOut',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your attendance was changed on another screen or device. It has been refreshed, please check it and try again.`
+  String get timeTrackerAttendanceChanged {
+    return Intl.message(
+      'Your attendance was changed on another screen or device. It has been refreshed, please check it and try again.',
+      name: 'timeTrackerAttendanceChanged',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `From Date`
+  String get timeTrackerDateFrom {
+    return Intl.message(
+      'From Date',
+      name: 'timeTrackerDateFrom',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To Date`
+  String get timeTrackerDateTo {
+    return Intl.message(
+      'To Date',
+      name: 'timeTrackerDateTo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Work Location Type`
+  String get timeTrackerWorkLocationType {
+    return Intl.message(
+      'Work Location Type',
+      name: 'timeTrackerWorkLocationType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose Employee`
+  String get timeTrackerChooseEmployee {
+    return Intl.message(
+      'Choose Employee',
+      name: 'timeTrackerChooseEmployee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The end date must be on or after the start date.`
+  String get timeTrackerDateRangeError {
+    return Intl.message(
+      'The end date must be on or after the start date.',
+      name: 'timeTrackerDateRangeError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Assign Date`
+  String get timeTrackerAssignDateLabel {
+    return Intl.message(
+      'Assign Date',
+      name: 'timeTrackerAssignDateLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `🧪 Test employee`
+  String get debugTestEmployeeButton {
+    return Intl.message(
+      '🧪 Test employee',
+      name: 'debugTestEmployeeButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `🧪 Switch to test employee`
+  String get debugSwitchToTestEmployee {
+    return Intl.message(
+      '🧪 Switch to test employee',
+      name: 'debugSwitchToTestEmployee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `🧪 Test Employees`
+  String get debugTestEmployeeTitle {
+    return Intl.message(
+      '🧪 Test Employees',
+      name: 'debugTestEmployeeTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Debug builds only. Signs in as the chosen test account without its password; its role, status and access dates are still checked.`
+  String get debugTestEmployeeHint {
+    return Intl.message(
+      'Debug builds only. Signs in as the chosen test account without its password; its role, status and access dates are still checked.',
+      name: 'debugTestEmployeeHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Company ID`
+  String get debugTestEmployeeCompanyId {
+    return Intl.message(
+      'Company ID',
+      name: 'debugTestEmployeeCompanyId',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Load`
+  String get debugTestEmployeeLoad {
+    return Intl.message(
+      'Load',
+      name: 'debugTestEmployeeLoad',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No test employees found in this company (emails ending in {domains}).`
+  String debugTestEmployeeEmpty(String domains) {
+    return Intl.message(
+      'No test employees found in this company (emails ending in $domains).',
+      name: 'debugTestEmployeeEmpty',
+      desc: '',
+      args: [domains],
+    );
+  }
+
+  /// `Could not load this company's employees.`
+  String get debugTestEmployeeLoadFailed {
+    return Intl.message(
+      'Could not load this company\'s employees.',
+      name: 'debugTestEmployeeLoadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `DEBUG: test employee`
+  String get debugTestEmployeeBadge {
+    return Intl.message(
+      'DEBUG: test employee',
+      name: 'debugTestEmployeeBadge',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cannot Switch`
+  String get debugTestEmployeeCannotSwitch {
+    return Intl.message(
+      'Cannot Switch',
+      name: 'debugTestEmployeeCannotSwitch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This is available in debug builds only.`
+  String get debugTestEmployeeDebugOnly {
+    return Intl.message(
+      'This is available in debug builds only.',
+      name: 'debugTestEmployeeDebugOnly',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Only test accounts can be used (emails ending in {domains}).`
+  String debugTestEmployeeNotTestEmail(String domains) {
+    return Intl.message(
+      'Only test accounts can be used (emails ending in $domains).',
+      name: 'debugTestEmployeeNotTestEmail',
+      desc: '',
+      args: [domains],
+    );
+  }
+
+  /// `The company admin account cannot be used with the debug switch.`
+  String get debugTestEmployeeCompanyAdmin {
+    return Intl.message(
+      'The company admin account cannot be used with the debug switch.',
+      name: 'debugTestEmployeeCompanyAdmin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This account belongs to another company ({companyId}).`
+  String debugTestEmployeeOtherCompany(String companyId) {
+    return Intl.message(
+      'This account belongs to another company ($companyId).',
+      name: 'debugTestEmployeeOtherCompany',
+      desc: '',
+      args: [companyId],
+    );
+  }
+
+  /// `This account is not activated yet. It must complete its first sign-in (password change) before it can be used here.`
+  String get debugTestEmployeeNotActivated {
+    return Intl.message(
+      'This account is not activated yet. It must complete its first sign-in (password change) before it can be used here.',
+      name: 'debugTestEmployeeNotActivated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This account cannot sign in because its status is "{status}".`
+  String debugTestEmployeeStatusBlocked(String status) {
+    return Intl.message(
+      'This account cannot sign in because its status is "$status".',
+      name: 'debugTestEmployeeStatusBlocked',
+      desc: '',
+      args: [status],
+    );
+  }
+
+  /// `You will be signed out of this session to choose a test employee.`
+  String get debugTestEmployeeConfirmSwitch {
+    return Intl.message(
+      'You will be signed out of this session to choose a test employee.',
+      name: 'debugTestEmployeeConfirmSwitch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No role`
+  String get debugTestEmployeeNoRole {
+    return Intl.message(
+      'No role',
+      name: 'debugTestEmployeeNoRole',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No department`
+  String get debugTestEmployeeNoDepartment {
+    return Intl.message(
+      'No department',
+      name: 'debugTestEmployeeNoDepartment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Status: {status}`
+  String debugTestEmployeeStatus(String status) {
+    return Intl.message(
+      'Status: $status',
+      name: 'debugTestEmployeeStatus',
+      desc: '',
+      args: [status],
+    );
+  }
+
+  /// `Not activated yet (signs in as activated in debug)`
+  String get debugTestEmployeeNotActivatedNote {
+    return Intl.message(
+      'Not activated yet (signs in as activated in debug)',
+      name: 'debugTestEmployeeNotActivatedNote',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{year} has only {days} vacation days left.`
+  String timeTrackerYearBalanceShort(String year, String days) {
+    return Intl.message(
+      '$year has only $days vacation days left.',
+      name: 'timeTrackerYearBalanceShort',
+      desc: '',
+      args: [year, days],
+    );
+  }
+
+  /// `1 Day`
+  String get timeTrackerOneDay {
+    return Intl.message('1 Day', name: 'timeTrackerOneDay', desc: '', args: []);
+  }
+
+  /// `2 Days`
+  String get timeTrackerTwoDays {
+    return Intl.message(
+      '2 Days',
+      name: 'timeTrackerTwoDays',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count} Days`
+  String timeTrackerDaysFew(Object count) {
+    return Intl.message(
+      '$count Days',
+      name: 'timeTrackerDaysFew',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `{count} Days`
+  String timeTrackerDaysMany(Object count) {
+    return Intl.message(
+      '$count Days',
+      name: 'timeTrackerDaysMany',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `1 Absence`
+  String get timeTrackerOneAbsence {
+    return Intl.message(
+      '1 Absence',
+      name: 'timeTrackerOneAbsence',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `2 Absences`
+  String get timeTrackerTwoAbsences {
+    return Intl.message(
+      '2 Absences',
+      name: 'timeTrackerTwoAbsences',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count} Absences`
+  String timeTrackerAbsencesFew(Object count) {
+    return Intl.message(
+      '$count Absences',
+      name: 'timeTrackerAbsencesFew',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `{count} Absences`
+  String timeTrackerAbsencesMany(Object count) {
+    return Intl.message(
+      '$count Absences',
+      name: 'timeTrackerAbsencesMany',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Choose the request type first — the form then shows only what it needs.`
+  String get timeTrackerPickTypeFirst {
+    return Intl.message(
+      'Choose the request type first — the form then shows only what it needs.',
+      name: 'timeTrackerPickTypeFirst',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Approved By`
+  String get timeTrackerApprovedByColumn {
+    return Intl.message(
+      'Approved By',
+      name: 'timeTrackerApprovedByColumn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pending With`
+  String get timeTrackerPendingWithColumn {
+    return Intl.message(
+      'Pending With',
+      name: 'timeTrackerPendingWithColumn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Can Remind Again In {time}`
+  String timeTrackerRemindAgainIn(Object time) {
+    return Intl.message(
+      'You Can Remind Again In $time',
+      name: 'timeTrackerRemindAgainIn',
+      desc: '',
+      args: [time],
+    );
+  }
+
+  /// `{h} h {m} m`
+  String timeTrackerHoursMinutesShort(Object h, Object m) {
+    return Intl.message(
+      '$h h $m m',
+      name: 'timeTrackerHoursMinutesShort',
+      desc: '',
+      args: [h, m],
+    );
+  }
+
+  /// `On`
+  String get timeTrackerOn {
+    return Intl.message('On', name: 'timeTrackerOn', desc: '', args: []);
+  }
+
+  /// `Off`
+  String get timeTrackerOff {
+    return Intl.message('Off', name: 'timeTrackerOff', desc: '', args: []);
+  }
+
+  /// `Address`
+  String get timeTrackerSectionAddress {
+    return Intl.message(
+      'Address',
+      name: 'timeTrackerSectionAddress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Location On Map`
+  String get timeTrackerSectionMap {
+    return Intl.message(
+      'Location On Map',
+      name: 'timeTrackerSectionMap',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open In Google Maps`
+  String get timeTrackerOpenInGoogleMaps {
+    return Intl.message(
+      'Open In Google Maps',
+      name: 'timeTrackerOpenInGoogleMaps',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Attendance Rules`
+  String get timeTrackerSectionAttendanceRules {
+    return Intl.message(
+      'Attendance Rules',
+      name: 'timeTrackerSectionAttendanceRules',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Download The Template`
+  String get timeTrackerImportStep1Title {
+    return Intl.message(
+      'Download The Template',
+      name: 'timeTrackerImportStep1Title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A spreadsheet (CSV), one row per location. The rows already in it are your CURRENT locations — they show how to fill each column. Columns: name, map link, address, work hours, rules.`
+  String get timeTrackerImportStep1Locations {
+    return Intl.message(
+      'A spreadsheet (CSV), one row per location. The rows already in it are your CURRENT locations — they show how to fill each column. Columns: name, map link, address, work hours, rules.',
+      name: 'timeTrackerImportStep1Locations',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A spreadsheet (CSV), one row per employee, already filled with the current balances of the selected year. Only Total Days is imported; Employee Name, Department, Job Title, Used and Remaining Days help you find the employee and are not changed.`
+  String get timeTrackerImportStep1Balances {
+    return Intl.message(
+      'A spreadsheet (CSV), one row per employee, already filled with the current balances of the selected year. Only Total Days is imported; Employee Name, Department, Job Title, Used and Remaining Days help you find the employee and are not changed.',
+      name: 'timeTrackerImportStep1Balances',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fill It In`
+  String get timeTrackerImportStep2Title {
+    return Intl.message(
+      'Fill It In',
+      name: 'timeTrackerImportStep2Title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add a row for each new location, or change values in an existing row (same name = update). An empty cell keeps the saved value. Nothing is ever deleted.`
+  String get timeTrackerImportStep2Locations {
+    return Intl.message(
+      'Add a row for each new location, or change values in an existing row (same name = update). An empty cell keeps the saved value. Nothing is ever deleted.',
+      name: 'timeTrackerImportStep2Locations',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Change Total Days for each employee for {year}. A blank Year means {year}; other years are skipped. Nothing is ever deleted.`
+  String timeTrackerImportStep2Balances(Object year) {
+    return Intl.message(
+      'Change Total Days for each employee for $year. A blank Year means $year; other years are skipped. Nothing is ever deleted.',
+      name: 'timeTrackerImportStep2Balances',
+      desc: '',
+      args: [year],
+    );
+  }
+
+  /// `Upload The File`
+  String get timeTrackerImportStep3Title {
+    return Intl.message(
+      'Upload The File',
+      name: 'timeTrackerImportStep3Title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose the filled file (CSV or Excel). You will see what will be added, updated or skipped before anything is saved.`
+  String get timeTrackerImportStep3Body {
+    return Intl.message(
+      'Choose the filled file (CSV or Excel). You will see what will be added, updated or skipped before anything is saved.',
+      name: 'timeTrackerImportStep3Body',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vacation History`
+  String get timeTrackerVacationHistory {
+    return Intl.message(
+      'Vacation History',
+      name: 'timeTrackerVacationHistory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No vacation requests in {year}.`
+  String timeTrackerNoVacationsInYear(Object year) {
+    return Intl.message(
+      'No vacation requests in $year.',
+      name: 'timeTrackerNoVacationsInYear',
+      desc: '',
+      args: [year],
+    );
+  }
+
+  /// `Deducted From Balance`
+  String get timeTrackerDeductedFromBalance {
+    return Intl.message(
+      'Deducted From Balance',
+      name: 'timeTrackerDeductedFromBalance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Requests: {count}`
+  String timeTrackerVacationRequestsCount(Object count) {
+    return Intl.message(
+      'Requests: $count',
+      name: 'timeTrackerVacationRequestsCount',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Here you set how many vacation days {name} gets in {year} (Total Days). Used Days are counted from approved vacation requests and cannot be edited here. Remaining = Total Days − Used Days.`
+  String timeTrackerEditVacationExplain(String name, String year) {
+    return Intl.message(
+      'Here you set how many vacation days $name gets in $year (Total Days). Used Days are counted from approved vacation requests and cannot be edited here. Remaining = Total Days − Used Days.',
+      name: 'timeTrackerEditVacationExplain',
+      desc: '',
+      args: [name, year],
+    );
+  }
+
+  /// `e.g. 21`
+  String get timeTrackerTotalDaysHint {
+    return Intl.message(
+      'e.g. 21',
+      name: 'timeTrackerTotalDaysHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter a map link that starts with https:// (Google Maps or Apple Maps).`
+  String get timeTrackerMapsUrlInvalid {
+    return Intl.message(
+      'Enter a map link that starts with https:// (Google Maps or Apple Maps).',
+      name: 'timeTrackerMapsUrlInvalid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Late After must be shorter than the work day.`
+  String get timeTrackerLateAfterTooLong {
+    return Intl.message(
+      'Late After must be shorter than the work day.',
+      name: 'timeTrackerLateAfterTooLong',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A pause can be at most 1440 minutes (one day).`
+  String get timeTrackerPauseTooLong {
+    return Intl.message(
+      'A pause can be at most 1440 minutes (one day).',
+      name: 'timeTrackerPauseTooLong',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose the work start time.`
+  String get timeTrackerWorkStartRequired {
+    return Intl.message(
+      'Choose the work start time.',
+      name: 'timeTrackerWorkStartRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose the work end time.`
+  String get timeTrackerWorkEndRequired {
+    return Intl.message(
+      'Choose the work end time.',
+      name: 'timeTrackerWorkEndRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Longest pause in minutes (empty = no limit)`
+  String get timeTrackerPauseLimitHint {
+    return Intl.message(
+      'Longest pause in minutes (empty = no limit)',
+      name: 'timeTrackerPauseLimitHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Minutes after start before it counts as late (e.g. 15)`
+  String get timeTrackerLateAfterGraceHint {
+    return Intl.message(
+      'Minutes after start before it counts as late (e.g. 15)',
+      name: 'timeTrackerLateAfterGraceHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Terrain`
+  String get timeTrackerTerrainView {
+    return Intl.message(
+      'Terrain',
+      name: 'timeTrackerTerrainView',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Country, State and City were filled in from the pin.`
+  String get timeTrackerAddressFromPin {
+    return Intl.message(
+      'Country, State and City were filled in from the pin.',
+      name: 'timeTrackerAddressFromPin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Group Rules`
+  String get timeTrackerGroupRulesTag {
+    return Intl.message(
+      'Group Rules',
+      name: 'timeTrackerGroupRulesTag',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Custom Rules`
+  String get timeTrackerCustomRulesTag {
+    return Intl.message(
+      'Custom Rules',
+      name: 'timeTrackerCustomRulesTag',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Late & Absent Ranking`
+  String get timeTrackerLateAbsentRanking {
+    return Intl.message(
+      'Late & Absent Ranking',
+      name: 'timeTrackerLateAbsentRanking',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No late or absent days in this period.`
+  String get timeTrackerRankingEmpty {
+    return Intl.message(
+      'No late or absent days in this period.',
+      name: 'timeTrackerRankingEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pause left: {time}`
+  String timeTrackerPauseLeft(String time) {
+    return Intl.message(
+      'Pause left: $time',
+      name: 'timeTrackerPauseLeft',
+      desc: '',
+      args: [time],
+    );
+  }
+
+  /// `Paused: {time}`
+  String timeTrackerPausedFor(String time) {
+    return Intl.message(
+      'Paused: $time',
+      name: 'timeTrackerPausedFor',
+      desc: '',
+      args: [time],
+    );
+  }
+
+  /// `Pause time is over ({time} more)`
+  String timeTrackerPauseOver(String time) {
+    return Intl.message(
+      'Pause time is over ($time more)',
+      name: 'timeTrackerPauseOver',
+      desc: '',
+      args: [time],
+    );
+  }
+
+  /// `Upload failed, please try again`
+  String get uploadFailedTryAgain {
+    return Intl.message(
+      'Upload failed, please try again',
+      name: 'uploadFailedTryAgain',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Former employee`
+  String get formerEmployee {
+    return Intl.message(
+      'Former employee',
+      name: 'formerEmployee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not save the form. Please try again.`
+  String get formSaveFailed {
+    return Intl.message(
+      'Could not save the form. Please try again.',
+      name: 'formSaveFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The form was saved, but its access list could not be saved. Please share the form again.`
+  String get formAccessSaveFailed {
+    return Intl.message(
+      'The form was saved, but its access list could not be saved. Please share the form again.',
+      name: 'formAccessSaveFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please select at least one department`
+  String get selectAtLeastOneDepartment {
+    return Intl.message(
+      'Please select at least one department',
+      name: 'selectAtLeastOneDepartment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not load your forms. Please try again.`
+  String get formsLoadFailed {
+    return Intl.message(
+      'Could not load your forms. Please try again.',
+      name: 'formsLoadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You do not have permission to create forms`
+  String get noPermissionCreateForm {
+    return Intl.message(
+      'You do not have permission to create forms',
+      name: 'noPermissionCreateForm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not save the group. Please try again.`
+  String get groupActionFailed {
+    return Intl.message(
+      'Could not save the group. Please try again.',
+      name: 'groupActionFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please select at least one member`
+  String get groupNeedsMembers {
+    return Intl.message(
+      'Please select at least one member',
+      name: 'groupNeedsMembers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not load groups. Please try again.`
+  String get groupsLoadFailed {
+    return Intl.message(
+      'Could not load groups. Please try again.',
+      name: 'groupsLoadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not share the form. Please try again.`
+  String get shareFailed {
+    return Intl.message(
+      'Could not share the form. Please try again.',
+      name: 'shareFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please select people and both access dates`
+  String get shareNeedsPeopleAndDates {
+    return Intl.message(
+      'Please select people and both access dates',
+      name: 'shareNeedsPeopleAndDates',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The PDF preview is not ready yet.`
+  String get pdfNotReady {
+    return Intl.message(
+      'The PDF preview is not ready yet.',
+      name: 'pdfNotReady',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `There is no page to download.`
+  String get pdfNoPages {
+    return Intl.message(
+      'There is no page to download.',
+      name: 'pdfNoPages',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A reminder was already sent in the last 24 hours`
+  String get reminderTooSoon {
+    return Intl.message(
+      'A reminder was already sent in the last 24 hours',
+      name: 'reminderTooSoon',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not load the results. Please try again.`
+  String get resultsLoadFailed {
+    return Intl.message(
+      'Could not load the results. Please try again.',
+      name: 'resultsLoadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Departments could not be loaded, so the department filter may be empty.`
+  String get departmentsLoadFailed {
+    return Intl.message(
+      'Departments could not be loaded, so the department filter may be empty.',
+      name: 'departmentsLoadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Files downloaded successfully`
+  String get mediaDownloaded {
+    return Intl.message(
+      'Files downloaded successfully',
+      name: 'mediaDownloaded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `There are no files to download. Choose people and a media type.`
+  String get noFilesToDownload {
+    return Intl.message(
+      'There are no files to download. Choose people and a media type.',
+      name: 'noFilesToDownload',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This form is closed, so your answer can no longer be edited.`
+  String get formEditingClosed {
+    return Intl.message(
+      'This form is closed, so your answer can no longer be edited.',
+      name: 'formEditingClosed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your answer could not be sent. Please try again.`
+  String get submitFailedTryAgain {
+    return Intl.message(
+      'Your answer could not be sent. Please try again.',
+      name: 'submitFailedTryAgain',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Title`
+  String get fbAddTitle {
+    return Intl.message('Add Title', name: 'fbAddTitle', desc: '', args: []);
+  }
+
+  /// `Add Hint`
+  String get fbAddHint {
+    return Intl.message('Add Hint', name: 'fbAddHint', desc: '', args: []);
+  }
+
+  /// `Choose Alignment`
+  String get fbChooseAlignment {
+    return Intl.message(
+      'Choose Alignment',
+      name: 'fbChooseAlignment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose Arrangement`
+  String get fbChooseArrangement {
+    return Intl.message(
+      'Choose Arrangement',
+      name: 'fbChooseArrangement',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Options`
+  String get fbAddOptions {
+    return Intl.message(
+      'Add Options',
+      name: 'fbAddOptions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Option Or`
+  String get fbAddOptionOr {
+    return Intl.message(
+      'Add Option Or',
+      name: 'fbAddOptionOr',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add "other"`
+  String get fbAddOther {
+    return Intl.message('Add "other"', name: 'fbAddOther', desc: '', args: []);
+  }
+
+  /// `Limitation`
+  String get fbLimitation {
+    return Intl.message('Limitation', name: 'fbLimitation', desc: '', args: []);
+  }
+
+  /// `Maximum Selection`
+  String get fbMaximumSelection {
+    return Intl.message(
+      'Maximum Selection',
+      name: 'fbMaximumSelection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Text Formatting Styles`
+  String get fbTextFormattingStyles {
+    return Intl.message(
+      'Text Formatting Styles',
+      name: 'fbTextFormattingStyles',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Text Size`
+  String get fbTextSize {
+    return Intl.message('Text Size', name: 'fbTextSize', desc: '', args: []);
+  }
+
+  /// `Color`
+  String get fbColor {
+    return Intl.message('Color', name: 'fbColor', desc: '', args: []);
+  }
+
+  /// `Pick Color`
+  String get fbPickColor {
+    return Intl.message('Pick Color', name: 'fbPickColor', desc: '', args: []);
+  }
+
+  /// `Upload eSignature`
+  String get fbUploadESignature {
+    return Intl.message(
+      'Upload eSignature',
+      name: 'fbUploadESignature',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Results`
+  String get fbResults {
+    return Intl.message('Results', name: 'fbResults', desc: '', args: []);
+  }
+
+  /// `Reminders Sent`
+  String get fbRemindersSent {
+    return Intl.message(
+      'Reminders Sent',
+      name: 'fbRemindersSent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reminder Sent Successfully`
+  String get fbReminderSentSuccessfully {
+    return Intl.message(
+      'Reminder Sent Successfully',
+      name: 'fbReminderSentSuccessfully',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Users`
+  String get fbUsers {
+    return Intl.message('Users', name: 'fbUsers', desc: '', args: []);
+  }
+
+  /// `Total Pages`
+  String get fbTotalPages {
+    return Intl.message(
+      'Total Pages',
+      name: 'fbTotalPages',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Used by`
+  String get fbUsedBy {
+    return Intl.message('Used by', name: 'fbUsedBy', desc: '', args: []);
+  }
+
+  /// `Deleted Date`
+  String get fbDeletedDate {
+    return Intl.message(
+      'Deleted Date',
+      name: 'fbDeletedDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Editing Form Details`
+  String get fbEditingFormDetails {
+    return Intl.message(
+      'Editing Form Details',
+      name: 'fbEditingFormDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Deleting Form Details`
+  String get fbDeletingFormDetails {
+    return Intl.message(
+      'Deleting Form Details',
+      name: 'fbDeletingFormDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Type Of Document`
+  String get fbTypeOfDocument {
+    return Intl.message(
+      'Type Of Document',
+      name: 'fbTypeOfDocument',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Document`
+  String get fbSelectDocument {
+    return Intl.message(
+      'Select Document',
+      name: 'fbSelectDocument',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No results found`
+  String get fbNoResultsFound {
+    return Intl.message(
+      'No results found',
+      name: 'fbNoResultsFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Required`
+  String get fbRequired {
+    return Intl.message('Required', name: 'fbRequired', desc: '', args: []);
+  }
+
+  /// `Title`
+  String get fbTitle {
+    return Intl.message('Title', name: 'fbTitle', desc: '', args: []);
+  }
+
+  /// `Street Number`
+  String get fbStreetNumber {
+    return Intl.message(
+      'Street Number',
+      name: 'fbStreetNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Access granted successfully`
+  String get fbAccessGrantedSuccessfully {
+    return Intl.message(
+      'Access granted successfully',
+      name: 'fbAccessGrantedSuccessfully',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Minutes`
+  String get fbMinutes {
+    return Intl.message('Minutes', name: 'fbMinutes', desc: '', args: []);
+  }
+
+  /// `Please select at least one person`
+  String get fbPleaseSelectAtLeastOnePerson {
+    return Intl.message(
+      'Please select at least one person',
+      name: 'fbPleaseSelectAtLeastOnePerson',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No persons found`
+  String get fbNoPersonsFound {
+    return Intl.message(
+      'No persons found',
+      name: 'fbNoPersonsFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Resend Now`
+  String get fbResendNow {
+    return Intl.message('Resend Now', name: 'fbResendNow', desc: '', args: []);
+  }
+
+  /// `Resend In`
+  String get fbResendIn {
+    return Intl.message('Resend In', name: 'fbResendIn', desc: '', args: []);
+  }
+
+  /// `Are you sure you want to download this form as PDF?`
+  String get fbDownloadFormPdfConfirm {
+    return Intl.message(
+      'Are you sure you want to download this form as PDF?',
+      name: 'fbDownloadFormPdfConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sent`
+  String get fbSent {
+    return Intl.message('Sent', name: 'fbSent', desc: '', args: []);
+  }
+
+  /// `This allows them the opportunity to review and make any necessary changes to their responses`
+  String get fbEditPermissionReviewHint {
+    return Intl.message(
+      'This allows them the opportunity to review and make any necessary changes to their responses',
+      name: 'fbEditPermissionReviewHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You don't have permission to view this section.`
+  String get fbNoPermissionSection {
+    return Intl.message(
+      'You don\'t have permission to view this section.',
+      name: 'fbNoPermissionSection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Group Name`
+  String get fbEnterGroupName {
+    return Intl.message(
+      'Enter Group Name',
+      name: 'fbEnterGroupName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Group name and description are required`
+  String get fbGroupNameAndDescriptionRequired {
+    return Intl.message(
+      'Group name and description are required',
+      name: 'fbGroupNameAndDescriptionRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name (A-Z)`
+  String get fbSortNameAsc {
+    return Intl.message(
+      'Name (A-Z)',
+      name: 'fbSortNameAsc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name (Z-A)`
+  String get fbSortNameDesc {
+    return Intl.message(
+      'Name (Z-A)',
+      name: 'fbSortNameDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Most Members`
+  String get fbSortMostMembers {
+    return Intl.message(
+      'Most Members',
+      name: 'fbSortMostMembers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete Group`
+  String get fbDeleteGroup {
+    return Intl.message(
+      'Delete Group',
+      name: 'fbDeleteGroup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No group selected`
+  String get fbNoGroupSelected {
+    return Intl.message(
+      'No group selected',
+      name: 'fbNoGroupSelected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pick a color`
+  String get fbPickAColor {
+    return Intl.message(
+      'Pick a color',
+      name: 'fbPickAColor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Must enter text in English only`
+  String get fbEnglishOnly {
+    return Intl.message(
+      'Must enter text in English only',
+      name: 'fbEnglishOnly',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Must enter text in Arabic only`
+  String get fbArabicOnly {
+    return Intl.message(
+      'Must enter text in Arabic only',
+      name: 'fbArabicOnly',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Form data not initialized. Please try again.`
+  String get fbFormDataNotReady {
+    return Intl.message(
+      'Form data not initialized. Please try again.',
+      name: 'fbFormDataNotReady',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fill demo data`
+  String get fbFillDemoData {
+    return Intl.message(
+      'Fill demo data',
+      name: 'fbFillDemoData',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Demo data filled — all 18 field types added. Review and press Publish.`
+  String get fbDemoFilledTablet {
+    return Intl.message(
+      'Demo data filled — all 18 field types added. Review and press Publish.',
+      name: 'fbDemoFilledTablet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Demo data filled — press Next to see all 18 field types.`
+  String get fbDemoFilledPhone {
+    return Intl.message(
+      'Demo data filled — press Next to see all 18 field types.',
+      name: 'fbDemoFilledPhone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Filled {count} fields with demo answers. Image, attachment and signature fields need a real file.`
+  String fbDemoAnswersFilled(Object count) {
+    return Intl.message(
+      'Filled $count fields with demo answers. Image, attachment and signature fields need a real file.',
+      name: 'fbDemoAnswersFilled',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Enter a valid email address, e.g. name@company.com`
+  String get fbInvalidEmailExample {
+    return Intl.message(
+      'Enter a valid email address, e.g. name@company.com',
+      name: 'fbInvalidEmailExample',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter a valid link, e.g. https://www.example.com`
+  String get fbInvalidLinkExample {
+    return Intl.message(
+      'Enter a valid link, e.g. https://www.example.com',
+      name: 'fbInvalidLinkExample',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Phone number must be digits only ({count} digits)`
+  String fbPhoneDigitsOnly(Object count) {
+    return Intl.message(
+      'Phone number must be digits only ($count digits)',
+      name: 'fbPhoneDigitsOnly',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Phone number must be {count} digits`
+  String fbPhoneDigitsCount(Object count) {
+    return Intl.message(
+      'Phone number must be $count digits',
+      name: 'fbPhoneDigitsCount',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Test Form Builder notifications`
+  String get fbTestNotificationsTitle {
+    return Intl.message(
+      'Test Form Builder notifications',
+      name: 'fbTestNotificationsTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Send all {notifications} Form Builder notifications and add all {events} calendar events to your account ({email})?`
+  String fbTestNotificationsConfirm(
+    Object notifications,
+    Object events,
+    Object email,
+  ) {
+    return Intl.message(
+      'Send all $notifications Form Builder notifications and add all $events calendar events to your account ($email)?',
+      name: 'fbTestNotificationsConfirm',
+      desc: '',
+      args: [notifications, events, email],
+    );
+  }
+
+  /// `Open Notifications and Calendar to check every Form Builder event.`
+  String get fbTestNotificationsDone {
+    return Intl.message(
+      'Open Notifications and Calendar to check every Form Builder event.',
+      name: 'fbTestNotificationsDone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Notifications: {sent}/{attempted}\nCalendar: {written}/{tried}`
+  String fbTestNotificationsPartial(
+    Object sent,
+    Object attempted,
+    Object written,
+    Object tried,
+  ) {
+    return Intl.message(
+      'Notifications: $sent/$attempted\nCalendar: $written/$tried',
+      name: 'fbTestNotificationsPartial',
+      desc: '',
+      args: [sent, attempted, written, tried],
+    );
+  }
+
+  /// `Test notifications & calendar`
+  String get fbTestNotificationsButton {
+    return Intl.message(
+      'Test notifications & calendar',
+      name: 'fbTestNotificationsButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sending…`
+  String get fbSending {
+    return Intl.message('Sending…', name: 'fbSending', desc: '', args: []);
+  }
+
+  /// `{notifications} Form Builder notifications + {events} calendar events to you`
+  String fbTestNotificationsSubtitle(Object notifications, Object events) {
+    return Intl.message(
+      '$notifications Form Builder notifications + $events calendar events to you',
+      name: 'fbTestNotificationsSubtitle',
+      desc: '',
+      args: [notifications, events],
+    );
+  }
+
+  /// `DD / MM / YYYY`
+  String get fbDateHint {
+    return Intl.message(
+      'DD / MM / YYYY',
+      name: 'fbDateHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `HH : MM`
+  String get fbTimeHint {
+    return Intl.message('HH : MM', name: 'fbTimeHint', desc: '', args: []);
+  }
+
+  /// `Form not found`
+  String get fbFormNotFound {
+    return Intl.message(
+      'Form not found',
+      name: 'fbFormNotFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No data found`
+  String get fbNoDataFound {
+    return Intl.message(
+      'No data found',
+      name: 'fbNoDataFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{ordinal} Row`
+  String fbRowTitle(Object ordinal) {
+    return Intl.message(
+      '$ordinal Row',
+      name: 'fbRowTitle',
+      desc: '',
+      args: [ordinal],
+    );
+  }
+
+  /// `{ordinal} Column`
+  String fbColumnTitle(Object ordinal) {
+    return Intl.message(
+      '$ordinal Column',
+      name: 'fbColumnTitle',
+      desc: '',
+      args: [ordinal],
+    );
+  }
+
+  /// `Choose Field of {ordinal} Column`
+  String fbChooseFieldOfColumn(Object ordinal) {
+    return Intl.message(
+      'Choose Field of $ordinal Column',
+      name: 'fbChooseFieldOfColumn',
+      desc: '',
+      args: [ordinal],
+    );
+  }
+
+  /// `Images`
+  String get fbMediaImages {
+    return Intl.message('Images', name: 'fbMediaImages', desc: '', args: []);
+  }
+
+  /// `eSignature`
+  String get fbMediaESignatures {
+    return Intl.message(
+      'eSignature',
+      name: 'fbMediaESignatures',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Answers`
+  String get fbAnswersCount {
+    return Intl.message('Answers', name: 'fbAnswersCount', desc: '', args: []);
+  }
+
+  /// `Could not load your account data.`
+  String get accountDataLoadError {
+    return Intl.message(
+      'Could not load your account data.',
+      name: 'accountDataLoadError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your session has expired. Please log in again.`
+  String get approvalsSessionExpired {
+    return Intl.message(
+      'Your session has expired. Please log in again.',
+      name: 'approvalsSessionExpired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not update the status.`
+  String get approvalsStatusUpdateFailed {
+    return Intl.message(
+      'Could not update the status.',
+      name: 'approvalsStatusUpdateFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You do not have permission to approve documents.`
+  String get approvalsNoApprovePermission {
+    return Intl.message(
+      'You do not have permission to approve documents.',
+      name: 'approvalsNoApprovePermission',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You do not have permission to reject documents.`
+  String get approvalsNoRejectPermission {
+    return Intl.message(
+      'You do not have permission to reject documents.',
+      name: 'approvalsNoRejectPermission',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This document is not waiting for your approval. Please refresh.`
+  String get approvalsNotPendingInQueue {
+    return Intl.message(
+      'This document is not waiting for your approval. Please refresh.',
+      name: 'approvalsNotPendingInQueue',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not approve the document.`
+  String get approvalsApproveFailed {
+    return Intl.message(
+      'Could not approve the document.',
+      name: 'approvalsApproveFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not reject the document.`
+  String get approvalsRejectFailed {
+    return Intl.message(
+      'Could not reject the document.',
+      name: 'approvalsRejectFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not add the comment.`
+  String get approvalsAddCommentFailed {
+    return Intl.message(
+      'Could not add the comment.',
+      name: 'approvalsAddCommentFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not record this action.`
+  String get approvalsRecordActionFailed {
+    return Intl.message(
+      'Could not record this action.',
+      name: 'approvalsRecordActionFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Revision requested`
+  String get revisionRequested {
+    return Intl.message(
+      'Revision requested',
+      name: 'revisionRequested',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Documents that could not be read:`
+  String get approvalsUnreadableDocs {
+    return Intl.message(
+      'Documents that could not be read:',
+      name: 'approvalsUnreadableDocs',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reminder sent to your supervisor.`
+  String get reminderSent {
+    return Intl.message(
+      'Reminder sent to your supervisor.',
+      name: 'reminderSent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reminder sent — try again tomorrow`
+  String get reminderTryTomorrow {
+    return Intl.message(
+      'Reminder sent — try again tomorrow',
+      name: 'reminderTryTomorrow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit And Resend`
+  String get editAndResend {
+    return Intl.message(
+      'Edit And Resend',
+      name: 'editAndResend',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Preview Personal Information`
+  String get previewPersonalInformation {
+    return Intl.message(
+      'Preview Personal Information',
+      name: 'previewPersonalInformation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not send the reminder.`
+  String get reminderFailed {
+    return Intl.message(
+      'Could not send the reminder.',
+      name: 'reminderFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Documents that could not be read:`
+  String get unreadableDocuments {
+    return Intl.message(
+      'Documents that could not be read:',
+      name: 'unreadableDocuments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The document could not be found.`
+  String get khDocumentNotFound {
+    return Intl.message(
+      'The document could not be found.',
+      name: 'khDocumentNotFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not remove the document. Please try again.`
+  String get khRemoveDocumentFailed {
+    return Intl.message(
+      'Could not remove the document. Please try again.',
+      name: 'khRemoveDocumentFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Comment deleted`
+  String get khCommentDeleted {
+    return Intl.message(
+      'Comment deleted',
+      name: 'khCommentDeleted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Image Attachment`
+  String get khImageAttachment {
+    return Intl.message(
+      'Image Attachment',
+      name: 'khImageAttachment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Document Attachment`
+  String get khDocumentAttachment {
+    return Intl.message(
+      'Document Attachment',
+      name: 'khDocumentAttachment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unknown User`
+  String get khUnknownUser {
+    return Intl.message(
+      'Unknown User',
+      name: 'khUnknownUser',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unknown Department`
+  String get khUnknownDepartment {
+    return Intl.message(
+      'Unknown Department',
+      name: 'khUnknownDepartment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{date} at {time}`
+  String khDateAtTime(Object date, Object time) {
+    return Intl.message(
+      '$date at $time',
+      name: 'khDateAtTime',
+      desc: '',
+      args: [date, time],
+    );
+  }
+
+  /// `Video Recording`
+  String get khDocTypeVideoRecording {
+    return Intl.message(
+      'Video Recording',
+      name: 'khDocTypeVideoRecording',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Frame Work`
+  String get khDocTypeFrameWork {
+    return Intl.message(
+      'Frame Work',
+      name: 'khDocTypeFrameWork',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Workshop`
+  String get khDocTypeWorkshop {
+    return Intl.message(
+      'Workshop',
+      name: 'khDocTypeWorkshop',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed to load image`
+  String get khFailedToLoadImage {
+    return Intl.message(
+      'Failed to load image',
+      name: 'khFailedToLoadImage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Preview not available`
+  String get khPreviewNotAvailable {
+    return Intl.message(
+      'Preview not available',
+      name: 'khPreviewNotAvailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `File type: .{extension}`
+  String khFileType(Object extension) {
+    return Intl.message(
+      'File type: .$extension',
+      name: 'khFileType',
+      desc: '',
+      args: [extension],
+    );
+  }
+
+  /// `Please download to view this file`
+  String get khDownloadToView {
+    return Intl.message(
+      'Please download to view this file',
+      name: 'khDownloadToView',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Allow Remove Contributor's Documents`
+  String get allowRemoveContributorsDocuments {
+    return Intl.message(
+      'Allow Remove Contributor\'s Documents',
+      name: 'allowRemoveContributorsDocuments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove My Submissions Documents`
+  String get removeMySubmissionsDocuments {
+    return Intl.message(
+      'Remove My Submissions Documents',
+      name: 'removeMySubmissionsDocuments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Document Approved Successfully`
+  String get khDocumentApproved {
+    return Intl.message(
+      'Document Approved Successfully',
+      name: 'khDocumentApproved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The document has been approved and is now published.`
+  String get khDocumentApprovedBody {
+    return Intl.message(
+      'The document has been approved and is now published.',
+      name: 'khDocumentApprovedBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Approval Failed`
+  String get khApprovalFailed {
+    return Intl.message(
+      'Approval Failed',
+      name: 'khApprovalFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rejection Failed`
+  String get khRejectionFailed {
+    return Intl.message(
+      'Rejection Failed',
+      name: 'khRejectionFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Just now`
+  String get khJustNow {
+    return Intl.message('Just now', name: 'khJustNow', desc: '', args: []);
+  }
+
+  /// `d ago`
+  String get khDaysAgoShort {
+    return Intl.message('d ago', name: 'khDaysAgoShort', desc: '', args: []);
+  }
+
+  /// `h ago`
+  String get khHoursAgoShort {
+    return Intl.message('h ago', name: 'khHoursAgoShort', desc: '', args: []);
+  }
+
+  /// `m ago`
+  String get khMinutesAgoShort {
+    return Intl.message('m ago', name: 'khMinutesAgoShort', desc: '', args: []);
+  }
+
+  /// `Create sample knowledge`
+  String get khSeedTitle {
+    return Intl.message(
+      'Create sample knowledge',
+      name: 'khSeedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sample documents will be created, one per file type, spread across every status.`
+  String get khSeedBody {
+    return Intl.message(
+      'Sample documents will be created, one per file type, spread across every status.',
+      name: 'khSeedBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Creating…`
+  String get khSeedCreating {
+    return Intl.message(
+      'Creating…',
+      name: 'khSeedCreating',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sample documents created:`
+  String get khSeedDone {
+    return Intl.message(
+      'Sample documents created:',
+      name: 'khSeedDone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not create sample documents.`
+  String get khSeedFailed {
+    return Intl.message(
+      'Could not create sample documents.',
+      name: 'khSeedFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Backfill visibility`
+  String get khBackfillTitle {
+    return Intl.message(
+      'Backfill visibility',
+      name: 'khBackfillTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Backfilling…`
+  String get khBackfillRunning {
+    return Intl.message(
+      'Backfilling…',
+      name: 'khBackfillRunning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Documents updated:`
+  String get khBackfillDone {
+    return Intl.message(
+      'Documents updated:',
+      name: 'khBackfillDone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Backfill failed.`
+  String get khBackfillFailed {
+    return Intl.message(
+      'Backfill failed.',
+      name: 'khBackfillFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Arabic Document Name`
+  String get khArabicDocumentName {
+    return Intl.message(
+      'Arabic Document Name',
+      name: 'khArabicDocumentName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Arabic Document Description`
+  String get khArabicDocumentDescription {
+    return Intl.message(
+      'Arabic Document Description',
+      name: 'khArabicDocumentDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Write here`
+  String get khWriteHere {
+    return Intl.message('Write here', name: 'khWriteHere', desc: '', args: []);
+  }
+
+  /// `Name of Document`
+  String get khEnglishDocumentName {
+    return Intl.message(
+      'Name of Document',
+      name: 'khEnglishDocumentName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Document Description`
+  String get khEnglishDocumentDescription {
+    return Intl.message(
+      'Document Description',
+      name: 'khEnglishDocumentDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `File Uploaded Successfully`
+  String get khFileUploaded {
+    return Intl.message(
+      'File Uploaded Successfully',
+      name: 'khFileUploaded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed to Upload File`
+  String get khFileUploadFailed {
+    return Intl.message(
+      'Failed to Upload File',
+      name: 'khFileUploadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Template`
+  String get crmAddTemplate {
+    return Intl.message(
+      'Add Template',
+      name: 'crmAddTemplate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure to add this template?`
+  String get crmAddTemplateSubtitle {
+    return Intl.message(
+      'Are you sure to add this template?',
+      name: 'crmAddTemplateSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Number of Fields`
+  String get crmNumberOfFields {
+    return Intl.message(
+      'Number of Fields',
+      name: 'crmNumberOfFields',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Creation By`
+  String get crmCreationBy {
+    return Intl.message(
+      'Creation By',
+      name: 'crmCreationBy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fields: `
+  String get crmFieldsCount {
+    return Intl.message('Fields: ', name: 'crmFieldsCount', desc: '', args: []);
+  }
+
+  /// `By: `
+  String get crmByAuthor {
+    return Intl.message('By: ', name: 'crmByAuthor', desc: '', args: []);
+  }
+
+  /// `Oldest`
+  String get crmOldest {
+    return Intl.message('Oldest', name: 'crmOldest', desc: '', args: []);
+  }
+
+  /// `Newest`
+  String get crmNewest {
+    return Intl.message('Newest', name: 'crmNewest', desc: '', args: []);
+  }
+
+  /// `Active`
+  String get crmTemplateActive {
+    return Intl.message(
+      'Active',
+      name: 'crmTemplateActive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Inactive`
+  String get crmTemplateInactive {
+    return Intl.message(
+      'Inactive',
+      name: 'crmTemplateInactive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Deleted`
+  String get crmTemplateDeleted {
+    return Intl.message(
+      'Deleted',
+      name: 'crmTemplateDeleted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Template created successfully`
+  String get crmTemplateCreatedSuccess {
+    return Intl.message(
+      'Template created successfully',
+      name: 'crmTemplateCreatedSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Template Details`
+  String get crmTemplateDetails {
+    return Intl.message(
+      'Template Details',
+      name: 'crmTemplateDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fields & Sections`
+  String get crmFieldsAndSections {
+    return Intl.message(
+      'Fields & Sections',
+      name: 'crmFieldsAndSections',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Layout`
+  String get crmLayout {
+    return Intl.message('Layout', name: 'crmLayout', desc: '', args: []);
+  }
+
+  /// `Delete Template`
+  String get crmDeleteTemplate {
+    return Intl.message(
+      'Delete Template',
+      name: 'crmDeleteTemplate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure to delete this template?`
+  String get crmDeleteTemplateSubtitle {
+    return Intl.message(
+      'Are you sure to delete this template?',
+      name: 'crmDeleteTemplateSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Template`
+  String get crmEditTemplate {
+    return Intl.message(
+      'Edit Template',
+      name: 'crmEditTemplate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Field`
+  String get crmEditField {
+    return Intl.message('Edit Field', name: 'crmEditField', desc: '', args: []);
+  }
+
+  /// `Edit Section`
+  String get crmEditSection {
+    return Intl.message(
+      'Edit Section',
+      name: 'crmEditSection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Field & Section`
+  String get crmAddFieldAndSection {
+    return Intl.message(
+      'Add Field & Section',
+      name: 'crmAddFieldAndSection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove Section`
+  String get crmRemoveSection {
+    return Intl.message(
+      'Remove Section',
+      name: 'crmRemoveSection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure to remove this section?`
+  String get crmRemoveSectionSubtitle {
+    return Intl.message(
+      'Are you sure to remove this section?',
+      name: 'crmRemoveSectionSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save as Section`
+  String get crmSaveAsSection {
+    return Intl.message(
+      'Save as Section',
+      name: 'crmSaveAsSection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Saving...`
+  String get crmSaving {
+    return Intl.message('Saving...', name: 'crmSaving', desc: '', args: []);
+  }
+
+  /// `Layout saved successfully.`
+  String get crmLayoutSavedSuccess {
+    return Intl.message(
+      'Layout saved successfully.',
+      name: 'crmLayoutSavedSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `First Row`
+  String get crmFirstRow {
+    return Intl.message('First Row', name: 'crmFirstRow', desc: '', args: []);
+  }
+
+  /// `Second Row`
+  String get crmSecondRow {
+    return Intl.message('Second Row', name: 'crmSecondRow', desc: '', args: []);
+  }
+
+  /// `Third Row`
+  String get crmThirdRow {
+    return Intl.message('Third Row', name: 'crmThirdRow', desc: '', args: []);
+  }
+
+  /// `Fourth Row`
+  String get crmFourthRow {
+    return Intl.message('Fourth Row', name: 'crmFourthRow', desc: '', args: []);
+  }
+
+  /// `Fifth Row`
+  String get crmFifthRow {
+    return Intl.message('Fifth Row', name: 'crmFifthRow', desc: '', args: []);
+  }
+
+  /// `Sixth Row`
+  String get crmSixthRow {
+    return Intl.message('Sixth Row', name: 'crmSixthRow', desc: '', args: []);
+  }
+
+  /// `Row`
+  String get crmRow {
+    return Intl.message('Row', name: 'crmRow', desc: '', args: []);
+  }
+
+  /// `Link`
+  String get crmLink {
+    return Intl.message('Link', name: 'crmLink', desc: '', args: []);
+  }
+
+  /// `Signature`
+  String get crmSignature {
+    return Intl.message('Signature', name: 'crmSignature', desc: '', args: []);
+  }
+
+  /// `Custom Grid`
+  String get crmCustomGrid {
+    return Intl.message(
+      'Custom Grid',
+      name: 'crmCustomGrid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Maximum 4 fields can be selected.`
+  String get crmMax4FieldsCanBeSelected {
+    return Intl.message(
+      'Maximum 4 fields can be selected.',
+      name: 'crmMax4FieldsCanBeSelected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Billing & Contracts`
+  String get crmControlBillingAndContracts {
+    return Intl.message(
+      'Billing & Contracts',
+      name: 'crmControlBillingAndContracts',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Manage all Billing and Contracts .`
+  String get crmControlBillingAndContractsDesc {
+    return Intl.message(
+      'Manage all Billing and Contracts .',
+      name: 'crmControlBillingAndContractsDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Commissions`
+  String get crmControlCommissions {
+    return Intl.message(
+      'Commissions',
+      name: 'crmControlCommissions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Manage and create Commissions Packages.`
+  String get crmControlCommissionsDesc {
+    return Intl.message(
+      'Manage and create Commissions Packages.',
+      name: 'crmControlCommissionsDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Convert`
+  String get crmControlConvert {
+    return Intl.message(
+      'Convert',
+      name: 'crmControlConvert',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Manage all Stages of Convert Leads to Clients .`
+  String get crmControlConvertDesc {
+    return Intl.message(
+      'Manage all Stages of Convert Leads to Clients .',
+      name: 'crmControlConvertDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reasons`
+  String get crmControlReasons {
+    return Intl.message(
+      'Reasons',
+      name: 'crmControlReasons',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Manage the reasons available for each client status.`
+  String get crmControlReasonsDesc {
+    return Intl.message(
+      'Manage the reasons available for each client status.',
+      name: 'crmControlReasonsDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delivery Rules`
+  String get crmControlDeliveryRules {
+    return Intl.message(
+      'Delivery Rules',
+      name: 'crmControlDeliveryRules',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Define how delivery fees and conditions are calculated.`
+  String get crmControlDeliveryRulesDesc {
+    return Intl.message(
+      'Define how delivery fees and conditions are calculated.',
+      name: 'crmControlDeliveryRulesDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Billing Cycle`
+  String get crmBillingCycle {
+    return Intl.message(
+      'Billing Cycle',
+      name: 'crmBillingCycle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Payment Terms`
+  String get crmPaymentTerms {
+    return Intl.message(
+      'Payment Terms',
+      name: 'crmPaymentTerms',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Contract Duration (Months)`
+  String get crmContractDuration {
+    return Intl.message(
+      'Contract Duration (Months)',
+      name: 'crmContractDuration',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Auto Renewal`
+  String get crmAutoRenewal {
+    return Intl.message(
+      'Auto Renewal',
+      name: 'crmAutoRenewal',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Grace Period (Days)`
+  String get crmGracePeriod {
+    return Intl.message(
+      'Grace Period (Days)',
+      name: 'crmGracePeriod',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Late Fee (%)`
+  String get crmLateFee {
+    return Intl.message('Late Fee (%)', name: 'crmLateFee', desc: '', args: []);
+  }
+
+  /// `Tax Rate (%)`
+  String get crmTaxPercentage {
+    return Intl.message(
+      'Tax Rate (%)',
+      name: 'crmTaxPercentage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Require Deposit`
+  String get crmRequireDeposit {
+    return Intl.message(
+      'Require Deposit',
+      name: 'crmRequireDeposit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Deposit Rate (%)`
+  String get crmDepositPercentage {
+    return Intl.message(
+      'Deposit Rate (%)',
+      name: 'crmDepositPercentage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Contract Terms & Conditions`
+  String get crmContractTerms {
+    return Intl.message(
+      'Contract Terms & Conditions',
+      name: 'crmContractTerms',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Billing Details`
+  String get crmBillingDetails {
+    return Intl.message(
+      'Billing Details',
+      name: 'crmBillingDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Contract Details`
+  String get crmContractDetails {
+    return Intl.message(
+      'Contract Details',
+      name: 'crmContractDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Financial Rules & Taxes`
+  String get crmFinancialRules {
+    return Intl.message(
+      'Financial Rules & Taxes',
+      name: 'crmFinancialRules',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Billing & Contract`
+  String get crmAddBillingContract {
+    return Intl.message(
+      'Add Billing & Contract',
+      name: 'crmAddBillingContract',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Billing & Contract`
+  String get crmEditBillingContract {
+    return Intl.message(
+      'Edit Billing & Contract',
+      name: 'crmEditBillingContract',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Billing & Contract Details`
+  String get crmBillingContractDetails {
+    return Intl.message(
+      'Billing & Contract Details',
+      name: 'crmBillingContractDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Billing & Contract package saved successfully.`
+  String get crmBillingContractSavedSuccess {
+    return Intl.message(
+      'Billing & Contract package saved successfully.',
+      name: 'crmBillingContractSavedSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Billing & Contract package updated successfully.`
+  String get crmBillingContractUpdatedSuccess {
+    return Intl.message(
+      'Billing & Contract package updated successfully.',
+      name: 'crmBillingContractUpdatedSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Billing & Contract package deleted successfully.`
+  String get crmBillingContractDeletedSuccess {
+    return Intl.message(
+      'Billing & Contract package deleted successfully.',
+      name: 'crmBillingContractDeletedSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to delete this billing & contract package?`
+  String get crmDeleteBillingContractConfirm {
+    return Intl.message(
+      'Are you sure you want to delete this billing & contract package?',
+      name: 'crmDeleteBillingContractConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Billing & Contract packages found.`
+  String get crmNoBillingContractsFound {
+    return Intl.message(
+      'No Billing & Contract packages found.',
+      name: 'crmNoBillingContractsFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Billing`
+  String get crmBilling {
+    return Intl.message('Billing', name: 'crmBilling', desc: '', args: []);
+  }
+
+  /// `Contracts`
+  String get crmContracts {
+    return Intl.message('Contracts', name: 'crmContracts', desc: '', args: []);
+  }
+
+  /// `Manage invoice template, files, message, notes and colors.`
+  String get crmBillingDesc {
+    return Intl.message(
+      'Manage invoice template, files, message, notes and colors.',
+      name: 'crmBillingDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Manage contract template, files, message, notes and colors.`
+  String get crmContractsDesc {
+    return Intl.message(
+      'Manage contract template, files, message, notes and colors.',
+      name: 'crmContractsDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Billing`
+  String get crmEditBilling {
+    return Intl.message(
+      'Edit Billing',
+      name: 'crmEditBilling',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Contract`
+  String get crmEditContract {
+    return Intl.message(
+      'Edit Contract',
+      name: 'crmEditContract',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Files`
+  String get crmFiles {
+    return Intl.message('Files', name: 'crmFiles', desc: '', args: []);
+  }
+
+  /// `Logo`
+  String get crmLogo {
+    return Intl.message('Logo', name: 'crmLogo', desc: '', args: []);
+  }
+
+  /// `Digital Seal`
+  String get crmDigitalSeal {
+    return Intl.message(
+      'Digital Seal',
+      name: 'crmDigitalSeal',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Watermark`
+  String get crmWatermark {
+    return Intl.message('Watermark', name: 'crmWatermark', desc: '', args: []);
+  }
+
+  /// `Upload`
+  String get crmUpload {
+    return Intl.message('Upload', name: 'crmUpload', desc: '', args: []);
+  }
+
+  /// `Message`
+  String get crmMessage {
+    return Intl.message('Message', name: 'crmMessage', desc: '', args: []);
+  }
+
+  /// `Notes`
+  String get crmNotes {
+    return Intl.message('Notes', name: 'crmNotes', desc: '', args: []);
+  }
+
+  /// `Note`
+  String get crmAddNote {
+    return Intl.message('Note', name: 'crmAddNote', desc: '', args: []);
+  }
+
+  /// `Colors`
+  String get crmColors {
+    return Intl.message('Colors', name: 'crmColors', desc: '', args: []);
+  }
+
+  /// `Text`
+  String get crmTextColor {
+    return Intl.message('Text', name: 'crmTextColor', desc: '', args: []);
+  }
+
+  /// `Highlighting`
+  String get crmHighlightingColor {
+    return Intl.message(
+      'Highlighting',
+      name: 'crmHighlightingColor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Team Types`
+  String get crmControlTeamTypes {
+    return Intl.message(
+      'Team Types',
+      name: 'crmControlTeamTypes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Manage team types`
+  String get crmControlTeamTypesDesc {
+    return Intl.message(
+      'Manage team types',
+      name: 'crmControlTeamTypesDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Merge`
+  String get crmEditMerge {
+    return Intl.message('Edit Merge', name: 'crmEditMerge', desc: '', args: []);
+  }
+
+  /// `Likelihood`
+  String get crmLikelihood {
+    return Intl.message(
+      'Likelihood',
+      name: 'crmLikelihood',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Likelihood Level`
+  String get crmMergeAddLikelihoodLevel {
+    return Intl.message(
+      'Add Likelihood Level',
+      name: 'crmMergeAddLikelihoodLevel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Level`
+  String get crmMergeLevel {
+    return Intl.message('Level', name: 'crmMergeLevel', desc: '', args: []);
+  }
+
+  /// `Failed to save merge level`
+  String get crmMergeSaveFailed {
+    return Intl.message(
+      'Failed to save merge level',
+      name: 'crmMergeSaveFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Range`
+  String get crmRange {
+    return Intl.message('Range', name: 'crmRange', desc: '', args: []);
+  }
+
+  /// `General Setting`
+  String get crmGeneralSetting {
+    return Intl.message(
+      'General Setting',
+      name: 'crmGeneralSetting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unit`
+  String get crmMergeUnit {
+    return Intl.message('Unit', name: 'crmMergeUnit', desc: '', args: []);
+  }
+
+  /// `Criteria & Weights Setting`
+  String get crmMergeCriteriaAndWeights {
+    return Intl.message(
+      'Criteria & Weights Setting',
+      name: 'crmMergeCriteriaAndWeights',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Criteria`
+  String get crmMergeCriteria {
+    return Intl.message(
+      'Criteria',
+      name: 'crmMergeCriteria',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Weight`
+  String get crmMergeWeight {
+    return Intl.message('Weight', name: 'crmMergeWeight', desc: '', args: []);
+  }
+
+  /// `ID`
+  String get crmMergeCriteriaId {
+    return Intl.message('ID', name: 'crmMergeCriteriaId', desc: '', args: []);
+  }
+
+  /// `Full Name`
+  String get crmMergeCriteriaFullName {
+    return Intl.message(
+      'Full Name',
+      name: 'crmMergeCriteriaFullName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Email`
+  String get crmMergeCriteriaEmail {
+    return Intl.message(
+      'Email',
+      name: 'crmMergeCriteriaEmail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Phone`
+  String get crmMergeCriteriaPhone {
+    return Intl.message(
+      'Phone',
+      name: 'crmMergeCriteriaPhone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Limit Reached`
+  String get crmCustomGridLimitReached {
+    return Intl.message(
+      'Limit Reached',
+      name: 'crmCustomGridLimitReached',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed to save custom grid fields.`
+  String get crmCustomGridSaveFailedDesc {
+    return Intl.message(
+      'Failed to save custom grid fields.',
+      name: 'crmCustomGridSaveFailedDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save Failed`
+  String get crmSaveFailed {
+    return Intl.message(
+      'Save Failed',
+      name: 'crmSaveFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Custom Grid`
+  String get crmEditCustomGrid {
+    return Intl.message(
+      'Edit Custom Grid',
+      name: 'crmEditCustomGrid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Section not found`
+  String get crmSectionNotFound {
+    return Intl.message(
+      'Section not found',
+      name: 'crmSectionNotFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Field not found`
+  String get crmFieldNotFound {
+    return Intl.message(
+      'Field not found',
+      name: 'crmFieldNotFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choice`
+  String get crmChoice {
+    return Intl.message('Choice', name: 'crmChoice', desc: '', args: []);
+  }
+
+  /// `No template ID`
+  String get crmNoTemplateId {
+    return Intl.message(
+      'No template ID',
+      name: 'crmNoTemplateId',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All fields and sections are already assigned`
+  String get crmAllFieldsAndSectionsAssigned {
+    return Intl.message(
+      'All fields and sections are already assigned',
+      name: 'crmAllFieldsAndSectionsAssigned',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error`
+  String get crmError {
+    return Intl.message('Error', name: 'crmError', desc: '', args: []);
+  }
+
+  /// `Creating employee...`
+  String get creatingEmployee {
+    return Intl.message(
+      'Creating employee...',
+      name: 'creatingEmployee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retry employee creation`
+  String get retryEmployeeCreation {
+    return Intl.message(
+      'Retry employee creation',
+      name: 'retryEmployeeCreation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create Other`
+  String get createOther {
+    return Intl.message(
+      'Create Other',
+      name: 'createOther',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The rows could not be loaded, so nothing can be saved. Try again.`
+  String get tableRowsLoadFailed {
+    return Intl.message(
+      'The rows could not be loaded, so nothing can be saved. Try again.',
+      name: 'tableRowsLoadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Someone else saved this table after you opened it. Reload to see their changes, then make yours again.`
+  String get tableRowsChangedElsewhere {
+    return Intl.message(
+      'Someone else saved this table after you opened it. Reload to see their changes, then make yours again.',
+      name: 'tableRowsChangedElsewhere',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The file has no rows.`
+  String get importFileNoRows {
+    return Intl.message(
+      'The file has no rows.',
+      name: 'importFileNoRows',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The file has no heading row.`
+  String get importFileNoHeadings {
+    return Intl.message(
+      'The file has no heading row.',
+      name: 'importFileNoHeadings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This file could not be read. Use a .csv or .xlsx file.`
+  String get importFileUnreadable {
+    return Intl.message(
+      'This file could not be read. Use a .csv or .xlsx file.',
+      name: 'importFileUnreadable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your employee details could not be found, so the comment was not posted. Try again.`
+  String get commentAuthorNotFound {
+    return Intl.message(
+      'Your employee details could not be found, so the comment was not posted. Try again.',
+      name: 'commentAuthorNotFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The employee list could not be loaded. The people already on this access are still shown.`
+  String get employeeDirectoryLoadFailed {
+    return Intl.message(
+      'The employee list could not be loaded. The people already on this access are still shown.',
+      name: 'employeeDirectoryLoadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Someone else changed this access after you opened it. Close this screen and open it again to see their changes.`
+  String get accessChangedElsewhere {
+    return Intl.message(
+      'Someone else changed this access after you opened it. Close this screen and open it again to see their changes.',
+      name: 'accessChangedElsewhere',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Change Column Type?`
+  String get retypeColumnsTitle {
+    return Intl.message(
+      'Change Column Type?',
+      name: 'retypeColumnsTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cells that do not fit a column's new type will be cleared. Continue?`
+  String get retypeColumnsSubtitle {
+    return Intl.message(
+      'Cells that do not fit a column\'s new type will be cleared. Continue?',
+      name: 'retypeColumnsSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Title must be at least {titleMinLength} characters`
+  String dbCreateTitleTooShort(Object titleMinLength) {
+    return Intl.message(
+      'Title must be at least $titleMinLength characters',
+      name: 'dbCreateTitleTooShort',
+      desc: '',
+      args: [titleMinLength],
+    );
+  }
+
+  /// `Arabic title is required`
+  String get dbCreateTitleArRequired {
+    return Intl.message(
+      'Arabic title is required',
+      name: 'dbCreateTitleArRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `English title is required`
+  String get dbCreateTitleEnRequired {
+    return Intl.message(
+      'English title is required',
+      name: 'dbCreateTitleEnRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to discard this database?`
+  String get dbCreateDiscardConfirmSubtitle {
+    return Intl.message(
+      'Are you sure you want to discard this database?',
+      name: 'dbCreateDiscardConfirmSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Discard Changes`
+  String get dbCreateDiscardConfirmTitle {
+    return Intl.message(
+      'Discard Changes',
+      name: 'dbCreateDiscardConfirmTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Details Saved`
+  String get dbCreateNextStepPendingTitle {
+    return Intl.message(
+      'Details Saved',
+      name: 'dbCreateNextStepPendingTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Missing Information`
+  String get dbCreateIncompleteTitle {
+    return Intl.message(
+      'Missing Information',
+      name: 'dbCreateIncompleteTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Something Went Wrong`
+  String get dbCreateErrorTitle {
+    return Intl.message(
+      'Something Went Wrong',
+      name: 'dbCreateErrorTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close`
+  String get dbCreateClose {
+    return Intl.message('Close', name: 'dbCreateClose', desc: '', args: []);
+  }
+
+  /// `You Successfully Created New Database`
+  String get dbCreateSuccessSubtitle {
+    return Intl.message(
+      'You Successfully Created New Database',
+      name: 'dbCreateSuccessSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Success`
+  String get dbCreateSuccessTitle {
+    return Intl.message(
+      'Success',
+      name: 'dbCreateSuccessTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your database is saved under Drafts. Nobody has been granted access to it yet.`
+  String get dbCreateDraftSavedSubtitle {
+    return Intl.message(
+      'Your database is saved under Drafts. Nobody has been granted access to it yet.',
+      name: 'dbCreateDraftSavedSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Saved As Draft`
+  String get dbCreateDraftSavedTitle {
+    return Intl.message(
+      'Saved As Draft',
+      name: 'dbCreateDraftSavedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The database could not be saved. Check your connection and try again.`
+  String get dbCreateCouldNotSave {
+    return Intl.message(
+      'The database could not be saved. Check your connection and try again.',
+      name: 'dbCreateCouldNotSave',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save this database as a draft? It will wait for you under Drafts.`
+  String get dbCreateSaveDraftSubtitle {
+    return Intl.message(
+      'Save this database as a draft? It will wait for you under Drafts.',
+      name: 'dbCreateSaveDraftSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save For Later`
+  String get dbCreateSaveDraftTitle {
+    return Intl.message(
+      'Save For Later',
+      name: 'dbCreateSaveDraftTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No`
+  String get dbCreateNo {
+    return Intl.message('No', name: 'dbCreateNo', desc: '', args: []);
+  }
+
+  /// `Yes`
+  String get dbCreateYes {
+    return Intl.message('Yes', name: 'dbCreateYes', desc: '', args: []);
+  }
+
+  /// `Are You Sure You Want To Create This Database?`
+  String get dbCreateConfirmCreateSubtitle {
+    return Intl.message(
+      'Are You Sure You Want To Create This Database?',
+      name: 'dbCreateConfirmCreateSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New Database`
+  String get dbCreateConfirmCreateTitle {
+    return Intl.message(
+      'New Database',
+      name: 'dbCreateConfirmCreateTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Details saved. Access Management is not wired up yet.`
+  String get dbCreateNextStepPending {
+    return Intl.message(
+      'Details saved. Access Management is not wired up yet.',
+      name: 'dbCreateNextStepPending',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Editing a saved database is not wired up yet.`
+  String get dbCreateEditNotAvailable {
+    return Intl.message(
+      'Editing a saved database is not wired up yet.',
+      name: 'dbCreateEditNotAvailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Editing Not Available Yet`
+  String get dbCreateEditNotAvailableTitle {
+    return Intl.message(
+      'Editing Not Available Yet',
+      name: 'dbCreateEditNotAvailableTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nothing has been deleted.`
+  String get dbCreateNoDeletedDatabases {
+    return Intl.message(
+      'Nothing has been deleted.',
+      name: 'dbCreateNoDeletedDatabases',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The database could not be restored. Check your connection and try again.`
+  String get dbCreateRestoreFailed {
+    return Intl.message(
+      'The database could not be restored. Check your connection and try again.',
+      name: 'dbCreateRestoreFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restore Failed`
+  String get dbCreateRestoreFailedTitle {
+    return Intl.message(
+      'Restore Failed',
+      name: 'dbCreateRestoreFailedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restore "{title}"? It goes back to Drafts, where it was before it was deleted.`
+  String dbCreateRestoreConfirmSubtitleDraft(Object title) {
+    return Intl.message(
+      'Restore "$title"? It goes back to Drafts, where it was before it was deleted.',
+      name: 'dbCreateRestoreConfirmSubtitleDraft',
+      desc: '',
+      args: [title],
+    );
+  }
+
+  /// `Restore "{title}"? It goes back to the database list with its access grants unchanged.`
+  String dbCreateRestoreConfirmSubtitleLive(Object title) {
+    return Intl.message(
+      'Restore "$title"? It goes back to the database list with its access grants unchanged.',
+      name: 'dbCreateRestoreConfirmSubtitleLive',
+      desc: '',
+      args: [title],
+    );
+  }
+
+  /// `Restore Database`
+  String get dbCreateRestoreConfirmTitle {
+    return Intl.message(
+      'Restore Database',
+      name: 'dbCreateRestoreConfirmTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restore`
+  String get dbCreateRestore {
+    return Intl.message('Restore', name: 'dbCreateRestore', desc: '', args: []);
+  }
+
+  /// `The database could not be deleted. Check your connection and try again.`
+  String get dbCreateDeleteFailed {
+    return Intl.message(
+      'The database could not be deleted. Check your connection and try again.',
+      name: 'dbCreateDeleteFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete Failed`
+  String get dbCreateDeleteFailedTitle {
+    return Intl.message(
+      'Delete Failed',
+      name: 'dbCreateDeleteFailedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Move "{title}" to Deleted? It stops appearing in the list and keeps its access grants — you can restore it from the Deleted tab.`
+  String dbCreateDeleteConfirmSubtitle(Object title) {
+    return Intl.message(
+      'Move "$title" to Deleted? It stops appearing in the list and keeps its access grants — you can restore it from the Deleted tab.',
+      name: 'dbCreateDeleteConfirmSubtitle',
+      desc: '',
+      args: [title],
+    );
+  }
+
+  /// `Delete Database`
+  String get dbCreateDeleteConfirmTitle {
+    return Intl.message(
+      'Delete Database',
+      name: 'dbCreateDeleteConfirmTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete`
+  String get dbCreateDelete {
+    return Intl.message('Delete', name: 'dbCreateDelete', desc: '', args: []);
+  }
+
+  /// `Edit`
+  String get dbCreateEdit {
+    return Intl.message('Edit', name: 'dbCreateEdit', desc: '', args: []);
+  }
+
+  /// `Apply`
+  String get dbCreateApply {
+    return Intl.message('Apply', name: 'dbCreateApply', desc: '', args: []);
+  }
+
+  /// `Reset`
+  String get dbCreateReset {
+    return Intl.message('Reset', name: 'dbCreateReset', desc: '', args: []);
+  }
+
+  /// `Last Update`
+  String get dbCreateLastUpdate {
+    return Intl.message(
+      'Last Update',
+      name: 'dbCreateLastUpdate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Creation Date`
+  String get dbCreateCreationDate {
+    return Intl.message(
+      'Creation Date',
+      name: 'dbCreateCreationDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A database with this title already exists. Change the title and try again.`
+  String get dbCreateDuplicateTitle {
+    return Intl.message(
+      'A database with this title already exists. Change the title and try again.',
+      name: 'dbCreateDuplicateTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retry`
+  String get dbCreateRetry {
+    return Intl.message('Retry', name: 'dbCreateRetry', desc: '', args: []);
+  }
+
+  /// `No databases yet`
+  String get dbCreateNoDatabasesYet {
+    return Intl.message(
+      'No databases yet',
+      name: 'dbCreateNoDatabasesYet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Access:`
+  String get dbCreateAccess {
+    return Intl.message('Access:', name: 'dbCreateAccess', desc: '', args: []);
+  }
+
+  /// `Creation:`
+  String get dbCreateCreation {
+    return Intl.message(
+      'Creation:',
+      name: 'dbCreateCreation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No. Of Tables:`
+  String get dbCreateNoOfTables {
+    return Intl.message(
+      'No. Of Tables:',
+      name: 'dbCreateNoOfTables',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Deleted`
+  String get dbCreateDeleted {
+    return Intl.message('Deleted', name: 'dbCreateDeleted', desc: '', args: []);
+  }
+
+  /// `Drafts`
+  String get dbCreateDrafts {
+    return Intl.message('Drafts', name: 'dbCreateDrafts', desc: '', args: []);
+  }
+
+  /// `Personal`
+  String get dbCreatePersonal {
+    return Intl.message(
+      'Personal',
+      name: 'dbCreatePersonal',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restricted`
+  String get dbCreateRestricted {
+    return Intl.message(
+      'Restricted',
+      name: 'dbCreateRestricted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open`
+  String get dbCreateOpen {
+    return Intl.message('Open', name: 'dbCreateOpen', desc: '', args: []);
+  }
+
+  /// `All`
+  String get dbCreateAll {
+    return Intl.message('All', name: 'dbCreateAll', desc: '', args: []);
+  }
+
+  /// `Sort`
+  String get dbCreateSort {
+    return Intl.message('Sort', name: 'dbCreateSort', desc: '', args: []);
+  }
+
+  /// `Filter`
+  String get dbCreateFilter {
+    return Intl.message('Filter', name: 'dbCreateFilter', desc: '', args: []);
+  }
+
+  /// `Create Database`
+  String get dbCreateCreateDatabase {
+    return Intl.message(
+      'Create Database',
+      name: 'dbCreateCreateDatabase',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Database Builder`
+  String get dbCreateDatabaseBuilder {
+    return Intl.message(
+      'Database Builder',
+      name: 'dbCreateDatabaseBuilder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select at least one person before continuing.`
+  String get dbCreatePickSomeoneFirst {
+    return Intl.message(
+      'Select at least one person before continuing.',
+      name: 'dbCreatePickSomeoneFirst',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Finish these before granting access:`
+  String get dbCreateFinishTheseFirst {
+    return Intl.message(
+      'Finish these before granting access:',
+      name: 'dbCreateFinishTheseFirst',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Still needs a permission level and both dates: {departments}.`
+  String dbCreateIncompleteGrantsFor(Object departments) {
+    return Intl.message(
+      'Still needs a permission level and both dates: $departments.',
+      name: 'dbCreateIncompleteGrantsFor',
+      desc: '',
+      args: [departments],
+    );
+  }
+
+  /// `Choose a permission level and both dates for every group.`
+  String get dbCreateIncompleteGrants {
+    return Intl.message(
+      'Choose a permission level and both dates for every group.',
+      name: 'dbCreateIncompleteGrants',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total Departments`
+  String get dbCreateTotalDepartments {
+    return Intl.message(
+      'Total Departments',
+      name: 'dbCreateTotalDepartments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total Employees`
+  String get dbCreateTotalEmployees {
+    return Intl.message(
+      'Total Employees',
+      name: 'dbCreateTotalEmployees',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Summary`
+  String get dbCreateSummary {
+    return Intl.message('Summary', name: 'dbCreateSummary', desc: '', args: []);
+  }
+
+  /// `End date must be after the start date`
+  String get dbCreateEndBeforeStart {
+    return Intl.message(
+      'End date must be after the start date',
+      name: 'dbCreateEndBeforeStart',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Date`
+  String get dbCreateDate {
+    return Intl.message('Date', name: 'dbCreateDate', desc: '', args: []);
+  }
+
+  /// `End Date Of Access`
+  String get dbCreateEndDateOfAccess {
+    return Intl.message(
+      'End Date Of Access',
+      name: 'dbCreateEndDateOfAccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Start Date Of Access`
+  String get dbCreateStartDateOfAccess {
+    return Intl.message(
+      'Start Date Of Access',
+      name: 'dbCreateStartDateOfAccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose Permissions`
+  String get dbCreateChoosePermissions {
+    return Intl.message(
+      'Choose Permissions',
+      name: 'dbCreateChoosePermissions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Permissions`
+  String get dbCreatePermissions {
+    return Intl.message(
+      'Permissions',
+      name: 'dbCreatePermissions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No members selected yet`
+  String get dbCreateNoMembersSelected {
+    return Intl.message(
+      'No members selected yet',
+      name: 'dbCreateNoMembersSelected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No employees found`
+  String get dbCreateNoEmployeesFound {
+    return Intl.message(
+      'No employees found',
+      name: 'dbCreateNoEmployeesFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Employee  Information`
+  String get dbCreateEmployeeInformation {
+    return Intl.message(
+      'Employee  Information',
+      name: 'dbCreateEmployeeInformation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Deselect All`
+  String get dbCreateDeselectAll {
+    return Intl.message(
+      'Deselect All',
+      name: 'dbCreateDeselectAll',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select All`
+  String get dbCreateSelectAll {
+    return Intl.message(
+      'Select All',
+      name: 'dbCreateSelectAll',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose one or more departments to set their access and pick people.`
+  String get dbCreatePickDepartmentFirst {
+    return Intl.message(
+      'Choose one or more departments to set their access and pick people.',
+      name: 'dbCreatePickDepartmentFirst',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Department`
+  String get dbCreateDepartment {
+    return Intl.message(
+      'Department',
+      name: 'dbCreateDepartment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Search`
+  String get dbCreateSearch {
+    return Intl.message('Search', name: 'dbCreateSearch', desc: '', args: []);
+  }
+
+  /// `Add Members`
+  String get dbCreateAddMembers {
+    return Intl.message(
+      'Add Members',
+      name: 'dbCreateAddMembers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Access Management`
+  String get dbCreateAccessManagementCrumb {
+    return Intl.message(
+      'Access Management',
+      name: 'dbCreateAccessManagementCrumb',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Grant Access`
+  String get dbCreateGrantAccess {
+    return Intl.message(
+      'Grant Access',
+      name: 'dbCreateGrantAccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save For Later`
+  String get dbCreateSaveForLater {
+    return Intl.message(
+      'Save For Later',
+      name: 'dbCreateSaveForLater',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Review`
+  String get dbCreateReview {
+    return Intl.message('Review', name: 'dbCreateReview', desc: '', args: []);
+  }
+
+  /// `Next`
+  String get dbCreateNext {
+    return Intl.message('Next', name: 'dbCreateNext', desc: '', args: []);
+  }
+
+  /// `Create`
+  String get dbCreateCreate {
+    return Intl.message('Create', name: 'dbCreateCreate', desc: '', args: []);
+  }
+
+  /// `Discard`
+  String get dbCreateDiscard {
+    return Intl.message('Discard', name: 'dbCreateDiscard', desc: '', args: []);
+  }
+
+  /// `Choose an access type`
+  String get dbCreateAccessRequired {
+    return Intl.message(
+      'Choose an access type',
+      name: 'dbCreateAccessRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Access`
+  String get dbCreateSelectAccess {
+    return Intl.message(
+      'Select Access',
+      name: 'dbCreateSelectAccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Access Management`
+  String get dbCreateAccessManagement {
+    return Intl.message(
+      'Access Management',
+      name: 'dbCreateAccessManagement',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create New Database`
+  String get dbCreateCreateNewDatabase {
+    return Intl.message(
+      'Create New Database',
+      name: 'dbCreateCreateNewDatabase',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Database`
+  String get dbCreateDatabase {
+    return Intl.message(
+      'Database',
+      name: 'dbCreateDatabase',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete this comment? It cannot be brought back.`
+  String get dbTableDeleteCommentSubtitle {
+    return Intl.message(
+      'Delete this comment? It cannot be brought back.',
+      name: 'dbTableDeleteCommentSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete Comment`
+  String get dbTableDeleteCommentTitle {
+    return Intl.message(
+      'Delete Comment',
+      name: 'dbTableDeleteCommentTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign in to leave a comment.`
+  String get dbTableSignInToComment {
+    return Intl.message(
+      'Sign in to leave a comment.',
+      name: 'dbTableSignInToComment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Comments on this table are Private, so only admins can post.`
+  String get dbTableCommentsPrivate {
+    return Intl.message(
+      'Comments on this table are Private, so only admins can post.',
+      name: 'dbTableCommentsPrivate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your comment could not be posted. Check your connection and try again.`
+  String get dbTableCommentFailed {
+    return Intl.message(
+      'Your comment could not be posted. Check your connection and try again.',
+      name: 'dbTableCommentFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The comments could not be loaded.`
+  String get dbTableCommentsLoadFailed {
+    return Intl.message(
+      'The comments could not be loaded.',
+      name: 'dbTableCommentsLoadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Date: {date} At {time}`
+  String dbTableCommentDate(Object date, Object time) {
+    return Intl.message(
+      'Date: $date At $time',
+      name: 'dbTableCommentDate',
+      desc: '',
+      args: [date, time],
+    );
+  }
+
+  /// `Dislike`
+  String get dbTableDislike {
+    return Intl.message('Dislike', name: 'dbTableDislike', desc: '', args: []);
+  }
+
+  /// `Like`
+  String get dbTableLike {
+    return Intl.message('Like', name: 'dbTableLike', desc: '', args: []);
+  }
+
+  /// `Send`
+  String get dbTableSend {
+    return Intl.message('Send', name: 'dbTableSend', desc: '', args: []);
+  }
+
+  /// `Write a Comment`
+  String get dbTableWriteAComment {
+    return Intl.message(
+      'Write a Comment',
+      name: 'dbTableWriteAComment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Comments`
+  String get dbTableComments {
+    return Intl.message(
+      'Comments',
+      name: 'dbTableComments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The table could not be deleted. Check your connection and try again.`
+  String get dbTableCouldNotDelete {
+    return Intl.message(
+      'The table could not be deleted. Check your connection and try again.',
+      name: 'dbTableCouldNotDelete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete Failed`
+  String get dbTableDeleteFailedTitle {
+    return Intl.message(
+      'Delete Failed',
+      name: 'dbTableDeleteFailedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `"{name}" has been deleted.`
+  String dbTableDeletedSubtitle(Object name) {
+    return Intl.message(
+      '"$name" has been deleted.',
+      name: 'dbTableDeletedSubtitle',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `Deleted`
+  String get dbTableDeletedTitle {
+    return Intl.message(
+      'Deleted',
+      name: 'dbTableDeletedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to delete "{name}"? This cannot be undone.`
+  String dbTableDeleteTableSubtitle(Object name) {
+    return Intl.message(
+      'Are you sure you want to delete "$name"? This cannot be undone.',
+      name: 'dbTableDeleteTableSubtitle',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `Delete Table`
+  String get dbTableDeleteTableTitle {
+    return Intl.message(
+      'Delete Table',
+      name: 'dbTableDeleteTableTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This table has no named columns yet. Use Edit to give them headings.`
+  String get dbTableNoNamedColumns {
+    return Intl.message(
+      'This table has no named columns yet. Use Edit to give them headings.',
+      name: 'dbTableNoNamedColumns',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `NO`
+  String get dbTableRowNumber {
+    return Intl.message('NO', name: 'dbTableRowNumber', desc: '', args: []);
+  }
+
+  /// `Accesses`
+  String get dbTableAccesses {
+    return Intl.message(
+      'Accesses',
+      name: 'dbTableAccesses',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No. Of Rows`
+  String get dbTableNoOfRows {
+    return Intl.message(
+      'No. Of Rows',
+      name: 'dbTableNoOfRows',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No. Of Columns`
+  String get dbTableNoOfColumns {
+    return Intl.message(
+      'No. Of Columns',
+      name: 'dbTableNoOfColumns',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No description`
+  String get dbTableNoDescription {
+    return Intl.message(
+      'No description',
+      name: 'dbTableNoDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Last Edit:`
+  String get dbTableLastEditLabel {
+    return Intl.message(
+      'Last Edit:',
+      name: 'dbTableLastEditLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Creation Date:`
+  String get dbTableCreationDateLabel {
+    return Intl.message(
+      'Creation Date:',
+      name: 'dbTableCreationDateLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Description:`
+  String get dbTableDescriptionLabel {
+    return Intl.message(
+      'Description:',
+      name: 'dbTableDescriptionLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Filter`
+  String get dbTableFilter {
+    return Intl.message('Filter', name: 'dbTableFilter', desc: '', args: []);
+  }
+
+  /// `Export`
+  String get dbTableExport {
+    return Intl.message('Export', name: 'dbTableExport', desc: '', args: []);
+  }
+
+  /// `Delete`
+  String get dbTableDelete {
+    return Intl.message('Delete', name: 'dbTableDelete', desc: '', args: []);
+  }
+
+  /// `Edit`
+  String get dbTableEdit {
+    return Intl.message('Edit', name: 'dbTableEdit', desc: '', args: []);
+  }
+
+  /// `Access`
+  String get dbTableAccess {
+    return Intl.message('Access', name: 'dbTableAccess', desc: '', args: []);
+  }
+
+  /// `Expand`
+  String get dbTableExpand {
+    return Intl.message('Expand', name: 'dbTableExpand', desc: '', args: []);
+  }
+
+  /// `Hide`
+  String get dbTableHide {
+    return Intl.message('Hide', name: 'dbTableHide', desc: '', args: []);
+  }
+
+  /// `Table Details`
+  String get dbTableTableDetails {
+    return Intl.message(
+      'Table Details',
+      name: 'dbTableTableDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{name} Details`
+  String dbTableTableDetailsCrumb(Object name) {
+    return Intl.message(
+      '$name Details',
+      name: 'dbTableTableDetailsCrumb',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `No. of Columns:`
+  String get dbTableCardColumns {
+    return Intl.message(
+      'No. of Columns:',
+      name: 'dbTableCardColumns',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No. of Rows:`
+  String get dbTableCardRows {
+    return Intl.message(
+      'No. of Rows:',
+      name: 'dbTableCardRows',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The table could not be saved. Check your connection and try again.`
+  String get dbTableCouldNotSave {
+    return Intl.message(
+      'The table could not be saved. Check your connection and try again.',
+      name: 'dbTableCouldNotSave',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter a row number between {minRows} and {maxRows}`
+  String dbTableRowCountRange(Object minRows, Object maxRows) {
+    return Intl.message(
+      'Enter a row number between $minRows and $maxRows',
+      name: 'dbTableRowCountRange',
+      desc: '',
+      args: [minRows, maxRows],
+    );
+  }
+
+  /// `Enter a column number between {minColumns} and {maxColumns}`
+  String dbTableColumnCountRange(Object minColumns, Object maxColumns) {
+    return Intl.message(
+      'Enter a column number between $minColumns and $maxColumns',
+      name: 'dbTableColumnCountRange',
+      desc: '',
+      args: [minColumns, maxColumns],
+    );
+  }
+
+  /// `A table with this name already exists in this database. Change the name and try again.`
+  String get dbTableDuplicateName {
+    return Intl.message(
+      'A table with this name already exists in this database. Change the name and try again.',
+      name: 'dbTableDuplicateName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Table name must be at least {titleMinLength} characters`
+  String dbTableNameTooShort(Object titleMinLength) {
+    return Intl.message(
+      'Table name must be at least $titleMinLength characters',
+      name: 'dbTableNameTooShort',
+      desc: '',
+      args: [titleMinLength],
+    );
+  }
+
+  /// `Arabic table name is required`
+  String get dbTableNameArRequired {
+    return Intl.message(
+      'Arabic table name is required',
+      name: 'dbTableNameArRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `English table name is required`
+  String get dbTableNameEnRequired {
+    return Intl.message(
+      'English table name is required',
+      name: 'dbTableNameEnRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Lowering the column number removes 1 column you have already named. Continue?`
+  String get dbTableRemoveColumnsSubtitleOne {
+    return Intl.message(
+      'Lowering the column number removes 1 column you have already named. Continue?',
+      name: 'dbTableRemoveColumnsSubtitleOne',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Lowering the column number removes {count} columns you have already named. Continue?`
+  String dbTableRemoveColumnsSubtitleOther(Object count) {
+    return Intl.message(
+      'Lowering the column number removes $count columns you have already named. Continue?',
+      name: 'dbTableRemoveColumnsSubtitleOther',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Remove Columns`
+  String get dbTableRemoveColumnsTitle {
+    return Intl.message(
+      'Remove Columns',
+      name: 'dbTableRemoveColumnsTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to discard this table?`
+  String get dbTableDiscardConfirmSubtitle {
+    return Intl.message(
+      'Are you sure you want to discard this table?',
+      name: 'dbTableDiscardConfirmSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Discard Changes`
+  String get dbTableDiscardConfirmTitle {
+    return Intl.message(
+      'Discard Changes',
+      name: 'dbTableDiscardConfirmTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No`
+  String get dbTableNo {
+    return Intl.message('No', name: 'dbTableNo', desc: '', args: []);
+  }
+
+  /// `Yes`
+  String get dbTableYes {
+    return Intl.message('Yes', name: 'dbTableYes', desc: '', args: []);
+  }
+
+  /// `Close`
+  String get dbTableClose {
+    return Intl.message('Close', name: 'dbTableClose', desc: '', args: []);
+  }
+
+  /// `Nothing on this screen has been changed yet.`
+  String get dbTableNothingChanged {
+    return Intl.message(
+      'Nothing on this screen has been changed yet.',
+      name: 'dbTableNothingChanged',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nothing Changed`
+  String get dbTableNothingChangedTitle {
+    return Intl.message(
+      'Nothing Changed',
+      name: 'dbTableNothingChangedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Missing Information`
+  String get dbTableIncompleteTitle {
+    return Intl.message(
+      'Missing Information',
+      name: 'dbTableIncompleteTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Something Went Wrong`
+  String get dbTableErrorTitle {
+    return Intl.message(
+      'Something Went Wrong',
+      name: 'dbTableErrorTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your changes have been saved.`
+  String get dbTableSavedSubtitle {
+    return Intl.message(
+      'Your changes have been saved.',
+      name: 'dbTableSavedSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Successfully Created A New Table`
+  String get dbTableCreatedSubtitle {
+    return Intl.message(
+      'You Successfully Created A New Table',
+      name: 'dbTableCreatedSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Success`
+  String get dbTableSuccessTitle {
+    return Intl.message(
+      'Success',
+      name: 'dbTableSuccessTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Create This Table?`
+  String get dbTableConfirmCreateSubtitle {
+    return Intl.message(
+      'Are You Sure You Want To Create This Table?',
+      name: 'dbTableConfirmCreateSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New Table`
+  String get dbTableConfirmCreateTitle {
+    return Intl.message(
+      'New Table',
+      name: 'dbTableConfirmCreateTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `End date must be after the start date`
+  String get dbTableEndBeforeStart {
+    return Intl.message(
+      'End date must be after the start date',
+      name: 'dbTableEndBeforeStart',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose a permission level and both dates before saving.`
+  String get dbTableIncompleteGrant {
+    return Intl.message(
+      'Choose a permission level and both dates before saving.',
+      name: 'dbTableIncompleteGrant',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Discard the changes you made to this table's access?`
+  String get dbTableDiscardAccessSubtitle {
+    return Intl.message(
+      'Discard the changes you made to this table\'s access?',
+      name: 'dbTableDiscardAccessSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Table access has been updated.`
+  String get dbTableAccessSavedSubtitle {
+    return Intl.message(
+      'Table access has been updated.',
+      name: 'dbTableAccessSavedSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save these access rules for this table?`
+  String get dbTableConfirmAccessSubtitle {
+    return Intl.message(
+      'Save these access rules for this table?',
+      name: 'dbTableConfirmAccessSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Table Access`
+  String get dbTableConfirmAccessTitle {
+    return Intl.message(
+      'Table Access',
+      name: 'dbTableConfirmAccessTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove access for 1 person? They keep a Removed row on the access table.`
+  String get dbTableRemoveAllAccessSubtitleOne {
+    return Intl.message(
+      'Remove access for 1 person? They keep a Removed row on the access table.',
+      name: 'dbTableRemoveAllAccessSubtitleOne',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove access for all {count} people? They keep a Removed row on the access table.`
+  String dbTableRemoveAllAccessSubtitleOther(Object count) {
+    return Intl.message(
+      'Remove access for all $count people? They keep a Removed row on the access table.',
+      name: 'dbTableRemoveAllAccessSubtitleOther',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Remove All Access`
+  String get dbTableRemoveAllAccess {
+    return Intl.message(
+      'Remove All Access',
+      name: 'dbTableRemoveAllAccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This table has no named columns yet, so there are no fields to limit.`
+  String get dbTableTableHasNoNamedColumns {
+    return Intl.message(
+      'This table has no named columns yet, so there are no fields to limit.',
+      name: 'dbTableTableHasNoNamedColumns',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `1 field`
+  String get dbTableFieldsSelectedOne {
+    return Intl.message(
+      '1 field',
+      name: 'dbTableFieldsSelectedOne',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count} fields`
+  String dbTableFieldsSelectedOther(Object count) {
+    return Intl.message(
+      '$count fields',
+      name: 'dbTableFieldsSelectedOther',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `All fields`
+  String get dbTableAllFields {
+    return Intl.message(
+      'All fields',
+      name: 'dbTableAllFields',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Viewable Fields`
+  String get dbTableSelectViewableFields {
+    return Intl.message(
+      'Select Viewable Fields',
+      name: 'dbTableSelectViewableFields',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Job Title`
+  String get dbTableColJobTitle {
+    return Intl.message(
+      'Job Title',
+      name: 'dbTableColJobTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Employee Name`
+  String get dbTableColName {
+    return Intl.message(
+      'Employee Name',
+      name: 'dbTableColName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Employee Picture`
+  String get dbTableColPicture {
+    return Intl.message(
+      'Employee Picture',
+      name: 'dbTableColPicture',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Viewable Fields`
+  String get dbTableViewableFields {
+    return Intl.message(
+      'Viewable Fields',
+      name: 'dbTableViewableFields',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Permissions`
+  String get dbTablePermissions {
+    return Intl.message(
+      'Permissions',
+      name: 'dbTablePermissions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total Departments`
+  String get dbTableTotalDepartments {
+    return Intl.message(
+      'Total Departments',
+      name: 'dbTableTotalDepartments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total Employees`
+  String get dbTableTotalEmployees {
+    return Intl.message(
+      'Total Employees',
+      name: 'dbTableTotalEmployees',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Summary`
+  String get dbTableSummary {
+    return Intl.message('Summary', name: 'dbTableSummary', desc: '', args: []);
+  }
+
+  /// `Select at least one person before continuing.`
+  String get dbTablePickSomeoneFirst {
+    return Intl.message(
+      'Select at least one person before continuing.',
+      name: 'dbTablePickSomeoneFirst',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No members selected yet`
+  String get dbTableNoMembersSelected {
+    return Intl.message(
+      'No members selected yet',
+      name: 'dbTableNoMembersSelected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No employees found`
+  String get dbTableNoEmployeesFound {
+    return Intl.message(
+      'No employees found',
+      name: 'dbTableNoEmployeesFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Discard Changes`
+  String get dbTableDiscardChanges {
+    return Intl.message(
+      'Discard Changes',
+      name: 'dbTableDiscardChanges',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Review`
+  String get dbTableReview {
+    return Intl.message('Review', name: 'dbTableReview', desc: '', args: []);
+  }
+
+  /// `Deselect All`
+  String get dbTableDeselectAll {
+    return Intl.message(
+      'Deselect All',
+      name: 'dbTableDeselectAll',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select All`
+  String get dbTableSelectAll {
+    return Intl.message(
+      'Select All',
+      name: 'dbTableSelectAll',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All Departments`
+  String get dbTableAllDepartments {
+    return Intl.message(
+      'All Departments',
+      name: 'dbTableAllDepartments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Department`
+  String get dbTableDepartment {
+    return Intl.message(
+      'Department',
+      name: 'dbTableDepartment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Search`
+  String get dbTableSearch {
+    return Intl.message('Search', name: 'dbTableSearch', desc: '', args: []);
+  }
+
+  /// `Employee  Information`
+  String get dbTableEmployeeInformation {
+    return Intl.message(
+      'Employee  Information',
+      name: 'dbTableEmployeeInformation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Access`
+  String get dbTableAccessCrumb {
+    return Intl.message(
+      'Access',
+      name: 'dbTableAccessCrumb',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Editing Table Access`
+  String get dbTableEditingTableAccess {
+    return Intl.message(
+      'Editing Table Access',
+      name: 'dbTableEditingTableAccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retry`
+  String get dbTableRetry {
+    return Intl.message('Retry', name: 'dbTableRetry', desc: '', args: []);
+  }
+
+  /// `The tables could not be loaded.`
+  String get dbTableTablesLoadFailed {
+    return Intl.message(
+      'The tables could not be loaded.',
+      name: 'dbTableTablesLoadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fill in at least one cell before previewing the table.`
+  String get dbTableNothingToPreview {
+    return Intl.message(
+      'Fill in at least one cell before previewing the table.',
+      name: 'dbTableNothingToPreview',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your changes to this table data will be lost.`
+  String get dbTableDiscardRowsSubtitle {
+    return Intl.message(
+      'Your changes to this table data will be lost.',
+      name: 'dbTableDiscardRowsSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The table data has been saved.`
+  String get dbTableRowsSavedSubtitle {
+    return Intl.message(
+      'The table data has been saved.',
+      name: 'dbTableRowsSavedSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `One cell does not match its column type. It is outlined in red.`
+  String get dbTableInvalidCellsSubtitleOne {
+    return Intl.message(
+      'One cell does not match its column type. It is outlined in red.',
+      name: 'dbTableInvalidCellsSubtitleOne',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count} cells do not match their column type. They are outlined in red.`
+  String dbTableInvalidCellsSubtitleOther(Object count) {
+    return Intl.message(
+      '$count cells do not match their column type. They are outlined in red.',
+      name: 'dbTableInvalidCellsSubtitleOther',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Remove "{name}" and everything filled into it?`
+  String dbTableRemoveColumnSubtitle(Object name) {
+    return Intl.message(
+      'Remove "$name" and everything filled into it?',
+      name: 'dbTableRemoveColumnSubtitle',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `These headings were skipped because this table has no column for them: {headings}`
+  String dbTableImportUnmatchedHeadings(Object headings) {
+    return Intl.message(
+      'These headings were skipped because this table has no column for them: $headings',
+      name: 'dbTableImportUnmatchedHeadings',
+      desc: '',
+      args: [headings],
+    );
+  }
+
+  /// `None of the headings in that file match this table's columns.`
+  String get dbTableImportMatchedNothing {
+    return Intl.message(
+      'None of the headings in that file match this table\'s columns.',
+      name: 'dbTableImportMatchedNothing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Upload File`
+  String get dbTableUploadFile {
+    return Intl.message(
+      'Upload File',
+      name: 'dbTableUploadFile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Type Of Import`
+  String get dbTableTypeOfImport {
+    return Intl.message(
+      'Type Of Import',
+      name: 'dbTableTypeOfImport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import`
+  String get dbTableImport {
+    return Intl.message('Import', name: 'dbTableImport', desc: '', args: []);
+  }
+
+  /// `Import Table`
+  String get dbTableImportTable {
+    return Intl.message(
+      'Import Table',
+      name: 'dbTableImportTable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Column`
+  String get dbTableAddColumn {
+    return Intl.message('Column', name: 'dbTableAddColumn', desc: '', args: []);
+  }
+
+  /// `Row`
+  String get dbTableAddRow {
+    return Intl.message('Row', name: 'dbTableAddRow', desc: '', args: []);
+  }
+
+  /// `Remove Selection`
+  String get dbTableRemoveSelection {
+    return Intl.message(
+      'Remove Selection',
+      name: 'dbTableRemoveSelection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Redo`
+  String get dbTableRedo {
+    return Intl.message('Redo', name: 'dbTableRedo', desc: '', args: []);
+  }
+
+  /// `Undo`
+  String get dbTableUndo {
+    return Intl.message('Undo', name: 'dbTableUndo', desc: '', args: []);
+  }
+
+  /// `Preview`
+  String get dbTablePreview {
+    return Intl.message('Preview', name: 'dbTablePreview', desc: '', args: []);
+  }
+
+  /// `Preview`
+  String get dbTablePreviewCrumb {
+    return Intl.message(
+      'Preview',
+      name: 'dbTablePreviewCrumb',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Editing {name}`
+  String dbTableEditingTableDataCrumb(Object name) {
+    return Intl.message(
+      'Editing $name',
+      name: 'dbTableEditingTableDataCrumb',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `Save`
+  String get dbTableSave {
+    return Intl.message('Save', name: 'dbTableSave', desc: '', args: []);
+  }
+
+  /// `Create`
+  String get dbTableCreate {
+    return Intl.message('Create', name: 'dbTableCreate', desc: '', args: []);
+  }
+
+  /// `Discard`
+  String get dbTableDiscard {
+    return Intl.message('Discard', name: 'dbTableDiscard', desc: '', args: []);
+  }
+
+  /// `Remove column`
+  String get dbTableRemoveColumn {
+    return Intl.message(
+      'Remove column',
+      name: 'dbTableRemoveColumn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Duplicate column`
+  String get dbTableDuplicateColumn {
+    return Intl.message(
+      'Duplicate column',
+      name: 'dbTableDuplicateColumn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Employee Name`
+  String get dbTableColumnNameHint {
+    return Intl.message(
+      'Employee Name',
+      name: 'dbTableColumnNameHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Column Name`
+  String get dbTableColumnName {
+    return Intl.message(
+      'Column Name',
+      name: 'dbTableColumnName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Data Type`
+  String get dbTableSelectDataType {
+    return Intl.message(
+      'Select Data Type',
+      name: 'dbTableSelectDataType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Data Type`
+  String get dbTableDataType {
+    return Intl.message(
+      'Data Type',
+      name: 'dbTableDataType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Column Number`
+  String get dbTableEnterColumnNumber {
+    return Intl.message(
+      'Enter Column Number',
+      name: 'dbTableEnterColumnNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Row Number`
+  String get dbTableEnterRowNumber {
+    return Intl.message(
+      'Enter Row Number',
+      name: 'dbTableEnterRowNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Comments Access`
+  String get dbTableSelectCommentsAccess {
+    return Intl.message(
+      'Select Comments Access',
+      name: 'dbTableSelectCommentsAccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Comments Access`
+  String get dbTableCommentsAccess {
+    return Intl.message(
+      'Comments Access',
+      name: 'dbTableCommentsAccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Editing Table Name`
+  String get dbTableEditingTableName {
+    return Intl.message(
+      'Editing Table Name',
+      name: 'dbTableEditingTableName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Creating Table`
+  String get dbTableCreatingTable {
+    return Intl.message(
+      'Creating Table',
+      name: 'dbTableCreatingTable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Database`
+  String get dbTableDatabase {
+    return Intl.message(
+      'Database',
+      name: 'dbTableDatabase',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Another database already uses this title. Change it and try again.`
+  String get dbDetailsDuplicateTitle {
+    return Intl.message(
+      'Another database already uses this title. Change it and try again.',
+      name: 'dbDetailsDuplicateTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Title must be at least {min} characters`
+  String dbDetailsTitleTooShort(Object min) {
+    return Intl.message(
+      'Title must be at least $min characters',
+      name: 'dbDetailsTitleTooShort',
+      desc: '',
+      args: [min],
+    );
+  }
+
+  /// `Arabic title is required`
+  String get dbDetailsTitleArRequired {
+    return Intl.message(
+      'Arabic title is required',
+      name: 'dbDetailsTitleArRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `English title is required`
+  String get dbDetailsTitleEnRequired {
+    return Intl.message(
+      'English title is required',
+      name: 'dbDetailsTitleEnRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This database could not be read. Check your connection and try again.`
+  String get dbDetailsCouldNotLoad {
+    return Intl.message(
+      'This database could not be read. Check your connection and try again.',
+      name: 'dbDetailsCouldNotLoad',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The changes could not be saved. Check your connection and try again.`
+  String get dbDetailsCouldNotSave {
+    return Intl.message(
+      'The changes could not be saved. Check your connection and try again.',
+      name: 'dbDetailsCouldNotSave',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Missing Information`
+  String get dbDetailsIncompleteTitle {
+    return Intl.message(
+      'Missing Information',
+      name: 'dbDetailsIncompleteTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Something Went Wrong`
+  String get dbDetailsErrorTitle {
+    return Intl.message(
+      'Something Went Wrong',
+      name: 'dbDetailsErrorTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retry`
+  String get dbDetailsRetry {
+    return Intl.message('Retry', name: 'dbDetailsRetry', desc: '', args: []);
+  }
+
+  /// `Close`
+  String get dbDetailsClose {
+    return Intl.message('Close', name: 'dbDetailsClose', desc: '', args: []);
+  }
+
+  /// `No`
+  String get dbDetailsNo {
+    return Intl.message('No', name: 'dbDetailsNo', desc: '', args: []);
+  }
+
+  /// `Yes`
+  String get dbDetailsYes {
+    return Intl.message('Yes', name: 'dbDetailsYes', desc: '', args: []);
+  }
+
+  /// `"{title}" and its access grants have been removed.`
+  String dbDetailsDeletedSubtitle(Object title) {
+    return Intl.message(
+      '"$title" and its access grants have been removed.',
+      name: 'dbDetailsDeletedSubtitle',
+      desc: '',
+      args: [title],
+    );
+  }
+
+  /// `Database Deleted`
+  String get dbDetailsDeletedTitle {
+    return Intl.message(
+      'Database Deleted',
+      name: 'dbDetailsDeletedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete Failed`
+  String get dbDetailsDeleteFailedTitle {
+    return Intl.message(
+      'Delete Failed',
+      name: 'dbDetailsDeleteFailedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to delete "{title}"? Its access grants are removed with it and this cannot be undone.`
+  String dbDetailsDeleteConfirmSubtitle(Object title) {
+    return Intl.message(
+      'Are you sure you want to delete "$title"? Its access grants are removed with it and this cannot be undone.',
+      name: 'dbDetailsDeleteConfirmSubtitle',
+      desc: '',
+      args: [title],
+    );
+  }
+
+  /// `Delete Database`
+  String get dbDetailsDeleteConfirmTitle {
+    return Intl.message(
+      'Delete Database',
+      name: 'dbDetailsDeleteConfirmTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Successfully Edited This Database`
+  String get dbDetailsAccessSavedSubtitle {
+    return Intl.message(
+      'You Successfully Edited This Database',
+      name: 'dbDetailsAccessSavedSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Access Updated`
+  String get dbDetailsAccessSavedTitle {
+    return Intl.message(
+      'Access Updated',
+      name: 'dbDetailsAccessSavedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose a permission level and both dates for every person you picked.`
+  String get dbDetailsIncompleteRows {
+    return Intl.message(
+      'Choose a permission level and both dates for every person you picked.',
+      name: 'dbDetailsIncompleteRows',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose a permission level and both dates for every group.`
+  String get dbDetailsIncompleteGrants {
+    return Intl.message(
+      'Choose a permission level and both dates for every group.',
+      name: 'dbDetailsIncompleteGrants',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select at least one person before continuing.`
+  String get dbDetailsPickSomeoneFirst {
+    return Intl.message(
+      'Select at least one person before continuing.',
+      name: 'dbDetailsPickSomeoneFirst',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open and Restricted access choose people in different ways, so the {count} people picked here will be cleared and have to be chosen again.`
+  String dbDetailsAccessTypeChangeSubtitle(Object count) {
+    return Intl.message(
+      'Open and Restricted access choose people in different ways, so the $count people picked here will be cleared and have to be chosen again.',
+      name: 'dbDetailsAccessTypeChangeSubtitle',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Change Access Type?`
+  String get dbDetailsAccessTypeChangeTitle {
+    return Intl.message(
+      'Change Access Type?',
+      name: 'dbDetailsAccessTypeChangeTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Personal access is for you alone. Saving will revoke access for the {count} people who have it now.`
+  String dbDetailsPersonalDropsGrants(Object count) {
+    return Intl.message(
+      'Personal access is for you alone. Saving will revoke access for the $count people who have it now.',
+      name: 'dbDetailsPersonalDropsGrants',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Remove All Access?`
+  String get dbDetailsPersonalDropsGrantsTitle {
+    return Intl.message(
+      'Remove All Access?',
+      name: 'dbDetailsPersonalDropsGrantsTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A personal database belongs to you alone. Nobody else is granted access, so there is nothing to configure here.`
+  String get dbDetailsPersonalAccessExplainer {
+    return Intl.message(
+      'A personal database belongs to you alone. Nobody else is granted access, so there is nothing to configure here.',
+      name: 'dbDetailsPersonalAccessExplainer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total Departments`
+  String get dbDetailsTotalDepartments {
+    return Intl.message(
+      'Total Departments',
+      name: 'dbDetailsTotalDepartments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total Employees`
+  String get dbDetailsTotalEmployees {
+    return Intl.message(
+      'Total Employees',
+      name: 'dbDetailsTotalEmployees',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Summary`
+  String get dbDetailsSummary {
+    return Intl.message(
+      'Summary',
+      name: 'dbDetailsSummary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose one or more departments above, then pick the people inside them.`
+  String get dbDetailsPickDepartmentFirst {
+    return Intl.message(
+      'Choose one or more departments above, then pick the people inside them.',
+      name: 'dbDetailsPickDepartmentFirst',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No employees found`
+  String get dbDetailsNoEmployeesFound {
+    return Intl.message(
+      'No employees found',
+      name: 'dbDetailsNoEmployeesFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Department:`
+  String get dbDetailsDepartmentLabel {
+    return Intl.message(
+      'Department:',
+      name: 'dbDetailsDepartmentLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Job Title:`
+  String get dbDetailsJobTitleLabel {
+    return Intl.message(
+      'Job Title:',
+      name: 'dbDetailsJobTitleLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Date`
+  String get dbDetailsDate {
+    return Intl.message('Date', name: 'dbDetailsDate', desc: '', args: []);
+  }
+
+  /// `End Date Of Access`
+  String get dbDetailsEndDateOfAccess {
+    return Intl.message(
+      'End Date Of Access',
+      name: 'dbDetailsEndDateOfAccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Start Date Of Access`
+  String get dbDetailsStartDateOfAccess {
+    return Intl.message(
+      'Start Date Of Access',
+      name: 'dbDetailsStartDateOfAccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Access Ends`
+  String get dbDetailsAccessEnds {
+    return Intl.message(
+      'Access Ends',
+      name: 'dbDetailsAccessEnds',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Access Begins`
+  String get dbDetailsAccessBegins {
+    return Intl.message(
+      'Access Begins',
+      name: 'dbDetailsAccessBegins',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Grant Access`
+  String get dbDetailsGrantAccess {
+    return Intl.message(
+      'Grant Access',
+      name: 'dbDetailsGrantAccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Review`
+  String get dbDetailsReview {
+    return Intl.message('Review', name: 'dbDetailsReview', desc: '', args: []);
+  }
+
+  /// `Deselect All`
+  String get dbDetailsDeselectAll {
+    return Intl.message(
+      'Deselect All',
+      name: 'dbDetailsDeselectAll',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select All`
+  String get dbDetailsSelectAll {
+    return Intl.message(
+      'Select All',
+      name: 'dbDetailsSelectAll',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Employee  Information`
+  String get dbDetailsEmployeeInformation {
+    return Intl.message(
+      'Employee  Information',
+      name: 'dbDetailsEmployeeInformation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Permission`
+  String get dbDetailsSelectPermission {
+    return Intl.message(
+      'Select Permission',
+      name: 'dbDetailsSelectPermission',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose Permissions`
+  String get dbDetailsChoosePermissions {
+    return Intl.message(
+      'Choose Permissions',
+      name: 'dbDetailsChoosePermissions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Permissions`
+  String get dbDetailsPermissions {
+    return Intl.message(
+      'Permissions',
+      name: 'dbDetailsPermissions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Department`
+  String get dbDetailsDepartment {
+    return Intl.message(
+      'Department',
+      name: 'dbDetailsDepartment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Access Management`
+  String get dbDetailsAccessManagement {
+    return Intl.message(
+      'Access Management',
+      name: 'dbDetailsAccessManagement',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nothing on this screen has been changed yet.`
+  String get dbDetailsNothingChanged {
+    return Intl.message(
+      'Nothing on this screen has been changed yet.',
+      name: 'dbDetailsNothingChanged',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nothing Changed`
+  String get dbDetailsNothingChangedTitle {
+    return Intl.message(
+      'Nothing Changed',
+      name: 'dbDetailsNothingChangedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your changes have not been saved. Leave without saving?`
+  String get dbDetailsDiscardConfirmSubtitle {
+    return Intl.message(
+      'Your changes have not been saved. Leave without saving?',
+      name: 'dbDetailsDiscardConfirmSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Discard Changes`
+  String get dbDetailsDiscardConfirmTitle {
+    return Intl.message(
+      'Discard Changes',
+      name: 'dbDetailsDiscardConfirmTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You Successfully Edited This Database`
+  String get dbDetailsEditSuccessSubtitle {
+    return Intl.message(
+      'You Successfully Edited This Database',
+      name: 'dbDetailsEditSuccessSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are You Sure You Want To Edit This Database?`
+  String get dbDetailsEditConfirmSubtitle {
+    return Intl.message(
+      'Are You Sure You Want To Edit This Database?',
+      name: 'dbDetailsEditConfirmSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Editing Database`
+  String get dbDetailsEditConfirmTitle {
+    return Intl.message(
+      'Editing Database',
+      name: 'dbDetailsEditConfirmTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save`
+  String get dbDetailsSave {
+    return Intl.message('Save', name: 'dbDetailsSave', desc: '', args: []);
+  }
+
+  /// `Discard Changes`
+  String get dbDetailsDiscardChanges {
+    return Intl.message(
+      'Discard Changes',
+      name: 'dbDetailsDiscardChanges',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The access list could not be written to a file.`
+  String get dbDetailsExportFailed {
+    return Intl.message(
+      'The access list could not be written to a file.',
+      name: 'dbDetailsExportFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export Failed`
+  String get dbDetailsExportFailedTitle {
+    return Intl.message(
+      'Export Failed',
+      name: 'dbDetailsExportFailedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Saved {fileName} and opened the share sheet.`
+  String dbDetailsExportDone(Object fileName) {
+    return Intl.message(
+      'Saved $fileName and opened the share sheet.',
+      name: 'dbDetailsExportDone',
+      desc: '',
+      args: [fileName],
+    );
+  }
+
+  /// `Export Ready`
+  String get dbDetailsExportDoneTitle {
+    return Intl.message(
+      'Export Ready',
+      name: 'dbDetailsExportDoneTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `There are no access rows on screen to export.`
+  String get dbDetailsExportEmpty {
+    return Intl.message(
+      'There are no access rows on screen to export.',
+      name: 'dbDetailsExportEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nothing To Export`
+  String get dbDetailsExportEmptyTitle {
+    return Intl.message(
+      'Nothing To Export',
+      name: 'dbDetailsExportEmptyTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No access rows match this filter.`
+  String get dbDetailsNoAccessMatches {
+    return Intl.message(
+      'No access rows match this filter.',
+      name: 'dbDetailsNoAccessMatches',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nobody has been granted access to this database yet.`
+  String get dbDetailsNoAccessYet {
+    return Intl.message(
+      'Nobody has been granted access to this database yet.',
+      name: 'dbDetailsNoAccessYet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Access Status`
+  String get dbDetailsColAccessStatus {
+    return Intl.message(
+      'Access Status',
+      name: 'dbDetailsColAccessStatus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Access Type`
+  String get dbDetailsColAccessType {
+    return Intl.message(
+      'Access Type',
+      name: 'dbDetailsColAccessType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `End Date Of Access`
+  String get dbDetailsColEnd {
+    return Intl.message(
+      'End Date Of Access',
+      name: 'dbDetailsColEnd',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Start Date Of Access`
+  String get dbDetailsColStart {
+    return Intl.message(
+      'Start Date Of Access',
+      name: 'dbDetailsColStart',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Access Grantor`
+  String get dbDetailsColGrantor {
+    return Intl.message(
+      'Access Grantor',
+      name: 'dbDetailsColGrantor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Job Title`
+  String get dbDetailsColJobTitle {
+    return Intl.message(
+      'Job Title',
+      name: 'dbDetailsColJobTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Department`
+  String get dbDetailsColDepartment {
+    return Intl.message(
+      'Department',
+      name: 'dbDetailsColDepartment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Employee Name`
+  String get dbDetailsColName {
+    return Intl.message(
+      'Employee Name',
+      name: 'dbDetailsColName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Scheduled`
+  String get dbDetailsScheduledChip {
+    return Intl.message(
+      'Scheduled',
+      name: 'dbDetailsScheduledChip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Removed`
+  String get dbDetailsRemovedChip {
+    return Intl.message(
+      'Removed',
+      name: 'dbDetailsRemovedChip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Deactivated`
+  String get dbDetailsDeactivatedChip {
+    return Intl.message(
+      'Deactivated',
+      name: 'dbDetailsDeactivatedChip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Active`
+  String get dbDetailsActiveChip {
+    return Intl.message(
+      'Active',
+      name: 'dbDetailsActiveChip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All`
+  String get dbDetailsAll {
+    return Intl.message('All', name: 'dbDetailsAll', desc: '', args: []);
+  }
+
+  /// `Export`
+  String get dbDetailsExport {
+    return Intl.message('Export', name: 'dbDetailsExport', desc: '', args: []);
+  }
+
+  /// `Edit Access`
+  String get dbDetailsEditAccess {
+    return Intl.message(
+      'Edit Access',
+      name: 'dbDetailsEditAccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Table`
+  String get dbDetailsTable {
+    return Intl.message('Table', name: 'dbDetailsTable', desc: '', args: []);
+  }
+
+  /// `Apply`
+  String get dbDetailsApply {
+    return Intl.message('Apply', name: 'dbDetailsApply', desc: '', args: []);
+  }
+
+  /// `Reset`
+  String get dbDetailsReset {
+    return Intl.message('Reset', name: 'dbDetailsReset', desc: '', args: []);
+  }
+
+  /// `Sort`
+  String get dbDetailsSort {
+    return Intl.message('Sort', name: 'dbDetailsSort', desc: '', args: []);
+  }
+
+  /// `Filter`
+  String get dbDetailsFilter {
+    return Intl.message('Filter', name: 'dbDetailsFilter', desc: '', args: []);
+  }
+
+  /// `Search`
+  String get dbDetailsSearch {
+    return Intl.message('Search', name: 'dbDetailsSearch', desc: '', args: []);
+  }
+
+  /// `No description was added.`
+  String get dbDetailsNoDescription {
+    return Intl.message(
+      'No description was added.',
+      name: 'dbDetailsNoDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Last Edit:`
+  String get dbDetailsLastEditLabel {
+    return Intl.message(
+      'Last Edit:',
+      name: 'dbDetailsLastEditLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Creation:`
+  String get dbDetailsCreationLabel {
+    return Intl.message(
+      'Creation:',
+      name: 'dbDetailsCreationLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Description:`
+  String get dbDetailsDescriptionLabel {
+    return Intl.message(
+      'Description:',
+      name: 'dbDetailsDescriptionLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Access Management:`
+  String get dbDetailsAccessManagementLabel {
+    return Intl.message(
+      'Access Management:',
+      name: 'dbDetailsAccessManagementLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Database Details`
+  String get dbDetailsDatabaseDetails {
+    return Intl.message(
+      'Database Details',
+      name: 'dbDetailsDatabaseDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Expand`
+  String get dbDetailsExpand {
+    return Intl.message('Expand', name: 'dbDetailsExpand', desc: '', args: []);
+  }
+
+  /// `Hide`
+  String get dbDetailsHide {
+    return Intl.message('Hide', name: 'dbDetailsHide', desc: '', args: []);
+  }
+
+  /// `Delete`
+  String get dbDetailsDelete {
+    return Intl.message('Delete', name: 'dbDetailsDelete', desc: '', args: []);
+  }
+
+  /// `Edit`
+  String get dbDetailsEdit {
+    return Intl.message('Edit', name: 'dbDetailsEdit', desc: '', args: []);
+  }
+
+  /// `Access`
+  String get dbDetailsAccess {
+    return Intl.message('Access', name: 'dbDetailsAccess', desc: '', args: []);
+  }
+
+  /// `Editing Access Management`
+  String get dbDetailsEditingAccessManagement {
+    return Intl.message(
+      'Editing Access Management',
+      name: 'dbDetailsEditingAccessManagement',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Editing Database Access`
+  String get dbDetailsEditingDatabaseAccess {
+    return Intl.message(
+      'Editing Database Access',
+      name: 'dbDetailsEditingDatabaseAccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Editing {title}`
+  String dbDetailsEditingCrumb(Object title) {
+    return Intl.message(
+      'Editing $title',
+      name: 'dbDetailsEditingCrumb',
+      desc: '',
+      args: [title],
+    );
+  }
+
+  /// `Access`
+  String get dbDetailsAccessCrumb {
+    return Intl.message(
+      'Access',
+      name: 'dbDetailsAccessCrumb',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{title} Details`
+  String dbDetailsDetailsCrumb(Object title) {
+    return Intl.message(
+      '$title Details',
+      name: 'dbDetailsDetailsCrumb',
+      desc: '',
+      args: [title],
+    );
+  }
+
+  /// `Database`
+  String get dbDetailsDatabase {
+    return Intl.message(
+      'Database',
+      name: 'dbDetailsDatabase',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `1st Column`
+  String get dbTableColumnFirst {
+    return Intl.message(
+      '1st Column',
+      name: 'dbTableColumnFirst',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `2nd Column`
+  String get dbTableColumnSecond {
+    return Intl.message(
+      '2nd Column',
+      name: 'dbTableColumnSecond',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `3rd Column`
+  String get dbTableColumnThird {
+    return Intl.message(
+      '3rd Column',
+      name: 'dbTableColumnThird',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{ordinal} Column`
+  String dbTableNthColumn(Object ordinal) {
+    return Intl.message(
+      '$ordinal Column',
+      name: 'dbTableNthColumn',
+      desc: '',
+      args: [ordinal],
+    );
+  }
+
+  /// `Open Access`
+  String get dbAccessTypeOpen {
+    return Intl.message(
+      'Open Access',
+      name: 'dbAccessTypeOpen',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restricted Access`
+  String get dbAccessTypeRestricted {
+    return Intl.message(
+      'Restricted Access',
+      name: 'dbAccessTypeRestricted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Personal Access`
+  String get dbAccessTypePersonal {
+    return Intl.message(
+      'Personal Access',
+      name: 'dbAccessTypePersonal',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Full Access`
+  String get dbPermissionFullAccess {
+    return Intl.message(
+      'Full Access',
+      name: 'dbPermissionFullAccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit`
+  String get dbPermissionEdit {
+    return Intl.message('Edit', name: 'dbPermissionEdit', desc: '', args: []);
+  }
+
+  /// `Export`
+  String get dbPermissionExport {
+    return Intl.message(
+      'Export',
+      name: 'dbPermissionExport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View`
+  String get dbPermissionView {
+    return Intl.message('View', name: 'dbPermissionView', desc: '', args: []);
+  }
+
+  /// `Custom`
+  String get dbPermissionCustom {
+    return Intl.message(
+      'Custom',
+      name: 'dbPermissionCustom',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ascending`
+  String get dbSortAscending {
+    return Intl.message(
+      'Ascending',
+      name: 'dbSortAscending',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Descending`
+  String get dbSortDescending {
+    return Intl.message(
+      'Descending',
+      name: 'dbSortDescending',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Last Updated`
+  String get dbSortLastUpdated {
+    return Intl.message(
+      'Last Updated',
+      name: 'dbSortLastUpdated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Active`
+  String get dbAccessStatusActive {
+    return Intl.message(
+      'Active',
+      name: 'dbAccessStatusActive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Scheduled`
+  String get dbAccessStatusScheduled {
+    return Intl.message(
+      'Scheduled',
+      name: 'dbAccessStatusScheduled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Deactivated`
+  String get dbAccessStatusDeactivated {
+    return Intl.message(
+      'Deactivated',
+      name: 'dbAccessStatusDeactivated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Removed`
+  String get dbAccessStatusRemoved {
+    return Intl.message(
+      'Removed',
+      name: 'dbAccessStatusRemoved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `General`
+  String get dbColumnTypeGeneral {
+    return Intl.message(
+      'General',
+      name: 'dbColumnTypeGeneral',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Number`
+  String get dbColumnTypeNumber {
+    return Intl.message(
+      'Number',
+      name: 'dbColumnTypeNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Currency`
+  String get dbColumnTypeCurrency {
+    return Intl.message(
+      'Currency',
+      name: 'dbColumnTypeCurrency',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Date`
+  String get dbColumnTypeDate {
+    return Intl.message('Date', name: 'dbColumnTypeDate', desc: '', args: []);
+  }
+
+  /// `Time`
+  String get dbColumnTypeTime {
+    return Intl.message('Time', name: 'dbColumnTypeTime', desc: '', args: []);
+  }
+
+  /// `Percentage`
+  String get dbColumnTypePercentage {
+    return Intl.message(
+      'Percentage',
+      name: 'dbColumnTypePercentage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Private`
+  String get dbCommentsAccessPrivate {
+    return Intl.message(
+      'Private',
+      name: 'dbCommentsAccessPrivate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Shared`
+  String get dbCommentsAccessShared {
+    return Intl.message(
+      'Shared',
+      name: 'dbCommentsAccessShared',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Overwrite`
+  String get dbImportModeOverwrite {
+    return Intl.message(
+      'Overwrite',
+      name: 'dbImportModeOverwrite',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Append`
+  String get dbImportModeAppend {
+    return Intl.message(
+      'Append',
+      name: 'dbImportModeAppend',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Private: Only admins can view and manage the comments.`
+  String get dbCommentsAccessHintPrivate {
+    return Intl.message(
+      'Private: Only admins can view and manage the comments.',
+      name: 'dbCommentsAccessHintPrivate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Shared: All employees can view, reply to, and engage with the comments.`
+  String get dbCommentsAccessHintShared {
+    return Intl.message(
+      'Shared: All employees can view, reply to, and engage with the comments.',
+      name: 'dbCommentsAccessHintShared',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `عنوان قاعدة بيانات`
+  String get dbArabicDatabaseTitleLabel {
+    return Intl.message(
+      'عنوان قاعدة بيانات',
+      name: 'dbArabicDatabaseTitleLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `الوصف`
+  String get dbArabicDescriptionLabel {
+    return Intl.message(
+      'الوصف',
+      name: 'dbArabicDescriptionLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `اكتب هنا`
+  String get dbArabicHint {
+    return Intl.message('اكتب هنا', name: 'dbArabicHint', desc: '', args: []);
+  }
+
+  /// `اسم الجدول`
+  String get dbArabicTableNameLabel {
+    return Intl.message(
+      'اسم الجدول',
+      name: 'dbArabicTableNameLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `, `
+  String get dbListSeparator {
+    return Intl.message(', ', name: 'dbListSeparator', desc: '', args: []);
+  }
+
+  /// `The employee list could not be loaded. Try again.`
+  String get dbEmployeeListLoadFailed {
+    return Intl.message(
+      'The employee list could not be loaded. Try again.',
+      name: 'dbEmployeeListLoadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error Saving Supplier`
+  String get errorSavingSupplier {
+    return Intl.message(
+      'Error Saving Supplier',
+      name: 'errorSavingSupplier',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed To Save The Supplier. Please Check Your Internet Connection And Try Again.`
+  String get failedToSaveSupplierCheckConnection {
+    return Intl.message(
+      'Failed To Save The Supplier. Please Check Your Internet Connection And Try Again.',
+      name: 'failedToSaveSupplierCheckConnection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Duplicate`
+  String get duplicate {
+    return Intl.message('Duplicate', name: 'duplicate', desc: '', args: []);
+  }
+
+  /// `Failed To Create The Storage Location. Please Try Again.`
+  String get failedToCreateStorageLocation {
+    return Intl.message(
+      'Failed To Create The Storage Location. Please Try Again.',
+      name: 'failedToCreateStorageLocation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed To Save The Storage Location. Please Try Again.`
+  String get failedToSaveStorageLocation {
+    return Intl.message(
+      'Failed To Save The Storage Location. Please Try Again.',
+      name: 'failedToSaveStorageLocation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed To Update The Storage Location. Please Try Again.`
+  String get failedToUpdateStorageLocation {
+    return Intl.message(
+      'Failed To Update The Storage Location. Please Try Again.',
+      name: 'failedToUpdateStorageLocation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed To Update The Status. Please Try Again.`
+  String get failedToUpdateStatus {
+    return Intl.message(
+      'Failed To Update The Status. Please Try Again.',
+      name: 'failedToUpdateStatus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The PDF Could Not Be Generated. Please Try Again.`
+  String get pdfCouldNotBeGenerated {
+    return Intl.message(
+      'The PDF Could Not Be Generated. Please Try Again.',
+      name: 'pdfCouldNotBeGenerated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Do You Want To Submit All Products?`
+  String get doYouWantToSubmitAllProducts {
+    return Intl.message(
+      'Do You Want To Submit All Products?',
+      name: 'doYouWantToSubmitAllProducts',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reset Module Notifications`
+  String get resetModuleNotifications {
+    return Intl.message(
+      'Reset Module Notifications',
+      name: 'resetModuleNotifications',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Every Notification In "{module}" Will Be Restored To Its Approved Default Text. Any Edits Made Here Will Be Lost. Continue?`
+  String resetModuleNotificationsBody(String module) {
+    return Intl.message(
+      'Every Notification In "$module" Will Be Restored To Its Approved Default Text. Any Edits Made Here Will Be Lost. Continue?',
+      name: 'resetModuleNotificationsBody',
+      desc: '',
+      args: [module],
+    );
+  }
+
+  /// `You’re all clear`
+  String get youreAllClear {
+    return Intl.message(
+      'You’re all clear',
+      name: 'youreAllClear',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Admin`
+  String get groupAdmin {
+    return Intl.message('Admin', name: 'groupAdmin', desc: '', args: []);
+  }
+
+  /// `Current`
+  String get currentTag {
+    return Intl.message('Current', name: 'currentTag', desc: '', args: []);
+  }
+
+  /// `New`
+  String get newTag {
+    return Intl.message('New', name: 'newTag', desc: '', args: []);
+  }
+
+  /// `No note added.`
+  String get noNoteAdded {
+    return Intl.message(
+      'No note added.',
+      name: 'noNoteAdded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Degree`
+  String get addDegree {
+    return Intl.message('Add Degree', name: 'addDegree', desc: '', args: []);
+  }
+
+  /// `Add Skill`
+  String get addSkill {
+    return Intl.message('Add Skill', name: 'addSkill', desc: '', args: []);
+  }
+
+  /// `Add Hobby`
+  String get addHobby {
+    return Intl.message('Add Hobby', name: 'addHobby', desc: '', args: []);
+  }
+
+  /// `Add Emergency Contact`
+  String get addEmergencyContact {
+    return Intl.message(
+      'Add Emergency Contact',
+      name: 'addEmergencyContact',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Second Emergency Contact`
+  String get addSecondEmergencyContact {
+    return Intl.message(
+      'Add Second Emergency Contact',
+      name: 'addSecondEmergencyContact',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Preview Company Information`
+  String get previewCompanyInformation {
+    return Intl.message(
+      'Preview Company Information',
+      name: 'previewCompanyInformation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reason For Cancellation`
+  String get reasonForCancellation {
+    return Intl.message(
+      'Reason For Cancellation',
+      name: 'reasonForCancellation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancellation Reason`
+  String get cancellationReason {
+    return Intl.message(
+      'Cancellation Reason',
+      name: 'cancellationReason',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Editing Personal Information`
+  String get editingPersonalInformation {
+    return Intl.message(
+      'Editing Personal Information',
+      name: 'editingPersonalInformation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Soon`
+  String get soon {
+    return Intl.message('Soon', name: 'soon', desc: '', args: []);
+  }
+
+  /// `Logo`
+  String get logo {
+    return Intl.message('Logo', name: 'logo', desc: '', args: []);
+  }
+
+  /// `English Font`
+  String get englishFont {
+    return Intl.message(
+      'English Font',
+      name: 'englishFont',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Arabic Font`
+  String get arabicFont {
+    return Intl.message('Arabic Font', name: 'arabicFont', desc: '', args: []);
+  }
+
+  /// `About Knowticed Plus`
+  String get aboutKnowticedPlus {
+    return Intl.message(
+      'About Knowticed Plus',
+      name: 'aboutKnowticedPlus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Back To Edit`
+  String get backToEdit {
+    return Intl.message('Back To Edit', name: 'backToEdit', desc: '', args: []);
+  }
+
+  /// `{name} Settings`
+  String hwsTitle(String name) {
+    return Intl.message(
+      '$name Settings',
+      name: 'hwsTitle',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `Period`
+  String get hwsPeriod {
+    return Intl.message('Period', name: 'hwsPeriod', desc: '', args: []);
+  }
+
+  /// `This Year`
+  String get hwsThisYear {
+    return Intl.message('This Year', name: 'hwsThisYear', desc: '', args: []);
+  }
+
+  /// `Custom Range`
+  String get hwsCustomRange {
+    return Intl.message(
+      'Custom Range',
+      name: 'hwsCustomRange',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All Time`
+  String get hwsAllTime {
+    return Intl.message('All Time', name: 'hwsAllTime', desc: '', args: []);
+  }
+
+  /// `Show`
+  String get hwsShow {
+    return Intl.message('Show', name: 'hwsShow', desc: '', args: []);
+  }
+
+  /// `My Department`
+  String get hwsMyDepartment {
+    return Intl.message(
+      'My Department',
+      name: 'hwsMyDepartment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All Requests`
+  String get hwsAllRequests {
+    return Intl.message(
+      'All Requests',
+      name: 'hwsAllRequests',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Requests Shown`
+  String get hwsRequestsShown {
+    return Intl.message(
+      'Requests Shown',
+      name: 'hwsRequestsShown',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `rows`
+  String get hwsUnitRows {
+    return Intl.message('rows', name: 'hwsUnitRows', desc: '', args: []);
+  }
+
+  /// `Due`
+  String get hwsDue {
+    return Intl.message('Due', name: 'hwsDue', desc: '', args: []);
+  }
+
+  /// `Statuses`
+  String get hwsStatuses {
+    return Intl.message('Statuses', name: 'hwsStatuses', desc: '', args: []);
+  }
+
+  /// `Statuses Shown`
+  String get hwsStatusesShown {
+    return Intl.message(
+      'Statuses Shown',
+      name: 'hwsStatusesShown',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Buttons Shown`
+  String get hwsButtonsShown {
+    return Intl.message(
+      'Buttons Shown',
+      name: 'hwsButtonsShown',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tiles Shown`
+  String get hwsTilesShown {
+    return Intl.message(
+      'Tiles Shown',
+      name: 'hwsTilesShown',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Warn When SLA Time Used Is At Least`
+  String get hwsWarnWhenSla {
+    return Intl.message(
+      'Warn When SLA Time Used Is At Least',
+      name: 'hwsWarnWhenSla',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `%`
+  String get hwsUnitPercent {
+    return Intl.message('%', name: 'hwsUnitPercent', desc: '', args: []);
+  }
+
+  /// `Also List Requests Already Breached`
+  String get hwsAlsoListBreached {
+    return Intl.message(
+      'Also List Requests Already Breached',
+      name: 'hwsAlsoListBreached',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All Departments`
+  String get hwsAllDepartments {
+    return Intl.message(
+      'All Departments',
+      name: 'hwsAllDepartments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Counts Shown`
+  String get hwsCountsShown {
+    return Intl.message(
+      'Counts Shown',
+      name: 'hwsCountsShown',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Count`
+  String get hwsCount {
+    return Intl.message('Count', name: 'hwsCount', desc: '', args: []);
+  }
+
+  /// `All Tasks`
+  String get hwsAllTasks {
+    return Intl.message('All Tasks', name: 'hwsAllTasks', desc: '', args: []);
+  }
+
+  /// `Open Tasks Only`
+  String get hwsOpenTasksOnly {
+    return Intl.message(
+      'Open Tasks Only',
+      name: 'hwsOpenTasksOnly',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Priorities Shown`
+  String get hwsPrioritiesShown {
+    return Intl.message(
+      'Priorities Shown',
+      name: 'hwsPrioritiesShown',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tasks Shown`
+  String get hwsTasksShown {
+    return Intl.message(
+      'Tasks Shown',
+      name: 'hwsTasksShown',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `tasks`
+  String get hwsUnitTasks {
+    return Intl.message('tasks', name: 'hwsUnitTasks', desc: '', args: []);
+  }
+
+  /// `Open Tasks`
+  String get hwsOpenTasks {
+    return Intl.message('Open Tasks', name: 'hwsOpenTasks', desc: '', args: []);
+  }
+
+  /// `Due Today`
+  String get hwsDueToday {
+    return Intl.message('Due Today', name: 'hwsDueToday', desc: '', args: []);
+  }
+
+  /// `Due This Week`
+  String get hwsDueThisWeek {
+    return Intl.message(
+      'Due This Week',
+      name: 'hwsDueThisWeek',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Order`
+  String get hwsOrder {
+    return Intl.message('Order', name: 'hwsOrder', desc: '', args: []);
+  }
+
+  /// `Newest`
+  String get hwsNewest {
+    return Intl.message('Newest', name: 'hwsNewest', desc: '', args: []);
+  }
+
+  /// `Due Date`
+  String get hwsDueDate {
+    return Intl.message('Due Date', name: 'hwsDueDate', desc: '', args: []);
+  }
+
+  /// `Priority`
+  String get hwsPriority {
+    return Intl.message('Priority', name: 'hwsPriority', desc: '', args: []);
+  }
+
+  /// `Allowed {min}–{max}`
+  String hwsAllowed(String min, String max) {
+    return Intl.message(
+      'Allowed $min–$max',
+      name: 'hwsAllowed',
+      desc: '',
+      args: [min, max],
+    );
+  }
+
+  /// `Keep at least {n}`
+  String hwsKeepAtLeast(String n) {
+    return Intl.message(
+      'Keep at least $n',
+      name: 'hwsKeepAtLeast',
+      desc: '',
+      args: [n],
+    );
+  }
+
+  /// `Enter a number from {min} to {max}.`
+  String hwsErrNumber(String min, String max) {
+    return Intl.message(
+      'Enter a number from $min to $max.',
+      name: 'hwsErrNumber',
+      desc: '',
+      args: [min, max],
+    );
+  }
+
+  /// `Pick at least {n}.`
+  String hwsErrPickAtLeast(String n) {
+    return Intl.message(
+      'Pick at least $n.',
+      name: 'hwsErrPickAtLeast',
+      desc: '',
+      args: [n],
+    );
+  }
+
+  /// `Pick up to {n}.`
+  String hwsErrPickAtMost(String n) {
+    return Intl.message(
+      'Pick up to $n.',
+      name: 'hwsErrPickAtMost',
+      desc: '',
+      args: [n],
+    );
+  }
+
+  /// `Pick a date.`
+  String get hwsErrPickDate {
+    return Intl.message(
+      'Pick a date.',
+      name: 'hwsErrPickDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The end date must be after the start date.`
+  String get hwsErrEndBeforeStart {
+    return Intl.message(
+      'The end date must be after the start date.',
+      name: 'hwsErrEndBeforeStart',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Settings`
+  String get hwsGear {
+    return Intl.message('Settings', name: 'hwsGear', desc: '', args: []);
+  }
+
+  /// `Service Actions`
+  String get hwsNameServiceActions {
+    return Intl.message(
+      'Service Actions',
+      name: 'hwsNameServiceActions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Service Overview`
+  String get hwsNameServiceOverview {
+    return Intl.message(
+      'Service Overview',
+      name: 'hwsNameServiceOverview',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To-Do Counts`
+  String get hwsNameTodoCounts {
+    return Intl.message(
+      'To-Do Counts',
+      name: 'hwsNameTodoCounts',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To-Do Priorities`
+  String get hwsNameTodoPriorities {
+    return Intl.message(
+      'To-Do Priorities',
+      name: 'hwsNameTodoPriorities',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To-Do Tasks`
+  String get hwsNameTodoTasks {
+    return Intl.message(
+      'To-Do Tasks',
+      name: 'hwsNameTodoTasks',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{n} selected`
+  String hwsSelectedCount(String n) {
+    return Intl.message(
+      '$n selected',
+      name: 'hwsSelectedCount',
+      desc: '',
+      args: [n],
+    );
+  }
+
+  /// `Due`
+  String get calStatusDue {
+    return Intl.message('Due', name: 'calStatusDue', desc: '', args: []);
+  }
+
+  /// `Milestone`
+  String get calStatusMilestone {
+    return Intl.message(
+      'Milestone',
+      name: 'calStatusMilestone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pending Approval`
+  String get calStatusPendingApproval {
+    return Intl.message(
+      'Pending Approval',
+      name: 'calStatusPendingApproval',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Expiring`
+  String get calStatusExpiring {
+    return Intl.message(
+      'Expiring',
+      name: 'calStatusExpiring',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Updated`
+  String get calStatusUpdated {
+    return Intl.message(
+      'Updated',
+      name: 'calStatusUpdated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reminders`
+  String get calStatusReminders {
+    return Intl.message(
+      'Reminders',
+      name: 'calStatusReminders',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Approved by Supervisor`
+  String get calStatusApprovedBySupervisor {
+    return Intl.message(
+      'Approved by Supervisor',
+      name: 'calStatusApprovedBySupervisor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `In Progress`
+  String get calStatusInProgress {
+    return Intl.message(
+      'In Progress',
+      name: 'calStatusInProgress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Release`
+  String get calStatusRelease {
+    return Intl.message(
+      'Release',
+      name: 'calStatusRelease',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Duration`
+  String get calStatusDuration {
+    return Intl.message(
+      'Duration',
+      name: 'calStatusDuration',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No options`
+  String get noOptions {
+    return Intl.message('No options', name: 'noOptions', desc: '', args: []);
+  }
+
+  /// `Notification Preview`
+  String get notifPreviewTitle {
+    return Intl.message(
+      'Notification Preview',
+      name: 'notifPreviewTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Subject:`
+  String get notifPreviewSubject {
+    return Intl.message(
+      'Subject:',
+      name: 'notifPreviewSubject',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Body:`
+  String get notifPreviewBody {
+    return Intl.message('Body:', name: 'notifPreviewBody', desc: '', args: []);
+  }
+
+  /// `Note: Variables like {example} will be replaced with actual values when sending notifications`
+  String notifPreviewNote(Object example) {
+    return Intl.message(
+      'Note: Variables like $example will be replaced with actual values when sending notifications',
+      name: 'notifPreviewNote',
+      desc: '',
+      args: [example],
+    );
+  }
+
+  /// `Close`
+  String get notifClose {
+    return Intl.message('Close', name: 'notifClose', desc: '', args: []);
+  }
+
+  /// `This notification has no variables`
+  String get notifNoVariables {
+    return Intl.message(
+      'This notification has no variables',
+      name: 'notifNoVariables',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Available variables: {tokens}`
+  String notifAvailableVariables(Object tokens) {
+    return Intl.message(
+      'Available variables: $tokens',
+      name: 'notifAvailableVariables',
+      desc: '',
+      args: [tokens],
+    );
+  }
+
+  /// `Select a notification type first`
+  String get notifSelectEventFirst {
+    return Intl.message(
+      'Select a notification type first',
+      name: 'notifSelectEventFirst',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Notification Status`
+  String get notifStatus {
+    return Intl.message(
+      'Notification Status',
+      name: 'notifStatus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reset Default`
+  String get notifResetDefault {
+    return Intl.message(
+      'Reset Default',
+      name: 'notifResetDefault',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reset Default Messages`
+  String get notifResetDefaultMessages {
+    return Intl.message(
+      'Reset Default Messages',
+      name: 'notifResetDefaultMessages',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Notification Type`
+  String get notifChannelType {
+    return Intl.message(
+      'Notification Type',
+      name: 'notifChannelType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Email`
+  String get notifChannelEmail {
+    return Intl.message('Email', name: 'notifChannelEmail', desc: '', args: []);
+  }
+
+  /// `Push Notification`
+  String get notifChannelPush {
+    return Intl.message(
+      'Push Notification',
+      name: 'notifChannelPush',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Notification Type`
+  String get notifSelectChannel {
+    return Intl.message(
+      'Select Notification Type',
+      name: 'notifSelectChannel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Subject (English)`
+  String get notifSubjectEnglish {
+    return Intl.message(
+      'Subject (English)',
+      name: 'notifSubjectEnglish',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Subject (Arabic)`
+  String get notifSubjectArabic {
+    return Intl.message(
+      'Subject (Arabic)',
+      name: 'notifSubjectArabic',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Message (English)`
+  String get notifBodyEnglish {
+    return Intl.message(
+      'Message (English)',
+      name: 'notifBodyEnglish',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Message (Arabic)`
+  String get notifBodyArabic {
+    return Intl.message(
+      'Message (Arabic)',
+      name: 'notifBodyArabic',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Write here`
+  String get notifWriteHere {
+    return Intl.message(
+      'Write here',
+      name: 'notifWriteHere',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reset module notifications`
+  String get notifResetModuleTitle {
+    return Intl.message(
+      'Reset module notifications',
+      name: 'notifResetModuleTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Every notification in "{module}" will be restored to its approved default text. Any edits made here will be lost. Continue?`
+  String notifResetModuleBody(Object module) {
+    return Intl.message(
+      'Every notification in "$module" will be restored to its approved default text. Any edits made here will be lost. Continue?',
+      name: 'notifResetModuleBody',
+      desc: '',
+      args: [module],
+    );
+  }
+
+  /// `Reset all in this module`
+  String get notifResetModuleAction {
+    return Intl.message(
+      'Reset all in this module',
+      name: 'notifResetModuleAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No notification permissions available`
+  String get notifNoPermissions {
+    return Intl.message(
+      'No notification permissions available',
+      name: 'notifNoPermissions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Service Management`
+  String get notifServiceManagement {
+    return Intl.message(
+      'Service Management',
+      name: 'notifServiceManagement',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Some events could not be loaded. Please try again later.`
+  String get calendarSomeSourcesFailed {
+    return Intl.message(
+      'Some events could not be loaded. Please try again later.',
+      name: 'calendarSomeSourcesFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Scheduled`
+  String get calStatusScheduled {
+    return Intl.message(
+      'Scheduled',
+      name: 'calStatusScheduled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Assigned`
+  String get calStatusAssigned {
+    return Intl.message(
+      'Assigned',
+      name: 'calStatusAssigned',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Overdue`
+  String get calStatusOverdue {
+    return Intl.message(
+      'Overdue',
+      name: 'calStatusOverdue',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `SLA`
+  String get calStatusSla {
+    return Intl.message('SLA', name: 'calStatusSla', desc: '', args: []);
+  }
+
+  /// `Renewal`
+  String get calStatusRenewal {
+    return Intl.message(
+      'Renewal',
+      name: 'calStatusRenewal',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Billing Cycles`
+  String get calStatusBillingCycles {
+    return Intl.message(
+      'Billing Cycles',
+      name: 'calStatusBillingCycles',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pending Requests`
+  String get calStatusPendingRequests {
+    return Intl.message(
+      'Pending Requests',
+      name: 'calStatusPendingRequests',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Frequency`
+  String get calStatusFrequency {
+    return Intl.message(
+      'Frequency',
+      name: 'calStatusFrequency',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Service Management`
+  String get calModuleServiceManagement {
+    return Intl.message(
+      'Service Management',
+      name: 'calModuleServiceManagement',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Form Builder`
+  String get calModuleFormBuilder {
+    return Intl.message(
+      'Form Builder',
+      name: 'calModuleFormBuilder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Inventory`
+  String get calModuleInventory {
+    return Intl.message(
+      'Inventory',
+      name: 'calModuleInventory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Database`
+  String get calModuleDatabase {
+    return Intl.message(
+      'Database',
+      name: 'calModuleDatabase',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Events`
+  String get calModuleEvents {
+    return Intl.message('Events', name: 'calModuleEvents', desc: '', args: []);
+  }
+
+  /// `Tracking`
+  String get calModuleTracking {
+    return Intl.message(
+      'Tracking',
+      name: 'calModuleTracking',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Org Chart`
+  String get calModuleOrgChart {
+    return Intl.message(
+      'Org Chart',
+      name: 'calModuleOrgChart',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Knowledge Hub`
+  String get calModuleKnowledgeHub {
+    return Intl.message(
+      'Knowledge Hub',
+      name: 'calModuleKnowledgeHub',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tasks`
+  String get calModuleTasks {
+    return Intl.message('Tasks', name: 'calModuleTasks', desc: '', args: []);
+  }
+
+  /// `To Do`
+  String get calModuleTodo {
+    return Intl.message('To Do', name: 'calModuleTodo', desc: '', args: []);
+  }
+
+  /// `GRC`
+  String get calModuleGrc {
+    return Intl.message('GRC', name: 'calModuleGrc', desc: '', args: []);
+  }
+
+  /// `Qiyas`
+  String get calModuleQiyas {
+    return Intl.message('Qiyas', name: 'calModuleQiyas', desc: '', args: []);
+  }
+
+  /// `Messages`
+  String get calModuleMessages {
+    return Intl.message(
+      'Messages',
+      name: 'calModuleMessages',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Role Management`
+  String get calModuleRoleManagement {
+    return Intl.message(
+      'Role Management',
+      name: 'calModuleRoleManagement',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Settings`
+  String get calModuleSettings {
+    return Intl.message(
+      'Settings',
+      name: 'calModuleSettings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You’re all clear`
+  String get calNoEvents {
+    return Intl.message(
+      'You’re all clear',
+      name: 'calNoEvents',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Database Title`
+  String get dbEnglishDatabaseTitleLabel {
+    return Intl.message(
+      'Database Title',
+      name: 'dbEnglishDatabaseTitleLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Description`
+  String get dbEnglishDescriptionLabel {
+    return Intl.message(
+      'Description',
+      name: 'dbEnglishDescriptionLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Text here`
+  String get dbEnglishHint {
+    return Intl.message('Text here', name: 'dbEnglishHint', desc: '', args: []);
+  }
+
+  /// `This database has no id and cannot be updated.`
+  String get dbNoIdCannotUpdate {
+    return Intl.message(
+      'This database has no id and cannot be updated.',
+      name: 'dbNoIdCannotUpdate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This database has no id and cannot be deleted.`
+  String get dbNoIdCannotDelete {
+    return Intl.message(
+      'This database has no id and cannot be deleted.',
+      name: 'dbNoIdCannotDelete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This database has no id and cannot be restored.`
+  String get dbNoIdCannotRestore {
+    return Intl.message(
+      'This database has no id and cannot be restored.',
+      name: 'dbNoIdCannotRestore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This database has no id, so it cannot be read or saved.`
+  String get dbNoIdCannotReadOrSave {
+    return Intl.message(
+      'This database has no id, so it cannot be read or saved.',
+      name: 'dbNoIdCannotReadOrSave',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This database has no id, so it cannot be read.`
+  String get dbNoIdCannotRead {
+    return Intl.message(
+      'This database has no id, so it cannot be read.',
+      name: 'dbNoIdCannotRead',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This database has no id, so it cannot be saved.`
+  String get dbNoIdCannotSave {
+    return Intl.message(
+      'This database has no id, so it cannot be saved.',
+      name: 'dbNoIdCannotSave',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The current access list could not be loaded. Saving now would remove everyone's existing access, so try again first.`
+  String get dbTableAccessLoadFailed {
+    return Intl.message(
+      'The current access list could not be loaded. Saving now would remove everyone\'s existing access, so try again first.',
+      name: 'dbTableAccessLoadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The table was saved, but old values in its rows could not be cleaned up. Values that no longer fit a changed column may show as errors when you edit the data.`
+  String get dbTableColumnCleanupFailed {
+    return Intl.message(
+      'The table was saved, but old values in its rows could not be cleaned up. Values that no longer fit a changed column may show as errors when you edit the data.',
+      name: 'dbTableColumnCleanupFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Knowledge Document`
+  String get calKnowledgeDocument {
+    return Intl.message(
+      'Knowledge Document',
+      name: 'calKnowledgeDocument',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Service`
+  String get calServiceFallback {
+    return Intl.message(
+      'Service',
+      name: 'calServiceFallback',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Service Request`
+  String get calServiceRequestFallback {
+    return Intl.message(
+      'Service Request',
+      name: 'calServiceRequestFallback',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Supervisor`
+  String get calRoleSupervisor {
+    return Intl.message(
+      'Supervisor',
+      name: 'calRoleSupervisor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Super Admin`
+  String get calRoleSuperAdmin {
+    return Intl.message(
+      'Super Admin',
+      name: 'calRoleSuperAdmin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Knowledge Hub Admin`
+  String get calRoleKnowledgeHubAdmin {
+    return Intl.message(
+      'Knowledge Hub Admin',
+      name: 'calRoleKnowledgeHubAdmin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Qiyas Document {criteria}-{document}`
+  String calQiyasDocumentName(Object criteria, Object document) {
+    return Intl.message(
+      'Qiyas Document $criteria-$document',
+      name: 'calQiyasDocumentName',
+      desc: '',
+      args: [criteria, document],
+    );
+  }
+
+  /// `You have been assigned an evidence and due date is {dueDate}`
+  String calQiyasAssigned(Object dueDate) {
+    return Intl.message(
+      'You have been assigned an evidence and due date is $dueDate',
+      name: 'calQiyasAssigned',
+      desc: '',
+      args: [dueDate],
+    );
+  }
+
+  /// `You must upload your evidence immediately`
+  String get calQiyasUploadNow {
+    return Intl.message(
+      'You must upload your evidence immediately',
+      name: 'calQiyasUploadNow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your evidence has been submitted and is awaiting supervisor approval`
+  String get calQiyasSubmitted {
+    return Intl.message(
+      'Your evidence has been submitted and is awaiting supervisor approval',
+      name: 'calQiyasSubmitted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your evidence has been approved by supervisor, waiting for manager approval`
+  String get calQiyasApprovedBySupervisor {
+    return Intl.message(
+      'Your evidence has been approved by supervisor, waiting for manager approval',
+      name: 'calQiyasApprovedBySupervisor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your evidence has been fully approved by manager`
+  String get calQiyasApprovedByManager {
+    return Intl.message(
+      'Your evidence has been fully approved by manager',
+      name: 'calQiyasApprovedByManager',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your evidence has been rejected by supervisor. Please resubmit`
+  String get calQiyasRejectedBySupervisor {
+    return Intl.message(
+      'Your evidence has been rejected by supervisor. Please resubmit',
+      name: 'calQiyasRejectedBySupervisor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your evidence has been rejected by manager. Please resubmit`
+  String get calQiyasRejectedByManager {
+    return Intl.message(
+      'Your evidence has been rejected by manager. Please resubmit',
+      name: 'calQiyasRejectedByManager',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your employee {name} has been assigned {evidence}`
+  String calQiyasEmployeeAssigned(Object name, Object evidence) {
+    return Intl.message(
+      'Your employee $name has been assigned $evidence',
+      name: 'calQiyasEmployeeAssigned',
+      desc: '',
+      args: [name, evidence],
+    );
+  }
+
+  /// `Your employee {name} did not upload the evidence which was requested from him`
+  String calQiyasEmployeeOverdue(Object name) {
+    return Intl.message(
+      'Your employee $name did not upload the evidence which was requested from him',
+      name: 'calQiyasEmployeeOverdue',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `You have approved {name}'s evidence, waiting for manager approval`
+  String calQiyasYouApproved(Object name) {
+    return Intl.message(
+      'You have approved $name\'s evidence, waiting for manager approval',
+      name: 'calQiyasYouApproved',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `Manager has approved {name}'s evidence`
+  String calQiyasManagerApproved(Object name) {
+    return Intl.message(
+      'Manager has approved $name\'s evidence',
+      name: 'calQiyasManagerApproved',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `You have rejected {name}'s evidence`
+  String calQiyasYouRejected(Object name) {
+    return Intl.message(
+      'You have rejected $name\'s evidence',
+      name: 'calQiyasYouRejected',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `Manager has rejected {name}'s evidence`
+  String calQiyasManagerRejected(Object name) {
+    return Intl.message(
+      'Manager has rejected $name\'s evidence',
+      name: 'calQiyasManagerRejected',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `You have a request from {name} that needs action`
+  String calQiyasRequestNeedsAction(Object name) {
+    return Intl.message(
+      'You have a request from $name that needs action',
+      name: 'calQiyasRequestNeedsAction',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `Todo Task`
+  String get calTodoTaskFallback {
+    return Intl.message(
+      'Todo Task',
+      name: 'calTodoTaskFallback',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Task scheduled to start on {start}`
+  String calTodoScheduled(Object start) {
+    return Intl.message(
+      'Task scheduled to start on $start',
+      name: 'calTodoScheduled',
+      desc: '',
+      args: [start],
+    );
+  }
+
+  /// `Task scheduled to start on {start} and end on {end}`
+  String calTodoScheduledRange(Object start, Object end) {
+    return Intl.message(
+      'Task scheduled to start on $start and end on $end',
+      name: 'calTodoScheduledRange',
+      desc: '',
+      args: [start, end],
+    );
+  }
+
+  /// `Active task from {start} to {end}`
+  String calTodoActive(Object start, Object end) {
+    return Intl.message(
+      'Active task from $start to $end',
+      name: 'calTodoActive',
+      desc: '',
+      args: [start, end],
+    );
+  }
+
+  /// `Task was completed on {date}`
+  String calTodoCompleted(Object date) {
+    return Intl.message(
+      'Task was completed on $date',
+      name: 'calTodoCompleted',
+      desc: '',
+      args: [date],
+    );
+  }
+
+  /// `Task deadline is {date}`
+  String calTodoDeadline(Object date) {
+    return Intl.message(
+      'Task deadline is $date',
+      name: 'calTodoDeadline',
+      desc: '',
+      args: [date],
+    );
+  }
+
+  /// `Task is overdue! Must be completed immediately`
+  String get calTodoOverdue {
+    return Intl.message(
+      'Task is overdue! Must be completed immediately',
+      name: 'calTodoOverdue',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Daily recurring task - Next occurrence on {date}`
+  String calTodoRecurringDaily(Object date) {
+    return Intl.message(
+      'Daily recurring task - Next occurrence on $date',
+      name: 'calTodoRecurringDaily',
+      desc: '',
+      args: [date],
+    );
+  }
+
+  /// `Weekly recurring task - Next occurrence on {date}`
+  String calTodoRecurringWeekly(Object date) {
+    return Intl.message(
+      'Weekly recurring task - Next occurrence on $date',
+      name: 'calTodoRecurringWeekly',
+      desc: '',
+      args: [date],
+    );
+  }
+
+  /// `Monthly recurring task - Next occurrence on {date}`
+  String calTodoRecurringMonthly(Object date) {
+    return Intl.message(
+      'Monthly recurring task - Next occurrence on $date',
+      name: 'calTodoRecurringMonthly',
+      desc: '',
+      args: [date],
+    );
+  }
+
+  /// `Recurring task - Next occurrence on {date}`
+  String calTodoRecurring(Object date) {
+    return Intl.message(
+      'Recurring task - Next occurrence on $date',
+      name: 'calTodoRecurring',
+      desc: '',
+      args: [date],
+    );
+  }
+
+  /// `The table's rows could not be loaded. Retry before editing, so no stored rows are lost.`
+  String get dbTableRowsLoadFailed {
+    return Intl.message(
+      'The table\'s rows could not be loaded. Retry before editing, so no stored rows are lost.',
+      name: 'dbTableRowsLoadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This database is deleted. Restore it before changing who has access.`
+  String get dbDetailsDeletedNoAccessChange {
+    return Intl.message(
+      'This database is deleted. Restore it before changing who has access.',
+      name: 'dbDetailsDeletedNoAccessChange',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This database has no id, so its tables cannot be read or saved.`
+  String get dbTableNoDatabaseId {
+    return Intl.message(
+      'This database has no id, so its tables cannot be read or saved.',
+      name: 'dbTableNoDatabaseId',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This table has no id, so it cannot be saved.`
+  String get dbTableNoIdCannotSave {
+    return Intl.message(
+      'This table has no id, so it cannot be saved.',
+      name: 'dbTableNoIdCannotSave',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This table has no id, so it cannot be deleted.`
+  String get dbTableNoIdCannotDelete {
+    return Intl.message(
+      'This table has no id, so it cannot be deleted.',
+      name: 'dbTableNoIdCannotDelete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This table has no id, so access to it cannot be saved.`
+  String get dbTableNoIdCannotSaveAccess {
+    return Intl.message(
+      'This table has no id, so access to it cannot be saved.',
+      name: 'dbTableNoIdCannotSaveAccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This table has not been saved yet.`
+  String get dbTableNotSavedYet {
+    return Intl.message(
+      'This table has not been saved yet.',
+      name: 'dbTableNotSavedYet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This table has not been saved yet, so its rows cannot be written.`
+  String get dbTableNotSavedRows {
+    return Intl.message(
+      'This table has not been saved yet, so its rows cannot be written.',
+      name: 'dbTableNotSavedRows',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This table has no id, so it cannot take comments.`
+  String get dbTableNoIdCannotComment {
+    return Intl.message(
+      'This table has no id, so it cannot take comments.',
+      name: 'dbTableNoIdCannotComment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This comment has no id, so it cannot be deleted.`
+  String get dbCommentNoIdCannotDelete {
+    return Intl.message(
+      'This comment has no id, so it cannot be deleted.',
+      name: 'dbCommentNoIdCannotDelete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This comment has no id, so it cannot be reacted to.`
+  String get dbCommentNoIdCannotReact {
+    return Intl.message(
+      'This comment has no id, so it cannot be reacted to.',
+      name: 'dbCommentNoIdCannotReact',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign in to react to a comment.`
+  String get dbTableSignInToReact {
+    return Intl.message(
+      'Sign in to react to a comment.',
+      name: 'dbTableSignInToReact',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This table no longer exists.`
+  String get dbTableNoLongerExists {
+    return Intl.message(
+      'This table no longer exists.',
+      name: 'dbTableNoLongerExists',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This comment no longer exists.`
+  String get dbCommentNoLongerExists {
+    return Intl.message(
+      'This comment no longer exists.',
+      name: 'dbCommentNoLongerExists',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This database no longer exists.`
+  String get dbDatabaseNoLongerExists {
+    return Intl.message(
+      'This database no longer exists.',
+      name: 'dbDatabaseNoLongerExists',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No company is signed in, so the databases cannot be reached.`
+  String get dbNoCompanySignedIn {
+    return Intl.message(
+      'No company is signed in, so the databases cannot be reached.',
+      name: 'dbNoCompanySignedIn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The edit was saved, but its reason could not be saved. Please try again.`
+  String get khEditReasonNotSaved {
+    return Intl.message(
+      'The edit was saved, but its reason could not be saved. Please try again.',
+      name: 'khEditReasonNotSaved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `PDF policy`
+  String get khSeedFilePdf {
+    return Intl.message(
+      'PDF policy',
+      name: 'khSeedFilePdf',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Word 97 letter`
+  String get khSeedFileDoc {
+    return Intl.message(
+      'Word 97 letter',
+      name: 'khSeedFileDoc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Word guidelines`
+  String get khSeedFileDocx {
+    return Intl.message(
+      'Word guidelines',
+      name: 'khSeedFileDocx',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Excel 97 report`
+  String get khSeedFileXls {
+    return Intl.message(
+      'Excel 97 report',
+      name: 'khSeedFileXls',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Excel report`
+  String get khSeedFileXlsx {
+    return Intl.message(
+      'Excel report',
+      name: 'khSeedFileXlsx',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `CSV data sheet`
+  String get khSeedFileCsv {
+    return Intl.message(
+      'CSV data sheet',
+      name: 'khSeedFileCsv',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `PowerPoint 97 deck`
+  String get khSeedFilePpt {
+    return Intl.message(
+      'PowerPoint 97 deck',
+      name: 'khSeedFilePpt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `PowerPoint deck`
+  String get khSeedFilePptx {
+    return Intl.message(
+      'PowerPoint deck',
+      name: 'khSeedFilePptx',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Text note`
+  String get khSeedFileTxt {
+    return Intl.message('Text note', name: 'khSeedFileTxt', desc: '', args: []);
+  }
+
+  /// `PNG diagram`
+  String get khSeedFilePng {
+    return Intl.message(
+      'PNG diagram',
+      name: 'khSeedFilePng',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `JPG photo`
+  String get khSeedFileJpg {
+    return Intl.message('JPG photo', name: 'khSeedFileJpg', desc: '', args: []);
+  }
+
+  /// `Animated GIF`
+  String get khSeedFileGif {
+    return Intl.message(
+      'Animated GIF',
+      name: 'khSeedFileGif',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `WEBP image`
+  String get khSeedFileWebp {
+    return Intl.message(
+      'WEBP image',
+      name: 'khSeedFileWebp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `MP4 video`
+  String get khSeedFileMp4 {
+    return Intl.message('MP4 video', name: 'khSeedFileMp4', desc: '', args: []);
+  }
+
+  /// `MOV video`
+  String get khSeedFileMov {
+    return Intl.message('MOV video', name: 'khSeedFileMov', desc: '', args: []);
+  }
+
+  /// `WEBM workshop video`
+  String get khSeedFileWebm {
+    return Intl.message(
+      'WEBM workshop video',
+      name: 'khSeedFileWebm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `MP3 recording`
+  String get khSeedFileMp3 {
+    return Intl.message(
+      'MP3 recording',
+      name: 'khSeedFileMp3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Published`
+  String get khSeedStatePublished {
+    return Intl.message(
+      'Published',
+      name: 'khSeedStatePublished',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Published after approval`
+  String get khSeedStatePublishedAfterApproval {
+    return Intl.message(
+      'Published after approval',
+      name: 'khSeedStatePublishedAfterApproval',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Published (scheduled window)`
+  String get khSeedStatePublishedScheduledWindow {
+    return Intl.message(
+      'Published (scheduled window)',
+      name: 'khSeedStatePublishedScheduledWindow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pending approval`
+  String get khSeedStatePendingApproval {
+    return Intl.message(
+      'Pending approval',
+      name: 'khSeedStatePendingApproval',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Approved (publishes later)`
+  String get khSeedStateApprovedPublishesLater {
+    return Intl.message(
+      'Approved (publishes later)',
+      name: 'khSeedStateApprovedPublishesLater',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Scheduled`
+  String get khSeedStateScheduled {
+    return Intl.message(
+      'Scheduled',
+      name: 'khSeedStateScheduled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rejected`
+  String get khSeedStateRejected {
+    return Intl.message(
+      'Rejected',
+      name: 'khSeedStateRejected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Removed`
+  String get khSeedStateRemoved {
+    return Intl.message(
+      'Removed',
+      name: 'khSeedStateRemoved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Archived`
+  String get khSeedStateArchived {
+    return Intl.message(
+      'Archived',
+      name: 'khSeedStateArchived',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Auto-generated sample .{fileExtension} in the "{status}" state, for testing every Knowledge Hub screen.`
+  String khSeedDescription(Object fileExtension, Object status) {
+    return Intl.message(
+      'Auto-generated sample .$fileExtension in the "$status" state, for testing every Knowledge Hub screen.',
+      name: 'khSeedDescription',
+      desc: '',
+      args: [fileExtension, status],
+    );
+  }
+
+  /// `Uploaded`
+  String get khUploaded {
+    return Intl.message('Uploaded', name: 'khUploaded', desc: '', args: []);
+  }
+
+  /// `Published Documents`
+  String get khPublishedDocuments {
+    return Intl.message(
+      'Published Documents',
+      name: 'khPublishedDocuments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Removed Documents`
+  String get khRemovedDocuments {
+    return Intl.message(
+      'Removed Documents',
+      name: 'khRemovedDocuments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Records that could not be read:`
+  String get khUnreadableRecords {
+    return Intl.message(
+      'Records that could not be read:',
+      name: 'khUnreadableRecords',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not load the comments`
+  String get khCommentsLoadFailed {
+    return Intl.message(
+      'Could not load the comments',
+      name: 'khCommentsLoadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Attachment ({extension})`
+  String khCommentAttachment(Object extension) {
+    return Intl.message(
+      'Attachment ($extension)',
+      name: 'khCommentAttachment',
+      desc: '',
+      args: [extension],
+    );
+  }
+
+  /// `Remove attachment`
+  String get khRemoveAttachment {
+    return Intl.message(
+      'Remove attachment',
+      name: 'khRemoveAttachment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No comments yet. Be the first to comment!`
+  String get khNoCommentsBeFirst {
+    return Intl.message(
+      'No comments yet. Be the first to comment!',
+      name: 'khNoCommentsBeFirst',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Attachment`
+  String get khAttachment {
+    return Intl.message('Attachment', name: 'khAttachment', desc: '', args: []);
+  }
+
+  /// `Some details could not be loaded`
+  String get khSomeDetailsLoadFailed {
+    return Intl.message(
+      'Some details could not be loaded',
+      name: 'khSomeDetailsLoadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not load the video`
+  String get khVideoLoadFailed {
+    return Intl.message(
+      'Could not load the video',
+      name: 'khVideoLoadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Loading video...`
+  String get khLoadingVideo {
+    return Intl.message(
+      'Loading video...',
+      name: 'khLoadingVideo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Loading {fileType} file...`
+  String khLoadingFileType(Object fileType) {
+    return Intl.message(
+      'Loading $fileType file...',
+      name: 'khLoadingFileType',
+      desc: '',
+      args: [fileType],
+    );
+  }
+
+  /// `Could not load the file`
+  String get khFileLoadFailed {
+    return Intl.message(
+      'Could not load the file',
+      name: 'khFileLoadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not read the Excel file`
+  String get khExcelParseFailed {
+    return Intl.message(
+      'Could not read the Excel file',
+      name: 'khExcelParseFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The Excel file is empty`
+  String get khExcelEmpty {
+    return Intl.message(
+      'The Excel file is empty',
+      name: 'khExcelEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The sheet is empty`
+  String get khSheetEmpty {
+    return Intl.message(
+      'The sheet is empty',
+      name: 'khSheetEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not read the CSV file`
+  String get khCsvParseFailed {
+    return Intl.message(
+      'Could not read the CSV file',
+      name: 'khCsvParseFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The CSV file is empty`
+  String get khCsvEmpty {
+    return Intl.message(
+      'The CSV file is empty',
+      name: 'khCsvEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{fileType} Preview`
+  String khFileTypePreview(Object fileType) {
+    return Intl.message(
+      '$fileType Preview',
+      name: 'khFileTypePreview',
+      desc: '',
+      args: [fileType],
+    );
+  }
+
+  /// `Preview is not available for {fileType} files.\nPlease download the file to view it.`
+  String khPreviewNotAvailableForType(Object fileType) {
+    return Intl.message(
+      'Preview is not available for $fileType files.\nPlease download the file to view it.',
+      name: 'khPreviewNotAvailableForType',
+      desc: '',
+      args: [fileType],
+    );
+  }
+
+  /// `Unsupported file type`
+  String get khUnsupportedFileType {
+    return Intl.message(
+      'Unsupported file type',
+      name: 'khUnsupportedFileType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `DD/MM/YYYY`
+  String get khDateHint {
+    return Intl.message('DD/MM/YYYY', name: 'khDateHint', desc: '', args: []);
+  }
+
+  /// `Could not load who already has access to this form, so sharing is turned off. Please try again.`
+  String get fbAccessListLoadFailed {
+    return Intl.message(
+      'Could not load who already has access to this form, so sharing is turned off. Please try again.',
+      name: 'fbAccessListLoadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `lat:`
+  String get fbLatitudeHint {
+    return Intl.message('lat:', name: 'fbLatitudeHint', desc: '', args: []);
+  }
+
+  /// `long:`
+  String get fbLongitudeHint {
+    return Intl.message('long:', name: 'fbLongitudeHint', desc: '', args: []);
+  }
+
+  /// `second`
+  String get svcUnitSecondOne {
+    return Intl.message('second', name: 'svcUnitSecondOne', desc: '', args: []);
+  }
+
+  /// `seconds`
+  String get svcUnitSecondTwo {
+    return Intl.message(
+      'seconds',
+      name: 'svcUnitSecondTwo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `seconds`
+  String get svcUnitSecondMany {
+    return Intl.message(
+      'seconds',
+      name: 'svcUnitSecondMany',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `minute`
+  String get svcUnitMinuteOne {
+    return Intl.message('minute', name: 'svcUnitMinuteOne', desc: '', args: []);
+  }
+
+  /// `minutes`
+  String get svcUnitMinuteTwo {
+    return Intl.message(
+      'minutes',
+      name: 'svcUnitMinuteTwo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `minutes`
+  String get svcUnitMinuteMany {
+    return Intl.message(
+      'minutes',
+      name: 'svcUnitMinuteMany',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `hour`
+  String get svcUnitHourOne {
+    return Intl.message('hour', name: 'svcUnitHourOne', desc: '', args: []);
+  }
+
+  /// `hours`
+  String get svcUnitHourTwo {
+    return Intl.message('hours', name: 'svcUnitHourTwo', desc: '', args: []);
+  }
+
+  /// `hours`
+  String get svcUnitHourMany {
+    return Intl.message('hours', name: 'svcUnitHourMany', desc: '', args: []);
+  }
+
+  /// `day`
+  String get svcUnitDayOne {
+    return Intl.message('day', name: 'svcUnitDayOne', desc: '', args: []);
+  }
+
+  /// `days`
+  String get svcUnitDayTwo {
+    return Intl.message('days', name: 'svcUnitDayTwo', desc: '', args: []);
+  }
+
+  /// `days`
+  String get svcUnitDayMany {
+    return Intl.message('days', name: 'svcUnitDayMany', desc: '', args: []);
+  }
+
+  /// `week`
+  String get svcUnitWeekOne {
+    return Intl.message('week', name: 'svcUnitWeekOne', desc: '', args: []);
+  }
+
+  /// `weeks`
+  String get svcUnitWeekTwo {
+    return Intl.message('weeks', name: 'svcUnitWeekTwo', desc: '', args: []);
+  }
+
+  /// `weeks`
+  String get svcUnitWeekMany {
+    return Intl.message('weeks', name: 'svcUnitWeekMany', desc: '', args: []);
+  }
+
+  /// `month`
+  String get svcUnitMonthOne {
+    return Intl.message('month', name: 'svcUnitMonthOne', desc: '', args: []);
+  }
+
+  /// `months`
+  String get svcUnitMonthTwo {
+    return Intl.message('months', name: 'svcUnitMonthTwo', desc: '', args: []);
+  }
+
+  /// `months`
+  String get svcUnitMonthMany {
+    return Intl.message('months', name: 'svcUnitMonthMany', desc: '', args: []);
+  }
+
+  /// `year`
+  String get svcUnitYearOne {
+    return Intl.message('year', name: 'svcUnitYearOne', desc: '', args: []);
+  }
+
+  /// `years`
+  String get svcUnitYearTwo {
+    return Intl.message('years', name: 'svcUnitYearTwo', desc: '', args: []);
+  }
+
+  /// `years`
+  String get svcUnitYearMany {
+    return Intl.message('years', name: 'svcUnitYearMany', desc: '', args: []);
+  }
+
+  /// `The comments could not be loaded.`
+  String get svcChatLoadFailed {
+    return Intl.message(
+      'The comments could not be loaded.',
+      name: 'svcChatLoadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The message could not be sent.`
+  String get svcChatSendFailed {
+    return Intl.message(
+      'The message could not be sent.',
+      name: 'svcChatSendFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The file could not be uploaded.`
+  String get svcChatUploadFailed {
+    return Intl.message(
+      'The file could not be uploaded.',
+      name: 'svcChatUploadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The message could not be edited.`
+  String get svcChatEditFailed {
+    return Intl.message(
+      'The message could not be edited.',
+      name: 'svcChatEditFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The message could not be deleted.`
+  String get svcChatDeleteFailed {
+    return Intl.message(
+      'The message could not be deleted.',
+      name: 'svcChatDeleteFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Only the author can change this message.`
+  String get svcChatNotAuthor {
+    return Intl.message(
+      'Only the author can change this message.',
+      name: 'svcChatNotAuthor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `PDF Document`
+  String get svcChatAttachmentPdf {
+    return Intl.message(
+      'PDF Document',
+      name: 'svcChatAttachmentPdf',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The request could not be cancelled. Please try again.`
+  String get svcCancelRequestFailed {
+    return Intl.message(
+      'The request could not be cancelled. Please try again.',
+      name: 'svcCancelRequestFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reminder sent.`
+  String get svcReminderSent {
+    return Intl.message(
+      'Reminder sent.',
+      name: 'svcReminderSent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No service provider assigned to this request`
+  String get svcNoProviderAssigned {
+    return Intl.message(
+      'No service provider assigned to this request',
+      name: 'svcNoProviderAssigned',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Assign Provider`
+  String get svcAssignProvider {
+    return Intl.message(
+      'Assign Provider',
+      name: 'svcAssignProvider',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `اسم الخدمة`
+  String get svcArFieldServiceName {
+    return Intl.message(
+      'اسم الخدمة',
+      name: 'svcArFieldServiceName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `وصف الخدمة`
+  String get svcArFieldServiceDescription {
+    return Intl.message(
+      'وصف الخدمة',
+      name: 'svcArFieldServiceDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `اكتب هنا`
+  String get svcArFieldHint {
+    return Intl.message('اكتب هنا', name: 'svcArFieldHint', desc: '', args: []);
+  }
+
+  /// `Service Name`
+  String get svcEnFieldServiceName {
+    return Intl.message(
+      'Service Name',
+      name: 'svcEnFieldServiceName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Service Description`
+  String get svcEnFieldServiceDescription {
+    return Intl.message(
+      'Service Description',
+      name: 'svcEnFieldServiceDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Text here`
+  String get svcEnFieldHint {
+    return Intl.message(
+      'Text here',
+      name: 'svcEnFieldHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You cannot uncheck '{section}' because you have entered SLA percentage data. Please clear the SLA fields first or keep the checkbox checked.`
+  String svcCannotUncheckSlaSection(Object section) {
+    return Intl.message(
+      'You cannot uncheck \'$section\' because you have entered SLA percentage data. Please clear the SLA fields first or keep the checkbox checked.',
+      name: 'svcCannotUncheckSlaSection',
+      desc: '',
+      args: [section],
+    );
+  }
+
+  /// `Decimals are not allowed`
+  String get svcDecimalsNotAllowed {
+    return Intl.message(
+      'Decimals are not allowed',
+      name: 'svcDecimalsNotAllowed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Department not specified`
+  String get svcDepartmentNotSpecified {
+    return Intl.message(
+      'Department not specified',
+      name: 'svcDepartmentNotSpecified',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Drop your Excel file here`
+  String get svcDropExcelHere {
+    return Intl.message(
+      'Drop your Excel file here',
+      name: 'svcDropExcelHere',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The file may be corrupted or contain invalid data.\n\nPlease ensure:\n• The file is a valid Excel format (.xlsx or .xls)\n• All cells contain valid data\n• There are no merged cells in the header row`
+  String get svcExcelFileInvalid {
+    return Intl.message(
+      'The file may be corrupted or contain invalid data.\n\nPlease ensure:\n• The file is a valid Excel format (.xlsx or .xls)\n• All cells contain valid data\n• There are no merged cells in the header row',
+      name: 'svcExcelFileInvalid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No valid data found in the Excel file.`
+  String get svcExcelNoValidData {
+    return Intl.message(
+      'No valid data found in the Excel file.',
+      name: 'svcExcelNoValidData',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No worksheets found in the Excel file.`
+  String get svcExcelNoWorksheets {
+    return Intl.message(
+      'No worksheets found in the Excel file.',
+      name: 'svcExcelNoWorksheets',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Loading draft services...`
+  String get svcLoadingDraftServices {
+    return Intl.message(
+      'Loading draft services...',
+      name: 'svcLoadingDraftServices',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You are about to upload multiple services at once using a structured file template. In this step, you will:`
+  String get svcMasterStep1Intro {
+    return Intl.message(
+      'You are about to upload multiple services at once using a structured file template. In this step, you will:',
+      name: 'svcMasterStep1Intro',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add service names (Arabic & English), define service descriptions, set service duration and time unit, assign owning departments, select service fulfillers, and configure availability and approval requirements.`
+  String get svcMasterStep1Fields {
+    return Intl.message(
+      'Add service names (Arabic & English), define service descriptions, set service duration and time unit, assign owning departments, select service fulfillers, and configure availability and approval requirements.',
+      name: 'svcMasterStep1Fields',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `After uploading, you will review all records in preview mode. Any missing or incorrect data will be highlighted.`
+  String get svcMasterStep1Preview {
+    return Intl.message(
+      'After uploading, you will review all records in preview mode. Any missing or incorrect data will be highlighted.',
+      name: 'svcMasterStep1Preview',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Make sure the file follows the required format to avoid validation errors.`
+  String get svcMasterStep1Format {
+    return Intl.message(
+      'Make sure the file follows the required format to avoid validation errors.',
+      name: 'svcMasterStep1Format',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `After successfully completing this step, you will proceed to: Service Requests.`
+  String get svcMasterStep1Next {
+    return Intl.message(
+      'After successfully completing this step, you will proceed to: Service Requests.',
+      name: 'svcMasterStep1Next',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You are about to upload service requests linked to the services created in Step 1.`
+  String get svcMasterStep2Intro {
+    return Intl.message(
+      'You are about to upload service requests linked to the services created in Step 1.',
+      name: 'svcMasterStep2Intro',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `In this step, you will: assign requesters and departments, define request dates and statuses, and assign request fulfillers.`
+  String get svcMasterStep2Fields {
+    return Intl.message(
+      'In this step, you will: assign requesters and departments, define request dates and statuses, and assign request fulfillers.',
+      name: 'svcMasterStep2Fields',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The system will verify that all services and users exist before confirmation.`
+  String get svcMasterStep2Verify {
+    return Intl.message(
+      'The system will verify that all services and users exist before confirmation.',
+      name: 'svcMasterStep2Verify',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Step 1 must be completed successfully before uploading requests.`
+  String get svcMasterStep2Requires {
+    return Intl.message(
+      'Step 1 must be completed successfully before uploading requests.',
+      name: 'svcMasterStep2Requires',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No employees available`
+  String get svcNoEmployeesAvailable {
+    return Intl.message(
+      'No employees available',
+      name: 'svcNoEmployeesAvailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not available`
+  String get svcNotAvailable {
+    return Intl.message(
+      'Not available',
+      name: 'svcNotAvailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `First`
+  String get svcOrdinal1 {
+    return Intl.message('First', name: 'svcOrdinal1', desc: '', args: []);
+  }
+
+  /// `Second`
+  String get svcOrdinal2 {
+    return Intl.message('Second', name: 'svcOrdinal2', desc: '', args: []);
+  }
+
+  /// `Third`
+  String get svcOrdinal3 {
+    return Intl.message('Third', name: 'svcOrdinal3', desc: '', args: []);
+  }
+
+  /// `Fourth`
+  String get svcOrdinal4 {
+    return Intl.message('Fourth', name: 'svcOrdinal4', desc: '', args: []);
+  }
+
+  /// `Fifth`
+  String get svcOrdinal5 {
+    return Intl.message('Fifth', name: 'svcOrdinal5', desc: '', args: []);
+  }
+
+  /// `Sixth`
+  String get svcOrdinal6 {
+    return Intl.message('Sixth', name: 'svcOrdinal6', desc: '', args: []);
+  }
+
+  /// `Seventh`
+  String get svcOrdinal7 {
+    return Intl.message('Seventh', name: 'svcOrdinal7', desc: '', args: []);
+  }
+
+  /// `Eighth`
+  String get svcOrdinal8 {
+    return Intl.message('Eighth', name: 'svcOrdinal8', desc: '', args: []);
+  }
+
+  /// `Ninth`
+  String get svcOrdinal9 {
+    return Intl.message('Ninth', name: 'svcOrdinal9', desc: '', args: []);
+  }
+
+  /// `Tenth`
+  String get svcOrdinal10 {
+    return Intl.message('Tenth', name: 'svcOrdinal10', desc: '', args: []);
+  }
+
+  /// `No. {number}`
+  String svcOrdinalNumber(Object number) {
+    return Intl.message(
+      'No. $number',
+      name: 'svcOrdinalNumber',
+      desc: '',
+      args: [number],
+    );
+  }
+
+  /// `Selected Departments`
+  String get svcSelectedDepartments {
+    return Intl.message(
+      'Selected Departments',
+      name: 'svcSelectedDepartments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Service Name (Arabic)`
+  String get svcServiceNameArabicColumn {
+    return Intl.message(
+      'Service Name (Arabic)',
+      name: 'svcServiceNameArabicColumn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Service Name (English)`
+  String get svcServiceNameEnglishColumn {
+    return Intl.message(
+      'Service Name (English)',
+      name: 'svcServiceNameEnglishColumn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Service Description (Arabic)`
+  String get svcServiceDescriptionArabicColumn {
+    return Intl.message(
+      'Service Description (Arabic)',
+      name: 'svcServiceDescriptionArabicColumn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Service Description (English)`
+  String get svcServiceDescriptionEnglishColumn {
+    return Intl.message(
+      'Service Description (English)',
+      name: 'svcServiceDescriptionEnglishColumn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Service name "{name}" already exists. Please choose another name.`
+  String svcServiceNameAlreadyExists(Object name) {
+    return Intl.message(
+      'Service name "$name" already exists. Please choose another name.',
+      name: 'svcServiceNameAlreadyExists',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `Something went wrong. Please try again.`
+  String get svcSomethingWentWrong {
+    return Intl.message(
+      'Something went wrong. Please try again.',
+      name: 'svcSomethingWentWrong',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Step information`
+  String get svcStepInformation {
+    return Intl.message(
+      'Step information',
+      name: 'svcStepInformation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Storage permission denied. Please grant permission to access files.`
+  String get svcStoragePermissionDenied {
+    return Intl.message(
+      'Storage permission denied. Please grant permission to access files.',
+      name: 'svcStoragePermissionDenied',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please try again later`
+  String get svcTryAgainLater {
+    return Intl.message(
+      'Please try again later',
+      name: 'svcTryAgainLater',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unique Department Requesters`
+  String get svcUniqueDepartmentRequesters {
+    return Intl.message(
+      'Unique Department Requesters',
+      name: 'svcUniqueDepartmentRequesters',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No services to export`
+  String get svcNoServicesToExport {
+    return Intl.message(
+      'No services to export',
+      name: 'svcNoServicesToExport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No provider`
+  String get svcNoServiceProvider {
+    return Intl.message(
+      'No provider',
+      name: 'svcNoServiceProvider',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter only whole numbers in percentage fields. Decimals are not allowed.`
+  String get svcSlaWholeNumbersOnly {
+    return Intl.message(
+      'Please enter only whole numbers in percentage fields. Decimals are not allowed.',
+      name: 'svcSlaWholeNumbersOnly',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enable '{section}' checkbox when using its notification options`
+  String svcSlaEnableSection(Object section) {
+    return Intl.message(
+      'Please enable \'$section\' checkbox when using its notification options',
+      name: 'svcSlaEnableSection',
+      desc: '',
+      args: [section],
+    );
+  }
+
+  /// `Please enable '{section}' checkbox when using notification options or entering SLA percentages`
+  String svcSlaEnableSectionWithSla(Object section) {
+    return Intl.message(
+      'Please enable \'$section\' checkbox when using notification options or entering SLA percentages',
+      name: 'svcSlaEnableSectionWithSla',
+      desc: '',
+      args: [section],
+    );
+  }
+
+  /// `Could not save the draft. Please check your connection and try again.`
+  String get svcDraftNotSaved {
+    return Intl.message(
+      'Could not save the draft. Please check your connection and try again.',
+      name: 'svcDraftNotSaved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The service could not be saved. Please try again.`
+  String get svcServiceSaveFailed {
+    return Intl.message(
+      'The service could not be saved. Please try again.',
+      name: 'svcServiceSaveFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Couldn't load the organization chart`
+  String get orgChartLoadFailed {
+    return Intl.message(
+      'Couldn\'t load the organization chart',
+      name: 'orgChartLoadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count} profiles could not be loaded and are not shown`
+  String orgChartProfilesSkipped(Object count) {
+    return Intl.message(
+      '$count profiles could not be loaded and are not shown',
+      name: 'orgChartProfilesSkipped',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `{count} reporting lines need HR review`
+  String orgChartBrokenLinks(Object count) {
+    return Intl.message(
+      '$count reporting lines need HR review',
+      name: 'orgChartBrokenLinks',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Departments couldn't be loaded`
+  String get orgChartDepartmentsLoadFailed {
+    return Intl.message(
+      'Departments couldn\'t be loaded',
+      name: 'orgChartDepartmentsLoadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Couldn't load this profile`
+  String get orgChartProfileLoadFailed {
+    return Intl.message(
+      'Couldn\'t load this profile',
+      name: 'orgChartProfileLoadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Supervisor not found`
+  String get orgChartSupervisorNotFound {
+    return Intl.message(
+      'Supervisor not found',
+      name: 'orgChartSupervisorNotFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Circular reporting line`
+  String get orgChartReportingLoop {
+    return Intl.message(
+      'Circular reporting line',
+      name: 'orgChartReportingLoop',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This employee has no id or email, so their profile can't be opened.`
+  String get orgChartEmployeeIdMissing {
+    return Intl.message(
+      'This employee has no id or email, so their profile can\'t be opened.',
+      name: 'orgChartEmployeeIdMissing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This employee's profile wasn't found.`
+  String get orgChartEmployeeNotFound {
+    return Intl.message(
+      'This employee\'s profile wasn\'t found.',
+      name: 'orgChartEmployeeNotFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check your connection and try again.`
+  String get orgChartCheckConnection {
+    return Intl.message(
+      'Check your connection and try again.',
+      name: 'orgChartCheckConnection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Couldn't load`
+  String get homeCardLoadFailed {
+    return Intl.message(
+      'Couldn\'t load',
+      name: 'homeCardLoadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your to-dos couldn't be loaded`
+  String get homeScheduleLoadFailed {
+    return Intl.message(
+      'Your to-dos couldn\'t be loaded',
+      name: 'homeScheduleLoadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your home layout couldn't be loaded.`
+  String get homeLayoutLoadFailed {
+    return Intl.message(
+      'Your home layout couldn\'t be loaded.',
+      name: 'homeLayoutLoadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your account is still loading. Please try again.`
+  String get homeLayoutAccountLoading {
+    return Intl.message(
+      'Your account is still loading. Please try again.',
+      name: 'homeLayoutAccountLoading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your home layout hasn't loaded yet, so it can't be saved. Reload it and try again.`
+  String get homeLayoutNotLoadedSaveBlocked {
+    return Intl.message(
+      'Your home layout hasn\'t loaded yet, so it can\'t be saved. Reload it and try again.',
+      name: 'homeLayoutNotLoadedSaveBlocked',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not save your home layout. Please try again.`
+  String get homeLayoutSaveFailed {
+    return Intl.message(
+      'Could not save your home layout. Please try again.',
+      name: 'homeLayoutSaveFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Something went wrong while saving your home layout.`
+  String get homeLayoutSaveUnexpected {
+    return Intl.message(
+      'Something went wrong while saving your home layout.',
+      name: 'homeLayoutSaveUnexpected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Some modules couldn't be loaded.`
+  String get navModulesLoadFailed {
+    return Intl.message(
+      'Some modules couldn\'t be loaded.',
+      name: 'navModulesLoadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `en`
+  String get homeContentLanguage {
+    return Intl.message('en', name: 'homeContentLanguage', desc: '', args: []);
+  }
+
+  /// `en_US`
+  String get homeDateLocale {
+    return Intl.message('en_US', name: 'homeDateLocale', desc: '', args: []);
+  }
+
+  /// `Unknown`
+  String get homeQuoteUnknownAuthor {
+    return Intl.message(
+      'Unknown',
+      name: 'homeQuoteUnknownAuthor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `AR`
+  String get homeHeaderIconArabic {
+    return Intl.message('AR', name: 'homeHeaderIconArabic', desc: '', args: []);
+  }
+
+  /// `Hub Approval`
+  String get homeHeaderIconHubApproval {
+    return Intl.message(
+      'Hub Approval',
+      name: 'homeHeaderIconHubApproval',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Loading...`
+  String get navLoading {
+    return Intl.message('Loading...', name: 'navLoading', desc: '', args: []);
+  }
+
+  /// `Loading modules...`
+  String get navLoadingModules {
+    return Intl.message(
+      'Loading modules...',
+      name: 'navLoadingModules',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your drafts could not be loaded. Please try again later.`
+  String get svcDraftsLoadFailed {
+    return Intl.message(
+      'Your drafts could not be loaded. Please try again later.',
+      name: 'svcDraftsLoadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The service could not be deleted. Please try again.`
+  String get svcServiceDeleteFailed {
+    return Intl.message(
+      'The service could not be deleted. Please try again.',
+      name: 'svcServiceDeleteFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This request no longer exists.`
+  String get svcRequestNotFound {
+    return Intl.message(
+      'This request no longer exists.',
+      name: 'svcRequestNotFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This request is no longer pending, so it cannot be approved or rejected.`
+  String get svcRequestNoLongerPending {
+    return Intl.message(
+      'This request is no longer pending, so it cannot be approved or rejected.',
+      name: 'svcRequestNoLongerPending',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `It is not your turn to decide on this request.`
+  String get svcNotYourTurnToDecide {
+    return Intl.message(
+      'It is not your turn to decide on this request.',
+      name: 'svcNotYourTurnToDecide',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your decision could not be saved. Please try again.`
+  String get svcDecisionFailed {
+    return Intl.message(
+      'Your decision could not be saved. Please try again.',
+      name: 'svcDecisionFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Decision saved, but the next person could not be notified.`
+  String get svcDecisionSavedNotifyFailed {
+    return Intl.message(
+      'Decision saved, but the next person could not be notified.',
+      name: 'svcDecisionSavedNotifyFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request saved, but the approver could not be notified.`
+  String get svcRequestSavedNotifyFailed {
+    return Intl.message(
+      'Request saved, but the approver could not be notified.',
+      name: 'svcRequestSavedNotifyFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request cancelled, but the provider could not be notified.`
+  String get svcCancelSavedNotifyFailed {
+    return Intl.message(
+      'Request cancelled, but the provider could not be notified.',
+      name: 'svcCancelSavedNotifyFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request moved to In progress.`
+  String get svcRequestMovedToInProgress {
+    return Intl.message(
+      'Request moved to In progress.',
+      name: 'svcRequestMovedToInProgress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Status saved, but the requester could not be notified.`
+  String get svcStatusSavedNotifyFailed {
+    return Intl.message(
+      'Status saved, but the requester could not be notified.',
+      name: 'svcStatusSavedNotifyFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Planned Hours`
+  String get svcPlannedHours {
+    return Intl.message(
+      'Planned Hours',
+      name: 'svcPlannedHours',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No employees match your search`
+  String get svcNoEmployeesMatch {
+    return Intl.message(
+      'No employees match your search',
+      name: 'svcNoEmployeesMatch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The image could not be selected. Please try again.`
+  String get svcImagePickFailed {
+    return Intl.message(
+      'The image could not be selected. Please try again.',
+      name: 'svcImagePickFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The image could not be uploaded. Please try again.`
+  String get svcImageUploadFailed {
+    return Intl.message(
+      'The image could not be uploaded. Please try again.',
+      name: 'svcImageUploadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please wait for the image upload to finish.`
+  String get svcImageUploadInProgress {
+    return Intl.message(
+      'Please wait for the image upload to finish.',
+      name: 'svcImageUploadInProgress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The provider could not be updated. Please try again.`
+  String get svcProviderUpdateFailed {
+    return Intl.message(
+      'The provider could not be updated. Please try again.',
+      name: 'svcProviderUpdateFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Service not found in the uploaded services list`
+  String get svcServiceNotInUploadedList {
+    return Intl.message(
+      'Service not found in the uploaded services list',
+      name: 'svcServiceNotInUploadedList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `State must be: pending, approved, or done`
+  String get svcUploadInvalidState {
+    return Intl.message(
+      'State must be: pending, approved, or done',
+      name: 'svcUploadInvalidState',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Date format must be like: 12 Feb 2023`
+  String get svcUploadInvalidRequestedDate {
+    return Intl.message(
+      'Date format must be like: 12 Feb 2023',
+      name: 'svcUploadInvalidRequestedDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Requester Department`
+  String get dbRequesterDepartment {
+    return Intl.message(
+      'Requester Department',
+      name: 'dbRequesterDepartment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `There are no requests to export`
+  String get dbNoRequestsToExport {
+    return Intl.message(
+      'There are no requests to export',
+      name: 'dbNoRequestsToExport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Permission Denied`
+  String get dbStoragePermissionTitle {
+    return Intl.message(
+      'Permission Denied',
+      name: 'dbStoragePermissionTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Storage permission is required to export the file`
+  String get dbStoragePermissionMessage {
+    return Intl.message(
+      'Storage permission is required to export the file',
+      name: 'dbStoragePermissionMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not export the data`
+  String get dbExportFailedMessage {
+    return Intl.message(
+      'Could not export the data',
+      name: 'dbExportFailedMessage',
       desc: '',
       args: [],
     );

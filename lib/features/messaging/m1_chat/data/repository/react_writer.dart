@@ -13,7 +13,7 @@ library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../../domain/enum/reacts.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/domain/enum/reacts.dart';
 
 class ReactWriter {
   ReactWriter._();

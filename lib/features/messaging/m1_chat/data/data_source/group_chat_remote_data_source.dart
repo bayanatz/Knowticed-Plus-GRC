@@ -1,17 +1,18 @@
 /// Module: messaging / chat / data/data_source/group_chat_remote_data_source.dart
+library;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
-import 'package:flutter/cupertino.dart';
 
-import 'package:grc_module/core/network/message_module/services/error_handler.dart';
-import 'package:grc_module/core/constants/message_module/api_constants.dart';
-import 'package:grc_module/core/enums/message_module/message_types.dart';
-import 'package:grc_module/core/services/message_module/firebase/repository/firebase_repository.dart';
-import '../../../m3_groups/data/models/group_last_message_info.dart';
-import '../../../m3_groups/data/models/group_members.dart';
-import '../../../m3_groups/data/models/group_model.dart';
-import '../models/group_chat_message_model.dart';
-import '../models/group_member_seen_model.dart';
+import 'package:knowticed_plus/core/network/failure_model.dart';
+import 'package:knowticed_plus/features/messaging/helpers/constants/messaging_api_constants.dart';
+import 'package:knowticed_plus/features/messaging/helpers/enums/message_types.dart';
+import 'package:knowticed_plus/features/messaging/helpers/services/firebase/repository/firebase_repository.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/data/models/group_last_message_info.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/data/models/group_members.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/data/models/group_model.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/group_chat_message_model.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/group_member_seen_model.dart';
 
 /// ******************************** FILE INFO *****************************
 /// Class Name: GroupChatRemoteDataSource
@@ -21,7 +22,8 @@ import '../models/group_member_seen_model.dart';
 class GroupChatRemoteDataSource {
   WriteBatch _batch = FirebaseFirestore.instance.batch();
 
-  sendMessage({required GroupChatMessageModel messageModel}) async {
+  Future<void> sendMessage(
+      {required GroupChatMessageModel messageModel}) async {
     FirebaseRepository.setDocumentWithIdWithBatch(
         collection:
             "${ApiConstants.groupsChat}/${messageModel.groupId}/${ApiConstants.messages}",
@@ -42,9 +44,6 @@ class GroupChatRemoteDataSource {
     return await FirebaseRepository.commitBatch(batch: _batch);
   }
 
-
-
-
   /// Update pinned message ID on the group document
   Future<Either<Failure, void>> updateGroupPinnedMessageId({
     required String groupId,
@@ -55,7 +54,7 @@ class GroupChatRemoteDataSource {
           .collection(ApiConstants.groups)
           .doc(groupId)
           .update({
-        GroupModel.PINNED_MESSAGE_ID: pinnedMessageId,
+        GroupModel.kPinnedMessageId: pinnedMessageId,
       });
       return const Right(null);
     } catch (e) {
@@ -63,11 +62,10 @@ class GroupChatRemoteDataSource {
     }
   }
 
-
   /// Function Name : updateGroupMessageData
   /// Purpose: function to add update group message data to batch
   /// Parameters:
-  ///            data: Map<String,dynamic> - Map<String, dynamic> data
+  ///            data: Map`<String,dynamic>` - Map`<String, dynamic>` data
   ///            groupId: String - group id
   void updateGroupMessageData(
       {required Map<String, dynamic> data, required String groupId}) {
@@ -83,17 +81,17 @@ class GroupChatRemoteDataSource {
     yield* FirebaseRepository.getStreamOfCollectionSorted(
         collectionPath:
             "${ApiConstants.groupsChat}/$groupId/${ApiConstants.messages}",
-        sortedBy: GroupChatMessageModel.SEND_TIME);
+        sortedBy: GroupChatMessageModel.kSendTime);
   }
 
   /// Function Name : updateUserSeenMessages
   /// Purpose: function to add update in batch for user seen messages in message models that were not seen before
   /// Parameters:
   ///           chatId: String - chat id
-  ///           messageId: List<String> - list of unseen message ids
+  ///           messageId: List`<String>` - list of unseen message ids
   ///           userId: String - user id
   ///           seenTime: Timestamp - seen time
-  updateUserSeenMessages({
+  Future<void> updateUserSeenMessages({
     required String chatId,
     required List<String> messageId,
     required String userId,
@@ -106,10 +104,10 @@ class GroupChatRemoteDataSource {
           .collection(ApiConstants.messages)
           .doc(id);
       _batch.update(documentReference, {
-        GroupChatMessageModel.SEEN_BY: FieldValue.arrayUnion([
+        GroupChatMessageModel.kSeenBy: FieldValue.arrayUnion([
           {
-            GroupMemberSeenModel.MEMBER_ID: userId,
-            GroupMemberSeenModel.SEEN_TIME: seenTime,
+            GroupMemberSeenModel.kMemberId: userId,
+            GroupMemberSeenModel.kSeenTime: seenTime,
           }
         ])
       });
@@ -132,13 +130,14 @@ class GroupChatRemoteDataSource {
         data: {
           "${GroupMembers.membersKey}.${userId.replaceAll(".", "---")}.${GroupMember.numOfUnreadMessagesKey}":
               numOfUnreadMessages,
-              GroupModel.MENTIONED_MEMBERS: FieldValue.arrayRemove([userId])
+          GroupModel.kMentionedMembers: FieldValue.arrayRemove([userId])
         },
         documentId: groupId,
         batch: _batch);
   }
 
-  uploadMedia({required String filePath}) async {
+  Future<Either<FirebaseFailure, String>> uploadMedia(
+      {required String filePath}) async {
     return await FirebaseRepository.uploadFile(
         collectionName: ApiConstants.groupsChat,
         documentName: filePath.split("/").last,
@@ -151,7 +150,7 @@ class GroupChatRemoteDataSource {
   ///          messageId: String - message id
   ///          groupId: String - group id
   ///          currentUserId: String - current user id
-  ///          Return: Future<Either<Failure, dynamic>> - Future of either failure or dynamic
+  ///          Return: Future`<Either<Failure, dynamic>`> - Future of either failure or dynamic
   ///
   Future<Either<Failure, dynamic>> deleteMessage(
       {required String messageId,
@@ -164,23 +163,25 @@ class GroupChatRemoteDataSource {
         collection:
             "${ApiConstants.groupsChat}/$groupId/${ApiConstants.messages}",
         data: {
-          GroupChatMessageModel.MESSAGE_TYPE: MessageTypes.deleted.index,
-          GroupChatMessageModel.IS_DELETED: true,
+          GroupChatMessageModel.kMessageType: MessageTypes.deleted.index,
+          GroupChatMessageModel.kIsDeleted: true,
         },
         documentId: messageId,
         batch: _batch);
     // get group data to check if the message is the last message in the group
     await _updateGroupLastMessageInfoIfSame(messageId, groupId, {
-      "${GroupModel.GROUP_LAST_MESSAGE_INFO}.${GroupLastMessageInfo.MESSAGE_TYPE}":
+      "${GroupModel.kGroupLastMessageInfo}.${GroupLastMessageInfo.kMessageType}":
           MessageTypes.deleted.index
     });
     // commit batch to commit multiple operations at once
     return await commitBatch();
   }
-  
-  getMessage(String messageId, String groupId) async {
+
+  Future<Either<FirebaseFailure, dynamic>> getMessage(
+      String messageId, String groupId) async {
     return await FirebaseRepository.getDocumentWithId(
-        collection: "${ApiConstants.groupsChat}/$groupId/${ApiConstants.messages}",
+        collection:
+            "${ApiConstants.groupsChat}/$groupId/${ApiConstants.messages}",
         documentId: messageId);
   }
 
@@ -189,14 +190,14 @@ class GroupChatRemoteDataSource {
   /// Parameters:
   ///         messageId: String - message id to check if last message same as it
   ///         groupId: String - group id
-  ///         updatedData: Map<String, dynamic> - updated data
+  ///         updatedData: Map`<String, dynamic>` - updated data
 
-  _updateGroupLastMessageInfoIfSame(String messageId, String groupId,
-      Map<String, dynamic> updatedData) async {
+  Future<void> _updateGroupLastMessageInfoIfSame(String messageId,
+      String groupId, Map<String, dynamic> updatedData) async {
     var data = await FirebaseFirestore.instance
         .collection(ApiConstants.groups)
         .where(
-            "${GroupModel.GROUP_LAST_MESSAGE_INFO}.${GroupLastMessageInfo.MESSAGE_ID}",
+            "${GroupModel.kGroupLastMessageInfo}.${GroupLastMessageInfo.kMessageId}",
             isEqualTo: messageId)
         .get();
 
@@ -209,7 +210,7 @@ class GroupChatRemoteDataSource {
     }
   }
 
-  editTextMessage(
+  Future<Either<Failure, dynamic>> editTextMessage(
       {required String newMessageText,
       required String messageId,
       required String groupId,
@@ -219,14 +220,14 @@ class GroupChatRemoteDataSource {
         collection:
             "${ApiConstants.groupsChat}/$groupId/${ApiConstants.messages}",
         data: {
-          GroupChatMessageModel.MESSAGE_CONTENT: newMessageText,
-          GroupChatMessageModel.IS_EDITED: true
+          GroupChatMessageModel.kMessageContent: newMessageText,
+          GroupChatMessageModel.kIsEdited: true
         },
         documentId: messageId,
         batch: _batch);
 
     await _updateGroupLastMessageInfoIfSame(messageId, groupId, {
-      "${GroupModel.GROUP_LAST_MESSAGE_INFO}.${GroupLastMessageInfo.TEXT_MESSAGE}":
+      "${GroupModel.kGroupLastMessageInfo}.${GroupLastMessageInfo.kTextMessage}":
           newMessageText
     });
 
@@ -238,15 +239,17 @@ class GroupChatRemoteDataSource {
     FirebaseRepository.updateDocumentWithIdWithBatch(
         collection: ApiConstants.groups,
         documentId: groupId,
-        data: {GroupModel.MENTIONED_MEMBERS: FieldValue.arrayUnion(mentions)},
+        data: {GroupModel.kMentionedMembers: FieldValue.arrayUnion(mentions)},
         batch: _batch);
   }
 
-  updateMessage(String messageId, String groupId, Map<String, dynamic> data) async {
-  return await  FirebaseRepository.setDocumentWithId(
-        collection: "${ApiConstants.groupsChat}/$groupId/${ApiConstants.messages}",
-        documentId: messageId,
-        data: data,
-        );
+  Future<Either<FirebaseFailure, void>> updateMessage(
+      String messageId, String groupId, Map<String, dynamic> data) async {
+    return await FirebaseRepository.setDocumentWithId(
+      collection:
+          "${ApiConstants.groupsChat}/$groupId/${ApiConstants.messages}",
+      documentId: messageId,
+      data: data,
+    );
   }
 }

@@ -5,28 +5,27 @@
 /// Purpose: Declares `CalendarDatePicker2WithActionButtons`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
-import 'package:grc_module/core/theme/haptic_controller.dart';
-import 'package:grc_module/core/theme/app_font_size.dart' show AppFontStyle;
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:grc_module/core/extensions/calendar_package/src/models/calendar_date_picker2_config.dart';
-import 'package:grc_module/core/extensions/calendar_package/src/widgets/calendar_date_picker2.dart';
-
+import 'package:knowticed_plus/core/extensions/calendar_package/src/models/calendar_date_picker2_config.dart';
+import 'package:knowticed_plus/core/extensions/calendar_package/src/widgets/calendar_date_picker2.dart';
 
 class CalendarDatePicker2WithActionButtons extends StatefulWidget {
   const CalendarDatePicker2WithActionButtons({
     required this.value,
     required this.config,
-      this.isHome = false,
+    this.isHome = false,
     this.onValueChanged,
     this.onDisplayedMonthChanged,
     this.onCancelTapped,
     this.onOkTapped,
-    Key? key,
-  }) : super(key: key);
-
+    super.key,
+  });
 
   final bool? isHome;
   final List<DateTime?> value;
@@ -97,7 +96,7 @@ class _CalendarDatePicker2WithActionButtonsState
         MediaQuery.removePadding(
           context: context,
           child: CalendarDatePicker2(
-           isHome: widget.isHome!,
+            isHome: widget.isHome!,
             value: [..._editCache],
             config: widget.config,
             onValueChanged: (values) => _editCache = values,
@@ -136,7 +135,7 @@ class _CalendarDatePicker2WithActionButtonsState
             Text(
               localizations.cancelButtonLabel.toUpperCase(),
               style: widget.config.cancelButtonTextStyle ??
-                  AppFontStyle.cairoRegularStyle.copyWith(
+                  StyleText.fontSize16Weight400.copyWith(
                     color: widget.config.selectedDayHighlightColor ??
                         colorScheme.primary,
                     fontWeight: FontWeight.w700,
@@ -171,7 +170,7 @@ class _CalendarDatePicker2WithActionButtonsState
             Text(
               localizations.okButtonLabel.toUpperCase(),
               style: widget.config.okButtonTextStyle ??
-                  AppFontStyle.cairoRegularStyle.copyWith(
+                  StyleText.fontSize16Weight400.copyWith(
                     color: widget.config.selectedDayHighlightColor ??
                         colorScheme.primary,
                     fontWeight: FontWeight.w700,

@@ -11,10 +11,11 @@
 /// `employee!.mobilePhone` … — which meant three copies of the same
 /// force-unwrapping and a crash whenever a history list was empty. The
 /// flattening happens once, here, and `lastOrNull` replaces every `!`.
+library;
 
-import 'package:grc_module/features/roles/r4_active_directory/data/models/employees_model/mobile_phone_model.dart';
-import 'package:grc_module/features/roles/r4_active_directory/data/models/employees_model/new_employee_model.dart';
-import 'package:grc_module/features/settings/se1_profile/domain/entities/personal_profile.dart';
+import 'package:knowticed_plus/features/roles/r4_active_directory/data/models/employees_model/mobile_phone_model.dart';
+import 'package:knowticed_plus/features/roles/r4_active_directory/data/models/employees_model/new_employee_model.dart';
+import 'package:knowticed_plus/features/settings/se1_profile/domain/entities/personal_profile.dart';
 
 class BuildPersonalProfile {
   const BuildPersonalProfile();
@@ -31,7 +32,8 @@ class BuildPersonalProfile {
   PersonalProfile call(NewEmployeeModelHistory? employee) {
     if (employee == null) return PersonalProfile.empty;
 
-    final MobilePhone? mobilePhone = _first(employee.mobilePhone);
+    // Owner 21/10/2026: newest phone entry (history is newest last), not the oldest.
+    final MobilePhone? mobilePhone = _last(employee.mobilePhone);
 
     return PersonalProfile(
       firstName: _last(employee.firstName) ?? '',
@@ -61,7 +63,4 @@ class BuildPersonalProfile {
   /// import a service locator for a list helper.
   static T? _last<T>(List<T>? values) =>
       (values == null || values.isEmpty) ? null : values.last;
-
-  static T? _first<T>(List<T>? values) =>
-      (values == null || values.isEmpty) ? null : values.first;
 }

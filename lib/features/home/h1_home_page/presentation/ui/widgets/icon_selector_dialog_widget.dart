@@ -2,7 +2,7 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: icon_selector_dialog_widget.dart
-/// Purpose: Dialog that lets the user pick which icons are pinned to the home
+/// Description: Dialog that lets the user pick which icons are pinned to the home
 ///          app bar, plus the catalog of selectable icons.
 /// Author: Amr Mesbah
 /// Created at: 20/9/2025
@@ -37,32 +37,35 @@
 ///          Hub / 2 Settings...) do not sum to its own total, so they are
 ///          placeholders. Counts here are derived from the catalog, and the
 ///          chips are the modules the catalog actually uses.
+library;
 
-import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:grc_module/core/custom/86-removed_module_placeholder.dart';
+import 'package:knowticed_plus/core/custom/feedback/removed_module_placeholder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:grc_module/core/custom/8-custom_filter_app.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/core/custom/navigation/custom_filter_app.dart';
+import 'package:knowticed_plus/core/helper/access/modules_enum.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
-import 'package:grc_module/core/constants/app_constants.dart';
-import 'package:grc_module/core/di/app_controllers.dart';
-import 'package:grc_module/features/roles/r1_role_management/presentation/ui/pages/role_screen.dart';
+import 'package:knowticed_plus/core/constants/app_constants.dart';
+import 'package:knowticed_plus/core/di/app_controllers.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/presentation/ui/pages/role_screen.dart';
+import 'package:knowticed_plus/features/knowledge_hub/kh6_approvals/presentation/controller/approvals_cubit.dart'; // [module:knowledge_hub]
+import 'package:knowticed_plus/features/knowledge_hub/kh6_approvals/presentation/ui/pages/approvals_screen.dart'; // [module:knowledge_hub]
 
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/header_icon_item.dart';
-
-/// Folder the Figma-exported picker glyphs live in. They are all in
-/// `home_assets/`, which pubspec already declares as an asset directory, so
-/// adding them needed no pubspec change.
-const String _pickerAssets = 'assets/icons_assets/home_assets';
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/header_icon_item.dart';
+import 'package:knowticed_plus/features/todo/presentation/ui/pages/todo_module_entry.dart';
+// ADDED 9/10/2026 — Time Tracker phase 6 (Check In / Out header icon).
+import 'package:knowticed_plus/features/time_tracker/presentation/ui/pages/time_tracker_module_entry.dart'; // [module:time_tracker]
+import 'package:knowticed_plus/core/theme/theme_controller.dart';
+import 'package:knowticed_plus/features/knowledge_hub/knowledge_hub_get_it.dart'; // [module:knowledge_hub]
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
 
 // ── Roles module tabs ────────────────────────────────────────────────────────
 // Indices as `RoleScreen._buildVisibleTabs` assigns them.
@@ -151,7 +154,8 @@ List<HeaderIconCatalogEntry> headerIconCatalogEntries(BuildContext context) {
     HeaderIconCatalogEntry(
       module: Modules.employees,
       item: HeaderIconItem(
-        svgPath: '$_pickerAssets/picker_user_management.svg',
+        svgPath:
+            'assets/icons_assets/home_assets/ic_module_user_management.svg',
         getTitle: (ctx) => S.of(ctx).userManagement,
         // The roles module with its User Management tab selected, NOT
         // `UserManagementHome()` on its own — see [_rolesModuleAt].
@@ -161,17 +165,23 @@ List<HeaderIconCatalogEntry> headerIconCatalogEntries(BuildContext context) {
     HeaderIconCatalogEntry(
       module: Modules.settings,
       item: HeaderIconItem(
-        svgPath: '$_pickerAssets/picker_english.svg',
-        getTitle: (ctx) => S.of(ctx).english,
+        svgPath: 'assets/icons_assets/home_assets/ic_module_language_en.svg',
+        getTitle: (ctx) => S.of(ctx).language,
         navigateTo: (context) => const Placeholder(),
-        // An action, not a page (23/8/2026).
-        onTap: (context) => _applyLanguage(const Locale('en', 'US')),
+        // One button that flips the language (22/10/2026) — it replaces the
+        // separate English and AR entries.
+        onTap: (context) => _applyLanguage(
+          (Get.locale?.languageCode ?? 'en') == 'ar'
+              ? const Locale('en', 'US')
+              : const Locale('ar', 'SA'),
+        ),
       ),
     ),
     HeaderIconCatalogEntry(
       module: Modules.roles,
       item: HeaderIconItem(
-        svgPath: '$_pickerAssets/picker_roles.svg',
+        svgPath:
+            'assets/icons_assets/main_icons_assets/ic_module_service_approvals.svg',
         getTitle: (ctx) => S.of(ctx).roles,
         navigateTo: (context) => _rolesModuleAt(_roleManagementTab),
       ),
@@ -179,7 +189,7 @@ List<HeaderIconCatalogEntry> headerIconCatalogEntries(BuildContext context) {
     HeaderIconCatalogEntry(
       module: Modules.roles,
       item: HeaderIconItem(
-        svgPath: '$_pickerAssets/picker_user_access.svg',
+        svgPath: 'assets/icons_assets/home_assets/ic_module_user_access.svg',
         getTitle: (ctx) => S.of(ctx).userAccess,
         navigateTo: (context) => _rolesModuleAt(_userAccessTab),
       ),
@@ -187,7 +197,7 @@ List<HeaderIconCatalogEntry> headerIconCatalogEntries(BuildContext context) {
     HeaderIconCatalogEntry(
       module: Modules.settings,
       item: HeaderIconItem(
-        svgPath: '$_pickerAssets/picker_dark_mode.svg',
+        svgPath: 'assets/icons_assets/home_assets/ic_module_dark_mode.svg',
         getTitle: (ctx) => S.of(ctx).lightDarkMode,
         navigateTo: (context) => const Placeholder(),
         // An action, not a page (23/8/2026). One toggle serves both the dark
@@ -196,21 +206,10 @@ List<HeaderIconCatalogEntry> headerIconCatalogEntries(BuildContext context) {
       ),
     ),
     HeaderIconCatalogEntry(
-      module: Modules.settings,
-      item: HeaderIconItem(
-        // The design labels this one "AR" — the Arabic counterpart of the
-        // "English" tile. There is no `arabic` key in intl_en.arb (only
-        // `english`), so the label is a literal until one is added.
-        svgPath: '$_pickerAssets/picker_ar.svg',
-        getTitle: (ctx) => 'AR',
-        navigateTo: (context) => const Placeholder(),
-        onTap: (context) => _applyLanguage(const Locale('ar', 'SA')),
-      ),
-    ),
-    HeaderIconCatalogEntry(
       module: Modules.services,
       item: HeaderIconItem(
-        svgPath: '$_pickerAssets/picker_service_dashboard.svg',
+        svgPath:
+            'assets/icons_assets/main_icons_assets/ic_comms_customer_service.svg',
         getTitle: (ctx) => S.of(ctx).serviceDashboard,
         navigateTo: (context) =>
             RemovedModulePage(moduleName: S.of(context).services),
@@ -219,7 +218,8 @@ List<HeaderIconCatalogEntry> headerIconCatalogEntries(BuildContext context) {
     HeaderIconCatalogEntry(
       module: Modules.services,
       item: HeaderIconItem(
-        svgPath: '$_pickerAssets/picker_requested_services.svg',
+        svgPath:
+            'assets/icons_assets/home_assets/ic_module_requested_services.svg',
         getTitle: (ctx) => S.of(ctx).requestedServices,
         navigateTo: (context) =>
             RemovedModulePage(moduleName: S.of(context).services),
@@ -228,7 +228,8 @@ List<HeaderIconCatalogEntry> headerIconCatalogEntries(BuildContext context) {
     HeaderIconCatalogEntry(
       module: Modules.services,
       item: HeaderIconItem(
-        svgPath: '$_pickerAssets/picker_service_approvals.svg',
+        svgPath:
+            'assets/icons_assets/main_icons_assets/ic_module_service_approvals.svg',
         getTitle: (ctx) => S.of(ctx).serviceApprovals,
         navigateTo: (context) =>
             RemovedModulePage(moduleName: S.of(context).services),
@@ -237,7 +238,8 @@ List<HeaderIconCatalogEntry> headerIconCatalogEntries(BuildContext context) {
     HeaderIconCatalogEntry(
       module: Modules.inventory,
       item: HeaderIconItem(
-        svgPath: '$_pickerAssets/picker_inventory_dashboard.svg',
+        svgPath:
+            'assets/icons_assets/home_assets/ic_module_inventory_dashboard.svg',
         getTitle: (ctx) => S.of(ctx).inventoryDashboard,
         navigateTo: (context) =>
             RemovedModulePage(moduleName: S.of(context).inventory),
@@ -246,51 +248,68 @@ List<HeaderIconCatalogEntry> headerIconCatalogEntries(BuildContext context) {
     HeaderIconCatalogEntry(
       module: Modules.qiyas,
       item: HeaderIconItem(
-        svgPath: '$_pickerAssets/picker_qiyas_dashboard.svg',
+        svgPath: 'assets/icons_assets/home_assets/ic_module_grc_qiyas.svg',
         getTitle: (ctx) => S.of(ctx).qiyasDashboard,
         navigateTo: (context) => const Placeholder(),
       ),
     ),
+    // [module:knowledge_hub]
     HeaderIconCatalogEntry(
       module: Modules.knowledgeHub,
       item: HeaderIconItem(
         // No `hubApproval` key exists in intl_en.arb — literal until one is
         // added. Every other label here resolves through S.of(ctx).
-        svgPath: '$_pickerAssets/picker_hub_approval.svg',
-        getTitle: (ctx) => 'Hub Approval',
+        svgPath: 'assets/icons_assets/home_assets/ic_module_hub_approvals.svg',
+        getTitle: (ctx) => Localizations.localeOf(ctx).languageCode == 'ar'
+            ? 'موافقات مركز المعرفة'
+            : 'Knowledge Hub Approval',
         // WIRED 23/8/2026 — the page exists (knowledge_hub/k6_approvals) and
         // was simply never connected here. It reads `ApprovalsCubit` from the
         // tree, which normally comes from `KnowledgeHubPage`'s MultiBlocProvider
         // — opened on its own it has to bring its own, or it throws
         // ProviderNotFoundException the moment it builds.
-        navigateTo: (context) =>
-            RemovedModulePage(moduleName: S.of(context).knowledgeHub),
+        navigateTo: (context) => BlocProvider<ApprovalsCubit>(
+          create: (_) => KnowledgeHubDI.approvalsCubit(),
+          child: const ApprovalsScreen(),
+        ),
       ),
     ),
+    // [/module:knowledge_hub]
     HeaderIconCatalogEntry(
       module: Modules.todo,
       item: HeaderIconItem(
-        svgPath: '$_pickerAssets/picker_create_todo.svg',
+        svgPath:
+            'assets/icons_assets/main_icons_assets/ic_module_create_todo.svg',
         getTitle: (ctx) => S.of(ctx).createToDo,
-        navigateTo: (context) => const Placeholder(),
+        // WIRED 7/10/2026 — opens the To-Do module straight on the create
+        // form (back lands on the list). TodoModuleEntry provides its cubits.
+        navigateTo: (context) => const TodoModuleEntry(startInCreate: true),
       ),
     ),
     HeaderIconCatalogEntry(
       module: Modules.tasks,
       item: HeaderIconItem(
-        svgPath: '$_pickerAssets/picker_create_task.svg',
+        svgPath: 'assets/icons_assets/home_assets/ic_module_create_task.svg',
         getTitle: (ctx) => S.of(ctx).createTask,
         navigateTo: (context) => const Placeholder(),
       ),
     ),
+    // [module:time_tracker]
     HeaderIconCatalogEntry(
-      module: Modules.tracking,
+      // WIRED 9/10/2026 (Time Tracker phase 6) — was `Modules.tracking` + a
+      // Placeholder. The legacy tracking module is no longer in any drawer
+      // (Modules.timeTracker took its slot), so the picker never offered this
+      // icon. It now opens the Time Tracker main page, whose header holds the
+      // Check In / Check Out control. No "New Request" icon: the picker set
+      // has no glyph for it.
+      module: Modules.timeTracker,
       item: HeaderIconItem(
-        svgPath: '$_pickerAssets/picker_check_in_out.svg',
+        svgPath: 'assets/icons_assets/main_icons_assets/ic_hr_check_in_out.svg',
         getTitle: (ctx) => S.of(ctx).checkInOut,
-        navigateTo: (context) => const Placeholder(),
+        navigateTo: (context) => const TimeTrackerModuleEntry(),
       ),
     ),
+    // [/module:time_tracker]
   ];
 }
 
@@ -327,8 +346,9 @@ List<HeaderIconItem> headerIconCatalog(BuildContext context) =>
 HeaderIconItem? headerIconForSvgPath(BuildContext context, String svgPath) {
   final String canonical = HeaderIconItem.canonicalSvgPath(svgPath);
 
-  for (final HeaderIconCatalogEntry entry
-      in headerIconCatalogEntries(context)) {
+  for (final HeaderIconCatalogEntry entry in headerIconCatalogEntries(
+    context,
+  )) {
     if (entry.item.svgPath == canonical) return entry.item;
   }
   return null;
@@ -340,9 +360,14 @@ HeaderIconItem? headerIconForSvgPath(BuildContext context, String svgPath) {
 class IconSelectorDialog extends StatefulWidget {
   final Function(HeaderIconItem) onIconSelected;
 
+  /// SVG paths already in the header: their tiles are faded and cannot be
+  /// tapped — one shortcut icon is added only once (Owner 21/10/2026).
+  final Set<String> addedPaths;
+
   const IconSelectorDialog({
     super.key,
     required this.onIconSelected,
+    this.addedPaths = const <String>{},
   });
 
   @override
@@ -367,10 +392,6 @@ class _IconSelectorDialogState extends State<IconSelectorDialog> {
   static const double _tileWidth = 150;
   static const double _tileHeight = 38;
   static const double _tileRadius = 4;
-  static const double _actionWidth = 135;
-  static const double _actionHeight = 38;
-  static const double _actionRadius = 8;
-  static const double _actionGap = 30;
 
   // ── Filtering ──────────────────────────────────────────────────────────────
 
@@ -378,7 +399,9 @@ class _IconSelectorDialogState extends State<IconSelectorDialog> {
     final List<HeaderIconCatalogEntry> all = headerIconCatalogEntries(context);
     if (_selectedModuleKey == _allKey) return all;
     return all
-        .where((HeaderIconCatalogEntry e) => e.module.name == _selectedModuleKey)
+        .where(
+          (HeaderIconCatalogEntry e) => e.module.name == _selectedModuleKey,
+        )
         .toList();
   }
 
@@ -396,9 +419,11 @@ class _IconSelectorDialogState extends State<IconSelectorDialog> {
       // The design's chip row is 1104 wide inside a 645 content column, so it
       // is meant to scroll rather than wrap.
       child: StatusChipFilter(
+        // 23/10/2026 (Moataz): the unselected counters are grey — white was
+        // invisible on the white dialog.
+        unselectedColor: AppColors.background,
         selectedKey: _selectedModuleKey,
-        onSelected: (String key) =>
-            setState(() => _selectedModuleKey = key),
+        onSelected: (String key) => setState(() => _selectedModuleKey = key),
         items: <StatusChipItem>[
           StatusChipItem(
             key: _allKey,
@@ -421,81 +446,61 @@ class _IconSelectorDialogState extends State<IconSelectorDialog> {
 
   Widget _iconTile(HeaderIconItem icon) {
     final bool isSelected = selectedItem?.svgPath == icon.svgPath;
+    final bool alreadyAdded = widget.addedPaths
+        .map(HeaderIconItem.canonicalSvgPath)
+        .contains(icon.svgPath);
 
-    return InkWell(
-      borderRadius: BorderRadius.circular(_tileRadius.r),
-      onTap: () => setState(() => selectedItem = isSelected ? null : icon),
-      child: Container(
-        width: _tileWidth.w,
-        height: _tileHeight.h,
-        padding: EdgeInsets.all(8.sp),
-        decoration: BoxDecoration(
-          color: AppColors.primary,
-          borderRadius: BorderRadius.circular(_tileRadius.r),
-          border: isSelected
-              ? Border.all(color: AppColors.text, width: 2)
-              : null,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CustomSvgImage(
-              assetPath: icon.svgPath,
-              width: 20.w,
-              height: 20.h,
-              color: AppColors.textButton,
-              fit: BoxFit.contain,
-            ),
-            SizedBox(width: 8.w),
-            Flexible(
-              child: Text(
-                icon.title(context),
-                style: StyleText.fontSize16Weight400.copyWith(
-                  fontSize: 12.sp,
-                  color: AppColors.textButton,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+    return Opacity(
+      opacity: alreadyAdded ? 0.5 : 1,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(_tileRadius.r),
+        onTapDown: (_) => HapticController.low(),
+        // 21/10/2026 (Moataz): one tap adds the icon and closes the picker —
+        // no Discard / Save step.
+        onTap: alreadyAdded
+            ? null
+            : () {
+                widget.onIconSelected(icon);
+                Navigator.of(context).pop();
+              },
+        child: Container(
+          width: _tileWidth.w,
+          height: _tileHeight.h,
+          padding: EdgeInsets.all(8.sp),
+          decoration: BoxDecoration(
+            color: AppColors.primary,
+            borderRadius: BorderRadius.circular(_tileRadius.r),
+            border:
+                isSelected ? Border.all(color: AppColors.text, width: 2) : null,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CustomSvgImage(
+                assetPath: HeaderIconItem.displaySvgPath(icon.svgPath),
+                width: 20.w,
+                height: 20.h,
+                color: AppColors.textButton,
+                fit: BoxFit.contain,
               ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _actionButton({
-    required String label,
-    required Color color,
-    required Color textColor,
-    required VoidCallback onTap,
-    bool expand = false,
-  }) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(_actionRadius.r),
-      onTap: onTap,
-      child: Container(
-        width: expand ? double.infinity : _actionWidth.w,
-        height: _actionHeight.sp,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(_actionRadius.r),
-        ),
-        child: Text(
-          label,
-          style: StyleText.fontSize16Weight400.copyWith(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w500,
-            color: textColor,
+              SizedBox(width: 8.w),
+              Flexible(
+                child: Text(
+                  icon.title(context),
+                  style: StyleText.fontSize16Weight400.copyWith(
+                    fontSize: 12.sp,
+                    color: AppColors.textButton,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
-
-  Widget _wrapAction(bool isMobile, Widget child) =>
-      isMobile ? Expanded(child: child) : child;
 
   @override
   Widget build(BuildContext context) {
@@ -507,9 +512,7 @@ class _IconSelectorDialogState extends State<IconSelectorDialog> {
     final List<HeaderIconCatalogEntry> visible = _visibleEntries;
 
     return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8.r),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
       // Settings bug report p.12: on a phone the dialog grew to the full screen
       // height and Save / Discard were pushed past the bottom edge. The inset
       // keeps a margin round the dialog, and the max height below makes the
@@ -545,7 +548,8 @@ class _IconSelectorDialogState extends State<IconSelectorDialog> {
                   ),
                   child: Center(
                     child: CustomSvgImage(
-                      assetPath: '$_pickerAssets/picker_grid.svg',
+                      assetPath:
+                          'assets/icons_assets/main_icons_assets/ic_nav_grid.svg',
                       width: 14.sp,
                       height: 14.sp,
                       fit: BoxFit.scaleDown,
@@ -576,65 +580,24 @@ class _IconSelectorDialogState extends State<IconSelectorDialog> {
             // ── Grid of icons ───────────────────────────────────────────────
             Flexible(
               child: SingleChildScrollView(
-                child: Wrap(
-                  spacing: _gutter.w,
-                  runSpacing: _gutter.h,
-                  children: <Widget>[
-                    for (final HeaderIconCatalogEntry entry in visible)
-                      // A Wrap rather than a GridView: the tiles are a fixed
-                      // 150 wide in the design, so the column count falls out
-                      // of the available width instead of being forced — 4 on
-                      // the tablet dialog, fewer on a phone.
-                      SizedBox(
-                        width: isMobile
-                            ? double.infinity
-                            : _tileWidth.w,
-                        child: _iconTile(entry.item),
-                      ),
-                  ],
+                // Owner 21/10/2026: two tiles in a row on the phone (one per
+                // row was too long a list); the tablet keeps 150-wide tiles.
+                child: LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints box) => Wrap(
+                    spacing: _gutter.w,
+                    runSpacing: _gutter.h,
+                    children: <Widget>[
+                      for (final HeaderIconCatalogEntry entry in visible)
+                        SizedBox(
+                          width: isMobile
+                              ? (box.maxWidth - _gutter.w) / 2
+                              : _tileWidth.w,
+                          child: _iconTile(entry.item),
+                        ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-
-            SizedBox(height: 24.h),
-
-            // ── Discard / Save ──────────────────────────────────────────────
-            // Left-aligned fixed-width pair, not the full-width Expanded pair
-            // this used to be.
-            // SWAPPED 21/9/2026 — Settings bug report p.16: Discard on the
-            // left, Save on the right, like every other dialog in the app
-            // (the Save was on the left). Discard also takes the shared grey +
-            // white of the Discard / No buttons.
-            // Phone: the pair splits the row with a 12 gap so neither button
-            // runs past the dialog edge.
-            Row(
-              children: [
-                _wrapAction(
-                  isMobile,
-                  _actionButton(
-                    expand: isMobile,
-                    label: l.discard,
-                    color: AppColors.darkGrey,
-                    textColor: AppColors.white,
-                    onTap: () => Navigator.of(context).pop(),
-                  ),
-                ),
-                isMobile ? SizedBox(width: 12.sp) : Spacer(),
-                _wrapAction(
-                  isMobile,
-                  _actionButton(
-                  expand: isMobile,
-                  label: l.save,
-                  color: AppColors.primary,
-                  textColor: AppColors.textButton,
-                  onTap: () {
-                    if (selectedItem == null) return;
-                    widget.onIconSelected(selectedItem!);
-                    Navigator.of(context).pop();
-                  },
-                  ),
-                ),
-              ],
             ),
           ],
         ),

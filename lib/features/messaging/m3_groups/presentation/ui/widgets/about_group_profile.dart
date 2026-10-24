@@ -1,26 +1,25 @@
 // by : Mohamed Ashraf
 
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grc_module/core/services/media_picker_service.dart';
+import 'package:knowticed_plus/core/app_services/media_picker_service.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
 
-import 'package:grc_module/core/constants/message_module/app_assets.dart';
-import 'package:grc_module/core/helper/main_helper/spacing_helper.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import '../../controller/groups_controller.dart';
-import './switch_button/switch_button_title.dart';
-import './switch_button/switch_button_title_subTitle.dart';
-import 'package:grc_module/core/custom/46-custom_image_picker.dart';
-import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
-import 'package:grc_module/core/custom/2-custom_textfield.dart';
-import 'package:grc_module/core/custom/5-custom_button.dart';
+import 'package:knowticed_plus/features/messaging/helpers/constants/messaging_assets.dart';
+import 'package:knowticed_plus/features/messaging/helpers/spacing_helper.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/presentation/controller/groups_controller.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/presentation/ui/widgets/switch_button/switch_button_title.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/presentation/ui/widgets/switch_button/switch_button_title_subtitle.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/core/custom/inputs/custom_textfield.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_button.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
 
 class AboutGroupProfile extends StatelessWidget {
   const AboutGroupProfile({
@@ -56,11 +55,10 @@ class AboutGroupProfile extends StatelessWidget {
                   backgroundColor: AppColors.grey,
                   backgroundImage: state.groupImage != null
                       ? FileImage(state.groupImage!.absolute)
-                      : appImageProvider(
-                    AppAssets.blackGallery,
-                  ) as ImageProvider,
+                      : null,
                 ),
                 GestureDetector(
+                  onTapDown: (_) => HapticController.high(),
                   onTap: () async {
                     // Picker lives in the page/service now — cubit only stores
                     // the result (§16/§20). Old pickGroupImage() was removed.
@@ -73,11 +71,11 @@ class AboutGroupProfile extends StatelessWidget {
                   child: CircleAvatar(
                     radius: 12.r,
                     backgroundColor: AppColors.primary,
-                    child: SvgPicture.asset(
-                      AppAssets.camera,
+                    child: CustomSvgImage.natural(
+                      assetPath: AppAssets.camera,
                       width: 16.w,
                       height: 16.h,
-                      color: Colors.black,
+                      color: AppColors.textButton,
                     ),
                   ),
                 ),
@@ -138,18 +136,22 @@ class AboutGroupProfile extends StatelessWidget {
             ),
             verticalSpace(24),
             Align(
-              alignment: isTablet ? Alignment.bottomRight : Alignment.bottomCenter,
+              alignment:
+                  isTablet ? Alignment.bottomRight : Alignment.bottomCenter,
               child: customButton(
                 width: isTablet ? 105.w : double.infinity,
                 textColor: AppColors.base,
                 color: AppColors.primary,
                 title: S.of(context).Save,
                 textStyle: isTablet
-                    ? StyleText.fontSize18Weight500.copyWith(color: AppColors.textButton)
-                    : StyleText.fontSize16Weight500.copyWith(color: AppColors.textButton),
+                    ? StyleText.fontSize18Weight500
+                        .copyWith(color: AppColors.textButton)
+                    : StyleText.fontSize16Weight500
+                        .copyWith(color: AppColors.textButton),
                 function: () async {
                   await controller.updateGroupData();
-                },),
+                },
+              ),
             ),
             verticalSpace(24),
           ],

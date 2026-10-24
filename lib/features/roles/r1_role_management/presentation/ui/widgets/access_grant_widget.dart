@@ -5,15 +5,14 @@
 /// Purpose: Declares `AccessGrantorWidget`.
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-
-import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/helper/format_title.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
 
 class AccessGrantorWidget extends StatelessWidget {
   final String title;
@@ -58,8 +57,9 @@ class AccessGrantorWidget extends StatelessWidget {
       radius: 12.sp,
       backgroundColor: AppColors.transparent,
       child: ClipOval(
-        child: SvgPicture.asset(
-          'assets/icons_assets/main_icons_assets/male_avatar.svg',
+        child: CustomSvgImage.natural(
+          assetPath:
+              'assets/icons_assets/main_icons_assets/ic_user_avatar_male.png',
           fit: BoxFit.cover,
           width: 24.sp,
           height: 24.sp,

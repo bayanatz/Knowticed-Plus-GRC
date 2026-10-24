@@ -3,8 +3,7 @@
 // Last update: 1/9/2024
 // Objectives: This file is responsible for providing a model for group chatting feature in direct messaging screen.
 
-
-import '../../../m2_connections/data/models/member_model.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/data/models/member_model.dart';
 
 class GroupModel {
   String id;
@@ -33,7 +32,13 @@ class GroupModel {
   String get isUserTyping {
     final userTyping = groupMembers.firstWhere(
       (element) => element.isrUserTyping,
-      orElse: () => Member(id: '', firstName: '', avatarUrl: '', phoneNumber: '', lastName: '',),
+      orElse: () => Member(
+        id: '',
+        firstName: '',
+        avatarUrl: '',
+        phoneNumber: '',
+        lastName: '',
+      ),
     );
     return userTyping.firstName;
   }

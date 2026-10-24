@@ -2,34 +2,41 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: edit_user_access_dialog.dart
-/// Purpose: Part of the user-management feature.
-/// Author: Knowticed Plus team
+/// Description: Part of the user-management feature.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
-import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-// REMOVED_MODULE: import 'package:grc_module/features/external/grc/core/widgets/custom_botton.dart';
-// REMOVED_MODULE: import 'package:grc_module/features/external/knowledge_hub_module/core/theming/new_theme.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/features/roles/r1_role_management/domain/enums/role_status.dart';
-import 'package:grc_module/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
-import 'package:grc_module/generated/l10n.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/features/external/grc/core/widgets/custom_botton.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/features/external/knowledge_hub_module/core/theming/new_theme.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/role_status.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
-import 'package:grc_module/features/roles/r2_user_management/domain/entities/user_permission_entity.dart';
-import 'package:grc_module/features/roles/r2_user_management/presentation/controller/user_management_cubit.dart';
-import '../pages/edit_select.dart';
-import 'package:intl/intl.dart';
+import 'package:knowticed_plus/features/roles/r2_user_management/domain/entities/user_permission_entity.dart';
+import 'package:knowticed_plus/features/roles/r2_user_management/presentation/controller/user_management_cubit.dart';
+
+import 'package:knowticed_plus/features/roles/r2_user_management/presentation/ui/pages/edit_select.dart';
+
+import 'package:intl/intl.dart' hide TextDirection;
+
 import 'dart:ui' as ui;
 
-import 'package:grc_module/core/custom/5-custom_button.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/theme/app_animations.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_button.dart';
+import 'package:knowticed_plus/core/theme/app_animations.dart';
+import 'package:knowticed_plus/core/custom/feedback/circle_progress.dart';
+import 'package:knowticed_plus/core/custom/dialogs/custom_filter_frame.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/data/models/role_model.dart'
+    show RoleHistoryModelMethods;
+
 /// Shows the Edit User Access Dialog
-/// Returns Map<String, dynamic> with 'role', 'accessGranted', 'accessRevoked' on success
+/// Returns Map`<String, dynamic>` with 'role', 'accessGranted', 'accessRevoked' on success
 /// Returns null on discard
 Future<dynamic> showEditUserAccessDialog({
   required BuildContext context,
@@ -43,9 +50,7 @@ Future<dynamic> showEditUserAccessDialog({
         BlocProvider.value(value: context.read<UserManagementAccessCubit>()),
         BlocProvider.value(value: context.read<RoleCubit>()),
       ],
-      child: _EditUserAccessDialogContent(
-        userPermission: userPermission,
-      ),
+      child: _EditUserAccessDialogContent(userPermission: userPermission),
     ),
   );
 }
@@ -129,7 +134,11 @@ class _EditUserAccessDialogContentState
         if (parsed != null) controller.accessRevoked = parsed;
       }
 
-      controller.emit(UserPermissionsDataLoaded());
+      controller.emitState(UserPermissionsDataLoaded());
+
+      // 9/10/2026 — the user limits, so Save can refuse a role this user
+      // cannot be given before the dialog closes.
+      controller.loadLicenceUsage();
     });
   }
 
@@ -175,16 +184,23 @@ class _EditUserAccessDialogContentState
         }
 
         final arabicMonths = {
-          'يناير': 1, 'فبراير': 2, 'مارس': 3, 'أبريل': 4,
-          'مايو': 5, 'يونيو': 6, 'يوليو': 7, 'أغسطس': 8,
-          'سبتمبر': 9, 'أكتوبر': 10, 'نوفمبر': 11, 'ديسمبر': 12,
+          'يناير': 1,
+          'فبراير': 2,
+          'مارس': 3,
+          'أبريل': 4,
+          'مايو': 5,
+          'يونيو': 6,
+          'يوليو': 7,
+          'أغسطس': 8,
+          'سبتمبر': 9,
+          'أكتوبر': 10,
+          'نوفمبر': 11,
+          'ديسمبر': 12,
         };
         for (final entry in arabicMonths.entries) {
           if (normalized.contains(entry.key)) {
-            final cleaned = normalized
-                .replaceAll(entry.key, '')
-                .replaceAll(',', '')
-                .trim();
+            final cleaned =
+                normalized.replaceAll(entry.key, '').replaceAll(',', '').trim();
             final parts = cleaned.split(RegExp(r'\s+'));
             if (parts.length == 2) {
               final nums = parts.map((p) => int.tryParse(p)).toList();
@@ -197,8 +213,8 @@ class _EditUserAccessDialogContentState
           }
         }
       }
-    } catch (e, stackTrace) {
-      debugPrint('edit_user_access_dialog: date parse failed: $e\n$stackTrace');
+    } catch (_) {
+      // Best effort: this failure must not stop the action.
     }
 
     return null;
@@ -210,26 +226,29 @@ class _EditUserAccessDialogContentState
 
     if (controller.newAccessSelectedRole == null ||
         controller.newAccessSelectedRole!.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(s.pleaseSelectARoleType),   // ← use S.of(context) key
-        backgroundColor: AppColors.red,
-      ));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(s.pleaseSelectARoleType), // ← use S.of(context) key
+          backgroundColor: AppColors.red,
+        ),
+      );
       return;
     }
 
-    if (controller.accessGranted == null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(s.pleaseSelectAccessGrantedDate),
-        backgroundColor: AppColors.red,
-      ));
-      return;
-    }
-
-    if (controller.accessRevoked == null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(s.pleaseSelectAccessRevokedDate),
-        backgroundColor: AppColors.red,
-      ));
+    // 9/10/2026 — user limits (Knowticed Admin). Re-checked inside the
+    // transaction on save; this only spares the admin a round trip.
+    final String? limitMessage = controller.limitMessageFor(<String>[
+      widget.userPermission.employeeId,
+    ], controller.newAccessSelectedRole!);
+    if (limitMessage != null) {
+      if (controller.licenceUsageFailed) controller.loadLicenceUsage();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(limitMessage),
+          backgroundColor: AppColors.red,
+          duration: const Duration(seconds: 5),
+        ),
+      );
       return;
     }
 
@@ -247,7 +266,7 @@ class _EditUserAccessDialogContentState
 
   @override
   Widget build(BuildContext context) {
-    final lightMode = Theme.of(context).brightness == Brightness.light;
+    Theme.of(context).brightness == Brightness.light;
 
     // ── Detect locale direction ────────────────────────────────────────────
     final isAr = Localizations.localeOf(context).languageCode == 'ar';
@@ -269,11 +288,9 @@ class _EditUserAccessDialogContentState
           child: Theme(
             data: Theme.of(context).copyWith(
               inputDecorationTheme:
-              Theme.of(context).inputDecorationTheme.copyWith(
-                hintStyle: TextStyle(
-                  color: AppColors.secondaryText,
-                ),
-              ),
+                  Theme.of(context).inputDecorationTheme.copyWith(
+                        hintStyle: TextStyle(color: AppColors.secondaryText),
+                      ),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -284,61 +301,39 @@ class _EditUserAccessDialogContentState
                 // User Access dialogs.
                 Padding(
                   padding: EdgeInsetsDirectional.only(
-                      start: 15.sp, end: 15.sp, top: 15.sp),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 30.sp,
-                        height: 30.sp,
-                        padding: EdgeInsets.all(6.sp),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary,
-                          shape: BoxShape.circle,
-                        ),
-                        child: CustomSvgImage(
-                          assetPath:
-                              'assets/icons_assets/roles_assets/edit_access.svg',
-                          fit: BoxFit.contain,
-                          color: AppColors.textButton,
-                        ),
-                      ),
-                      SizedBox(width: 10.sp),
-                      Expanded(
-                        child: Text(
-                          S.of(context).editingAccessDetails,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: StyleText.fontSize16Weight400
-                              .copyWith(color: AppColors.text),
-                        ),
-                      ),
-                    ],
+                    start: 15.sp,
+                    end: 15.sp,
+                    top: 15.sp,
                   ),
+                  // 22/10/2026 — Owner: one dialog header everywhere (30 circle · 16 icon · 18/500 title) — was a hand-rolled 30./30./10. row.
+                  child: CustomDialogHeader(
+                      title: S.of(context).editingAccessDetails,
+                      icon:
+                          'assets/icons_assets/main_icons_assets/ic_security_edit_access.svg'),
                 ),
                 // ── Form ──────────────────────────────────────────────────
-                Expanded(
-                  child: EditAccessDetails(),
-                ),
+                Expanded(child: EditAccessDetails()),
 
                 // ── Buttons ───────────────────────────────────────────────
                 Padding(
                   padding: EdgeInsets.all(15.sp),
                   child: Row(
+                    textDirection: TextDirection
+                        .ltr, // X-73: Cancel left, action right in both languages
+
                     children: [
                       if (!_isSaving)
                         customButton(
                           title: S.of(context).discard,
                           textStyle: StyleText.fontSize16Weight400.copyWith(
-                            color: AppColors.blackButton,
+                            color: AppColors.text,
                           ),
                           function: () => Navigator.pop(context),
-                          color: AppColors.secondaryButton,
+                          color: AppColors.darkGrey,
                           width: 135.w,
                           height: 38.h,
                         ),
-
                       const Spacer(),
-
                       if (_isSaving)
                         SizedBox(
                           width: 38.h,

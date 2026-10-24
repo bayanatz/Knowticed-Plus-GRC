@@ -6,10 +6,11 @@
 /// Author: Knowticed Plus team
 /// Created at: 2026
 /// Updated: 12/8/2026 - CR-SKEL-O3-N30: added the missing FILE INFO block.
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:grc_module/core/helper/main_helper/single_value_model.dart';
-import 'package:grc_module/core/helper/main_helper/phone_number.dart';
+import 'package:knowticed_plus/core/helper/single_value_model.dart';
+import 'package:knowticed_plus/core/helper/phone_number.dart';
 
 class ContactInformationModel {
   SingleValueModel<String> firstName;
@@ -26,29 +27,29 @@ class ContactInformationModel {
     required this.approvalDate,
   });
 
-  static const String FIRST_NAME = 'First_Name';
-  static const String LAST_NAME = 'Last_Name';
-  static const String EMAIL = 'Email';
-  static const String PHONE = 'Phone';
-  static const String APPROVAL_DATE = 'Approval_Date';
+  static const String kFirstName = 'First_Name';
+  static const String kLastName = 'Last_Name';
+  static const String kEmail = 'Email';
+  static const String kPhone = 'Phone';
+  static const String kApprovalDate = 'Approval_Date';
 
   Map<String, dynamic> toMap() {
     return {
-      FIRST_NAME: firstName.toMap(),
-      LAST_NAME: lastName.toMap(),
-      EMAIL: email.toMap(),
-      PHONE: phone.toMap(),
-      APPROVAL_DATE: approvalDate,
+      kFirstName: firstName.toMap(),
+      kLastName: lastName.toMap(),
+      kEmail: email.toMap(),
+      kPhone: phone.toMap(),
+      kApprovalDate: approvalDate,
     };
   }
 
   factory ContactInformationModel.fromMap(Map<String, dynamic> map) {
     return ContactInformationModel(
-      firstName: SingleValueModel<String>.fromMap(map[FIRST_NAME]),
-      lastName: SingleValueModel<String>.fromMap(map[LAST_NAME]),
-      email: SingleValueModel<String>.fromMap(map[EMAIL]),
-      phone: PhoneModel.fromMap(map[PHONE]),
-      approvalDate: map[APPROVAL_DATE],
+      firstName: SingleValueModel<String>.fromMap(map[kFirstName]),
+      lastName: SingleValueModel<String>.fromMap(map[kLastName]),
+      email: SingleValueModel<String>.fromMap(map[kEmail]),
+      phone: PhoneModel.fromMap(map[kPhone]),
+      approvalDate: map[kApprovalDate],
     );
   }
 }

@@ -10,6 +10,7 @@
 /// parallel structures on the controller — `skillsFields[i]['skillName']`,
 /// `skillsControllers[i]` and `skillss[i]` — that the UI had to keep in sync by
 /// hand at every keystroke (CR-SKEL-SE2-N18).
+library;
 
 import 'package:flutter/foundation.dart';
 

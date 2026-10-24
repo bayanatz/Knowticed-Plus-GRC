@@ -1,6 +1,6 @@
 {
-    "name": "Knowticed GRC",
-    "short_name": "Knowticed GRC",
+    "name": "knowticed_plus",
+    "short_name": "knowticed_plus",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

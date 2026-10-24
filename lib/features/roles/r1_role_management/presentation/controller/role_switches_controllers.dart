@@ -3,17 +3,18 @@
 ///********************** FILE INFO **********************
 ///
 ///  FILE NAME: role_switches_controllers.dart
-///  Purpose: This file contains the RoleSwitchesControllers extension which manages permission states in the new multi-collection architecture.
+/// Description: This file contains the RoleSwitchesControllers extension which manages permission states in the new multi-collection architecture.
 ///  Created by: Mohamed Elrashidy
-///  Created on: 3/9/2025
+/// Author: Amr Mesbah
+/// Created at: 3/9/2025
 ///  Updated for: Multi-collection permission architecture
+library;
 
-import 'package:flutter/foundation.dart';
-import 'package:grc_module/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
-import 'package:grc_module/features/roles/r1_role_management/data/models/role_model.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
-import 'package:grc_module/features/roles/r1_role_management/domain/entities/module_permissions_sections.dart';
-import 'package:grc_module/features/roles/r1_role_management/domain/entities/module_permissions_sections_permissions.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/data/models/role_model.dart';
+import 'package:knowticed_plus/core/helper/access/modules_enum.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/entities/module_permissions_sections.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/entities/module_permissions_sections_permissions.dart';
 
 extension RoleSwitchesControllers on RoleCubit {
   /// NEW: Toggle permission state using string-based module system
@@ -62,7 +63,9 @@ extension RoleSwitchesControllers on RoleCubit {
     }
 
     // Get default permissions for the module and set all to admin value
-    Map<String, bool> defaultPermissions = _getDefaultPermissionsForModule(moduleName);
+    Map<String, bool> defaultPermissions = _getDefaultPermissionsForModule(
+      moduleName,
+    );
     defaultPermissions.forEach((key, _) {
       modulePermissions[moduleName]![key] = isAdmin;
     });
@@ -114,7 +117,10 @@ extension RoleSwitchesControllers on RoleCubit {
   /// Parameters:
   ///             moduleName[String]: The module name
   ///             permissions[Map<String, bool>]: The permissions to update
-  void updateModulePermissions(String moduleName, Map<String, bool> permissions) {
+  void updateModulePermissions(
+    String moduleName,
+    Map<String, bool> permissions,
+  ) {
     if (!selectedModules.contains(moduleName)) {
       return;
     }
@@ -152,19 +158,18 @@ extension RoleSwitchesControllers on RoleCubit {
             module: moduleName,
             permissions: modulePermissions[moduleName]!,
           );
-        } catch (e, stackTrace) {
+        } catch (e) {
           failedModules.add(moduleName);
-          debugPrint(
-            'saveAllPermissionsToDatabase: $moduleName failed: $e\n$stackTrace',
-          );
         }
       }
     }
 
     if (failedModules.isNotEmpty) {
-      emitSafely(RoleError(
-        'Could not save permissions for: ${failedModules.join(', ')}.',
-      ));
+      emitSafely(
+        RoleError(
+          'Could not save permissions for: ${failedModules.join(', ')}.',
+        ),
+      );
       return;
     }
 
@@ -195,16 +200,20 @@ extension RoleSwitchesControllers on RoleCubit {
             modulePermissions[moduleName] = {};
 
             permissions.forEach((key, value) {
-              if (key != 'Role_Id' && key != 'timestamps' && value is List && value.isNotEmpty) {
+              if (key != 'Role_Id' &&
+                  key != 'timestamps' &&
+                  value is List &&
+                  value.isNotEmpty) {
                 modulePermissions[moduleName]![key] = value.last == true;
               }
             });
-
           }
         }
       } catch (e) {
         // Create default permissions if loading fails
-        modulePermissions[moduleName] = _getDefaultPermissionsForModule(moduleName);
+        modulePermissions[moduleName] = _getDefaultPermissionsForModule(
+          moduleName,
+        );
       }
     }
 
@@ -216,7 +225,9 @@ extension RoleSwitchesControllers on RoleCubit {
   /// Purpose: Resets all module permissions to their default values
   void resetAllPermissions() {
     for (String moduleName in selectedModules) {
-      modulePermissions[moduleName] = _getDefaultPermissionsForModule(moduleName);
+      modulePermissions[moduleName] = _getDefaultPermissionsForModule(
+        moduleName,
+      );
     }
 
     emitSafely(RolePermissionUpdated());
@@ -233,8 +244,9 @@ extension RoleSwitchesControllers on RoleCubit {
     List<String> sourceModules = sourceRole.currentSelectedModules;
 
     // Only clone permissions for modules that are selected in current role
-    List<String> modulesToClone = selectedModules.where((module) =>
-        sourceModules.contains(module)).toList();
+    List<String> modulesToClone = selectedModules
+        .where((module) => sourceModules.contains(module))
+        .toList();
 
     // A module whose clone fails used to vanish into an empty `catch {}`, so
     // the caller saw RolePermissionUpdated and assumed a complete copy (§11.5).
@@ -253,25 +265,26 @@ extension RoleSwitchesControllers on RoleCubit {
             modulePermissions[moduleName] = {};
 
             permissions.forEach((key, value) {
-              if (key != 'Role_Id' && key != 'timestamps' && value is List && value.isNotEmpty) {
+              if (key != 'Role_Id' &&
+                  key != 'timestamps' &&
+                  value is List &&
+                  value.isNotEmpty) {
                 modulePermissions[moduleName]![key] = value.last == true;
               }
             });
-
           }
         }
-      } catch (e, stackTrace) {
+      } catch (e) {
         failedModules.add(moduleName);
-        debugPrint(
-          'clonePermissionsFromRole: $moduleName failed: $e\n$stackTrace',
-        );
       }
     }
 
     if (failedModules.isNotEmpty) {
-      emitSafely(RoleError(
-        'Could not copy permissions for: ${failedModules.join(', ')}.',
-      ));
+      emitSafely(
+        RoleError(
+          'Could not copy permissions for: ${failedModules.join(', ')}.',
+        ),
+      );
       return;
     }
 
@@ -288,13 +301,17 @@ extension RoleSwitchesControllers on RoleCubit {
       if (modulePermissions.containsKey(moduleName)) {
         Map<String, bool> permissions = modulePermissions[moduleName]!;
         int totalPermissions = permissions.length;
-        int enabledPermissions = permissions.values.where((p) => p == true).length;
+        int enabledPermissions =
+            permissions.values.where((p) => p == true).length;
 
         summary[moduleName] = {
           'totalPermissions': totalPermissions,
           'enabledPermissions': enabledPermissions,
-          'percentageEnabled': totalPermissions > 0 ? (enabledPermissions / totalPermissions * 100).round() : 0,
-          'isFullAccess': enabledPermissions == totalPermissions && totalPermissions > 0,
+          'percentageEnabled': totalPermissions > 0
+              ? (enabledPermissions / totalPermissions * 100).round()
+              : 0,
+          'isFullAccess':
+              enabledPermissions == totalPermissions && totalPermissions > 0,
           'permissions': Map<String, bool>.from(permissions),
         };
       }
@@ -330,13 +347,17 @@ extension RoleSwitchesControllers on RoleCubit {
         case 'services':
           if (!permissions.containsKey('Create_Service') &&
               !permissions.containsKey('Edit_Service')) {
-            errors.add('Services module should have at least Create or Edit permission');
+            errors.add(
+              'Services module should have at least Create or Edit permission',
+            );
           }
           break;
         case 'services_app':
           if (!permissions.containsKey('Create_New_Form') &&
               !permissions.containsKey('Edit_Form')) {
-            errors.add('Form Builder module should have at least Create or Edit permission');
+            errors.add(
+              'Form Builder module should have at least Create or Edit permission',
+            );
           }
           break;
       }
@@ -401,7 +422,7 @@ extension RoleSwitchesControllers on RoleCubit {
           'View_Documents': false,
           'Analytics': false,
         };
-    // ✅ ADDED: HR Module
+      // ✅ ADDED: HR Module
       case 'hr':
         return {
           'HR_Module': false,
@@ -431,7 +452,7 @@ extension RoleSwitchesControllers on RoleCubit {
           'Document_Management': false,
           'Employee_Self_Service': false,
         };
-    // ✅ ADDED: CRM Module
+      // ✅ ADDED: CRM Module
       case 'crm':
         return {
           'CRM_Module': false,
@@ -465,7 +486,7 @@ extension RoleSwitchesControllers on RoleCubit {
           'Configure_CRM_Settings': false,
           'Set_CRM_Permissions': false,
         };
-    // ✅ ADDED: Notification Module
+      // ✅ ADDED: Notification Module
       case 'notification':
         return {
           'Notification_Module': false,
@@ -490,11 +511,83 @@ extension RoleSwitchesControllers on RoleCubit {
           'Show_HR_Notifications': false,
           'Show_CRM_Notifications': false,
         };
-      default:
+      // ADDED 7/10/2026: To-Do Module (keys mirror TodoPermissions /
+      // TodoPermissionsSections and the admin app).
+      case 'todo':
         return {
-          'View_Access': false,
-          'Edit_Access': false,
+          'To_Do_Permissions': false,
+          'View_To_Do': false,
+          'Create_To_Do': false,
+          'Edit_To_Do': false,
+          'Delete_To_Do': false,
+          'Restore_To_Do': false,
         };
+      // ADDED 8/10/2026: Time Tracker Module — 10 section masters + 48 switches,
+      // all OFF (keys mirror TimeTrackerPermissionsSections /
+      // TimeTrackerPermissions and FINAL SPEC §1).
+      case 'time_tracker':
+        return {
+          'Check_In_Permissions': false,
+          'Check_In_And_Out': false,
+          'Work_From_Different_Location': false,
+          'Time_Tracker_Dashboard_Permissions': false,
+          'Personal_Dashboard': false,
+          'HR_Dashboard': false,
+          'HR_Dashboard_All_Departments': false,
+          'HR_Dashboard_Filter_By_Employee': false,
+          'Attendance_Permissions': false,
+          'View_Attendance': false,
+          'Request_Transaction': false,
+          'Cancel_Transaction': false,
+          'Export_Attendance': false,
+          'Time_Tracker_Request_Permissions': false,
+          'View_Time_Tracker_Requests': false,
+          'Create_Time_Tracker_Request': false,
+          'Cancel_Time_Tracker_Request': false,
+          'Send_Request_Reminder': false,
+          'Comment_On_Requests': false,
+          'Export_Time_Tracker_Requests': false,
+          'Approval_Permissions': false,
+          'View_Approvals': false,
+          'Approve_And_Reject': false,
+          'Cancel_Request_After_Approving': false,
+          'Approvals_All_Departments': false,
+          'Comment_On_Approvals': false,
+          'Request_Type_Permissions': false,
+          'View_Request_Types': false,
+          'Create_Request_Type': false,
+          'Edit_Request_Type': false,
+          'Change_Request_Type_Status': false,
+          'Remove_Request_Type': false,
+          'Export_Request_Types': false,
+          'Location_Permissions': false,
+          'View_Locations': false,
+          'Create_Location': false,
+          'Edit_Location': false,
+          'Change_Location_Status': false,
+          'Delete_Location': false,
+          'Export_Locations': false,
+          'Import_Locations': false,
+          'Time_Tracker_Employee_Permissions': false,
+          'View_Time_Tracker_Employees': false,
+          'Employees_All_Departments': false,
+          'Assign_Employee': false,
+          'Reassign_Employee_Location': false,
+          'Remove_Employee_Assignment': false,
+          'Export_Time_Tracker_Employees': false,
+          'Group_Permissions': false,
+          'View_Groups': false,
+          'Create_Group': false,
+          'Edit_Group': false,
+          'Delete_Group': false,
+          'Vacation_Balance_Permissions': false,
+          'View_Vacation_Balances': false,
+          'Edit_Vacation_Balance': false,
+          'Import_Vacation_Balances': false,
+          'Export_Vacation_Balances': false,
+        };
+      default:
+        return {'View_Access': false, 'Edit_Access': false};
     }
   }
 
@@ -522,18 +615,15 @@ extension RoleSwitchesControllers on RoleCubit {
     String moduleName = _moduleEnumToString(module);
     bool currentValue = isModuleAdminActive(moduleName);
 
-    toggleModuleAdminAccess(
-      moduleName: moduleName,
-      isAdmin: !currentValue,
-    );
+    toggleModuleAdminAccess(moduleName: moduleName, isAdmin: !currentValue);
   }
 
   @Deprecated('Use new permission system with isPermissionActive instead')
   bool isSwitchActive(
-      Modules module,
-      ModulePermissionsSections section,
-      ModulePermissionsSectionsPermission permission,
-      ) {
+    Modules module,
+    ModulePermissionsSections section,
+    ModulePermissionsSectionsPermission permission,
+  ) {
     String moduleName = _moduleEnumToString(module);
     String permissionKey = permission.getDataBaseName;
     return isPermissionActive(moduleName, permissionKey);
@@ -580,11 +670,11 @@ extension RoleSwitchesControllers on RoleCubit {
         return 'roles';
       case Modules.settings:
         return 'settings';
-      case Modules.hr:  // ✅ ADDED
+      case Modules.hr: // ✅ ADDED
         return 'hr';
-      case Modules.crm:  // ✅ ADDED
+      case Modules.crm: // ✅ ADDED
         return 'crm';
-      case Modules.notification:  // ✅ ADDED
+      case Modules.notification: // ✅ ADDED
         return 'notification';
       // ADDED 13/9/2026 — same fix as role_cubit.moduleEnumToString, which is
       // a duplicate of this switch. Without it GRC answered 'employees' and
@@ -592,6 +682,8 @@ extension RoleSwitchesControllers on RoleCubit {
       // employees permission document.
       case Modules.grc:
         return 'grc';
+      case Modules.timeTracker: // ADDED 8/10/2026 — Time Tracker
+        return 'time_tracker';
       default:
         return 'employees';
     }

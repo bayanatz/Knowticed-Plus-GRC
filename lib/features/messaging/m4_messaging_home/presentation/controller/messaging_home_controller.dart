@@ -4,15 +4,16 @@
 /// Purpose: Messaging home controller — messaging Home sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grc_module/features/messaging/m2_connections/presentation/controller/connections_controller.dart';
-import 'package:grc_module/features/messaging/m3_groups/presentation/controller/groups_controller.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/presentation/controller/connections_controller.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/presentation/controller/groups_controller.dart';
 
-import '../../../../../core/helper/message_module/interface/entity/user_category.dart';
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/interface/entity/user_category.dart';
 
-import '../../domain/enums/sort_enum.dart';
+import 'package:knowticed_plus/features/messaging/m4_messaging_home/domain/enums/sort_enum.dart';
 
 // State classes
 abstract class MessagingHomeState {}
@@ -107,16 +108,18 @@ class MessagingHomeCubit extends Cubit<MessagingHomeState> {
 
   void filterByCategory(UserCategory category) {
     _selectedTab = category;
-    connectionsCubit.selectedTab = category; // Update the connections cubit's selected tab
+    connectionsCubit.selectedTab =
+        category; // Update the connections cubit's selected tab
     _emitLoadedState();
     connectionsCubit.filteredSingleConnections();
   }
 
   void sortChats(dynamic value) {
-    if (_sort == value)
+    if (_sort == value) {
       _sort = null;
-    else
+    } else {
       _sort = value;
+    }
 
     _emitLoadedState(clearSort: _sort == null);
     connectionsCubit.filteredSingleConnections();

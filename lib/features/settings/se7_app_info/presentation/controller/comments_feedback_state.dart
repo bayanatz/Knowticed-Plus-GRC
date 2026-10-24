@@ -5,8 +5,9 @@
 /// Purpose: States for [CommentsFeedbackCubit].
 /// Author: Knowticed Plus team
 /// Created at: 1/9/2026
+library;
 
-import 'package:grc_module/features/settings/se7_app_info/domain/entities/app_feedback.dart';
+import 'package:knowticed_plus/features/settings/se7_app_info/domain/entities/app_feedback.dart';
 
 /// How the "Request Details" list is ordered.
 ///

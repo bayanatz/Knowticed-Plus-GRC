@@ -1,0 +1,127 @@
+// Module: firestore rules
+// File Name: firestore.rules
+// Description: DRAFT server-side rules for the Database module (DB-CREATE-01).
+// Author: Amr Mesbah
+// Created at: 16/10/2026
+//
+// NOT DEPLOYABLE YET. The app signs in without Firebase Auth, so
+// `request.auth` is always null and these rules would block everyone.
+// They take effect once login moves to Firebase Auth and each user's token
+// carries a custom claim `employee_id` (set with the Admin SDK).
+//
+// Mirrors DatabaseAccessRule in the app:
+//   creator                  everything
+//   Personal database        creator only
+//   draft                    creator only
+//   member of a grant        highest level whose dates include today
+//   deleted database         creator or Full Access
+//
+// Firestore rules cannot loop, so only the first 3 access windows a person has
+// on one database are checked. One person in more than 3 grants of the same
+// database is not expected.
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function me() {
+      return request.auth != null ? request.auth.token.employee_id : null;
+    }
+
+    function rank(p) {
+      return {'view': 1, 'custom': 1, 'export': 2, 'edit': 3, 'full_access': 4}.get(p, 0);
+    }
+
+    // End date is inclusive: the whole of that day counts.
+    function active(w) {
+      return (w.start_date == null || w.start_date <= request.time)
+          && (w.end_date == null || request.time < w.end_date + duration.value(1, 'd'));
+    }
+
+    function hasLevel(d, minRank) {
+      let ws = d.get('access_index', {}).get(me(), []);
+      return (ws.size() > 0 && active(ws[0]) && rank(ws[0].permission) >= minRank)
+          || (ws.size() > 1 && active(ws[1]) && rank(ws[1].permission) >= minRank)
+          || (ws.size() > 2 && active(ws[2]) && rank(ws[2].permission) >= minRank);
+    }
+
+    function isCreator(d) {
+      return me() != null && d.created_by == me();
+    }
+
+    function shared(d) {
+      return d.status != 'draft' && d.access_type != 'personal_access';
+    }
+
+    function canView(d) {
+      return isCreator(d) || (shared(d) && hasLevel(d, d.status == 'deleted' ? 4 : 1));
+    }
+    function canEdit(d)   { return isCreator(d) || (shared(d) && hasLevel(d, 3)); }
+    function canManage(d) { return isCreator(d) || (shared(d) && hasLevel(d, 4)); }
+
+    // Fields only Full Access may change: who has access, and delete/restore.
+    function touchesAccess() {
+      return request.resource.data.diff(resource.data).affectedKeys().hasAny(
+        ['access_index', 'member_ids', 'access_type', 'member_count',
+         'status', 'previous_status', 'deleted_at', 'created_by']);
+    }
+
+    // Title index (DB-CREATE-11): written only inside the save transaction.
+    match /Demo/{company}/Modules/database_builder/Database_Titles/{key} {
+      allow read: if me() != null;
+      allow write: if me() != null;
+    }
+
+    match /Demo/{company}/Modules/database_builder/Databases/{dbId} {
+      // The list query filters on created_by or member_ids; dates and levels
+      // are re-checked by the app. A single read checks everything.
+      allow list: if me() != null
+          && (resource.data.created_by == me() || me() in resource.data.get('member_ids', []));
+      allow get: if canView(resource.data);
+      allow create: if me() != null && request.resource.data.created_by == me();
+      allow update: if touchesAccess() ? canManage(resource.data) : canEdit(resource.data);
+      allow delete: if canManage(resource.data);
+
+      function parent() {
+        return get(/databases/$(database)/documents/Demo/$(company)/Modules/database_builder/Databases/$(dbId)).data;
+      }
+
+      match /Access_Grants/{grantId} {
+        allow read: if canView(parent());
+        allow write: if canManage(parent());
+      }
+
+      // Tables (DB-TABLE-03). A table with its own grants is limited to its
+      // grantees; the database creator and Full Access keep everything.
+      // Hidden COLUMNS cannot be enforced here: a row is one document, and
+      // rules cannot hide fields inside it. The app hides them.
+      match /Tables/{tableId} {
+        function table() {
+          return get(/databases/$(database)/documents/Demo/$(company)/Modules/database_builder/Databases/$(dbId)/Tables/$(tableId)).data;
+        }
+        function tableView(t) {
+          return canManage(parent()) || t.get('created_by', null) == me()
+              || (canView(parent())
+                  && ((t.get('access_restricted', false) == false && t.get('access_index', {}).size() == 0) || hasLevel(t, 1)));
+        }
+        function tableEdit(t) {
+          return canManage(parent()) || t.get('created_by', null) == me()
+              || (canView(parent())
+                  && ((t.get('access_restricted', false) == false && t.get('access_index', {}).size() == 0) ? canEdit(parent()) : hasLevel(t, 3)));
+        }
+
+        allow read: if tableView(resource.data);
+        allow create: if canEdit(parent());
+        allow update, delete: if canManage(parent()) || resource.data.get('created_by', null) == me();
+
+        match /Access_Grants/{grantId} {
+          allow read: if tableView(table());
+          allow write: if canManage(parent()) || table().get('created_by', null) == me();
+        }
+        match /{sub=**} {
+          allow read: if tableView(table());
+          allow write: if tableEdit(table());
+        }
+      }
+    }
+  }
+}

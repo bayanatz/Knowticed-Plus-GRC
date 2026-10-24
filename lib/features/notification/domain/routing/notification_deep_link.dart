@@ -40,14 +40,23 @@
 /// separate change: a field on the model, a parameter on the sender, and the
 /// call sites in the eight module notification services.
 ///
+/// UPDATE 7/10/2026: that change now exists — optional
+/// `NotificationModelSystem.requestId` (`Request_Id`) and a `requestId`
+/// parameter on `AppNotificationSender` — and To-Do is its first user:
+/// `NotificationRouting.todoIdFor` opens the to-do itself. Other modules can
+/// adopt it the same way; this table still resolves only to sections.
+///
 /// ⚠️ RULE: a page key that matches nothing resolves to the module landing —
 /// today's behaviour. This router never dead-ends a tap.
 library;
 
-import 'package:grc_module/core/helper/role/modules_enum.dart';
-import 'package:grc_module/features/notification/domain/enums/knowledge_hub_module/knowledge_hub_notification_pages.dart';
-import 'package:grc_module/features/notification/domain/enums/services_module/services_notification_pages.dart';
-import 'package:grc_module/features/notification/domain/enums/settings_module/settings_notification_pages.dart';
+import 'package:knowticed_plus/core/helper/access/modules_enum.dart';
+import 'package:knowticed_plus/features/form_builder/presentation/navigation/form_builder_shortcut.dart'; // [module:form_builder]
+import 'package:knowticed_plus/features/notification/domain/enums/form_builder/form_builder_notification_pages.dart';
+import 'package:knowticed_plus/features/notification/domain/enums/grc/grc_notification_pages.dart';
+import 'package:knowticed_plus/features/notification/domain/enums/knowledge_hub/knowledge_hub_notification_pages.dart';
+import 'package:knowticed_plus/features/notification/domain/enums/services/services_notification_pages.dart';
+import 'package:knowticed_plus/features/notification/domain/enums/settings/settings_notification_pages.dart';
 
 /// Which settings section a notification belongs to.
 ///
@@ -97,7 +106,26 @@ class NotificationDeepLink {
     this.settingsSection,
     this.knowledgeHubSection,
     this.servicesSection,
+    this.formBuilderTab, // [module:form_builder]
+    this.grcActionCenter = false,
   });
+
+  /// A link built directly, not from stored strings. ADDED 22/10/2026 — a
+  /// calendar card knows its event type, so it names its section itself
+  /// (`CalendarEventTap`).
+  const NotificationDeepLink.section(
+    Modules module, {
+    int? rolesTab,
+    NotificationSettingsSection? settingsSection,
+    NotificationKnowledgeHubSection? knowledgeHubSection,
+    NotificationServicesSection? servicesSection,
+  }) : this._(
+          module,
+          rolesTab: rolesTab,
+          settingsSection: settingsSection,
+          knowledgeHubSection: knowledgeHubSection,
+          servicesSection: servicesSection,
+        );
 
   /// The drawer entry to select. Always present — a link with no module is
   /// never built; the caller resolves the module first and only then asks for
@@ -113,12 +141,20 @@ class NotificationDeepLink {
   final NotificationKnowledgeHubSection? knowledgeHubSection;
   final NotificationServicesSection? servicesSection;
 
+  /// ADDED 22/10/2026 — Form Builder home tab (a submission → Submissions).
+  final FormBuilderShortcut? formBuilderTab; // [module:form_builder]
+
+  /// ADDED 22/10/2026 — open GRC's Action Center (a task for this user).
+  final bool grcActionCenter;
+
   /// Whether this link says anything beyond "open the module".
   bool get hasSection =>
       rolesTab != null ||
       settingsSection != null ||
       knowledgeHubSection != null ||
-      servicesSection != null;
+      servicesSection != null ||
+      formBuilderTab != null || // [module:form_builder]
+      grcActionCenter;
 
   /// Function Name: [resolve]
   ///
@@ -162,6 +198,21 @@ class NotificationDeepLink {
           module,
           servicesSection: _servicesSectionFor(page),
         );
+      case Modules.formBuilder:
+        return NotificationDeepLink._(
+          module,
+          // [module:form_builder]
+          formBuilderTab: FormBuilderNotificationPage.fromKey(page) ==
+                  FormBuilderNotificationPage.resultScreen
+              ? FormBuilderShortcut.submissions
+              : null,
+          // [/module:form_builder]
+        );
+      case Modules.grc:
+        return NotificationDeepLink._(
+          module,
+          grcActionCenter: _grcTaskPages.contains(page),
+        );
       default:
         // Database and Messages land on their module for now: every one of
         // their page keys names a record (one database, one table's access
@@ -170,6 +221,21 @@ class NotificationDeepLink {
         return NotificationDeepLink._(module);
     }
   }
+
+  // ── GRC ──────────────────────────────────────────────────────────────────
+  //
+  // Pages that name work waiting for THIS user — a control to submit or
+  // score, an assignment, an approval, an audit. They land on the Action
+  // Center. Module / policy / control setup pages keep the module list.
+  static final Set<String> _grcTaskPages = <String>{
+    GrcNotificationPage.grcAssignmentControls.key,
+    GrcNotificationPage.grcControlChampionDetails.key,
+    GrcNotificationPage.grcControlOwnerDetails.key,
+    GrcNotificationPage.grcApprovals.key,
+    GrcNotificationPage.grcMyAudits.key,
+    GrcNotificationPage.grcRequests.key,
+    GrcNotificationPage.grcRequestDetails.key,
+  };
 
   // ── Roles ────────────────────────────────────────────────────────────────
   //

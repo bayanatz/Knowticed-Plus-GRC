@@ -5,10 +5,11 @@
 /// Purpose: Turns the raw demo-request document into a module-licence map.
 /// Author: Knowticed Plus team
 /// Created at: 11/8/2026
+library;
 
-import 'package:grc_module/core/constants/firebase_collections.dart';
-import 'package:grc_module/features/home/h3_app_drawer/data/data_source/remote_data_source/app_drawer_remote_data_source.dart';
-import 'package:grc_module/features/home/h3_app_drawer/domain/base_repository/app_drawer_base_repository.dart';
+import 'package:knowticed_plus/core/constants/firebase_collections.dart';
+import 'package:knowticed_plus/features/home/h3_app_drawer/data/data_source/remote_data_source/app_drawer_remote_data_source.dart';
+import 'package:knowticed_plus/features/home/h3_app_drawer/domain/base_repository/app_drawer_base_repository.dart';
 
 class AppDrawerRepository implements AppDrawerBaseRepository {
   AppDrawerRepository({AppDrawerRemoteDataSource? remoteDataSource})
@@ -36,6 +37,25 @@ class AppDrawerRepository implements AppDrawerBaseRepository {
       // An empty map means "no licence data", which the callers treat as
       // "block every non-system module" — the safe default on a read failure.
       return <String, bool>{};
+    }
+  }
+
+  @override
+  Future<List<String>?> getDrawerOrder(String email) async {
+    try {
+      return await _remoteDataSource.getDrawerOrder(email);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  @override
+  Future<bool> saveDrawerOrder(String email, List<String> order) async {
+    try {
+      await _remoteDataSource.saveDrawerOrder(email, order);
+      return true;
+    } catch (_) {
+      return false;
     }
   }
 

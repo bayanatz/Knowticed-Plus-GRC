@@ -5,23 +5,19 @@
 /// Purpose: Declares `ViewToggleButtons`.
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'package:flutter/material.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/custom/39-custom_grid_button.dart';
-import 'package:grc_module/core/custom/40-custom_table_button.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_view_mode_button.dart';
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
-import 'package:grc_module/features/roles/r1_role_management/domain/enums/roles/role_management_permission.dart';
-import 'package:grc_module/features/roles/r1_role_management/domain/enums/roles/roles_permissions_sections.dart';
-import 'package:grc_module/features/roles/r1_role_management/domain/enums/roles/user_management_permission.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
-import 'package:grc_module/core/di/app_controllers.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/core/theme/app_animations.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
 
 class ViewToggleButtons extends StatelessWidget {
   final bool isGridView;
@@ -51,7 +47,7 @@ class ViewToggleButtons extends StatelessWidget {
     final bool labelled = isTabletLandscape(context);
     final Widget icon = CustomSvgImage(
       // Role QA p.7: was the knowledge-hub book icon.
-      assetPath: 'assets/icons_assets/watermark/upload.svg',
+      assetPath: 'assets/icons_assets/main_icons_assets/ic_upload.svg',
       fit: BoxFit.scaleDown,
       width: 20.sp,
       height: 20.sp,
@@ -60,6 +56,7 @@ class ViewToggleButtons extends StatelessWidget {
     );
 
     return GestureDetector(
+      onTapDown: hapticDown(onImportTap, HapticLevel.low),
       onTap: onImportTap,
       child: Padding(
         padding: EdgeInsetsDirectional.only(start: 8.sp),
@@ -94,25 +91,15 @@ class ViewToggleButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var lightMode = Theme.of(context).brightness == Brightness.light;
-
     var isMobile = ContextExtension(context).isPhone;
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         if (onImportTap != null) _importButton(context),
-        if (showExport ||
-            AppControllers.employee.isHasPermission(
-              module: Modules.roles,
-              section: RolePermissionsSections.roleManagement,
-              permission: RoleManagement.exportRoleData,
-            )|| AppControllers.employee.isHasPermission(
-          module: Modules.roles,
-          section: RolePermissionsSections.userManagement,
-          permission: UserManagement.exportUsersData,
-        ))
-
-        GestureDetector(
+        // Owner 21/10/2026: Export shows only when the caller says so (each tab passes its own Export permission).
+        if (showExport)
+          GestureDetector(
+            onTapDown: hapticDown(onExportTap, HapticLevel.low),
             onTap: onExportTap,
             child: Padding(
               padding: isMobile
@@ -127,39 +114,40 @@ class ViewToggleButtons extends StatelessWidget {
                 ),
                 child: isTabletLandscape(context)
                     ? Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Center(
-                      child: CustomSvgImage(assetPath: 
-                        "assets/icons_assets/watermark/export.svg",
-                        fit: BoxFit.scaleDown,
-                        width: 20.sp,
-                        height: 20.sp,
-                        color: AppColors.textButton,
-                        semanticsLabel: 'Export',
-                      ),
-                    ),
-                    SizedBox(width: 8.sp),
-                    Text(
-                      S.of(context).export,
-                      style: StyleText.fontSize16Weight500.copyWith(
-                        color: AppColors.textButton
-                      ),
-                    )
-                  ],
-                )
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Center(
+                            child: CustomSvgImage(
+                              assetPath:
+                                  "assets/icons_assets/roles_assets/ic_file_export_document.svg",
+                              fit: BoxFit.scaleDown,
+                              width: 20.sp,
+                              height: 20.sp,
+                              color: AppColors.textButton,
+                              semanticsLabel: 'Export',
+                            ),
+                          ),
+                          SizedBox(width: 8.sp),
+                          Text(
+                            S.of(context).export,
+                            style: StyleText.fontSize16Weight500
+                                .copyWith(color: AppColors.textButton),
+                          )
+                        ],
+                      )
                     // Role QA p.2 / p.7: the phone used the share-arrow icon;
                     // it now uses the same export icon as the tablet button.
                     : Center(
-                  child: CustomSvgImage(assetPath:
-                    "assets/icons_assets/watermark/export.svg",
-                    fit: BoxFit.scaleDown,
-                    width: 20.sp,
-                    height: 20.sp,
-                    color: AppColors.textButton,
-                    semanticsLabel: 'Export',
-                  ),
-                ),
+                        child: CustomSvgImage(
+                          assetPath:
+                              "assets/icons_assets/roles_assets/ic_file_export_document.svg",
+                          fit: BoxFit.scaleDown,
+                          width: 20.sp,
+                          height: 20.sp,
+                          color: AppColors.textButton,
+                          semanticsLabel: 'Export',
+                        ),
+                      ),
               ),
             ),
           ),
@@ -168,31 +156,35 @@ class ViewToggleButtons extends StatelessWidget {
         // before (the core defaults are transparent + white icon).
         isMobile
             ? SizedBox()
-            : customTableButton(
+            : customViewModeButton(
+                mode: ViewMode.list,
                 function: onTableViewTap,
                 isSelected: !isGridView,
                 color: AppColors.card,
                 selectedColor: AppColors.primary,
-                svgColor: lightMode ? AppColors.blackButton : AppColors.white,
+                svgColor: AppColors.blackButton,
                 selectedSvgColor: AppColors.textButton,
               ),
         isMobile ? SizedBox() : SizedBox(width: 8.sp),
         isMobile
             ? SizedBox()
-            : customGridButton(
+            : customViewModeButton(
+                mode: ViewMode.grid,
                 function: onGridViewTap,
                 isSelected: isGridView,
-                 color: AppColors.card,
+                color: AppColors.card,
                 selectedColor: AppColors.primary,
-                svgColor:lightMode ? AppColors.blackButton : AppColors.white,
+                svgColor: AppColors.blackButton,
                 selectedSvgColor: AppColors.textButton,
               ),
       ],
     );
   }
+
   bool isTabletLandscape(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
     return size.width >= 600 && isLandscape;
   }
 }

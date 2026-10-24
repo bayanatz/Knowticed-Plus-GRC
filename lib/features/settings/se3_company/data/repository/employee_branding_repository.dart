@@ -14,13 +14,14 @@
 ///
 /// PORTED into services_app under features/settings.
 /// Source: services_app features/employees/employee_branding/data/repo/…
+library;
 
 import 'package:dartz/dartz.dart';
 
-import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/features/settings/se3_company/data/data_source/remote_data_source/employee_branding_remote_data_source.dart';
-import 'package:grc_module/features/settings/se3_company/domain/base_repository/employee_branding_base_repository.dart';
-import 'package:grc_module/features/settings/se3_company/domain/entities/employee_branding_entity.dart';
+import 'package:knowticed_plus/core/network/failure_model.dart';
+import 'package:knowticed_plus/features/settings/se3_company/data/data_source/remote_data_source/employee_branding_remote_data_source.dart';
+import 'package:knowticed_plus/features/settings/se3_company/domain/base_repository/employee_branding_base_repository.dart';
+import 'package:knowticed_plus/features/settings/se3_company/domain/entities/employee_branding_entity.dart';
 
 class EmployeeBrandingRepository implements EmployeeBrandingBaseRepository {
   EmployeeBrandingRepository({

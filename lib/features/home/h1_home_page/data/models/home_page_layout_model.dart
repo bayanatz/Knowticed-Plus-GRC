@@ -7,10 +7,11 @@
 /// Created at: 21/9/2025
 /// Updated: 11/8/2026 - Fields made final, keys made `static const`, explicit
 ///          toMap() type, copyWith added, console I/O removed.
+library;
 
-import 'package:grc_module/features/home/h1_home_page/domain/enums/app_bar_enum.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/domain/enums/app_bar_enum.dart';
 
-import 'package:grc_module/features/home/h1_home_page/data/models/home_component_model.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/home_component_model.dart';
 
 class HomePageLayoutModel {
   const HomePageLayoutModel({
@@ -76,8 +77,8 @@ class HomePageLayoutModel {
               .toList(),
       activeAppBarOptions:
           List<String>.from(map[activeAppBarOptionsKey] ?? const [])
-              .map((String e) => AppBarOptions.values
-                  .firstWhere((AppBarOptions option) => option.databaseName == e))
+              .map((String e) => AppBarOptions.values.firstWhere(
+                  (AppBarOptions option) => option.databaseName == e))
               .toList(),
       headerIcons: map[headerIconsKey] != null
           ? List<String>.from(map[headerIconsKey])

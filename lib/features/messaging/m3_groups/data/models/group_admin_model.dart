@@ -4,6 +4,7 @@
 /// Purpose: Group admin model — messaging Groups sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 

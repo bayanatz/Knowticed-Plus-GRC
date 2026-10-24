@@ -1,17 +1,14 @@
 /// Module: messaging / chat / presentation/ui/widgets/pinned_message.dart
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart'; // Keep for context extensions only
-import 'package:grc_module/features/messaging/m1_chat/domain/entity/message_entity.dart';
+// Keep for context extensions only
 
-import 'package:grc_module/core/constants/message_module/app_assets.dart';
-import 'package:grc_module/core/enums/message_module/message_types.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import '../../controller/functions_on_messages_controllers/pin_message_cubit.dart';
-import '../../controller/main_controllers/master_chat_cubit.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/functions_on_messages_controllers/pin_message_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/main_controllers/master_chat_cubit.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
 
 class PinnedMessage extends StatelessWidget {
   const PinnedMessage({super.key});
@@ -25,15 +22,14 @@ class PinnedMessage extends StatelessWidget {
         return BlocBuilder<PinMessageCubit, PinMessageState>(
           bloc: cubit.pinnedMessageCubit,
           builder: (context, pinState) {
-
             if (pinState.pinnedMessagesInRow.isEmpty) {
               return const SizedBox.shrink();
             }
 
             // Get the current pinned message to display
-            final currentMessage = cubit.pinnedMessageCubit.message;
 
             return GestureDetector(
+              onTapDown: (_) => HapticController.low(),
               onTap: () {
                 cubit.chatScrollCubit.scrollAndHighlight(
                   pinState.pinnedMessagesInRow.first,
@@ -44,7 +40,7 @@ class PinnedMessage extends StatelessWidget {
                   // Container(
                   //   height: 60.h,
                   //   padding: EdgeInsetsDirectional.only(start: 24, end: 16.w),
-                  //   color: AppColors.field,
+                  //   color: AppColors.card,
                   //   child: Row(
                   //     spacing: 10.w,
                   //     children: [
@@ -76,41 +72,8 @@ class PinnedMessage extends StatelessWidget {
     );
   }
 
-  Widget _buildMessageTypeIcon(MasterChatState state, MessageEntity? message) {
-    if (state.messages.isEmpty || message == null) {
-      return const SizedBox.shrink();
-    }
-
-    if (message.messageType == MessageTypes.audio) {
-      return SvgPicture.asset(
-        AppAssets.audio,
-        height: 20.h,
-        width: 20.h,
-        color: AppColors.secondaryBlack,
-      );
-    }
-    if (message.messageType == MessageTypes.cameraImage ||
-        message.messageType == MessageTypes.galleryImage) {
-      return SvgPicture.asset(AppAssets.galleryWhite);
-    }
-    if (message.messageType == MessageTypes.video) {
-      return SvgPicture.asset(AppAssets.video);
-    }
-    if (message.messageType == MessageTypes.doc) {
-      return SvgPicture.asset(AppAssets.document);
-    }
-    if (message.messageType == MessageTypes.text) {
-      return Text(
-        message.messageContent!,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      );
-    }
-    return const SizedBox.shrink();
-  }
-
   Widget _buildAppBarDivider() {
-    return  Divider(
+    return Divider(
       color: AppColors.lightGrey,
       thickness: 0.5,
       height: 1,

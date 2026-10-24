@@ -13,21 +13,22 @@
 ///          replaced with intl's locale-aware NumberFormat; the duplicated
 ///          `@override`, the dead `countryApp` local and the commented-out
 ///          REMOVED imports are gone.
-import 'dart:ui' as ui;
+library;
 
+import 'package:knowticed_plus/core/custom/dropdowns/custom_dropdown.dart'
+    show kFieldLabelGap;
+import 'package:knowticed_plus/core/extensions/context_extensions.dart'
+    show kpIsPhoneLayout;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:grc_module/core/helper/main_helper/extensions.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_font_size.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/custom/2-custom_textfield.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/ui/widgets/settings_header.dart';
-import 'package:grc_module/features/settings/se1_profile/data/utils/localized_digits.dart';
-import 'package:grc_module/features/settings/se1_profile/data/utils/phone_country_lookup.dart';
-import 'package:grc_module/features/settings/se1_profile/domain/entities/personal_profile.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/custom/inputs/custom_textfield.dart';
+import 'package:knowticed_plus/features/settings/presentation/ui/widgets/settings_header.dart';
+import 'package:knowticed_plus/features/settings/se1_profile/data/utils/phone_country_lookup.dart';
+import 'package:knowticed_plus/features/settings/se1_profile/domain/entities/personal_profile.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
 class ContactInformation extends StatefulWidget {
   const ContactInformation({
@@ -81,17 +82,13 @@ class _ContactInformationState extends State<ContactInformation> {
   /// Replaces `ArabicDigits(...).toArabicNumbers()`, a hand-rolled character
   /// substitution that reimplemented intl (CR-SKEL-SE1-N13).
   void _syncPhoneFields() {
-    final String localeName = Localizations.localeOf(context).toLanguageTag();
-
-    String localize(String value) => LocalizedDigits.apply(value, localeName);
-
-    final String flag =
-        PhoneCountryLookup.flagOf(widget.profile.phoneCountryCode);
-    final String dialCode =
-        PhoneCountryLookup.dialCodeOf(widget.profile.phoneCountryCode);
-
-    _countryCodeController.text = '$flag ${localize(dialCode)}';
-    _phoneController.text = localize(widget.profile.phoneNumber);
+    _countryCodeController.text =
+        PhoneCountryLookup.flagAndCode(widget.profile.phoneCountryCode);
+    // D-211 (20/10/2026): the view shows ONE field — flag + code + number.
+    final String number = widget.profile.phoneNumber;
+    _phoneController.text = number.isEmpty
+        ? ''
+        : '${PhoneCountryLookup.flagAndCode(widget.profile.phoneCountryCode)} $number';
   }
 
   @override
@@ -103,15 +100,9 @@ class _ContactInformationState extends State<ContactInformation> {
   }
 
   // ── Grid constants ────────────────────────────────────────────────────────
-  // The Name / Location rows are three equal columns separated by a 12.w gap.
-  // Everything below is measured against that same grid so the Contact fields
-  // line up with the fields above and below them.
-  double get _gridGap => 12.w;
-
-  /// Width of the flag + dial-code box in portrait. In landscape the caller
-  /// passes a full grid column instead, so the code and the number land on
-  /// columns 2 and 3 — matching the edit page.
-  double get _dialCodeWidth => 110.w;
+  // R-1: the Name / Location rows are three equal columns separated by a
+  // 16.w gap. Email + Phone use the same 16.w gap but split the row in halves.
+  double get _gridGap => 16.w;
 
   Widget _emailField(BuildContext context) {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
@@ -119,7 +110,7 @@ class _ContactInformationState extends State<ContactInformation> {
       label: S.of(context).email,
       hint: S.of(context).enterYourEmail,
       controller: _emailController,
-      textDirection: ui.TextDirection.ltr,
+      textDirection: TextDirection.ltr,
       textAlign: isArabic ? TextAlign.right : TextAlign.left,
       enabled: !widget.isReadOnly,
     );
@@ -128,9 +119,9 @@ class _ContactInformationState extends State<ContactInformation> {
   /// Label + dial code + number. Renders its own label so it matches the
   /// label CustomTextField draws (same style, same 6.sp gap) — otherwise the
   /// two columns sit at different heights.
-  Widget _phoneSection(BuildContext context, {double? dialCodeWidth}) {
+  Widget _phoneSection(BuildContext context) {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
-    final direction = isArabic ? ui.TextDirection.rtl : ui.TextDirection.ltr;
+    final direction = isArabic ? TextDirection.rtl : TextDirection.ltr;
     final align = isArabic ? TextAlign.right : TextAlign.left;
 
     return Column(
@@ -148,30 +139,15 @@ class _ContactInformationState extends State<ContactInformation> {
                 StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
           ),
         ),
-        SizedBox(height: 6.sp),
-        Row(
-          children: [
-            SizedBox(
-              width: dialCodeWidth ?? _dialCodeWidth,
-              child: CustomTextField(
-                hint: '',
-                controller: _countryCodeController,
-                textDirection: direction,
-                textAlign: align,
-                enabled: false,
-              ),
-            ),
-            SizedBox(width: _gridGap),
-            Expanded(
-              child: CustomTextField(
-                hint: S.of(context).enterThePhoneNumber,
-                controller: _phoneController,
-                textDirection: direction,
-                textAlign: align,
-                enabled: false,
-              ),
-            ),
-          ],
+        SizedBox(height: kFieldLabelGap.sp),
+        // D-211 (20/10/2026): one field — flag, code and number together
+        // (was a code box + a number box).
+        CustomTextField(
+          hint: S.of(context).enterThePhoneNumber,
+          controller: _phoneController,
+          textDirection: direction,
+          textAlign: align,
+          enabled: false,
         ),
       ],
     );
@@ -184,15 +160,14 @@ class _ContactInformationState extends State<ContactInformation> {
     // This file imports core/helper/main_helper/extensions.dart, whose
     // extension is ALSO called ContextExtension — and its `isPhone` is
     //
-    //     bool get isPhone => MediaQuery.of(this).size.width >= 600;
+    //     bool get isPhone => !kpIsPhoneLayout(this);
     //
     // i.e. true on WIDE screens, the exact inverse of
     // core/extensions/context_extensions.dart's `shortestSide < 600`. Same
     // name, same target type, opposite meaning, and that file's own comment
     // admits it. Every `isPhone` here was therefore reading FALSE on a phone.
     // Computed inline so it cannot bind to the wrong extension again.
-    final bool isPhone = MediaQuery.of(context).size.shortestSide < 600;
-    bool isTablet = MediaQuery.of(context).size.shortestSide > 600;
+    !kpIsPhoneLayout(context);
     final isPortrait =
         MediaQuery.of(context).orientation == Orientation.portrait;
 
@@ -209,66 +184,53 @@ class _ContactInformationState extends State<ContactInformation> {
       // All four sides equal: the space under the phone row now matches the
       // space at the sides, instead of being its own number.
       child: Padding(
-        padding: EdgeInsets.only(top : 15.sp,left: 15.sp,right: 15.sp,bottom: 15.sp),
+        padding: EdgeInsets.only(
+            // D-243: 24 before a new group title inside the one box.
+            top: 24.sp,
+            left: 16.sp,
+            right: 16.sp,
+            bottom: 16.sp),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SettingsHeader(
-                // 0: the Padding above already applies 15.sp on each side, and
-                // SettingsHeader adds its own 15.sp on phone — the two stacked,
-                // so the icon sat 30.sp in while Email sat at 15.sp.
+                // 0: the Padding above already applies 16.sp on each side, and
+                // SettingsHeader adds its own 16.sp on phone — the two stacked,
+                // so the icon sat 30.sp in while Email sat at 16.sp.
                 horizontalPadding: 0,
-                imagePath: 'assets/icons_assets/settings_assets/phone_call_contact.svg',
+                imagePath:
+                    'assets/icons_assets/settings_assets/ic_comms_phone_call.svg',
                 text: S.of(context).contact),
 
-            // Mobile only: 15.sp after a section title. Others keep 15.h.
-            SizedBox(height: isPhone ? 15.sp : 15.h),
+            // Mobile only: 16.sp after a section title. Others keep 16.h.
+            SizedBox(height: 12.sp),
 
             // ── Email + Phone ────────────────────────────────────────
             // Portrait: stacked, full width.
-            // Landscape: email occupies column 1 of the same 3-column
-            // grid the Name / Location rows use; the phone block spans
-            // columns 2 + 3 so its right edge lands on the grid too.
+            // Landscape (21/10/2026, Moataz): email and phone split the row
+            // equally, 16.w gap between them (R-1).
             isPortrait
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _emailField(context),
                       // Mobile only: 10.sp between fields.
-                      SizedBox(height: isPhone ? 10.sp : 16.h),
+                      SizedBox(height: 12.sp),
                       _phoneSection(context),
                     ],
                   )
-                : LayoutBuilder(
-                    builder: (context, constraints) {
-                      final columnWidth =
-                          (constraints.maxWidth - _gridGap * 2) / 3;
-                      return Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Column 1
-                          SizedBox(
-                            width: columnWidth,
-                            child: _emailField(context),
-                          ),
-                          SizedBox(width: _gridGap),
-                          // Columns 2 + 3 (plus the gap between them).
-                          // Dial code pinned to one column so the number
-                          // fills column 3 — email / code / number share
-                          // the gridlines of the Name row above.
-                          SizedBox(
-                            width: columnWidth * 2 + _gridGap,
-                            child: _phoneSection(
-                              context,
-                              dialCodeWidth: columnWidth,
-                            ),
-                          ),
-                        ],
-                      );
-                    },
+                : Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(child: _emailField(context)),
+                      SizedBox(width: _gridGap),
+                      Expanded(child: _phoneSection(context)),
+                    ],
                   ),
 
-            if (!isPhone) SizedBox(height: 16.h),
+            // 20/10/2026 (Moataz "consistency in padding"): no trailing gap —
+            // the card's own 15 bottom padding is the gap to Location, the
+            // same 15 as Status → Contact.
           ],
         ),
       ),

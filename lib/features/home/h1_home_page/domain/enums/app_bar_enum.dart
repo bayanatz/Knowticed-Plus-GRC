@@ -5,17 +5,18 @@
 /// Purpose: Enum `AppBarOptions` used by this feature.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 enum AppBarOptions {
   roles,
   userAcess,
-  UserManagement,
-  English;
+  userManagement,
+  english;
 
   String get icon {
     switch (this) {
       default:
-        return 'assets/icons_assets/roles_assets/roles_people_gear.svg';
+        return 'assets/icons_assets/main_icons_assets/ic_module_roles.svg';
     }
   }
 
@@ -25,9 +26,9 @@ enum AppBarOptions {
         return 'Roles';
       case AppBarOptions.userAcess:
         return 'User_Access';
-      case AppBarOptions.UserManagement:
+      case AppBarOptions.userManagement:
         return 'User_Management';
-      case AppBarOptions.English:
+      case AppBarOptions.english:
         return 'English';
     }
   }

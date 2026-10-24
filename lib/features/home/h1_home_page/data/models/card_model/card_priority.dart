@@ -5,6 +5,7 @@
 /// Purpose: Declares `CardPriority`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -15,8 +16,9 @@ class CardPriority {
   });
 
   CardPriority.fromJson(dynamic json) {
-    cardPriority =
-        json['Card_Priority'] != null ? json['Card_Priority'].cast<String>() : [];
+    cardPriority = json['Card_Priority'] != null
+        ? json['Card_Priority'].cast<String>()
+        : [];
     timestamp =
         json['Timestamp'] != null ? json['Timestamp'].cast<Timestamp>() : [];
   }

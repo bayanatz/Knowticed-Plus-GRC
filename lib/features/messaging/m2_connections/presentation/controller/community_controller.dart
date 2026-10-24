@@ -1,3 +1,12 @@
+/// Module: messaging/m2_connections
+///
+///*************************** FILE INFO ****************************///
+/// File Name: community_controller.dart
+/// Description: `CommunityState` state, `CommunityInitial`, `CommunityLoaded` and 3 more.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
+library;
+
 // Date: 1/9/2024
 // By:  Nada Mohammed , Youssef Ashraf
 // Last update: 1/9/2024
@@ -5,23 +14,23 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grc_module/features/messaging/m2_connections/presentation/controller/connections_controller.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/presentation/controller/connections_controller.dart';
 
-import 'package:grc_module/core/constants/message_module/app_assets.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import '../../../m1_chat/data/models/message/audio_message_model.dart';
-import '../../../m1_chat/data/models/message/message_model.dart';
-import '../../../m1_chat/data/models/message/poll_message_model.dart';
-import '../../../m1_chat/data/models/message/video_message_model.dart';
-import '../../../../../core/helper/message_module/main_helper/update_ui_ids.dart';
-import '../../../../../core/helper/message_module/interface/entity/user_category.dart';
-import '../../../m1_chat/data/models/chat/chat_model.dart';
-import '../../../m1_chat/data/models/media/doc_info_model.dart';
-import '../../../m1_chat/data/models/media/image_model.dart';
-import '../../../m1_chat/data/models/media/link_model.dart';
-import '../../../m1_chat/data/models/media/media_model.dart';
-import '../../../m3_groups/data/models/legacy_group_model.dart';
-import '../../data/models/member_model.dart';
+import 'package:knowticed_plus/features/messaging/helpers/constants/messaging_assets.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/message/audio_message_model.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/message/message_model.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/message/poll_message_model.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/message/video_message_model.dart';
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/interface/entity/user_category.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/chat/chat_model.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/media/doc_info_model.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/media/image_model.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/media/link_model.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/media/media_model.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/data/models/legacy_group_model.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/data/models/member_model.dart';
 
 // State classes
 abstract class CommunityState {}
@@ -102,11 +111,21 @@ class CommunityLoaded extends CommunityState {
       isSelectedChat: isSelectedChat ?? this.isSelectedChat,
       selectedAllTab: selectedAllTab ?? this.selectedAllTab,
       selectedTab: selectedTab ?? this.selectedTab,
-      tabletMediaView: clearTabletMediaView ? null : (tabletMediaView ?? this.tabletMediaView),
-      viewContactView: clearViewContactView ? null : (viewContactView ?? this.viewContactView),
-      showAdditionalInfo: clearShowAdditionalInfo ? null : (showAdditionalInfo ?? this.showAdditionalInfo),
-      filteredSingleChats: clearFilteredSingleChats ? null : (filteredSingleChats ?? this.filteredSingleChats),
-      filteredGroupChats: clearFilteredGroupChats ? null : (filteredGroupChats ?? this.filteredGroupChats),
+      tabletMediaView: clearTabletMediaView
+          ? null
+          : (tabletMediaView ?? this.tabletMediaView),
+      viewContactView: clearViewContactView
+          ? null
+          : (viewContactView ?? this.viewContactView),
+      showAdditionalInfo: clearShowAdditionalInfo
+          ? null
+          : (showAdditionalInfo ?? this.showAdditionalInfo),
+      filteredSingleChats: clearFilteredSingleChats
+          ? null
+          : (filteredSingleChats ?? this.filteredSingleChats),
+      filteredGroupChats: clearFilteredGroupChats
+          ? null
+          : (filteredGroupChats ?? this.filteredGroupChats),
       isDarkModeEnabled: isDarkModeEnabled ?? this.isDarkModeEnabled,
       selectedLanguage: selectedLanguage ?? this.selectedLanguage,
     );
@@ -136,8 +155,7 @@ class CommunityCubit extends Cubit<CommunityState> {
     'Software Developing',
   ];
 
-
-// Add this getter
+  // Add this getter
   bool get isTabControllerInitialized {
     try {
       final _ = tabController;
@@ -150,22 +168,19 @@ class CommunityCubit extends Cubit<CommunityState> {
   UserCategory? _selectedTab;
   UserCategory? get selectedTab => _selectedTab;
 
-  List<AllTabs> allTabs = [
-    AllTabs.directMessages,
-    AllTabs.groups,
-  ];
+  List<AllTabs> allTabs = [AllTabs.directMessages, AllTabs.groups];
 
   AllTabs _selectedAllTab = AllTabs.directMessages;
   AllTabs get selectedAllTab => _selectedAllTab;
 
   List<GroupModel> _groups = [];
-  List<ChatModel> _groupChats = [];
+  final List<ChatModel> _groupChats = [];
   List<ChatModel> _singleChats = [];
   List<Member> _currentContacts = [];
   List<ChatModel> _allChats = [];
-  Map<ChatModel, bool> _selectedChats = {};
+  final Map<ChatModel, bool> _selectedChats = {};
   bool _isSelectedChat = false;
-  List<ChatModel> _frequentlyContacted = [];
+  final List<ChatModel> _frequentlyContacted = [];
   List<ChatModel>? _filteredSingleChats;
   List<ChatModel>? _filteredGroupChats;
 
@@ -175,7 +190,6 @@ class CommunityCubit extends Cubit<CommunityState> {
   List<GroupModel> get groups => _groups;
 
   void initialize(BuildContext context) {
-
     // Fetch data first
     fetchSingleChats();
     fetchCurrentContacts();
@@ -186,8 +200,6 @@ class CommunityCubit extends Cubit<CommunityState> {
     // Safe initialization with null check
     try {
       final connectionsCubit = context.read<ConnectionsCubit>();
-      final categoriesLength = connectionsCubit.categories?.length ?? 1;
-
 
       // Note: TabController needs TickerProvider from StatefulWidget
       // You'll need to pass this from a StatefulWidget
@@ -200,8 +212,8 @@ class CommunityCubit extends Cubit<CommunityState> {
       }
 
       _emitLoadedState();
-
-    } catch (e, stackTrace) {
+    } catch (e) {
+      debugPrint('Ignored error: $e');
     }
   }
 
@@ -341,11 +353,7 @@ class CommunityCubit extends Cubit<CommunityState> {
   void addGroup(GroupModel group) {
     _groups.add(group);
     _groupChats.add(
-      ChatModel(
-        messages: [],
-        mediaModel: dummyMedia,
-        groupModel: group,
-      ),
+      ChatModel(messages: [], mediaModel: dummyMedia, groupModel: group),
     );
     _emitLoadedState();
   }
@@ -378,10 +386,12 @@ class CommunityCubit extends Cubit<CommunityState> {
       _filteredGroupChats = null;
     } else {
       _filteredGroupChats = _groupChats
-          .where((element) =>
-          element.groupModel!.groupName.trim().toLowerCase().contains(
-            searchController.text.trim().toLowerCase(),
-          ))
+          .where(
+            (element) => element.groupModel!.groupName
+                .trim()
+                .toLowerCase()
+                .contains(searchController.text.trim().toLowerCase()),
+          )
           .toList();
     }
     _emitLoadedState();
@@ -393,11 +403,11 @@ class CommunityCubit extends Cubit<CommunityState> {
     } else {
       _filteredSingleChats = _singleChats
           .where(
-            (element) =>
-            element.otherUser!.firstName.trim().toLowerCase().contains(
-              searchController.text.trim().toLowerCase(),
-            ),
-      )
+            (element) => element.otherUser!.firstName
+                .trim()
+                .toLowerCase()
+                .contains(searchController.text.trim().toLowerCase()),
+          )
           .toList();
     }
     _emitLoadedState();
@@ -409,25 +419,27 @@ class CommunityCubit extends Cubit<CommunityState> {
 
   // Helper method to emit loaded state
   void _emitLoadedState() {
-    emit(CommunityLoaded(
-      singleChats: _singleChats,
-      groupChats: _groupChats,
-      allChats: _allChats,
-      currentContacts: _currentContacts,
-      groups: _groups,
-      frequentlyContacted: _frequentlyContacted,
-      selectedChats: _selectedChats,
-      isSelectedChat: _isSelectedChat,
-      selectedAllTab: _selectedAllTab,
-      selectedTab: _selectedTab,
-      tabletMediaView: _tabletMediaView,
-      viewContactView: _viewContactView,
-      showAdditionalInfo: _showAdditionalInfo,
-      filteredSingleChats: _filteredSingleChats,
-      filteredGroupChats: _filteredGroupChats,
-      isDarkModeEnabled: _isDarkModeEnabled,
-      selectedLanguage: _selectedLanguage,
-    ));
+    emit(
+      CommunityLoaded(
+        singleChats: _singleChats,
+        groupChats: _groupChats,
+        allChats: _allChats,
+        currentContacts: _currentContacts,
+        groups: _groups,
+        frequentlyContacted: _frequentlyContacted,
+        selectedChats: _selectedChats,
+        isSelectedChat: _isSelectedChat,
+        selectedAllTab: _selectedAllTab,
+        selectedTab: _selectedTab,
+        tabletMediaView: _tabletMediaView,
+        viewContactView: _viewContactView,
+        showAdditionalInfo: _showAdditionalInfo,
+        filteredSingleChats: _filteredSingleChats,
+        filteredGroupChats: _filteredGroupChats,
+        isDarkModeEnabled: _isDarkModeEnabled,
+        selectedLanguage: _selectedLanguage,
+      ),
+    );
   }
 
   // ************** DUMMY DATA **************
@@ -435,53 +447,61 @@ class CommunityCubit extends Cubit<CommunityState> {
   void fetchCurrentContacts() {
     _currentContacts = [
       Member(
-          firstName: 'Aya Magdy',
-          lastName: 'Ahmed',
-          avatarUrl: AppAssets.user,
-          id: '1',
-          phoneNumber: '+20 1022199451'),
+        firstName: 'Aya Magdy',
+        lastName: 'Ahmed',
+        avatarUrl: AppAssets.profile,
+        id: '1',
+        phoneNumber: '+20 1022199451',
+      ),
       Member(
-          firstName: 'Sara',
-          lastName: 'Ahmed',
-          avatarUrl: AppAssets.user2,
-          id: '2',
-          phoneNumber: '+20 1022199451'),
+        firstName: 'Sara',
+        lastName: 'Ahmed',
+        avatarUrl: AppAssets.profile,
+        id: '2',
+        phoneNumber: '+20 1022199451',
+      ),
       Member(
-          firstName: 'Ahmed',
-          lastName: 'Ahmed',
-          avatarUrl: AppAssets.user3,
-          id: '3',
-          phoneNumber: '+20 1022199451'),
+        firstName: 'Ahmed',
+        lastName: 'Ahmed',
+        avatarUrl: AppAssets.profile,
+        id: '3',
+        phoneNumber: '+20 1022199451',
+      ),
       Member(
-          firstName: 'Ali',
-          lastName: 'Ahmed',
-          avatarUrl: AppAssets.user4,
-          id: '4',
-          phoneNumber: '+20 1022199451'),
+        firstName: 'Ali',
+        lastName: 'Ahmed',
+        avatarUrl: AppAssets.profile,
+        id: '4',
+        phoneNumber: '+20 1022199451',
+      ),
       Member(
-          firstName: 'Maya',
-          lastName: 'Ahmed',
-          avatarUrl: AppAssets.user5,
-          id: '5',
-          phoneNumber: '+20 1022199451'),
+        firstName: 'Maya',
+        lastName: 'Ahmed',
+        avatarUrl: AppAssets.profile,
+        id: '5',
+        phoneNumber: '+20 1022199451',
+      ),
       Member(
-          firstName: 'Sara',
-          lastName: 'Ahmed',
-          avatarUrl: AppAssets.user,
-          id: '6',
-          phoneNumber: '+20 1022199451'),
+        firstName: 'Sara',
+        lastName: 'Ahmed',
+        avatarUrl: AppAssets.profile,
+        id: '6',
+        phoneNumber: '+20 1022199451',
+      ),
       Member(
-          firstName: 'Maria',
-          lastName: 'Ahmed',
-          avatarUrl: AppAssets.profile,
-          id: '7',
-          phoneNumber: '+20 1022199451'),
+        firstName: 'Maria',
+        lastName: 'Ahmed',
+        avatarUrl: AppAssets.profile,
+        id: '7',
+        phoneNumber: '+20 1022199451',
+      ),
       Member(
-          firstName: 'Sara',
-          lastName: 'Ahmed',
-          avatarUrl: AppAssets.profile2,
-          id: '8',
-          phoneNumber: '+20 1022199451'),
+        firstName: 'Sara',
+        lastName: 'Ahmed',
+        avatarUrl: AppAssets.profile,
+        id: '8',
+        phoneNumber: '+20 1022199451',
+      ),
     ];
   }
 
@@ -491,13 +511,14 @@ class CommunityCubit extends Cubit<CommunityState> {
       GroupModel(
         id: '1',
         groupName: 'Owners Owners Owners Owners Owners Owners Owners',
-        groupImage: AppAssets.groupProfile,
+        groupImage: null,
         groupAdmin: Member(
-            firstName: 'Aya',
-            lastName: 'Ahmed',
-            avatarUrl: AppAssets.user,
-            id: '1',
-            phoneNumber: '+20 1022199451'),
+          firstName: 'Aya',
+          lastName: 'Ahmed',
+          avatarUrl: AppAssets.profile,
+          id: '1',
+          phoneNumber: '+20 1022199451',
+        ),
         groupMembers: [
           // ... members
         ],
@@ -512,7 +533,7 @@ class CommunityCubit extends Cubit<CommunityState> {
     images: [
       ImageModel(
         date: DateTime.parse('2020-08-30'),
-        img: AppAssets.profile2,
+        img: AppAssets.profile,
       ),
       // ... rest of images
     ],
@@ -526,9 +547,10 @@ class CommunityCubit extends Cubit<CommunityState> {
     ],
     links: [
       LinkModel(
-          date: DateTime.parse('2024-08-20'),
-          link:
-          "https://www.flaticon.com/free-icon/pdf_4726010?term=pdf&page=1&position=6&origin=search&related_id=4726010"),
+        date: DateTime.parse('2024-08-20'),
+        link:
+            "https://www.flaticon.com/free-icon/pdf_4726010?term=pdf&page=1&position=6&origin=search&related_id=4726010",
+      ),
       // ... rest of links
     ],
   )
@@ -567,10 +589,7 @@ class CommunityCubit extends Cubit<CommunityState> {
   }
 }
 
-enum AllTabs {
-  directMessages,
-  groups,
-}
+enum AllTabs { directMessages, groups }
 
 extension AllTabsExtension on AllTabs {
   String get getName {

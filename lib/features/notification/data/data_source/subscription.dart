@@ -6,19 +6,19 @@
 /// Author: Knowticed Plus team
 /// Created at: 2026
 /// Updated: 12/8/2026 - CR-SKEL-NOTIF-N20: renamed from `subsecration.dart`.
+library;
 
+import 'package:flutter/foundation.dart';
 import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/controller/settings_controller.dart';
+import 'package:knowticed_plus/features/settings/presentation/controller/settings_controller.dart';
 
 class FCMSubscriptionService {
-
   /// Subscribe current logged-in user to their personal notification channel
   /// ✅ UPDATED: Handle platform-specific token requirements
   static Future<void> subscribeToPersonalChannel({String? userEmail}) async {
     try {
-
       String? email;
 
       // ✅ Option 1: Use provided email
@@ -28,25 +28,24 @@ class FCMSubscriptionService {
       // ✅ Option 2: Try to get from SettingsController
       else {
         try {
-          SettingsController settingsController = Get.find<SettingsController>();
+          SettingsController settingsController =
+              Get.find<SettingsController>();
 
           if (settingsController.employee == null) {
             return;
           }
 
-          if (settingsController.employee!.email == null ||
-              settingsController.employee!.email!.isEmpty ||
-              settingsController.employee!.email!.last == null) {
+          if (settingsController.employee!.email.isEmpty) {
             return;
           }
 
-          email = settingsController.employee!.email!.last!;
+          email = settingsController.employee!.email.last;
         } catch (e) {
           return;
         }
       }
 
-      if (email == null || email.isEmpty) {
+      if (email.isEmpty) {
         return;
       }
 
@@ -97,12 +96,9 @@ class FCMSubscriptionService {
           .replaceAll('+', '_plus_')
           .replaceAll(' ', '_');
 
-
       // Subscribe to personal notification channel
       await FirebaseMessaging.instance.subscribeToTopic(topicName);
-
-
-    } catch (e, stackTrace) {
+    } catch (e) {
       // Don't throw - subscription failure shouldn't crash the app
     }
   }
@@ -110,7 +106,6 @@ class FCMSubscriptionService {
   /// Subscribe to the general "App" broadcast channel
   static Future<void> subscribeToAppChannel() async {
     try {
-
       // ✅ PLATFORM-SPECIFIC: Wait for APNS token on iOS/macOS
       if (Platform.isIOS || Platform.isMacOS) {
         await Future.delayed(const Duration(seconds: 1));
@@ -118,11 +113,13 @@ class FCMSubscriptionService {
 
       await FirebaseMessaging.instance.subscribeToTopic('App');
     } catch (e) {
+      debugPrint('Ignored error: $e');
     }
   }
 
   /// Unsubscribe from personal channel (call this on logout)
-  static Future<void> unsubscribeFromPersonalChannel({String? userEmail}) async {
+  static Future<void> unsubscribeFromPersonalChannel(
+      {String? userEmail}) async {
     try {
       String? email;
 
@@ -130,21 +127,21 @@ class FCMSubscriptionService {
         email = userEmail;
       } else {
         try {
-          SettingsController settingsController = Get.find<SettingsController>();
+          SettingsController settingsController =
+              Get.find<SettingsController>();
 
           if (settingsController.employee == null ||
-              settingsController.employee!.email == null ||
-              settingsController.employee!.email!.isEmpty) {
+              settingsController.employee!.email.isEmpty) {
             return;
           }
 
-          email = settingsController.employee!.email!.last!;
+          email = settingsController.employee!.email.last;
         } catch (e) {
           return;
         }
       }
 
-      if (email == null || email.isEmpty) {
+      if (email.isEmpty) {
         return;
       }
 
@@ -157,9 +154,8 @@ class FCMSubscriptionService {
           .replaceAll(' ', '_');
 
       await FirebaseMessaging.instance.unsubscribeFromTopic(topicName);
-
-
     } catch (e) {
+      debugPrint('Ignored error: $e');
     }
   }
 
@@ -168,6 +164,7 @@ class FCMSubscriptionService {
     try {
       await FirebaseMessaging.instance.unsubscribeFromTopic('App');
     } catch (e) {
+      debugPrint('Ignored error: $e');
     }
   }
 }

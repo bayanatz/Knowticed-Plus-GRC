@@ -15,23 +15,32 @@
 ///          TextEditingControllers went with it; none were read outside this
 ///          file. The two empty catches now record [loadErrorMessage].
 ///
+/// Updated: 9/10/2026 - Reads Employees_Info ONLY. The two extra loads from
+///          `Demo/{cid}/Insurance/{email}` and `Demo/{cid}/Emergency
+///          Contacts/{email}` are gone (Settings schema 9 Oct: those
+///          collections are duplicates being dropped — approval never updated
+///          them, so they could only go stale). The entities they filled,
+///          `healthInsuranceEntity` / `emergencyContactEntity`, had no reader
+///          left (the preview page stopped using them on 24/8/2026) and went
+///          with them, as did `loadErrorMessage`, which only those loads set.
+///
 /// REMAINING (CR-SKEL-SE4-N01): this is still a plain class rather than a
 /// Cubit. Folding it into EmployeesHealthInsuranceCubit means changing what
 /// SettingsController hands to the section widgets; staged, not done.
+library;
 
-import 'package:get/get.dart';
-import 'package:grc_module/core/helper/main_helper/phone_number.dart';
-import 'package:grc_module/features/settings/se5_emergency_contact/domain/entities/emergency_contact_entity.dart';
-import 'package:grc_module/features/settings/se4_health_insurance/domain/entities/request_health_insurance_entity.dart';
-import 'package:grc_module/features/settings/se5_emergency_contact/presentation/controller/emergency_contact_controller.dart';
-import 'package:grc_module/features/settings/se4_health_insurance/presentation/controller/employees_health_insurance_cubit.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/controller/settings_controller.dart';
+import 'package:knowticed_plus/core/helper/phone_number.dart';
+import 'package:knowticed_plus/features/settings/presentation/controller/settings_controller.dart';
 
 class SettingsHealthInsuranceController {
   SettingsController settingsController;
 
-  EmergencyContactEntity? emergencyContactEntity;
-  HealthInsuranceEntity? healthInsuranceEntity;
+  // REMOVED 9/10/2026 — `EmergencyContactEntity? emergencyContactEntity` and
+  // `HealthInsuranceEntity? healthInsuranceEntity`. They were filled from the
+  // duplicate `Emergency Contacts` / `Insurance` collections and nothing read
+  // them. Insurance and emergency contacts now come from Employees_Info alone
+  // (`Insurance_Name`, `Insurance_Policy_Number`, `First_Contact_*`,
+  // `Second_Contact_*`; current value = last element of each history list).
 
   // Phone Numbers
   PhoneNumber? insurancePhone2;
@@ -61,7 +70,7 @@ class SettingsHealthInsuranceController {
   SettingsHealthInsuranceController(this.settingsController);
 
   /// Get all data from employee model
-  getData() {
+  void getData() {
     // print('🏥 Loading Health Insurance & Emergency Contact data...');
 
     if (settingsController.employee == null) {
@@ -71,8 +80,9 @@ class SettingsHealthInsuranceController {
 
     _loadHealthInsuranceFromEmployee();
     _loadEmergencyContactFromEmployee();
-    _getHealthInsuranceData();
-    _getEmergencyContactData();
+    // REMOVED 9/10/2026 — `_getHealthInsuranceData()` and
+    // `_getEmergencyContactData()`: the reads of `Insurance/{email}` and
+    // `Emergency Contacts/{email}`. Employees_Info (above) is the only source.
   }
 
   /// Load health insurance data from employee model
@@ -86,7 +96,8 @@ class SettingsHealthInsuranceController {
 
     // Load Insurance Policy Number
     if (settingsController.employee!.insurancePolicyNumber.isNotEmpty) {
-      insurancePolice2 = settingsController.employee!.insurancePolicyNumber.last;
+      insurancePolice2 =
+          settingsController.employee!.insurancePolicyNumber.last;
     }
   }
 
@@ -101,13 +112,15 @@ class SettingsHealthInsuranceController {
 
     // Load First Contact Last Name
     if (settingsController.employee!.firstContactLastName.isNotEmpty) {
-      connectionLastName2 = settingsController.employee!.firstContactLastName.last;
+      connectionLastName2 =
+          settingsController.employee!.firstContactLastName.last;
       // print('   Contact Last Name: $connectionLastName2');
     }
 
     // Load First Contact Relationship
     if (settingsController.employee!.firstContactRelationship.isNotEmpty) {
-      connecntionRelation2 = settingsController.employee!.firstContactRelationship.last;
+      connecntionRelation2 =
+          settingsController.employee!.firstContactRelationship.last;
     }
 
     // Load First Contact Email
@@ -125,13 +138,15 @@ class SettingsHealthInsuranceController {
 
     // Load First Contact Country
     if (settingsController.employee!.firstContactCountry.isNotEmpty) {
-      connecntionCountry2 = settingsController.employee!.firstContactCountry.last;
+      connecntionCountry2 =
+          settingsController.employee!.firstContactCountry.last;
       // print('   Contact Country: $connecntionCountry2');
     }
 
     // Load First Contact Province
     if (settingsController.employee!.firstContactProvince.isNotEmpty) {
-      connecntionProvince2 = settingsController.employee!.firstContactProvince.last;
+      connecntionProvince2 =
+          settingsController.employee!.firstContactProvince.last;
       // print('   Contact Province: $connecntionProvince2');
     }
 
@@ -143,49 +158,17 @@ class SettingsHealthInsuranceController {
 
     // Load First Contact Street
     if (settingsController.employee!.firstContactStreet.isNotEmpty) {
-      connecntionAddress2 = settingsController.employee!.firstContactStreet.last;
+      connecntionAddress2 =
+          settingsController.employee!.firstContactStreet.last;
       // print('   Contact Address: $connecntionAddress2');
     }
-
   }
 
-  /// The reason the last load failed, or `null`. Both loads used to swallow
-  /// everything in an empty catch, so a failure showed the user no data and no
-  /// error — which is where the repository's fabricated-success NPE used to
-  /// disappear (CR-SKEL-SE4-N10).
-  String? loadErrorMessage;
-
-  /// Function Name: [_getHealthInsuranceData]
-  ///
-  /// Purpose: Load the insurance entity for the signed-in employee.
-  Future<void> _getHealthInsuranceData() async {
-    final String? email = settingsController.employee?.email.lastOrNull;
-    if (email == null || email.isEmpty) return;
-
-    try {
-      healthInsuranceEntity = await Get.find<EmployeesHealthInsuranceCubit>()
-          .loadEmployeeData(employeeId: email);
-      loadErrorMessage = null;
-    } catch (e) {
-      loadErrorMessage = 'Could not load health insurance: $e';
-    }
-    settingsController.notifyChanged();
-  }
-
-  /// Function Name: [_getEmergencyContactData]
-  ///
-  /// Purpose: Load the emergency-contact entity for the signed-in employee.
-  Future<void> _getEmergencyContactData() async {
-    final String? email = settingsController.employee?.email.lastOrNull;
-    if (email == null || email.isEmpty) return;
-
-    try {
-      emergencyContactEntity = await Get.find<EmergencyContactController>()
-          .getEmployeeData(employeeId: email);
-      loadErrorMessage = null;
-    } catch (e) {
-      loadErrorMessage = 'Could not load the emergency contact: $e';
-    }
-    settingsController.notifyChanged();
-  }
+  // REMOVED 9/10/2026 — `loadErrorMessage`, `_getHealthInsuranceData()` and
+  // `_getEmergencyContactData()`. They read `Demo/{cid}/Insurance/{email}`
+  // and `Demo/{cid}/Emergency Contacts/{email}` through
+  // EmployeesHealthInsuranceCubit / EmergencyContactController — duplicate
+  // copies the Settings schema (9 Oct) drops. The page renders straight from
+  // the Employees_Info history lists (HealthInsuranceSection,
+  // EmergencyContactInformationSection, EditPageRequestHealth).
 }

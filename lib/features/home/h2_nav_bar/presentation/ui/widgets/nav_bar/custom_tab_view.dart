@@ -6,24 +6,22 @@
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Extracted from the oversized model.dart as part of
 ///          breaking up the vendored persistent-nav-bar god files.
+library;
 
-import 'dart:math';
-import 'dart:ui';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:grc_module/features/home/h2_nav_bar/persistent_nav_bar.dart';
+import 'package:knowticed_plus/features/home/h2_nav_bar/persistent_nav_bar.dart';
 
 class CustomTabView extends StatefulWidget {
   const CustomTabView({
-    final Key? key,
+    super.key,
     this.builder,
     this.routeAndNavigatorSettings,
-  }) : super(key: key);
+  });
   final WidgetBuilder? builder;
   final RouteAndNavigatorSettings? routeAndNavigatorSettings;
 
   @override
-  _CustomTabViewState createState() => _CustomTabViewState();
+  State<CustomTabView> createState() => _CustomTabViewState();
 }
 
 class _CustomTabViewState extends State<CustomTabView> {

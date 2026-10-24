@@ -2,8 +2,9 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: csv_active_directory_filter_dialog.dart
-/// Purpose: Part file of `custom_csv_table_page.dart`.
-/// Author: Knowticed Plus team
+/// Description: Part file of `custom_csv_table_page.dart`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
 ///
 /// FIXED 25/8/2026 — this dialog was English-only in its placeholders. Every
@@ -83,26 +84,26 @@ class _ActiveDirectoryFilterDialogState
   void initState() {
     super.initState();
     // Restore previous selections
-    _department         = widget.initialDepartment;
-    _role               = widget.initialRole;
-    _title              = widget.initialTitle;
-    _workLocation       = widget.initialWorkLocation;
-    _supervisor         = widget.initialSupervisor;
-    _selectedGender     = widget.initialGender;
+    _department = widget.initialDepartment;
+    _role = widget.initialRole;
+    _title = widget.initialTitle;
+    _workLocation = widget.initialWorkLocation;
+    _supervisor = widget.initialSupervisor;
+    _selectedGender = widget.initialGender;
     _selectedNationality = widget.initialNationality;
-    _country            = widget.initialCountry;
+    _country = widget.initialCountry;
   }
 
   void _clearFilter() {
     setState(() {
-      _department          = null;
-      _role                = null;
-      _title               = null;
-      _workLocation        = null;
-      _supervisor          = null;
-      _selectedGender      = null;
+      _department = null;
+      _role = null;
+      _title = null;
+      _workLocation = null;
+      _supervisor = null;
+      _selectedGender = null;
       _selectedNationality = null;
-      _country             = null;
+      _country = null;
     });
     // Also clear the controller immediately so the table updates live
     AppControllers.activeDirectory.clearFilters();
@@ -110,14 +111,14 @@ class _ActiveDirectoryFilterDialogState
 
   void _applyFilter() {
     AppControllers.activeDirectory.applyFilters(
-      department:   _department,
-      role:         _role,
-      title:        _title,
+      department: _department,
+      role: _role,
+      title: _title,
       workLocation: _workLocation,
-      supervisor:   _supervisor,
-      gender:       _selectedGender,
-      nationality:  _selectedNationality,
-      country:      _country,
+      supervisor: _supervisor,
+      gender: _selectedGender,
+      nationality: _selectedNationality,
+      country: _country,
     );
     Navigator.pop(context);
   }
@@ -127,8 +128,7 @@ class _ActiveDirectoryFilterDialogState
     return Dialog(
       backgroundColor: AppColors.background,
       insetPadding: EdgeInsets.symmetric(
-        horizontal:
-        MediaQuery.of(context).size.width > 800 ? 0.2.w : 0.05.w,
+        horizontal: MediaQuery.of(context).size.width > 800 ? 0.2.w : 0.05.w,
         vertical: 0.05.h,
       ),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
@@ -139,34 +139,11 @@ class _ActiveDirectoryFilterDialogState
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // ── Title row with active-filter indicator ────────────────────
-            Row(
-              children: [
-
-                CircleAvatar(
-                  radius: 15.sp,
-                  backgroundColor: AppColors.primary,
-                  child: Container(
-                    padding: EdgeInsets.all(4.sp),
-                    child: CustomSvgImage(assetPath: 'assets/icons_assets/main_icons_assets/filter_sliders.svg',
-                      width: 16.sp,
-                      height: 16.sp,
-                      color: AppColors.textButton,
-                    ),
-                  ),
-                ),
-
-                SizedBox(width: 8.sp),
-
-                Text(
-                  S.of(context).Filter,
-                  style: StyleText.fontSize14Weight400.copyWith(
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.text,
-                  ),
-                ),
-
-              ],
-            ),
+            // 22/10/2026 — Owner: one dialog header everywhere (30 circle · 16 icon · 18/500 title) — was a hand-rolled 15./16./16. row.
+            CustomDialogHeader(
+                title: S.of(context).Filter,
+                icon:
+                    'assets/icons_assets/main_icons_assets/ic_action_filter.svg'),
             SizedBox(height: 0.02.h),
 
             // ── Dropdowns — two per row on desktop, one per row on mobile ──
@@ -183,13 +160,14 @@ class _ActiveDirectoryFilterDialogState
             Row(
               children: [
                 InkWell(
+                  onTapDown: hapticDown(_clearFilter, HapticLevel.low),
                   onTap: _clearFilter,
                   borderRadius: BorderRadius.circular(8),
                   child: Container(
                     width: 150.sp,
                     height: 38.sp,
                     decoration: BoxDecoration(
-                      color: AppColors.secondaryButton,
+                      color: AppColors.darkGrey,
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(color: AppColors.border),
                     ),
@@ -198,7 +176,7 @@ class _ActiveDirectoryFilterDialogState
                         S.of(context).reset,
                         style: StyleText.fontSize14Weight400.copyWith(
                           fontWeight: FontWeight.w500,
-                          color: AppColors.blackButton,
+                          color: AppColors.text,
                         ),
                       ),
                     ),
@@ -207,6 +185,7 @@ class _ActiveDirectoryFilterDialogState
                 Spacer(),
                 InkWell(
                   // ✅ FIX: was Navigator.pop(context) — now calls applyFilter
+                  onTapDown: hapticDown(_applyFilter, HapticLevel.medium),
                   onTap: _applyFilter,
                   borderRadius: BorderRadius.circular(8),
                   child: Container(
@@ -234,26 +213,6 @@ class _ActiveDirectoryFilterDialogState
     );
   }
 
-  /// Count of currently selected filters (for the badge)
-  int get _activeCount => [
-    _department,
-    _role,
-    _title,
-    _workLocation,
-    _supervisor,
-    _selectedGender,
-    _selectedNationality,
-    _country,
-  ].where((v) => v != null && v.isNotEmpty).length;
-
-  /// A count rendered in the reader's numerals — see `_localizedCount` in
-  /// csv_table_builders1.dart, which does the same for the tab badges.
-  String _localizedCount(BuildContext context, int value) =>
-      LocalizedDigits.apply(
-        value.toString(),
-        Localizations.localeOf(context).languageCode,
-      );
-
   /// Two dropdowns per row on desktop, one per row on mobile.
   bool get _isDesktop => MediaQuery.of(context).size.width > 800;
 
@@ -263,7 +222,6 @@ class _ActiveDirectoryFilterDialogState
       _filterRow(
         label: S.of(context).department,
         child: _buildDropdown(
-
           hint: S.of(context).selectDepartments,
           items: widget.departments,
           value: _department,
@@ -363,10 +321,12 @@ class _ActiveDirectoryFilterDialogState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: _filterItems()
-          .map((item) => Padding(
-                padding: EdgeInsets.only(bottom: 14.h),
-                child: item,
-              ))
+          .map(
+            (item) => Padding(
+              padding: EdgeInsets.only(bottom: 14.h),
+              child: item,
+            ),
+          )
           .toList(),
     );
   }
@@ -385,7 +345,7 @@ class _ActiveDirectoryFilterDialogState
       value: value,
       onChanged: onChanged,
       borderRadius: BorderRadius.circular(4.r),
-      fillColor: AppColors.field,
+      fillColor: AppColors.card,
     );
   }
 

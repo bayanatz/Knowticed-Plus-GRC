@@ -4,12 +4,13 @@
 /// Purpose: Group model — messaging Groups sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:grc_module/core/helper/main_helper/single_value_tracking_model.dart';
-import './group_admin_model.dart';
-import './group_last_message_info.dart';
-import './group_members.dart';
+import 'package:knowticed_plus/core/helper/single_value_tracking_model.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/data/models/group_admin_model.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/data/models/group_last_message_info.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/data/models/group_members.dart';
 
 class GroupModel {
   String groupId;
@@ -56,48 +57,48 @@ class GroupModel {
     this.pinnedMessageId, // ✅
   });
 
-  static const String GROUP_ID = 'Group_Id';
-  static const String CREATED_BY = 'Created_By';
-  static const String GROUP_NAME = 'Group_Name';
-  static const String GROUP_NAME_AR = 'Group_Name_Ar';
-  static const String GROUP_DESCRIPTION = 'Group_Description';
-  static const String GROUP_DESCRIPTION_AR = 'Group_Description_Ar';
-  static const String GROUP_IMAGE = 'Group_Image';
-  static const String CREATION_TIME = 'Creation_Time';
-  static const String IS_PUBLIC = 'Is_Public';
-  static const String IS_ONLY_ADMINS_CAN_SEND = 'Is_Only_Admins_Can_Send';
-  static const String IS_DELETED = 'Is_Deleted';
-  static const String DELETED_TIME = 'Deleted_Time';
-  static const String IS_UN_MUTED = 'Is_Un_Muted';
-  static const String IS_DISAPPEARING_MESSAGES = 'Is_Disappearing_Messages';
-  static const String GROUP_ADMINS = 'Group_Admins';
-  static const String GROUP_LAST_MESSAGE_INFO = 'Group_Last_Message_Info';
-  static const String CURRENT_EXISTING_MEMBERS = 'Current_Existing_Members';
-  static const String MENTIONED_MEMBERS = 'Mentioned_Members';
-  static const String PINNED_MESSAGE_ID = 'Pinned_Message_Id'; // ✅
+  static const String kGroupId = 'Group_Id';
+  static const String kCreatedBy = 'Created_By';
+  static const String kGroupName = 'Group_Name';
+  static const String kGroupNameAr = 'Group_Name_Ar';
+  static const String kGroupDescription = 'Group_Description';
+  static const String kGroupDescriptionAr = 'Group_Description_Ar';
+  static const String kGroupImage = 'Group_Image';
+  static const String kCreationTime = 'Creation_Time';
+  static const String kIsPublic = 'Is_Public';
+  static const String kIsOnlyAdminsCanSend = 'Is_Only_Admins_Can_Send';
+  static const String kIsDeleted = 'Is_Deleted';
+  static const String kDeletedTime = 'Deleted_Time';
+  static const String kIsUnMuted = 'Is_Un_Muted';
+  static const String kIsDisappearingMessages = 'Is_Disappearing_Messages';
+  static const String kGroupAdmins = 'Group_Admins';
+  static const String kGroupLastMessageInfo = 'Group_Last_Message_Info';
+  static const String kCurrentExistingMembers = 'Current_Existing_Members';
+  static const String kMentionedMembers = 'Mentioned_Members';
+  static const String kPinnedMessageId = 'Pinned_Message_Id'; // ✅
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
-      GROUP_ID: groupId,
-      CREATED_BY: createdBy,
-      CURRENT_EXISTING_MEMBERS: currentExistingMembers,
-      GROUP_NAME: groupName.toMap(),
-      if (groupNameAr != null) GROUP_NAME_AR: groupNameAr!.toMap(),
-      GROUP_DESCRIPTION: groupDescription.toMap(),
+      kGroupId: groupId,
+      kCreatedBy: createdBy,
+      kCurrentExistingMembers: currentExistingMembers,
+      kGroupName: groupName.toMap(),
+      if (groupNameAr != null) kGroupNameAr: groupNameAr!.toMap(),
+      kGroupDescription: groupDescription.toMap(),
       if (groupDescriptionAr != null)
-        GROUP_DESCRIPTION_AR: groupDescriptionAr!.toMap(),
-      GROUP_IMAGE: groupImage.toMap(),
-      CREATION_TIME: creationTime,
-      IS_PUBLIC: isPublic.toMap(),
-      IS_ONLY_ADMINS_CAN_SEND: isOnlyAdminsCanSend.toMap(),
-      IS_DELETED: isDeleted,
-      DELETED_TIME: deletedTime,
-      IS_UN_MUTED: isUnMuted.toMap(),
-      GROUP_ADMINS: groupAdmins.toMap(),
-      IS_DISAPPEARING_MESSAGES: isDisappearingMessages.toMap(),
-      GROUP_LAST_MESSAGE_INFO: groupLastMessageInfo?.toMap(),
-      MENTIONED_MEMBERS: mentionedMembers,
-      if (pinnedMessageId != null) PINNED_MESSAGE_ID: pinnedMessageId, // ✅
+        kGroupDescriptionAr: groupDescriptionAr!.toMap(),
+      kGroupImage: groupImage.toMap(),
+      kCreationTime: creationTime,
+      kIsPublic: isPublic.toMap(),
+      kIsOnlyAdminsCanSend: isOnlyAdminsCanSend.toMap(),
+      kIsDeleted: isDeleted,
+      kDeletedTime: deletedTime,
+      kIsUnMuted: isUnMuted.toMap(),
+      kGroupAdmins: groupAdmins.toMap(),
+      kIsDisappearingMessages: isDisappearingMessages.toMap(),
+      kGroupLastMessageInfo: groupLastMessageInfo?.toMap(),
+      kMentionedMembers: mentionedMembers,
+      if (pinnedMessageId != null) kPinnedMessageId: pinnedMessageId, // ✅
     };
     map.addAll(groupMembers.toMap());
     return map;
@@ -105,45 +106,45 @@ class GroupModel {
 
   factory GroupModel.fromMap(Map<String, dynamic> map) {
     return GroupModel(
-      groupId: map[GROUP_ID] as String,
-      currentExistingMembers: List<String>.from(map[CURRENT_EXISTING_MEMBERS]),
-      createdBy: map[CREATED_BY] as String,
+      groupId: map[kGroupId] as String,
+      currentExistingMembers: List<String>.from(map[kCurrentExistingMembers]),
+      createdBy: map[kCreatedBy] as String,
       groupName: SingleValueTrackingModel<String>.fromMap(
-          map[GROUP_NAME] as Map<String, dynamic>),
-      groupNameAr: map[GROUP_NAME_AR] != null
+          map[kGroupName] as Map<String, dynamic>),
+      groupNameAr: map[kGroupNameAr] != null
           ? SingleValueTrackingModel<String>.fromMap(
-          map[GROUP_NAME_AR] as Map<String, dynamic>)
+              map[kGroupNameAr] as Map<String, dynamic>)
           : null,
       groupDescription: SingleValueTrackingModel<String>.fromMap(
-          map[GROUP_DESCRIPTION] as Map<String, dynamic>),
-      groupDescriptionAr: map[GROUP_DESCRIPTION_AR] != null
+          map[kGroupDescription] as Map<String, dynamic>),
+      groupDescriptionAr: map[kGroupDescriptionAr] != null
           ? SingleValueTrackingModel<String>.fromMap(
-          map[GROUP_DESCRIPTION_AR] as Map<String, dynamic>)
+              map[kGroupDescriptionAr] as Map<String, dynamic>)
           : null,
       groupImage: SingleValueTrackingModel<String>.fromMap(
-          map[GROUP_IMAGE] as Map<String, dynamic>),
-      creationTime: map[CREATION_TIME] as Timestamp,
+          map[kGroupImage] as Map<String, dynamic>),
+      creationTime: map[kCreationTime] as Timestamp,
       isPublic: SingleValueTrackingModel<bool>.fromMap(
-          map[IS_PUBLIC] as Map<String, dynamic>),
+          map[kIsPublic] as Map<String, dynamic>),
       isOnlyAdminsCanSend: SingleValueTrackingModel<bool>.fromMap(
-          map[IS_ONLY_ADMINS_CAN_SEND] as Map<String, dynamic>),
-      isDeleted: map[IS_DELETED] as bool,
-      deletedTime: map[DELETED_TIME] as Timestamp?,
+          map[kIsOnlyAdminsCanSend] as Map<String, dynamic>),
+      isDeleted: map[kIsDeleted] as bool,
+      deletedTime: map[kDeletedTime] as Timestamp?,
       isUnMuted: SingleValueTrackingModel<bool>.fromMap(
-          map[IS_UN_MUTED] as Map<String, dynamic>),
+          map[kIsUnMuted] as Map<String, dynamic>),
       groupMembers: GroupMembers.fromMap(map),
-      groupAdmins: GroupAdminsModel.fromMap(
-          map[GROUP_ADMINS] as Map<String, dynamic>),
-      groupLastMessageInfo: map[GROUP_LAST_MESSAGE_INFO] == null
+      groupAdmins:
+          GroupAdminsModel.fromMap(map[kGroupAdmins] as Map<String, dynamic>),
+      groupLastMessageInfo: map[kGroupLastMessageInfo] == null
           ? null
           : GroupLastMessageInfo.fromMap(
-          map[GROUP_LAST_MESSAGE_INFO] as Map<String, dynamic>),
+              map[kGroupLastMessageInfo] as Map<String, dynamic>),
       isDisappearingMessages: SingleValueTrackingModel<bool>.fromMap(
-          map[IS_DISAPPEARING_MESSAGES] as Map<String, dynamic>),
-      mentionedMembers: map[MENTIONED_MEMBERS] == null
+          map[kIsDisappearingMessages] as Map<String, dynamic>),
+      mentionedMembers: map[kMentionedMembers] == null
           ? null
-          : List<String>.from(map[MENTIONED_MEMBERS]),
-      pinnedMessageId: map[PINNED_MESSAGE_ID] as String?, // ✅
+          : List<String>.from(map[kMentionedMembers]),
+      pinnedMessageId: map[kPinnedMessageId] as String?, // ✅
     );
   }
 }

@@ -1,14 +1,14 @@
 /// ******************* FILE INFO *******************
 /// File Name: support_voice_player.dart
-/// Purpose: Plays a voice note the admin sent in Knowticed Support
+/// Description: Plays a voice note the admin sent in Knowticed Support
 ///          (24/9/2026) — same player as the admin dashboard's Messages
 ///          bubble (knowticed_admin › help_voice_player.dart): play / pause,
 ///          seekable bar, remaining / total time, 1x · 1.5x · 2x. Streams the
 ///          .m4a from its URL with `audioplayers` on every platform.
 /// Module: messaging / m5_support / presentation
 /// Author: Amr Mesbah
-/// Created: 24/9/2026.
-import 'dart:ui' as ui;
+/// Created at: 24/9/2026.
+library;
 
 import 'dart:async';
 
@@ -16,9 +16,11 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/custom/feedback/circle_progress.dart';
+import 'package:knowticed_plus/core/theme/app_animations.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
 
 class SupportVoicePlayer extends StatefulWidget {
   const SupportVoicePlayer({super.key, required this.url, this.color});
@@ -51,20 +53,26 @@ class _SupportVoicePlayerState extends State<SupportVoicePlayer> {
     if (_player != null) return _player!;
     final p = AudioPlayer();
     _subs
-      ..add(p.onDurationChanged.listen((d) {
-        if (mounted) setState(() => _duration = d);
-      }))
-      ..add(p.onPositionChanged.listen((d) {
-        if (mounted) setState(() => _position = d);
-      }))
-      ..add(p.onPlayerComplete.listen((_) {
-        if (mounted) {
-          setState(() {
-            _isPlaying = false;
-            _position = Duration.zero;
-          });
-        }
-      }));
+      ..add(
+        p.onDurationChanged.listen((d) {
+          if (mounted) setState(() => _duration = d);
+        }),
+      )
+      ..add(
+        p.onPositionChanged.listen((d) {
+          if (mounted) setState(() => _position = d);
+        }),
+      )
+      ..add(
+        p.onPlayerComplete.listen((_) {
+          if (mounted) {
+            setState(() {
+              _isPlaying = false;
+              _position = Duration.zero;
+            });
+          }
+        }),
+      );
     return _player = p;
   }
 
@@ -90,7 +98,7 @@ class _SupportVoicePlayerState extends State<SupportVoicePlayer> {
       await p.resume();
       if (mounted) setState(() => _isPlaying = true);
     } catch (e) {
-      debugPrint('[SupportVoicePlayer] $e');
+      debugPrint('Ignored error: $e');
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -109,7 +117,8 @@ class _SupportVoicePlayerState extends State<SupportVoicePlayer> {
   Future<void> _seek(double ratio) async {
     if (_duration <= Duration.zero) return;
     final to = Duration(
-        milliseconds: (_duration.inMilliseconds * ratio.clamp(0.0, 1.0)).round());
+      milliseconds: (_duration.inMilliseconds * ratio.clamp(0.0, 1.0)).round(),
+    );
     setState(() => _position = to);
     await _player?.seek(to);
   }
@@ -149,6 +158,7 @@ class _SupportVoicePlayerState extends State<SupportVoicePlayer> {
         children: [
           // ── Play / pause ───────────────────────────────────────────────
           InkWell(
+            onTapDown: hapticDown(_toggle, HapticLevel.low),
             onTap: _toggle,
             customBorder: const CircleBorder(),
             child: SizedBox(
@@ -158,87 +168,98 @@ class _SupportVoicePlayerState extends State<SupportVoicePlayer> {
                   ? Padding(
                       padding: EdgeInsets.all(7.sp),
                       child: CircleProgressMaster.inline(
-                          strokeWidth: 2, color: color),
+                        strokeWidth: 2,
+                        color: color,
+                      ),
                     )
                   : Icon(
                       _isPlaying
                           ? Icons.pause_rounded
                           : Icons.play_arrow_rounded,
                       size: 26.sp,
-                      color: color),
+                      color: color,
+                    ),
             ),
           ),
           SizedBox(width: 6.sp),
           // ── Seekable progress bar ─────────────────────────────────────
           Expanded(
-            child: LayoutBuilder(builder: (context, c) {
-              final width = c.maxWidth;
-              final rtl = Directionality.of(context) == ui.TextDirection.rtl;
-              void seekAt(Offset local) {
-                if (width <= 0) return;
-                var r = local.dx / width;
-                if (rtl) r = 1 - r;
-                _seek(r);
-              }
+            child: LayoutBuilder(
+              builder: (context, c) {
+                final width = c.maxWidth;
+                final rtl = Directionality.of(context) == TextDirection.rtl;
+                void seekAt(Offset local) {
+                  if (width <= 0) return;
+                  var r = local.dx / width;
+                  if (rtl) r = 1 - r;
+                  _seek(r);
+                }
 
-              return GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTapDown: (d) => seekAt(d.localPosition),
-                onHorizontalDragUpdate: (d) => seekAt(d.localPosition),
-                child: SizedBox(
-                  height: 24.sp,
-                  child: Stack(
-                    alignment: AlignmentDirectional.centerStart,
-                    children: [
-                      Container(
-                        height: 4.sp,
-                        decoration: BoxDecoration(
-                          color: color.withOpacity(0.3),
-                          borderRadius: BorderRadius.circular(4.r),
-                        ),
-                      ),
-                      FractionallySizedBox(
-                        widthFactor: progress,
-                        child: Container(
+                return GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTapDown: (d) => seekAt(d.localPosition),
+                  onHorizontalDragUpdate: (d) => seekAt(d.localPosition),
+                  child: SizedBox(
+                    height: 24.sp,
+                    child: Stack(
+                      alignment: AlignmentDirectional.centerStart,
+                      children: [
+                        Container(
                           height: 4.sp,
                           decoration: BoxDecoration(
-                            color: color,
+                            color: color.withValues(alpha: 0.3),
                             borderRadius: BorderRadius.circular(4.r),
                           ),
                         ),
-                      ),
-                      Align(
-                        alignment: AlignmentDirectional(2 * progress - 1, 0),
-                        child: Container(
-                          width: 10.sp,
-                          height: 10.sp,
-                          decoration: BoxDecoration(
-                              color: color, shape: BoxShape.circle),
+                        FractionallySizedBox(
+                          widthFactor: progress,
+                          child: Container(
+                            height: 4.sp,
+                            decoration: BoxDecoration(
+                              color: color,
+                              borderRadius: BorderRadius.circular(4.r),
+                            ),
+                          ),
                         ),
-                      ),
-                    ],
+                        Align(
+                          alignment: AlignmentDirectional(2 * progress - 1, 0),
+                          child: Container(
+                            width: 10.sp,
+                            height: 10.sp,
+                            decoration: BoxDecoration(
+                              color: color,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              );
-            }),
+                );
+              },
+            ),
           ),
           SizedBox(width: 8.sp),
           // ── Time + speed ──────────────────────────────────────────────
-          Text(timeText,
-              style: StyleText.fontSize12Weight500.copyWith(color: color)),
+          Text(
+            timeText,
+            style: StyleText.fontSize12Weight500.copyWith(color: color),
+          ),
           SizedBox(width: 6.sp),
           InkWell(
+            onTapDown: hapticDown(_nextRate, HapticLevel.low),
             onTap: _nextRate,
             borderRadius: BorderRadius.circular(4.r),
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 5.sp, vertical: 1.sp),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.15),
+                color: color.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(4.r),
               ),
-              child: Text(_rateLabel,
-                  style:
-                      StyleText.fontSize10Weight400.copyWith(color: color)),
+              child: Text(
+                _rateLabel,
+                style: StyleText.fontSize10Weight400.copyWith(color: color),
+              ),
             ),
           ),
         ],

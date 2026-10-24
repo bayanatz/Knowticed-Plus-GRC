@@ -8,27 +8,24 @@
 /// Updated: 29/8/2026 - Role Type, Access Granted and Access Revoked now share
 ///          one label gap, one field height and one horizontal padding, so the
 ///          three read as a single row.
+library;
 
-import 'package:grc_module/core/custom/1-custom_dropdown.dart';
-import 'package:grc_module/core/custom/3-custom_dropdown_calander.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/custom/dropdowns/custom_dropdown.dart';
+import 'package:knowticed_plus/core/custom/pickers/custom_date_field.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/custom/78-expanded_content.dart';
-// REMOVED_MODULE: import 'package:grc_module/core/helper/data_grc_module/core/extensions/extensions.dart';
-// REMOVED_MODULE: import 'package:grc_module/features/external/services_mangment_module/core/custom_drop_down.dart';
-// REMOVED_MODULE: import 'package:grc_module/features/external/services_mangment_module/core/new_theme.dart';
-import 'package:grc_module/core/helper/role/constants.dart';
+import 'package:knowticed_plus/core/custom/layout/expanded_content.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/core/helper/data_grc_module/core/extensions/extensions.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/features/external/services_mangment_module/core/custom_drop_down.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/features/external/services_mangment_module/core/new_theme.dart';
 
-
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/features/roles/r2_user_management/presentation/controller/user_management_cubit.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/features/roles/r2_user_management/presentation/controller/user_management_cubit.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
 /// Geometry the three Access Details fields share.
 ///
@@ -44,13 +41,12 @@ import 'package:grc_module/generated/l10n.dart';
 /// it internally, so a pre-scaled constant would be scaled twice there.
 ///
 /// The label gap is deliberately not declared here: it is [kFieldLabelGap],
-/// shared with `CustomDropdown` and `CustomDropdownCalendar`. A gap only this
+/// shared with `CustomDropdown` and `CustomDateField`. A gap only this
 /// screen agreed on is how these drifted in the first place.
 const double _kAccessFieldHeight = 36;
-const double _kAccessFieldHPadding = 10;
 
 class AccessDetails extends StatefulWidget {
-  AccessDetails({super.key});
+  const AccessDetails({super.key});
 
   @override
   State<AccessDetails> createState() => _AccessDetailsState();
@@ -80,10 +76,20 @@ class _AccessDetailsState extends State<AccessDetails> {
     if (!isArabic) return formatted;
 
     const List<String> western = <String>[
-      '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+      '0',
+      '1',
+      '2',
+      '3',
+      '4',
+      '5',
+      '6',
+      '7',
+      '8',
+      '9',
     ];
     const List<String> eastern = <String>[
-      '٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩',
+      // D-145: Western digits in Arabic too.
+      '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
     ];
 
     String result = formatted;
@@ -96,13 +102,14 @@ class _AccessDetailsState extends State<AccessDetails> {
   @override
   Widget build(BuildContext context) {
     controller = context.read<UserManagementAccessCubit>();
-    bool isTablet = MediaQuery.of(context).size.width > 600;
+    bool isTablet = !kpIsPhoneLayout(context);
     bool isPortrait =
         MediaQuery.of(context).orientation == Orientation.portrait;
 
     return ExpandedContent(
       title: S.of(context).accessDetails,
-      content: BlocBuilder<UserManagementAccessCubit, UserManagementAccessState>(
+      content:
+          BlocBuilder<UserManagementAccessCubit, UserManagementAccessState>(
         builder: (context, state) {
           return Container(
             padding: EdgeInsets.all(15.sp),
@@ -112,42 +119,39 @@ class _AccessDetailsState extends State<AccessDetails> {
             ),
             child: (isTablet)
                 ? Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(width: 390.w, child: roleSelector()),
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(width: 390.w, child: roleSelector()),
 
-
-                // accessGranted
-                SizedBox(
-                    width: isPortrait ? 150.w : 390.w,
-                    child: accessGranted(context)),
-                // accessRevoked
-                SizedBox(
-                    width: isPortrait ? 150.w : 390.w,
-                    child: accessRevoked(context))
-              ],
-            )
+                      // accessGranted
+                      SizedBox(
+                          width: isPortrait ? 150.w : 390.w,
+                          child: accessGranted(context)),
+                      // accessRevoked
+                      SizedBox(
+                          width: isPortrait ? 150.w : 390.w,
+                          child: accessRevoked(context))
+                    ],
+                  )
                 : Column(
-              children: [
-                SizedBox(width: double.infinity, child: roleSelector()),
-                SizedBox(height: 15.sp),
-                SizedBox(
-                    width: double.infinity,
-                    child: accessGranted(context)),
-                SizedBox(height: 15.sp),
-                SizedBox(
-                    width: double.infinity,
-                    child: accessRevoked(context))
-              ],
-            ),
+                    children: [
+                      SizedBox(width: double.infinity, child: roleSelector()),
+                      SizedBox(height: 15.sp),
+                      SizedBox(
+                          width: double.infinity,
+                          child: accessGranted(context)),
+                      SizedBox(height: 15.sp),
+                      SizedBox(
+                          width: double.infinity, child: accessRevoked(context))
+                    ],
+                  ),
           );
         },
       ),
     );
   }
 
-    Widget roleSelector() {
-
+  Widget roleSelector() {
     // Build roles list filtering out 'master admin'
     //
     // ── One entry per role ────────────────────────────────────────────────
@@ -228,7 +232,7 @@ class _AccessDetailsState extends State<AccessDetails> {
       value: controller.newAccessSelectedRole,
       onChanged: (selectedRole) {
         controller.newAccessSelectedRole = selectedRole;
-        controller.emit(UserPermissionsDataLoaded());
+        controller.emitState(UserPermissionsDataLoaded());
       },
       fillColor: AppColors.background,
       itemStyle: StyleText.fontSize14Weight500.copyWith(
@@ -247,7 +251,7 @@ class _AccessDetailsState extends State<AccessDetails> {
 
   // REPLACED 29/8/2026 — both date fields were hand-rolled: an `InkWell` around
   // a `Container`, its own label `Text`, its own calendar SVG, and a direct call
-  // to `DatePicker().showDatePicker`. `CustomDropdownCalendar` is the shared
+  // to `DatePicker().showDatePicker`. `CustomDateField` is the shared
   // widget for exactly this, and it is what the Role Type field beside them is
   // already a sibling of, so the three now share one label gap, one trigger
   // height and one inset by construction rather than by three call sites
@@ -290,15 +294,15 @@ class _AccessDetailsState extends State<AccessDetails> {
     required DateTime? value,
     required void Function(DateTime) onPicked,
   }) {
-    return CustomDropdownCalendar(
+    return CustomDateField(
       label: label,
-      labelStyle:
-          StyleText.fontSize14Weight400.copyWith(color: AppColors.text),
+      labelStyle: StyleText.fontSize14Weight400.copyWith(color: AppColors.text),
       hint: hint,
       value: value,
       firstDate: DateTime.now(),
       dateFormatter: (DateTime date) => _formatAccessDate(context, date),
-      valueStyle: StyleText.fontSize12Weight400.copyWith(color: AppColors.secondaryBlack)
+      valueStyle: StyleText.fontSize12Weight400
+          .copyWith(color: AppColors.secondaryBlack)
           .copyWith(color: AppColors.text),
       fillColor: AppColors.background,
       borderRadius: BorderRadius.circular(4.r),
@@ -308,7 +312,7 @@ class _AccessDetailsState extends State<AccessDetails> {
       onChanged: (DateTime? date) {
         if (date == null) return;
         onPicked(date);
-        controller.emit(UserPermissionsDataLoaded());
+        controller.emitState(UserPermissionsDataLoaded());
       },
     );
   }

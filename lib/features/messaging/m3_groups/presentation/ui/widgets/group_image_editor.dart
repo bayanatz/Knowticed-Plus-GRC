@@ -15,14 +15,15 @@
 ///
 /// So it now just wires the group's image state to [CustomImagePicker] and
 /// keeps its own job, which is telling GroupsCubit about the new file.
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:grc_module/core/constants/message_module/app_assets.dart';
-import 'package:grc_module/core/custom/46-custom_image_picker.dart';
-import '../../controller/groups_controller.dart';
+import 'package:knowticed_plus/features/messaging/helpers/constants/messaging_assets.dart';
+import 'package:knowticed_plus/core/custom/pickers/custom_image_picker.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/presentation/controller/groups_controller.dart';
 
 class GroupImageEditor extends StatefulWidget {
   const GroupImageEditor({super.key});
@@ -39,9 +40,8 @@ class _GroupImageEditorState extends State<GroupImageEditor> {
     // The stored photo only applies when EDITING a group. While creating one
     // there is nothing on the server yet, so the picker falls through to its
     // placeholder.
-    final String? storedImage = controller.isCreateGroup
-        ? null
-        : controller.selectedGroup?.groupImage;
+    final String? storedImage =
+        controller.isCreateGroup ? null : controller.selectedGroup?.groupImage;
 
     return CustomImagePicker(
       // A freshly picked file wins over the stored URL — CustomImagePicker

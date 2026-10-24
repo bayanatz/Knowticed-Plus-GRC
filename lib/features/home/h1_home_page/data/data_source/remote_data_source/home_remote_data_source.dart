@@ -6,12 +6,13 @@
 /// Author: Amr Mesbah
 /// Created at: 21/9/2025
 /// Updated: 11/8/2026 - Explicit return types.
+library;
 
 import 'package:dartz/dartz.dart';
-import 'package:grc_module/core/network/api_constants.dart';
-import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/core/services/firebase/repository/firebase_repository.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/home_page_layout_model.dart';
+import 'package:knowticed_plus/core/network/api_constants.dart';
+import 'package:knowticed_plus/core/network/failure_model.dart';
+import 'package:knowticed_plus/core/app_services/firebase/repository/firebase_repository.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/home_page_layout_model.dart';
 
 class HomeRemoteDataSource {
   /// Function Name: [updateHomeComponents]

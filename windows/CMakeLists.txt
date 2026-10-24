@@ -1,10 +1,10 @@
 # Project-level configuration.
 cmake_minimum_required(VERSION 3.14)
-project(grc_module LANGUAGES CXX)
+project(knowticed_plus LANGUAGES CXX)
 
 # The name of the executable created for the application. Change this to change
 # the on-disk name of your application.
-set(BINARY_NAME "grc_module")
+set(BINARY_NAME "knowticed_plus")
 
 # Explicitly opt in to modern CMake behaviors to avoid warnings with recent
 # versions of CMake.
@@ -44,6 +44,19 @@ function(APPLY_STANDARD_SETTINGS TARGET)
   target_compile_definitions(${TARGET} PRIVATE "_HAS_EXCEPTIONS=0")
   target_compile_definitions(${TARGET} PRIVATE "$<$<CONFIG:Debug>:_DEBUG>")
 endfunction()
+
+# --- pdfium conflict fix (pdfx + printing) -----------------------------------
+# Both `pdfx` and `printing` call download_project(PROJ pdfium ...), which resolves
+# to the SAME ${CMAKE_BINARY_DIR}/pdfium-src + pdfium-download directories, and both
+# declare PDFIUM_VERSION as a plain CACHE variable. Whichever plugin configures first
+# (pdfx, alphabetically) wins and pins a pdfium build that is no longer published on
+# bblanchon/pdfium-binaries, so the ExternalProject download step dies with
+# "Build step for pdfium failed: 1".
+#
+# Forcing the cache entry here - before flutter/generated_plugins.cmake runs - makes
+# both plugins agree on one release that still exists.
+set(PDFIUM_VERSION "5200" CACHE STRING "Version of pdfium used" FORCE)
+# -----------------------------------------------------------------------------
 
 # Flutter library and tool build rules.
 set(FLUTTER_MANAGED_DIR "${CMAKE_CURRENT_SOURCE_DIR}/flutter")

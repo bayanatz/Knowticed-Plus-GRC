@@ -7,9 +7,10 @@
 /// Created at: 20/9/2025
 /// Updated: 11/8/2026 - HeaderIconItem now comes from data/models/ instead of
 ///          a presentation widget file.
+library;
 
-import 'package:grc_module/features/home/h1_home_page/data/models/header_icon_item.dart';
-import 'package:grc_module/features/home/h1_home_page/presentation/controller/home_cubit.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/header_icon_item.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/presentation/controller/home_cubit.dart';
 
 abstract class HomeState {}
 
@@ -30,6 +31,7 @@ class HomeError extends HomeState {
   final String message;
   HomeError(this.message);
 }
+
 class HomePreviewModeChanged extends HomeState {
   final PreviewMode mode;
   HomePreviewModeChanged(this.mode);

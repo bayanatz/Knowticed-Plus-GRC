@@ -2,10 +2,10 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: feedback_more_options_panel.dart
-/// Purpose: The collapsible "More Options" block under each box on the
+/// Description: The collapsible "More Options" block under each box on the
 ///          comments-and-feedback form — seven triage dropdowns and the
 ///          "Steps to reproduce" field.
-/// Author: Knowticed Plus team
+/// Author: Amr Mesbah
 /// Created at: 2/9/2026
 ///
 /// Figma: MESBAH 4717:8596. A slate header bar with a chevron, and under it a
@@ -25,18 +25,21 @@
 /// shut and empty, and that is three pieces of per-kind state — putting any of
 /// it in here would mean this widget losing it every time the parent rebuilds
 /// the list of boxes.
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:grc_module/core/custom/1-custom_dropdown.dart';
-import 'package:grc_module/core/custom/2-custom_textfield.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/features/settings/se7_app_info/domain/entities/app_feedback.dart';
-import 'package:grc_module/features/settings/se7_app_info/presentation/ui/widgets/feedback_display.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/core/custom/dropdowns/custom_dropdown.dart';
+import 'package:knowticed_plus/core/custom/inputs/custom_textfield.dart';
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/features/settings/se7_app_info/domain/entities/app_feedback.dart';
+import 'package:knowticed_plus/features/settings/se7_app_info/presentation/ui/widgets/feedback_display.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
+import 'package:knowticed_plus/core/theme/app_animations.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
 
 class FeedbackMoreOptionsPanel extends StatelessWidget {
   const FeedbackMoreOptionsPanel({
@@ -88,10 +91,7 @@ class FeedbackMoreOptionsPanel extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         _header(context),
-        if (isExpanded) ...<Widget>[
-          SizedBox(height: 12.h),
-          _body(context),
-        ],
+        if (isExpanded) ...<Widget>[SizedBox(height: 12.h), _body(context)],
       ],
     );
   }
@@ -103,6 +103,7 @@ class FeedbackMoreOptionsPanel extends StatelessWidget {
   /// label and chevron on it can be a flat white rather than a theme lookup.
   Widget _header(BuildContext context) {
     return InkWell(
+      onTapDown: hapticDown(onToggle, HapticLevel.low),
       onTap: onToggle,
       borderRadius: BorderRadius.circular(4.r),
       child: Container(
@@ -110,7 +111,9 @@ class FeedbackMoreOptionsPanel extends StatelessWidget {
         height: 30.h,
         padding: EdgeInsets.symmetric(horizontal: 10.w),
         decoration: BoxDecoration(
-          color: AppColors.darkGrey,
+          // 23/10/2026 (Moataz): the same bar colour as the Org Chart
+          // sections (grey 700 with white text and chevron).
+          color: Colors.grey[700],
           borderRadius: BorderRadius.circular(4.r),
         ),
         child: Row(
@@ -118,8 +121,9 @@ class FeedbackMoreOptionsPanel extends StatelessWidget {
             Expanded(
               child: Text(
                 S.of(context).moreOptions,
-                style: StyleText.fontSize14Weight500
-                    .copyWith(color: Colors.white),
+                style: StyleText.fontSize14Weight500.copyWith(
+                  color: Colors.white,
+                ),
               ),
             ),
             AnimatedRotation(
@@ -129,7 +133,7 @@ class FeedbackMoreOptionsPanel extends StatelessWidget {
               duration: const Duration(milliseconds: 180),
               child: CustomSvgImage(
                 assetPath:
-                    'assets/icons_assets/main_icons_assets/chevron_down.svg',
+                    'assets/icons_assets/main_icons_assets/ic_nav_chevron_down.svg',
                 width: 18.sp,
                 height: 18.sp,
                 color: Colors.white,
@@ -148,23 +152,14 @@ class FeedbackMoreOptionsPanel extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        _pair(
-          _moduleField(context),
-          _screenSectionField(context),
-        ),
-        SizedBox(height: 15.sp),
-        _pair(
-          _designIssueField(context),
-          _logicIssueField(context),
-        ),
-        SizedBox(height: 15.sp),
-        _pair(
-          _deviceField(context),
-          _softwareTypeField(context),
-        ),
-        SizedBox(height: 15.sp),
+        _pair(_moduleField(context), _screenSectionField(context)),
+        SizedBox(height: 16.sp),
+        _pair(_designIssueField(context), _logicIssueField(context)),
+        SizedBox(height: 16.sp),
+        _pair(_deviceField(context), _softwareTypeField(context)),
+        SizedBox(height: 16.sp),
         _pair(_frequencyField(context), null),
-        SizedBox(height: 15.sp),
+        SizedBox(height: 16.sp),
         _stepsField(context),
       ],
     );
@@ -181,48 +176,18 @@ class FeedbackMoreOptionsPanel extends StatelessWidget {
   /// inside the settings pane, whose width changes with the split, and a
   /// hardcoded 265 from the design would clip the moment the pane narrowed.
   Widget _pair(Widget left, Widget? right) {
-    if (isMobile) {
-      if (right == null) return left;
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          left,
-          SizedBox(height: 12.h),
-          right,
-        ],
-      );
-    }
-
-    return Row(
+    // Moataz 23/10/2026: one field per row on every device.
+    if (right == null) return left;
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Expanded(child: left),
-        SizedBox(width: 15.w),
-        // A SizedBox.shrink() inside an Expanded, not a missing child: the
-        // left column must stay half-width on the Frequency row.
-        Expanded(child: right ?? const SizedBox.shrink()),
+        left,
+        SizedBox(height: 12.h),
+        right,
       ],
     );
   }
 
-  /// Every dropdown on this panel, built the same way.
-  ///
-  /// The 36 height, the [AppColors.background] fill and the label/hint type
-  /// scale all match [FeedbackPriorityDropdown] directly above the panel —
-  /// they are the same control in the same form and must not disagree.
-  ///
-  /// `height: 36` is RAW, not `.sp`. [CustomDropdown.height] documents itself
-  /// as being interpreted in `.sp` and scaled internally; pre-scaling here
-  /// would scale it twice.
-  ///
-  /// TAP-TO-CLEAR, added 8/9/2026. Choosing the item that is already selected
-  /// clears the field instead of re-selecting it. Every field in this panel is
-  /// optional, and until now there was no way to take an answer back short of
-  /// unticking the whole box and losing everything else with it.
-  ///
-  /// [CustomDropdown.onChanged] is `ValueChanged<T>` and can only ever report
-  /// a CHOSEN item, so the comparison has to happen here on the way out — and
-  /// [onSelected] is `ValueChanged<T?>` for the same reason.
   Widget _dropdown<T>({
     required String label,
     required String hint,
@@ -248,11 +213,15 @@ class FeedbackMoreOptionsPanel extends StatelessWidget {
       // Dropping it falls back to CustomDropdown's own 12.sp/10.sp, which is
       // exactly what FeedbackPriorityDropdown above uses at the same 36 height,
       // so the value now centres in the box and the two controls match.
+      // 23/10/2026 (Moataz): the hint and value are 14, like the text
+      // fields in this form (the dropdown default is 12).
+      enforceTypeScale: false,
+      hintStyle: StyleText.fontSize14Weight400,
+      valueStyle: StyleText.fontSize14Weight400,
       fillColor: AppColors.background,
-      height: 36,
-      // Matches FeedbackPriorityDropdown directly above the panel — see the
-      // note there. These are the same control in the same form.
-      labelGap: 3,
+      // Owner 21/10/2026: 38 and the shared label gap (8), the same as the
+      // Priority box and the Attach Document button — one form, one size.
+      height: 38,
       onChanged: (T chosen) => onSelected(chosen == value ? null : chosen),
     );
   }

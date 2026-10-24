@@ -7,6 +7,7 @@
 /// Created at: 20/11/2024
 /// Updated: 11/8/2026 - CR-SKEL-SE4-N04: the load path no longer falls through to a fabricated
 ///          `Right` on failure, and the mapping moved to HealthInsuranceMapper.
+library;
 
 // PORTED into services_app under features/settings.
 // Source: services_app features/employees/data/repository/health_insurance_repository.dart
@@ -19,15 +20,14 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
-import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/features/settings/main_controller/data/repository/employees_repository.dart';
-import 'package:grc_module/core/helper/main_helper/single_value_model.dart';
-import 'package:grc_module/features/settings/se4_health_insurance/domain/entities/request_health_insurance_entity.dart';
-import 'package:grc_module/features/settings/se4_health_insurance/data/data_source/remote_data_source/insurance_remote_data_source.dart';
-import 'package:grc_module/features/settings/se4_health_insurance/data/models/health_insurance_mapper.dart';
-import 'package:grc_module/features/settings/se4_health_insurance/data/models/health_insurance_model.dart';
-import 'package:grc_module/features/roles/r4_active_directory/data/models/employees_model/mobile_phone_model.dart';
-
+import 'package:knowticed_plus/core/network/failure_model.dart';
+import 'package:knowticed_plus/features/settings/data/repository/employees_repository.dart';
+import 'package:knowticed_plus/core/helper/single_value_model.dart';
+import 'package:knowticed_plus/features/settings/se4_health_insurance/domain/entities/request_health_insurance_entity.dart';
+import 'package:knowticed_plus/features/settings/se4_health_insurance/data/data_source/remote_data_source/insurance_remote_data_source.dart';
+import 'package:knowticed_plus/features/settings/se4_health_insurance/data/models/health_insurance_mapper.dart';
+import 'package:knowticed_plus/features/settings/se4_health_insurance/data/models/health_insurance_model.dart';
+import 'package:knowticed_plus/features/roles/r4_active_directory/data/models/employees_model/mobile_phone_model.dart';
 
 class HealthInsuranceRepository {
   final InsuranceRemoteDataSource _remoteDataSource =
@@ -37,7 +37,7 @@ class HealthInsuranceRepository {
   /// Purpose: starting point function to add employee insurance data
   /// Parameters:
   ///            insuranceData: RequestInsuranceEntity - new insurance data to be added
-  /// return: Future<Either<Failure, dynamic> - failure message or success
+  /// return: Future`<Either<Failure, dynamic>` - failure message or success
   Future<Either<Failure, dynamic>> addEmployeeInsuranceData({
     required HealthInsuranceEntity insuranceData,
   }) async {
@@ -51,7 +51,7 @@ class HealthInsuranceRepository {
   /// Purpose: function to check if employee exist or send error that no employee in the system
   /// Parameters:
   ///            employeeId: String - employee id to check if exist
-  /// return: Future<Either<Failure, dynamic> - failure message or true if exist
+  /// return: Future`<Either<Failure, dynamic>` - failure message or true if exist
   Future<Either<Failure, dynamic>> _checkIfEmployeeExist(
       {required String employeeId}) async {
     Either<Failure, dynamic> isEmployeeExist =
@@ -67,7 +67,7 @@ class HealthInsuranceRepository {
   /// Purpose: function controls algorithm flow to add employee insurance data
   /// Parameters:
   ///          RequestInsuranceEntity insuranceData - new insurance data to be added
-  /// return: Future<Either<Failure, dynamic> - failure message or success
+  /// return: Future`<Either<Failure, dynamic>` - failure message or success
   Future<Either<Failure, dynamic>> _addEmployeeInsuranceData(
       {required HealthInsuranceEntity insuranceData}) async {
     Either<Failure, dynamic> result =
@@ -85,7 +85,7 @@ class HealthInsuranceRepository {
   /// Purpose: function to get employee insurance model from database or create new one if not exist
   /// Parameters:
   ///            employeeId: String - employee id to get insurance data
-  /// return: Future<Either<Failure, dynamic> - failure message or insurance model
+  /// return: Future`<Either<Failure, dynamic>` - failure message or insurance model
   Future<Either<Failure, dynamic>> _getEmployeeInsuranceModel(
       {required String employeeId}) async {
     Either<Failure, dynamic> result = await _remoteDataSource
@@ -107,7 +107,7 @@ class HealthInsuranceRepository {
     return HealthInsuranceModel(
       employeeId: employeeId,
       insuranceProviderContact: MobilePhone(),
-      insurancePolicyNumber: SingleValueModel(values:[] , timestamps: []),
+      insurancePolicyNumber: SingleValueModel(values: [], timestamps: []),
       insuranceProviderName:
           SingleValueModel<String>(values: [], timestamps: []),
       postalCode: SingleValueModel<String>(values: [], timestamps: []),
@@ -171,7 +171,7 @@ class HealthInsuranceRepository {
         originalInsuranceModel.insuranceProviderContact.countryApp = [];
         originalInsuranceModel.insuranceProviderContact.timestamps = [];
       }
-      if(newInsuranceData.providerCountryCode != null){
+      if (newInsuranceData.providerCountryCode != null) {
         originalInsuranceModel.insuranceProviderContact.countryCode!
             .add(newInsuranceData.providerCountryCode!);
       } else {

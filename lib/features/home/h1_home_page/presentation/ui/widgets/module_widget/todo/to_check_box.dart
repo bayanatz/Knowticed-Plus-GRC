@@ -2,220 +2,164 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: to_check_box.dart
-/// Purpose: Declares `MyTodoCheckBox`.
+/// Purpose: Declares `MyTodoCheckBox` — home To-Do card 2: the first three
+///          open to-dos, each with a done checkbox and a "2/5" item badge.
 /// Author: Knowticed Plus team
-/// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+/// Updated: 7/10/2026 - Reads the new To-Do module through `TodoHomeCubit`;
+///          the checkbox marks done via the repository + System Logs.
+///          Badge radius 8; white text on the green "complete" badge.
+/// Updated: 7/10/2026 - Owner round 3: tapping a row's TEXT opens that
+///          to-do's details (module + `TodoDetailsPage` on top of the list);
+///          the checkbox still toggles. Grid width; its height is the
+///          reference for all three To-Do cards.
+/// Updated: 7/10/2026 - Owner round 4: titles are ONE line with an
+///          ellipsis; the "0/3" progress badge radius is 2.
+///
+/// Figma: To-Do widget node 130:8096, middle card. "Open" = the list's All
+/// tab minus done, in the list's default (newest first) order.
+library;
 
-import 'package:get/get.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
-import 'package:grc_module/core/custom/23-custom_check_box.dart';
-import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/standard_container.dart';
 
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-// REMOVED_MODULE: import 'package:grc_module/features/todo_new_module/external/tasks_module/category/data/models/task_model_updates_with_field_history.dart';
-// REMOVED_MODULE: import 'package:grc_module/features/todo_new_module/external/tasks_module/category/domain/services/task_services.dart';
-// REMOVED_MODULE: import 'package:grc_module/features/todo_new_module/external/tasks_module/core/enums/task_status_enum.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/home_component_model.dart';
-import 'package:grc_module/features/home/main_controller/helper/todo_new_module/tasks_stub.dart';
-import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
+import 'package:knowticed_plus/core/helper/format_title.dart';
+import 'package:knowticed_plus/core/custom/inputs/custom_check_box.dart';
+import 'package:knowticed_plus/core/helper/localized_number.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/home_component_model.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/presentation/controller/todo_home_cubit.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/widgets/module_widget/todo/todo_home_card_parts.dart';
+import 'package:knowticed_plus/features/todo/domain/entities/todo_entity.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
 class MyTodoCheckBox extends StatelessWidget {
-  MyTodoCheckBox({required this.model, super.key});
+  const MyTodoCheckBox({required this.model, super.key});
+
   final HomeComponentModel model;
-  final TaskFirebaseService _taskService = TaskFirebaseService();
+
+  /// Rows the Figma card draws.
+  // D-227 (Moataz 20/10/2026): 4 tasks, not 3.
+  static const int _kRows = 4;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 265.sp,
-      child: StandardContainer(
-        child: StreamBuilder<List<TaskModel>>(
-          stream: _taskService.getAllTasks(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return _buildLoadingState();
-            }
-
-            if (snapshot.hasError) {
-              return _buildErrorState();
-            }
-
-            final allTasks = snapshot.data ?? [];
-
-            // Get active (non-deleted, non-done) tasks, limit to 3
-            final activeTasks = allTasks
-                .where((task) =>
-            task.taskStatus.current != TaskStatus.deleted &&
-                task.taskStatus.current != TaskStatus.done)
-                .take(3)
-                .toList();
-
-            return Column(
-              spacing: 8.sp,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      S.of(context).homeScreenToDoListTitle,
-                      style: StyleText.fontSize14Weight500
-                          .copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    SvgPicture.asset(
-                      'assets/icons_assets/home_assets/todo_checklist_clipboard.svg',
-                      width: 20,
-                      height: 20,
-                      color: AppColors.primary,
-                    )
-                  ],
-                ),
-                const SizedBox.shrink(),
-                if (activeTasks.isEmpty)
-                  Center(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 20.h),
-                      child: Text(
-                        S.of(context).noActiveTasks,
-                        style: StyleText.fontSize12Weight500.copyWith(
-                          color: AppColors.secondaryText,
-                        ),
-                      ),
-                    ),
-                  )
-                else
-                  ...activeTasks.map((task) => _buildTaskItem(task)),
-              ],
-            );
-          },
-        ),
-      ),
+    return TodoHomeCardScope(
+      width: TodoHomeCardMetrics.wideWidth,
+      builder: (BuildContext context, TodoHomeState state) {
+        // D-242: tasks shown, filter and order come from the copy's settings.
+        final List<TodoEntity> open =
+            state.tasksFor(model.widgetSettings, _kRows);
+        if (open.isEmpty) {
+          return Center(
+            child: Text(
+              S.of(context).todoHomeNoOpen,
+              textAlign: TextAlign.center,
+              style: StyleText.fontSize12Weight500.copyWith(
+                color: AppColors.secondaryText,
+              ),
+            ),
+          );
+        }
+        // Three single-line rows fit the card; the scroll view only guards
+        // against large accessibility text scales.
+        return SingleChildScrollView(
+          child: Column(
+            spacing: 8.sp,
+            children: <Widget>[
+              for (final TodoEntity todo in open)
+                _TodoRow(todo: todo, canEdit: state.canEdit),
+            ],
+          ),
+        );
+      },
     );
   }
+}
 
-  Widget _buildTaskItem(TaskModel task) {
-    // Calculate completed items
-    final items = task.currentItems ?? [];
-    final completedCount = items.where((item) => item.itemStatus == TaskStatus.done).length;
-    final totalCount = items.length;
-    final isAllCompleted = totalCount > 0 && completedCount == totalCount;
+/// Checkbox (toggles done) · name (opens details) · "done/total" badge.
+class _TodoRow extends StatelessWidget {
+  const _TodoRow({required this.todo, required this.canEdit});
 
-    return Padding(
-      padding: EdgeInsets.only(bottom: 8.h),
-      child: Row(
-        children: [
-          GestureDetector(
-            onTap: () {
-              _taskService.updateTaskStatusUi(task);
-            },
-            child: CustomCheckBox(
-              isSelected: task.taskStatus.current == TaskStatus.done,
-            ),
+  final TodoEntity todo;
+  final bool canEdit;
+
+  @override
+  Widget build(BuildContext context) {
+    final int total = todo.items.length;
+    return Row(
+      spacing: 8.sp,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: canEdit
+              ? () {
+                  HapticController.low();
+                  context.read<TodoHomeCubit>().toggleDone(todo);
+                }
+              : null,
+          child: Opacity(
+            opacity: canEdit ? 1 : 0.4,
+            child: CustomCheckBox(isSelected: todo.isDone, size: 18.sp),
           ),
-          SizedBox(width: 8.w),
-          Expanded(
+        ),
+        Expanded(
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTapDown: (_) => HapticController.low(),
+            onTap: () => openTodoModule(context, todoId: todo.id),
             child: Text(
-              FormatHelper.capitalize(task.name.current ?? S.current.untitledTask),
+              FormatHelper.capitalize(todo.name),
               style: StyleText.fontSize12Weight500.copyWith(
                 color: AppColors.text,
-                decoration: task.taskStatus.current == TaskStatus.done
-                    ? TextDecoration.lineThrough
-                    : null,
+                height: TodoHomeCardMetrics.lineHeight,
+                decoration: todo.isDone ? TextDecoration.lineThrough : null,
               ),
+              // Owner (round 4): one line, ellipsis when it doesn't fit.
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          SizedBox(width: 8.w),
-          if (totalCount > 0)
-            Container(
-              width: 40.w,
-              height: 20.h,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4.r),
-                color: isAllCompleted ? AppColors.green : AppColors.primary,
-              ),
-              child: Center(
-                child: Text(
-                  "$completedCount/$totalCount",
-                  style: StyleText.fontSize10Weight500.copyWith(
-                    color: AppColors.textButton,
-                  ),
-                ),
-              ),
-            ),
-        ],
+        ),
+        if (total > 0)
+          _ProgressBadge(done: todo.completedItemsCount, total: total),
+      ],
+    );
+  }
+}
+
+/// Yellow "2/5" pill; green once every item is ticked.
+class _ProgressBadge extends StatelessWidget {
+  const _ProgressBadge({required this.done, required this.total});
+
+  final int done;
+  final int total;
+
+  @override
+  Widget build(BuildContext context) {
+    final bool complete = done == total;
+    return Container(
+      padding: EdgeInsetsDirectional.symmetric(
+        horizontal: 8.sp,
+        vertical: 2.sp,
       ),
-    );
-  }
-
-  Widget _buildLoadingState() {
-    return Column(
-      spacing: 8.sp,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              S.current.homeScreenToDoListTitle,
-              style: StyleText.fontSize14Weight500
-                  .copyWith(fontWeight: FontWeight.bold),
-            ),
-            SvgPicture.asset(
-              'assets/icons_assets/home_assets/todo_checklist_clipboard.svg',
-              width: 20,
-              height: 20,
-              color: AppColors.primary,
-            )
-          ],
+      decoration: BoxDecoration(
+        // Radius 2 — owner round 4 override for this progress badge.
+        borderRadius: BorderRadiusDirectional.circular(2.r),
+        color: complete ? AppColors.green : AppColors.primary,
+      ),
+      child: Text(
+        '${LocalizedNumber.of(context, done)}/${LocalizedNumber.of(context, total)}',
+        // `textButton` is computed against the YELLOW primary (→ near-black),
+        // which is unreadable on the dark green fill in both themes; the
+        // complete badge uses white instead.
+        style: StyleText.fontSize12Weight500.copyWith(
+          color: complete ? AppColors.white : AppColors.textButton,
         ),
-        const SizedBox.shrink(),
-        const Center(
-          child: SizedBox(
-            width: 20,
-            height: 20,
-            child: CircleProgressMaster.inline(strokeWidth: 2),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildErrorState() {
-    return Column(
-      spacing: 8.sp,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              S.current.homeScreenToDoListTitle,
-              style: StyleText.fontSize14Weight500
-                  .copyWith(fontWeight: FontWeight.bold),
-            ),
-            SvgPicture.asset(
-              'assets/icons_assets/home_assets/todo_checklist_clipboard.svg',
-              width: 20,
-              height: 20,
-              color: AppColors.primary,
-            )
-          ],
-        ),
-        const SizedBox.shrink(),
-        Text(
-          S.current.errorLoadingTasks,
-          style: StyleText.fontSize12Weight400
-              .copyWith(color: AppColors.red, fontSize: 10.sp),
-        ),
-      ],
+      ),
     );
   }
 }

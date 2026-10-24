@@ -2,29 +2,32 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: apply_all_modules_button.dart
-/// Purpose: Home card that runs `DemoAccountsSeeder.applyAll` — every
+/// Description: Home card that runs `DemoAccountsSeeder.applyAll` — every
 ///          notification and every calendar event of every module, for the
 ///          four demo accounts.
-/// Author: Knowticed Plus team
+/// Author: Amr Mesbah
 /// Created at: 27/9/2026
 ///
 /// Visible only to the demo accounts themselves (and always in debug builds),
 /// so a real tenant never sees it. Confirm → run → success / error dialog
 /// through `CustomDialogManager`; no SnackBar.
+library;
 
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
-import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/features/home/h1_home_page/data/data_source/demo_accounts_seeder.dart';
-import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
+import 'package:knowticed_plus/core/custom/dialogs/custom_dialog_manager.dart';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/core/helper/access/main_core_employee_controller.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/data_source/demo_accounts_seeder.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
+import 'package:knowticed_plus/core/custom/feedback/circle_progress.dart';
+import 'package:knowticed_plus/core/theme/app_animations.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
 
 class ApplyAllModulesButton extends StatefulWidget {
   const ApplyAllModulesButton({super.key, this.onApplied});
@@ -36,6 +39,7 @@ class ApplyAllModulesButton extends StatefulWidget {
   /// Whether the signed-in user should see the button.
   static bool get isVisible {
     if (kDebugMode) return true;
+    if (!Get.isRegistered<MainCoreEmployeeController>()) return false;
     final String? email =
         Get.find<MainCoreEmployeeController>().employeeEntity?.email;
     return DemoAccountsSeeder.isDemoAccount(email);
@@ -49,11 +53,11 @@ class _ApplyAllModulesButtonState extends State<ApplyAllModulesButton> {
   bool _running = false;
 
   static const String _confirmLottie =
-      'assets/lottie_assets/main_lottie_assets/lottie_confirmation.json';
+      'assets/lottie_assets/main_lottie_assets/lot_status_confirmation.json';
   static const String _successLottie =
-      'assets/lottie_assets/main_lottie_assets/lottie_approved.json';
+      'assets/lottie_assets/main_lottie_assets/lot_status_approved.json';
   static const String _errorLottie =
-      'assets/lottie_assets/main_lottie_assets/lottie_rejected.json';
+      'assets/lottie_assets/main_lottie_assets/lot_status_rejected.json';
 
   Future<void> _onTap() async {
     if (_running) return;
@@ -76,14 +80,13 @@ class _ApplyAllModulesButtonState extends State<ApplyAllModulesButton> {
         setState(() => _running = true);
         try {
           result = await DemoAccountsSeeder.applyAll(
-            senderEmail: Get.find<MainCoreEmployeeController>()
-                    .employeeEntity
-                    ?.email ??
-                DemoAccountsSeeder.accounts.last,
+            senderEmail:
+                Get.find<MainCoreEmployeeController>().employeeEntity?.email ??
+                    DemoAccountsSeeder.accounts.last,
             isArabic: !en,
           );
-        } catch (e, stackTrace) {
-          debugPrint('[demo-seed] threw — $e\n$stackTrace');
+        } catch (e) {
+          debugPrint('Ignored error: $e');
         } finally {
           if (mounted) setState(() => _running = false);
         }
@@ -130,12 +133,13 @@ class _ApplyAllModulesButtonState extends State<ApplyAllModulesButton> {
     final bool en = context.isEnglish;
 
     return GestureDetector(
+      onTapDown: hapticDown(_onTap, HapticLevel.medium),
       onTap: _onTap,
       child: Container(
         width: double.infinity,
         padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
         decoration: BoxDecoration(
-          color: AppColors.field,
+          color: AppColors.card,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Row(
@@ -152,12 +156,15 @@ class _ApplyAllModulesButtonState extends State<ApplyAllModulesButton> {
                         color: AppColors.textButton,
                       ),
                     )
-                  : SvgPicture.asset(
-                      'assets/icons_assets/main_icons_assets/notification_bell.svg',
+                  : CustomSvgImage.natural(
+                      assetPath:
+                          'assets/icons_assets/main_icons_assets/ic_comms_notification_bell.svg',
                       width: 24.sp,
                       height: 24.sp,
                       colorFilter: ColorFilter.mode(
-                          AppColors.textButton, BlendMode.srcIn),
+                        AppColors.textButton,
+                        BlendMode.srcIn,
+                      ),
                     ),
             ),
             SizedBox(width: 12.w),
@@ -176,8 +183,9 @@ class _ApplyAllModulesButtonState extends State<ApplyAllModulesButton> {
                         : (en
                             ? 'All notifications & calendar events for the demo accounts'
                             : 'جميع الإشعارات وأحداث التقويم للحسابات التجريبية'),
-                    style: StyleText.fontSize14Weight400
-                        .copyWith(color: AppColors.icon),
+                    style: StyleText.fontSize14Weight400.copyWith(
+                      color: AppColors.icon,
+                    ),
                   ),
                 ],
               ),

@@ -6,6 +6,7 @@
 /// Author: Knowticed Plus team
 /// Created at: 2026
 /// Updated: 12/8/2026 - Added the standard header (Docs).
+library;
 
 /// ************************* FILE INFO *************************
 /// File Name: notification_event.dart
@@ -18,13 +19,13 @@
 ///
 /// The values here are DEFAULTS ONLY. At send time
 /// AppNotificationSender.sendFromTemplate reads
-/// `notification_templates/<module>_<key>` from Firestore first, so text
+/// `Modules/notification_templates/<module>/<key>` from Firestore first, so text
 /// edited by an admin in Notification Control always wins. These strings
 /// are what a brand-new tenant starts with and what "Reset to default"
 /// restores.
 
-import 'package:grc_module/core/enums/app_module.dart';
-import 'package:grc_module/core/enums/template_variable.dart';
+import 'package:knowticed_plus/core/enums/app_module.dart';
+import 'package:knowticed_plus/core/enums/template_variable.dart';
 
 abstract interface class NotificationEvent {
   /// Stable event key. Combined with the module it forms the Firestore
@@ -42,7 +43,7 @@ abstract interface class NotificationEvent {
   /// Which module raises this event.
   AppModule get module;
 
-  /// `<module>_<key>` — the Firestore `notification_templates` document id.
+  /// `<module>_<key>` — the event's id in the code (the Firestore document is `<key>` inside its module).
   String get templateId;
 
   /// Default English subject.

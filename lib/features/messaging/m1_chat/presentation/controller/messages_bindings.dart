@@ -5,8 +5,8 @@
 
 import 'package:get/get.dart';
 
-import './message_controller.dart';
-import 'package:grc_module/core/services/image_picker_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/message_controller.dart';
+import 'package:knowticed_plus/core/app_services/image_picker_cubit.dart';
 
 class MessagesBindings implements Bindings {
   @override

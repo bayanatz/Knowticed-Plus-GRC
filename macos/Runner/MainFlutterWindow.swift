@@ -26,6 +26,16 @@ class MainFlutterWindow: NSWindow {
     let windowFrame = self.frame
     self.contentViewController = flutterViewController
     self.setFrame(windowFrame, display: true)
+    // ADDED 17/10/2026 (Moataz, resize test): the window stops shrinking at a
+    // phone size, so it can show the phone layout but never squash smaller.
+    self.contentMinSize = NSSize(width: 375, height: 640)
+    // ADDED 22/10/2026 (Moataz): no white title bar — the app's own header
+    // colour fills the top edge, behind the three window buttons. Flutter
+    // keeps a strip of `kMacTitleBarHeight` free at the top (main.dart) so
+    // nothing sits under the buttons; the strip still drags the window.
+    self.titlebarAppearsTransparent = true
+    self.titleVisibility = .hidden
+    self.styleMask.insert(.fullSizeContentView)
 
     RegisterGeneratedPlugins(registry: flutterViewController)
 

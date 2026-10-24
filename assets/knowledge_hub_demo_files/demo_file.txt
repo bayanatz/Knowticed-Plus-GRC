@@ -1,0 +1,5 @@
+Knowledge Hub — Sample text file
+
+This plain-text file tests .txt handling in the Knowledge Hub.
+Line 3
+Line 4

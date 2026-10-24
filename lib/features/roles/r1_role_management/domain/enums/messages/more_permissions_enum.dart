@@ -26,9 +26,10 @@
 /// ⚠️ [getDataBaseName] is the exact string stored in Firestore under
 /// `Demo_Permissions`. See the note on [MessagesPermissions] — renaming one
 /// orphans every role document already written with it.
+library;
 
-import 'package:grc_module/features/roles/r1_role_management/domain/entities/module_permissions_sections_permissions.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/entities/module_permissions_sections_permissions.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
 enum MoreMessagesPermissions implements ModulePermissionsSectionsPermission {
   contact,

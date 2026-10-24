@@ -2,37 +2,37 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: table_widget.dart
-/// Purpose: Declares `RoleTableView`.
-/// Author: Knowticed Plus team
+/// Description: Declares `RoleTableView`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
-import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/custom/layout/fill_width_table.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-// REMOVED_MODULE: import 'package:grc_module/features/external/knowledge_hub_module/core/theming/new_theme.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
+import 'package:knowticed_plus/core/helper/format_title.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/features/external/knowledge_hub_module/core/theming/new_theme.dart';
+import 'package:knowticed_plus/core/helper/access/modules_enum.dart';
+
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
-import 'package:grc_module/features/roles/r1_role_management/data/models/role_model.dart';
-import 'package:grc_module/features/roles/r1_role_management/presentation/controller/modules_cubit.dart';
-import 'package:grc_module/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
-import 'package:grc_module/features/roles/r1_role_management/presentation/ui/widgets/permission_label.dart';
-import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/core/theme/app_animations.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/data/models/role_model.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/presentation/controller/modules_cubit.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/presentation/ui/widgets/permission_label.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
+import 'package:knowticed_plus/core/theme/app_animations.dart';
+import 'package:knowticed_plus/core/custom/feedback/circle_progress.dart';
+
 class RoleTableView extends StatelessWidget {
   final List<RoleHistoryModel> roles;
   final String locale;
 
-  const RoleTableView({
-    Key? key,
-    required this.roles,
-    required this.locale,
-  }) : super(key: key);
+  const RoleTableView({super.key, required this.roles, required this.locale});
 
   bool get _isArabic => locale.toLowerCase().startsWith('ar');
 
@@ -74,26 +74,48 @@ class RoleTableView extends StatelessWidget {
 
   String _getModuleName(BuildContext context, Modules module) {
     switch (module) {
-      case Modules.employees:    return S.of(context).employees;
-      case Modules.services:     return S.of(context).services;
-      case Modules.tasks:        return S.of(context).tasks;
-      case Modules.todo:         return S.of(context).todo;
-      case Modules.events:       return S.of(context).events;
-      case Modules.notes:        return S.of(context).notes;
-      case Modules.requests:     return S.of(context).requests;
-      case Modules.knowledgeHub: return S.of(context).knowledge_hub;
-      case Modules.qiyas:        return S.of(context).qiyas;
-      case Modules.grc:          return S.of(context).grc;
-      case Modules.tracking:     return S.of(context).tracking;
-      case Modules.inventory:    return S.of(context).inventory;
-      case Modules.messages:     return S.of(context).messages;
-      case Modules.database:     return S.of(context).database_builder;
-      case Modules.formBuilder:  return S.of(context).services_app;
-      case Modules.roles:        return S.of(context).roles;
-      case Modules.settings:     return S.of(context).settings;
-      case Modules.home:         return S.of(context).home;
-      case Modules.notification: return S.of(context).notifications;
-      default:                   return module.name;
+      case Modules.employees:
+        return S.of(context).employees;
+      case Modules.services:
+        return S.of(context).services;
+      case Modules.tasks:
+        return S.of(context).tasks;
+      case Modules.todo:
+        return S.of(context).todo;
+      case Modules.events:
+        return S.of(context).events;
+      case Modules.notes:
+        return S.of(context).notes;
+      case Modules.requests:
+        return S.of(context).requests;
+      case Modules.knowledgeHub:
+        return S.of(context).knowledge_hub;
+      case Modules.qiyas:
+        return S.of(context).qiyas;
+      case Modules.grc:
+        return S.of(context).grc;
+      case Modules.tracking:
+        return S.of(context).tracking;
+      case Modules.inventory:
+        return S.of(context).inventory;
+      case Modules.messages:
+        return S.of(context).messages;
+      case Modules.database:
+        return S.of(context).database_builder;
+      case Modules.formBuilder:
+        return S.of(context).services_app;
+      case Modules.roles:
+        return S.of(context).roles;
+      case Modules.settings:
+        return S.of(context).settings;
+      case Modules.home:
+        return S.of(context).home;
+      case Modules.timeTracker:
+        return S.of(context).timeTracker; // ADDED 8/10/2026
+      case Modules.notification:
+        return S.of(context).notifications;
+      default:
+        return module.name;
     }
   }
 
@@ -101,30 +123,52 @@ class RoleTableView extends StatelessWidget {
 
   Modules? _getModuleEnum(String moduleName) {
     switch (moduleName.toLowerCase().trim()) {
-      case 'employees':                  return Modules.employees;
-      case 'services':                   return Modules.services;
-      case 'tasks':                      return Modules.tasks;
-      case 'todo':                       return Modules.todo;
-      case 'events':                     return Modules.events;
-      case 'notes':                      return Modules.notes;
-      case 'requests':                   return Modules.requests;
+      case 'employees':
+        return Modules.employees;
+      case 'services':
+        return Modules.services;
+      case 'tasks':
+        return Modules.tasks;
+      case 'todo':
+        return Modules.todo;
+      case 'events':
+        return Modules.events;
+      case 'notes':
+        return Modules.notes;
+      case 'requests':
+        return Modules.requests;
       case 'knowledge_hub':
-      case 'knowledgehub':               return Modules.knowledgeHub;
-      case 'qiyas':                      return Modules.qiyas;
-      case 'grc':                        return Modules.grc;
-      case 'tracking':                   return Modules.tracking;
-      case 'inventory':                  return Modules.inventory;
-      case 'messages':                   return Modules.messages;
+      case 'knowledgehub':
+        return Modules.knowledgeHub;
+      case 'qiyas':
+        return Modules.qiyas;
+      case 'grc':
+        return Modules.grc;
+      case 'tracking':
+        return Modules.tracking;
+      case 'inventory':
+        return Modules.inventory;
+      case 'messages':
+        return Modules.messages;
       case 'database_builder':
-      case 'database':                   return Modules.database;
+      case 'database':
+        return Modules.database;
       case 'services_app':
-      case 'formbuilder':                return Modules.formBuilder;
-      case 'roles':                      return Modules.roles;
-      case 'settings':                   return Modules.settings;
-      case 'home':                       return Modules.home;
+      case 'formbuilder':
+        return Modules.formBuilder;
+      case 'roles':
+        return Modules.roles;
+      case 'settings':
+        return Modules.settings;
+      case 'home':
+        return Modules.home;
       case 'notification':
-      case 'notifications':              return Modules.notification;
-      case 'crm':                        return Modules.crm;
+      case 'notifications':
+        return Modules.notification;
+      case 'crm':
+        return Modules.crm;
+      case 'time_tracker':
+        return Modules.timeTracker; // ADDED 8/10/2026
       default:
         return null;
     }
@@ -134,8 +178,9 @@ class RoleTableView extends StatelessWidget {
 
   List<Map<String, dynamic>> _expandRolesByModules(RoleHistoryModel role) {
     List<Map<String, dynamic>> expandedRows = [];
-    List<String> activeModuleStrings =
-    ModulesCubit().getRoleActiveModules(role);
+    List<String> activeModuleStrings = ModulesCubit().getRoleActiveModules(
+      role,
+    );
 
     if (activeModuleStrings.isEmpty) {
       expandedRows.add({
@@ -162,22 +207,11 @@ class RoleTableView extends StatelessWidget {
 
   int _getModulePermissionCount(String moduleString) {
     Map<String, bool> defaultPermissions =
-    ModulesCubit().getDefaultPermissionsForModule(moduleString);
+        ModulesCubit().getDefaultPermissionsForModule(moduleString);
     return defaultPermissions.length;
   }
 
   // ── Permission name (AR/EN via .tr) ───────────────────────────────────────
-
-  String _formatPermissionName(String permissionKey) {
-    return permissionKey
-        .replaceAll('_', ' ')
-        .split(' ')
-        .map((word) => word.isNotEmpty
-        ? '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}'
-        : '')
-        .join(' ')
-        ; // ← .tr resolves AR/EN from GetX translations
-  }
 
   // ── Created By: resolve full name from employee controller ────────────────
 
@@ -186,16 +220,12 @@ class RoleTableView extends StatelessWidget {
   // read the locale from `Get.locale` — a swallowed error plus a GetX
   // dependency in the UI layer (§11.2/§11.5, GetX standing rule).
 
-
   // ── Cell helpers ───────────────────────────────────────────────────────────
 
   Widget _cell(BuildContext context, Widget child) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10.sp, vertical: 8.sp),
-      child: DefaultTextStyle.merge(
-        style: _cellStyle(context),
-        child: child,
-      ),
+      child: DefaultTextStyle.merge(style: _cellStyle(context), child: child),
     );
   }
 
@@ -217,7 +247,10 @@ class RoleTableView extends StatelessWidget {
   // ── Switches cell ──────────────────────────────────────────────────────────
 
   Widget _switchesCell(
-      BuildContext context, RoleHistoryModel role, String? moduleString) {
+    BuildContext context,
+    RoleHistoryModel role,
+    String? moduleString,
+  ) {
     if (moduleString == null) {
       return _cell(context, Text('-'));
     }
@@ -271,7 +304,7 @@ class RoleTableView extends StatelessWidget {
                     vertical: 4.sp,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.grey.withOpacity(.3),
+                    color: AppColors.grey.withValues(alpha: .3),
                     borderRadius: BorderRadius.circular(4.sp),
                   ),
                   child: Text(
@@ -299,7 +332,7 @@ class RoleTableView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = S.of(context);
-    final lightMode = Theme.of(context).brightness == Brightness.light;
+    Theme.of(context).brightness == Brightness.light;
 
     final headers = <String>[
       s.number,
@@ -362,141 +395,136 @@ class RoleTableView extends StatelessWidget {
     return AnimatedSizeWrap(
       // Tables animate their size (rows added / removed / filtered).
       child: Directionality(
-      textDirection:
-      _isArabic ? ui.TextDirection.rtl : ui.TextDirection.ltr,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(10.sp),
-          child: Table(
-            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-            columnWidths: columnWidths,
-            children: [
-              // ── Header row ───────────────────────────────────────────────
-              TableRow(
-                decoration: BoxDecoration(
-                  color: AppColors.blackShadow
+        textDirection: _isArabic ? ui.TextDirection.rtl : ui.TextDirection.ltr,
+        // Owner 21/10/2026: full width, equal column shares (NO stays narrow); scrolls when the columns cannot fit.
+        child: FillWidthHorizontalScroll(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10.sp),
+            child: Table(
+              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+              columnWidths: fillColumnWidths(columnWidths),
+              children: [
+                // ── Header row ───────────────────────────────────────────────
+                TableRow(
+                  decoration: BoxDecoration(color: AppColors.blackShadow),
+                  children: headers
+                      .map(
+                        (name) => Padding(
+                          padding: EdgeInsets.all(10.sp),
+                          child: Text(
+                            name,
+                            style: _headerStyle,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.start,
+                          ),
+                        ),
+                      )
+                      .toList(),
                 ),
-                children: headers
-                    .map((name) => Padding(
-                  padding: EdgeInsets.all(10.sp),
-                  child: Text(
-                    name,
-                    style: _headerStyle,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.start,
-                  ),
-                ))
-                    .toList(),
-              ),
 
-              // ── Data rows ─────────────────────────────────────────────────
-              ...List.generate(expandedData.length, (index) {
-                final data = expandedData[index];
-                final role = data['role'] as RoleHistoryModel;
-                final moduleString = data['moduleString'] as String?;
-                final module = data['module'] as Modules?;
-                final rowNumber = data['rowNumber'] as int;
+                // ── Data rows ─────────────────────────────────────────────────
+                ...List.generate(expandedData.length, (index) {
+                  final data = expandedData[index];
+                  final role = data['role'] as RoleHistoryModel;
+                  final moduleString = data['moduleString'] as String?;
+                  final module = data['module'] as Modules?;
+                  final rowNumber = data['rowNumber'] as int;
 
-                final isEven = rowNumber.isEven;
-                // Was four raw/inline colours (§12). The theme already
-                // publishes alternating table-row tokens for both modes.
-                final rowColor = isEven
-                    ? AppColors.evenRowColor
-                    : AppColors.oddRowColor;
+                  final isEven = rowNumber.isEven;
+                  // Was four raw/inline colours (§12). The theme already
+                  // publishes alternating table-row tokens for both modes.
+                  final rowColor =
+                      isEven ? AppColors.evenRowColor : AppColors.oddRowColor;
 
-                return TableRow(
-                  decoration: BoxDecoration(color: rowColor),
-                  children: [
-                    // No
-                    _textCell(context, rowNumber.toString(), maxLines: 1),
+                  return TableRow(
+                    decoration: BoxDecoration(color: rowColor),
+                    children: [
+                      // No
+                      _textCell(context, rowNumber.toString(), maxLines: 1),
 
-                    // Role Name EN
-                    _textCell(context, role.currentRoleName, maxLines: 2),
+                      // Role Name EN
+                      _textCell(context, role.currentRoleName, maxLines: 2),
 
-                    // Role Name AR
-                    _textCell(
-                      context,
-                      role.currentRoleNameAr.isNotEmpty
-                          ? role.currentRoleNameAr
-                          : '-',
-                      maxLines: 2,
-                    ),
+                      // Role Name AR
+                      _textCell(
+                        context,
+                        role.currentRoleNameAr.isNotEmpty
+                            ? role.currentRoleNameAr
+                            : '-',
+                        maxLines: 2,
+                      ),
 
-                    // Role Description EN
-                    _textCell(
-                      context,
-                      role.currentRoleDescription.isNotEmpty
-                          ? role.currentRoleDescription
-                          : '-',
-                      maxLines: 3,
-                    ),
+                      // Role Description EN
+                      _textCell(
+                        context,
+                        role.currentRoleDescription.isNotEmpty
+                            ? role.currentRoleDescription
+                            : '-',
+                        maxLines: 3,
+                      ),
 
-                    // Role Description AR
-                    _textCell(
-                      context,
-                      role.currentRoleDescriptionAr.isNotEmpty
-                          ? role.currentRoleDescriptionAr
-                          : '-',
-                      maxLines: 3,
-                    ),
+                      // Role Description AR
+                      _textCell(
+                        context,
+                        role.currentRoleDescriptionAr.isNotEmpty
+                            ? role.currentRoleDescriptionAr
+                            : '-',
+                        maxLines: 3,
+                      ),
 
-                    // Status — localized via .tr on the enum name
-                    _cell(
-                      context,
-                      Text(
-                        // TRANSLATED 29/8/2026: was the raw Dart enum name
-                        // (`FormatHelper.capitalize(currentStatus.name)`), so
-                        // an Arabic user saw "Active"/"Draft" in English. Now
-                        // the ARB-backed localized name, matching the card view.
-                        role.currentStatus.getLocalizedName(context),
-                        style:
-                        StyleText.fontSize12Weight400.copyWith(
-                          color: role.currentStatus.color,
+                      // Status — localized via .tr on the enum name
+                      _cell(
+                        context,
+                        Text(
+                          // TRANSLATED 29/8/2026: was the raw Dart enum name
+                          // (`FormatHelper.capitalize(currentStatus.name)`), so
+                          // an Arabic user saw "Active"/"Draft" in English. Now
+                          // the ARB-backed localized name, matching the card view.
+                          role.currentStatus.getLocalizedName(context),
+                          style: StyleText.fontSize12Weight400.copyWith(
+                            color: role.currentStatus.color,
+                          ),
                         ),
                       ),
-                    ),
 
-                    // Created By — resolved full name (AR/EN)
-                    _textCell(
-                      context,
-                      roleCubit.resolveCreatedByName(
-                        role.currentCreatedBy,
-                        isArabic: _isArabic,
+                      // Created By — resolved full name (AR/EN)
+                      _textCell(
+                        context,
+                        roleCubit.resolveCreatedByName(
+                          role.currentCreatedBy,
+                          isArabic: _isArabic,
+                        ),
+                        maxLines: 2,
                       ),
-                      maxLines: 2,
-                    ),
 
-                    // Created At
-                    _textCell(
-                      context,
-                      roleCubit.formatRoleDate(
-                        role.currentCreatedAt.toDate(),
-                        isArabic: _isArabic,
+                      // Created At
+                      _textCell(
+                        context,
+                        roleCubit.formatRoleDate(
+                          role.currentCreatedAt.toDate(),
+                          isArabic: _isArabic,
+                        ),
+                        maxLines: 1,
                       ),
-                      maxLines: 1,
-                    ),
 
-                    // Module — localized via S.of(context)
-                    _textCell(
-                      context,
-                      module != null
-                          ? _getModuleName(context, module)
-                          : '-',
-                      maxLines: 1,
-                    ),
+                      // Module — localized via S.of(context)
+                      _textCell(
+                        context,
+                        module != null ? _getModuleName(context, module) : '-',
+                        maxLines: 1,
+                      ),
 
-                    // Active Permissions — localized chips via .tr
-                    _switchesCell(context, role, moduleString),
-                  ],
-                );
-              }),
-            ],
+                      // Active Permissions — localized chips via .tr
+                      _switchesCell(context, role, moduleString),
+                    ],
+                  );
+                }),
+              ],
+            ),
           ),
         ),
       ),
-    ),
     );
   }
 }

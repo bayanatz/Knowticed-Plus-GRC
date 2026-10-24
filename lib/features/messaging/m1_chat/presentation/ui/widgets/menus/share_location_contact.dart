@@ -1,6 +1,8 @@
 /// Module: messaging / chat / presentation/ui/widgets/menus/share_location_contact.dart
-/// Purpose: The Location and Contact buttons of the attachment menu
+/// Description: The Location and Contact buttons of the attachment menu
 ///          (bug report #23). Both were `onTap: () {}`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 ///
 ///  • Location — WhatsApp-style "send current location": reads the device
 ///    position, looks up a street address when the platform can, confirms,
@@ -16,17 +18,19 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
-import 'package:grc_module/core/services/geolocator/geolocator_repository.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
+import 'package:knowticed_plus/core/custom/dialogs/custom_dialog_manager.dart';
+import 'package:knowticed_plus/core/app_services/geolocator/geolocator_repository.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
 
-import '../../../../../m2_connections/domain/entities/single_connection_entity.dart';
-import '../../../../../m2_connections/presentation/controller/connections_controller.dart';
-import '../../../../domain/entity/new_message_content_entity.dart';
-import '../../../controller/main_controllers/master_chat_cubit.dart';
-import '../dialogs/contact_picker_dialog.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/domain/entities/single_connection_entity.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/presentation/controller/connections_controller.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/domain/entity/new_message_content_entity.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/main_controllers/master_chat_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/ui/widgets/dialogs/contact_picker_dialog.dart';
+import 'package:knowticed_plus/core/theme/app_animations.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
 
 bool _isAr(BuildContext context) =>
     Localizations.localeOf(context).languageCode == 'ar';
@@ -42,29 +46,30 @@ void _toast(String msg) => Fluttertoast.showToast(
 // ─────────────────────────────────────────────────────────────────────────────
 
 Future<void> shareCurrentLocation(
-    BuildContext context, MasterChatCubit cubit) async {
+  BuildContext context,
+  MasterChatCubit cubit,
+) async {
   final bool isAr = _isAr(context);
-  debugPrint('[ShareLocation] requesting current position…');
 
   final Position? position = await GelocatorRepository.getCurrentLocation();
   if (position == null) {
-    debugPrint('[ShareLocation] ✗ no position (service off / permission '
-        'denied / platform unsupported)');
-    _toast(isAr
-        ? 'تعذر تحديد موقعك. فعّل خدمات الموقع ثم حاول مرة أخرى'
-        : 'Could not get your location. Turn on location services and try again');
+    _toast(
+      isAr
+          ? 'تعذر تحديد موقعك. فعّل خدمات الموقع ثم حاول مرة أخرى'
+          : 'Could not get your location. Turn on location services and try again',
+    );
     return;
   }
 
-  final String? address =
-      await _addressFor(position.latitude, position.longitude);
+  final String? address = await _addressFor(
+    position.latitude,
+    position.longitude,
+  );
   final LocationPayload payload = LocationPayload(
     latitude: position.latitude,
     longitude: position.longitude,
     address: address,
   );
-  debugPrint('[ShareLocation] got ${payload.latitude},${payload.longitude} '
-      '(${address ?? 'no address'})');
 
   if (!context.mounted) return;
   final bool? confirmed = await CustomDialogManager.showContent<bool>(
@@ -82,8 +87,10 @@ Future<void> shareCurrentLocation(
 /// (e.g. Windows desktop) — the card then shows the coordinates only.
 Future<String?> _addressFor(double lat, double lng) async {
   try {
-    final List<Placemark> marks =
-        await Geocoding().placemarkFromCoordinates(lat, lng);
+    final List<Placemark> marks = await Geocoding().placemarkFromCoordinates(
+      lat,
+      lng,
+    );
     if (marks.isEmpty) return null;
     final Placemark p = marks.first;
     final List<String> parts = <String?>[
@@ -94,7 +101,6 @@ Future<String?> _addressFor(double lat, double lng) async {
     ].whereType<String>().where((s) => s.trim().isNotEmpty).toList();
     return parts.isEmpty ? null : parts.join(', ');
   } catch (e) {
-    debugPrint('[ShareLocation] address lookup unavailable: $e');
     return null;
   }
 }
@@ -113,22 +119,25 @@ class _ConfirmLocation extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           CustomSvgImage(
-            assetPath: 'assets/icons_assets/messaging_assets/location_svg.svg',
+            assetPath: 'assets/icons_assets/messaging_assets/ic_place_map.svg',
             width: 48.sp,
             height: 48.sp,
             fit: BoxFit.contain,
           ),
           SizedBox(height: 12.h),
-          Text(isAr ? 'إرسال موقعك الحالي؟' : 'Send your current location?',
-              style: StyleText.fontSize16Weight500),
+          Text(
+            isAr ? 'إرسال موقعك الحالي؟' : 'Send your current location?',
+            style: StyleText.fontSize16Weight500,
+          ),
           SizedBox(height: 6.h),
           Text(
             payload.address ??
                 '${payload.latitude.toStringAsFixed(5)}, '
                     '${payload.longitude.toStringAsFixed(5)}',
             textAlign: TextAlign.center,
-            style: StyleText.fontSize14Weight400
-                .copyWith(color: AppColors.secondaryBlack),
+            style: StyleText.fontSize14Weight400.copyWith(
+              color: AppColors.secondaryBlack,
+            ),
           ),
           SizedBox(height: 16.h),
           Row(
@@ -159,32 +168,34 @@ class _ConfirmLocation extends StatelessWidget {
 
 Future<void> shareContact(BuildContext context, MasterChatCubit cubit) async {
   final bool isAr = _isAr(context);
-  if (!Get.isRegistered<ConnectionsCubit>() && !Get.isPrepared<ConnectionsCubit>()) {
-    debugPrint('[ShareContact] ✗ ConnectionsCubit not registered');
+  if (!Get.isRegistered<ConnectionsCubit>() &&
+      !Get.isPrepared<ConnectionsCubit>()) {
     return;
   }
   final ConnectionsCubit connections = Get.find<ConnectionsCubit>();
   final String? otherId = cubit.state.otherConnectionSide?.otherSideId;
-  final List<SingleConnectionEntity> people = connections.connections
-      .where((c) => c.userId != otherId)
-      .toList();
-  debugPrint('[ShareContact] ${people.length} colleagues to pick from');
+  final List<SingleConnectionEntity> people =
+      connections.connections.where((c) => c.userId != otherId).toList();
 
   // Figma 6799:5402 — multi-select grid with search + department filter.
-  final List<SingleConnectionEntity> picked =
-      await showContactPickerDialog(context, people: people);
+  final List<SingleConnectionEntity> picked = await showContactPickerDialog(
+    context,
+    people: people,
+  );
   if (picked.isEmpty) return;
 
   int failed = 0;
   for (final SingleConnectionEntity p in picked) {
-    final bool sent = await cubit.sendContactMessage(ContactPayload(
-      userId: p.userId,
-      name: p.primaryLanguageName,
-      nameAr: p.secondaryLanguageName,
-      jobTitle: p.primaryLanguageSubInfo,
-      jobTitleAr: p.secondaryLanguageSubInfo,
-      imageUri: p.imageUri,
-    ));
+    final bool sent = await cubit.sendContactMessage(
+      ContactPayload(
+        userId: p.userId,
+        name: p.primaryLanguageName,
+        nameAr: p.secondaryLanguageName,
+        jobTitle: p.primaryLanguageSubInfo,
+        jobTitleAr: p.secondaryLanguageSubInfo,
+        imageUri: p.imageUri,
+      ),
+    );
     if (!sent) failed++;
   }
   if (failed > 0) {
@@ -206,6 +217,7 @@ class _DialogButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      onTapDown: hapticDown(onTap, HapticLevel.low),
       onTap: onTap,
       borderRadius: BorderRadius.circular(4.r),
       child: Container(
@@ -213,7 +225,7 @@ class _DialogButton extends StatelessWidget {
         height: 38.sp,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: primary ? AppColors.primary : AppColors.field,
+          color: primary ? AppColors.primary : AppColors.darkGrey,
           borderRadius: BorderRadius.circular(4.r),
         ),
         child: Text(

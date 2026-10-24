@@ -5,10 +5,11 @@
 /// Purpose: Turns the raw demo-request document into a module-licence map.
 /// Author: Knowticed Plus team
 /// Created at: 11/8/2026
+library;
 
-import 'package:grc_module/core/constants/firebase_collections.dart';
-import 'package:grc_module/features/home/h2_nav_bar/data/data_source/remote_data_source/nav_bar_remote_data_source.dart';
-import 'package:grc_module/features/home/h2_nav_bar/domain/base_repository/nav_bar_base_repository.dart';
+import 'package:knowticed_plus/core/constants/firebase_collections.dart';
+import 'package:knowticed_plus/features/home/h2_nav_bar/data/data_source/remote_data_source/nav_bar_remote_data_source.dart';
+import 'package:knowticed_plus/features/home/h2_nav_bar/domain/base_repository/nav_bar_base_repository.dart';
 
 class NavBarRepository implements NavBarBaseRepository {
   NavBarRepository({NavBarRemoteDataSource? remoteDataSource})

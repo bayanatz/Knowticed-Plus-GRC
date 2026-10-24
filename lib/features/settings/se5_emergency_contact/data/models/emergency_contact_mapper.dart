@@ -11,9 +11,10 @@
 /// original one, with the `countryCode!` / `countryApp!` force-unwraps replaced
 /// by `?.` — the phone sub-model's lists are nullable, and a contact saved
 /// without a country code would have thrown here.
+library;
 
-import 'package:grc_module/features/settings/se5_emergency_contact/data/models/emergency_contacts_model.dart';
-import 'package:grc_module/features/settings/se5_emergency_contact/domain/entities/emergency_contact_entity.dart';
+import 'package:knowticed_plus/features/settings/se5_emergency_contact/data/models/emergency_contacts_model.dart';
+import 'package:knowticed_plus/features/settings/se5_emergency_contact/domain/entities/emergency_contact_entity.dart';
 
 abstract class EmergencyContactMapper {
   /// Function Name: [toEntity]
@@ -21,7 +22,6 @@ abstract class EmergencyContactMapper {
   /// Purpose: Flatten the stored history lists into the latest values.
   static EmergencyContactEntity toEntity(
       EmergencyContactsModel emergencyContactsModel) {
-
     return EmergencyContactEntity(
       employeeId: emergencyContactsModel.employeeId,
       firstContactFirstName: emergencyContactsModel
@@ -39,17 +39,17 @@ abstract class EmergencyContactMapper {
       firstContactCountryApp: emergencyContactsModel
           .firstEmergencyContact?.phone.countryApp?.lastOrNull,
       firstContactEmail:
-      emergencyContactsModel.firstEmergencyContact?.email.values.lastOrNull,
+          emergencyContactsModel.firstEmergencyContact?.email.values.lastOrNull,
       firstContactCountry: emergencyContactsModel
           .firstEmergencyContact?.country.values.lastOrNull,
       firstContactProvince: emergencyContactsModel
           .firstEmergencyContact?.province.values.lastOrNull,
       firstContactCity:
-      emergencyContactsModel.firstEmergencyContact?.city?.values.lastOrNull,
+          emergencyContactsModel.firstEmergencyContact?.city.values.lastOrNull,
       firstContactStreet: emergencyContactsModel
           .firstEmergencyContact?.street.values.lastOrNull,
       firstContactLanguage: emergencyContactsModel
-          .firstEmergencyContact?.language?.values.lastOrNull,
+          .firstEmergencyContact?.language.values.lastOrNull,
       secondContactFirstName: emergencyContactsModel
           .secondEmergencyContact?.firstName.values.lastOrNull,
       secondContactMiddleName: emergencyContactsModel
@@ -71,11 +71,11 @@ abstract class EmergencyContactMapper {
       secondContactProvince: emergencyContactsModel
           .secondEmergencyContact?.province.values.lastOrNull,
       secondContactCity:
-      emergencyContactsModel.secondEmergencyContact?.city.values.lastOrNull,
+          emergencyContactsModel.secondEmergencyContact?.city.values.lastOrNull,
       secondContactStreet: emergencyContactsModel
           .secondEmergencyContact?.street.values.lastOrNull,
       secondContactLanguage: emergencyContactsModel
-          .secondEmergencyContact?.language?.values.lastOrNull,
+          .secondEmergencyContact?.language.values.lastOrNull,
     );
   }
 }

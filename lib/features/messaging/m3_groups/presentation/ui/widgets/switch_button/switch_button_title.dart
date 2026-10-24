@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_utils/get_utils.dart';
-import 'package:grc_module/core/custom/58-default_switch_button.dart';
+import 'package:knowticed_plus/core/custom/inputs/default_switch_button.dart';
 
-import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
 
 class SwitchButtonTitle extends StatelessWidget {
   const SwitchButtonTitle({

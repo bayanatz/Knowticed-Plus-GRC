@@ -6,6 +6,10 @@
 /// Author: Knowticed Plus team
 /// Created at: 2026
 /// Updated: 12/8/2026 - Added the standard header (Docs).
+/// Updated: 22/10/2026 - Every notification saves the account's email as
+///          `Request_Id`, so View lands on that account in User Access
+///          (owner: View opens the record, not the module).
+library;
 
 /// ************************* FILE INFO ************************* ///
 /// File Name: account_status_notification_service.dart
@@ -42,11 +46,11 @@
 /// to the whole batch.
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:grc_module/core/enums/template_variable.dart';
-import 'package:grc_module/core/network/get_base_url.dart';
-import 'package:grc_module/features/notification/domain/enums/role_module/user_access_module/user_access_events.dart';
-import 'package:grc_module/features/notification/domain/enums/role_module/user_access_module/user_access_notification_pages.dart';
-import 'package:grc_module/features/notification/services/app_notification_sender.dart';
+import 'package:knowticed_plus/core/enums/template_variable.dart';
+import 'package:knowticed_plus/core/network/get_base_url.dart';
+import 'package:knowticed_plus/features/notification/domain/enums/roles/user_access_module/user_access_events.dart';
+import 'package:knowticed_plus/features/notification/domain/enums/roles/user_access_module/user_access_notification_pages.dart';
+import 'package:knowticed_plus/features/notification/helpers/services/app_notification_sender.dart';
 
 class AccountStatusNotificationService {
   AccountStatusNotificationService._();
@@ -71,7 +75,7 @@ class AccountStatusNotificationService {
 
       final emails = <String>[];
       for (final doc in snapshot.docs) {
-        final data = doc.data() as Map<String, dynamic>;
+        final data = doc.data();
 
         final roles = data['Role'];
         if (roles is! List || roles.isEmpty) continue;
@@ -98,6 +102,7 @@ class AccountStatusNotificationService {
     required String senderEmail,
     required bool isArabic,
     Map<TemplateVariable, String> variables = const {},
+    String requestId = '',
   }) {
     return AppNotificationSender.sendEvent(
       event: event,
@@ -106,6 +111,7 @@ class AccountStatusNotificationService {
       receiverEmail: receiverEmail,
       isArabic: isArabic,
       variables: variables,
+      requestId: requestId,
     );
   }
 
@@ -115,6 +121,7 @@ class AccountStatusNotificationService {
     required String senderEmail,
     required bool isArabic,
     Map<TemplateVariable, String> variables = const {},
+    String requestId = '',
   }) async {
     return AppNotificationSender.sendEventToAll(
       event: event,
@@ -123,6 +130,7 @@ class AccountStatusNotificationService {
       receiverEmails: await _masterAdminEmails(),
       isArabic: isArabic,
       variables: variables,
+      requestId: requestId,
     );
   }
 
@@ -140,12 +148,14 @@ class AccountStatusNotificationService {
       receiverEmail: userEmail,
       senderEmail: senderEmail,
       isArabic: isArabic,
+      requestId: userEmail,
     );
     await _toAdmins(
       UserAccessNotificationEvent.accountActivatedAdmin,
       senderEmail: senderEmail,
       isArabic: isArabic,
       variables: {TemplateVariable.userName: userName},
+      requestId: userEmail,
     );
   }
 
@@ -165,6 +175,7 @@ class AccountStatusNotificationService {
       senderEmail: senderEmail,
       isArabic: isArabic,
       variables: {TemplateVariable.userName: userName},
+      requestId: userEmail,
     );
   }
 
@@ -182,12 +193,14 @@ class AccountStatusNotificationService {
       receiverEmail: userEmail,
       senderEmail: senderEmail,
       isArabic: isArabic,
+      requestId: userEmail,
     );
     await _toAdmins(
       UserAccessNotificationEvent.accountUnlockedAdmin,
       senderEmail: senderEmail,
       isArabic: isArabic,
       variables: {TemplateVariable.userName: userName},
+      requestId: userEmail,
     );
   }
 
@@ -207,12 +220,14 @@ class AccountStatusNotificationService {
       senderEmail: senderEmail,
       isArabic: isArabic,
       variables: {TemplateVariable.scheduledDate: scheduledDate},
+      requestId: userEmail,
     );
     await _toAdmins(
       UserAccessNotificationEvent.activationScheduledAdmin,
       senderEmail: senderEmail,
       isArabic: isArabic,
       variables: {TemplateVariable.userName: userName},
+      requestId: userEmail,
     );
   }
 
@@ -232,12 +247,14 @@ class AccountStatusNotificationService {
       senderEmail: senderEmail,
       isArabic: isArabic,
       variables: {TemplateVariable.scheduledDate: scheduledDate},
+      requestId: userEmail,
     );
     await _toAdmins(
       UserAccessNotificationEvent.deactivationScheduledAdmin,
       senderEmail: senderEmail,
       isArabic: isArabic,
       variables: {TemplateVariable.userName: userName},
+      requestId: userEmail,
     );
   }
 
@@ -262,6 +279,7 @@ class AccountStatusNotificationService {
       senderEmail: senderEmail,
       isArabic: isArabic,
       variables: {TemplateVariable.scheduledDate: newScheduledDate},
+      requestId: userEmail,
     );
   }
 
@@ -279,6 +297,7 @@ class AccountStatusNotificationService {
       receiverEmail: userEmail,
       senderEmail: senderEmail,
       isArabic: isArabic,
+      requestId: userEmail,
     );
   }
 
@@ -296,6 +315,7 @@ class AccountStatusNotificationService {
       senderEmail: senderEmail,
       isArabic: isArabic,
       variables: {TemplateVariable.userName: userName},
+      requestId: userEmail,
     );
   }
 
@@ -313,6 +333,7 @@ class AccountStatusNotificationService {
       senderEmail: senderEmail,
       isArabic: isArabic,
       variables: {TemplateVariable.userName: userName},
+      requestId: userEmail,
     );
   }
 }

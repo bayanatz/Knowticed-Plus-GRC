@@ -4,12 +4,13 @@
 /// Purpose: Chat type entity — messaging Home sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:grc_module/core/enums/message_module/message_types.dart';
+import 'package:knowticed_plus/features/messaging/helpers/enums/message_types.dart';
 
-class ChatTypeEntity{
+class ChatTypeEntity {
   String imageUri;
   String primaryLanguageName;
   String? secondaryLanguageName;
@@ -21,20 +22,15 @@ class ChatTypeEntity{
   String? messageContent;
   String otherSideId;
 
-
-  ChatTypeEntity({
-    required this.myNumUnreadMessage,
-    required this.isLastMessageSenderIsCurrentUser,
-    required this.isSeen,
-    required this.lastMessageTime,
-    required this.messageType,
-    required this.messageContent,
-    required this.otherSideId,
-    required this.imageUri,
-    required this.primaryLanguageName,
-    this.secondaryLanguageName
-
-
-  });
-
+  ChatTypeEntity(
+      {required this.myNumUnreadMessage,
+      required this.isLastMessageSenderIsCurrentUser,
+      required this.isSeen,
+      required this.lastMessageTime,
+      required this.messageType,
+      required this.messageContent,
+      required this.otherSideId,
+      required this.imageUri,
+      required this.primaryLanguageName,
+      this.secondaryLanguageName});
 }

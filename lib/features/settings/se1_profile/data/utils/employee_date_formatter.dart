@@ -11,10 +11,11 @@
 /// §11.2) and a `print()` in the catch. `DateFormat.parseStrict` is the only
 /// call here that throws, so the exception handling belongs to this layer and
 /// the widgets just call [parse] / [format].
+library;
 
 import 'package:intl/intl.dart';
 
-import 'package:grc_module/features/settings/se1_profile/data/utils/localized_digits.dart';
+import 'package:knowticed_plus/features/settings/se1_profile/data/utils/localized_digits.dart';
 
 abstract class EmployeeDateFormatter {
   /// The shape the birthday is *written* in. Reads accept the older shapes too,

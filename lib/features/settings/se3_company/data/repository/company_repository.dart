@@ -10,13 +10,14 @@
 /// `updateCompanyModel` and `updateCompanyInformation` all reached Firestore
 /// from `CompanyCubit`; the I/O half of them lives here now and the cubit keeps
 /// only the state transitions.
+library;
 
 import 'package:dartz/dartz.dart';
 
-import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/features/settings/se3_company/data/data_source/remote_data_source/company_remote_data_source.dart';
-import 'package:grc_module/features/settings/se3_company/data/models/company_model/company_model.dart';
-import 'package:grc_module/features/settings/se3_company/domain/base_repository/company_base_repository.dart';
+import 'package:knowticed_plus/core/network/failure_model.dart';
+import 'package:knowticed_plus/features/settings/se3_company/data/data_source/remote_data_source/company_remote_data_source.dart';
+import 'package:knowticed_plus/features/settings/se3_company/data/models/company_model/company_model.dart';
+import 'package:knowticed_plus/features/settings/se3_company/domain/base_repository/company_base_repository.dart';
 
 class CompanyRepository implements CompanyBaseRepository {
   CompanyRepository({CompanyRemoteDataSource? remoteDataSource})

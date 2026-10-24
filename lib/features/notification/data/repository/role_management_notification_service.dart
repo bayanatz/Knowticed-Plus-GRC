@@ -6,6 +6,9 @@
 ///          has its status changed.
 /// Author: Knowticed Plus team
 /// Created at: 18/8/2026
+/// Updated: 22/10/2026 - Created / updated / status-changed save the role id
+///          as `Request_Id`, so View opens that role. Deleted saves none:
+///          the role is gone, so it lands on the Role Management list.
 ///
 /// ************************* FILE INFO ************************* ///
 /// File Name: role_management_notification_service.dart
@@ -37,13 +40,14 @@
 /// ─── LANGUAGE ────────────────────────────────────────────────────────
 /// `isArabic` defaults to false so new call sites are explicit about it.
 /// A fan-out sends one language to the whole batch.
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:grc_module/core/enums/template_variable.dart';
-import 'package:grc_module/core/network/get_base_url.dart';
-import 'package:grc_module/features/notification/domain/enums/role_module/role_management_module/role_management_events.dart';
-import 'package:grc_module/features/notification/domain/enums/role_module/role_management_module/role_management_notification_pages.dart';
-import 'package:grc_module/features/notification/services/app_notification_sender.dart';
+import 'package:knowticed_plus/core/enums/template_variable.dart';
+import 'package:knowticed_plus/core/network/get_base_url.dart';
+import 'package:knowticed_plus/features/notification/domain/enums/roles/role_management_module/role_management_events.dart';
+import 'package:knowticed_plus/features/notification/domain/enums/roles/role_management_module/role_management_notification_pages.dart';
+import 'package:knowticed_plus/features/notification/helpers/services/app_notification_sender.dart';
 
 class RoleManagementNotificationService {
   RoleManagementNotificationService._();
@@ -68,7 +72,7 @@ class RoleManagementNotificationService {
 
       final emails = <String>[];
       for (final doc in snapshot.docs) {
-        final data = doc.data() as Map<String, dynamic>;
+        final data = doc.data();
 
         final roles = data['Role'];
         if (roles is! List || roles.isEmpty) continue;
@@ -99,6 +103,7 @@ class RoleManagementNotificationService {
     required String pageKey,
     required bool isArabic,
     required Map<TemplateVariable, String> variables,
+    String roleId = '',
   }) async {
     return AppNotificationSender.sendEventToAll(
       event: event,
@@ -107,6 +112,7 @@ class RoleManagementNotificationService {
       receiverEmails: await _masterAdminEmails(excluding: actorEmail),
       isArabic: isArabic,
       variables: variables,
+      requestId: roleId,
     );
   }
 
@@ -118,6 +124,7 @@ class RoleManagementNotificationService {
   // ═══════════════════════════════════════════════════════════
   static Future<int> sendRoleCreatedNotification({
     required String actorEmail,
+    required String roleId,
     required String actorName,
     required String roleName,
     bool isArabic = false,
@@ -125,6 +132,7 @@ class RoleManagementNotificationService {
     return _toAdmins(
       RoleManagementNotificationEvent.roleCreated,
       actorEmail: actorEmail,
+      roleId: roleId,
       pageKey: RoleManagementNotificationPage.roleDetailsPage.key,
       isArabic: isArabic,
       variables: {
@@ -143,6 +151,7 @@ class RoleManagementNotificationService {
   // ═══════════════════════════════════════════════════════════
   static Future<int> sendRoleUpdatedNotification({
     required String actorEmail,
+    required String roleId,
     required String actorName,
     required String roleName,
     bool isArabic = false,
@@ -150,6 +159,7 @@ class RoleManagementNotificationService {
     return _toAdmins(
       RoleManagementNotificationEvent.roleUpdated,
       actorEmail: actorEmail,
+      roleId: roleId,
       pageKey: RoleManagementNotificationPage.editingRolePage.key,
       isArabic: isArabic,
       variables: {
@@ -192,6 +202,7 @@ class RoleManagementNotificationService {
   // ═══════════════════════════════════════════════════════════
   static Future<int> sendRoleStatusChangedNotification({
     required String actorEmail,
+    required String roleId,
     required String actorName,
     required String roleName,
     required String oldStatus,
@@ -201,6 +212,7 @@ class RoleManagementNotificationService {
     return _toAdmins(
       RoleManagementNotificationEvent.roleStatusChanged,
       actorEmail: actorEmail,
+      roleId: roleId,
       pageKey: RoleManagementNotificationPage.roleDetailsPage.key,
       isArabic: isArabic,
       variables: {

@@ -2,9 +2,9 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: scheduled_access_applier.dart
-/// Purpose: Detects pre-dated access changes whose start date has arrived and
+/// Description: Detects pre-dated access changes whose start date has arrived and
 ///          raises the two "Scheduled Access Applied" notifications for them.
-/// Author: Knowticed Plus team
+/// Author: Amr Mesbah
 /// Created at: 26/8/2026
 ///
 /// ─── WHY IT EXISTS ───────────────────────────────────────────────────
@@ -65,15 +65,15 @@
 /// fix is a scheduled backend job, and this class is shaped for it — it takes
 /// both its Firestore handle and its clock as parameters and holds no widget,
 /// cubit or locator reference, so only [applyDue]'s caller would change.
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 
-import 'package:grc_module/core/network/get_base_url.dart';
-import 'package:grc_module/core/helper/role/constants.dart';
-import 'package:grc_module/features/notification/data/repository/user_management_notification_service.dart';
-import 'package:grc_module/features/roles/r1_role_management/domain/entities/new_permission_entity.dart';
+import 'package:knowticed_plus/core/network/get_base_url.dart';
+import 'package:knowticed_plus/core/helper/access/constants.dart';
+import 'package:knowticed_plus/features/notification/data/repository/user_management_notification_service.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/entities/new_permission_entity.dart';
 
 /// One user's pending announcement, resolved from their permission document.
 class _DueChange {
@@ -160,10 +160,9 @@ class ScheduledAccessApplier {
         // and one deliberately skipped as history must not come back.
         await _seal(due);
       }
-    } catch (e, stackTrace) {
+    } catch (e) {
       // Deliberately swallowed, and deliberately logged. Consistent with every
       // other background pass in this feature.
-      debugPrint('ScheduledAccessApplier: pass failed — $e\n$stackTrace');
     }
 
     return sent;
@@ -185,12 +184,15 @@ class ScheduledAccessApplier {
     final Map<String, dynamic>? raw = doc.data();
     if (raw == null) return null;
 
-    final UserPermissionHistoryModel model =
-        UserPermissionHistoryModel.fromMap(raw);
+    final UserPermissionHistoryModel model = UserPermissionHistoryModel.fromMap(
+      raw,
+    );
 
     // A revoked or never-granted role has no access to start.
     final String role = model.currentRole;
-    if (role.isEmpty || role == Constants.removedEmployeePermission) return null;
+    if (role.isEmpty || role == Constants.removedEmployeePermission) {
+      return null;
+    }
 
     final String fromDate = model.currentFromDate;
     if (fromDate.trim().isEmpty) return null;
@@ -271,20 +273,15 @@ class ScheduledAccessApplier {
       await _firestore
           .collection(getBaseUrl('User_Management'))
           .doc(due.employeeId)
-          .set(
-        <String, dynamic>{
-          _appliedForField: due.fromDate,
-          'Scheduled_Applied_At': _now().millisecondsSinceEpoch,
-          'Scheduled_Applied_By': _systemActor,
-        },
-        SetOptions(merge: true),
-      );
-    } catch (e, stackTrace) {
+          .set(<String, dynamic>{
+        _appliedForField: due.fromDate,
+        'Scheduled_Applied_At': _now().millisecondsSinceEpoch,
+        'Scheduled_Applied_By': _systemActor,
+      }, SetOptions(merge: true));
+    } catch (e) {
       // A failed seal means this change is announced again on the next pass.
       // That is the safe direction to fail in — a duplicate notice beats a
       // silent one — but it is worth seeing in the log.
-      debugPrint('ScheduledAccessApplier: could not seal ${due.employeeId} '
-          '— $e\n$stackTrace');
     }
   }
 
@@ -323,9 +320,7 @@ class ScheduledAccessApplier {
         // reading "The scheduled access modification for  has been executed".
         'name': name.isEmpty ? email : name,
       };
-    } catch (e, stackTrace) {
-      debugPrint('ScheduledAccessApplier: identity for $employeeId failed '
-          '— $e\n$stackTrace');
+    } catch (e) {
       return null;
     }
   }

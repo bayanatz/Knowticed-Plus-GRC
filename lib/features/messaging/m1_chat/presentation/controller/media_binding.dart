@@ -5,7 +5,7 @@
 
 import 'package:get/get.dart';
 
-import './media_controller.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/media_controller.dart';
 
 class MediaBindings implements Bindings {
   @override

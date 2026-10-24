@@ -5,6 +5,7 @@
 /// Purpose: Declares `DefaultCsvField`.
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 // Date: 29/9/2024
 // By: Youssef Ashraf, Nada Mohammed, Mohammed Ashraf
@@ -13,12 +14,12 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:grc_module/core/theme/app_font_size.dart';
 
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/theme_controller.dart';
-import 'package:grc_module/core/di/app_controllers.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/theme_controller.dart';
+import 'package:knowticed_plus/core/di/app_controllers.dart';
 
 class DefaultCsvField extends StatelessWidget {
   const DefaultCsvField({
@@ -114,7 +115,8 @@ class DefaultCsvField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeController themeController = AppControllers.theme;
-    final isLightTheme = themeController.currentTheme.value == AppColors.lightTheme;
+    final isLightTheme =
+        themeController.currentTheme.value == AppColors.lightTheme;
 
     // Default border radius
     final radius = borderRadius ?? 8.0;
@@ -126,7 +128,8 @@ class DefaultCsvField extends StatelessWidget {
         textInputAction: TextInputAction.done,
         keyboardType: keyboardType,
         expands: expands ?? false,
-        autovalidateMode: autovalidateMode ?? AutovalidateMode.onUserInteraction,
+        autovalidateMode:
+            autovalidateMode ?? AutovalidateMode.onUserInteraction,
         onTap: onTap,
         controller: controller,
         onChanged: onChanged,
@@ -138,7 +141,6 @@ class DefaultCsvField extends StatelessWidget {
         textAlignVertical: TextAlignVertical.center,
         textAlign: textAlign ?? TextAlign.start,
         cursorColor: AppColors.lightPrimary,
-
         decoration: InputDecoration(
           // Counter settings
           counterText: showCounter ? null : '',
@@ -149,72 +151,81 @@ class DefaultCsvField extends StatelessWidget {
 
           // Hint text and style
           hintText: hintText,
-          hintStyle: hintStyle ?? AppFontStyle.cairoRegularStyle.copyWith(
-            color: isLightTheme ? AppColors.colorBlack : AppColors.colorWhite,
-            fontSize: 12.sp,
-          ),
+          hintStyle: hintStyle ??
+              StyleText.fontSize16Weight400.copyWith(
+                color:
+                    isLightTheme ? AppColors.colorBlack : AppColors.colorWhite,
+                fontSize: 12.sp,
+              ),
 
           // Label
           label: label,
           labelText: labelText,
-          labelStyle: AppFontStyle.cairoRegularStyle.copyWith(
+          labelStyle: StyleText.fontSize16Weight400.copyWith(
             color: isLightTheme ? AppColors.colorBlack : AppColors.colorWhite,
           ),
 
           // Content padding
-          contentPadding: contentPadding ?? EdgeInsetsDirectional.symmetric(
-            horizontal: 12.w,
-            vertical: 8.h,
-          ),
+          contentPadding: contentPadding ??
+              EdgeInsetsDirectional.symmetric(
+                horizontal: 12.w,
+                vertical: 8.h,
+              ),
 
           // Border configurations - CONDITIONAL based on removeBorder
           border: removeBorder
               ? InputBorder.none
               : OutlineInputBorder(
-            borderSide: BorderSide(
-              color: hasError ?? false
-                  ? AppColors.delete
-                  : (isLightTheme ? AppColors.colorBlack : AppColors.colorWhite),
-            ),
-            borderRadius: BorderRadius.circular(radius),
-          ),
+                  borderSide: BorderSide(
+                    color: hasError ?? false
+                        ? AppColors.red
+                        : (isLightTheme
+                            ? AppColors.colorBlack
+                            : AppColors.colorWhite),
+                  ),
+                  borderRadius: BorderRadius.circular(radius),
+                ),
 
           enabledBorder: removeBorder
               ? InputBorder.none
-              : enabledBorder ?? OutlineInputBorder(
-            borderSide: BorderSide(
-              color: hasError ?? false
-                  ? AppColors.delete
-                  : (isLightTheme ? AppColors.colorBlack : AppColors.colorWhite),
-            ),
-            borderRadius: BorderRadius.circular(radius),
-          ),
+              : enabledBorder ??
+                  OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: hasError ?? false
+                          ? AppColors.red
+                          : (isLightTheme
+                              ? AppColors.colorBlack
+                              : AppColors.colorWhite),
+                    ),
+                    borderRadius: BorderRadius.circular(radius),
+                  ),
 
           focusedBorder: removeBorder
               ? InputBorder.none
-              : focusedBorder ?? OutlineInputBorder(
-            borderSide: BorderSide(
-              color: hasError ?? false
-                  ? AppColors.delete
-                  : AppColors.lightPrimary,
-              width: 2,
-            ),
-            borderRadius: BorderRadius.circular(radius),
-          ),
+              : focusedBorder ??
+                  OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: hasError ?? false
+                          ? AppColors.red
+                          : AppColors.lightPrimary,
+                      width: 2,
+                    ),
+                    borderRadius: BorderRadius.circular(radius),
+                  ),
 
           errorBorder: removeBorder
               ? InputBorder.none
               : OutlineInputBorder(
-            borderSide: BorderSide(color: AppColors.delete, width: 1),
-            borderRadius: BorderRadius.circular(radius),
-          ),
+                  borderSide: BorderSide(color: AppColors.red, width: 1),
+                  borderRadius: BorderRadius.circular(radius),
+                ),
 
           focusedErrorBorder: removeBorder
               ? InputBorder.none
               : OutlineInputBorder(
-            borderSide: BorderSide(color: AppColors.delete, width: 2),
-            borderRadius: BorderRadius.circular(radius),
-          ),
+                  borderSide: BorderSide(color: AppColors.red, width: 2),
+                  borderRadius: BorderRadius.circular(radius),
+                ),
 
           // Fill color and background
           fillColor: fillColor ?? backGroundColor ?? AppColors.transparent,
@@ -228,21 +239,20 @@ class DefaultCsvField extends StatelessWidget {
               : null,
 
           // Error style
-          errorStyle: AppFontStyle.cairoRegularStyle.copyWith(
+          errorStyle: StyleText.fontSize16Weight400.copyWith(
             fontSize: hasError == true ? 10.sp : 0,
-            color: AppColors.delete,
+            color: AppColors.red,
           ),
 
           // Additional styling
           isDense: true,
         ),
-
-        style: style ?? AppFontStyle.cairoRegularStyle.copyWith(
-          color: isLightTheme ? AppColors.colorBlack : AppColors.colorWhite,
-          fontWeight: FontWeight.w400,
-          fontSize: 14.sp,
-        ),
-
+        style: style ??
+            StyleText.fontSize16Weight400.copyWith(
+              color: isLightTheme ? AppColors.colorBlack : AppColors.colorWhite,
+              fontWeight: FontWeight.w400,
+              fontSize: 14.sp,
+            ),
         validator: validator,
         obscureText: isObscureText ?? false,
       ),

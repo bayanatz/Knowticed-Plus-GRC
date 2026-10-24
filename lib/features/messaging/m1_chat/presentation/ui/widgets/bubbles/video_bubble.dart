@@ -39,103 +39,111 @@ class VideoBubble extends StatelessWidget {
             children: [
               message.videoMessageModel!.playerController.value.isInitialized
                   ? GestureDetector(
-                onTap: () {
-                  masterChatCubit.imageMessageCubit
-                      .playVideo(message.videoMessageModel!);
+                      onTapDown: (_) => HapticController.low(),
+                      onTap: () {
+                        masterChatCubit.imageMessageCubit
+                            .playVideo(message.videoMessageModel!);
 
-                  Get.to(
-                    VideoPlayerView(
-                      model: message.videoMessageModel!,
-                    ),
-                  );
-                },
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Hero(
-                      tag: 'video${message.videoMessageModel!.id}',
-                      child: AspectRatio(
-                        aspectRatio: message.videoMessageModel!
-                            .playerController.value.aspectRatio,
-                        child: VideoPlayer(
-                          message.videoMessageModel!.playerController,
-                        ),
-                      ),
-                    ),
-                    CircleAvatar(
-                      backgroundColor: AppColors.grey.withOpacity(0.3),
-                      child: SvgPicture.asset(AppAssets.play),
-                    ),
-                    if (message.videoMessageModel!.playerController.value
-                        .isInitialized)
-                      PositionedDirectional(
-                        end: 4.w,
-                        start: 4.w,
-                        bottom: 0,
-                        child: Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                SvgPicture.asset(AppAssets.video),
-                                SizedBox(width: 2.w),
-                                Text(message.videoMessageModel!.duration),
-                              ],
+                        Get.to(
+                          VideoPlayerView(
+                            model: message.videoMessageModel!,
+                          ),
+                        );
+                      },
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Hero(
+                            tag: 'video${message.videoMessageModel!.id}',
+                            child: AspectRatio(
+                              aspectRatio: message.videoMessageModel!
+                                  .playerController.value.aspectRatio,
+                              child: VideoPlayer(
+                                message.videoMessageModel!.playerController,
+                              ),
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                if (message.isStarred)
-                                  Padding(
-                                    padding: EdgeInsetsDirectional.only(
-                                      end: 4.w,
-                                      bottom: 2.h,
-                                    ),
-                                    child: Icon(
-                                      Icons.star,
-                                      color: !isMe
-                                          ? AppColors.primary
-                                          : AppColors.moreLightGrey,
-                                      size: isTablet ? 18.r : 12.r,
-                                    ),
+                          ),
+                          CircleAvatar(
+                            backgroundColor:
+                                AppColors.grey.withValues(alpha: 0.3),
+                            child: CustomSvgImage.natural(
+                                assetPath: AppAssets.play),
+                          ),
+                          if (message.videoMessageModel!.playerController.value
+                              .isInitialized)
+                            PositionedDirectional(
+                              end: 4.w,
+                              start: 4.w,
+                              bottom: 0,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      CustomSvgImage.natural(
+                                          assetPath: AppAssets.video),
+                                      SizedBox(width: 2.w),
+                                      Text(message.videoMessageModel!.duration),
+                                    ],
                                   ),
-                                Text(
-                                  // ToDo: Fix the time format
-                                  DateTimeHelper.formatTime(
-                                      message.time.toDate()),
-                                  style: GoogleFonts.roboto(
-                                    color: isMe
-                                        ? AppColors.moreLightGrey
-                                        : AppColors.darkGrey,
-                                    fontSize:
-                                    ContextExtension(context).isTablet ? 12.sp : 10.sp,
-                                  ),
-                                ),
-                                horizontalSpace(4),
-                                if (isMe)
-                                  Icon(
-                                    message.isSeen
-                                        ? Icons.done_all
-                                        : Icons.done,
-                                    /*color: message.isRead
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      if (message.isStarred)
+                                        Padding(
+                                          padding: EdgeInsetsDirectional.only(
+                                            end: 4.w,
+                                            bottom: 2.h,
+                                          ),
+                                          child: Icon(
+                                            Icons.star,
+                                            color: !isMe
+                                                ? AppColors.primary
+                                                : AppColors.moreLightGrey,
+                                            size: isTablet ? 18.r : 12.r,
+                                          ),
+                                        ),
+                                      Text(
+                                        // ToDo: Fix the time format
+                                        DateTimeHelper.formatTime(
+                                            message.time.toDate()),
+                                        style: GoogleFonts.roboto(
+                                          color: isMe
+                                              ? AppColors.moreLightGrey
+                                              : AppColors.darkGrey,
+                                          fontSize:
+                                              ContextExtension(context).isTablet
+                                                  ? 12.sp
+                                                  : 10.sp,
+                                        ),
+                                      ),
+                                      horizontalSpace(4),
+                                      if (isMe)
+                                        Icon(
+                                          message.isSeen
+                                              ? Icons.done_all
+                                              : Icons.done,
+                                          /*color: message.isRead
                                               ? AppColors.blue
                                               : AppColors.moreLightGrey,*/
-                                    size:
-                                    ContextExtension(context).isTablet ? 18.sp : 16.sp,
+                                          size:
+                                              ContextExtension(context).isTablet
+                                                  ? 18.sp
+                                                  : 16.sp,
+                                        ),
+                                    ],
                                   ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ],
-                        ),
+                        ],
                       ),
-                  ],
-                ),
-              )
+                    )
                   : LinearProgressIndicator(
-                color: AppColors.base,
-                backgroundColor: AppColors.inverseBase,
-              ),
+                      color: AppColors.base,
+                      backgroundColor: AppColors.secondaryBlack,
+                    ),
               if (message.messageContent != null &&
                   message.messageContent!.isNotEmpty)
                 Column(children: [SizedBox(height: 5.h)]),
@@ -143,7 +151,7 @@ class VideoBubble extends StatelessWidget {
                 message.videoMessageModel!.caption ?? '',
                 style: isMe
                     ? StyleText.fontSize14Weight400
-                    .copyWith(color: AppColors.textButton)
+                        .copyWith(color: AppColors.textButton)
                     : StyleText.fontSize14Weight400,
                 softWrap: true,
               ),

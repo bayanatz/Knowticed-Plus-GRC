@@ -10,6 +10,7 @@
 ///          to satisfy a `getColor(BuildContext)` member. The enum is now pure
 ///          data with no framework dependency; the colour mapping lives with
 ///          its only caller, in the presentation layer.
+library;
 
 /// Lifecycle of a user's access grant.
 ///

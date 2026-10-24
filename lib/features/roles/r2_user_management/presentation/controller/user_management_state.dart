@@ -6,7 +6,7 @@
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
 
-part of './user_management_cubit.dart';
+part of 'user_management_cubit.dart';
 
 @immutable
 sealed class UserManagementAccessState {}
@@ -21,13 +21,15 @@ class UserManagementAccessError extends UserManagementAccessState {
 }
 
 final class UserPermissionsDataLoading extends UserManagementAccessState {}
+
 final class EmployeeToGiveAccessDataLoaded extends UserManagementAccessState {}
 
-
-
+/// ADDED 9/10/2026 — the user-limit snapshot (Knowticed Admin limits + current
+/// usage) started loading, finished, or failed. The Add Access page rebuilds
+/// its usage lines and the Grant button on it.
+final class UserLimitUsageUpdated extends UserManagementAccessState {}
 
 class UserPermissionsDataError extends UserManagementAccessState {
   final String message;
   UserPermissionsDataError(this.message);
 }
-

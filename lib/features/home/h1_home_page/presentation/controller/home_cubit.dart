@@ -9,27 +9,31 @@
 /// Updated: 11/8/2026 - Repository injected, side-effects moved out of the
 ///          constructor into [init], prints removed, locale no longer read
 ///          from GetX, save failures now surface through [HomeError].
+library;
+
+import 'dart:collection';
+import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
-import 'package:grc_module/features/home/h1_home_page/domain/enums/home_components.dart';
+import 'package:knowticed_plus/core/helper/access/main_core_employee_controller.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/domain/enums/home_components.dart';
 
-import 'package:grc_module/core/constants/quotes_list.dart';
-import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/features/home/h3_app_drawer/presentation/controller/app_drawer_cubit.dart';
-import 'package:grc_module/features/home/h2_nav_bar/presentation/controller/nav_bar_cubit.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/header_icon_item.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/home_component_model.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/home_page_layout_model.dart';
-import 'package:grc_module/features/home/h1_home_page/data/repository/home_repository.dart';
-import 'package:grc_module/features/home/h1_home_page/domain/base_repository/home_base_repository.dart';
-import 'package:grc_module/features/home/h1_home_page/domain/enums/app_bar_enum.dart';
-import 'package:grc_module/features/home/h1_home_page/presentation/controller/home_state.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
+import 'package:knowticed_plus/core/constants/quotes_list.dart';
+import 'package:knowticed_plus/core/network/failure_model.dart';
+import 'package:knowticed_plus/features/home/h3_app_drawer/presentation/controller/app_drawer_cubit.dart';
+import 'package:knowticed_plus/features/home/h2_nav_bar/presentation/controller/nav_bar_cubit.dart';
+import 'package:knowticed_plus/core/helper/access/modules_enum.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/header_icon_item.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/home_component_model.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/home_page_layout_model.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/repository/home_repository.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/domain/base_repository/home_base_repository.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/domain/enums/app_bar_enum.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/presentation/controller/home_state.dart';
+import 'package:knowticed_plus/core/helper/format_title.dart';
 
 enum PreviewMode { desktop, tablet, mobile }
 
@@ -100,14 +104,10 @@ class AppHomeCubit extends Cubit<HomeState> {
   /// `editComponent` / `removeComponent` do `removeWhere` + `add`, so the same
   /// layout can come back in a different list ORDER with fresh instances. The
   /// signature is sorted, so only a real difference in what sits where counts.
+  ///
+  /// Header icons are NOT compared (Owner 21/10/2026): they save themselves
+  /// on add / remove, so counting them lit Save up until that save landed.
   bool get hasChanges {
-    final List<String> icons =
-        selectedHeaderIcons.map((HeaderIconItem i) => i.svgPath).toList();
-    if (icons.length != _savedHeaderIconPaths.length) return true;
-    for (int i = 0; i < icons.length; i++) {
-      if (icons[i] != _savedHeaderIconPaths[i]) return true;
-    }
-
     final List<String> edited = _componentSignature(_editingComponent);
     final List<String> active = _componentSignature(_activeComponents);
     if (edited.length != active.length) return true;
@@ -121,7 +121,9 @@ class AppHomeCubit extends Cubit<HomeState> {
   List<String> _componentSignature(List<HomeComponentModel> components) =>
       components
           .map((HomeComponentModel c) =>
-              '${c.rowNumber}:${c.columnNumber}:${c.component.databaseName}')
+              '${c.rowNumber}:${c.columnNumber}:${c.component.databaseName}'
+              // D-242: a settings change is a layout change (Save enables).
+              ':${jsonEncode(SplayTreeMap<String, dynamic>.of(c.settings))}')
           .toList()
         ..sort();
 
@@ -131,12 +133,54 @@ class AppHomeCubit extends Cubit<HomeState> {
   ///
   /// Parameters:
   /// - [icon]: The HeaderIconItem to be added
-  void addHeaderIcon(HeaderIconItem icon) {
-    if (selectedHeaderIcons.length < 3) {
+  /// 21/10/2026 (Moataz): picking an icon in the "+" picker applies at once
+  /// — it is saved straight away, no page Save needed.
+  /// [max]: 3 on the tablet, 2 on the phone (Owner 21/10/2026).
+  void addHeaderIcon(HeaderIconItem icon, {int max = 3}) {
+    // Owner 21/10/2026: one shortcut icon can be added only once.
+    if (selectedHeaderIcons
+        .any((HeaderIconItem i) => i.svgPath == icon.svgPath)) {
+      return;
+    }
+    if (selectedHeaderIcons.length < max) {
       selectedHeaderIcons.add(icon);
       emit(HomeIconsUpdated(List.from(selectedHeaderIcons)));
+      saveHeaderIcons();
     }
   }
+
+  /// Saves ONLY the header icons, next to the SAVED widget layout — an
+  /// unsaved widget draft on the page is not written with them.
+  Future<bool> saveHeaderIcons() async {
+    final List<String> headerIconPaths =
+        selectedHeaderIcons.map((HeaderIconItem icon) => icon.svgPath).toList();
+    final String? userEmail =
+        Get.find<MainCoreEmployeeController>().employeeEntity?.email;
+    if (userEmail == null || userEmail.isEmpty) {
+      emit(HomeError('Your account is still loading. Please try again.'));
+      return false;
+    }
+    final Either<Failure, dynamic> result =
+        await homeRepository.updateHomeComponents(
+      components: _activeComponents,
+      appBarOptions: const <AppBarOptions>[],
+      headerIcons: headerIconPaths,
+      currentUserEmail: userEmail,
+    );
+    return result.fold<bool>(
+      (Failure _) {
+        emit(
+            HomeError('Could not save your shortcut icons. Please try again.'));
+        return false;
+      },
+      (_) {
+        _savedHeaderIconPaths = headerIconPaths;
+        emit(HomeIconsUpdated(List.from(selectedHeaderIcons)));
+        return true;
+      },
+    );
+  }
+
   PreviewMode currentPreviewMode = PreviewMode.tablet; // Default to tablet
 
   /// Function Name: [setPreviewMode]
@@ -156,11 +200,27 @@ class AppHomeCubit extends Cubit<HomeState> {
   ///
   /// Parameters:
   /// - [index]: The index of the icon to be removed
+  /// Removing a shortcut icon applies at once too, like adding one
+  /// (21/10/2026) — the icon strip is saved on its own.
   void removeHeaderIcon(int index) {
     if (index >= 0 && index < selectedHeaderIcons.length) {
       selectedHeaderIcons.removeAt(index);
       emit(HomeIconsUpdated(List.from(selectedHeaderIcons)));
+      saveHeaderIcons();
     }
+  }
+
+  /// Function Name: [discardEdits]
+  ///
+  /// Purpose: Drop the unsaved layout — the editing rows go back to the
+  ///          saved ones (X-140, Home Preview › Discard Changes).
+  void discardEdits() {
+    _editingComponent = List<HomeComponentModel>.from(_activeComponents);
+    selectedHeaderIcons = _savedHeaderIconPaths
+        .map<HeaderIconItem?>(HeaderIconItem.fromSvgPath)
+        .whereType<HeaderIconItem>()
+        .toList();
+    emit(HomeEditingComponent());
   }
 
   /// Function Name: [getActiveRowComponents]
@@ -200,12 +260,16 @@ class AppHomeCubit extends Cubit<HomeState> {
   /// Parameters:
   /// - [rowIndex]: The row index of the component
   /// - [columnIndex]: The column index of the component
-  selectComponentToEdit({required int rowIndex, required int columnIndex}) {
+  void selectComponentToEdit(
+      {required int rowIndex, required int columnIndex}) {
     List<HomeComponents> components = HomeComponents.values;
     _readyToAddComponent = [];
     for (var component in components) {
+      // Owner 24/10/2026: one Bar chart (the one with 1D / 7D / 30D). The old
+      // small one is no longer offered; copies already placed still draw.
+      if (component == HomeComponents.barChart) continue;
       HomeComponentModel model =
-      component.getModel(rowNumber: rowIndex, columnNumber: columnIndex);
+          component.getModel(rowNumber: rowIndex, columnNumber: columnIndex);
       if (component.widget(model) != null) _readyToAddComponent.add(model);
     }
   }
@@ -216,9 +280,69 @@ class AppHomeCubit extends Cubit<HomeState> {
   ///
   /// Parameters:
   /// - [HomeComponentModel][component]: The component to be edited
-  editComponent(HomeComponentModel component) {
+  /// Function Name: [swapComponents]
+  ///
+  /// Purpose: Drag-and-drop reordering on Home Layout (X-132, 20/10/2026):
+  ///          move [moving] to ([toRow], [toColumn]); whatever sat there
+  ///          takes the moving widget's old cell. Nothing is written until
+  ///          Save.
+  void swapComponents(
+    HomeComponentModel moving, {
+    required int toRow,
+    required int toColumn,
+  }) {
+    if (moving.rowNumber == toRow && moving.columnNumber == toColumn) return;
+    final HomeComponentModel? target =
+        getEditedComponent(rowIndex: toRow, columnIndex: toColumn);
+    _editingComponent.removeWhere((HomeComponentModel c) =>
+        (c.rowNumber == moving.rowNumber &&
+            c.columnNumber == moving.columnNumber) ||
+        (c.rowNumber == toRow && c.columnNumber == toColumn));
+    // copyWith, not getModel: a widget keeps its settings when it moves.
+    _editingComponent
+        .add(moving.copyWith(rowNumber: toRow, columnNumber: toColumn));
+    if (target != null) {
+      _editingComponent.add(target.copyWith(
+          rowNumber: moving.rowNumber, columnNumber: moving.columnNumber));
+    }
+    emit(HomeEditingComponent());
+  }
+
+  /// Function Name: [updateComponentSettings]
+  ///
+  /// Purpose: D-242 — store the gear dialog's [settings] on the PLACED copy of
+  ///          [model] (matched by row / column). The widget redraws at once
+  ///          because the editing list is what Home Layout renders; the values
+  ///          reach Firebase with the layout's Save.
+  void updateComponentSettings(
+      HomeComponentModel model, Map<String, dynamic> settings) {
+    final int at = _editingComponent.indexWhere((HomeComponentModel c) =>
+        c.rowNumber == model.rowNumber &&
+        c.columnNumber == model.columnNumber &&
+        c.component == model.component);
+    if (at < 0) return;
+    _editingComponent[at] = _editingComponent[at].copyWith(settings: settings);
+    emit(HomeEditingComponent());
+  }
+
+  /// Function Name: [updateReadyToAddSettings]
+  ///
+  /// Purpose: D-242 — settings chosen on the Adding Widget page are held on
+  ///          the picker's draft of that widget and travel with it when the
+  ///          card is picked.
+  void updateReadyToAddSettings(
+      HomeComponentModel model, Map<String, dynamic> settings) {
+    final int at = _readyToAddComponent
+        .indexWhere((HomeComponentModel c) => c.component == model.component);
+    if (at < 0) return;
+    _readyToAddComponent[at] =
+        _readyToAddComponent[at].copyWith(settings: settings);
+    emit(HomeEditingComponent());
+  }
+
+  void editComponent(HomeComponentModel component) {
     _editingComponent.removeWhere((c) =>
-    c.rowNumber == component.rowNumber &&
+        c.rowNumber == component.rowNumber &&
         c.columnNumber == component.columnNumber);
     _editingComponent.add(component);
 
@@ -237,10 +361,12 @@ class AppHomeCubit extends Cubit<HomeState> {
     final bool isEnglish = locale?.languageCode == 'en';
     final String quoteAndAuthor = isEnglish
         ? FormatHelper.capitalize(getQuoteForToday())
-        : getQuoteForToday();
+        : getQuoteForToday(isArabic: locale?.languageCode == 'ar');
     final List<String> splitQuote = quoteAndAuthor.split(' - ');
     quote = splitQuote[0];
-    author = splitQuote.length > 1 ? splitQuote[1] : "Unknown";
+    author = splitQuote.length > 1
+        ? splitQuote[1]
+        : (locale?.languageCode == 'ar' ? "مجهول" : "Unknown");
   }
 
   /// Function Name: [initModules]
@@ -288,9 +414,9 @@ class AppHomeCubit extends Cubit<HomeState> {
   ///
   /// Parameters:
   /// - [component]: The component to be removed
-  removeComponent(HomeComponentModel component) {
+  void removeComponent(HomeComponentModel component) {
     _editingComponent.removeWhere((c) =>
-    c.rowNumber == component.rowNumber &&
+        c.rowNumber == component.rowNumber &&
         c.columnNumber == component.columnNumber);
     emit(HomeEditingComponent());
   }
@@ -375,7 +501,10 @@ class AppHomeCubit extends Cubit<HomeState> {
             List<HomeComponentModel>.from(layoutModel.activeComponents);
         _editingComponent = List<HomeComponentModel>.from(_activeComponents);
 
+        // toSet(): a layout saved before duplicates were blocked shows each
+        // shortcut once (Owner 21/10/2026).
         selectedHeaderIcons = layoutModel.headerIcons
+            .toSet()
             .map<HeaderIconItem?>(HeaderIconItem.fromSvgPath)
             .whereType<HeaderIconItem>()
             .toList();
@@ -384,9 +513,8 @@ class AppHomeCubit extends Cubit<HomeState> {
         // stored path this build no longer knows is dropped by the whereType
         // above, and the baseline has to match what the user can actually see
         // or the page would open already "changed".
-        _savedHeaderIconPaths = selectedHeaderIcons
-            .map((HeaderIconItem i) => i.svgPath)
-            .toList();
+        _savedHeaderIconPaths =
+            selectedHeaderIcons.map((HeaderIconItem i) => i.svgPath).toList();
       },
     );
     emit(HomeLoaded());

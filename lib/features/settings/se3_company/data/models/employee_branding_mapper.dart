@@ -8,10 +8,11 @@
 ///
 /// Added for CR-SKEL-SE3-N26. `Timestamp` conversion lives here so the domain
 /// entity can be infrastructure-free.
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:grc_module/features/settings/se3_company/domain/entities/employee_branding_entity.dart';
+import 'package:knowticed_plus/features/settings/se3_company/domain/entities/employee_branding_entity.dart';
 
 abstract class EmployeeBrandingMapper {
   /// Firestore field keys. Were repeated as literals in `fromMap` and `toMap`

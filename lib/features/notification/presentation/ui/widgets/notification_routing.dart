@@ -15,25 +15,64 @@
 /// `_getModuleFromString` and their own `context.read<AppDrawerCubit>()`. Both
 /// were wrong, and being wrong in triplicate is why every one of the three
 /// inbox screens showed "Error occurred" on tap. One copy now.
+///
+/// Updated: 7/10/2026 - View on a To-Do notification that carries a
+///          `Request_Id` opens THAT to-do's details (TodoModuleEntry); older
+///          To-Do notifications without one still open the module's list.
+/// Updated: 9/10/2026 - Time Tracker phase 4: `time_tracker` (and the legacy
+///          `tracking`) resolve to `Modules.timeTracker` — the drawer entry
+///          that replaced the legacy stub (phase 2) — and View on a Time
+///          Tracker notification with a `Request_Id` opens that request's
+///          details: the requester's, or the approver's when its page is
+///          `TimeTrackerNotificationPage.approvalDetails`
+///          ([timeTrackerLinkFor], mirrors the To-Do deep link).
 library;
 
+import 'package:knowticed_plus/core/extensions/context_extensions.dart'
+    show kpIsPhoneLayout;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-import 'package:grc_module/core/constants/app_constants.dart';
-import 'package:grc_module/core/enums/app_module.dart';
-import 'package:grc_module/features/notification/domain/enums/settings_module/settings_notification_pages.dart';
-import 'package:grc_module/core/helper/message_module/main_helper/messaging_interface_implementation.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
-import 'package:grc_module/features/home/h2_nav_bar/presentation/controller/nav_bar_cubit.dart';
-import 'package:grc_module/features/home/h3_app_drawer/presentation/controller/app_drawer_cubit.dart';
+import 'package:knowticed_plus/core/constants/app_constants.dart';
+import 'package:knowticed_plus/core/enums/app_module.dart';
+import 'package:knowticed_plus/core/custom/dialogs/custom_dialog_manager.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
+import 'package:knowticed_plus/features/notification/domain/enums/settings/settings_notification_pages.dart';
+import 'package:knowticed_plus/features/notification/domain/enums/messages/messages_notification_pages.dart';
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/main_helper/messaging_interface_implementation.dart';
+import 'package:knowticed_plus/core/helper/access/modules_enum.dart';
+import 'package:knowticed_plus/features/home/h2_nav_bar/presentation/controller/nav_bar_cubit.dart';
+import 'package:knowticed_plus/features/home/h3_app_drawer/presentation/controller/app_drawer_cubit.dart';
+import 'package:knowticed_plus/features/home/helpers/role_access.dart';
 // ADDED 12/9/2026 — the deep-link router. These four are the module roots that
 // hold a "pending section" hint; see [openNotification].
-import 'package:grc_module/features/notification/data/models/notification_data_model.dart';
-import 'package:grc_module/features/notification/domain/routing/notification_deep_link.dart';
-import 'package:grc_module/features/roles/r1_role_management/presentation/ui/pages/role_screen.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/ui/pages/settings_screen.dart';
+import 'package:knowticed_plus/features/knowledge_hub/presentation/ui/pages/knowledge_hub_responsive_page.dart'; // [module:knowledge_hub]
+import 'package:knowticed_plus/features/notification/data/models/notification_data_model.dart';
+import 'package:knowticed_plus/features/notification/domain/routing/notification_deep_link.dart';
+import 'package:knowticed_plus/features/notification/domain/routing/pending_notification_record.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/presentation/ui/pages/role_screen.dart';
+import 'package:knowticed_plus/features/services/sv1_home_page_services/presentation/ui/pages/responsive_services.dart'; // [module:services]
+import 'package:knowticed_plus/features/settings/presentation/ui/pages/settings_screen.dart';
+import 'package:knowticed_plus/features/form_builder/presentation/navigation/form_builder_shortcut.dart'; // [module:form_builder]
+import 'package:knowticed_plus/features/grc/grc11_module/presentation/ui/pages/grc_page.dart'; // [module:grc]
+import 'package:knowticed_plus/features/todo/presentation/ui/pages/todo_module_entry.dart';
+// ADDED 9/10/2026 — Time Tracker deep link (phase 4).
+import 'package:knowticed_plus/features/notification/domain/enums/time_tracker/time_tracker_notification_pages.dart';
+import 'package:knowticed_plus/features/time_tracker/presentation/ui/pages/time_tracker_module_entry.dart'; // [module:time_tracker]
+
+/// Which Time Tracker request a notification opens, and as whom. ADDED
+/// 9/10/2026 (phase 4).
+class TimeTrackerNotificationLink {
+  const TimeTrackerNotificationLink(
+      {required this.requestId, required this.asApproval});
+
+  final String requestId;
+
+  /// Open the approver's details (Approve / Reject) instead of the
+  /// requester's.
+  final bool asApproval;
+}
 
 abstract class NotificationRouting {
   /// Function Name: [moduleForStoredKey]
@@ -87,8 +126,10 @@ abstract class NotificationRouting {
           return Modules.todo;
         case AppModule.services:
           return Modules.services;
+        // CHANGED 9/10/2026 — Time Tracker phase 4: the drawer / nav bar
+        // carry `Modules.timeTracker` (phase 2 took the legacy slot).
         case AppModule.timeTracker:
-          return Modules.tracking;
+          return Modules.timeTracker;
         case AppModule.database:
           return Modules.database;
         case AppModule.qiyas:
@@ -103,7 +144,8 @@ abstract class NotificationRouting {
           return Modules.inventory;
         case AppModule.messages:
           return Modules.messages;
-          throw UnimplementedError();
+        case AppModule.formBuilder:
+          return Modules.formBuilder;
       }
     }
 
@@ -122,7 +164,8 @@ abstract class NotificationRouting {
       case 'services_app':
         return Modules.formBuilder;
       case 'tracking':
-        return Modules.tracking;
+        // CHANGED 9/10/2026 — legacy key → the real Time Tracker module.
+        return Modules.timeTracker;
       case 'roles':
         return Modules.roles;
       case 'requests':
@@ -205,19 +248,24 @@ abstract class NotificationRouting {
   // The literals live here, named, instead of being scattered across the three
   // pages and the app bar.
 
-  /// Shell index for the inbox — mirrors `custom_drawer.dart`.
-  static const int inboxShellIndex = 19;
+  // FIXED 17/10/2026: these were 19 / 20 / 21 — real positions in the
+  // drawer's module list. A tenant with 19+ allowed modules (the admin sees
+  // all of them) landed CRM and its neighbours on those numbers, and the shell
+  // then hid the module page and showed nothing. Negative numbers can never
+  // collide with a module position.
+
+  /// Shell index for the inbox — read by `custom_drawer.dart`.
+  static const int inboxShellIndex = -1;
 
   /// Shell index for the cleared list.
-  static const int clearedShellIndex = 20;
+  static const int clearedShellIndex = -2;
 
   /// Shell index for the pinned list.
-  static const int pinnedShellIndex = 21;
+  static const int pinnedShellIndex = -3;
 
   /// The desktop / tablet shell is what renders the sidebar; below this the
   /// app runs NavScreen, which does not. Same breakpoint as main_responsive.
-  static bool _hasShell(BuildContext context) =>
-      MediaQuery.of(context).size.width >= 600;
+  static bool _hasShell(BuildContext context) => !kpIsPhoneLayout(context);
 
   /// Function Name: [openInShell]
   ///
@@ -286,17 +334,40 @@ abstract class NotificationRouting {
   /// this way since 22/8/2026; the other three follow it.
   ///
   /// WHAT IT CANNOT DO. Land on a RECORD — a specific database, document,
-  /// conversation or request. A stored notification carries no target id, so
-  /// a page key naming a detail screen resolves to the list that screen opens
-  /// from. See the header of `notification_deep_link.dart`.
+  /// conversation or request — EXCEPT a to-do: since 7/10/2026 To-Do
+  /// notifications carry `Request_Id` (see [todoIdFor]). For every other
+  /// module a page key naming a detail screen resolves to the list that screen
+  /// opens from. See the header of `notification_deep_link.dart`.
   ///
   /// Parameters:
   /// - [context]: the inbox page's context, used only to pop it afterwards.
   /// - [notification]: the tapped notification.
   ///
   /// Returns: nothing. A notification whose module resolves to nothing, or to
-  /// a module this user's drawer does not carry, is a silent no-op — the
-  /// pre-existing behaviour, snackbars deliberately removed.
+  /// a module this user's drawer does not carry, shows "Access Denied" for 3
+  /// seconds (22/10/2026 — was a silent no-op; see [_showNoAccess]).
+  /// The Time Tracker request details for a Time Tracker request link, or null
+  /// (17/10/2026: its own helper so module-split builds without Time Tracker
+  /// keep the shared routing — the block below is cut out there).
+  static Widget? _timeTrackerRequestPage(
+    TimeTrackerNotificationLink? request, [
+    DateTime? attendanceDay,
+  ]) {
+    // [module:time_tracker]
+    if (request != null) {
+      return TimeTrackerModuleEntry(
+        initialRequestId: request.requestId,
+        initialAsApproval: request.asApproval,
+      );
+    }
+    // 22/10/2026 — a late / absent calendar card: Attendance on that day.
+    if (attendanceDay != null) {
+      return TimeTrackerModuleEntry(initialAttendanceDate: attendanceDay);
+    }
+    // [/module:time_tracker]
+    return null;
+  }
+
   static void openNotification(
     BuildContext context,
     NotificationModelSystem notification,
@@ -304,11 +375,43 @@ abstract class NotificationRouting {
     // 21/9/2026 — change-request notifications are FILED under User
     // Management but still point at a Settings page (their name_of_page is a
     // SettingsNotificationPage key); the page decides where View lands.
-    final Modules? targetModule =
-        SettingsNotificationPage.fromKey(notification.nameOfPage) != null
+    // 22/10/2026 — Owner: a change request WAITING FOR REVIEW opens in
+    // Roles → User Management → Requests (where it is approved); the
+    // submitter's own request still opens in Settings → Requests.
+    final SettingsNotificationPage? settingsPage =
+        SettingsNotificationPage.fromKey(notification.nameOfPage);
+    final bool isReview =
+        settingsPage == SettingsNotificationPage.previewChangesPage ||
+            settingsPage ==
+                SettingsNotificationPage.previewHealthInsuranceChangesPage;
+    final Modules? targetModule = isReview
+        ? Modules.roles
+        : settingsPage != null
             ? Modules.settings
             : moduleForStoredKey(notification.nameOfModule);
-    if (targetModule == null) return;
+    if (targetModule == null) {
+      _showNoAccess(context);
+      return;
+    }
+
+    // 22/10/2026 — Owner (audit): a one-to-one "new message" notification
+    // opened the Messages module's front page, and the reader then had to find
+    // the person again. View now opens that chat — exactly what the card's
+    // Message button does.
+    // 22/10/2026 — a notification about a GROUP (page `GroupChat`) goes to
+    // the Messages module, which opens that group; only a one-to-one `chat`
+    // opens the sender's chat here.
+    final bool namesGroup =
+        MessagesNotificationPage.fromKey(notification.nameOfPage) ==
+            MessagesNotificationPage.groupChat;
+    if (targetModule == Modules.messages &&
+        !namesGroup &&
+        MessagesNotificationPage.fromKey(notification.nameOfPage) ==
+            MessagesNotificationPage.chat &&
+        notification.senderEmail.trim().isNotEmpty) {
+      messageSender(context, notification);
+      return;
+    }
 
     final NotificationDeepLink link = NotificationDeepLink.resolve(
       module: targetModule,
@@ -316,11 +419,220 @@ abstract class NotificationRouting {
       pageKey: notification.nameOfPage,
     );
 
-    if (_hasShell(context)) {
-      _openInDrawer(context, targetModule, link);
-    } else {
-      _openOnMobile(context, targetModule, link);
+    final String? todoId = todoIdFor(notification, targetModule);
+    final TimeTrackerNotificationLink? request =
+        timeTrackerLinkFor(notification, targetModule);
+
+    // 22/10/2026 — Owner: View opens the RECORD the notification is about.
+    // Every other module reads its record from here on its first build (see
+    // pending_notification_record.dart); To-Do / Time Tracker keep their own.
+    final bool hasRecord = todoId == null &&
+        request == null &&
+        notification.requestId.trim().isNotEmpty;
+    void armRecord() {
+      if (hasRecord) {
+        PendingNotificationRecord.arm(
+            targetModule, notification.requestId, notification.nameOfPage);
+      }
     }
+
+    if (_hasShell(context)) {
+      armRecord();
+      _openInDrawer(context, targetModule, link,
+          todoId: todoId, request: request);
+    } else {
+      // Armed only just before the fresh module page is built: switching to
+      // a tab the first time builds the tab's own root, which would take the
+      // record and then be replaced (22/10/2026, phone device round).
+      _openNotificationOnPhone(context, targetModule, link,
+          todoId: todoId,
+          request: request,
+          hasRecord: hasRecord,
+          armRecord: armRecord);
+    }
+  }
+
+  /// Function Name: [_openNotificationOnPhone]
+  ///
+  /// Purpose: The phone half of View. ADDED 22/10/2026 — Owner: View pushed
+  /// the module over Home, so the bottom bar still said Home. A module with
+  /// its own bar tab now opens IN that tab (it highlights; the section /
+  /// record opens on the module's main page, so Back lands there) after the
+  /// inbox closes. Any other module replaces the inbox as before, so Back
+  /// returns to Home.
+  static Future<void> _openNotificationOnPhone(
+    BuildContext context,
+    Modules targetModule,
+    NotificationDeepLink link, {
+    String? todoId,
+    TimeTrackerNotificationLink? request,
+    bool hasRecord = false,
+    VoidCallback? armRecord,
+  }) async {
+    if (!Get.isRegistered<NavBarCubit>()) {
+      armRecord?.call();
+      _openOnMobile(context, targetModule, link,
+          todoId: todoId, request: request);
+      return;
+    }
+    final NavBarCubit navBar = Get.find<NavBarCubit>();
+    final bool inBar = navBar.navBarModules.contains(targetModule);
+    final bool inMore = navBar.moreListModules.contains(targetModule);
+    if (!inBar && !inMore) {
+      armRecord?.call();
+      _openOnMobile(context, targetModule, link,
+          todoId: todoId, request: request);
+      return;
+    }
+    final NavigatorState navigator = Navigator.of(context);
+    if (navigator.canPop()) navigator.pop();
+    // A pending record needs a FRESH module root (it is read in initState).
+    final bool deep =
+        todoId != null || request != null || link.hasSection || hasRecord;
+    Widget page() => todoId != null
+        ? TodoModuleEntry(initialTodoId: todoId)
+        : (_timeTrackerRequestPage(request) ?? targetModule.widget);
+    void beforeOpen() {
+      _armSection(link);
+      armRecord?.call();
+    }
+
+    if (inBar) {
+      await RoleAccess.openInTab(targetModule,
+          beforeOpen: beforeOpen, page: deep ? page : null);
+    } else {
+      await RoleAccess.openInMoreTab(targetModule,
+          beforeOpen: beforeOpen, page: page);
+    }
+  }
+
+  /// Function Name: [openFromCalendar]
+  ///
+  /// Purpose: Open what a calendar card is about. ADDED 22/10/2026 — Owner:
+  /// a calendar card opened Time Tracker / To-Do as a page pushed over Home,
+  /// so the sidebar still said Home; and every other module's card did
+  /// nothing. It now goes the notification way: on the tablet / desktop
+  /// shell the module is SELECTED in the sidebar (it highlights, and Home
+  /// keeps the calendar open underneath — Home in the sidebar returns to
+  /// it); on a phone the module is pushed over the calendar, so Back
+  /// returns to it.
+  ///
+  /// Parameters:
+  /// - [context]: the calendar card's context.
+  /// - [link]: module + section, built by `CalendarEventTap`.
+  /// - [todoId] / [request] / [attendanceDay]: the record, where the module
+  ///   can open one.
+  /// Set when a calendar card opens a module on the shell: the next tap on
+  /// Home in the sidebar returns to the Calendar page instead of the Home
+  /// page (Owner, 22/10/2026). Read and cleared by `custom_drawer.dart`.
+  static bool returnToCalendar = false;
+
+  static void openFromCalendar(
+    BuildContext context,
+    NotificationDeepLink link, {
+    String? todoId,
+    TimeTrackerNotificationLink? request,
+    DateTime? attendanceDay,
+  }) {
+    if (_hasShell(context)) {
+      returnToCalendar = true;
+      _openInDrawer(context, link.module, link,
+          todoId: todoId,
+          request: request,
+          attendanceDay: attendanceDay,
+          popCaller: false);
+    } else {
+      _openFromCalendarOnPhone(context, link,
+          todoId: todoId, request: request, attendanceDay: attendanceDay);
+    }
+  }
+
+  /// Function Name: [_openFromCalendarOnPhone]
+  ///
+  /// Purpose: The phone half of [openFromCalendar]. A module with its own
+  /// bottom-bar tab opens IN that tab (the bar highlights it; the Home tab
+  /// keeps the calendar, so tapping Home returns to it), with the section /
+  /// record pushed on top of the module's main page. Any other module is
+  /// pushed over the calendar, so Back returns to it — the same split as
+  /// Home's own cards (`openHomeMessagesModule`).
+  static Future<void> _openFromCalendarOnPhone(
+    BuildContext context,
+    NotificationDeepLink link, {
+    String? todoId,
+    TimeTrackerNotificationLink? request,
+    DateTime? attendanceDay,
+  }) async {
+    final bool opensRecord =
+        todoId != null || request != null || attendanceDay != null;
+    final bool deep = opensRecord || link.hasSection;
+    Widget page() => todoId != null
+        ? TodoModuleEntry(initialTodoId: todoId)
+        : (_timeTrackerRequestPage(request, attendanceDay) ??
+            link.module.widget);
+    if (await RoleAccess.openInTab(link.module,
+        beforeOpen: () => _armSection(link), page: deep ? page : null)) {
+      return;
+    }
+    // Under More: opened inside the More tab, as the More page does.
+    if (await RoleAccess.openInMoreTab(link.module,
+        beforeOpen: () => _armSection(link), page: page)) {
+      return;
+    }
+    if (!context.mounted) return;
+    _openOnMobile(context, link.module, link,
+        todoId: todoId,
+        request: request,
+        attendanceDay: attendanceDay,
+        replaceCaller: false);
+  }
+
+  /// Function Name: [timeTrackerLinkFor]
+  ///
+  /// Purpose: The Time Tracker request a notification should open. ADDED
+  /// 9/10/2026 (phase 4) — Time Tracker notifications store the request's id
+  /// as `Request_Id` and say in `name_of_page` whether View opens the
+  /// requester's details or the approver's.
+  ///
+  /// Parameters:
+  /// - [notification]: the tapped notification.
+  /// - [targetModule]: its resolved drawer module.
+  ///
+  /// Returns: [TimeTrackerNotificationLink?] — null when the module is not
+  /// Time Tracker or no id is stored (→ the module's main page).
+  static TimeTrackerNotificationLink? timeTrackerLinkFor(
+    NotificationModelSystem notification,
+    Modules? targetModule,
+  ) {
+    if (targetModule != Modules.timeTracker) return null;
+    final String id = notification.requestId.trim();
+    if (id.isEmpty) return null;
+    return TimeTrackerNotificationLink(
+      requestId: id,
+      asApproval:
+          TimeTrackerNotificationPage.fromKey(notification.nameOfPage) ==
+              TimeTrackerNotificationPage.approvalDetails,
+    );
+  }
+
+  /// Function Name: [todoIdFor]
+  ///
+  /// Purpose: The to-do a notification should open, or null for "the module's
+  /// list". ADDED 7/10/2026 — the first record-level link: To-Do
+  /// notifications store the to-do's id as `Request_Id`.
+  ///
+  /// Parameters:
+  /// - [notification]: the tapped notification.
+  /// - [targetModule]: its resolved drawer module.
+  ///
+  /// Returns: [String?] — null when the module is not To-Do or no id is
+  /// stored (notifications written before 7/10/2026).
+  static String? todoIdFor(
+    NotificationModelSystem notification,
+    Modules? targetModule,
+  ) {
+    if (targetModule != Modules.todo) return null;
+    final String id = notification.requestId.trim();
+    return id.isEmpty ? null : id;
   }
 
   /// Function Name: [_openInDrawer]
@@ -330,18 +642,43 @@ abstract class NotificationRouting {
   static void _openInDrawer(
     BuildContext context,
     Modules targetModule,
-    NotificationDeepLink link,
-  ) {
+    NotificationDeepLink link, {
+    String? todoId,
+    TimeTrackerNotificationLink? request,
+    DateTime? attendanceDay,
+    bool popCaller = true,
+  }) {
     final AppDrawerCubit appDrawerController = drawerCubit();
     final int moduleIndex =
         appDrawerController.allowedDrawerModules.indexOf(targetModule);
-    // Not in this user's drawer: no role or no licence for it. Silent no-op,
-    // the pre-existing behaviour — snackbars deliberately removed.
-    if (moduleIndex == -1) return;
+    // Not in this user's drawer: no role or no licence for it.
+    // 22/10/2026 — Owner (audit): was a silent no-op, so View looked broken.
+    if (moduleIndex == -1) {
+      _showNoAccess(context);
+      return;
+    }
 
     // Armed BEFORE the drawer switches: updateSelectedIndex is what causes the
     // module to be built, and the module reads its hint during that build.
     _armSection(link);
+    // The target module is remounted below, so TodoModuleEntry reads the hint
+    // as its navigator builds its first routes.
+    if (todoId != null) TodoModuleEntry.pendingTodoId = todoId;
+    // ADDED 9/10/2026 — same one-shot hint for a Time Tracker request.
+    // [module:time_tracker]
+    if (request != null) {
+      TimeTrackerModuleEntry.pendingRequestId = request.requestId;
+      TimeTrackerModuleEntry.pendingAsApproval = request.asApproval;
+    }
+    // 22/10/2026 — a late / absent calendar card: Attendance on that day.
+    if (attendanceDay != null) {
+      TimeTrackerModuleEntry.pendingAttendanceDate = attendanceDay;
+    }
+    // [/module:time_tracker]
+    // 22/10/2026 — Owner (View lag): the shell keeps every module mounted
+    // behind the notification pages now, so only THIS module is rebuilt —
+    // fresh, so it reads the hints armed above on its first build.
+    appDrawerController.remountModulePage(targetModule);
     appDrawerController.updateSelectedIndex(moduleIndex);
 
     // Guarded, unlike the three copies this replaces, which called
@@ -349,6 +686,8 @@ abstract class NotificationRouting {
     // not a pushed route at all — it is rendered at sentinel index 19 — so
     // there was nothing of ours to pop and the call reached whatever route sat
     // below.
+    // 22/10/2026 — not from the calendar: it stays open under Home.
+    if (!popCaller) return;
     final NavigatorState navigator = Navigator.of(context);
     if (navigator.canPop()) navigator.pop();
   }
@@ -377,8 +716,12 @@ abstract class NotificationRouting {
   static void _openOnMobile(
     BuildContext context,
     Modules targetModule,
-    NotificationDeepLink link,
-  ) {
+    NotificationDeepLink link, {
+    String? todoId,
+    TimeTrackerNotificationLink? request,
+    DateTime? attendanceDay,
+    bool replaceCaller = true,
+  }) {
     // Role ∩ licence, as the phone computes it: `navBarModules` is the bottom
     // bar and `moreListModules` is everything else the user may open (see
     // `_getMoreListModules`). Skipped entirely when the cubit is absent or
@@ -388,24 +731,58 @@ abstract class NotificationRouting {
       final NavBarCubit navBar = Get.find<NavBarCubit>();
       final bool listsReady =
           navBar.navBarModules.isNotEmpty || navBar.moreListModules.isNotEmpty;
-      final bool allowed = navBar.navBarModules.contains(targetModule) ||
+      // 22/10/2026 — Settings is a system module every user has (the drawer
+      // adds it unconditionally), but the phone's lists only carry what the
+      // role names, so a change-request notification could be refused here.
+      final bool allowed = targetModule == Modules.settings ||
+          navBar.navBarModules.contains(targetModule) ||
           navBar.moreListModules.contains(targetModule);
-      if (listsReady && !allowed) return;
+      if (listsReady && !allowed) {
+        _showNoAccess(context);
+        return;
+      }
     }
 
     _armSection(link);
 
     final NavigatorState navigator = Navigator.of(context);
-    final MaterialPageRoute<void> route =
-        MaterialPageRoute<void>(builder: (_) => targetModule.widget);
+    // A To-Do notification with an id opens that to-do's details on top of
+    // the module's list; everything else opens the module as before.
+    // ADDED 9/10/2026 — a Time Tracker request notification opens that
+    // request's details on top of the module's main page.
+    final MaterialPageRoute<void> route = MaterialPageRoute<void>(
+      builder: (_) => todoId != null
+          ? TodoModuleEntry(initialTodoId: todoId)
+          : (_timeTrackerRequestPage(request, attendanceDay) ??
+              targetModule.widget),
+    );
 
     // canPop tells us whether the inbox is a route of ours to replace. It
     // always is on this path today; the push is the safe fallback.
-    if (navigator.canPop()) {
+    // 22/10/2026 — from the calendar: pushed over it, so Back returns to it.
+    if (replaceCaller && navigator.canPop()) {
       navigator.pushReplacement(route);
     } else {
       navigator.push(route);
     }
+  }
+
+  /// Function Name: [_showNoAccess]
+  ///
+  /// Purpose: Say why View did nothing. ADDED 22/10/2026 — Owner asked for
+  /// every notification type to be checked; one whose module this user cannot
+  /// open (no role / no licence, or an unknown module key) used to be a silent
+  /// no-op, which reads as a broken button. Same self-closing warning as the
+  /// Message button's failures ([showOpenChatFailure]).
+  static void _showNoAccess(BuildContext context) {
+    if (!context.mounted) return;
+    CustomDialogManager.showMessage(
+      context: context,
+      lottiePath:
+          'assets/lottie_assets/main_lottie_assets/lot_status_warning.json',
+      title: S.of(context).accessDenied,
+      closeAfter: const Duration(seconds: 3),
+    );
   }
 
   /// Function Name: [_armSection]
@@ -421,7 +798,27 @@ abstract class NotificationRouting {
     if (link.settingsSection != null) {
       SettingsScreen.pendingInitialIndex = link.settingsSection!.containerIndex;
     }
-    // Knowledge Hub / Services sections: those modules are not in this app.
+    // [module:knowledge_hub]
+    if (link.knowledgeHubSection != null) {
+      KnowledgeHubPage.pendingSection = link.knowledgeHubSection;
+    }
+    // [/module:knowledge_hub]
+    // [module:services]
+    if (link.servicesSection != null) {
+      ServicesResponsivePage.pendingSection = link.servicesSection;
+    }
+    // [/module:services]
+    // ADDED 22/10/2026 — Form Builder tab / GRC Action Center.
+    // [module:form_builder]
+    if (link.formBuilderTab != null) {
+      FormBuilderShortcuts.pending = link.formBuilderTab;
+    }
+    // [/module:form_builder]
+    // [module:grc]
+    if (link.grcActionCenter) {
+      GovernanceRiskAndCompliancePage.pendingActionCenter = true;
+    }
+    // [/module:grc]
   }
 
   /// Function Name: [formatTimestamp]

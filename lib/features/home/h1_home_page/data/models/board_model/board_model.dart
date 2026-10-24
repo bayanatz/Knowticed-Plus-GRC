@@ -9,15 +9,16 @@
 ///          `card_model/card_model.dart` for why that module was empty of
 ///          everything except models.
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
-import 'package:grc_module/features/home/h1_home_page/data/models/board_model/board_department.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/board_model/board_name.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/board_model/messaging_channels.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/card_model/card_model.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/board_model/board_description.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/board_model/board_image.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/board_model/board_tasks.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/board_model/board_members.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/board_model/board_department.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/board_model/board_name.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/board_model/messaging_channels.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/card_model/card_model.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/board_model/board_description.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/board_model/board_image.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/board_model/board_tasks.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/board_model/board_members.dart';
 
 class BoardModel {
   String? boardId;

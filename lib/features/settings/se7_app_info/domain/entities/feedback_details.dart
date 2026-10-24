@@ -24,6 +24,7 @@
 /// WIRE VALUES ARE SNAKE_CASE AND PERMANENT. They are what lands in Firestore.
 /// Renaming an enum CONSTANT is free; renaming its [wireValue] orphans every
 /// document already written, exactly as [FeedbackKind] documents.
+library;
 
 /// Function Name: [_fromWire]
 ///
@@ -353,8 +354,7 @@ class FeedbackDetails {
       module: FeedbackModule.fromWire(map['module']?.toString()),
       screenSection:
           FeedbackScreenSection.fromWire(map['screenSection']?.toString()),
-      designIssue:
-          FeedbackDesignIssue.fromWire(map['designIssue']?.toString()),
+      designIssue: FeedbackDesignIssue.fromWire(map['designIssue']?.toString()),
       logicIssue: FeedbackLogicIssue.fromWire(map['logicIssue']?.toString()),
       device: FeedbackDevice.fromWire(map['device']?.toString()),
       softwareType:

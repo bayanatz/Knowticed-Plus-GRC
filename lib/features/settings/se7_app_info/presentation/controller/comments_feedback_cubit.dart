@@ -11,6 +11,7 @@
 /// Shaped after `MyRequestCubit`: one loaded state carrying both the full list
 /// and the filtered one, so the widget never filters and the chip counts can
 /// never disagree with the cards below them.
+library;
 
 import 'dart:typed_data';
 
@@ -22,12 +23,14 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 
-import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/controller/settings_controller.dart';
-import 'package:grc_module/features/settings/se7_app_info/data/repository/feedback_repository.dart';
-import 'package:grc_module/features/settings/se7_app_info/domain/base_repository/feedback_base_repository.dart';
-import 'package:grc_module/features/settings/se7_app_info/domain/entities/app_feedback.dart';
-import 'package:grc_module/features/settings/se7_app_info/presentation/controller/comments_feedback_state.dart';
+import 'package:knowticed_plus/core/app_services/firebase/live_refresh.dart';
+import 'package:knowticed_plus/core/network/failure_model.dart';
+import 'package:knowticed_plus/features/settings/presentation/controller/settings_controller.dart';
+import 'package:knowticed_plus/features/settings/se7_app_info/data/repository/feedback_repository.dart';
+import 'package:knowticed_plus/features/settings/se7_app_info/data/utils/feedback_collection_paths.dart';
+import 'package:knowticed_plus/features/settings/se7_app_info/domain/base_repository/feedback_base_repository.dart';
+import 'package:knowticed_plus/features/settings/se7_app_info/domain/entities/app_feedback.dart';
+import 'package:knowticed_plus/features/settings/se7_app_info/presentation/controller/comments_feedback_state.dart';
 
 class CommentsFeedbackCubit extends Cubit<CommentsFeedbackState> {
   CommentsFeedbackCubit({FeedbackBaseRepository? repository})
@@ -37,6 +40,7 @@ class CommentsFeedbackCubit extends Cubit<CommentsFeedbackState> {
   }
 
   final FeedbackBaseRepository _repository;
+  final LiveRefresh _live = LiveRefresh();
 
   /// Owned here, not by the screen, so `close()` disposes it exactly once.
   final TextEditingController searchController = TextEditingController();
@@ -89,7 +93,13 @@ class CommentsFeedbackCubit extends Cubit<CommentsFeedbackState> {
           _publish(const <FeedbackRequest>[]);
         }
       },
-      (List<FeedbackRequest> items) => _publish(items),
+      (List<FeedbackRequest> items) {
+        _publish(items);
+        _live.watchPaths(<String>[
+          '${FeedbackCollectionPaths.settingsDoc}/'
+              '${FeedbackCollectionPaths.feedbackCollection}',
+        ], () => load(showLoading: false));
+      },
     );
   }
 
@@ -99,10 +109,12 @@ class CommentsFeedbackCubit extends Cubit<CommentsFeedbackState> {
     _publish(current.allItems, selectedStatus: status);
   }
 
-  void updateSort(FeedbackSortOption option) {
+  /// [option] null = the active sort was tapped again: deselect it (Moataz
+  /// 23/10/2026 — the list goes back to the default order).
+  void updateSort(FeedbackSortOption? option) {
     final CommentsFeedbackLoaded? current = _lastLoaded;
     if (current == null) return;
-    _publish(current.allItems, sortOption: option);
+    _publish(current.allItems, sortOption: option, clearSort: option == null);
   }
 
   void _onSearchChanged() {
@@ -120,11 +132,14 @@ class CommentsFeedbackCubit extends Cubit<CommentsFeedbackState> {
   /// Returns: [Future<Failure?>] — null on success. The screen decides which
   ///          dialog to show; a cubit has no business building UI.
   Future<Failure?> submit(AppFeedback feedback) async {
-    final CommentsFeedbackLoaded? current = _lastLoaded;
-    if (current != null && current.isSubmitting) {
+    // CR-KNP-SET-APP-10 (20/10/2026): the guard used to live on the loaded
+    // state, which is null until the list has loaded — so a double tap on
+    // Submit before the first load wrote the feedback twice. The flag is a
+    // plain field now, independent of what has been emitted.
+    if (_submitting) {
       return FeatureFailure('A submission is already in progress.');
     }
-
+    _submitting = true;
     _setSubmitting(true);
 
     final Either<Failure, void> result = await _repository.submit(feedback);
@@ -171,7 +186,12 @@ class CommentsFeedbackCubit extends Cubit<CommentsFeedbackState> {
     );
   }
 
+  /// True from the start of [submit] until its write returns, whatever the
+  /// emitted state is (CR-KNP-SET-APP-10).
+  bool _submitting = false;
+
   void _setSubmitting(bool value) {
+    _submitting = value;
     final CommentsFeedbackLoaded? current = _lastLoaded;
     if (current == null || isClosed) return;
     _lastLoaded = current.copyWith(isSubmitting: value);
@@ -187,14 +207,14 @@ class CommentsFeedbackCubit extends Cubit<CommentsFeedbackState> {
     FeedbackStatusFilter? selectedStatus,
     FeedbackSortOption? sortOption,
     String? searchText,
+    bool clearSort = false,
   }) {
     if (isClosed) return;
 
     final CommentsFeedbackLoaded? previous = _lastLoaded;
 
-    final FeedbackStatusFilter status = selectedStatus ??
-        previous?.selectedStatus ??
-        FeedbackStatusFilter.all;
+    final FeedbackStatusFilter status =
+        selectedStatus ?? previous?.selectedStatus ?? FeedbackStatusFilter.all;
     // CHANGED 2/9/2026 — two variables where there used to be one.
     //
     // [sort] is what the user PICKED and may be null (nobody has opened the
@@ -203,7 +223,8 @@ class CommentsFeedbackCubit extends Cubit<CommentsFeedbackState> {
     // actually ordered by, which has always been "descending unless told
     // otherwise" and still is. Collapsing them back into one field would make
     // the button claim a choice the user never made.
-    final FeedbackSortOption? sort = sortOption ?? previous?.sortOption;
+    final FeedbackSortOption? sort =
+        clearSort ? null : (sortOption ?? previous?.sortOption);
     final FeedbackSortOption effectiveSort =
         sort ?? FeedbackSortOption.descending;
     final String query = searchText ?? previous?.searchText ?? '';
@@ -244,7 +265,8 @@ class CommentsFeedbackCubit extends Cubit<CommentsFeedbackState> {
     emit(_lastLoaded!);
   }
 
-  static bool _matchesStatus(FeedbackRequest item, FeedbackStatusFilter filter) {
+  static bool _matchesStatus(
+      FeedbackRequest item, FeedbackStatusFilter filter) {
     switch (filter) {
       case FeedbackStatusFilter.all:
         return true;
@@ -295,6 +317,7 @@ class CommentsFeedbackCubit extends Cubit<CommentsFeedbackState> {
   Future<void> close() {
     searchController.removeListener(_onSearchChanged);
     searchController.dispose();
+    _live.dispose();
     return super.close();
   }
 }

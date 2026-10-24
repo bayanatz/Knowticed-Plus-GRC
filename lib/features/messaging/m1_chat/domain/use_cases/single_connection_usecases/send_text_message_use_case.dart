@@ -1,17 +1,19 @@
 /// Module: messaging / chat / domain/use_cases/single_connection_usecases/send_text_message_use_case.dart
+library;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:get/get.dart';
 
-import 'package:grc_module/core/network/message_module/services/error_handler.dart';
-import 'package:grc_module/core/enums/message_module/message_types.dart';
-import '../../../../../../core/helper/message_module/interface/controller/messaging_init_controller.dart';
-import '../../../../../../core/helper/message_module/interface/entity/base_messaging_interface_parameters.dart';
-import '../../../../m2_connections/data/models/user_connection_last_message_info_model.dart';
-import '../../../../m2_connections/domain/entities/single_connection_entity.dart';
-import '../../../../m4_messaging_home/domain/entities/chat_type_entity.dart';
-import '../../../data/models/single_chat_message_model.dart';
-import '../../repository/chat_repository/base_chat_repository.dart';
+import 'package:knowticed_plus/core/network/failure_model.dart';
+import 'package:knowticed_plus/features/messaging/helpers/enums/message_types.dart';
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/interface/controller/messaging_init_controller.dart';
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/interface/entity/base_messaging_interface_parameters.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/data/models/user_connection_last_message_info_model.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/domain/entities/single_connection_entity.dart';
+import 'package:knowticed_plus/features/messaging/m4_messaging_home/domain/entities/chat_type_entity.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/single_chat_message_model.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/domain/repository/chat_repository/base_chat_repository.dart';
 
 class SendTextMessageUseCase {
   final BaseChatRepository chatRepository;
@@ -22,10 +24,10 @@ class SendTextMessageUseCase {
 
   Future<Either<Failure, void>> execute(
       {required String messageText,
-        required BaseMessagingInterfaceParameters currentUser,
-        required ChatTypeEntity otherUser,
-        String? repliedMessageId,
-        String? previewText}) async {
+      required BaseMessagingInterfaceParameters currentUser,
+      required ChatTypeEntity otherUser,
+      String? repliedMessageId,
+      String? previewText}) async {
     messageTime = Timestamp.now();
     otherUser as SingleConnectionEntity;
 
@@ -35,17 +37,17 @@ class SendTextMessageUseCase {
     SingleChatMessageModel message = createMessageModel(otherUser.connectionId,
         messageText, currentUser, otherUser, repliedMessageId);
     UserConnectionLastMessageInfoModel senderConnectionInfo =
-    createSenderConnectionModel(
-        otherUser: otherUser,
-        message: displayText,
-        otherUnreadMessagesCount: otherUser.otherNumUnreadMessage ?? 0,
-        messageId: message.messageId);
+        createSenderConnectionModel(
+            otherUser: otherUser,
+            message: displayText,
+            otherUnreadMessagesCount: otherUser.otherNumUnreadMessage,
+            messageId: message.messageId);
     UserConnectionLastMessageInfoModel receiverConnectionInfo =
-    createReceiverConnectionModel(
-        messageId: message.messageId,
-        currentUser: currentUser,
-        message: displayText,
-        unreadMessagesCount: otherUser.otherNumUnreadMessage ?? 0);
+        createReceiverConnectionModel(
+            messageId: message.messageId,
+            currentUser: currentUser,
+            message: displayText,
+            unreadMessagesCount: otherUser.otherNumUnreadMessage);
     Either<Failure, dynamic> response = await chatRepository.sendMessage(
         messageModel: message,
         currentUserConnectionModel: senderConnectionInfo,
@@ -55,23 +57,23 @@ class SendTextMessageUseCase {
         .messagingConfigurations
         .sendNotification
         .call(
-        targetAudienceIds: [otherUser.userId],
-        englishBody:
-        '${currentUser.primaryLanguageName} sends you a ${message.messageType.messagePrimaryLanguageName}',
-        englishTitle: 'New Message',
-        arabicBody:
-        '${currentUser.secondaryLanguageName} أرسل لك ${message.messageType.messageArabicName}',
-        arabicTitle: 'رسالة جديدة',
-        payload: <String, String>{
-          "Chat_Id": otherUser.connectionId,
-          "Sender_Id": currentUser.userId,
-          "Receiver_Id": otherUser.userId,
-        });
+            targetAudienceIds: [otherUser.userId],
+            englishBody:
+                '${currentUser.primaryLanguageName} sends you a ${message.messageType.messagePrimaryLanguageName}',
+            englishTitle: 'New Message',
+            arabicBody:
+                '${currentUser.secondaryLanguageName} أرسل لك ${message.messageType.messageArabicName}',
+            arabicTitle: 'رسالة جديدة',
+            payload: <String, String>{
+              "Chat_Id": otherUser.connectionId,
+              "Sender_Id": currentUser.userId,
+              "Receiver_Id": otherUser.userId,
+            });
 
     return response;
   }
 
-  createMessageModel(
+  SingleChatMessageModel createMessageModel(
       String connectionId,
       String messageText,
       BaseMessagingInterfaceParameters currentUser,

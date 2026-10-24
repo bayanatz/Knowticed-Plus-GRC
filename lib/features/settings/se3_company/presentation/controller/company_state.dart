@@ -12,11 +12,13 @@
 ///          EmployeeBrandingEntity, and added [restartRequested] so the cubit
 ///          can ask the UI to remount instead of calling
 ///          `RestartWidget.restartApp(Get.context!)` after a `Future.delayed`.
+library;
 
 import 'package:flutter/material.dart';
+import 'package:knowticed_plus/features/settings/se3_company/data/utils/branding_color.dart';
 
-import 'package:grc_module/features/settings/se3_company/data/models/company_model/company_model.dart';
-import 'package:grc_module/features/settings/se3_company/domain/entities/employee_branding_entity.dart';
+import 'package:knowticed_plus/features/settings/se3_company/data/models/company_model/company_model.dart';
+import 'package:knowticed_plus/features/settings/se3_company/domain/entities/employee_branding_entity.dart';
 
 /// Sentinel so `copyWith` can distinguish "leave unchanged" from "set to null".
 /// Needed because the branding fields are legitimately reset to null (see
@@ -131,12 +133,33 @@ class CompanyState {
   /// document, yet still run the confirm dialog and report "saved
   /// successfully". Gating the button on this is a correctness fix as much as
   /// a visual one.
-  bool get hasBrandingChanges =>
-      imageUrl != null ||
-      primaryColor != null ||
-      secondaryColor != null ||
-      selectedEnglishFont != null ||
-      selectedArabicFont != null;
+  ///
+  /// Owner 21/10/2026: a selection only counts when it DIFFERS from the saved
+  /// company value. The selections are not cleared after Apply, so the old
+  /// "any non-null" check kept Apply yellow after a successful save; once
+  /// `getCompany` reloads the saved document the two now match and Apply greys.
+  bool get hasBrandingChanges {
+    final bool active = isCompanyActive;
+    String? saved(List<String?>? history) =>
+        active ? history?.lastOrNull : null;
+    bool colorDiffers(Color? picked, List<String?>? history) {
+      if (picked == null) return false;
+      final Color? stored = BrandingColor.parse(saved(history));
+      return stored == null || stored.toARGB32() != picked.toARGB32();
+    }
+
+    bool fontDiffers(String? picked, List<String?>? history) {
+      if (picked == null) return false;
+      return picked.toLowerCase() != saved(history)?.toLowerCase();
+    }
+
+    return (imageUrl != null &&
+            imageUrl != saved(company?.companyLogo?.companyLogo)) ||
+        colorDiffers(primaryColor, company?.primaryColor?.primaryColor) ||
+        colorDiffers(secondaryColor, company?.secondaryColor?.secondaryColor) ||
+        fontDiffers(selectedEnglishFont, company?.englishFont?.englishFont) ||
+        fontDiffers(selectedArabicFont, company?.arabicFont?.arabicFont);
+  }
 
   CompanyState copyWith({
     CompanyStatus? status,
@@ -175,23 +198,27 @@ class CompanyState {
           ? this.errorMessage
           : errorMessage as String?,
       restartRequested: restartRequested ?? this.restartRequested,
-      company: identical(company, _unset) ? this.company : company as CompanyModel?,
+      company:
+          identical(company, _unset) ? this.company : company as CompanyModel?,
       employeeBranding: identical(employeeBranding, _unset)
           ? this.employeeBranding
           : employeeBranding as EmployeeBrandingEntity?,
-      brandingSelectedIndex: brandingSelectedIndex ?? this.brandingSelectedIndex,
+      brandingSelectedIndex:
+          brandingSelectedIndex ?? this.brandingSelectedIndex,
       selectedEnglishFont: identical(selectedEnglishFont, _unset)
           ? this.selectedEnglishFont
           : selectedEnglishFont as String?,
       selectedArabicFont: identical(selectedArabicFont, _unset)
           ? this.selectedArabicFont
           : selectedArabicFont as String?,
-      primaryColor:
-          identical(primaryColor, _unset) ? this.primaryColor : primaryColor as Color?,
+      primaryColor: identical(primaryColor, _unset)
+          ? this.primaryColor
+          : primaryColor as Color?,
       secondaryColor: identical(secondaryColor, _unset)
           ? this.secondaryColor
           : secondaryColor as Color?,
-      imageUrl: identical(imageUrl, _unset) ? this.imageUrl : imageUrl as String?,
+      imageUrl:
+          identical(imageUrl, _unset) ? this.imageUrl : imageUrl as String?,
       companyName: companyName ?? this.companyName,
       taxNumber: taxNumber ?? this.taxNumber,
       birthDate: birthDate ?? this.birthDate,

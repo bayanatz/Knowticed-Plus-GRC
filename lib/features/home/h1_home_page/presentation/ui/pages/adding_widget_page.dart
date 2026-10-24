@@ -5,29 +5,34 @@
 /// Purpose: Declares `AddingWidgetPage`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
+import 'package:knowticed_plus/core/extensions/context_extensions.dart'
+    show kpIsPhoneLayout;
 import 'package:get/get.dart';
-import 'package:grc_module/core/custom/8-custom_filter_app.dart';
-import 'package:grc_module/core/custom/9-filter_tab_with_container.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/custom/navigation/custom_filter_app.dart';
 import 'package:flutter/material.dart';
+import 'package:knowticed_plus/core/custom/navigation/custom_segmented_toggle.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:grc_module/core/custom/50-custom_side_frame_master.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/features/home/h3_app_drawer/presentation/controller/app_drawer_cubit.dart';
-// REMOVED_MODULE: import 'package:grc_module/features/external/services_mangment_module/core/new_theme.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/home_component_model.dart';
-import 'package:grc_module/features/home/h1_home_page/presentation/controller/home_cubit.dart';
+import 'package:knowticed_plus/core/custom/navigation/custom_side_frame_master.dart';
+import 'package:knowticed_plus/core/helper/access/modules_enum.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/features/home/h3_app_drawer/presentation/controller/app_drawer_cubit.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/features/external/services_mangment_module/core/new_theme.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/home_component_model.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/domain/enums/home_components.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/presentation/controller/home_cubit.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/presentation/controller/home_state.dart';
 
-import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/add_component_wrapper.dart';
-import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/home_card_metrics.dart';
-import 'package:grc_module/features/settings/se8_watermark/presentation/ui/widgets/watermark_layer.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/widgets/add_component_wrapper.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/widgets/home_card_metrics.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/widgets/packed_wrap.dart';
+import 'package:knowticed_plus/features/settings/se8_watermark/presentation/ui/widgets/watermark_layer.dart';
 
 class AddingWidgetPage extends StatefulWidget {
-  AddingWidgetPage({super.key});
+  const AddingWidgetPage({super.key});
 
   @override
   State<AddingWidgetPage> createState() => _AddingWidgetPageState();
@@ -61,7 +66,8 @@ class _AddingWidgetPageState extends State<AddingWidgetPage> {
   /// nothing.
   Set<Modules>? get _allowedModules {
     if (!Get.isRegistered<AppDrawerCubit>()) return null;
-    final List<Modules> allowed = Get.find<AppDrawerCubit>().allowedDrawerModules;
+    final List<Modules> allowed =
+        Get.find<AppDrawerCubit>().allowedDrawerModules;
     if (allowed.isEmpty) return null;
     return allowed.toSet();
   }
@@ -112,8 +118,8 @@ class _AddingWidgetPageState extends State<AddingWidgetPage> {
 
   /// Widgets per module. Counted off [_grantedComponents], not
   /// [_allComponents], so the chips and the "الكل" total describe the same set.
-  Map<Modules, int> get _widgetCounts =>
-      _countsFor(_grantedComponents.where((m) => !m.component.isChart).toList());
+  Map<Modules, int> get _widgetCounts => _countsFor(
+      _grantedComponents.where((m) => !m.component.isChart).toList());
 
   /// Charts per module.
   Map<Modules, int> get _chartCounts =>
@@ -147,8 +153,32 @@ class _AddingWidgetPageState extends State<AddingWidgetPage> {
     return allowed.where(withContent.contains).toList();
   }
 
+  /// Chart family of a chart component, for the Chart & Graph tab's filter.
+  /// (Charts belong to no module until the gear picks one, so filtering them by
+  /// module showed 0 on every chip — Moataz 24/10/2026.)
+  static String _chartFamily(HomeComponents c) {
+    switch (c) {
+      case HomeComponents.pieChart:
+      case HomeComponents.donutChart:
+      case HomeComponents.radialBarChart:
+      case HomeComponents.gaugeChart:
+        return 'circular';
+      case HomeComponents.tableChart:
+        return 'table';
+      case HomeComponents.lineChart:
+        return 'line';
+      default:
+        return 'bars';
+    }
+  }
+
   List<HomeComponentModel> get _visibleComponents {
     if (selectedModuleKey == _allKey) return _tabComponents;
+    if (selectedTab == 1) {
+      return _tabComponents
+          .where((m) => _chartFamily(m.component) == selectedModuleKey)
+          .toList();
+    }
     return _tabComponents
         .where((m) => m.component.module?.name == selectedModuleKey)
         .toList();
@@ -159,6 +189,7 @@ class _AddingWidgetPageState extends State<AddingWidgetPage> {
   /// Uses the shared StatusChipFilter (core/custom/8-custom_filter_app.dart) so
   /// this page's filter looks and behaves like every other filter in the app.
   Widget _moduleFilter() {
+    if (selectedTab == 1) return _chartTypeFilter();
     final modules = _filterModules;
 
     // Nothing to filter by — don't take up a row for a lone "All" chip.
@@ -186,6 +217,33 @@ class _AddingWidgetPageState extends State<AddingWidgetPage> {
     );
   }
 
+  /// The Chart & Graph tab's filter: by KIND of chart (bars / circular / table),
+  /// which is what distinguishes one chart card from another.
+  Widget _chartTypeFilter() {
+    final bool ar = Localizations.localeOf(context).languageCode == 'ar';
+    final List<HomeComponentModel> charts = _tabComponents;
+    int n(String f) =>
+        charts.where((m) => _chartFamily(m.component) == f).length;
+    return StatusChipFilter(
+      selectedKey: selectedModuleKey,
+      onSelected: (key) => setState(() => selectedModuleKey = key),
+      items: [
+        StatusChipItem(
+            key: _allKey, label: S.of(context).all, count: charts.length),
+        StatusChipItem(
+            key: 'bars', label: ar ? 'أعمدة' : 'Bars', count: n('bars')),
+        StatusChipItem(
+            key: 'line', label: ar ? 'خطي' : 'Line', count: n('line')),
+        StatusChipItem(
+            key: 'circular',
+            label: ar ? 'دائري' : 'Circular',
+            count: n('circular')),
+        StatusChipItem(
+            key: 'table', label: ar ? 'جدول' : 'Table', count: n('table')),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // CHANGED 23/8/2026: was
@@ -201,7 +259,7 @@ class _AddingWidgetPageState extends State<AddingWidgetPage> {
     // The cards carry a further inset of their own — AddComponentWrapper pads
     // each one by 12 to reserve room for the gear badge — so the grid sits
     // 15 + 12 from the edge, not 15.
-    final bool isMobile = MediaQuery.of(context).size.shortestSide < 600;
+    final bool isMobile = kpIsPhoneLayout(context);
 
     // CHANGED: the page frame is SideFrameMasterServices — the breadcrumb
     // frame the settings pages use — in place of the hand-built
@@ -215,14 +273,15 @@ class _AddingWidgetPageState extends State<AddingWidgetPage> {
     // pops twice, "Home" once. On phone the frame collapses the trail to the
     // last segment plus a back chevron, which pops once.
     return Scaffold(
-      backgroundColor: AppColors.background,
+        backgroundColor: AppColors.background,
         // WATERMARK 25/8/2026. Wrapped here rather than relying on an ancestor: on
         // the phone branch this page is pushed onto an OUTER navigator, so it is
         // not a descendant of the wrapped HomeResponsivePage. On tablet it is,
         // and the inner layer then hands its child straight back — see the
         // nesting note in watermark_layer.dart.
         body: WatermarkLayer(
-          module: Modules.settings, // ADDED 28/9/2026 — Home Layout is a settings page
+          module: Modules
+              .settings, // ADDED 28/9/2026 — Home Layout is a settings page
           child: SideFrameMasterServices(
             titleText: S.of(context).settings,
             onFirstTap: () {
@@ -231,174 +290,143 @@ class _AddingWidgetPageState extends State<AddingWidgetPage> {
                 ..pop()
                 ..pop();
             },
-            secondTitle: S.of(context).home,
+            secondTitle: S.of(context).homeLayout,
             onSecondTap: () => Navigator.of(context).maybePop(),
             thirdTitle: S.of(context).addingWidget,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 _expandOnTablet(
                   isMobile: isMobile,
-                  child: ScrollConfiguration(
-                    behavior: const ScrollBehavior().copyWith(scrollbars: false),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        // A Column centres its children by default, and the
-                        // Wrap below sizes to its runs rather than to the full
-                        // width — so a row of cards that did not fill the page
-                        // sat centred, drifting further from the edge the fewer
-                        // widgets a filter left. Start-aligned now (23/8/2026).
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Column(
+                    // A Column centres its children by default, and the
+                    // Wrap below sizes to its runs rather than to the full
+                    // width — so a row of cards that did not fill the page
+                    // sat centred, drifting further from the edge the fewer
+                    // widgets a filter left. Start-aligned now (23/8/2026).
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // CustomSegmentedTabs (core/custom/9_filter_tab_with_container.dart).
+                      // The hand-rolled switcher this replaced wired BOTH
+                      // tabs to `selectedTab = 0`, so tapping
+                      // "Chart & Graph" just re-opened the Widget tab.
+                      Row(
+                        // Was MainAxisAlignment.end, which parked the
+                        // switcher against the trailing edge while
+                        // everything else on the page began at the leading
+                        // one (23/8/2026).
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-
-
-                          // CustomSegmentedTabs (core/custom/9_filter_tab_with_container.dart).
-                          // The hand-rolled switcher this replaced wired BOTH
-                          // tabs to `selectedTab = 0`, so tapping
-                          // "Chart & Graph" just re-opened the Widget tab.
-                          Row(
-                            // Was MainAxisAlignment.end, which parked the
-                            // switcher against the trailing edge while
-                            // everything else on the page began at the leading
-                            // one (23/8/2026).
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              SizedBox(
-                                width: 300.w,
-                                height: 41.h,
-                                child: CustomSegmentedTabs(
-                                  tabs: [
-                                    S.of(context).widget,
-                                    S.of(context).chartGraph,
-                                  ],
-                                  selectedIndex: selectedTab,
-                                  onTabSelected: (index) =>
-                                      setState(() => selectedTab = index),
-                                  equalWidth: true,
-                                  containerColor: AppColors.card,
-                                  unselectedColor: AppColors.card,
-                                  selectedColor: AppColors.primary,
-                                  borderRadius: 4.r,
-                                  containerPadding: EdgeInsets.all(4.sp),
-                                  spacing: 4.sp,
-                                  textStyle: StyleText.fontSize16Weight500,
-                                ),
-                              ),
+                          // Owner 21/10/2026: our standard two-option toggle (as List | Grid, My Dashboard | HR), not hand-set tabs.
+                          CustomSegmentedToggle(
+                            tabs: [
+                              S.of(context).widget,
+                              S.of(context).chartGraph,
                             ],
-                          ),
-                          SizedBox(height: 20.sp),
-
-                          // Module filter and the Widget / Chart & Graph
-                          // switcher both start at the leading edge. The filter
-                          // stays visible on both tabs and applies to charts too.
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Expanded(child: _moduleFilter()),
-                    
-                            ],
-                          ),
-                          SizedBox(height: 12.w),
-
-                          // Animated Content Switcher
-                          AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 300),
-                            switchInCurve: Curves.easeInOut,
-                            switchOutCurve: Curves.easeInOut,
-                            transitionBuilder: (Widget child, Animation<double> animation) {
-                              return FadeTransition(
-                                opacity: animation,
-                                child: SlideTransition(
-                                  position: Tween<Offset>(
-                                    begin: const Offset(0.05, 0),
-                                    end: Offset.zero,
-                                  ).animate(animation),
-                                  child: child,
-                                ),
-                              );
-                            },
-                            // Both tabs render the same way — charts are just
-                            // components whose isChart flag is true — so tapping
-                            // a chart runs the identical AddComponentWrapper
-                            // flow (editComponent + pop back to Home Layout)
-                            // that tapping a widget does.
-                            child: Wrap(
-                              // Key includes the tab and filter so
-                              // AnimatedSwitcher cross-fades on either change.
-                              key: ValueKey('tab${selectedTab}_$selectedModuleKey'),
-                              // Figma's card gutter is 15 in both directions.
-                              // AddComponentWrapper already pads each card by
-                              // 12 (it reserves room for the gear badge), so
-                              // the Wrap only has to contribute the last 3.
-                              // Changing either number changes how many cards
-                              // land per row — see the geometry note in
-                              // home_chart_cards_extra.dart.
-                              runSpacing: 3.h,
-                              spacing: 3.w,
-                              children: [
-                                for (HomeComponentModel componentModel
-                                in _visibleComponents)
-                                  AddComponentWrapper(
-                                    model: componentModel,
-                                    // ✅ Every card is exactly
-                                    // HomeCardMetrics.height tall — widgets and
-                                    // charts alike, and the same height the
-                                    // layout editor and dashboard use. Each
-                                    // module widget used to bring its own
-                                    // height too, so the grid was ragged.
-                                    //
-                                    // CHANGED 12/9/2026: `heightBox`, not
-                                    // `box`. HEIGHT is unchanged — still pinned
-                                    // to HomeCardMetrics.height, still the same
-                                    // number. WIDTH is no longer forced to
-                                    // HomeCardMetrics.width: each card is as
-                                    // wide as its own module widget declares,
-                                    // which is how this picker behaved before
-                                    // the shared metrics landed on 31/8/2026.
-                                    // A uniform tile grid is not what this
-                                    // screen is for — the cards are previews of
-                                    // widgets whose real proportions differ,
-                                    // and clamping a wide one to 250 misled
-                                    // about what you were picking.
-                                    //
-                                    // ⚠️ Widths are therefore whatever the
-                                    // module widgets say, deliberately
-                                    // unclamped. A widget with a hardcoded
-                                    // width wider than the screen
-                                    // (knowledge_hub_overview.dart is 400.sp)
-                                    // will overflow its run on a phone. The fix
-                                    // belongs in that widget, not in a clamp
-                                    // here — a clamp would be forcing the width
-                                    // again, which is the thing this change
-                                    // removes.
-                                    //
-                                    // The box goes around the component rather
-                                    // than around AddComponentWrapper on
-                                    // purpose: the wrapper adds its own 12.h/
-                                    // 12.w padding (gear-badge room), so sizing
-                                    // the wrapper would leave the visible card
-                                    // 12 short. Constraining the child keeps
-                                    // that padding outside the card and leaves
-                                    // the 15 gutter (12 here + 3 from the Wrap)
-                                    // intact.
-                                    //
-                                    // The page's ScrollConfiguration above sets
-                                    // scrollbars: false, and the box's inner
-                                    // scroll view inherits it, so no per-card
-                                    // scrollbar appears on desktop.
-                                    component: HomeCardMetrics.heightBox(
-                                      child: componentModel.component
-                                              .widget(componentModel) ??
-                                          Container(),
-                                    ),
-                                  )
-                              ],
-                            ),
+                            selectedIndex: selectedTab,
+                            // Back to "All": the two tabs filter by different things.
+                            onChanged: (index) => setState(() {
+                              selectedTab = index;
+                              selectedModuleKey = _allKey;
+                            }),
                           ),
                         ],
                       ),
-                    ),
+                      SizedBox(height: 20.sp),
+
+                      // Module filter and the Widget / Chart & Graph
+                      // switcher both start at the leading edge. The filter
+                      // stays visible on both tabs and applies to charts too.
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(child: _moduleFilter()),
+                        ],
+                      ),
+                      SizedBox(height: 12.w),
+
+                      // Owner 23/10/2026: the toggle and the filter stay
+                      // pinned; only the cards scroll under them.
+                      Expanded(
+                        child: ScrollConfiguration(
+                          behavior: const ScrollBehavior()
+                              .copyWith(scrollbars: false),
+                          child: SingleChildScrollView(
+                            child: AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 300),
+                              switchInCurve: Curves.easeInOut,
+                              switchOutCurve: Curves.easeInOut,
+                              transitionBuilder:
+                                  (Widget child, Animation<double> animation) {
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: SlideTransition(
+                                    position: Tween<Offset>(
+                                      begin: const Offset(0.05, 0),
+                                      end: Offset.zero,
+                                    ).animate(animation),
+                                    child: child,
+                                  ),
+                                );
+                              },
+                              // Both tabs render the same way — charts are just
+                              // components whose isChart flag is true — so tapping
+                              // a chart runs the identical AddComponentWrapper
+                              // flow (editComponent + pop back to Home Layout)
+                              // that tapping a widget does.
+                              // 18/10/2026 (Moataz): every card in the picker is
+                              // the SAME cell as on the home grid — one width, one
+                              // height, one even gap — so nothing spreads out.
+                              child: LayoutBuilder(
+                                key: ValueKey(
+                                    'tab${selectedTab}_$selectedModuleKey'),
+                                builder: (context, constraints) {
+                                  // D-242: a settings change on a card redraws
+                                  // the picker (the cubit holds the draft).
+                                  return BlocBuilder<AppHomeCubit, HomeState>(
+                                    buildWhen: (HomeState p, HomeState c) =>
+                                        c is HomeEditingComponent,
+                                    builder: (BuildContext _, HomeState __) =>
+                                        PackedWrap(
+                                      // 23/10/2026 (Moataz): rows are packed — a
+                                      // card that fits beside the last one moves
+                                      // up, so no row ends in a blank strip, on
+                                      // All and on every module filter.
+                                      // Tablet: every card keeps 12 badge room on top and end, so
+                                      // gap − 12 shows 16 between cards (as on Home Layout).
+                                      runSpacing:
+                                          HomeCardMetrics.gapBesideBadge,
+                                      spacing: HomeCardMetrics.gapBesideBadge,
+                                      children: [
+                                        for (HomeComponentModel componentModel
+                                            in _visibleComponents)
+                                          // Owner 23/10/2026: what you see here is what you
+                                          // get on Home Layout — the SAME path as the editor
+                                          // (own width, card height, scaled whole on a phone),
+                                          // on every device.
+                                          AddComponentWrapper(
+                                            model: componentModel,
+                                            component:
+                                                HomeCardMetrics.heightBox(
+                                              capWidth: false,
+                                              height: HomeCardMetrics
+                                                  .chartHeightFor(
+                                                      componentModel.component),
+                                              child: componentModel.component
+                                                      .widget(componentModel) ??
+                                                  const SizedBox.shrink(),
+                                            ),
+                                          )
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 SizedBox(
@@ -420,5 +448,7 @@ class _AddingWidgetPageState extends State<AddingWidgetPage> {
     required bool isMobile,
     required Widget child,
   }) =>
-      isMobile ? child : Expanded(child: child);
+      // Phone: bounded to the page (as Home Layout does) so the toggle and
+      // the filter above stay put and only the cards scroll.
+      isMobile ? SideFrameBoundedBody(child: child) : Expanded(child: child);
 }

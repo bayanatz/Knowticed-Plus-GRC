@@ -6,6 +6,7 @@
 /// Author: Amr Mesbah
 /// Created at: 20/11/2024
 /// Updated: 11/8/2026 - CR-SKEL-SE5-N09: mapping moved to EmergencyContactMapper.
+library;
 
 // PORTED into services_app under features/settings.
 // Source: services_app features/employees/data/repository/emergency_contact_repository.dart
@@ -13,15 +14,15 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
-import 'package:grc_module/core/helper/main_helper/single_value_model.dart';
-import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/features/settings/se5_emergency_contact/data/models/emergency_contacts_model.dart';
-import 'package:grc_module/features/settings/se5_emergency_contact/data/models/emergency_contact_mapper.dart';
-import 'package:grc_module/features/settings/se5_emergency_contact/domain/entities/emergency_contact_entity.dart';
+import 'package:knowticed_plus/core/helper/single_value_model.dart';
+import 'package:knowticed_plus/core/network/failure_model.dart';
+import 'package:knowticed_plus/features/settings/se5_emergency_contact/data/models/emergency_contacts_model.dart';
+import 'package:knowticed_plus/features/settings/se5_emergency_contact/data/models/emergency_contact_mapper.dart';
+import 'package:knowticed_plus/features/settings/se5_emergency_contact/domain/entities/emergency_contact_entity.dart';
 
-import 'package:grc_module/features/settings/se5_emergency_contact/data/data_source/remote_data_source/emergency_contact_remote_data_source.dart';
-import 'package:grc_module/features/roles/r4_active_directory/data/models/employees_model/mobile_phone_model.dart';
-import 'package:grc_module/features/settings/main_controller/data/repository/employees_repository.dart';
+import 'package:knowticed_plus/features/settings/se5_emergency_contact/data/data_source/remote_data_source/emergency_contact_remote_data_source.dart';
+import 'package:knowticed_plus/features/roles/r4_active_directory/data/models/employees_model/mobile_phone_model.dart';
+import 'package:knowticed_plus/features/settings/data/repository/employees_repository.dart';
 
 /// **************************** FILE INFO **************************** ///
 /// Purpose: Repository to handle Emergency contact data operations
@@ -30,7 +31,7 @@ import 'package:grc_module/features/settings/main_controller/data/repository/emp
 
 class EmergencyContactRepository {
   final EmergencyContactRemoteDataSource _remoteDataSource =
-  EmergencyContactRemoteDataSource();
+      EmergencyContactRemoteDataSource();
 
   Future<Either<Failure, dynamic>> addEmployeeInsuranceData({
     required EmergencyContactEntity emergencyContactData,
@@ -43,9 +44,10 @@ class EmergencyContactRepository {
   }
 
   // Todo: refactor this method
-  _checkIfEmployeeExist({required String employeeId}) async {
+  Future<Either<Failure, dynamic>> _checkIfEmployeeExist(
+      {required String employeeId}) async {
     Either<Failure, dynamic> isEmployeeExist =
-    await EmployeesRepository().isEmployeeExist(employeeId: employeeId);
+        await EmployeesRepository().isEmployeeExist(employeeId: employeeId);
     if (isEmployeeExist.isLeft()) return isEmployeeExist;
     if (isEmployeeExist.getOrElse(() => false) == false) {
       return Left(FirebaseFailure('Employee not found'));
@@ -53,7 +55,7 @@ class EmergencyContactRepository {
     return isEmployeeExist = Right(true);
   }
 
-  _addEmployeeEmergencyContactData(
+  Future<Either<Failure, dynamic>> _addEmployeeEmergencyContactData(
       {required EmergencyContactEntity emergencyContactData}) async {
     Either<Failure, dynamic> result = await _getEmployeeEmergencyContactModel(
         employeeId: emergencyContactData.employeeId);
@@ -67,9 +69,10 @@ class EmergencyContactRepository {
         documentId: emergencyContactModel.employeeId);
   }
 
-  _getEmployeeEmergencyContactModel({required String employeeId}) async {
+  Future<Either<Failure, dynamic>> _getEmployeeEmergencyContactModel(
+      {required String employeeId}) async {
     Either<Failure, dynamic> result =
-    await _remoteDataSource.getEmergencyContactData(employeeId: employeeId);
+        await _remoteDataSource.getEmergencyContactData(employeeId: employeeId);
     if (result.isLeft()) return result;
     Map<String, dynamic>? insuranceData = result.getOrElse(() => null);
     if (insuranceData == null) {
@@ -80,23 +83,23 @@ class EmergencyContactRepository {
 
   void _updateEmergencyContactModel(
       {required EmergencyContactsModel originalEmergencyContactModel,
-        required EmergencyContactEntity newEmergencyContactData}) {
+      required EmergencyContactEntity newEmergencyContactData}) {
     // First Emergency Contact
     _handleSingleValueItem(
         itemModel:
-        originalEmergencyContactModel.firstEmergencyContact!.firstName,
+            originalEmergencyContactModel.firstEmergencyContact!.firstName,
         itemValue: newEmergencyContactData.firstContactFirstName);
     _handleSingleValueItem(
         itemModel:
-        originalEmergencyContactModel.firstEmergencyContact!.middleName,
+            originalEmergencyContactModel.firstEmergencyContact!.middleName,
         itemValue: newEmergencyContactData.firstContactMiddleName);
     _handleSingleValueItem(
         itemModel:
-        originalEmergencyContactModel.firstEmergencyContact!.lastName,
+            originalEmergencyContactModel.firstEmergencyContact!.lastName,
         itemValue: newEmergencyContactData.firstContactLastName);
     _handleSingleValueItem(
         itemModel:
-        originalEmergencyContactModel.firstEmergencyContact!.relationShip,
+            originalEmergencyContactModel.firstEmergencyContact!.relationShip,
         itemValue: newEmergencyContactData.firstContactRelationShip);
     _handleSingleValueItem(
         itemModel: originalEmergencyContactModel.firstEmergencyContact!.email,
@@ -106,49 +109,51 @@ class EmergencyContactRepository {
         itemValue: newEmergencyContactData.firstContactCountry);
     _handleSingleValueItem(
         itemModel:
-        originalEmergencyContactModel.firstEmergencyContact!.province,
+            originalEmergencyContactModel.firstEmergencyContact!.province,
         itemValue: newEmergencyContactData.firstContactProvince);
     _handleSingleValueItem(
         itemModel: originalEmergencyContactModel.firstEmergencyContact!.city,
         itemValue: newEmergencyContactData.firstContactCity);
     _handleSingleValueItem(
         itemModel: originalEmergencyContactModel.firstEmergencyContact!.street,
-        itemValue: newEmergencyContactData.firstContactStreet); // NEW: Added street handling
+        itemValue: newEmergencyContactData
+            .firstContactStreet); // NEW: Added street handling
 
     // Second Emergency Contact
     _handleSingleValueItem(
         itemModel:
-        originalEmergencyContactModel.secondEmergencyContact!.firstName,
+            originalEmergencyContactModel.secondEmergencyContact!.firstName,
         itemValue: newEmergencyContactData.secondContactFirstName);
     _handleSingleValueItem(
         itemModel:
-        originalEmergencyContactModel.secondEmergencyContact!.middleName,
+            originalEmergencyContactModel.secondEmergencyContact!.middleName,
         itemValue: newEmergencyContactData.secondContactMiddleName);
     _handleSingleValueItem(
         itemModel:
-        originalEmergencyContactModel.secondEmergencyContact!.lastName,
+            originalEmergencyContactModel.secondEmergencyContact!.lastName,
         itemValue: newEmergencyContactData.secondContactLastName);
     _handleSingleValueItem(
         itemModel:
-        originalEmergencyContactModel.secondEmergencyContact!.relationShip,
+            originalEmergencyContactModel.secondEmergencyContact!.relationShip,
         itemValue: newEmergencyContactData.secondContactRelationShip);
     _handleSingleValueItem(
         itemModel: originalEmergencyContactModel.secondEmergencyContact!.email,
         itemValue: newEmergencyContactData.secondContactEmail);
     _handleSingleValueItem(
         itemModel:
-        originalEmergencyContactModel.secondEmergencyContact!.country,
+            originalEmergencyContactModel.secondEmergencyContact!.country,
         itemValue: newEmergencyContactData.secondContactCountry);
     _handleSingleValueItem(
         itemModel:
-        originalEmergencyContactModel.secondEmergencyContact!.province,
+            originalEmergencyContactModel.secondEmergencyContact!.province,
         itemValue: newEmergencyContactData.secondContactProvince);
     _handleSingleValueItem(
         itemModel: originalEmergencyContactModel.secondEmergencyContact!.city,
         itemValue: newEmergencyContactData.secondContactCity);
     _handleSingleValueItem(
         itemModel: originalEmergencyContactModel.secondEmergencyContact!.street,
-        itemValue: newEmergencyContactData.secondContactStreet); // NEW: Added street handling
+        itemValue: newEmergencyContactData
+            .secondContactStreet); // NEW: Added street handling
 
     // Phone handling
     _handlePhoneItem(
@@ -163,7 +168,8 @@ class EmergencyContactRepository {
         countryCode: newEmergencyContactData.secondContactCountryCode);
   }
 
-  _createTempInsuranceModel({required String employeeId}) {
+  EmergencyContactsModel _createTempInsuranceModel(
+      {required String employeeId}) {
     return EmergencyContactsModel(
       employeeId: employeeId,
       firstEmergencyContact: _getEmptyEmergencyContactModel(),
@@ -215,7 +221,8 @@ class EmergencyContactRepository {
         values: [],
         timestamps: [],
       ),
-      language: SingleValueModel<String>( // ADD THIS
+      language: SingleValueModel<String>(
+        // ADD THIS
         values: [],
         timestamps: [],
       ),
@@ -224,22 +231,23 @@ class EmergencyContactRepository {
 
   void _handleSingleValueItem(
       {required SingleValueModel<String> itemModel,
-        required String? itemValue}) {
+      required String? itemValue}) {
     if (itemValue != null && itemValue != itemModel.values.lastOrNull) {
       itemModel.values.add(itemValue);
       itemModel.timestamps.add(Timestamp.now());
     }
   }
 
-  _handlePhoneItem(
+  void _handlePhoneItem(
       {required MobilePhone itemModel,
-        required String? countryApp,
-        required String? phoneNumber,
-        required String? countryCode}) {
+      required String? countryApp,
+      required String? phoneNumber,
+      required String? countryCode}) {
     if ((phoneNumber != null && phoneNumber != itemModel.phones!.lastOrNull) ||
         (countryCode != null &&
-            countryCode != itemModel.countryCode!.lastOrNull)||
-        (countryApp != null && countryApp != itemModel.countryApp!.lastOrNull)) {
+            countryCode != itemModel.countryCode!.lastOrNull) ||
+        (countryApp != null &&
+            countryApp != itemModel.countryApp!.lastOrNull)) {
       // services_app's MobilePhone declares List<String> (non-nullable
       // elements), whereas services_app's declares List<String?>. The guard
       // above only requires ONE of the three to be non-null, so the other two
@@ -252,16 +260,14 @@ class EmergencyContactRepository {
   }
 
   Future<Either<Failure, EmergencyContactEntity>>
-  getEmployeeEmergencyContactData({required String employeeId}) async {
+      getEmployeeEmergencyContactData({required String employeeId}) async {
     Either<Failure, dynamic> data =
-    await _getEmployeeEmergencyContactModel(employeeId: employeeId);
-    Either<Failure, EmergencyContactEntity> result;
+        await _getEmployeeEmergencyContactModel(employeeId: employeeId);
     if (data.isLeft()) {
       Failure? failure = data.fold((l) => l, (r) => null);
       return Left(failure!);
     }
     EmergencyContactsModel emergencyContactModel = data.getOrElse(() => null);
-    return result =
-        Right(EmergencyContactMapper.toEntity(emergencyContactModel));
+    return Right(EmergencyContactMapper.toEntity(emergencyContactModel));
   }
 }

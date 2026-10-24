@@ -1,0 +1,136 @@
+/// Module: roles/r4_active_directory
+///
+///*************************** FILE INFO ****************************///
+/// File Name: employee_entity_controller_methods.dart
+/// Description: Methods of `EmployeeEntityController` — split out of `employee_entity.dart`.
+/// Author: Amr Mesbah
+/// Created at: 11/10/2026
+
+part of '../employee_entity.dart';
+
+// Split from employee_entity.dart to keep every file under 700 lines.
+
+extension EmployeeEntityControllerMethods on EmployeeEntityController {
+  /// Converts NewEmployeeModelHistory to EmployeeEntity (PRIMARY METHOD)
+  HrEmployeeEntity fromHistoryModel(NewEmployeeModelHistory model) {
+    return HrEmployeeEntity(
+      id: model.id,
+      firstName: model.firstName.lastOrNull,
+      middleName: model.middleName.lastOrNull,
+      lastName: model.lastName.lastOrNull,
+      firstNameInArabic: model.firstNameInArabic.lastOrNull,
+      middleNameInArabic: model.middleNameInArabic.lastOrNull,
+      lastNameInArabic: model.lastNameInArabic.lastOrNull,
+      nationalId: model.nationalId.lastOrNull,
+      nationalIdExpirationDate: model.nationalIdExpirationDate.lastOrNull,
+      nationality: model.nationality.lastOrNull,
+      passport: model.passport.lastOrNull,
+      passportExpirationDate: model.passportExpirationDate.lastOrNull,
+      email: model.email.lastOrNull,
+      mobilePhone: EmployeeEntityController._extractMobilePhone(
+        model.mobilePhone,
+      ),
+      officePhone: model.officePhone.lastOrNull,
+      homePhone: model.homePhone.lastOrNull,
+      officePhoneNumber: EmployeeEntityController._extractOfficePhone(
+        model.officePhoneDetails,
+      ),
+      homePhoneNumber: EmployeeEntityController._extractHomePhone(
+        model.homePhoneDetails,
+      ),
+      firstEmergencyPhone: EmployeeEntityController._extractMobilePhone(
+        model.firstContactPhoneDetails,
+      ),
+      secondEmergencyPhone: EmployeeEntityController._extractMobilePhone(
+        model.secondContactPhoneDetails,
+      ),
+      extension: model.extension.lastOrNull,
+      birthDay: model.birthDay.lastOrNull,
+      gender: model.gender.lastOrNull,
+      country: model.country.lastOrNull,
+      province: model.province.lastOrNull,
+      city: model.city.lastOrNull,
+      postalCode: model.postalCode.lastOrNull,
+      street: model.street.lastOrNull,
+      maritalStatus: model.maritalStatus.lastOrNull,
+      language: model.language.lastOrNull,
+      departmentId: model.departmentId.lastOrNull,
+      supervisor: model.supervisor.lastOrNull,
+      role: model.role.lastOrNull,
+      title: model.title.lastOrNull,
+      titleInArabic: model.titleInArabic.lastOrNull,
+      workLocation: model.workLocation.lastOrNull,
+      drivingLicenseId: model.drivingLicenseId.lastOrNull,
+      carPlates: model.carPlates.lastOrNull,
+      academicHistory: EmployeeEntityController._extractAcademicHistory(
+        model.academicHistory,
+      ),
+      bio: model.bio.lastOrNull,
+      photo: model.photo.lastOrNull,
+      skills: model.skills.lastOrNull,
+      hobbies: model.hobbies.lastOrNull,
+      status: model.status.lastOrNull,
+      personalEmail: model.personalEmail.lastOrNull,
+      homeCountryCode: model.homeCountryCode.lastOrNull,
+      officeCountryCode: model.officeCountryCode.lastOrNull,
+      jobType: model.jobType.lastOrNull,
+      workArrangement: model.workArrangement.lastOrNull,
+      remoteStatus: model.remoteStatus.lastOrNull,
+      employeeGrade: model.employeeGrade.lastOrNull,
+      startDate: model.startDate.lastOrNull,
+      startTime: model.startTime.lastOrNull,
+      endTime: model.endTime.lastOrNull,
+      daysOff: model.daysOff.lastOrNull,
+      salary: model.salary.lastOrNull,
+      currency: model.currency.lastOrNull,
+      institutionName: model.institutionName.lastOrNull,
+      degree: model.degree.lastOrNull,
+      fieldOfStudy: model.fieldOfStudy.lastOrNull,
+      certificationStartDate: model.certificationStartDate.lastOrNull,
+      certificationEndDate: model.certificationEndDate.lastOrNull,
+      gradeOrScore: model.gradeOrScore.lastOrNull,
+      certificateId: model.certificateId.lastOrNull,
+      issuingAuthority: model.issuingAuthority.lastOrNull,
+      certificationDocumentUrl: model.certificationDocumentUrl.lastOrNull,
+      certificationNotes: model.certificationNotes.lastOrNull,
+      insuranceName: model.insuranceName.lastOrNull,
+      insurancePolicyNumber: model.insurancePolicyNumber.lastOrNull,
+      insuranceProviderContact: model.insuranceProviderContact.lastOrNull,
+      firstContactFirstName: model.firstContactFirstName.lastOrNull,
+      firstContactLastName: model.firstContactLastName.lastOrNull,
+      firstContactRelationship: model.firstContactRelationship.lastOrNull,
+      firstContactEmail: model.firstContactEmail.lastOrNull,
+      firstContactPhone: model.firstContactPhone.lastOrNull,
+      firstContactLanguage: model.firstContactLanguage.lastOrNull,
+      firstContactCountry: model.firstContactCountry.lastOrNull,
+      firstContactProvince: model.firstContactProvince.lastOrNull,
+      firstContactCity: model.firstContactCity.lastOrNull,
+      firstContactStreet: model.firstContactStreet.lastOrNull,
+      firstContactFirstNameArabic: model.firstContactFirstNameArabic.lastOrNull,
+      firstContactLastNameArabic: model.firstContactLastNameArabic.lastOrNull,
+      secondContactFirstName: model.secondContactFirstName.lastOrNull,
+      secondContactLastName: model.secondContactLastName.lastOrNull,
+      secondContactRelationship: model.secondContactRelationship.lastOrNull,
+      secondContactEmail: model.secondContactEmail.lastOrNull,
+      secondContactPhone: model.secondContactPhone.lastOrNull,
+      secondContactLanguage: model.secondContactLanguage.lastOrNull,
+      secondContactCountry: model.secondContactCountry.lastOrNull,
+      secondContactProvince: model.secondContactProvince.lastOrNull,
+      secondContactCity: model.secondContactCity.lastOrNull,
+      secondContactStreet: model.secondContactStreet.lastOrNull,
+      secondContactFirstNameArabic:
+          model.secondContactFirstNameArabic.lastOrNull,
+      secondContactLastNameArabic: model.secondContactLastNameArabic.lastOrNull,
+      passportDocumentUrl: model.passportDocumentUrl.lastOrNull,
+      nationalIdFrontUrl: model.nationalIdFrontUrl.lastOrNull,
+      nationalIdBackUrl: model.nationalIdBackUrl.lastOrNull,
+      drivingLicenseDocumentUrl: model.drivingLicenseDocumentUrl.lastOrNull,
+      password: model.password,
+      defaultPassword: model.defaultPassword,
+      firstLogin: model.firstLogin,
+      lastLogin: model.lastLogin,
+      deactivationDate: model.deactivationDate,
+      activationDate: model.activationDate,
+    );
+  }
+}

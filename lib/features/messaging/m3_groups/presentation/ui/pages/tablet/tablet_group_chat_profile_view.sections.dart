@@ -1,4 +1,5 @@
-part of './tablet_group_chat_profile_view.dart';
+part of 'tablet_group_chat_profile_view.dart';
+
 /// Module: messaging / groups / presentation/ui/pages/tablet/tablet_group_chat_profile_view.sections.dart
 
 /// Fields + helper/builder methods for the screen, split out to keep
@@ -7,10 +8,6 @@ mixin _TabletGroupChatProfileSections on State<TabletGroupChatProfileView> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   bool _isFormValid = false;
-
-
-  bool _submitted = false;
-
 
   // ── Language validation error states ─────────────────────────────────────
   String? _nameEnLangError;
@@ -21,7 +18,6 @@ mixin _TabletGroupChatProfileSections on State<TabletGroupChatProfileView> {
 
   String? _descArLangError;
 
-
   // ── Validate language for EN field ──────────────────────────────────────
   String? _validateEnLanguage(String? value) {
     if (value == null || value.trim().isEmpty) return null;
@@ -31,7 +27,6 @@ mixin _TabletGroupChatProfileSections on State<TabletGroupChatProfileView> {
     return null;
   }
 
-
   // ── Validate language for AR field ──────────────────────────────────────
   String? _validateArLanguage(String? value) {
     if (value == null || value.trim().isEmpty) return null;
@@ -40,7 +35,6 @@ mixin _TabletGroupChatProfileSections on State<TabletGroupChatProfileView> {
     }
     return null;
   }
-
 
   void _validateForm(GroupsCubit controller) {
     final nameEn = controller.groupNameController.text.trim();
@@ -81,7 +75,6 @@ mixin _TabletGroupChatProfileSections on State<TabletGroupChatProfileView> {
     }
   }
 
-
   // ── Combine empty + language check into one error string ────────────────
   String? _getEnFieldError(String value, String validationLabel) {
     if (value.trim().isEmpty) {
@@ -93,7 +86,6 @@ mixin _TabletGroupChatProfileSections on State<TabletGroupChatProfileView> {
     return null;
   }
 
-
   String? _getArFieldError(String value, String validationLabel) {
     if (value.trim().isEmpty) {
       return Validator.isEmpty('', validationLabel);
@@ -103,7 +95,6 @@ mixin _TabletGroupChatProfileSections on State<TabletGroupChatProfileView> {
     }
     return null;
   }
-
 
   // ── EN field: LTR direction ─────────────────────────────────────────────
   Widget _buildEnField({
@@ -148,7 +139,8 @@ mixin _TabletGroupChatProfileSections on State<TabletGroupChatProfileView> {
             hideCounter: !showCounter,
             fillColor: AppColors.background,
             controller: controller,
-            hintStyle: StyleText.fontSize12Weight400.copyWith(color: AppColors.secondaryBlack),
+            hintStyle: StyleText.fontSize12Weight400
+                .copyWith(color: AppColors.secondaryBlack),
             contentPadding: const EdgeInsetsDirectional.only(
               top: 7,
               bottom: 7,
@@ -164,7 +156,6 @@ mixin _TabletGroupChatProfileSections on State<TabletGroupChatProfileView> {
       ),
     );
   }
-
 
   // ── AR field: RTL direction ─────────────────────────────────────────────
   Widget _buildArField({
@@ -209,7 +200,8 @@ mixin _TabletGroupChatProfileSections on State<TabletGroupChatProfileView> {
             hideCounter: !showCounter,
             fillColor: AppColors.background,
             controller: controller,
-            hintStyle: StyleText.fontSize12Weight400.copyWith(color: AppColors.secondaryBlack),
+            hintStyle: StyleText.fontSize12Weight400
+                .copyWith(color: AppColors.secondaryBlack),
             contentPadding: const EdgeInsetsDirectional.only(
               top: 7,
               bottom: 7,
@@ -226,7 +218,6 @@ mixin _TabletGroupChatProfileSections on State<TabletGroupChatProfileView> {
     );
   }
 
-
   String _buildAppBarGroupName(GroupsCubit controller, bool isAr) {
     final group = controller.selectedGroup;
     if (group == null) return '';
@@ -235,5 +226,4 @@ mixin _TabletGroupChatProfileSections on State<TabletGroupChatProfileView> {
       secondaryLanguageText: group.groupNameAr,
     );
   }
-
 }

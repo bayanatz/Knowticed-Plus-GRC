@@ -6,7 +6,7 @@
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
 
-part of './user_management_controller.dart';
+part of 'user_management_controller.dart';
 
 @immutable
 sealed class UserManagementControllerState {}

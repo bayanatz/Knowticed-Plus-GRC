@@ -25,6 +25,8 @@
 /// the next card starts after them. Once the slots are gone, the remaining
 /// children are collapsed to nothing — the row can never overflow, and it never
 /// needs a sideways scroll to reach a card.
+library;
+
 import 'dart:ui' as ui;
 
 import 'dart:math' as math;
@@ -98,8 +100,7 @@ class _HomeSlotRowDelegate extends MultiChildLayoutDelegate {
   void performLayout(Size size) {
     // One slot's share of the row, with the gaps taken out first so that
     // slotCount slots plus (slotCount - 1) gaps come to exactly the row width.
-    final double unit =
-        (size.width - gap * (slotCount - 1)) / slotCount;
+    final double unit = (size.width - gap * (slotCount - 1)) / slotCount;
 
     // Degenerate width (a zero-width parent during a transition, or a slot
     // count that leaves nothing over). Collapse everything rather than divide
@@ -151,8 +152,17 @@ class _HomeSlotRowDelegate extends MultiChildLayoutDelegate {
         // stretched to fill the slots it reserves. That is deliberate: a card
         // takes the width it needs, and the span only decides how much of the
         // row is spoken for and where the next card begins.
-        final Size measured =
-            layoutChild(i, BoxConstraints.loose(Size(size.width, size.height)));
+        //
+        // The most it may take is what is LEFT in the row (24/10/2026): a
+        // card that wants four slots but sits in the last two used to be drawn
+        // at full width and spill past the row's edge, taking its remove
+        // button off screen where it could not be tapped. Capped, it is
+        // squeezed into the slots that remain.
+        final double room = remainingSlots * unit + (remainingSlots - 1) * gap;
+        final Size measured = layoutChild(
+            i,
+            BoxConstraints.loose(
+                Size(math.min(size.width, room), size.height)));
 
         // A card 1.05 slots wide reserves 2 — rounding up is what stops the
         // next card from being pushed past the row's edge. Clamped to what is
@@ -168,9 +178,7 @@ class _HomeSlotRowDelegate extends MultiChildLayoutDelegate {
 
       // Mirrored for Arabic: the first column is the RIGHTMOST one, and the
       // cursor still walks away from that edge.
-      final double dx = isRtl
-          ? size.width - cursor - occupiedWidth
-          : cursor;
+      final double dx = isRtl ? size.width - cursor - occupiedWidth : cursor;
 
       positionChild(i, Offset(dx, 0));
 

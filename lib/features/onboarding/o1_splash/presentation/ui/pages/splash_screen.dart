@@ -15,19 +15,21 @@
 ///          paths and storage keys moved to `AppAssets` / `AppConstants`; the
 ///          dead `isUsebiometrics` field removed; `const` constructor with a
 ///          `Key` added.
+library;
 
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
-import 'package:grc_module/core/constants/app_assets.dart';
-import 'package:grc_module/core/network/message_module/routes/app_routes.dart';
-import 'package:grc_module/core/network/message_module/routes/get_pages.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_font_size.dart';
-import 'package:grc_module/features/onboarding/o1_splash/presentation/controller/splash_controller.dart';
-import 'package:grc_module/features/onboarding/o1_splash/presentation/controller/splash_destination.dart';
-import 'package:grc_module/features/onboarding/o3_authentication/presentation/controller/login_controller.dart';
+import 'package:knowticed_plus/core/constants/app_assets.dart';
+import 'package:knowticed_plus/core/routes/app_routes.dart';
+import 'package:knowticed_plus/core/routes/get_pages.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/extensions/screen_fraction_extension.dart';
+import 'package:knowticed_plus/features/onboarding/o1_splash/presentation/controller/splash_controller.dart';
+import 'package:knowticed_plus/features/onboarding/o1_splash/presentation/controller/splash_destination.dart';
+import 'package:knowticed_plus/features/onboarding/o3_authentication/presentation/controller/login_controller.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -46,8 +48,7 @@ class _SplashScreenState extends State<SplashScreen>
   /// The `Get.find` is passed in as a callback so the controller itself has no
   /// dependency on the auth feature (CR-SKEL-O1-N04).
   late final SplashController _splashController = SplashController(
-    isBiometricLoginEnabled: () =>
-        Get.find<LoginController>().isUseBiometrics,
+    isBiometricLoginEnabled: () => Get.find<LoginController>().isUseBiometrics,
   );
 
   @override
@@ -109,7 +110,7 @@ class _SplashScreenState extends State<SplashScreen>
             // app mark grows in landscape. Preserved from the original.
             height: companyLogo == null || isPortrait ? 0.15.h : 0.25.h,
             child: companyLogo == null
-                ? SvgPicture.asset(_appMarkFor(context))
+                ? CustomSvgImage.natural(assetPath: _appMarkFor(context))
                 : SvgPicture.network(companyLogo),
           ),
         ),

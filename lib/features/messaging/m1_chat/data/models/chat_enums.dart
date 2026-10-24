@@ -4,7 +4,7 @@
 // Objectives: This file is responsible for providing an enums for the messaging feature.
 
 import 'package:get/get.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
 // ---------------- for message disappearing messages/mute chat options ------------
 

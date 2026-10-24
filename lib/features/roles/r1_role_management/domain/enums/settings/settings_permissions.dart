@@ -31,9 +31,12 @@
 /// Firestore is the registry. Without those keys the row renders as a label
 /// with blank space where the switch belongs. The keys are the
 /// [getDataBaseName] values below.
-// REMOVED_MODULE: import 'package:grc_module/features/external/services_app_module/core/constants/strings.dart';
+library;
 
-import 'package:grc_module/features/roles/r1_role_management/domain/entities/module_permissions_sections_permissions.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/features/external/services_app_module/core/constants/strings.dart';
+
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/entities/module_permissions_sections_permissions.dart';
+
 enum SettingsPermissions implements ModulePermissionsSectionsPermission {
   companyInformation,
   branding,

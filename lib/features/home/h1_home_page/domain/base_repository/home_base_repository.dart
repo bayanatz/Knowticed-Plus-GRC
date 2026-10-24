@@ -6,13 +6,14 @@
 ///          to an abstraction instead of the concrete data-layer class.
 /// Author: Amr Mesbah
 /// Created at: 11/8/2026
+library;
 
 import 'package:dartz/dartz.dart';
 
-import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/home_component_model.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/home_page_layout_model.dart';
-import 'package:grc_module/features/home/h1_home_page/domain/enums/app_bar_enum.dart';
+import 'package:knowticed_plus/core/network/failure_model.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/home_component_model.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/home_page_layout_model.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/domain/enums/app_bar_enum.dart';
 
 /// Contract implemented by the data layer for reading and persisting the
 /// per-user home page layout.

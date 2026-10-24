@@ -11,11 +11,12 @@
 /// controller were standing in for: with a real value type, "did anything
 /// change" is `edited != original` rather than a flag that any listener could
 /// set and any save path could forget to reset.
+library;
 
 import 'package:flutter/foundation.dart';
 
-import 'package:grc_module/features/settings/se2_social/domain/entities/academic_entry.dart';
-import 'package:grc_module/features/settings/se2_social/domain/entities/skill_entry.dart';
+import 'package:knowticed_plus/features/settings/se2_social/domain/entities/academic_entry.dart';
+import 'package:knowticed_plus/features/settings/se2_social/domain/entities/skill_entry.dart';
 
 @immutable
 class SocialProfile {
@@ -29,6 +30,9 @@ class SocialProfile {
 
   /// Top-level Firestore keys on the employee document.
   static const String fieldBio = 'Bio';
+  // NOTE 9/10/2026: `Bio_Status` / `Bio_In_Arabic_Status` are no longer
+  // written by the social save (never read anywhere; dropped by the Settings
+  // schema of 9 Oct). Existing documents may still carry them.
   static const String fieldBioStatus = 'Bio_Status';
 
   /// ADDED 24/8/2026. A separate top-level field, matching

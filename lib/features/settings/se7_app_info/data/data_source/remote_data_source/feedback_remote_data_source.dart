@@ -17,13 +17,14 @@
 /// Added while fixing the dead submit button — there was no data layer for
 /// this feature at all, in any module. The screen collected three text bodies
 /// and then dropped them on the floor.
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:grc_module/features/messaging/m5_support/data/support_chat_repository.dart';
+import 'package:knowticed_plus/features/messaging/m5_support/data/support_chat_repository.dart';
 
-import 'package:grc_module/features/settings/se7_app_info/data/utils/feedback_collection_paths.dart';
-import 'package:grc_module/features/settings/se7_app_info/domain/entities/app_feedback.dart';
+import 'package:knowticed_plus/features/settings/se7_app_info/data/utils/feedback_collection_paths.dart';
+import 'package:knowticed_plus/features/settings/se7_app_info/domain/entities/app_feedback.dart';
 
 class FeedbackRemoteDataSource {
   FeedbackRemoteDataSource({FirebaseFirestore? firestore})
@@ -180,8 +181,8 @@ class FeedbackRemoteDataSource {
     final QuerySnapshot<Map<String, dynamic>> snapshot =
         await _feedback.where('employeeId', isEqualTo: employeeId).get();
 
-    final List<FeedbackRequest> requests = snapshot.docs
-        .map((QueryDocumentSnapshot<Map<String, dynamic>> doc) {
+    final List<FeedbackRequest> requests =
+        snapshot.docs.map((QueryDocumentSnapshot<Map<String, dynamic>> doc) {
       final Map<String, dynamic> data = doc.data();
       final Object? raw = data['createdAt'];
 

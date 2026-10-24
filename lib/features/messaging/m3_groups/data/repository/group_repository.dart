@@ -4,18 +4,20 @@
 /// Purpose: This file contains the repository for groups
 /// Author: Mohamed Elrashidy
 /// Created At: 15-10-2024
+library;
 
+import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 
-import 'package:grc_module/core/network/message_module/services/error_handler.dart';
-import 'package:grc_module/core/helper/main_helper/single_value_tracking_model.dart';
-import '../../domain/entities/group_entity.dart';
-import '../../domain/entities/member_entity.dart';
-import '../../domain/base_repository/base_group_repository.dart';
-import '../data_source/remote_data_source/remote_data_source.dart';
-import '../models/group_admin_model.dart';
-import '../models/group_model.dart';
+import 'package:knowticed_plus/core/network/failure_model.dart';
+import 'package:knowticed_plus/core/helper/single_value_tracking_model.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/domain/entities/group_entity.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/domain/entities/member_entity.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/domain/base_repository/base_group_repository.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/data/data_source/remote_data_source/remote_data_source.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/data/models/group_admin_model.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/data/models/group_model.dart';
 
 class GroupsRepository implements BaseGroupsRepository {
   RemoteDataSource remoteDataSource = RemoteDataSource();
@@ -38,7 +40,7 @@ class GroupsRepository implements BaseGroupsRepository {
   @override
   Stream<Either<Failure, dynamic>> getGroups({required String userId}) async* {
     Stream<Either<Failure, dynamic>> groupsStream =
-    remoteDataSource.getGroups(userId);
+        remoteDataSource.getGroups(userId);
     await for (final Either<Failure, dynamic> groups in groupsStream) {
       if (groups.isLeft()) {
         yield groups;
@@ -46,7 +48,14 @@ class GroupsRepository implements BaseGroupsRepository {
         List<Map<String, dynamic>> groupsList = groups.getOrElse(() => []);
         List<GroupModel> groupsModelList = [];
         for (Map<String, dynamic> group in groupsList) {
-          groupsModelList.add(GroupModel.fromMap(group));
+          // 18/10/2026: one group that does not parse used to throw out of
+          // the stream, so the Groups section stayed EMPTY for everyone and
+          // the cubit resubscribed forever. Skip it and say why.
+          try {
+            groupsModelList.add(GroupModel.fromMap(group));
+          } catch (e) {
+            debugPrint('[groups] skipped ${group[GroupModel.kGroupId]}: $e');
+          }
         }
         yield Right(groupsModelList);
       }
@@ -57,7 +66,7 @@ class GroupsRepository implements BaseGroupsRepository {
   Future<Either<Failure, dynamic>> removeGroupMembers(
       {required String groupId, required List<String> members}) async {
     Either<Failure, dynamic> result =
-    await remoteDataSource.getGroup(groupId: groupId);
+        await remoteDataSource.getGroup(groupId: groupId);
     if (result.isLeft()) return result;
     Map<String, dynamic> data = result.getOrElse(() => {});
     GroupModel groupModel = GroupModel.fromMap(data);
@@ -70,7 +79,7 @@ class GroupsRepository implements BaseGroupsRepository {
   addGroupAdmins(
       {required String groupId, required List<String> admins}) async {
     Either<Failure, dynamic> result =
-    await remoteDataSource.getGroup(groupId: groupId);
+        await remoteDataSource.getGroup(groupId: groupId);
     if (result.isLeft()) return result;
     Map<String, dynamic> data = result.getOrElse(() => {});
     GroupModel groupModel = GroupModel.fromMap(data);
@@ -82,7 +91,7 @@ class GroupsRepository implements BaseGroupsRepository {
   removeGroupAdmins(
       {required String groupId, required List<String> admins}) async {
     Either<Failure, dynamic> result =
-    await remoteDataSource.getGroup(groupId: groupId);
+        await remoteDataSource.getGroup(groupId: groupId);
     if (result.isLeft()) return result;
     Map<String, dynamic> data = result.getOrElse(() => {});
     GroupModel groupModel = GroupModel.fromMap(data);
@@ -90,10 +99,10 @@ class GroupsRepository implements BaseGroupsRepository {
     return await remoteDataSource.addGroup(groupModel);
   }
 
-  _updateGroupMembersState(
+  void _updateGroupMembersState(
       {required List<String> members,
-        required GroupModel group,
-        bool state = false}) {
+      required GroupModel group,
+      bool state = false}) {
     for (String memberId in members) {
       if (group.groupMembers.members.containsKey(memberId)) {
         group.groupMembers.members[memberId]!.isMember.add(state);
@@ -103,10 +112,10 @@ class GroupsRepository implements BaseGroupsRepository {
     }
   }
 
-  _updateGroupAdminState(
+  void _updateGroupAdminState(
       {required List<String> members,
-        required GroupModel group,
-        bool state = false}) {
+      required GroupModel group,
+      bool state = false}) {
     for (String memberId in members) {
       if (group.groupAdmins.adminData.containsKey(memberId)) {
         group.groupAdmins.adminData[memberId]!.isAdmin.add(state);
@@ -122,7 +131,7 @@ class GroupsRepository implements BaseGroupsRepository {
   addGroupMembers(
       {required String groupId, required MemberEntity member}) async {
     Either<Failure, dynamic> result =
-    await remoteDataSource.getGroup(groupId: groupId);
+        await remoteDataSource.getGroup(groupId: groupId);
     if (result.isLeft()) return result;
     Map<String, dynamic> data = result.getOrElse(() => {});
     GroupModel groupModel = GroupModel.fromMap(data);
@@ -130,7 +139,8 @@ class GroupsRepository implements BaseGroupsRepository {
     return await remoteDataSource.addGroup(groupModel);
   }
 
-  _addMemberToGroup({required MemberEntity member, required GroupModel group}) {
+  void _addMemberToGroup(
+      {required MemberEntity member, required GroupModel group}) {
     if (group.groupMembers.members.containsKey(member.memberId)) {
       group.groupMembers.members[member.memberId]!.isMember.add(true);
       group.groupMembers.members[member.memberId]!.timestamps
@@ -156,14 +166,14 @@ class GroupsRepository implements BaseGroupsRepository {
     GroupEntity? groupEntity,
   }) async {
     Either<Failure, dynamic> result =
-    await remoteDataSource.getGroup(groupId: groupEntity!.groupId);
+        await remoteDataSource.getGroup(groupId: groupEntity!.groupId);
     if (result.isLeft()) return result;
     Map<String, dynamic> data = result.getOrElse(() => {});
     GroupModel groupModel = GroupModel.fromMap(data);
 
     if (image != null) {
       Either<Failure, dynamic> imageResult =
-      await remoteDataSource.uploadGroupImage(image);
+          await remoteDataSource.uploadGroupImage(image);
       if (imageResult.isLeft()) return imageResult;
       String imageUrl = imageResult.getOrElse(() => '');
       groupModel.groupImage.values.add(imageUrl);
@@ -173,7 +183,8 @@ class GroupsRepository implements BaseGroupsRepository {
       groupModel.groupName.values.add(groupName);
       groupModel.groupName.timestamps.add(Timestamp.now());
     }
-    if (groupNameAr != null) { // ✅
+    if (groupNameAr != null) {
+      // ✅
       groupModel.groupNameAr ??= SingleValueTrackingModel<String>(
         values: [],
         timestamps: [],
@@ -185,7 +196,8 @@ class GroupsRepository implements BaseGroupsRepository {
       groupModel.groupDescription.values.add(groupDescription);
       groupModel.groupDescription.timestamps.add(Timestamp.now());
     }
-    if (groupDescriptionAr != null) { // ✅ ADD THIS BLOCK
+    if (groupDescriptionAr != null) {
+      // ✅ ADD THIS BLOCK
       groupModel.groupDescriptionAr ??= SingleValueTrackingModel<String>(
         values: [],
         timestamps: [],

@@ -2,9 +2,9 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: download_logs_dialog.dart
-/// Purpose: Declares `SystemLogsDownloadDialog`.
-/// Author: Knowticed Plus team
-/// Created At: 12/8/2026
+/// Description: Declares `SystemLogsDownloadDialog`.
+/// Author: Amr Mesbah
+/// Created at: 12/8/2026
 /// Updated: 21/9/2026 - REBUILT. "When press export in system log" opened an
 ///          empty grey box (bug report p.7). The old body sized everything with
 ///          fractional ScreenUtil values — `0.021.h` font sizes, `0.3.w` insets,
@@ -15,18 +15,19 @@
 ///          itself and its result dialogs are unchanged: the cubit runs it and
 ///          `SystemLogsTable._handleSystemLogsState` presents the outcome and
 ///          closes this dialog.
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
-import 'package:grc_module/core/custom/2-custom_textfield.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/custom/5-custom_button.dart';
-import 'package:grc_module/core/di/app_controllers.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:intl/intl.dart' hide TextDirection;
+import 'package:knowticed_plus/core/custom/inputs/custom_textfield.dart';
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_button.dart';
+import 'package:knowticed_plus/core/di/app_controllers.dart';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
 class SystemLogsDownloadDialog extends StatefulWidget {
   const SystemLogsDownloadDialog({super.key});
@@ -44,7 +45,10 @@ class _SystemLogsDownloadDialogState extends State<SystemLogsDownloadDialog> {
     super.didChangeDependencies();
     if (fileName.text.isEmpty) {
       // File names stay ASCII ('en') whatever the UI language.
-      final String date = DateFormat('dd MMM yyyy', 'en').format(DateTime.now());
+      final String date = DateFormat(
+        'dd MMM yyyy',
+        'en',
+      ).format(DateTime.now());
       fileName.text = '${S.of(context).systemsLogs}_$date';
     }
   }
@@ -60,12 +64,16 @@ class _SystemLogsDownloadDialogState extends State<SystemLogsDownloadDialog> {
     if (name.isEmpty) {
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(
-          backgroundColor: AppColors.orange,
-          behavior: SnackBarBehavior.floating,
-          content: Text(S.of(context).pleaseEnterAFileName,
-              style: TextStyle(color: AppColors.white)),
-        ));
+        ..showSnackBar(
+          SnackBar(
+            backgroundColor: AppColors.orange,
+            behavior: SnackBarBehavior.floating,
+            content: Text(
+              S.of(context).pleaseEnterAFileName,
+              style: TextStyle(color: AppColors.white),
+            ),
+          ),
+        );
       return;
     }
 
@@ -111,7 +119,7 @@ class _SystemLogsDownloadDialogState extends State<SystemLogsDownloadDialog> {
                   child: Center(
                     child: CustomSvgImage(
                       assetPath:
-                          "assets/icons_assets/main_icons_assets/assets_export.svg",
+                          "assets/icons_assets/main_icons_assets/ic_export.svg",
                       width: 16.sp,
                       height: 16.sp,
                       color: AppColors.textButton,
@@ -122,8 +130,9 @@ class _SystemLogsDownloadDialogState extends State<SystemLogsDownloadDialog> {
                 Expanded(
                   child: Text(
                     S.of(context).downloadingFile,
-                    style: StyleText.fontSize16Weight500
-                        .copyWith(color: AppColors.text),
+                    style: StyleText.fontSize16Weight500.copyWith(
+                      color: AppColors.text,
+                    ),
                   ),
                 ),
               ],
@@ -137,16 +146,20 @@ class _SystemLogsDownloadDialogState extends State<SystemLogsDownloadDialog> {
             ),
             SizedBox(height: 20.sp),
             Row(
+              textDirection: TextDirection
+                  .ltr, // X-73: Cancel left, action right in both languages
+
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 customButton(
                   title: S.of(context).discard,
                   width: buttonWidth,
                   height: 38,
-                  color: AppColors.secondaryButton,
+                  color: AppColors.darkGrey,
                   radius: 8.r,
-                  textStyle: StyleText.fontSize16Weight500
-                      .copyWith(color: AppColors.blackButton),
+                  textStyle: StyleText.fontSize16Weight500.copyWith(
+                    color: AppColors.text,
+                  ),
                   function: () => Navigator.pop(context),
                 ),
                 customButton(
@@ -155,8 +168,9 @@ class _SystemLogsDownloadDialogState extends State<SystemLogsDownloadDialog> {
                   height: 38,
                   color: AppColors.primary,
                   radius: 8.r,
-                  textStyle: StyleText.fontSize16Weight500
-                      .copyWith(color: AppColors.textButton),
+                  textStyle: StyleText.fontSize16Weight500.copyWith(
+                    color: AppColors.textButton,
+                  ),
                   function: _export,
                 ),
               ],

@@ -32,12 +32,13 @@
 ///
 /// ⚠️ [getDataBaseName] is stored in Firestore. Renaming it orphans every role
 /// document already written with it.
+library;
 
-import 'package:grc_module/features/roles/r1_role_management/domain/entities/module_permissions_sections.dart';
-import 'package:grc_module/features/roles/r1_role_management/domain/entities/module_permissions_sections_permissions.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/entities/module_permissions_sections.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/entities/module_permissions_sections_permissions.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
-import 'notification_permissions_enum.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/notification/notification_permissions_enum.dart';
 
 enum NotificationPermissionsSections
     implements ModulePermissionsSections, ModulePermissionsSectionsPermission {

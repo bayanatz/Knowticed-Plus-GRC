@@ -1,26 +1,27 @@
 /// Module: messaging / chat / presentation/controller/main_controllers/group_chat_cubit.dart
+library;
 // Date: 6/8/2024
 // Last update: 28/4/2026
 // Purpose: Concrete cubit for group chat.
 //          Encrypts outgoing text messages and decrypts incoming ones.
 
+import 'package:flutter/foundation.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grc_module/features/messaging/m1_chat/domain/enum/media_type.dart';
-import 'package:grc_module/features/messaging/m1_chat/presentation/controller/main_controllers/master_chat_cubit.dart';
-import 'package:grc_module/core/helper/message_module/main_helper/message_action_types.dart';
-import 'package:grc_module/features/messaging/m3_groups/presentation/controller/groups_controller.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/domain/enum/media_type.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/main_controllers/master_chat_cubit.dart';
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/main_helper/message_action_types.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/presentation/controller/groups_controller.dart';
 
-import 'package:grc_module/core/enums/message_module/message_types.dart';
-import '../../../../../../core/helper/message_module/interface/entity/base_messaging_interface_parameters.dart';
-import '../../../../m3_groups/domain/entities/group_entity.dart';
-import '../../../../m3_groups/domain/entities/member_entity.dart';
-import '../../../../m4_messaging_home/domain/entities/chat_type_entity.dart';
-import '../../../domain/entity/group_message_entity.dart';
-import '../../../domain/entity/message_entity.dart';
-import '../../../domain/use_cases/group_chat_use_cases/get_group_chat_message_use_case.dart';
+import 'package:knowticed_plus/features/messaging/helpers/enums/message_types.dart';
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/interface/entity/base_messaging_interface_parameters.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/domain/entities/group_entity.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/domain/entities/member_entity.dart';
+import 'package:knowticed_plus/features/messaging/m4_messaging_home/domain/entities/chat_type_entity.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/domain/entity/group_message_entity.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/domain/entity/message_entity.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/domain/use_cases/group_chat_use_cases/get_group_chat_message_use_case.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // State
@@ -34,7 +35,7 @@ class GroupChatState extends MasterChatState {
   GroupChatState({
     super.otherConnectionSide,
     super.isShowMedia,
-    super.isShowContactInfo,       // ✅ added
+    super.isShowContactInfo, // ✅ added
     super.isExpansionTabletChat,
     super.mediaMessages,
     super.messages,
@@ -58,7 +59,7 @@ class GroupChatState extends MasterChatState {
   GroupChatState copyWith({
     ChatTypeEntity? otherConnectionSide,
     bool? isShowMedia,
-    bool? isShowContactInfo,       // ✅ added
+    bool? isShowContactInfo, // ✅ added
     bool? isExpansionTabletChat,
     Map<MediaType, Map<String, List<MessageEntity>>>? mediaMessages,
     List<MessageEntity>? messages,
@@ -80,15 +81,18 @@ class GroupChatState extends MasterChatState {
     return GroupChatState(
       otherConnectionSide: otherConnectionSide ?? this.otherConnectionSide,
       isShowMedia: isShowMedia ?? this.isShowMedia,
-      isShowContactInfo: isShowContactInfo ?? this.isShowContactInfo,  // ✅ added
-      isExpansionTabletChat: isExpansionTabletChat ?? this.isExpansionTabletChat,
+      isShowContactInfo: isShowContactInfo ?? this.isShowContactInfo, // ✅ added
+      isExpansionTabletChat:
+          isExpansionTabletChat ?? this.isExpansionTabletChat,
       mediaMessages: mediaMessages ?? this.mediaMessages,
       messages: messages ?? this.messages,
       selectMessages: selectMessages ?? this.selectMessages,
       messageActionType: messageActionType ?? this.messageActionType,
-      selectedMessage: selectedMessage != null ? selectedMessage() : this.selectedMessage,
+      selectedMessage:
+          selectedMessage != null ? selectedMessage() : this.selectedMessage,
       newMessageType: newMessageType ?? this.newMessageType,
-      firstUnreadIndex: firstUnreadIndex != null ? firstUnreadIndex() : this.firstUnreadIndex,
+      firstUnreadIndex:
+          firstUnreadIndex != null ? firstUnreadIndex() : this.firstUnreadIndex,
       swiperIndex: swiperIndex ?? this.swiperIndex,
       currentUser: currentUser ?? this.currentUser,
       isSending: isSending ?? this.isSending,
@@ -141,6 +145,7 @@ class GroupChatCubit extends MasterChatCubit {
         chatScrollCubit.scrollMessagesListener,
       );
     } catch (e) {
+      debugPrint('Ignored error: $e');
     }
 
     await getChatMessages();
@@ -160,7 +165,7 @@ class GroupChatCubit extends MasterChatCubit {
 
   @override
   Future<void> getChatMessages() async {
-    emit(state.copyWith(messages: []) as GroupChatState);
+    emit(state.copyWith(messages: []));
     _listenToChatMessages();
   }
 
@@ -199,8 +204,8 @@ class GroupChatCubit extends MasterChatCubit {
           // ✅ Decrypt all text messages before emitting to UI
           final decryptedMessages = decryptMessagesList(rawMessages);
 
-          emit(state.copyWith(messages: []) as GroupChatState);
-          emit(state.copyWith(messages: decryptedMessages) as GroupChatState);
+          emit(state.copyWith(messages: []));
+          emit(state.copyWith(messages: decryptedMessages));
 
           pinnedMessageCubit.updatePinList();
           getFirstUnreadIndex();
@@ -279,8 +284,8 @@ class GroupChatCubit extends MasterChatCubit {
       final encryptedText = encryptMessage(plainText);
 
       await textMessageCubit.sendMessage(
-        message: encryptedText,              // 🔒 encrypted for message content
-        previewText: plainText,              // 📝 plain for last message preview
+        message: encryptedText, // 🔒 encrypted for message content
+        previewText: plainText, // 📝 plain for last message preview
         currentUser: state.currentUser!,
         otherConnectionSide: state.otherConnectionSide!,
         mentionedMembers: state.mentionedMembers,
@@ -291,7 +296,7 @@ class GroupChatCubit extends MasterChatCubit {
       await imageMessageCubit.sendMessage();
     }
 
-    emit(state.copyWith(mentionedMembers: {}) as GroupChatState);
+    emit(state.copyWith(mentionedMembers: {}));
   }
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -336,74 +341,67 @@ class GroupChatCubit extends MasterChatCubit {
   }
 
   void _showMentionSection() {
-    final cursorPosition =
-        textMessageEditingController.selection.baseOffset;
+    final cursorPosition = textMessageEditingController.selection.baseOffset;
     final textBeforeCursor =
-    textMessageEditingController.text.substring(0, cursorPosition);
+        textMessageEditingController.text.substring(0, cursorPosition);
 
     if (textBeforeCursor.split('@').length > 1) {
       final textAfterLastAt = textBeforeCursor.split('@').last;
       if (textAfterLastAt.contains(' ')) {
-        emit(state.copyWith(showMentionCard: false) as GroupChatState);
+        emit(state.copyWith(showMentionCard: false));
       } else {
-        emit(state.copyWith(showMentionCard: true) as GroupChatState);
+        emit(state.copyWith(showMentionCard: true));
       }
     } else {
-      emit(state.copyWith(showMentionCard: false) as GroupChatState);
+      emit(state.copyWith(showMentionCard: false));
     }
   }
 
   String getMentionPrefix() {
-    final cursorPosition =
-        textMessageEditingController.selection.baseOffset;
+    final cursorPosition = textMessageEditingController.selection.baseOffset;
     final textBeforeCursor =
-    textMessageEditingController.text.substring(0, cursorPosition);
+        textMessageEditingController.text.substring(0, cursorPosition);
     return textBeforeCursor.split('@').last;
   }
 
   void addMention(MemberEntity member) {
-    final cursorPosition =
-        textMessageEditingController.selection.baseOffset;
+    final cursorPosition = textMessageEditingController.selection.baseOffset;
     String previousText =
-    textMessageEditingController.text.substring(0, cursorPosition);
-    previousText =
-        previousText.substring(0, previousText.lastIndexOf('@'));
-    previousText =
-    '$previousText@${member.memberId.replaceAll('@', '_')} '
+        textMessageEditingController.text.substring(0, cursorPosition);
+    previousText = previousText.substring(0, previousText.lastIndexOf('@'));
+    previousText = '$previousText@${member.memberId.replaceAll('@', '_')} '
         '${textMessageEditingController.text.substring(cursorPosition)}';
 
     textMessageEditingController.text = previousText;
 
     final updatedMentions =
-    Map<String, MemberEntity>.from(state.mentionedMembers);
+        Map<String, MemberEntity>.from(state.mentionedMembers);
     updatedMentions[member.memberId] = member;
 
     emit(state.copyWith(
       showMentionCard: false,
       mentionedMembers: updatedMentions,
-    ) as GroupChatState);
+    ));
   }
 
   void _validateMention() {
-    final cursorPosition =
-        textMessageEditingController.selection.baseOffset;
+    final cursorPosition = textMessageEditingController.selection.baseOffset;
     final textBeforeCursor =
-    textMessageEditingController.text.substring(0, cursorPosition);
+        textMessageEditingController.text.substring(0, cursorPosition);
 
     if (state.mentionedMembers.isNotEmpty) {
       final updatedMentions =
-      Map<String, MemberEntity>.from(state.mentionedMembers);
+          Map<String, MemberEntity>.from(state.mentionedMembers);
       bool needsUpdate = false;
 
       updatedMentions.forEach((key, member) {
-        String mentionText =
-            '@${member.memberId.replaceAll('@', '_')}';
+        String mentionText = '@${member.memberId.replaceAll('@', '_')}';
         mentionText = mentionText.substring(0, mentionText.length - 1);
 
         if (textBeforeCursor.contains(mentionText) &&
             textBeforeCursor.endsWith(mentionText)) {
-          textMessageEditingController.text =
-              textMessageEditingController.text.replaceRange(
+          textMessageEditingController.text = textMessageEditingController.text
+              .replaceRange(
                   textBeforeCursor.lastIndexOf('@'), cursorPosition, '');
           updatedMentions.remove(key);
           needsUpdate = true;
@@ -414,29 +412,26 @@ class GroupChatCubit extends MasterChatCubit {
         emit(state.copyWith(
           showMentionCard: false,
           mentionedMembers: updatedMentions,
-        ) as GroupChatState);
+        ));
       }
     }
   }
 
   void preventCursorInMention() {
-    final cursorPosition =
-        textMessageEditingController.selection.baseOffset;
+    final cursorPosition = textMessageEditingController.selection.baseOffset;
     final fullText = textMessageEditingController.text;
 
     for (final member in state.mentionedMembers.values) {
-      final mentionText =
-          '@${member.memberId.replaceAll('@', '_')}';
+      final mentionText = '@${member.memberId.replaceAll('@', '_')}';
       final mentionStart = fullText.indexOf(mentionText);
       final mentionEnd = mentionStart + mentionText.length;
 
       if (mentionStart != -1 &&
           cursorPosition > mentionStart &&
           cursorPosition < mentionEnd) {
-        textMessageEditingController.selection =
-            TextSelection.fromPosition(
-              TextPosition(offset: mentionEnd),
-            );
+        textMessageEditingController.selection = TextSelection.fromPosition(
+          TextPosition(offset: mentionEnd),
+        );
         break;
       }
     }

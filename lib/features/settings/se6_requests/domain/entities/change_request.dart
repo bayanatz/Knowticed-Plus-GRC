@@ -13,11 +13,12 @@
 /// copies of the same 12 string keys, which is how the older single-field shape
 /// (`whatChanged` / `oldValue` / `newValue`) and the newer `changes` array came
 /// to be read differently in different screens.
+library;
 
 import 'package:flutter/foundation.dart';
 
-import 'package:grc_module/features/settings/se6_requests/domain/entities/field_change.dart';
-import 'package:grc_module/features/settings/se6_requests/domain/enums/request_status.dart';
+import 'package:knowticed_plus/features/settings/se6_requests/domain/entities/field_change.dart';
+import 'package:knowticed_plus/features/settings/se6_requests/domain/enums/request_status.dart';
 
 @immutable
 class ChangeRequest {
@@ -31,6 +32,8 @@ class ChangeRequest {
     this.employeeEmail = '',
     this.employeeName = '',
     this.changes = const <FieldChange>[],
+    this.decisionReason = '',
+    this.lastReminderAt,
   });
 
   /// What an untagged request is shown as, matching the previous
@@ -54,6 +57,24 @@ class ChangeRequest {
 
   final List<FieldChange> changes;
 
+  /// X-135 (21/10/2026): the reason given on cancel / reject, shown on the
+  /// request. Empty while pending or approved.
+  final String decisionReason;
+
+  /// 21/10/2026 (Moataz): when the requester last sent "Send Reminder".
+  /// Stored on the request so the once-per-24-hours limit holds on every
+  /// device. Null = never sent.
+  final DateTime? lastReminderAt;
+
+  /// How long the requester waits between two reminders.
+  static const Duration reminderInterval = Duration(hours: 24);
+
+  /// Whether a reminder may be sent at [now] — never sent, or the last one is
+  /// at least [reminderInterval] old.
+  bool canSendReminderAt(DateTime now) =>
+      lastReminderAt == null ||
+      now.difference(lastReminderAt!) >= reminderInterval;
+
   int get numberOfChanges => changes.length;
 
   ChangeRequest copyWith({
@@ -66,6 +87,8 @@ class ChangeRequest {
     String? employeeEmail,
     String? employeeName,
     List<FieldChange>? changes,
+    String? decisionReason,
+    DateTime? lastReminderAt,
   }) {
     return ChangeRequest(
       id: id ?? this.id,
@@ -76,7 +99,9 @@ class ChangeRequest {
       employeeId: employeeId ?? this.employeeId,
       employeeEmail: employeeEmail ?? this.employeeEmail,
       employeeName: employeeName ?? this.employeeName,
+      decisionReason: decisionReason ?? this.decisionReason,
       changes: changes ?? this.changes,
+      lastReminderAt: lastReminderAt ?? this.lastReminderAt,
     );
   }
 

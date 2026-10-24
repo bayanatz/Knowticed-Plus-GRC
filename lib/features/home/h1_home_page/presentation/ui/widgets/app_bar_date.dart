@@ -7,19 +7,23 @@
 /// Created at: 20/9/2025
 /// Updated: 11/8/2026 - try/catch removed (forbidden in presentation/ui);
 ///          locale now comes from Localizations instead of GetX.
+library;
 
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
-import 'package:grc_module/core/constants/app_assets.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/constants/app_assets.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
 
 class AppBarDate extends StatelessWidget {
-  const AppBarDate({super.key});
+  const AppBarDate({super.key, this.style});
+
+  /// Overrides the 18 / 500 default (Home Layout uses 14 / 500, D-217).
+  final TextStyle? style;
 
   /// Locales this widget formats dates for. Their symbol data is registered by
   /// [ensureDateFormattingInitialized] at app start, which is what removes the
@@ -58,19 +62,19 @@ class AppBarDate extends StatelessWidget {
     return Row(
       children: [
         // CHANGED 22/8/2026: was the inline
-        // "assets/icons_assets/home_assets/todo_scheduled_calendar.svg" — the
+        // "assets/icons_assets/main_icons_assets/ic_status_todo_scheduled.svg" — the
         // to-do glyph, not a calendar. Routed through AppAssets rather than a
         // second string literal, since the constant for this file already
         // exists (§15, no magic asset paths in widgets).
-        SvgPicture.asset(
-          AppAssets.calendar,
+        CustomSvgImage.natural(
+          assetPath: AppAssets.calendar,
           height: 20.sp,
           color: AppColors.icon,
         ),
         SizedBox(width: 10.sp),
         Text(
           _formattedDate(context),
-          style: StyleText.fontSize18Weight500,
+          style: style ?? StyleText.fontSize18Weight500,
         ),
       ],
     );

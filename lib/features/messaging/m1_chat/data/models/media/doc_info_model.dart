@@ -3,9 +3,7 @@
 // Last update: 2/9/2024
 // Objectives: This file is responsible for providing  a model for the document info.
 
-
-
-import 'package:grc_module/core/helper/main_helper/date_time_helper.dart';
+import 'package:knowticed_plus/core/helper/date_time_helper.dart';
 
 class DocInfoModel {
   String fileName;

@@ -5,6 +5,7 @@
 /// Purpose: Declares `CheckListItems`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -32,16 +33,20 @@ class CheckListItems {
   CheckListItems.fromJson(dynamic json) {
     itemTitle =
         json['Item_Title'] != null ? json['Item_Title'].cast<String>() : [];
-    itemMembers = 
+    itemMembers =
         json['Item_Members'] != null ? json['Item_Members'].cast<String>() : [];
-    itemStartDate =
-        json['Item_Start_Date'] != null ? json['Item_Start_Date'].cast<String>() : [];
-    itemEndDate =
-        json['Item_End_Date'] != null ? json['Item_End_Date'].cast<String>() : [];
-    itemStartTime =
-        json['Item_Start_Time'] != null ? json['Item_Start_Time'].cast<String>() : [];
-    itemEndTime =
-        json['Item_End_Time'] != null ? json['Item_End_Time'].cast<String>() : [];
+    itemStartDate = json['Item_Start_Date'] != null
+        ? json['Item_Start_Date'].cast<String>()
+        : [];
+    itemEndDate = json['Item_End_Date'] != null
+        ? json['Item_End_Date'].cast<String>()
+        : [];
+    itemStartTime = json['Item_Start_Time'] != null
+        ? json['Item_Start_Time'].cast<String>()
+        : [];
+    itemEndTime = json['Item_End_Time'] != null
+        ? json['Item_End_Time'].cast<String>()
+        : [];
     itemStatus =
         json['Item_Status'] != null ? json['Item_Status'].cast<String>() : [];
     timestamp =

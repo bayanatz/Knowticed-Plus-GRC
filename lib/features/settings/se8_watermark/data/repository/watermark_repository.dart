@@ -24,8 +24,8 @@ library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:grc_module/core/network/get_base_url.dart';
-import 'package:grc_module/features/settings/se8_watermark/domain/entities/watermark_settings.dart';
+import 'package:knowticed_plus/core/network/get_base_url.dart';
+import 'package:knowticed_plus/features/settings/se8_watermark/domain/entities/watermark_settings.dart';
 
 class WatermarkRepository {
   /// The single document holding module-wide settings.

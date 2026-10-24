@@ -21,10 +21,11 @@
 /// Both copies also hardcoded the Arabic strings inline rather than using the
 /// `personalInformation` / `healthInsurance` / `emergencyContact` keys that
 /// already existed in both .arb files.
+library;
 
 import 'package:flutter/widgets.dart';
 
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
 abstract final class RequestSectionLabel {
   const RequestSectionLabel._();
@@ -47,8 +48,31 @@ abstract final class RequestSectionLabel {
         return S.of(context).healthInsurance;
       case 'emergency contact':
         return S.of(context).emergencyContact;
+      case 'company information':
+        return S.of(context).companyInformation;
       default:
         return raw;
+    }
+  }
+
+  /// Function Name: [iconOf]
+  ///
+  /// Purpose: The icon for a stored section value — the same icon the
+  ///          Settings menu / page title uses for that section.
+  ///
+  /// ADDED 21/10/2026 (Moataz): the list and the details page each had their
+  /// own mapping, and both gave Personal Information the Emergency Contact
+  /// icon while Emergency Contact got the insurance one.
+  static String iconOf(String? section) {
+    switch (_normalize(section?.trim() ?? '')) {
+      case 'health insurance':
+        return 'assets/icons_assets/main_icons_assets/ic_hr_insurance_document.svg';
+      case 'emergency contact':
+        return 'assets/icons_assets/main_icons_assets/ic_user_emergency_contact.svg';
+      case 'company information':
+        return 'assets/icons_assets/main_icons_assets/ic_org_company_building.svg';
+      default:
+        return 'assets/icons_assets/settings_assets/ic_personal_information.svg';
     }
   }
 

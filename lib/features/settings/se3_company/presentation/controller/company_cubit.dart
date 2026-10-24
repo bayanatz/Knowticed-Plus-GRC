@@ -16,11 +16,12 @@
 ///
 /// Merged: add_company_controller.dart + company_controller_personal.dart
 ///         (the latter was a strict superset; nothing was lost), then
-///         converted from GetxController+StateMixin to Cubit<CompanyState>.
+///         converted from GetxController+StateMixin to Cubit`<CompanyState>`.
 ///
 /// NOTE ON LIFECYCLE: this cubit is created in main() and provided at the app
 /// root via BlocProvider.value, because ThemeController is constructed before
 /// runApp and depends on it. Same pattern as ThemeAndLocalizationsCubit.
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
@@ -29,22 +30,27 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
-import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/core/theme/theme_controller.dart';
-import 'package:grc_module/features/roles/r5_system_logs/presentation/controller/system_logs_controller.dart';
-import 'package:grc_module/features/settings/se3_company/data/models/company_model/arabic_font_model.dart';
-import 'package:grc_module/features/settings/se3_company/data/models/company_model/company_logo_model.dart';
-import 'package:grc_module/features/settings/se3_company/data/models/company_model/company_model.dart';
-import 'package:grc_module/features/settings/se3_company/data/models/company_model/english_font_model.dart';
-import 'package:grc_module/features/settings/se3_company/data/models/company_model/primary_color_model.dart';
-import 'package:grc_module/features/settings/se3_company/data/models/company_model/secondary_color_model.dart';
-import 'package:grc_module/features/settings/se3_company/data/repository/company_repository.dart';
-import 'package:grc_module/features/settings/se3_company/data/repository/employee_branding_repository.dart';
-import 'package:grc_module/features/settings/se3_company/data/utils/company_collection_paths.dart';
-import 'package:grc_module/features/settings/se3_company/domain/base_repository/company_base_repository.dart';
-import 'package:grc_module/features/settings/se3_company/domain/base_repository/employee_branding_base_repository.dart';
-import 'package:grc_module/features/settings/se3_company/domain/entities/employee_branding_entity.dart';
-import 'package:grc_module/features/settings/se3_company/presentation/controller/company_state.dart';
+import 'package:knowticed_plus/core/di/app_controllers.dart';
+import 'package:knowticed_plus/core/helper/access/modules_enum.dart';
+import 'package:knowticed_plus/core/network/failure_model.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/settings/settings_permissions.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/settings/settings_permissions_sections.dart';
+import 'package:knowticed_plus/core/theme/theme_controller.dart';
+import 'package:knowticed_plus/features/roles/r5_system_logs/presentation/controller/system_logs_controller.dart';
+import 'package:knowticed_plus/features/settings/se3_company/data/models/company_model/arabic_font_model.dart';
+import 'package:knowticed_plus/features/settings/se3_company/data/models/company_model/company_logo_model.dart';
+import 'package:knowticed_plus/features/settings/se3_company/data/models/company_model/company_model.dart';
+import 'package:knowticed_plus/features/settings/se3_company/data/models/company_model/english_font_model.dart';
+import 'package:knowticed_plus/core/app_services/firebase/live_refresh.dart';
+import 'package:knowticed_plus/features/settings/se3_company/data/models/company_model/primary_color_model.dart';
+import 'package:knowticed_plus/features/settings/se3_company/data/models/company_model/secondary_color_model.dart';
+import 'package:knowticed_plus/features/settings/se3_company/data/repository/company_repository.dart';
+import 'package:knowticed_plus/features/settings/se3_company/data/repository/employee_branding_repository.dart';
+import 'package:knowticed_plus/features/settings/se3_company/data/utils/company_collection_paths.dart';
+import 'package:knowticed_plus/features/settings/se3_company/domain/base_repository/company_base_repository.dart';
+import 'package:knowticed_plus/features/settings/se3_company/domain/base_repository/employee_branding_base_repository.dart';
+import 'package:knowticed_plus/features/settings/se3_company/domain/entities/employee_branding_entity.dart';
+import 'package:knowticed_plus/features/settings/se3_company/presentation/controller/company_state.dart';
 
 class CompanyCubit extends Cubit<CompanyState> {
   CompanyCubit({
@@ -66,6 +72,13 @@ class CompanyCubit extends Cubit<CompanyState> {
   /// Both typed as domain contracts so they can be faked in tests.
   final CompanyBaseRepository companyRepository;
   final EmployeeBrandingBaseRepository employeeBrandingRepository;
+  final LiveRefresh _live = LiveRefresh();
+
+  @override
+  Future<void> close() {
+    _live.dispose();
+    return super.close();
+  }
 
   /// Resolved lazily rather than in a field initializer: the cubit is built in
   /// main() before the GetX bindings have necessarily registered this
@@ -98,7 +111,8 @@ class CompanyCubit extends Cubit<CompanyState> {
   void setPhone(String v) => emit(state.copyWith(phone: v));
   void setStreetAddress(String v) => emit(state.copyWith(streetAddress: v));
   void setCode(String v) => emit(state.copyWith(code: v));
-  void setContactFirstName(String v) => emit(state.copyWith(contactFirstName: v));
+  void setContactFirstName(String v) =>
+      emit(state.copyWith(contactFirstName: v));
   void setContactLastName(String v) => emit(state.copyWith(contactLastName: v));
   void setContactEmail(String v) => emit(state.copyWith(contactEmail: v));
   void setContactPhone(String v) => emit(state.copyWith(contactPhone: v));
@@ -300,16 +314,28 @@ class CompanyCubit extends Cubit<CompanyState> {
   Future<CompanyModel?> getCompany({
     String? companyName,
     bool shouldRestart = false,
+    bool silent = false,
   }) async {
-    emit(state.copyWith(status: CompanyStatus.loading));
+    if (!silent) emit(state.copyWith(status: CompanyStatus.loading));
 
-    String companyId = companyName ?? CompanyCollectionPaths.companyId;
-    if (companyId.isEmpty) companyId = _fallbackCompanyId;
+    final String companyId = companyName ?? CompanyCollectionPaths.companyId;
+    // CR-KNP-SET-PROFILE-01 (20/10/2026): there used to be a hard-coded
+    // fallback id ('70843020') here, which silently read ANOTHER tenant's
+    // branding when the root was not resolved yet. Now it is a plain failure.
+    if (companyId.isEmpty) {
+      if (silent) return null;
+      emit(state.copyWith(
+        status: CompanyStatus.failure,
+        errorMessage: 'Company is not resolved yet. Please sign in again.',
+      ));
+      return null;
+    }
 
     final Either<Failure, CompanyModel?> result =
         await companyRepository.getCompany(companyId);
 
     if (result.isLeft()) {
+      if (silent) return null;
       emit(state.copyWith(
         status: CompanyStatus.failure,
         errorMessage: result.fold((Failure l) => l.errMessage, (_) => null),
@@ -319,14 +345,18 @@ class CompanyCubit extends Cubit<CompanyState> {
 
     final CompanyModel? loaded = result.getOrElse(() => null);
     if (loaded == null) {
-      emit(state.copyWith(status: CompanyStatus.failure));
+      if (!silent) emit(state.copyWith(status: CompanyStatus.failure));
       return null;
     }
 
     emit(state.copyWith(company: loaded, status: CompanyStatus.success));
 
-    // Mirror the loaded company into the form fields.
-    _populateFormFields(loaded);
+    // Mirror the loaded company into the form fields. A live refresh skips
+    // this so it never overwrites what the admin is typing.
+    if (!silent) _populateFormFields(loaded);
+
+    _live.watchPaths(<String>[CompanyCollectionPaths.companies],
+        () => getCompany(silent: true));
 
     // Storage first — the theme controller reads these keys and only falls back
     // to the company document when a key is empty.
@@ -358,10 +388,6 @@ class CompanyCubit extends Cubit<CompanyState> {
 
     return loaded;
   }
-
-  /// Used when the tenant root has not been resolved yet — a pre-existing
-  /// fallback, kept so behaviour does not change.
-  static const String _fallbackCompanyId = '70843020';
 
   /// The one company status the branding pipeline reacts to.
   static const String _activeStatus = 'active';
@@ -396,7 +422,8 @@ class CompanyCubit extends Cubit<CompanyState> {
     storage.write(
         'font_arabic', _capitalize(c.arabicFont?.arabicFont?.lastOrNull));
     storage.write('primaryColor', c.primaryColor?.primaryColor?.lastOrNull);
-    storage.write('secondaryColor', c.secondaryColor?.secondaryColor?.lastOrNull);
+    storage.write(
+        'secondaryColor', c.secondaryColor?.secondaryColor?.lastOrNull);
     storage.write('logo', c.companyLogo?.companyLogo?.lastOrNull);
   }
 
@@ -431,8 +458,63 @@ class CompanyCubit extends Cubit<CompanyState> {
 
   // ─────────────────────────────── Mutations ────────────────────────────────
 
+  /// Function Name: [_hasPermission]
+  ///
+  /// Purpose: The signed-in employee's Settings permission for a write
+  ///          (CR-KNP-SET-PROFILE-04, 20/10/2026). The screens hide the
+  ///          buttons, but the cubit is the write path and checks again.
+  ///          Before the employee controller exists (tests, cold start) the
+  ///          write is allowed; the real gate is the role.
+  bool _hasPermission(SettingsPermissions permission) {
+    if (!AppControllers.isEmployeeRegistered) return true;
+    return AppControllers.employee.isHasPermission(
+      module: Modules.settings,
+      section: SettingsPermissionsSections.settings,
+      permission: permission,
+    );
+  }
+
+  static const String _noPermissionMessage =
+      'You do not have permission to change this.';
+
+  /// Function Name: [_draftOf]
+  ///
+  /// Purpose: A detached copy of the loaded company to mutate
+  ///          (CR-KNP-SET-PROFILE-05, 20/10/2026). The writers used to append
+  ///          straight into `state.company`'s lists, so a failed save left the
+  ///          in-memory company already carrying the new entries — the screen
+  ///          showed the change as applied and the NEXT save wrote it twice.
+  ///          Every missing branding container is created here so the
+  ///          writers never `!`-dereference a null sub-model.
+  static CompanyModel _draftOf(CompanyModel source) {
+    final CompanyModel c = CompanyModel.fromMap(source.toMap());
+    c.companyLogo ??= CompanyLogo(companyLogo: [], timestamps: []);
+    c.companyLogo!.companyLogo ??= <String?>[];
+    c.companyLogo!.timestamps ??= <Timestamp?>[];
+    c.primaryColor ??= PrimaryColor(primaryColor: [], timestamps: []);
+    c.primaryColor!.primaryColor ??= <String?>[];
+    c.primaryColor!.timestamps ??= <Timestamp?>[];
+    c.secondaryColor ??= SecondaryColor(secondaryColor: [], timestamps: []);
+    c.secondaryColor!.secondaryColor ??= <String?>[];
+    c.secondaryColor!.timestamps ??= <Timestamp?>[];
+    c.englishFont ??= EnglishFont(englishFont: [], timestamps: []);
+    c.englishFont!.englishFont ??= <String?>[];
+    c.englishFont!.timestamps ??= <Timestamp?>[];
+    c.arabicFont ??= ArabicFont(arabicFont: [], timestamps: []);
+    c.arabicFont!.arabicFont ??= <String?>[];
+    c.arabicFont!.timestamps ??= <Timestamp?>[];
+    return c;
+  }
+
   /// Persists the unsaved branding selections (logo, colors, fonts).
   Future<void> updateCompanyModel() async {
+    if (!_hasPermission(SettingsPermissions.branding)) {
+      emit(state.copyWith(
+        status: CompanyStatus.failure,
+        errorMessage: _noPermissionMessage,
+      ));
+      return;
+    }
     if (state.company == null) {
       await getCompany(shouldRestart: false);
       if (state.company == null) {
@@ -447,35 +529,37 @@ class CompanyCubit extends Cubit<CompanyState> {
     emit(state.copyWith(status: CompanyStatus.loading));
 
     try {
-      final CompanyModel c = state.company!;
+      final CompanyModel c = _draftOf(state.company!);
+      final Timestamp now = Timestamp.now();
 
       if (state.imageUrl != null) {
         c.companyLogo!.companyLogo!.add(state.imageUrl);
-        c.companyLogo!.timestamps!.add(Timestamp.now());
+        c.companyLogo!.timestamps!.add(now);
       }
 
       c.status = _activeStatus;
 
       if (state.primaryColor != null) {
         c.primaryColor!.primaryColor!
-            .add('0x${state.primaryColor!.value.toRadixString(16)}');
-        c.primaryColor!.timestamps!.add(Timestamp.now());
+            .add('0x${state.primaryColor!.toARGB32().toRadixString(16)}');
+        c.primaryColor!.timestamps!.add(now);
       }
 
       if (state.secondaryColor != null) {
         c.secondaryColor!.secondaryColor!
-            .add('0x${state.secondaryColor!.value.toRadixString(16)}');
-        c.secondaryColor!.timestamps!.add(Timestamp.now());
+            .add('0x${state.secondaryColor!.toARGB32().toRadixString(16)}');
+        c.secondaryColor!.timestamps!.add(now);
       }
 
       if (state.selectedEnglishFont != null) {
-        c.englishFont!.englishFont!.add(state.selectedEnglishFont!.toLowerCase());
-        c.englishFont!.timestamps!.add(Timestamp.now());
+        c.englishFont!.englishFont!
+            .add(state.selectedEnglishFont!.toLowerCase());
+        c.englishFont!.timestamps!.add(now);
       }
 
       if (state.selectedArabicFont != null) {
         c.arabicFont!.arabicFont!.add(state.selectedArabicFont!.toLowerCase());
-        c.arabicFont!.timestamps!.add(Timestamp.now());
+        c.arabicFont!.timestamps!.add(now);
       }
 
       // Stop on a failed write: the old code reported success regardless,
@@ -507,6 +591,13 @@ class CompanyCubit extends Cubit<CompanyState> {
   /// is forbidden in presentation/ui/ (§20/§21). The widget now only drives the
   /// dialog flow and reads the boolean.
   Future<bool> resetCompanyBranding() async {
+    if (!_hasPermission(SettingsPermissions.branding)) {
+      emit(state.copyWith(
+        status: CompanyStatus.failure,
+        errorMessage: _noPermissionMessage,
+      ));
+      return false;
+    }
     if (state.company == null) {
       await getCompany(shouldRestart: false);
       if (state.company == null) return false;
@@ -515,38 +606,30 @@ class CompanyCubit extends Cubit<CompanyState> {
     emit(state.copyWith(status: CompanyStatus.loading));
 
     try {
-      final CompanyModel company = state.company!;
+      // A detached copy with every container present (`_draftOf`), so a
+      // failed save leaves `state.company` untouched.
+      final CompanyModel company = _draftOf(state.company!);
       final Timestamp now = Timestamp.now();
 
-      // Each field used to be written through `?.add(...)` behind a
-      // `lastOrNull != null` guard, so a null sub-model or list silently
-      // skipped that part of the brand. The containers are created up front.
-      company.companyLogo ??= CompanyLogo(companyLogo: [], timestamps: []);
-      _appendNull(company.companyLogo!.companyLogo ??= <String?>[],
-          company.companyLogo!.timestamps ??= <Timestamp?>[], now);
-
-      company.primaryColor ??= PrimaryColor(primaryColor: [], timestamps: []);
-      _appendNull(company.primaryColor!.primaryColor ??= <String?>[],
-          company.primaryColor!.timestamps ??= <Timestamp?>[], now);
-
-      company.secondaryColor ??=
-          SecondaryColor(secondaryColor: [], timestamps: []);
-      _appendNull(company.secondaryColor!.secondaryColor ??= <String?>[],
-          company.secondaryColor!.timestamps ??= <Timestamp?>[], now);
-
-      company.englishFont ??= EnglishFont(englishFont: [], timestamps: []);
-      _appendNull(company.englishFont!.englishFont ??= <String?>[],
-          company.englishFont!.timestamps ??= <Timestamp?>[], now);
-
-      company.arabicFont ??= ArabicFont(arabicFont: [], timestamps: []);
-      _appendNull(company.arabicFont!.arabicFont ??= <String?>[],
-          company.arabicFont!.timestamps ??= <Timestamp?>[], now);
+      _appendNull(company.companyLogo!.companyLogo!,
+          company.companyLogo!.timestamps!, now);
+      _appendNull(company.primaryColor!.primaryColor!,
+          company.primaryColor!.timestamps!, now);
+      _appendNull(company.secondaryColor!.secondaryColor!,
+          company.secondaryColor!.timestamps!, now);
+      _appendNull(company.englishFont!.englishFont!,
+          company.englishFont!.timestamps!, now);
+      _appendNull(company.arabicFont!.arabicFont!,
+          company.arabicFont!.timestamps!, now);
 
       company.status = _inactiveStatus;
 
-      clearBrandingSelections();
-
-      return await addCompany(company, CompanyCollectionPaths.companyId);
+      // Owner 21/10/2026: clear the selections only after the write succeeds,
+      // so a failed reset keeps what the user had picked.
+      final bool saved =
+          await addCompany(company, CompanyCollectionPaths.companyId);
+      if (saved) clearBrandingSelections();
+      return saved;
     } catch (e) {
       emit(state.copyWith(
         status: CompanyStatus.failure,
@@ -575,8 +658,15 @@ class CompanyCubit extends Cubit<CompanyState> {
   /// Persists the company-information form. Reads the form values straight out
   /// of state (was `companyName.text`, etc.).
   Future<void> updateCompanyInformation() async {
-    final CompanyModel? c = state.company;
-    if (c == null) {
+    if (!_hasPermission(SettingsPermissions.companyInformation)) {
+      emit(state.copyWith(
+        status: CompanyStatus.failure,
+        errorMessage: _noPermissionMessage,
+      ));
+      return;
+    }
+    final CompanyModel? loaded = state.company;
+    if (loaded == null) {
       emit(state.copyWith(
         status: CompanyStatus.failure,
         errorMessage: 'Company data not loaded. Please try again.',
@@ -587,6 +677,8 @@ class CompanyCubit extends Cubit<CompanyState> {
     emit(state.copyWith(status: CompanyStatus.loading));
 
     try {
+      // Detached copy (CR-KNP-SET-PROFILE-05) — see `_draftOf`.
+      final CompanyModel c = _draftOf(loaded);
       final Timestamp now = Timestamp.now();
 
       void put(String value, List<String?>? target, List<Timestamp?>? stamps) {
@@ -596,17 +688,31 @@ class CompanyCubit extends Cubit<CompanyState> {
         stamps?.add(now);
       }
 
-      put(state.companyName, c.companyName?.companyName, c.companyName?.timestamps);
+      put(state.companyName, c.companyName?.companyName,
+          c.companyName?.timestamps);
       put(state.taxNumber, c.taxNumber?.taxNumber, c.taxNumber?.timestamps);
       put(state.country, c.country?.country, c.country?.timestamps);
       put(state.city, c.city?.city, c.city?.timestamps);
       put(state.stateOrProvince, c.province?.province, c.province?.timestamps);
       put(state.email, c.email?.emails, c.email?.timestamps);
       put(state.phone, c.phone?.phones, c.phone?.timestamps);
+      // Owner 21/10/2026: keep Country_Code/Country_App as long as Phone — the form holds no country picker, so repeat the previous values.
+      final ph = c.phone;
+      if (ph != null && state.phone.trim().isNotEmpty) {
+        ph.countryCode = <String>[
+          ...?ph.countryCode,
+          ph.countryCode?.lastOrNull ?? ''
+        ];
+        ph.countryApp = <String>[
+          ...?ph.countryApp,
+          ph.countryApp?.lastOrNull ?? ''
+        ];
+      }
       put(state.streetAddress, c.companyAddress?.address,
           c.companyAddress?.timestamps);
       put(state.code, c.zipCode?.zipCode, c.zipCode?.timestamps);
-      put(state.contactFirstName, c.firstName?.firstNames, c.firstName?.timestamps);
+      put(state.contactFirstName, c.firstName?.firstNames,
+          c.firstName?.timestamps);
       put(state.contactLastName, c.lastName?.lastNames, c.lastName?.timestamps);
 
       if (!await addCompany(c, CompanyCollectionPaths.companyId)) return;

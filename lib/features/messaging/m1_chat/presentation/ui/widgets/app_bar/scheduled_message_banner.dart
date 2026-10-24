@@ -13,9 +13,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import '../../../controller/main_controllers/master_chat_cubit.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/main_controllers/master_chat_cubit.dart';
 
 class ScheduledMessageBanner extends StatefulWidget {
   const ScheduledMessageBanner({super.key});
@@ -48,8 +48,7 @@ class _ScheduledMessageBannerState extends State<ScheduledMessageBanner> {
         final DateTime? next = snap.data;
         if (next == null) return const SizedBox.shrink();
         final String locale = isAr ? 'ar' : 'en';
-        final String when =
-            '${DateFormat('dd MMM yyyy', locale).format(next)} '
+        final String when = '${DateFormat('dd MMM yyyy', locale).format(next)} '
             '${isAr ? 'الساعة' : 'At'} '
             '${DateFormat('hh:mm a', locale).format(next)}';
         return Container(

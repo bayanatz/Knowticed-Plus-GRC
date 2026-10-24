@@ -11,6 +11,7 @@
 /// in presentation/ui/ (§20/§21), and all four catches were empty, so a
 /// malformed colour left the field silently unset with no way to tell that from
 /// "not configured". `int.tryParse` removes the need to throw at all.
+library;
 
 import 'package:flutter/material.dart';
 
@@ -36,5 +37,5 @@ abstract class BrandingColor {
   /// Returns: [String?] — `null` for a null colour, so "not set" round-trips.
   static String? format(Color? color) => color == null
       ? null
-      : '0x${color.value.toRadixString(16).padLeft(8, '0')}';
+      : '0x${color.toARGB32().toRadixString(16).padLeft(8, '0')}';
 }

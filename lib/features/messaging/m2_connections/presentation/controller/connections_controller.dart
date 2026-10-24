@@ -4,7 +4,10 @@
 /// Purpose: Connections controller — messaging Connections sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+library;
 
+import 'package:knowticed_plus/core/extensions/context_extensions.dart'
+    show kpIsPhoneLayout;
 import 'dart:async';
 import 'dart:developer';
 import 'package:dartz/dartz.dart';
@@ -12,24 +15,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
 
-import 'package:grc_module/core/network/message_module/routes/app_routes.dart';
-import 'package:grc_module/core/network/message_module/services/error_handler.dart';
-import 'package:grc_module/core/enums/message_module/message_types.dart';
-import '../../../../../core/helper/message_module/interface/entity/base_messaging_interface_parameters.dart';
-import '../../../../../core/helper/message_module/interface/entity/user_category.dart';
-import '../../../../../core/helper/message_module/interface/entity/user_connection_interface_parameters.dart';
-import '../../../m1_chat/data/repository/single_chat_repository.dart';
-import '../../../m1_chat/presentation/controller/main_controllers/master_chat_cubit.dart';
-import '../../../m1_chat/presentation/controller/main_controllers/single_chat_cubit.dart';
-import '../../../m1_chat/presentation/ui/pages/chat_mobile_view.dart';
-import '../../../m3_groups/presentation/controller/groups_controller.dart';
-import '../../../m4_messaging_home/domain/enums/sort_enum.dart';
-import '../../domain/base_repository/base_connections_repository.dart';
-import '../../domain/entities/single_connection_entity.dart';
-import '../../domain/usecases/create_new_connection_use_case.dart';
-import '../../domain/usecases/get_all_app_users_in_connection_form.dart';
+import 'package:knowticed_plus/core/app_services/firebase/live_refresh.dart';
+import 'package:knowticed_plus/core/network/failure_model.dart';
+import 'package:knowticed_plus/features/messaging/helpers/constants/messaging_api_constants.dart';
+import 'package:knowticed_plus/features/messaging/helpers/enums/message_types.dart';
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/interface/entity/base_messaging_interface_parameters.dart';
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/interface/entity/user_category.dart';
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/interface/entity/user_connection_interface_parameters.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/main_controllers/single_chat_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/ui/pages/chat_mobile_view.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/presentation/controller/groups_controller.dart';
+import 'package:knowticed_plus/features/messaging/m4_messaging_home/domain/enums/sort_enum.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/domain/base_repository/base_connections_repository.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/domain/entities/single_connection_entity.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/domain/usecases/create_new_connection_use_case.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/domain/usecases/get_all_app_users_in_connection_form.dart';
 
 // ─────────────────────────────────────────────────────────────
 // State classes
@@ -99,7 +100,7 @@ class ConnectionsCubit extends Cubit<ConnectionsState> {
   }
 
   late Future<List<UserConnectionInterfaceParameters>> Function()
-  getAllUsersDate;
+      getAllUsersDate;
   List<UserCategory>? categories;
 
   Map<String, int> categoriesUsersCount = {};
@@ -148,11 +149,16 @@ class ConnectionsCubit extends Cubit<ConnectionsState> {
   Timer? _connectionsRetryTimer;
   int _connectionsRetryAttempt = 0;
 
+  // The colleague list is read once per stream start, so a new or edited
+  // employee only showed up after a restart. Re-attaching the stream is cheap
+  // and keeps the current list on screen until the first new event.
+  LiveRefresh _live = LiveRefresh();
+
   void _scheduleConnectionsResubscribe() {
     if (isClosed) return;
     _connectionsRetryTimer?.cancel();
-    final int seconds = 1 <<
-        (_connectionsRetryAttempt < 4 ? _connectionsRetryAttempt : 4);
+    final int seconds =
+        1 << (_connectionsRetryAttempt < 4 ? _connectionsRetryAttempt : 4);
     _connectionsRetryAttempt++;
     _connectionsRetryTimer = Timer(Duration(seconds: seconds), () {
       if (isClosed) return;
@@ -162,6 +168,7 @@ class ConnectionsCubit extends Cubit<ConnectionsState> {
 
   @override
   Future<void> close() async {
+    _live.dispose();
     _connectionsRetryTimer?.cancel();
     await _connectionsSubscription?.cancel();
     return super.close();
@@ -183,6 +190,8 @@ class ConnectionsCubit extends Cubit<ConnectionsState> {
     _selectedConnection = null;
     _connectionsLoadedFor = null;
     categoriesUsersCount = {};
+    _live.dispose();
+    _live = LiveRefresh();
     final StreamSubscription<dynamic>? old = _connectionsSubscription;
     _connectionsSubscription = null;
     if (!isClosed) emit(ConnectionsInitial());
@@ -203,12 +212,12 @@ class ConnectionsCubit extends Cubit<ConnectionsState> {
 
     _connectionsSubscription =
         GetAllAppUsersInConnectionFormUseCase(connectionRepository: repository)
-        .execute(
+            .execute(
       currentUserId: currentUser.userId,
       getAllUsers: getAllUsersDate,
       categories: categories!,
     )
-        .listen((event) {
+            .listen((event) {
       if (isClosed) return;
       log("📡 stream at connections at controller level is called");
 
@@ -218,16 +227,14 @@ class ConnectionsCubit extends Cubit<ConnectionsState> {
         log("✅ Total connections loaded: ${_connections.length}");
 
         for (var c in _connections) {
-          log(
-              "  → name: ${c.primaryLanguageName} | messageType: ${c.messageType} | isNone: ${c.messageType == MessageTypes.none}");
+          log("  → name: ${c.primaryLanguageName} | messageType: ${c.messageType} | isNone: ${c.messageType == MessageTypes.none}");
         }
 
         _getCategoriesUsersCount();
         filteredSingleConnections();
         _updateSelectedConnection();
 
-        log(
-            "✅ filteredConnections after filter: ${filteredConnections.length}");
+        log("✅ filteredConnections after filter: ${filteredConnections.length}");
 
         emit(ConnectionsLoaded(
           connections: _connections,
@@ -257,6 +264,9 @@ class ConnectionsCubit extends Cubit<ConnectionsState> {
     }, cancelOnError: false);
 
     log('📤 getAllAppUsersInConnectionForm: listener attached');
+
+    _live.watchPaths(<String>['${ApiConstants.baseUri}/Employees_Info'],
+        getAllAppUsersInConnectionForm);
   }
 
   // ─────────────────────────────────────────────────────────
@@ -278,8 +288,7 @@ class ConnectionsCubit extends Cubit<ConnectionsState> {
   // filteredSingleConnections
   // ─────────────────────────────────────────────────────────
   void filteredSingleConnections() {
-    log(
-        '🔍 filteredSingleConnections: searchText="${searchController.text}"');
+    log('🔍 filteredSingleConnections: searchText="${searchController.text}"');
     filteredConnections = [];
 
     if (searchController.text.isEmpty) {
@@ -311,20 +320,23 @@ class ConnectionsCubit extends Cubit<ConnectionsState> {
           .toLowerCase()
           .contains(searchController.text.toLowerCase());
 
-      if (connection.secondaryLanguageName != null)
+      if (connection.secondaryLanguageName != null) {
         isSelected |= connection.secondaryLanguageName!
             .toLowerCase()
             .contains(searchController.text.toLowerCase());
+      }
 
-      if (connection.primaryLanguageSubInfo != null)
+      if (connection.primaryLanguageSubInfo != null) {
         isSelected |= connection.primaryLanguageSubInfo!
             .toLowerCase()
             .contains(searchController.text.toLowerCase());
+      }
 
-      if (connection.secondaryLanguageSubInfo != null)
+      if (connection.secondaryLanguageSubInfo != null) {
         isSelected |= connection.secondaryLanguageSubInfo!
             .toLowerCase()
             .contains(searchController.text.toLowerCase());
+      }
 
       if (selectedTab.categoryId != categories![0].categoryId) {
         isSelected &=
@@ -342,8 +354,7 @@ class ConnectionsCubit extends Cubit<ConnectionsState> {
   // noSearchFilteredData
   // ─────────────────────────────────────────────────────────
   void noSearchFilteredData() {
-    log(
-        "📋 noSearchFilteredData: _connections.length=${_connections.length}");
+    log("📋 noSearchFilteredData: _connections.length=${_connections.length}");
     filteredConnections = [];
 
     for (SingleConnectionEntity connection in _connections) {
@@ -352,8 +363,7 @@ class ConnectionsCubit extends Cubit<ConnectionsState> {
       // ⚠️ Comment out the line below to also show connections with no messages yet:
       isSelected &= connection.messageType != MessageTypes.none;
 
-      log(
-          "  📌 ${connection.primaryLanguageName} | messageType: ${connection.messageType} | passes filter: $isSelected");
+      log("  📌 ${connection.primaryLanguageName} | messageType: ${connection.messageType} | passes filter: $isSelected");
 
       if (selectedTab.categoryId != categories![0].categoryId) {
         isSelected &=
@@ -380,8 +390,8 @@ class ConnectionsCubit extends Cubit<ConnectionsState> {
   void clearSelectedConnection() {
     _selectedConnection = null;
     if (state is ConnectionsLoaded) {
-      emit((state as ConnectionsLoaded)
-          .copyWith(clearSelectedConnection: true));
+      emit(
+          (state as ConnectionsLoaded).copyWith(clearSelectedConnection: true));
     }
   }
 
@@ -445,13 +455,13 @@ class ConnectionsCubit extends Cubit<ConnectionsState> {
       return;
     }
     switch (sortType!) {
-      case SortEnum.ReadMessages:
+      case SortEnum.readMessages:
         filteredConnections.sort(
-                (a, b) => b.myNumUnreadMessage.compareTo(a.myNumUnreadMessage));
+            (a, b) => b.myNumUnreadMessage.compareTo(a.myNumUnreadMessage));
         break;
-      case SortEnum.UnRead:
+      case SortEnum.unRead:
         filteredConnections.sort(
-                (a, b) => a.myNumUnreadMessage.compareTo(b.myNumUnreadMessage));
+            (a, b) => a.myNumUnreadMessage.compareTo(b.myNumUnreadMessage));
         break;
     }
   }
@@ -474,7 +484,8 @@ class ConnectionsCubit extends Cubit<ConnectionsState> {
 
     singleChatCubit.getFirstUnreadIndex();
 
-    if (MediaQuery.of(context).size.width >= 600) {
+    if (!context.mounted) return;
+    if (!kpIsPhoneLayout(context)) {
       log("📱 selectConnection: tablet mode, staying on same page");
     } else {
       log("📱 selectConnection: mobile mode, navigating to chat...");

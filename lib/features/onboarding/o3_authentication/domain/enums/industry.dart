@@ -6,8 +6,7 @@
 /// Author: Knowticed Plus team
 /// Created at: 2026
 /// Updated: 12/8/2026 - Added the standard header (Docs).
-
-
+library;
 
 enum Industry {
   all,
@@ -118,5 +117,3 @@ extension IndustryExtension2 on Industry {
     }
   }
 }
-
-

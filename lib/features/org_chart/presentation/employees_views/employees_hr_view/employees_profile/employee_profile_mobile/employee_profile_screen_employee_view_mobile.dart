@@ -1,0 +1,234 @@
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:knowticed_plus/core/extensions/screen_fraction_extension.dart';
+import 'package:knowticed_plus/core/theme/theme_controller.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/features/org_chart/presentation/ui/widgets/employees_components/employee_profile_employee_view.dart';
+import 'package:knowticed_plus/features/org_chart/presentation/ui/widgets/employees_components/employees_hr_components/employee_mobile_components/custom_employee_profile_header_mobile.dart';
+import 'package:knowticed_plus/features/roles/r4_active_directory/data/models/employees_model/new_employee_model.dart';
+import 'package:knowticed_plus/features/org_chart/presentation/controller/employee_controller.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
+
+import 'package:knowticed_plus/features/org_chart/presentation/controller/employee_helper.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
+
+// REMOVED 8/9/2026: the `71-custom_appbar_mobile.dart` import went with the
+// duplicate "Employees" header row below — CustomAppBarMobile had no other use
+// in this file.
+
+class EmployeeProfileScreenMobileEmployeeViewScreen extends StatefulWidget {
+  final int? index;
+  final NewEmployeeModelHistory employee;
+
+  const EmployeeProfileScreenMobileEmployeeViewScreen(
+      {this.index, super.key, required this.employee});
+
+  @override
+  EmployeeProfileScreenMobileEmployeeViewScreenState createState() =>
+      EmployeeProfileScreenMobileEmployeeViewScreenState();
+}
+
+class EmployeeProfileScreenMobileEmployeeViewScreenState
+    extends State<EmployeeProfileScreenMobileEmployeeViewScreen> {
+  bool notificationsEnabled = true;
+  bool darkModeEnabled = false;
+  int selectedContainerIndex = 0;
+  @override
+  void initState() {
+    selectedContainerIndex = widget.index ?? 0;
+    super.initState();
+  }
+
+  void setSelectedContainerIndex(int index) {
+    setState(() {
+      selectedContainerIndex = index;
+    });
+  }
+
+  OrgChartEmployeeController addEmployeeController =
+      Get.isRegistered<OrgChartEmployeeController>()
+          ? Get.find<OrgChartEmployeeController>()
+          : Get.put(OrgChartEmployeeController());
+  bool notificationEnabled = false;
+  bool switchValue = false;
+  String? _bioForLocale() {
+    final String? english = widget.employee.bio.lastOrNull;
+    final String? arabic = widget.employee.bioInArabic.lastOrNull;
+    final bool isArabic = Directionality.of(context) == TextDirection.rtl;
+    final String? preferred = isArabic ? arabic : english;
+    if (preferred != null && preferred.trim().isNotEmpty) return preferred;
+    return isArabic ? english : arabic;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeController themeController = Get.put(ThemeController());
+    final orientation = MediaQuery.of(context).orientation;
+
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      resizeToAvoidBottomInset: true,
+      body: SafeArea(
+        child: Row(
+          children: [
+            Expanded(
+              child: Container(
+                child: _buildMobileLayout(orientation, themeController),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  double imageHeight = 0.03.h;
+  Widget _buildMobileLayout(
+      Orientation orientation, ThemeController themeController) {
+    var lightTheme = Theme.of(context).brightness == Brightness.light;
+    Theme.of(context).brightness == Brightness.light;
+    final bool isArabic = Directionality.of(context) == TextDirection.rtl;
+    return Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.all(15.sp),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              GestureDetector(
+                onTapDown: (_) => HapticController.low(),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Transform.rotate(
+                  angle: isArabic ? 0 : 3.1416,
+                  child: CustomSvgImage.natural(
+                    assetPath:
+                        'assets/icons_assets/main_icons_assets/ic_nav_chevron_right.svg',
+                    width: 24.sp,
+                    height: 24.sp,
+                    color: AppColors.text,
+                  ),
+                ),
+              ),
+              Text(
+                S.of(context).employeeInfo,
+                style: StyleText.fontSize22Weight600.copyWith(
+                    color:
+                        lightTheme ? AppColors.blackButton : AppColors.white),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 15.sp),
+        // REMOVED 8/9/2026 — `CustomAppBarMobile(showIcon: true, title:
+        // "Employees")` sat here.
+        //
+        // It drew a SECOND back chevron and title directly under the
+        // "Employee Info" row above, so the page opened with two stacked
+        // headers and two ways back. Its title was also a hardcoded English
+        // literal, so it stayed "Employees" on an Arabic screen while the row
+        // above it was translated.
+        //
+        // The row above is the page's header: it owns the back action
+        // (`Navigator.pop`) and the localized title, so nothing is lost.
+        // Padding(
+        //   padding: EdgeInsets.symmetric(horizontal: 0.04.w, vertical: 0.015.h),
+        //   child: widget.employee.bio?.length == 0
+        //       ? const SizedBox.shrink()
+        //       : Container(
+        //           width: double.infinity,
+        //           decoration: BoxDecoration(
+        //             color: Theme.of(context).colorScheme.inversePrimary,
+        //             borderRadius: BorderRadius.circular(8),
+        //           ),
+        //           padding: EdgeInsets.symmetric(
+        //               vertical: 0.015.h, horizontal: 0.02.w),
+        //           child: Column(
+        //             crossAxisAlignment: CrossAxisAlignment.start,
+        //             children: [
+        //               Text(
+        //                 "Bio:".tr,
+        //                 style: StyleText.fontSize16Weight400.copyWith(
+        //                   fontSize: 20.sp,
+        //                   fontWeight: FontWeight.w700,
+        //                   color:
+        //                       Theme.of(context).colorScheme.secondaryContainer,
+        //                 ),
+        //               ),
+        //               SizedBox(height: 0.007.h),
+        //               Text(
+        //                 "${widget.employee.bio?.lastOrNull}",
+        //                 style: StyleText.fontSize16Weight400.copyWith(
+        //                     fontSize: 14.sp,
+        //                     fontWeight: FontWeight.w500,
+        //                     color:
+        //                         Theme.of(context).colorScheme.tertiaryContainer,
+        //                     height: 1.5),
+        //               ),
+        //             ],
+        //           ),
+        //         ),
+        // ),
+        // MOVED 8/9/2026 — the profile card (CustomEmployeeAppBarMobile) used
+        // to sit HERE, as a fixed sibling above this Expanded, so it stayed
+        // pinned while only the sections below it scrolled. On a phone that
+        // permanently spent about a third of the viewport on a card the reader
+        // has already taken in, and left the details scrolling in a short
+        // window under it.
+        //
+        // It is now the first child inside the scroll view, so the whole page
+        // scrolls as one and the card leaves the screen on the way down.
+        //
+        // It is deliberately OUTSIDE the Padding below: the card applies its
+        // own `0.04.w` horizontal padding internally, and nesting it inside
+        // this one would double that and leave it narrower than the sections
+        // it sits above.
+        // 23/10/2026 (Moataz: "the employee card is fixed, then I scroll the
+        // position details, the working, the general"): the profile card is
+        // pinned again, above the scroll view. This reverses the 8/9/2026
+        // move that made the whole page scroll.
+        CustomEmployeeAppBarMobile(
+          isEmployeeView: true,
+          jobtitle: widget.employee.title.lastOrNull,
+          profileImagePath: widget.employee.photo.lastOrNull,
+          // Bio in the active language, other language if this one was
+          // never written (Moataz 23/10/2026).
+          bio: _bioForLocale(),
+          // ✅ Pass Arabic job title
+          jobtitleAr: widget.employee.titleInArabic.lastOrNull,
+          userName: EmployeeHelper.getEmployeeFirstAndLastNames(
+              employee: widget.employee),
+          totalReview: 4.5,
+          email: widget.employee.email.last,
+          userProfession: EmployeeHelper.getEmployeeFirstAndLastNames(
+              employee: widget.employee),
+          userMobile: "${widget.employee.mobilePhone.lastOrNull}",
+        ),
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 0.04.w, vertical: 0.0.h),
+                  child: Column(
+                    children: [
+                      EmployeeWorkInfoScreenEmployeeViewMobile(
+                          employee: widget.employee),
+                      SizedBox(height: 0.02.h),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}

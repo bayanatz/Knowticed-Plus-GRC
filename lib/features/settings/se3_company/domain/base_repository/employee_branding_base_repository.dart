@@ -9,11 +9,12 @@
 /// Added for CR-SKEL-SE3-N02 / N21. Every method returns an `Either` so a
 /// failure is a value the cubit must handle, rather than the previous mix of
 /// `rethrow`, `null` and `false`.
+library;
 
 import 'package:dartz/dartz.dart';
 
-import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/features/settings/se3_company/domain/entities/employee_branding_entity.dart';
+import 'package:knowticed_plus/core/network/failure_model.dart';
+import 'package:knowticed_plus/features/settings/se3_company/domain/entities/employee_branding_entity.dart';
 
 abstract class EmployeeBrandingBaseRepository {
   /// Whether the per-employee branding collection has been seeded.

@@ -4,41 +4,36 @@
 /// Purpose: Groups tile — messaging Groups sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+library;
 
 // Date: 16/9/2024
 // By: Youssef Ashraf , Nada Mohammed
 // Last update: 01/5/2026
 // Objectives: This file is responsible for providing the community group chats tile used in the community feature.
 
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
-import 'package:grc_module/features/messaging/m1_chat/presentation/ui/pages/chat_mobile_view.dart';
-import 'package:grc_module/features/messaging/m1_chat/presentation/controller/main_controllers/group_chat_cubit.dart';
-import 'package:grc_module/features/messaging/m3_groups/presentation/controller/groups_controller.dart';
+import 'package:knowticed_plus/core/helper/format_title.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/ui/pages/chat_mobile_view.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/main_controllers/group_chat_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/presentation/controller/groups_controller.dart';
 
-
-import 'package:grc_module/core/network/message_module/routes/app_routes.dart';
-import 'package:grc_module/core/constants/message_module/app_assets.dart';
-import 'package:grc_module/core/enums/message_module/message_types.dart';
-import 'package:grc_module/core/helper/main_helper/date_time_helper.dart';
-import 'package:grc_module/core/helper/main_helper/localized_number.dart';
-import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/core/helper/message_module/main_helper/localized_text_helper.dart';
-import 'package:grc_module/core/helper/main_helper/spacing_helper.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import '../../../../../../core/helper/message_module/interface/controller/messaging_init_controller.dart';
-import '../../../../m1_chat/data/repository/group_chat_repository.dart';
-import '../../../../m1_chat/presentation/controller/main_controllers/master_chat_cubit.dart';
-import '../../../../../../core/helper/message_module/main_helper/update_ui_ids.dart';
-import '../../../../m2_connections/presentation/controller/connections_controller.dart';
-import '../../../domain/entities/group_entity.dart';
-import '../../../../main_controller/helper/chat_settings_service.dart';
-import '../../../../main_controller/helper/chat_state_icons.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/features/messaging/helpers/constants/messaging_assets.dart';
+import 'package:knowticed_plus/features/messaging/helpers/enums/message_types.dart';
+import 'package:knowticed_plus/core/helper/date_time_helper.dart';
+import 'package:knowticed_plus/core/helper/localized_number.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/main_helper/localized_text_helper.dart';
+import 'package:knowticed_plus/features/messaging/helpers/spacing_helper.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/presentation/controller/connections_controller.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/domain/entities/group_entity.dart';
+import 'package:knowticed_plus/features/messaging/helpers/main/chat_settings_service.dart';
+import 'package:knowticed_plus/features/messaging/helpers/main/chat_state_icons.dart';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart';
 
 class GroupsTile extends StatelessWidget {
   final GroupEntity groupEntity;
@@ -75,6 +70,7 @@ class GroupsTile extends StatelessWidget {
         groupChatCubit.messageFocusNode.unfocus();
         groupChatCubit.getFirstUnreadIndex();
 
+        if (!context.mounted) return;
         if (!ContextExtension(context).isTablett) {
           // ── Pure Bloc: pass the active cubits into ChatMobileView (§3) ──
           Navigator.of(context).push(
@@ -91,8 +87,9 @@ class GroupsTile extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.field,
-          borderRadius: BorderRadius.circular(4.r), // bug report #3: cards use 4.r
+          color: AppColors.card,
+          borderRadius:
+              BorderRadius.circular(4.r), // bug report #3: cards use 4.r
         ),
         padding: EdgeInsetsDirectional.all(8.sp),
         child: Column(
@@ -106,12 +103,12 @@ class GroupsTile extends StatelessWidget {
                       ? NetworkImage(groupEntity.groupImage!)
                       : null,
                   child: groupEntity.groupImage == null
-                      ? SvgPicture.asset(
-                    AppAssets.message,
-                    color: AppColors.text,
-                    width: 20.sp,
-                    height: 20.sp,
-                  )
+                      ? CustomSvgImage.natural(
+                          assetPath: AppAssets.message,
+                          color: AppColors.text,
+                          width: 20.sp,
+                          height: 20.sp,
+                        )
                       : null,
                 ),
                 horizontalSpace(5),
@@ -125,52 +122,69 @@ class GroupsTile extends StatelessWidget {
                         FormatHelper.capitalize(
                           LocalizedTextHelper.formatString(
                             primaryLanguageText:
-                            groupEntity.primaryLanguageName,
-                            secondaryLanguageText:
-                            groupEntity.groupNameAr,
+                                groupEntity.primaryLanguageName,
+                            secondaryLanguageText: groupEntity.groupNameAr,
                           ),
                         ),
-                        overflow: TextOverflow.ellipsis,
-                        style: StyleText.fontSize14Weight500
-                            .copyWith(height: 1.3),
+                        // The group name is shown in full (owner 20/10/2026).
+                        style:
+                            StyleText.fontSize14Weight500.copyWith(height: 1.3),
                       ),
                       Text(
                         _getMessageText(isAr),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
-                        style: StyleText.fontSize12Weight500.copyWith(color: AppColors.inputColor),
+                        style: StyleText.fontSize12Weight500
+                            .copyWith(color: AppColors.greyDark),
                       ),
                     ],
                   ),
                 ),
-                if (groupEntity.myNumUnreadMessage > 0)
-                  Container(
-                    padding: EdgeInsets.all(6.sp),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Text(
-                      // `.toString()` is always ASCII — "3" beside Arabic text.
-                      LocalizedNumber.of(
-                          context, groupEntity.myNumUnreadMessage),
-                      style: StyleText.fontSize10Weight400,
-                    ),
-                  ),
-                Spacer(),
+                horizontalSpace(8),
+                // Owner 21/10/2026: unread badge moved from beside the avatar into the trailing column, under the time, next to the pin.
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
                       _formatDateLabel(context),
-                      style: StyleText.fontSize12Weight500.copyWith(color: AppColors.inputColor)
+                      style: StyleText.fontSize12Weight500
+                          .copyWith(color: AppColors.greyDark)
                           .copyWith(fontSize: 10.sp, height: 1),
                     ),
-                    SizedBox(height: 15.sp),
-                    // ── Pin / mute icons under the date (bug report #20–22) ──
-                    ChatStateIcons(
-                      chatKey: ChatSettingsService.groupKey(groupEntity.groupId),
-                      hasPinnedMessage: groupEntity.hasPinnedMessage,
+                    SizedBox(height: 6.sp),
+                    // ── Pin / mute icons + unread badge under the date ──
+                    // Min height = badge height, so every tile keeps the same
+                    // height and the time stays put with or without a badge.
+                    ConstrainedBox(
+                      constraints: BoxConstraints(minHeight: 24.sp),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        spacing: 4.sp,
+                        children: [
+                          ChatStateIcons(
+                            chatKey: ChatSettingsService.groupKey(
+                                groupEntity.groupId),
+                            hasPinnedMessage: groupEntity.hasPinnedMessage,
+                            padding: EdgeInsets.zero,
+                          ),
+                          if (groupEntity.myNumUnreadMessage > 0)
+                            // Owner 21/10/2026: one unread badge for groups and
+                            // direct chats — the branding primary, dark text.
+                            CircleAvatar(
+                              key: const ValueKey<String>('groupUnreadBadge'),
+                              radius: 8.r,
+                              backgroundColor: AppColors.primary,
+                              child: Text(
+                                // `.toString()` is always ASCII — "3" beside Arabic text.
+                                LocalizedNumber.of(
+                                    context, groupEntity.myNumUnreadMessage),
+                                style: StyleText.fontSize10Weight600
+                                    .copyWith(color: AppColors.textButton),
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -201,7 +215,7 @@ class GroupsTile extends StatelessWidget {
     final today = DateTime(now.year, now.month, now.day);
     final yesterday = today.subtract(const Duration(days: 1));
     final messageDay =
-    DateTime(messageDate.year, messageDate.month, messageDate.day);
+        DateTime(messageDate.year, messageDate.month, messageDate.day);
 
     if (messageDay == today) {
       return S.of(context).today;

@@ -7,22 +7,22 @@
 /// Author: Amr Mesbah
 /// Created at: 20/9/2025
 /// Updated: 11/8/2026 - Implements the domain contract, data source injected.
+library;
 
 import 'package:dartz/dartz.dart';
 
-import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/features/home/h1_home_page/data/data_source/remote_data_source/home_remote_data_source.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/home_component_model.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/home_page_layout_model.dart';
-import 'package:grc_module/features/home/h1_home_page/domain/base_repository/home_base_repository.dart';
-import 'package:grc_module/features/home/h1_home_page/domain/enums/app_bar_enum.dart';
+import 'package:knowticed_plus/core/network/failure_model.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/data_source/remote_data_source/home_remote_data_source.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/home_component_model.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/home_page_layout_model.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/domain/base_repository/home_base_repository.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/domain/enums/app_bar_enum.dart';
 
 class HomeRepository implements HomeBaseRepository {
   /// The remote data source is injected so tests (and future DI wiring) can
   /// substitute a fake instead of hitting Firebase.
   HomeRepository({HomeRemoteDataSource? homeRemoteDataSource})
-      : _homeRemoteDataSource =
-            homeRemoteDataSource ?? HomeRemoteDataSource();
+      : _homeRemoteDataSource = homeRemoteDataSource ?? HomeRemoteDataSource();
 
   final HomeRemoteDataSource _homeRemoteDataSource;
 

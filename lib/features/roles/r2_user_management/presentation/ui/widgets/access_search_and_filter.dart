@@ -2,33 +2,37 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: access_search_and_filter.dart
-/// Purpose: Declares `AccessSearchAndFilter`.
-/// Author: Knowticed Plus team
+/// Description: Declares `AccessSearchAndFilter`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
-import 'package:grc_module/core/custom/35-custom_search_widget_custom.dart';
-import 'package:grc_module/core/custom/1-custom_dropdown.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/custom/5-custom_button.dart';
-import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/custom/dialogs/dialog_width.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_button_sizing.dart';
+import 'package:knowticed_plus/core/custom/inputs/custom_search_widget_custom.dart';
+import 'package:knowticed_plus/core/custom/dropdowns/custom_dropdown.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_button.dart';
+import 'package:knowticed_plus/core/custom/dialogs/custom_dialog_manager.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-// REMOVED_MODULE: import 'package:grc_module/core/helper/data_grc_module/core/extensions/extensions.dart';
-// REMOVED_MODULE: import 'package:grc_module/features/external/knowledge_hub_module/core/theming/new_theme.dart';
-import 'package:grc_module/features/roles/r4_active_directory/presentation/controller/main_core_department_cubit.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/core/helper/data_grc_module/core/extensions/extensions.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/features/external/knowledge_hub_module/core/theming/new_theme.dart';
+import 'package:knowticed_plus/features/roles/r4_active_directory/presentation/controller/main_core_department_cubit.dart';
 
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
+import 'package:knowticed_plus/core/helper/format_title.dart';
 
-import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/features/roles/r2_user_management/presentation/controller/user_management_cubit.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/features/roles/r2_user_management/presentation/controller/user_management_cubit.dart';
+import 'package:knowticed_plus/core/custom/dialogs/custom_filter_frame.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_filter_icon.dart';
 
 class AccessSearchAndFilter extends StatefulWidget {
-  AccessSearchAndFilter({super.key});
+  const AccessSearchAndFilter({super.key});
 
   @override
   State<AccessSearchAndFilter> createState() => _AccessSearchAndFilterState();
@@ -40,13 +44,13 @@ class _AccessSearchAndFilterState extends State<AccessSearchAndFilter> {
   @override
   Widget build(BuildContext context) {
     controller = context.read<UserManagementAccessCubit>();
-    var lightMode = Theme.of(context).brightness == Brightness.light;
+    Theme.of(context).brightness == Brightness.light;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 8.sp,
       children: [
         Row(
-          spacing: 10.sp,
+          spacing: ButtonSizing.toolbarGap(context),
           children: [
             AppSearchTextField(
               controller: controller.addNewSearchController,
@@ -54,10 +58,12 @@ class _AccessSearchAndFilterState extends State<AccessSearchAndFilter> {
                 controller.filterEmployeesToGiveAccess(value);
               },
             ),
-          // Role QA p.6: phones had no way to filter the employee list (the
-          // department dropdown is too wide for the row). A 38×38 Filter
-          // button opens the same department filter in a dialog.
-          context.isPhone ? _filterButton(context) : _buildDepartment(context)
+            // Role QA p.6: phones had no way to filter the employee list (the
+            // department dropdown is too wide for the row). A 38×38 Filter
+            // button opens the same department filter in a dialog.
+            context.isPhone
+                ? _filterButton(context)
+                : _buildDepartment(context),
           ],
         ),
       ],
@@ -66,24 +72,14 @@ class _AccessSearchAndFilterState extends State<AccessSearchAndFilter> {
 
   Widget _filterButton(BuildContext context) {
     final bool active = controller.addNewAccessDepartmentId != null;
-    return GestureDetector(
+    // 22/10/2026 — Owner: filter and sort icons are one size and colour in
+    // every module — the core CustomFilterIcon (was a hand-built 38 square
+    // with a 15 icon). Icon-only, as before.
+    return CustomFilterIcon(
+      title: S.of(context).filter,
+      iconOnly: true,
+      active: active,
       onTap: () => _openFilterDialog(context),
-      child: Container(
-        height: 38.sp,
-        width: 38.sp,
-        decoration: BoxDecoration(
-          color: active ? AppColors.primary : AppColors.card,
-          borderRadius: BorderRadius.circular(8.r),
-        ),
-        child: Center(
-          child: CustomSvgImage(
-            assetPath: 'assets/icons_assets/main_icons_assets/filter_sliders.svg',
-            width: 15.sp,
-            height: 15.sp,
-            color: active ? AppColors.textButton : AppColors.secondaryText,
-          ),
-        ),
-      ),
     );
   }
 
@@ -100,33 +96,17 @@ class _AccessSearchAndFilterState extends State<AccessSearchAndFilter> {
 
     await CustomDialogManager.showContent<void>(
       context: context,
-      width: 300.sp,
+      width: DialogWidth.form.sp,
       child: StatefulBuilder(
         builder: (dialogContext, setDialogState) => Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                CircleAvatar(
-                  radius: 15.sp,
-                  backgroundColor: AppColors.primary,
-                  child: CustomSvgImage(
-                    assetPath:
-                        'assets/icons_assets/main_icons_assets/filter_sliders.svg',
-                    width: 16.sp,
-                    height: 16.sp,
-                    color: AppColors.textButton,
-                  ),
-                ),
-                SizedBox(width: 8.sp),
-                Text(
-                  S.of(dialogContext).Filter,
-                  style: StyleText.fontSize16Weight500
-                      .copyWith(color: AppColors.text),
-                ),
-              ],
-            ),
+            // 22/10/2026 — Owner: one dialog header everywhere (30 circle · 16 icon · 18/500 title) — was a hand-rolled 15./16./16. row.
+            CustomDialogHeader(
+                title: S.of(dialogContext).Filter,
+                icon:
+                    'assets/icons_assets/main_icons_assets/ic_action_filter.svg'),
             SizedBox(height: 15.sp),
             CustomDropdown<String>(
               label: S.of(dialogContext).select_department,
@@ -135,18 +115,24 @@ class _AccessSearchAndFilterState extends State<AccessSearchAndFilter> {
               fillColor: AppColors.background,
               height: 36,
               items: departments.departmentIds
-                  .map((String id) => DropdownItem<String>(
-                        value: id,
-                        label: FormatHelper.capitalize(dialogContext.isArabic
+                  .map(
+                    (String id) => DropdownItem<String>(
+                      value: id,
+                      label: FormatHelper.capitalize(
+                        dialogContext.isArabic
                             ? departments
                                     .getArabicDepartmentNameFromDepartmentId(
-                                        departmentId: id) ??
+                                  departmentId: id,
+                                ) ??
                                 ''
                             : departments
                                     .getEnglishDepartmentNameFromDepartmentId(
-                                        departmentId: id) ??
-                                ''),
-                      ))
+                                  departmentId: id,
+                                ) ??
+                                '',
+                      ),
+                    ),
+                  )
                   .toList(),
               onChanged: (value) => setDialogState(() => picked = value),
               required: false,
@@ -157,9 +143,10 @@ class _AccessSearchAndFilterState extends State<AccessSearchAndFilter> {
                 Expanded(
                   child: customButton(
                     fullWidth: true,
-                    color: AppColors.secondaryButton,
-                    textStyle: StyleText.fontSize16Weight500
-                        .copyWith(color: AppColors.blackButton),
+                    color: AppColors.darkGrey,
+                    textStyle: StyleText.fontSize16Weight500.copyWith(
+                      color: AppColors.text,
+                    ),
                     title: S.of(dialogContext).reset,
                     function: () {
                       setDialogState(() => picked = null);
@@ -209,12 +196,14 @@ class _AccessSearchAndFilterState extends State<AccessSearchAndFilter> {
                 ? context
                         .read<MainCoreDepartmentCubit>()
                         .getArabicDepartmentNameFromDepartmentId(
-                            departmentId: department) ??
+                          departmentId: department,
+                        ) ??
                     ''
                 : context
                         .read<MainCoreDepartmentCubit>()
                         .getEnglishDepartmentNameFromDepartmentId(
-                            departmentId: department) ??
+                          departmentId: department,
+                        ) ??
                     '',
           );
           return DropdownItem<String>(value: department, label: label);
@@ -229,12 +218,13 @@ class _AccessSearchAndFilterState extends State<AccessSearchAndFilter> {
             controller.addNewAccessDepartmentId = value;
           }
           controller.filterEmployeesToGiveAccess(
-              controller.addNewSearchController.text);
+            controller.addNewSearchController.text,
+          );
           setState(() {});
         },
         fillColor: AppColors.card,
         hintStyle: StyleText.fontSize14Weight500.copyWith(
-          color: AppColors.secondaryText.withOpacity(.7),
+          color: AppColors.secondaryText.withValues(alpha: .7),
         ),
         itemStyle: StyleText.fontSize14Weight500.copyWith(
           color: AppColors.text,

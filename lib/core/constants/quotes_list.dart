@@ -5,8 +5,10 @@
 /// Purpose: Declares `DateTimeExtension`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'package:flutter/material.dart';
+import 'package:knowticed_plus/core/constants/quotes_list_ar.dart';
 
 extension DateTimeExtension on DateTime {
   int get dayOfYear {
@@ -19,7 +21,7 @@ extension DateTimeExtension on DateTime {
   }
 }
 
-String getQuoteForToday() {
+String getQuoteForToday({bool isArabic = false}) {
   List<String> quotes = [
     "The only way to do great work is to love what you do.",
     "Success is not the key to happiness. Happiness is the key to success.",
@@ -227,5 +229,9 @@ String getQuoteForToday() {
   // Use the current day of the year to get a quote (ensuring it's within the range of the list)
   int dayOfYear = DateTime.now().dayOfYear;
   int quoteIndex = dayOfYear % quotes.length;
+  // Arabic: the same quote and author by index (quotes_list_ar.dart).
+  if (isArabic && quoteIndex < kQuotesAr.length) {
+    return "${kQuotesAr[quoteIndex]} - ${kQuoteAuthorsAr[quoteIndex]}";
+  }
   return "${quotes[quoteIndex]} - ${authors[quoteIndex]}";
 }

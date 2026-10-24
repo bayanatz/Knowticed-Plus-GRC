@@ -7,11 +7,12 @@
 /// Updated: 12/8/2026 - Moved from `data/data_source/remote_data_source.dart`,
 ///          a stray file sitting beside the folder of the same name, and
 ///          renamed after the two data sources it actually declares.
+library;
 
-import 'package:grc_module/core/network/api_constants.dart';
-import 'package:grc_module/core/network/get_base_url.dart';
+import 'package:knowticed_plus/core/network/api_constants.dart';
+import 'package:knowticed_plus/core/network/get_base_url.dart';
 
-import 'package:grc_module/core/services/firebase/repository/firebase_repository.dart';
+import 'package:knowticed_plus/core/app_services/firebase/repository/firebase_repository.dart';
 
 class DepartmentRemoteDataSource {
   Future<dynamic> getDepartments() async {
@@ -19,6 +20,7 @@ class DepartmentRemoteDataSource {
         collectionPath: getBaseUrl(ApiConstants.departmentDocumentKey));
   }
 }
+
 class MainCoreEmployeeRemoteDataSource {
   Future<dynamic> getAllEmployees() async {
     return await FirebaseRepository.getCollection(

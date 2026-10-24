@@ -19,16 +19,17 @@
 ///
 /// PORTED into services_app under features/settings.
 /// Source: services_app features/employees/presentation/controller/…
+library;
 
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 
-import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/features/settings/se5_emergency_contact/data/repository/emergency_contact_repository.dart';
-import 'package:grc_module/features/settings/se5_emergency_contact/domain/entities/emergency_contact_entity.dart';
+import 'package:knowticed_plus/core/network/failure_model.dart';
+import 'package:knowticed_plus/features/settings/se5_emergency_contact/data/repository/emergency_contact_repository.dart';
+import 'package:knowticed_plus/features/settings/se5_emergency_contact/domain/entities/emergency_contact_entity.dart';
 
-part './emergency_contact_state.dart';
+part 'emergency_contact_state.dart';
 
 class EmergencyContactController extends Cubit<EmergencyContactState> {
   EmergencyContactController({EmergencyContactRepository? repository})
@@ -85,9 +86,8 @@ class EmergencyContactController extends Cubit<EmergencyContactState> {
       {required String employeeId}) async {
     emit(state.copyWith(status: EmergencyContactStatus.loading));
 
-    final Either<Failure, EmergencyContactEntity> result =
-        await _repository.getEmployeeEmergencyContactData(
-            employeeId: employeeId);
+    final Either<Failure, EmergencyContactEntity> result = await _repository
+        .getEmployeeEmergencyContactData(employeeId: employeeId);
 
     return result.fold(
       (Failure failure) {
@@ -124,9 +124,8 @@ class EmergencyContactController extends Cubit<EmergencyContactState> {
     int failures = 0;
 
     for (final EmergencyContactEntity contact in rows) {
-      final Either<Failure, dynamic> result =
-          await _repository.addEmployeeInsuranceData(
-              emergencyContactData: contact);
+      final Either<Failure, dynamic> result = await _repository
+          .addEmployeeInsuranceData(emergencyContactData: contact);
       if (result.isLeft()) failures++;
     }
 

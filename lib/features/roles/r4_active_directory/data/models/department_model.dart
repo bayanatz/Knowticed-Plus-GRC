@@ -5,6 +5,7 @@
 /// Purpose: Declares `DepartmentModelPro`.
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -28,9 +29,22 @@ class DepartmentModelPro {
       departmentID: map['Department_ID'] as String? ?? '',
       departmentName: map['Department_Name'] as String? ?? '',
       departmentNameInArabic: map['Department_Name_In_Arabic'] as String? ?? '',
-      creationDate: map['Creation_Date'] as Timestamp? ?? Timestamp.now(),
+      creationDate: _creationDate(map['Creation_Date']),
       addedBy: map['Added_By'] as String? ?? '',
     );
+  }
+
+  /// Tolerant read (18/10/2026): one department saved with a text date made
+  /// the strict `as Timestamp?` cast throw and the WHOLE department list
+  /// failed to load (Org Chart lost its departments, tabs and columns).
+  static Timestamp _creationDate(Object? value) {
+    if (value is Timestamp) return value;
+    if (value is DateTime) return Timestamp.fromDate(value);
+    if (value is String) {
+      final DateTime? parsed = DateTime.tryParse(value);
+      if (parsed != null) return Timestamp.fromDate(parsed);
+    }
+    return Timestamp.now();
   }
 
   Map<String, dynamic> toMap() {
@@ -42,6 +56,4 @@ class DepartmentModelPro {
       'Added_By': addedBy,
     };
   }
-
-
 }

@@ -4,24 +4,26 @@
 /// Purpose: Department dropdown — messaging Groups sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+library;
 
 // Date: 28/4/2026
 // Updated by: Amr Mesbah
 // Objectives: Department dropdown using the core CustomDropdown
 
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 
-import 'package:grc_module/features/messaging/m2_connections/presentation/controller/connections_controller.dart';
-import 'package:grc_module/features/messaging/m3_groups/presentation/controller/groups_controller.dart';
-import 'package:grc_module/features/messaging/m4_messaging_home/presentation/controller/messaging_home_controller.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/presentation/controller/connections_controller.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/presentation/controller/groups_controller.dart';
+import 'package:knowticed_plus/features/messaging/m4_messaging_home/presentation/controller/messaging_home_controller.dart';
 
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/custom/1-custom_dropdown.dart';
-import '../../../../../../core/helper/message_module/interface/entity/user_category.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/custom/dropdowns/custom_dropdown.dart';
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/interface/entity/user_category.dart';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_toolbar_action_button.dart';
 
 class DepartmentDropdown extends StatefulWidget {
   const DepartmentDropdown({super.key});
@@ -84,13 +86,17 @@ class _DepartmentDropdownState extends State<DepartmentDropdown> {
           hintStyle: triggerStyle,
           valueStyle: triggerStyle,
           borderRadius: BorderRadius.circular(8.r),
-          triggerPadding: EdgeInsets.symmetric(horizontal: 12.sp,vertical: 14.sp),
+          triggerPadding:
+              EdgeInsets.symmetric(horizontal: 12.sp, vertical: 14.sp),
           prefixIcon: isTablet
               ? null
-              : SvgPicture.asset(
-                  'assets/icons_assets/messaging_assets/depart.svg',
-                  width: 16.sp,
-                  height: 16.sp,
+              // 22/10/2026 — Owner: filter and sort icons are one size and colour in every module (ToolbarStyle).
+              : CustomSvgImage(
+                  assetPath:
+                      'assets/icons_assets/main_icons_assets/ic_action_filter.svg',
+                  width: ToolbarStyle.iconSize,
+                  height: ToolbarStyle.iconSize,
+                  color: ToolbarStyle.contentColor,
                 ),
           suffixIcon: isTablet ? null : const SizedBox.shrink(),
           onChanged: (selectedKey) {

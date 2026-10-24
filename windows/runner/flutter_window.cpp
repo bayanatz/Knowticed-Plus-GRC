@@ -4,6 +4,34 @@
 
 #include "flutter/generated_plugin_registrant.h"
 
+// File Name: flutter_window.cpp
+// Updated: 26/8/2026 - handles the `screen_capture` channel behind the
+//          Settings > Take Screen Shot switch.
+//
+// Windows lever: SetWindowDisplayAffinity. WDA_EXCLUDEFROMCAPTURE (Windows 10
+// version 2004 / build 19041 and newer) leaves the window out of every capture
+// path entirely — screenshots, Snipping Tool, Teams/Zoom shares and recorders
+// all see the desktop behind it, while the window stays fully visible on the
+// physical screen. On older builds the call fails and we fall back to
+// WDA_MONITOR, which is cruder: the capture gets a black rectangle.
+namespace {
+
+// Defined in newer Windows SDK headers; declared here so the runner builds
+// against an older SDK too.
+#ifndef WDA_NONE
+constexpr DWORD WDA_NONE = 0x00000000;
+#endif
+#ifndef WDA_MONITOR
+constexpr DWORD WDA_MONITOR = 0x00000001;
+#endif
+#ifndef WDA_EXCLUDEFROMCAPTURE
+constexpr DWORD WDA_EXCLUDEFROMCAPTURE = 0x00000011;
+#endif
+
+constexpr char kScreenCaptureChannel[] = "knowticed_plus/screen_capture";
+
+}  // namespace
+
 FlutterWindow::FlutterWindow(const flutter::DartProject& project)
     : project_(project) {}
 
@@ -27,6 +55,8 @@ bool FlutterWindow::OnCreate() {
   RegisterPlugins(flutter_controller_->engine());
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
 
+  SetUpScreenCaptureChannel();
+
   flutter_controller_->engine()->SetNextFrameCallback([&]() {
     this->Show();
   });
@@ -40,11 +70,65 @@ bool FlutterWindow::OnCreate() {
 }
 
 void FlutterWindow::OnDestroy() {
+  screen_capture_channel_ = nullptr;
+
   if (flutter_controller_) {
     flutter_controller_ = nullptr;
   }
 
   Win32Window::OnDestroy();
+}
+
+void FlutterWindow::SetUpScreenCaptureChannel() {
+  screen_capture_channel_ =
+      std::make_unique<flutter::MethodChannel<flutter::EncodableValue>>(
+          flutter_controller_->engine()->messenger(), kScreenCaptureChannel,
+          &flutter::StandardMethodCodec::GetInstance());
+
+  screen_capture_channel_->SetMethodCallHandler(
+      [this](const flutter::MethodCall<flutter::EncodableValue>& call,
+             std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>>
+                 result) {
+        if (call.method_name() != "setAllowed") {
+          result->NotImplemented();
+          return;
+        }
+
+        bool allowed = true;
+        if (const auto* arguments =
+                std::get_if<flutter::EncodableMap>(call.arguments())) {
+          const auto entry =
+              arguments->find(flutter::EncodableValue("allowed"));
+          if (entry != arguments->end()) {
+            if (const bool* value = std::get_if<bool>(&entry->second)) {
+              allowed = *value;
+            }
+          }
+        }
+
+        result->Success(
+            flutter::EncodableValue(ApplyScreenCapturePolicy(allowed)));
+      });
+}
+
+bool FlutterWindow::ApplyScreenCapturePolicy(bool allowed) {
+  HWND handle = GetHandle();
+  if (!handle) {
+    return false;
+  }
+
+  if (allowed) {
+    ::SetWindowDisplayAffinity(handle, WDA_NONE);
+    return false;
+  }
+
+  // Preferred: the window is skipped by capture entirely.
+  if (::SetWindowDisplayAffinity(handle, WDA_EXCLUDEFROMCAPTURE)) {
+    return true;
+  }
+
+  // Pre-2004 Windows 10: the capture gets a black rectangle instead.
+  return ::SetWindowDisplayAffinity(handle, WDA_MONITOR) != FALSE;
 }
 
 LRESULT

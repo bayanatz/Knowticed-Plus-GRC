@@ -5,17 +5,20 @@
 /// Purpose: Declares `ServicePermissionsSections`.
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
-// REMOVED_MODULE: import 'package:grc_module/features/external/services_app_module/core/constants/strings.dart';
-import 'package:grc_module/features/roles/r1_role_management/domain/enums/services/request_service_permission.dart';
-import 'package:grc_module/features/roles/r1_role_management/domain/enums/services/service_permissions.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/features/external/services_app_module/core/constants/strings.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/services/request_service_permission.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/services/service_permissions.dart';
 
-import 'package:grc_module/features/roles/r1_role_management/domain/entities/module_permissions_sections.dart';
-import 'package:grc_module/features/roles/r1_role_management/domain/entities/module_permissions_sections_permissions.dart';
-import './Employee_services.dart';
-import './approval_permission_work.dart';
-import './dashboard_permissions.dart';
-enum ServicePermissionsSections implements ModulePermissionsSections, ModulePermissionsSectionsPermission {
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/entities/module_permissions_sections.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/entities/module_permissions_sections_permissions.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/services/employee_services.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/services/approval_permission_work.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/services/dashboard_permissions.dart';
+
+enum ServicePermissionsSections
+    implements ModulePermissionsSections, ModulePermissionsSectionsPermission {
   servicesPermissions,
   requestServicePermissions,
   dashboardPermissions,

@@ -2,21 +2,23 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: notification_services.dart
-/// Purpose: Firestore reads and writes for user notifications.
-/// Author: Knowticed Plus team
+/// Description: Firestore reads and writes for user notifications.
+/// Author: Amr Mesbah
 /// Created at: 2026
 /// Updated: 12/8/2026 - CR-SKEL-NOTIF-N17: the `Notifications` collection literal now comes from
 ///          `FirebaseCollections`.
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:grc_module/core/constants/firebase_collections.dart';
-import 'package:grc_module/core/network/get_base_url.dart';
-import '../models/notification_data_model.dart';
+import 'package:knowticed_plus/core/constants/firebase_collections.dart';
+import 'package:knowticed_plus/core/network/get_base_url.dart';
+
+import 'package:knowticed_plus/features/notification/data/models/notification_data_model.dart';
 
 class FirestoreNotificationService {
   static final FirestoreNotificationService _instance =
-  FirestoreNotificationService._internal();
+      FirestoreNotificationService._internal();
 
   factory FirestoreNotificationService() => _instance;
 
@@ -33,59 +35,50 @@ class FirestoreNotificationService {
     return tenantRoot;
   }
 
-
-
   // Add this method to your FirestoreNotificationService class
 
   /// Update notification clean status
   Future<bool> updateCleanStatus(String notificationId, bool isClean) async {
     try {
-
       final notificationsPath = _getNotificationsPath();
-      await _firestore
-          .collection(notificationsPath)
-          .doc(notificationId)
-          .update({'isClean': isClean});
+      await _firestore.collection(notificationsPath).doc(notificationId).update(
+        {'isClean': isClean},
+      );
 
       return true;
-    } catch (e, st) {
+    } catch (e) {
       return false;
     }
   }
 
   /// Upload a notification to Firestore
   /// Returns the document ID of the created notification
-  Future<String?> uploadNotification(NotificationModelSystem notification) async {
+  Future<String?> uploadNotification(
+    NotificationModelSystem notification,
+  ) async {
     final String notificationsPath = _getNotificationsPath();
     try {
       final docRef = await _firestore
           .collection(notificationsPath)
           .add(notification.toMap());
 
-      if (kDebugMode) {
-        debugPrint('[notify-db] wrote ${docRef.id} to "$notificationsPath" '
-            'for "${notification.receiverEmail}" '
-            '(module=${notification.nameOfModule})');
-      }
+      if (kDebugMode) {}
       return docRef.id;
-    } catch (e, st) {
+    } catch (e) {
       // This catch returned null with NOTHING logged — no message, no stack.
       // It is the single point where a notification the code believes it sent
       // silently never existed: a denied security rule, an offline write, a
       // bad collection path. From the inbox it is indistinguishable from "the
       // sender never ran", which is exactly the dead end the GRC tab hit.
-      debugPrint('[notify-db] WRITE FAILED to "$notificationsPath" for '
-          '"${notification.receiverEmail}" '
-          '(module=${notification.nameOfModule}) — $e\n$st');
       return null;
     }
   }
 
   /// Get all notifications for a specific receiver
   Future<List<NotificationModelSystem>> getNotificationsForUser(
-      String receiverEmail) async {
+    String receiverEmail,
+  ) async {
     try {
-
       final notificationsPath = _getNotificationsPath();
       final querySnapshot = await _firestore
           .collection(notificationsPath)
@@ -100,18 +93,17 @@ class FirestoreNotificationService {
       notifications.sort((a, b) => b.timestamp.compareTo(a.timestamp));
 
       return notifications;
-    } catch (e, st) {
+    } catch (e) {
       return [];
     }
   }
 
   /// Get notifications for a user filtered by module
   Future<List<NotificationModelSystem>> getNotificationsByModule(
-      String receiverEmail,
-      String moduleName,
-      ) async {
+    String receiverEmail,
+    String moduleName,
+  ) async {
     try {
-
       final notificationsPath = _getNotificationsPath();
       final querySnapshot = await _firestore
           .collection(notificationsPath)
@@ -127,16 +119,16 @@ class FirestoreNotificationService {
       notifications.sort((a, b) => b.timestamp.compareTo(a.timestamp));
 
       return notifications;
-    } catch (e, st) {
+    } catch (e) {
       return [];
     }
   }
 
   /// Get pinned notifications for a user
   Future<List<NotificationModelSystem>> getPinnedNotifications(
-      String receiverEmail) async {
+    String receiverEmail,
+  ) async {
     try {
-
       final notificationsPath = _getNotificationsPath();
       final querySnapshot = await _firestore
           .collection(notificationsPath)
@@ -152,16 +144,16 @@ class FirestoreNotificationService {
       notifications.sort((a, b) => b.timestamp.compareTo(a.timestamp));
 
       return notifications;
-    } catch (e, st) {
+    } catch (e) {
       return [];
     }
   }
 
   /// Get unread notifications for a user
   Future<List<NotificationModelSystem>> getUnreadNotifications(
-      String receiverEmail) async {
+    String receiverEmail,
+  ) async {
     try {
-
       final notificationsPath = _getNotificationsPath();
       final querySnapshot = await _firestore
           .collection(notificationsPath)
@@ -177,7 +169,7 @@ class FirestoreNotificationService {
       notifications.sort((a, b) => b.timestamp.compareTo(a.timestamp));
 
       return notifications;
-    } catch (e, st) {
+    } catch (e) {
       return [];
     }
   }
@@ -185,16 +177,15 @@ class FirestoreNotificationService {
   /// Stream notifications for a user in real-time
   /// NOTE: Sorts manually to avoid composite index requirement
   Stream<List<NotificationModelSystem>> streamNotificationsForUser(
-      String receiverEmail) {
+    String receiverEmail,
+  ) {
     try {
-
       final notificationsPath = _getNotificationsPath();
       return _firestore
           .collection(notificationsPath)
           .where('Reciver_Email', isEqualTo: receiverEmail.toLowerCase())
           .snapshots()
           .map((snapshot) {
-
         // Convert to list and sort manually (to avoid composite index requirement)
         List<NotificationModelSystem> notifications = snapshot.docs
             .map((doc) => NotificationModelSystem.fromFirestore(doc))
@@ -205,7 +196,7 @@ class FirestoreNotificationService {
 
         return notifications;
       });
-    } catch (e, st) {
+    } catch (e) {
       return Stream.value([]);
     }
   }
@@ -213,15 +204,13 @@ class FirestoreNotificationService {
   /// Update notification pin status
   Future<bool> updatePinStatus(String notificationId, bool isPinned) async {
     try {
-
       final notificationsPath = _getNotificationsPath();
-      await _firestore
-          .collection(notificationsPath)
-          .doc(notificationId)
-          .update({'Pin': isPinned});
+      await _firestore.collection(notificationsPath).doc(notificationId).update(
+        {'Pin': isPinned},
+      );
 
       return true;
-    } catch (e, st) {
+    } catch (e) {
       return false;
     }
   }
@@ -229,15 +218,13 @@ class FirestoreNotificationService {
   /// Mark notification as read
   Future<bool> markAsRead(String notificationId) async {
     try {
-
       final notificationsPath = _getNotificationsPath();
-      await _firestore
-          .collection(notificationsPath)
-          .doc(notificationId)
-          .update({'isRead': true});
+      await _firestore.collection(notificationsPath).doc(notificationId).update(
+        {'isRead': true},
+      );
 
       return true;
-    } catch (e, st) {
+    } catch (e) {
       return false;
     }
   }
@@ -245,7 +232,6 @@ class FirestoreNotificationService {
   /// Mark all notifications as read for a user
   Future<bool> markAllAsRead(String receiverEmail) async {
     try {
-
       final notificationsPath = _getNotificationsPath();
       final querySnapshot = await _firestore
           .collection(notificationsPath)
@@ -260,7 +246,7 @@ class FirestoreNotificationService {
       await batch.commit();
 
       return true;
-    } catch (e, st) {
+    } catch (e) {
       return false;
     }
   }
@@ -268,7 +254,6 @@ class FirestoreNotificationService {
   /// Mark all notifications as cleaned for a user
   Future<bool> markAllAsCleaned(String receiverEmail) async {
     try {
-
       final notificationsPath = _getNotificationsPath();
       final querySnapshot = await _firestore
           .collection(notificationsPath)
@@ -283,7 +268,56 @@ class FirestoreNotificationService {
       await batch.commit();
 
       return true;
-    } catch (e, st) {
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// Function Name: [markCleaned]
+  ///
+  /// Purpose: Clear exactly these notifications. 22/10/2026 — Owner: Clean
+  /// All clears what the page is SHOWING (the module chip, filters and
+  /// search); on "All" with nothing filtered that is every notification.
+  ///
+  /// Returns: `true` when every batch committed, `false` on failure.
+  Future<bool> markCleaned(List<String> notificationIds) => _writeInBatches(
+      notificationIds,
+      (WriteBatch batch, DocumentReference<Map<String, dynamic>> ref) =>
+          batch.update(ref, <String, dynamic>{'isClean': true}));
+
+  /// Function Name: [deleteNotifications]
+  ///
+  /// Purpose: Permanently delete exactly these notifications (the Cleared
+  /// page's Delete All, scoped to what it is showing — 22/10/2026).
+  ///
+  /// Returns: `true` when every batch committed, `false` on failure.
+  Future<bool> deleteNotifications(
+          List<String> notificationIds) =>
+      _writeInBatches(
+          notificationIds,
+          (WriteBatch batch, DocumentReference<Map<String, dynamic>> ref) =>
+              batch.delete(ref));
+
+  /// One write per id, committed 500 at a time (Firestore's batch cap).
+  Future<bool> _writeInBatches(
+    List<String> ids,
+    void Function(WriteBatch, DocumentReference<Map<String, dynamic>>) write,
+  ) async {
+    try {
+      final CollectionReference<Map<String, dynamic>> col =
+          _firestore.collection(_getNotificationsPath());
+      const int batchLimit = 500;
+      for (int start = 0; start < ids.length; start += batchLimit) {
+        final WriteBatch batch = _firestore.batch();
+        final int end =
+            start + batchLimit > ids.length ? ids.length : start + batchLimit;
+        for (final String id in ids.sublist(start, end)) {
+          write(batch, col.doc(id));
+        }
+        await batch.commit();
+      }
+      return true;
+    } catch (e) {
       return false;
     }
   }
@@ -313,7 +347,9 @@ class FirestoreNotificationService {
       // Firestore caps a batch at 500 writes, and a long-lived inbox can hold
       // more than that — commit in chunks rather than throwing on doc 501.
       const int batchLimit = 500;
-      for (int start = 0; start < querySnapshot.docs.length; start += batchLimit) {
+      for (int start = 0;
+          start < querySnapshot.docs.length;
+          start += batchLimit) {
         final batch = _firestore.batch();
         final end = (start + batchLimit) > querySnapshot.docs.length
             ? querySnapshot.docs.length
@@ -325,7 +361,7 @@ class FirestoreNotificationService {
       }
 
       return true;
-    } catch (e, st) {
+    } catch (e) {
       return false;
     }
   }
@@ -333,7 +369,6 @@ class FirestoreNotificationService {
   /// Delete a notification
   Future<bool> deleteNotification(String notificationId) async {
     try {
-
       final notificationsPath = _getNotificationsPath();
       await _firestore
           .collection(notificationsPath)
@@ -341,14 +376,16 @@ class FirestoreNotificationService {
           .delete();
 
       return true;
-    } catch (e, st) {
+    } catch (e) {
       return false;
     }
   }
 
   /// Get notification count for a user
-  Future<int> getNotificationCount(String receiverEmail,
-      {bool unreadOnly = false}) async {
+  Future<int> getNotificationCount(
+    String receiverEmail, {
+    bool unreadOnly = false,
+  }) async {
     try {
       final notificationsPath = _getNotificationsPath();
       var query = _firestore
@@ -363,7 +400,7 @@ class FirestoreNotificationService {
       final count = snapshot.count ?? 0;
 
       return count;
-    } catch (e, st) {
+    } catch (e) {
       return 0;
     }
   }

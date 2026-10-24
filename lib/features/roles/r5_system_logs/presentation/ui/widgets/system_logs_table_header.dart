@@ -17,14 +17,16 @@
 ///          is gone; the heading row is now painted by `DefaultDataTable`.
 /// Updated: 30/8/2026 - Labels centred over their column (`headingRowAlignment`),
 ///          matching the values below them. Type size is unchanged at 14.sp.
+library;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:knowticed_plus/features/roles/r5_system_logs/presentation/ui/widgets/system_logs_item_label.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
 
-import 'package:grc_module/features/roles/r5_system_logs/domain/constants/system_logs_constants.dart';
+import 'package:knowticed_plus/features/roles/helpers/constants/system_logs_constants.dart';
 
 /// The system logs table heading, as `DataTable` columns.
 ///
@@ -44,7 +46,8 @@ abstract class SystemLogsTableHeader {
   /// 14.sp — `font14BlackSemiBoldCairo` is exactly that, so the size is the
   /// style's, not a local `copyWith`.
   static TextStyle get _headerStyle =>
-      StyleText.fontSize14Weight600.copyWith(color: AppColors.white);
+      // Owner 21/10/2026: Attendance table header — Medium 14 white.
+      StyleText.fontSize14Weight500.copyWith(color: AppColors.white);
 
   static List<DataColumn> columns() {
     return [
@@ -58,14 +61,12 @@ abstract class SystemLogsTableHeader {
           // therefore centre nothing. `headingRowAlignment` is the knob that
           // moves the label itself, and it is direction-aware, so this reads
           // the same in Arabic.
-          headingRowAlignment: MainAxisAlignment.center,
-          label: Padding(
-            padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 8.w),
-            child: Text(
-              item.name,
-              style: _headerStyle,
-              textAlign: TextAlign.center,
-            ),
+          // Owner 21/10/2026: start-aligned titles, like the Attendance table.
+          label: Text(
+            // Owner 21/10/2026: localised title (was the English enum name).
+            item.label(S.current),
+            style: _headerStyle,
+            textAlign: TextAlign.start,
           ),
         ),
     ];

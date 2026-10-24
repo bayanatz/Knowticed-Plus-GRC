@@ -2,9 +2,9 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: messages_permissions_enum.dart
-/// Purpose: Declares `MessagesPermissions` — the left-hand column of the
+/// Description: Declares `MessagesPermissions` — the left-hand column of the
 ///          Messages block on the "Adding New Role" screen.
-/// Author: Knowticed Plus team
+/// Author: Amr Mesbah
 /// Created at: 2/9/2026
 ///
 /// Figma: MESBAH → ROLE MANAGEMENT → Adding New Role → Permissions Control →
@@ -24,9 +24,10 @@
 /// ⚠️ Every label here already existed in `intl_en.arb` / `intl_ar.arb` before
 /// this file — none were added. If a new permission is added, add its key to
 /// both ARBs first, or `S.current.<key>` will not compile.
+library;
 
-import 'package:grc_module/features/roles/r1_role_management/domain/entities/module_permissions_sections_permissions.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/entities/module_permissions_sections_permissions.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
 enum MessagesPermissions implements ModulePermissionsSectionsPermission {
   createGroup,
@@ -47,7 +48,9 @@ enum MessagesPermissions implements ModulePermissionsSectionsPermission {
       case createGroup:
         return 'Create_Group';
       case seenAndUnseen:
-        return 'Seen_And_Unseen';
+        // FIXED 17/10/2026: matches all 21 saved roles (was 'Seen_And_Unseen',
+        // which no role document uses, so the chat never saw this switch).
+        return 'Seen_and_Unseen';
       case editMessage:
         return 'Edit_Message';
       case deleteMessage:
@@ -55,7 +58,8 @@ enum MessagesPermissions implements ModulePermissionsSectionsPermission {
       case reactions:
         return 'Reactions';
       case forwardMessages:
-        return 'Forward_Messages';
+        // FIXED 17/10/2026: matches all 21 saved roles (was 'Forward_Messages').
+        return 'Forward_Message';
     }
   }
 

@@ -53,9 +53,10 @@ class AudioBubble extends StatelessWidget {
               Row(
                 children: [
                   GestureDetector(
+                    onTapDown: (_) => HapticController.low(),
                     onTap: () => audioCubit.startPlayingAudio(audio),
-                    child: SvgPicture.asset(
-                      audio.isCurrentPlaying
+                    child: CustomSvgImage.natural(
+                      assetPath: audio.isCurrentPlaying
                           ? AppAssets.pause
                           : AppAssets.play,
                       color: AppColors.greyDark,
@@ -101,6 +102,7 @@ class AudioBubble extends StatelessWidget {
                       start: audio.duration != Duration.zero ? 15.w : 4.w,
                     ),
                     child: GestureDetector(
+                      onTapDown: (_) => HapticController.low(),
                       onTap: () => audioCubit.updateAudioSpeed(audio: audio),
                       child: Text(
                         audio.rate,
@@ -130,7 +132,7 @@ class AudioBubble extends StatelessWidget {
                         .copyWith(color: AppColors.secondaryBlack)
                         .copyWith(
                           color: !isMe
-                              ? AppColors.inverseBase
+                              ? AppColors.secondaryBlack
                               : AppTheme.contrastGreyColor(),
                         ),
                   ),
@@ -234,7 +236,7 @@ class _AudioProgressBar extends StatelessWidget {
         return LayoutBuilder(
           builder: (context, constraints) {
             final width = constraints.maxWidth;
-            final isRtl = Directionality.of(context) == ui.TextDirection.rtl;
+            final isRtl = Directionality.of(context) == TextDirection.rtl;
 
             void seekTo(Offset local) {
               if (total <= 0 || width <= 0) return;
@@ -246,7 +248,8 @@ class _AudioProgressBar extends StatelessWidget {
             return GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTapDown: (details) => seekTo(details.localPosition),
-              onHorizontalDragUpdate: (details) => seekTo(details.localPosition),
+              onHorizontalDragUpdate: (details) =>
+                  seekTo(details.localPosition),
               child: SizedBox(
                 height: height,
                 width: double.infinity,
@@ -272,8 +275,7 @@ class _AudioProgressBar extends StatelessWidget {
                         ),
                       ),
                       Align(
-                        alignment:
-                            AlignmentDirectional(2 * progress - 1, 0),
+                        alignment: AlignmentDirectional(2 * progress - 1, 0),
                         child: Container(
                           height: 10.r,
                           width: 10.r,

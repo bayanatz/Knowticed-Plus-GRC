@@ -6,10 +6,14 @@
 /// Author: Knowticed Plus team
 /// Created at: 2026
 /// Updated: 12/8/2026 - Added the standard header (Docs).
+/// Updated: 7/10/2026 - Optional [NotificationModelSystem.requestId]
+///          (`Request_Id`): the record a notification is about, so View can
+///          open that record. First used by the To-Do module.
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:grc_module/core/enums/app_module.dart';
-import 'package:grc_module/features/notification/domain/enums/settings_module/settings_events.dart';
+import 'package:knowticed_plus/core/enums/app_module.dart';
+import 'package:knowticed_plus/features/notification/domain/enums/settings/settings_events.dart';
 
 class NotificationModelSystem {
   final String? id; // Document ID in Firestore
@@ -35,6 +39,15 @@ class NotificationModelSystem {
   final bool isRead; // Track if notification has been read
   final bool isClean; // Track if notification has been read
 
+  /// The id of the record this notification is about (stored as
+  /// `Request_Id`, the name the Services / Knowledge Hub comment docs already
+  /// use for "the record this belongs to"). ADDED 7/10/2026 — first writer is
+  /// the To-Do module, so View opens that to-do's details.
+  ///
+  /// `''` for every notification written before, or by a module that does not
+  /// pass one; View then opens the module root, as before.
+  final String requestId;
+
   NotificationModelSystem({
     this.id,
     required this.title,
@@ -49,6 +62,7 @@ class NotificationModelSystem {
     int? timestamp,
     this.isRead = false,
     this.isClean = false,
+    this.requestId = '',
   }) : timestamp = timestamp ?? DateTime.now().millisecondsSinceEpoch;
 
   /// ══════════════════════════════════════════════════════════════════
@@ -91,8 +105,7 @@ class NotificationModelSystem {
   /// Everything a search box should match against: both languages, so typing
   /// an Arabic word finds a notification whose card is currently rendered in
   /// English and the other way round.
-  String get searchText =>
-      '$title $body $titleAr $bodyAr'.toLowerCase();
+  String get searchText => '$title $body $titleAr $bodyAr'.toLowerCase();
 
   /// The body as a CARD should show it. ADDED 26/8/2026.
   ///
@@ -205,6 +218,9 @@ class NotificationModelSystem {
       'timestamp': timestamp,
       'isRead': isRead,
       'isClean': isClean,
+      // Only written when set, so modules without a target id keep the exact
+      // document shape they had.
+      if (requestId.isNotEmpty) 'Request_Id': requestId,
     };
   }
 
@@ -220,42 +236,55 @@ class NotificationModelSystem {
   }
 
   // Create NotificationModel from Firestore DocumentSnapshot
+  //
+  // HARDENED 7/10/2026 — both factories now go through [fromMap], which reads
+  // every field tolerantly: a field of the wrong type (a Firestore Timestamp
+  // or a double in `timestamp`, a number in a text field, a missing doc body)
+  // falls back to its default instead of throwing inside the inbox's stream.
   factory NotificationModelSystem.fromFirestore(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
-    return NotificationModelSystem(
-      id: doc.id,
-      title: data['title'] ?? '',
-      body: data['body'] ?? '',
-      titleAr: data['title_ar'] ?? '',
-      bodyAr: data['body_ar'] ?? '',
-      nameOfModule: _fileUnder(data['Name_of_module'] ?? '', data['title'] ?? ''),
-      senderEmail: data['Sender_Email'] ?? '',
-      receiverEmail: data['Reciver_Email'] ?? '',
-      nameOfPage: data['name_of_page'] ?? '',
-      isPinned: data['Pin'] ?? false,
-      timestamp: data['timestamp'] ?? DateTime.now().millisecondsSinceEpoch,
-      isRead: data['isRead'] ?? false,
-      isClean: data['isClean'] ?? false,
-    );
+    final Object? raw = doc.data();
+    final Map<String, dynamic> data =
+        raw is Map<String, dynamic> ? raw : <String, dynamic>{};
+    return NotificationModelSystem.fromMap(data, id: doc.id);
   }
 
   // Create NotificationModel from Map
-  factory NotificationModelSystem.fromMap(Map<String, dynamic> map, {String? id}) {
+  factory NotificationModelSystem.fromMap(Map<String, dynamic> map,
+      {String? id}) {
+    final String title = _text(map['title']);
     return NotificationModelSystem(
       id: id,
-      title: map['title'] ?? '',
-      body: map['body'] ?? '',
-      titleAr: map['title_ar'] ?? '',
-      bodyAr: map['body_ar'] ?? '',
-      nameOfModule: _fileUnder(map['Name_of_module'] ?? '', map['title'] ?? ''),
-      senderEmail: map['Sender_Email'] ?? '',
-      receiverEmail: map['Reciver_Email'] ?? '',
-      nameOfPage: map['name_of_page'] ?? '',
-      isPinned: map['Pin'] ?? false,
-      timestamp: map['timestamp'] ?? DateTime.now().millisecondsSinceEpoch,
-      isRead: map['isRead'] ?? false,
-      isClean: map['isClean'] ?? false,
+      title: title,
+      body: _text(map['body']),
+      titleAr: _text(map['title_ar']),
+      bodyAr: _text(map['body_ar']),
+      nameOfModule: _fileUnder(_text(map['Name_of_module']), title),
+      senderEmail: _text(map['Sender_Email']),
+      receiverEmail: _text(map['Reciver_Email']),
+      nameOfPage: _text(map['name_of_page']),
+      isPinned: _flag(map['Pin']),
+      timestamp: _millis(map['timestamp']),
+      isRead: _flag(map['isRead']),
+      isClean: _flag(map['isClean']),
+      requestId: _text(map['Request_Id']),
     );
+  }
+
+  /// A stored text field, or `''` when absent or not text.
+  static String _text(Object? value) =>
+      value is String ? value : (value == null ? '' : value.toString());
+
+  /// A stored boolean, `false` when absent or not a bool.
+  static bool _flag(Object? value) => value is bool && value;
+
+  /// A stored time as epoch milliseconds. Accepts an int / double, or a
+  /// Firestore [Timestamp]; anything else is `null`, which the constructor
+  /// turns into "now".
+  static int? _millis(Object? value) {
+    if (value is int) return value;
+    if (value is num) return value.toInt();
+    if (value is Timestamp) return value.millisecondsSinceEpoch;
+    return null;
   }
 
   // Copy with method for updating specific fields
@@ -273,6 +302,7 @@ class NotificationModelSystem {
     int? timestamp,
     bool? isRead,
     bool? isClean,
+    String? requestId,
   }) {
     return NotificationModelSystem(
       id: id ?? this.id,
@@ -288,6 +318,7 @@ class NotificationModelSystem {
       timestamp: timestamp ?? this.timestamp,
       isRead: isRead ?? this.isRead,
       isClean: isClean ?? this.isClean,
+      requestId: requestId ?? this.requestId,
     );
   }
 

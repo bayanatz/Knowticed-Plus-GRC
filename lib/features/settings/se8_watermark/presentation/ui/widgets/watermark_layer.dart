@@ -52,9 +52,9 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:grc_module/core/helper/role/modules_enum.dart';
-import 'package:grc_module/features/settings/se8_watermark/presentation/controller/watermark_cubit.dart';
-import 'package:grc_module/features/settings/se8_watermark/presentation/ui/widgets/watermark_preview.dart';
+import 'package:knowticed_plus/core/helper/access/modules_enum.dart';
+import 'package:knowticed_plus/features/settings/se8_watermark/presentation/controller/watermark_cubit.dart';
+import 'package:knowticed_plus/features/settings/se8_watermark/presentation/ui/widgets/watermark_preview.dart';
 
 /// Marks a subtree as already stamped, so an inner [WatermarkLayer] does
 /// nothing.
@@ -119,31 +119,41 @@ class NoWatermark extends StatefulWidget {
 }
 
 class _NoWatermarkState extends State<NoWatermark> {
-  /// Whether THIS widget's increment actually landed. Without it, a widget
-  /// disposed before its post-frame callback ran would decrement somebody
-  /// else's increment and leave the counter permanently negative-biased — the
-  /// stamp would come back while an editor was still open.
+  /// Whether THIS widget's increment is currently in the counter. Without it,
+  /// a widget disposed before its post-frame callback ran would decrement
+  /// somebody else's increment and leave the counter negative-biased.
   bool _counted = false;
 
-  @override
-  void initState() {
-    super.initState();
-    // Deferred to after the frame, NOT called straight from initState. Bumping
-    // the notifier here rebuilds the ancestor ValueListenableBuilder inside
-    // `WatermarkLayer` — and that ancestor may already have been built in this
-    // same pass, which is the "markNeedsBuild() called during build" assertion.
-    // The cost is one frame with the stamp still up, at the very start of the
-    // push transition where the page is barely on screen yet.
+  /// Moataz 23/10/2026: pressing another module in the drawer keeps the
+  /// Settings module (and this editor) MOUNTED but hidden, so the stamp stayed
+  /// off on every other module. The editor only suppresses while it is
+  /// actually the visible page: a hidden module has its tickers switched off.
+  /// Both changes are made after the frame (the notifier rebuilds layers that
+  /// may already have been built in this pass).
+  void _sync(bool shouldCount) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      _counted = true;
-      watermarkSuppressionCount.value++;
+      if (_counted == shouldCount) return;
+      if (shouldCount && !mounted) return;
+      _counted = shouldCount;
+      watermarkSuppressionCount.value += shouldCount ? 1 : -1;
     });
+    WidgetsBinding.instance.scheduleFrame();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _sync(TickerMode.valuesOf(context).enabled);
   }
 
   @override
   void dispose() {
-    if (_counted) watermarkSuppressionCount.value--;
+    if (_counted) {
+      _counted = false;
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => watermarkSuppressionCount.value--);
+      WidgetsBinding.instance.scheduleFrame();
+    }
     super.dispose();
   }
 

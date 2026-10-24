@@ -1,8 +1,10 @@
 /// Module: roles / r5_system_logs / domain / enums
 ///
-import 'package:grc_module/features/roles/r5_system_logs/data/models/system_logs_model.dart';
+library;
 
-import 'package:grc_module/core/helper/main_helper/date_time_helper.dart';
+import 'package:knowticed_plus/features/roles/r5_system_logs/data/models/system_logs_model.dart';
+
+import 'package:knowticed_plus/core/helper/date_time_helper.dart';
 
 ///*********************** FILE INFO ********************///
 /// FILE NAME: system_logs_items.dart
@@ -77,9 +79,7 @@ enum SystemLogsItems {
             ? model.middleName ?? ""
             : model.middleNameInArabic ?? "";
       case SystemLogsItems.lastName:
-        return !isArabic
-            ? model.lastName ?? ""
-            : model.lastNameInArabic ?? "";
+        return !isArabic ? model.lastName ?? "" : model.lastNameInArabic ?? "";
       case SystemLogsItems.role:
         return model.role ?? "";
       case SystemLogsItems.country:
@@ -100,7 +100,11 @@ enum SystemLogsItems {
         );
 
       case SystemLogsItems.time:
-        return DateTimeHelper.formatDateTimeHHMM(model.timestamp!.toDate());
+        // Owner 21/10/2026: no timestamp shows '-' (was timestamp!).
+        final DateTime? loggedAt = model.timestamp?.toDate();
+        return loggedAt == null
+            ? '-'
+            : DateTimeHelper.formatDateTimeHHMM(loggedAt);
       case SystemLogsItems.lat:
         return model.lat ?? "";
       case SystemLogsItems.long:
@@ -108,7 +112,9 @@ enum SystemLogsItems {
       case SystemLogsItems.action:
         return model.action ?? "";
       case SystemLogsItems.module:
-        return model.module?.name ?? "";
+        // CHANGED 21/10/2026: was the raw enum key ("more", "qiyas",
+        // "knowledgeHub") in the exported file. Now the module's own name.
+        return model.module?.getModuleName ?? "";
     }
     // REMOVED 12/8/2026: an unreachable `default:` branch and a trailing
     // `return "";` — the switch above returns on every one of the 12 enum

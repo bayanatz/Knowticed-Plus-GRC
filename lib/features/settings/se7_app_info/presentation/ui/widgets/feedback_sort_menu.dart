@@ -19,15 +19,17 @@
 /// why [selected] is nullable — the widget cannot draw the difference if the
 /// caller hands it a default and calls it a choice. The list is still ordered
 /// newest-first in the meantime; see `CommentsFeedbackLoaded.sortOption`.
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/features/settings/se7_app_info/presentation/controller/comments_feedback_state.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/features/settings/se7_app_info/presentation/controller/comments_feedback_state.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_toolbar_action_button.dart';
 
 class FeedbackSortMenu extends StatelessWidget {
   const FeedbackSortMenu({
@@ -50,20 +52,17 @@ class FeedbackSortMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool lightMode = Theme.of(context).brightness == Brightness.light;
-
     // One colour for both the glyph and the label — they are one control and
     // must not drift apart. Dimmed until the user has picked something.
-    final Color foreground = selected == null
-        ? AppColors.secondaryText.withOpacity(0.5)
-        : AppColors.textButton;
+    final Color foreground =
+        selected == null ? ToolbarStyle.contentColor : AppColors.textButton;
 
     return PopupMenuButton<FeedbackSortOption>(
       tooltip: '',
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.r),
       ),
-      color: lightMode ? AppColors.white : AppColors.chatBackground,
+      color: AppColors.card,
       position: PopupMenuPosition.under,
       onSelected: onSelected,
       itemBuilder: (BuildContext context) =>
@@ -93,16 +92,19 @@ class FeedbackSortMenu extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             CustomSvgImage(
-              assetPath: 'assets/icons_assets/main_icons_assets/sort_lines.svg',
-              width: 18.sp,
-              height: 18.sp,
+              assetPath:
+                  'assets/icons_assets/main_icons_assets/ic_action_sort.svg',
+              // 22/10/2026 — Owner: filter and sort icons are one size and colour in every module (ToolbarStyle).
+              width: ToolbarStyle.iconSize,
+              height: ToolbarStyle.iconSize,
               color: foreground,
             ),
             if (!compact) ...<Widget>[
               SizedBox(width: 8.w),
               Text(
                 S.of(context).sort,
-                style: StyleText.fontSize14Weight500.copyWith(color: foreground),
+                style:
+                    StyleText.fontSize14Weight500.copyWith(color: foreground),
               ),
             ],
           ],

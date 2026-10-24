@@ -10,12 +10,13 @@
 /// the cubit never sees a `FirebaseException` — the old code caught the raw
 /// error in the controller and interpolated `error.toString()` straight into a
 /// user-facing snackbar.
+library;
 
 import 'package:dartz/dartz.dart';
 
-import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/features/settings/se2_social/data/data_source/remote_data_source/social_remote_data_source.dart';
-import 'package:grc_module/features/settings/se2_social/domain/base_repository/social_base_repository.dart';
+import 'package:knowticed_plus/core/network/failure_model.dart';
+import 'package:knowticed_plus/features/settings/se2_social/data/data_source/remote_data_source/social_remote_data_source.dart';
+import 'package:knowticed_plus/features/settings/se2_social/domain/base_repository/social_base_repository.dart';
 
 class SocialRepository implements SocialBaseRepository {
   SocialRepository({SocialRemoteDataSource? remoteDataSource})

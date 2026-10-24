@@ -2,45 +2,51 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: custom_csv_table_page.dart
-/// Purpose: Declares `CustomCsvTable`.
-/// Author: Knowticed Plus team
+/// Description: Declares `CustomCsvTable`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
+import 'package:knowticed_plus/core/extensions/screen_fraction_extension.dart';
+import 'package:knowticed_plus/core/custom/feedback/custom_empty_state.dart';
 import 'package:flutter/material.dart';
+import 'package:knowticed_plus/core/constants/app_assets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:grc_module/core/custom/1-custom_dropdown.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:lottie/lottie.dart';
-import 'package:grc_module/core/custom/2-custom_textfield.dart' hide AppLanguage;
-import 'package:grc_module/core/custom/35-custom_search_widget_custom.dart';
+import 'package:knowticed_plus/core/custom/dropdowns/custom_dropdown.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_filter_icon.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_button_sizing.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_button.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_toolbar_action_button.dart';
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/custom/feedback/circle_progress.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/custom/inputs/custom_search_widget_custom.dart';
 // The shared chip filter behind the Users Data / Invalid Data tabs — see
 // `_buildTabBar` in csv_table_builders1.dart.
-import 'package:grc_module/core/custom/8-custom_filter_app.dart';
-import 'package:grc_module/core/theme/app_font_size.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/core/custom/navigation/custom_filter_app.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 // ADDED 25/8/2026: the tab badges and the filter badge render their counts in
 // the reader's numerals — see `_localizedCount` in csv_table_builders1.dart.
-import 'package:grc_module/features/settings/se1_profile/data/utils/localized_digits.dart';
-import 'package:grc_module/features/roles/r4_active_directory/presentation/controller/active_directory_controller.dart';
-import 'package:grc_module/features/roles/r4_active_directory/presentation/ui/widgets/tabs/user_data_tab.dart';
-import 'package:grc_module/features/roles/r4_active_directory/presentation/ui/widgets/tabs/wrong_data_tab.dart';
-import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
-import 'package:grc_module/core/di/app_controllers.dart';
+import 'package:knowticed_plus/features/settings/se1_profile/data/utils/localized_digits.dart';
+import 'package:knowticed_plus/features/roles/r4_active_directory/presentation/controller/active_directory_controller.dart';
+import 'package:knowticed_plus/features/roles/r4_active_directory/presentation/ui/widgets/tabs/user_data_tab.dart';
+import 'package:knowticed_plus/features/roles/r4_active_directory/presentation/ui/widgets/tabs/wrong_data_tab.dart';
+import 'package:knowticed_plus/core/custom/dialogs/custom_dialog_manager.dart';
+import 'package:knowticed_plus/core/di/app_controllers.dart';
 // ADDED 25/8/2026: the toolbar's Upload / Export / Restore / Edit buttons are
 // gated on the Active Directory permissions — see the getters at the top of
 // csv_table_builders1.dart.
-import 'package:grc_module/core/helper/role/roles_module_access.dart';
-import 'package:grc_module/features/roles/r1_role_management/domain/enums/roles/active_directory_permission.dart';
+import 'package:knowticed_plus/features/roles/helpers/roles_module_access.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/roles/active_directory_permission.dart';
 // ADDED 30/8/2026: the restore dialog draws one column per field, and the
 // field list — with its English/Arabic header names — is this enum.
-import 'package:grc_module/features/roles/r4_active_directory/domain/enums/employee_data.dart';
-import 'package:grc_module/core/theme/app_animations.dart';
-
+import 'package:knowticed_plus/features/roles/r4_active_directory/domain/enums/employee_data.dart';
+import 'package:knowticed_plus/core/theme/app_animations.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
+import 'package:knowticed_plus/core/custom/dialogs/custom_filter_frame.dart';
 
 part '../widgets/csv_table_builders1.dart';
 part '../widgets/csv_table_builders2.dart';
@@ -64,14 +70,14 @@ part '../widgets/csv_restore_dialog.dart';
 // 29:workLocation  30:none
 // ---------------------------------------------------------------------------
 class _ColumnIndex {
-  static const int department   = 23;
-  static const int role         = 26;
-  static const int title        = 27;
+  static const int department = 23;
+  static const int role = 26;
+  static const int title = 27;
   static const int workLocation = 29;
-  static const int supervisor   = 25;
-  static const int gender       = 15;
-  static const int nationality  = -1; // not in CSV
-  static const int country      = 16;
+  static const int supervisor = 25;
+  static const int gender = 15;
+  static const int nationality = -1; // not in CSV
+  static const int country = 16;
 }
 
 // ════════════════════════════════════════════════════════════════════════════
@@ -85,7 +91,7 @@ class CustomCsvTable extends StatelessWidget {
   /// The shared active-directory controller.
   ActiveDirectoryController get controller => AppControllers.activeDirectory;
 
-  const CustomCsvTable({Key? key}) : super(key: key);
+  const CustomCsvTable({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -97,24 +103,26 @@ class CustomCsvTable extends StatelessWidget {
       child: BlocBuilder<ActiveDirectoryController, ActiveDirectoryState>(
         bloc: AppControllers.activeDirectory,
         builder: (context, state) {
-      final controller = AppControllers.activeDirectory;
-      return controller.loadingData
-          ? const Center(child: CircleProgressMaster())
-          : Container(
-        color: AppColors.background,
-            child: Column(
+          final controller = AppControllers.activeDirectory;
+          return controller.loadingData
+              ? const Center(child: CircleProgressMaster())
+              : Container(
+                  color: AppColors.background,
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-            _buildHeader(controller, context, isVertical),
-            Expanded(
-              child: _buildTableArea(controller, context, isVertical),
-            ),
-            if (controller.isEditMode && controller.selectedIndex == 1)
-              _buildEditBottomBar(controller, context),
+                      _buildHeader(controller, context, isVertical),
+                      Expanded(
+                        child: _buildTableArea(controller, context, isVertical),
+                      ),
+                      if (controller.isEditMode &&
+                          controller.selectedIndex == 1)
+                        _buildEditBottomBar(controller, context),
                     ],
                   ),
-          );
-    }),
+                );
+        },
+      ),
     );
   }
 }

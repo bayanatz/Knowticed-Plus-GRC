@@ -2,10 +2,10 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: access_bulk_upload_preview_page.dart
-/// Purpose: "Bulk Upload" step 2 — review, fix and activate the imported rows
+/// Description: "Bulk Upload" step 2 — review, fix and activate the imported rows
 ///          (Figma 4717:36048).
-/// Author: Knowticed Plus team
-/// Created At: 21/9/2026 — bug report p.1. Toolbar, grid and pinned button
+/// Author: Amr Mesbah
+/// Created at: 21/9/2026 — bug report p.1. Toolbar, grid and pinned button
 ///          row follow the GRC assignee preview
 ///          (`assignee_bulk_upload_preview_page.dart`).
 ///
@@ -20,27 +20,28 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
-import 'package:grc_module/core/custom/1-custom_dropdown.dart';
-import 'package:grc_module/core/custom/23-custom_check_box.dart';
-import 'package:grc_module/core/custom/3-custom_dropdown_calander.dart';
-import 'package:grc_module/core/custom/50-custom_side_frame_master.dart';
-import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
-import 'package:grc_module/core/custom/5-custom_button.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/features/roles/r1_role_management/data/models/role_model.dart';
-import 'package:grc_module/features/roles/r2_user_management/domain/enums/user_access_status.dart';
-import 'package:grc_module/features/roles/r2_user_management/presentation/ui/pages/bulk_access_upload/access_bulk_upload_cubit.dart';
-import 'package:grc_module/features/roles/r2_user_management/presentation/ui/pages/bulk_access_upload/access_bulk_upload_rows.dart';
-import 'package:grc_module/features/roles/r2_user_management/presentation/ui/pages/user_management_home.dart'
+import 'package:intl/intl.dart' hide TextDirection;
+import 'package:knowticed_plus/core/custom/dropdowns/custom_dropdown.dart';
+import 'package:knowticed_plus/core/custom/inputs/custom_check_box.dart';
+import 'package:knowticed_plus/core/custom/pickers/custom_date_field.dart';
+import 'package:knowticed_plus/core/custom/navigation/custom_side_frame_master.dart';
+import 'package:knowticed_plus/core/custom/dialogs/custom_dialog_manager.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_button.dart';
+import 'package:knowticed_plus/core/custom/feedback/circle_progress.dart';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/data/models/role_model.dart';
+import 'package:knowticed_plus/features/roles/r2_user_management/domain/enums/user_access_status.dart';
+import 'package:knowticed_plus/features/roles/r2_user_management/presentation/ui/pages/bulk_access_upload/access_bulk_upload_cubit.dart';
+import 'package:knowticed_plus/features/roles/r2_user_management/presentation/ui/pages/bulk_access_upload/access_bulk_upload_rows.dart';
+import 'package:knowticed_plus/features/roles/r2_user_management/presentation/ui/pages/user_management_home.dart'
     show UserAccessStatusColor;
-import 'package:grc_module/features/roles/r2_user_management/presentation/ui/widgets/user_access_status_label.dart';
-import 'package:grc_module/features/settings/se1_profile/data/utils/localized_digits.dart';
-import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:knowticed_plus/features/roles/r2_user_management/presentation/ui/widgets/user_access_status_label.dart';
+import 'package:knowticed_plus/features/settings/se1_profile/data/utils/localized_digits.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
+import 'package:knowticed_plus/core/theme/app_animations.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
 
 /// Unscaled cell height, shared by every cell so the row reads as one line.
 const double _kCellHeight = 36;
@@ -72,36 +73,54 @@ class _AccessBulkUploadPreviewPageState
       ];
 
   String _errorText(AccessBulkError error) => switch (error) {
-        AccessBulkError.identityRequired =>
-          _tr('Employee ID or Email is required', 'رقم الموظف أو البريد مطلوب'),
-        AccessBulkError.employeeNotFound =>
-          _tr('No employee with this ID', 'لا يوجد موظف بهذا الرقم'),
-        AccessBulkError.emailNotFound =>
-          _tr('No employee with this email', 'لا يوجد موظف بهذا البريد'),
-        AccessBulkError.emailDoesNotMatchId =>
-          _tr('Email belongs to another employee', 'البريد يخص موظفًا آخر'),
-        AccessBulkError.ownAccess =>
-          _tr('You cannot change your own access', 'لا يمكنك تعديل صلاحيتك'),
-        AccessBulkError.duplicateEmployee =>
-          _tr('Employee appears in more than one row', 'الموظف مكرر في أكثر من صف'),
-        AccessBulkError.roleRequired =>
-          _tr('Role is required', 'الدور مطلوب'),
-        AccessBulkError.roleNotFound =>
-          _tr('Role not found or not active', 'الدور غير موجود أو غير نشط'),
+        AccessBulkError.identityRequired => _tr(
+            'Employee ID or Email is required',
+            'رقم الموظف أو البريد مطلوب',
+          ),
+        AccessBulkError.employeeNotFound => _tr(
+            'No employee with this ID',
+            'لا يوجد موظف بهذا الرقم',
+          ),
+        AccessBulkError.emailNotFound => _tr(
+            'No employee with this email',
+            'لا يوجد موظف بهذا البريد',
+          ),
+        AccessBulkError.emailDoesNotMatchId => _tr(
+            'Email belongs to another employee',
+            'البريد يخص موظفًا آخر',
+          ),
+        AccessBulkError.ownAccess => _tr(
+            'You cannot change your own access',
+            'لا يمكنك تعديل صلاحيتك',
+          ),
+        AccessBulkError.duplicateEmployee => _tr(
+            'Employee appears in more than one row',
+            'الموظف مكرر في أكثر من صف',
+          ),
+        AccessBulkError.roleRequired => _tr('Role is required', 'الدور مطلوب'),
+        AccessBulkError.roleNotFound => _tr(
+            'Role not found or not active',
+            'الدور غير موجود أو غير نشط',
+          ),
         AccessBulkError.dateRequired =>
           _tr('Date is required', 'التاريخ مطلوب'),
-        AccessBulkError.dateInvalid =>
-          _tr('Unreadable date', 'تاريخ غير صالح'),
-        AccessBulkError.datePast =>
-          _tr('Cannot start in the past', 'لا يمكن أن يبدأ في الماضي'),
-        AccessBulkError.revokedBeforeGranted =>
-          _tr('Must be after Access Granted', 'يجب أن يكون بعد تاريخ المنح'),
+        AccessBulkError.dateInvalid => _tr('Unreadable date', 'تاريخ غير صالح'),
+        AccessBulkError.datePast => _tr(
+            'Cannot start in the past',
+            'لا يمكن أن يبدأ في الماضي',
+          ),
+        AccessBulkError.revokedBeforeGranted => _tr(
+            'Must be after Access Granted',
+            'يجب أن يكون بعد تاريخ المنح',
+          ),
       };
 
   /// Figma's "23-04-2024". Formatted in 'en' (no locale data needed) and then
   /// given Arabic-Indic digits in Arabic, as the rest of the roles screens do.
   String _formatDate(DateTime date) => LocalizedDigits.apply(
-      DateFormat('dd-MM-yyyy', 'en').format(date), _ar ? 'ar' : 'en');
+        DateFormat('dd-MM-yyyy', 'en').format(date),
+        _ar ? 'ar' : 'en',
+      );
 
   // ── Error navigation ─────────────────────────────────────────────────────
   void _jumpToError(bool next, AccessBulkUploadRows rowsData) {
@@ -118,8 +137,11 @@ class _AccessBulkUploadPreviewPageState
     final AccessBulkRowForm row = rowsData.rows[rowIndex];
     final BuildContext? rowContext = row.key.currentContext;
     if (rowContext != null) {
-      Scrollable.ensureVisible(rowContext,
-          alignment: 0.5, duration: const Duration(milliseconds: 300));
+      Scrollable.ensureVisible(
+        rowContext,
+        alignment: 0.5,
+        duration: const Duration(milliseconds: 300),
+      );
     }
     row.focusNodes[field]?.requestFocus();
   }
@@ -131,13 +153,15 @@ class _AccessBulkUploadPreviewPageState
       if (rowsData.errorLocations.isNotEmpty) {
         await CustomDialogManager.showSuccess(
           context: context,
-          lottiePath: 'assets/lottie_assets/main_lottie_assets/lottie_rejected.json',
+          lottiePath:
+              'assets/lottie_assets/main_lottie_assets/lot_status_rejected.json',
           title: S.of(context).mustCorrectErrors,
         );
         if (mounted) _jumpToError(true, rowsData);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(S.of(context).addAtLeastOneRow)));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(S.of(context).addAtLeastOneRow)));
       }
       return;
     }
@@ -147,10 +171,13 @@ class _AccessBulkUploadPreviewPageState
 
     await CustomDialogManager.showDialogFlow(
       context: context,
-      confirmLottie: 'assets/lottie_assets/roles_lottie_assets/Edit Document.json',
+      confirmLottie:
+          'assets/lottie_assets/main_lottie_assets/lot_action_edit_document.json',
       confirmTitle: _tr('Activating Access', 'تفعيل الصلاحيات'),
-      confirmSubtitle: _tr('Are You Sure You Want To Activate These Access?',
-          'هل أنت متأكد أنك تريد تفعيل هذه الصلاحيات؟'),
+      confirmSubtitle: _tr(
+        'Are You Sure You Want To Activate These Access?',
+        'هل أنت متأكد أنك تريد تفعيل هذه الصلاحيات؟',
+      ),
       confirmNoText: S.of(context).no,
       confirmYesText: S.of(context).yes,
       onConfirm: () async {
@@ -161,10 +188,13 @@ class _AccessBulkUploadPreviewPageState
         // are reported below with the rows that failed still in the table.
         return failures.isEmpty;
       },
-      successLottie: 'assets/lottie_assets/main_lottie_assets/check.json',
+      successLottie:
+          'assets/lottie_assets/main_lottie_assets/lot_status_check.json',
       successTitle: S.of(context).activated,
-      successSubtitle: _tr('You Successfully Activated These Access',
-          'تم تفعيل هذه الصلاحيات بنجاح'),
+      successSubtitle: _tr(
+        'You Successfully Activated These Access',
+        'تم تفعيل هذه الصلاحيات بنجاح',
+      ),
       onSuccessComplete: () {
         if (navigator.mounted) navigator.pop(true);
       },
@@ -190,8 +220,9 @@ class _AccessBulkUploadPreviewPageState
             title: S.of(context).ok,
             function: () => Navigator.pop(dialogContext),
             color: AppColors.primary,
-            textStyle: StyleText.fontSize14Weight500
-                .copyWith(color: AppColors.textButton),
+            textStyle: StyleText.fontSize14Weight500.copyWith(
+              color: AppColors.textButton,
+            ),
           ),
         ],
       ),
@@ -247,13 +278,17 @@ class _AccessBulkUploadPreviewPageState
                 ),
                 SizedBox(height: 15.sp),
                 Row(
+                  textDirection: TextDirection
+                      .ltr, // X-73: Cancel left, action right in both languages
+
                   children: [
                     customButton(
                       title: S.of(context).discard,
                       function: () => Navigator.pop(context),
-                      color: AppColors.secondaryButton,
-                      textStyle: StyleText.fontSize16Weight600
-                          .copyWith(color: AppColors.blackButton),
+                      color: AppColors.darkGrey,
+                      textStyle: StyleText.fontSize16Weight600.copyWith(
+                        color: AppColors.text,
+                      ),
                     ),
                     const Spacer(),
                     customButton(
@@ -262,8 +297,9 @@ class _AccessBulkUploadPreviewPageState
                       color: rowsData.isValid && !submitting
                           ? AppColors.primary
                           : AppColors.secondaryText,
-                      textStyle: StyleText.fontSize16Weight600
-                          .copyWith(color: AppColors.textButton),
+                      textStyle: StyleText.fontSize16Weight600.copyWith(
+                        color: AppColors.textButton,
+                      ),
                     ),
                   ],
                 ),
@@ -290,10 +326,14 @@ class _AccessBulkUploadPreviewPageState
     );
   }
 
-  Widget _buildToolbar(AccessBulkUploadCubit cubit, AccessBulkUploadRows rowsData) {
+  Widget _buildToolbar(
+    AccessBulkUploadCubit cubit,
+    AccessBulkUploadRows rowsData,
+  ) {
     final int errorCount = rowsData.errorCount;
-    final TextStyle darkButtonText =
-        StyleText.fontSize14Weight500.copyWith(color: AppColors.white);
+    final TextStyle darkButtonText = StyleText.fontSize14Weight500.copyWith(
+      color: AppColors.white,
+    );
 
     return Row(
       children: [
@@ -309,24 +349,35 @@ class _AccessBulkUploadPreviewPageState
             children: [
               IconButton(
                 iconSize: 16.sp,
-                onPressed: () => _jumpToError(false, rowsData),
-                icon: Icon(_ar ? Icons.chevron_right : Icons.chevron_left,
-                    color: AppColors.text),
+                onPressed: withHaptic(
+                    () => _jumpToError(false, rowsData), HapticLevel.low),
+                icon: Icon(
+                  _ar ? Icons.chevron_right : Icons.chevron_left,
+                  color: AppColors.text,
+                ),
               ),
-              Text('${S.of(context).error}: ',
-                  style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text)),
+              Text(
+                '${S.of(context).error}: ',
+                style: StyleText.fontSize14Weight500.copyWith(
+                  color: AppColors.text,
+                ),
+              ),
               Text(
                 errorCount > 0 && _currentErrorIndex >= 0
                     ? '${_currentErrorIndex + 1}/$errorCount'
                     : '$errorCount',
                 style: StyleText.fontSize14Weight500.copyWith(
-                    color: errorCount > 0 ? AppColors.red : AppColors.text),
+                  color: errorCount > 0 ? AppColors.red : AppColors.text,
+                ),
               ),
               IconButton(
                 iconSize: 16.sp,
-                onPressed: () => _jumpToError(true, rowsData),
-                icon: Icon(_ar ? Icons.chevron_left : Icons.chevron_right,
-                    color: AppColors.text),
+                onPressed: withHaptic(
+                    () => _jumpToError(true, rowsData), HapticLevel.low),
+                icon: Icon(
+                  _ar ? Icons.chevron_left : Icons.chevron_right,
+                  color: AppColors.text,
+                ),
               ),
             ],
           ),
@@ -339,12 +390,13 @@ class _AccessBulkUploadPreviewPageState
           function: () {
             if (rowsData.selectedRows.isEmpty) {
               ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(S.of(context).selectAtLeastOneRow)));
+                SnackBar(content: Text(S.of(context).selectAtLeastOneRow)),
+              );
               return;
             }
             cubit.removeSelectedRows();
           },
-          color: AppColors.black,
+          color: AppColors.blackButton,
           textStyle: darkButtonText,
         ),
         SizedBox(width: 10.sp),
@@ -354,13 +406,16 @@ class _AccessBulkUploadPreviewPageState
           contentHorizontalPadding: 12.sp,
           function: () {
             if (rowsData.selectedRows.length != 1) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text(S.of(context).selectExactlyOneRowToDuplicate)));
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(S.of(context).selectExactlyOneRowToDuplicate),
+                ),
+              );
               return;
             }
             cubit.duplicateSelectedRow();
           },
-          color: AppColors.black,
+          color: AppColors.blackButton,
           textStyle: darkButtonText,
         ),
         SizedBox(width: 10.sp),
@@ -369,7 +424,7 @@ class _AccessBulkUploadPreviewPageState
           wrapContent: true,
           contentHorizontalPadding: 12.sp,
           function: cubit.addRow,
-          color: AppColors.black,
+          color: AppColors.blackButton,
           textStyle: darkButtonText,
         ),
       ],
@@ -397,7 +452,9 @@ class _AccessBulkUploadPreviewPageState
                   label,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
+                  style: StyleText.fontSize14Weight500.copyWith(
+                    color: AppColors.text,
+                  ),
                 ),
               ),
             ),
@@ -406,7 +463,11 @@ class _AccessBulkUploadPreviewPageState
     );
   }
 
-  Widget _buildRow(AccessBulkUploadCubit cubit, AccessBulkUploadRows rowsData, int index) {
+  Widget _buildRow(
+    AccessBulkUploadCubit cubit,
+    AccessBulkUploadRows rowsData,
+    int index,
+  ) {
     final AccessBulkRowForm row = rowsData.rows[index];
     final List<(String, double)> columns = _columns;
     double w(int column) => columns[column].$2.sp;
@@ -433,8 +494,11 @@ class _AccessBulkUploadPreviewPageState
             child: Center(
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
+                onTapDown: (_) => HapticController.low(),
                 onTap: () => cubit.toggleRowSelected(index),
-                child: CustomCheckBox(isSelected: rowsData.selectedRows.contains(index)),
+                child: CustomCheckBox(
+                  isSelected: rowsData.selectedRows.contains(index),
+                ),
               ),
             ),
           ),
@@ -473,7 +537,8 @@ class _AccessBulkUploadPreviewPageState
                 value: row.desiredRole,
                 // An unmatched file value is shown back as the hint, so the
                 // user sees what the sheet said while picking the fix.
-                hint: row.rawRole.isNotEmpty ? row.rawRole : S.of(context).select,
+                hint:
+                    row.rawRole.isNotEmpty ? row.rawRole : S.of(context).select,
                 onChanged: (String? value) => cubit.setRole(index, value),
                 errorText: _maybeError(row.errors[AccessBulkField.desiredRole]),
                 fillColor: AppColors.background,
@@ -485,13 +550,16 @@ class _AccessBulkUploadPreviewPageState
             width: w(4),
             child: Focus(
               focusNode: row.focusNodes[AccessBulkField.accessGranted],
-              child: CustomDropdownCalendar(
+              child: CustomDateField(
                 value: row.accessGranted,
                 hint: row.rawGranted.isNotEmpty ? row.rawGranted : 'dd-mm-yyyy',
                 firstDate: today,
                 dateFormatter: _formatDate,
-                onChanged: (DateTime? date) => cubit.setAccessGranted(index, date),
-                errorText: _maybeError(row.errors[AccessBulkField.accessGranted]),
+                onChanged: (DateTime? date) =>
+                    cubit.setAccessGranted(index, date),
+                errorText: _maybeError(
+                  row.errors[AccessBulkField.accessGranted],
+                ),
                 fillColor: AppColors.background,
                 height: _kCellHeight,
               ),
@@ -501,13 +569,16 @@ class _AccessBulkUploadPreviewPageState
             width: w(5),
             child: Focus(
               focusNode: row.focusNodes[AccessBulkField.accessRevoked],
-              child: CustomDropdownCalendar(
+              child: CustomDateField(
                 value: row.accessRevoked,
                 hint: row.rawRevoked.isNotEmpty ? row.rawRevoked : 'dd-mm-yyyy',
                 firstDate: row.accessGranted ?? today,
                 dateFormatter: _formatDate,
-                onChanged: (DateTime? date) => cubit.setAccessRevoked(index, date),
-                errorText: _maybeError(row.errors[AccessBulkField.accessRevoked]),
+                onChanged: (DateTime? date) =>
+                    cubit.setAccessRevoked(index, date),
+                errorText: _maybeError(
+                  row.errors[AccessBulkField.accessRevoked],
+                ),
                 fillColor: AppColors.background,
                 height: _kCellHeight,
               ),
@@ -534,7 +605,11 @@ class _AccessBulkUploadPreviewPageState
         ),
       );
 
-  Widget _readOnlyCell({required double width, required String text, Color? color}) {
+  Widget _readOnlyCell({
+    required double width,
+    required String text,
+    Color? color,
+  }) {
     return _cell(
       width: width,
       child: Container(
@@ -549,8 +624,9 @@ class _AccessBulkUploadPreviewPageState
           text,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: StyleText.fontSize12Weight400
-              .copyWith(color: color ?? AppColors.secondaryText),
+          style: StyleText.fontSize12Weight400.copyWith(
+            color: color ?? AppColors.secondaryText,
+          ),
         ),
       ),
     );
@@ -563,7 +639,8 @@ class _AccessBulkUploadPreviewPageState
     required AccessBulkError? error,
     required VoidCallback onChanged,
   }) {
-    final Color borderColor = error != null ? AppColors.red : Colors.transparent;
+    final Color borderColor =
+        error != null ? AppColors.red : Colors.transparent;
     OutlineInputBorder border(Color color) => OutlineInputBorder(
           borderRadius: BorderRadius.circular(4.r),
           borderSide: BorderSide(color: color),
@@ -592,7 +669,9 @@ class _AccessBulkUploadPreviewPageState
                 : null,
             border: border(borderColor),
             enabledBorder: border(borderColor),
-            focusedBorder: border(error != null ? AppColors.red : AppColors.primary),
+            focusedBorder: border(
+              error != null ? AppColors.red : AppColors.primary,
+            ),
           ),
         ),
       ),

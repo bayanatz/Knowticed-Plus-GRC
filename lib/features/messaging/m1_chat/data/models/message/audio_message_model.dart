@@ -1,14 +1,16 @@
 /// Module: messaging / chat / data/models/message/audio_message_model.dart
+library;
+
 import 'dart:async';
 
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:audioplayers/audioplayers.dart' as ap;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_timer_countdown/flutter_timer_countdown.dart';
-import 'package:grc_module/core/helper/main_helper/extensions.dart';
+import 'package:knowticed_plus/core/helper/extensions.dart';
 
-import 'package:grc_module/core/services/message_module/audio_playback_service.dart';
-import 'package:grc_module/core/services/message_module/audio_record_service.dart';
+import 'package:knowticed_plus/features/messaging/helpers/services/audio_playback_service.dart';
+import 'package:knowticed_plus/features/messaging/helpers/services/audio_record_service.dart';
 
 // Date: 2/9/2024
 // By: Youssef Ashraf, Nada Mohamed
@@ -262,8 +264,8 @@ class AudioMessageModel {
     );
   }
 
-  static const String AUDIO_PATH = "Media_Link";
-  static const String DURATION = "Duration";
+  static const String kAudioPath = "Media_Link";
+  static const String kDuration = "Duration";
 
   // KNOWN ISSUE (pre-existing): the duration is written in whole MINUTES, so
   // every voice note shorter than 60s round-trips as Duration.zero — which is
@@ -273,15 +275,15 @@ class AudioMessageModel {
   // Desktop playback sidesteps it by asking the player for the real duration.
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      DURATION: duration.inMinutes,
-      AUDIO_PATH: audioPath,
+      kDuration: duration.inMinutes,
+      kAudioPath: audioPath,
     };
   }
 
   factory AudioMessageModel.fromMap(Map<String, dynamic> map) {
     return AudioMessageModel(
-      audioPath: map[AUDIO_PATH],
-      duration: Duration(minutes: map[DURATION] as int),
+      audioPath: map[kAudioPath],
+      duration: Duration(minutes: map[kDuration] as int),
     );
   }
 }

@@ -4,15 +4,14 @@
 /// Purpose: Single connection entity — messaging Connections sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+library;
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-
-import 'package:grc_module/core/enums/message_module/message_types.dart';
-import 'package:grc_module/core/helper/message_module/main_helper/localized_text_helper.dart';
-import '../../../../../core/helper/message_module/interface/entity/base_messaging_interface_parameters.dart';
-import '../../../../../core/helper/message_module/interface/entity/user_category.dart';
-import '../../../../../core/helper/message_module/interface/entity/user_connection_interface_parameters.dart';
-import '../../../m4_messaging_home/domain/entities/chat_type_entity.dart';
+import 'package:knowticed_plus/features/messaging/helpers/enums/message_types.dart';
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/main_helper/localized_text_helper.dart';
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/interface/entity/base_messaging_interface_parameters.dart';
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/interface/entity/user_category.dart';
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/interface/entity/user_connection_interface_parameters.dart';
+import 'package:knowticed_plus/features/messaging/m4_messaging_home/domain/entities/chat_type_entity.dart';
 
 class SingleConnectionEntity extends ChatTypeEntity {
   String connectionId;
@@ -54,7 +53,7 @@ class SingleConnectionEntity extends ChatTypeEntity {
     this.isProfileMissing = false,
   });
 
-  static fromBaseMessagingInterface(
+  static SingleConnectionEntity fromBaseMessagingInterface(
       UserConnectionInterfaceParameters userConnection, String currentUserId) {
     return SingleConnectionEntity(
       connectionId: '$currentUserId.${userConnection.userId}',
@@ -78,7 +77,7 @@ class SingleConnectionEntity extends ChatTypeEntity {
     );
   }
 
-  toBaseMessagingInterface() {
+  BaseMessagingInterfaceParameters toBaseMessagingInterface() {
     return BaseMessagingInterfaceParameters(
       primaryLanguageName: primaryLanguageName,
       secondaryLanguageName: secondaryLanguageName,
@@ -96,7 +95,7 @@ class SingleConnectionEntity extends ChatTypeEntity {
       primaryLanguageText: primaryLanguageSubInfo!);
 
   String get name => LocalizedTextHelper.formatString(
-    secondaryLanguageText: secondaryLanguageName,
-    primaryLanguageText: primaryLanguageName,
-  );
+        secondaryLanguageText: secondaryLanguageName,
+        primaryLanguageText: primaryLanguageName,
+      );
 }

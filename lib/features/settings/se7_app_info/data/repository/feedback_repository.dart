@@ -10,16 +10,17 @@
 /// The raw Firestore error is converted to a [Failure] here so the controller
 /// never sees a `FirebaseException` and cannot interpolate it into a
 /// user-facing message.
+library;
 
 import 'dart:typed_data';
 
 import 'package:dartz/dartz.dart';
 
-import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/features/settings/se7_app_info/data/data_source/remote_data_source/feedback_attachment_remote_data_source.dart';
-import 'package:grc_module/features/settings/se7_app_info/data/data_source/remote_data_source/feedback_remote_data_source.dart';
-import 'package:grc_module/features/settings/se7_app_info/domain/base_repository/feedback_base_repository.dart';
-import 'package:grc_module/features/settings/se7_app_info/domain/entities/app_feedback.dart';
+import 'package:knowticed_plus/core/network/failure_model.dart';
+import 'package:knowticed_plus/features/settings/se7_app_info/data/data_source/remote_data_source/feedback_attachment_remote_data_source.dart';
+import 'package:knowticed_plus/features/settings/se7_app_info/data/data_source/remote_data_source/feedback_remote_data_source.dart';
+import 'package:knowticed_plus/features/settings/se7_app_info/domain/base_repository/feedback_base_repository.dart';
+import 'package:knowticed_plus/features/settings/se7_app_info/domain/entities/app_feedback.dart';
 
 class FeedbackRepository implements FeedbackBaseRepository {
   FeedbackRepository({

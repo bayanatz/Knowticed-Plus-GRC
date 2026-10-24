@@ -6,7 +6,7 @@
 /// Author: Knowticed Plus team
 /// Created at: 11/8/2026
 
-part of './emergency_contact_controller.dart';
+part of 'emergency_contact_controller.dart';
 
 enum EmergencyContactStatus { initial, loading, success, failure }
 

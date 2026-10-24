@@ -5,8 +5,8 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../../../m1_chat/data/models/chat/chat_model.dart';
-import '../tiles/common_group_tile.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/chat/chat_model.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/presentation/ui/widgets/tiles/common_group_tile.dart';
 
 class CommonGroupsListView extends StatelessWidget {
   const CommonGroupsListView({

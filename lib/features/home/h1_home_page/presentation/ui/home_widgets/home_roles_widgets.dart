@@ -47,18 +47,18 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:grc_module/core/helper/main_helper/localized_number.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/home_component_model.dart';
-import 'package:grc_module/features/home/h1_home_page/presentation/controller/roles_home_stats_cubit.dart';
-import 'package:grc_module/features/home/h1_home_page/presentation/controller/roles_home_stats_state.dart';
-import 'package:grc_module/features/home/h1_home_page/presentation/ui/home_widgets/home_widget_shell.dart';
-import 'package:grc_module/features/onboarding/o3_authentication/domain/enums/employee_status_enum.dart';
-import 'package:grc_module/features/onboarding/o3_authentication/presentation/ui/theme/employee_status_style.dart';
-import 'package:grc_module/features/roles/r1_role_management/domain/enums/role_status.dart';
-import 'package:grc_module/features/roles/r2_user_management/domain/enums/user_access_status.dart';
-import 'package:grc_module/features/roles/r2_user_management/presentation/ui/widgets/user_access_status_label.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/core/helper/localized_number.dart';
+import 'package:knowticed_plus/core/helper/access/modules_enum.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/home_component_model.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/presentation/controller/roles_home_stats_cubit.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/presentation/controller/roles_home_stats_state.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/home_widgets/home_widget_shell.dart';
+import 'package:knowticed_plus/features/onboarding/o3_authentication/domain/enums/employee_status_enum.dart';
+import 'package:knowticed_plus/features/onboarding/o3_authentication/presentation/ui/theme/employee_status_style.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/role_status.dart';
+import 'package:knowticed_plus/features/roles/r2_user_management/domain/enums/user_access_status.dart';
+import 'package:knowticed_plus/features/roles/r2_user_management/presentation/ui/widgets/user_access_status_label.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
 /// The module glyph in every Roles card header — the yellow people-and-gear
 /// mark Figma draws top-right on all four.
@@ -77,8 +77,8 @@ class _RolesStatCard extends StatelessWidget {
   /// while loading — [_RolesStatCard] passes the placeholder through
   /// [countOf] rather than swapping the whole card for a spinner, so the
   /// layout does not jump when the figures land.
-  final List<HomeStatTile> Function(BuildContext context, String Function(int) format)
-      tiles;
+  final List<HomeStatTile> Function(
+      BuildContext context, String Function(int) format) tiles;
 
   const _RolesStatCard({
     required this.title,
@@ -104,6 +104,7 @@ class _RolesStatCard extends StatelessWidget {
             ready ? LocalizedNumber.of(context, value) : '—';
 
         return HomeWidgetCard(
+          hugContent: true,
           title: title,
           icon: _kRolesIcon,
           width: width,
@@ -113,8 +114,6 @@ class _RolesStatCard extends StatelessWidget {
     );
   }
 }
-
-
 
 /// Figma 7488:10062 — "Role Management", two grid columns.
 class RoleManagementWidget extends StatelessWidget {

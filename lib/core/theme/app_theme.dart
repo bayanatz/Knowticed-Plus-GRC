@@ -2,9 +2,11 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: app_theme.dart
-/// Purpose: Declares `AppTheme`.
-/// Author: Knowticed Plus team
+/// Description: Declares `AppTheme`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 // Date: 1/8/2024
 // By: Youssef Ashraf, Mohamed Ashraf, Nada Mohammed
@@ -12,19 +14,36 @@
 // Objectives: This file is responsible for providing the app themes that is used in the app.
 
 import 'package:flutter/material.dart';
+import 'package:knowticed_plus/core/theme/app_animations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-import 'package:grc_module/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
 import 'package:get_storage/get_storage.dart';
-import './app_font_weights.dart';
+import 'package:knowticed_plus/core/theme/app_font_weights.dart';
+
+part 'app_theme/style_text.dart';
 
 abstract class AppTheme {
   static bool isDark = false;
 
+  /// Owner rule 23/10/2026 ("no hovers in anything"): nothing in the app reacts
+  /// to the mouse resting on it. The hovered state paints nothing; every other
+  /// state (pressed, focused, selected) keeps the framework's own overlay.
+  static final WidgetStateProperty<Color?> _noHoverOverlay =
+      WidgetStateProperty.resolveWith<Color?>(
+    (Set<WidgetState> states) =>
+        states.contains(WidgetState.hovered) ? Colors.transparent : null,
+  );
+  static final ButtonStyle _noHoverButton =
+      ButtonStyle(overlayColor: _noHoverOverlay);
+
+  // FIXED 17/10/2026: each theme reads ITS OWN colour map. These are built
+  // once (static final); reading the active `AppColors` map instead baked the
+  // light background into the dark theme when it was first built during the
+  // switch to dark (pages showed light behind dark cards).
   static final ThemeData lightTheme = ThemeData.light().copyWith(
     textTheme: TextTheme(
-
       headlineMedium: StyleText.fontSize20Weight500,
       headlineSmall: StyleText.fontSize16Weight500,
       titleLarge: StyleText.fontSize18Weight500,
@@ -40,17 +59,28 @@ abstract class AppTheme {
       displayMedium: StyleText.fontSize20Weight500,
       displaySmall: StyleText.fontSize16Weight500,
     ),
-    splashFactory: NoSplash.splashFactory,  // ADD THIS
-    highlightColor: Colors.transparent,     // ADD THIS
-    splashColor: Colors.transparent,        // ADD THIS
-    primaryColor: AppColors.primary,
-    scaffoldBackgroundColor: AppColors.background,
+    splashFactory: NoSplash.splashFactory, // ADD THIS
+    hoverColor: Colors.transparent,
+    textButtonTheme: TextButtonThemeData(style: _noHoverButton),
+    elevatedButtonTheme: ElevatedButtonThemeData(style: _noHoverButton),
+    filledButtonTheme: FilledButtonThemeData(style: _noHoverButton),
+    outlinedButtonTheme: OutlinedButtonThemeData(style: _noHoverButton),
+    iconButtonTheme: IconButtonThemeData(style: _noHoverButton),
+    checkboxTheme: CheckboxThemeData(overlayColor: _noHoverOverlay),
+    radioTheme: RadioThemeData(overlayColor: _noHoverOverlay),
+    switchTheme: SwitchThemeData(overlayColor: _noHoverOverlay),
+    highlightColor: Colors.transparent, // ADD THIS
+    splashColor: Colors.transparent, // ADD THIS
+    primaryColor: lightThemeColors['primary']!,
+    // X-15 / X-72: every page slides in over 400 ms.
+    pageTransitionsTheme: kpPageTransitionsTheme,
+    scaffoldBackgroundColor: lightThemeColors['background']!,
 
     colorScheme: ColorScheme.light(
-      primary: AppColors.secondaryPrimary,
+      primary: lightThemeColors['secondaryPrimary']!,
       onPrimary: Colors.white,
-      outlineVariant: AppColors.lightGrey,
-      onSurface: AppColors.inverseBase,
+      outlineVariant: lightThemeColors['lightGrey']!,
+      onSurface: lightThemeColors['secondaryBlack']!,
     ),
     buttonTheme: ButtonThemeData(
       shape: RoundedRectangleBorder(
@@ -59,11 +89,12 @@ abstract class AppTheme {
     ),
     datePickerTheme: DatePickerThemeData(
       headerHeadlineStyle: StyleText.fontSize23Weight400,
-      weekdayStyle: StyleText.fontSize12Weight600.copyWith(color: AppColors.darkGrey),
-      headerBackgroundColor: AppColors.secondaryPrimary,
+      weekdayStyle: StyleText.fontSize12Weight600
+          .copyWith(color: lightThemeColors['darkGrey']!),
+      headerBackgroundColor: lightThemeColors['secondaryPrimary']!,
       headerForegroundColor: Colors.white,
-      backgroundColor: AppColors.card,
-      todayBackgroundColor: WidgetStatePropertyAll(AppColors.card),
+      backgroundColor: lightThemeColors['card']!,
+      todayBackgroundColor: WidgetStatePropertyAll(lightThemeColors['card']!),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(8.r)),
       ),
@@ -71,9 +102,9 @@ abstract class AppTheme {
       dayBackgroundColor: WidgetStateProperty.resolveWith(
         (states) {
           if (states.contains(WidgetState.selected)) {
-            return AppColors.secondaryPrimary;
+            return lightThemeColors['secondaryPrimary']!;
           }
-          return AppColors.card;
+          return lightThemeColors['card']!;
         },
       ),
       dayForegroundColor: WidgetStateProperty.resolveWith(
@@ -81,17 +112,17 @@ abstract class AppTheme {
           if (states.contains(WidgetState.selected)) {
             return Colors.white;
           } else if (states.contains(WidgetState.disabled)) {
-            return AppColors.lightGrey;
+            return lightThemeColors['lightGrey']!;
           }
-          return AppColors.text;
+          return lightThemeColors['text']!;
         },
       ),
       yearBackgroundColor: WidgetStateProperty.resolveWith(
         (states) {
           if (states.contains(WidgetState.selected)) {
-            return AppColors.secondaryPrimary;
+            return lightThemeColors['secondaryPrimary']!;
           }
-          return AppColors.card;
+          return lightThemeColors['card']!;
         },
       ),
       yearForegroundColor: WidgetStateProperty.resolveWith(
@@ -99,23 +130,23 @@ abstract class AppTheme {
           if (states.contains(WidgetState.selected)) {
             return Colors.white;
           }
-          return AppColors.text;
+          return lightThemeColors['text']!;
         },
       ),
-      dividerColor: AppColors.secondaryPrimary,
+      dividerColor: lightThemeColors['secondaryPrimary']!,
       dayShape: WidgetStatePropertyAll(
         RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.r),
         ),
       ),
       todayForegroundColor: WidgetStateProperty.all(
-        AppColors.secondaryPrimary,
+        lightThemeColors['secondaryPrimary']!,
       ),
     ),
   );
 
   static final ThemeData darkTheme = ThemeData.dark().copyWith(
-    primaryColor: AppColors.primary,
+    primaryColor: darkThemeColors['primary']!,
     textTheme: TextTheme(
       headlineMedium: StyleText.fontSize20Weight500,
       headlineSmall: StyleText.fontSize16Weight500,
@@ -132,15 +163,26 @@ abstract class AppTheme {
       displayMedium: StyleText.fontSize20Weight500,
       displaySmall: StyleText.fontSize16Weight500,
     ),
-    scaffoldBackgroundColor: AppColors.background,
-    splashFactory: NoSplash.splashFactory,  // ADD THIS
-    highlightColor: Colors.transparent,     // ADD THIS
-    splashColor: Colors.transparent,        // ADD THIS
+    // X-15 / X-72: every page slides in over 400 ms.
+    pageTransitionsTheme: kpPageTransitionsTheme,
+    scaffoldBackgroundColor: darkThemeColors['background']!,
+    splashFactory: NoSplash.splashFactory, // ADD THIS
+    hoverColor: Colors.transparent,
+    textButtonTheme: TextButtonThemeData(style: _noHoverButton),
+    elevatedButtonTheme: ElevatedButtonThemeData(style: _noHoverButton),
+    filledButtonTheme: FilledButtonThemeData(style: _noHoverButton),
+    outlinedButtonTheme: OutlinedButtonThemeData(style: _noHoverButton),
+    iconButtonTheme: IconButtonThemeData(style: _noHoverButton),
+    checkboxTheme: CheckboxThemeData(overlayColor: _noHoverOverlay),
+    radioTheme: RadioThemeData(overlayColor: _noHoverOverlay),
+    switchTheme: SwitchThemeData(overlayColor: _noHoverOverlay),
+    highlightColor: Colors.transparent, // ADD THIS
+    splashColor: Colors.transparent, // ADD THIS
     colorScheme: ColorScheme.dark(
-      primary: AppColors.secondaryPrimary,
+      primary: darkThemeColors['secondaryPrimary']!,
       onPrimary: Colors.white,
-      outlineVariant: AppColors.lightGrey,
-      onSurface: AppColors.inverseBase,
+      outlineVariant: darkThemeColors['lightGrey']!,
+      onSurface: darkThemeColors['secondaryBlack']!,
     ),
     buttonTheme: ButtonThemeData(
       shape: RoundedRectangleBorder(
@@ -149,11 +191,12 @@ abstract class AppTheme {
     ),
     datePickerTheme: DatePickerThemeData(
       headerHeadlineStyle: StyleText.fontSize23Weight400,
-      weekdayStyle: StyleText.fontSize12Weight600.copyWith(color: AppColors.darkGrey),
-      headerBackgroundColor: AppColors.secondaryPrimary,
+      weekdayStyle: StyleText.fontSize12Weight600
+          .copyWith(color: darkThemeColors['darkGrey']!),
+      headerBackgroundColor: darkThemeColors['secondaryPrimary']!,
       headerForegroundColor: Colors.white,
-      backgroundColor: AppColors.card,
-      todayBackgroundColor: WidgetStatePropertyAll(AppColors.card),
+      backgroundColor: darkThemeColors['card']!,
+      todayBackgroundColor: WidgetStatePropertyAll(darkThemeColors['card']!),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(8.r)),
       ),
@@ -161,9 +204,9 @@ abstract class AppTheme {
       dayBackgroundColor: WidgetStateProperty.resolveWith(
         (states) {
           if (states.contains(WidgetState.selected)) {
-            return AppColors.secondaryPrimary;
+            return darkThemeColors['secondaryPrimary']!;
           }
-          return AppColors.white;
+          return darkThemeColors['white']!;
         },
       ),
       dayForegroundColor: WidgetStateProperty.resolveWith(
@@ -171,17 +214,17 @@ abstract class AppTheme {
           if (states.contains(WidgetState.selected)) {
             return Colors.white;
           } else if (states.contains(WidgetState.disabled)) {
-            return AppColors.lightGrey;
+            return darkThemeColors['lightGrey']!;
           }
-          return AppColors.black;
+          return darkThemeColors['black']!;
         },
       ),
       yearBackgroundColor: WidgetStateProperty.resolveWith(
         (states) {
           if (states.contains(WidgetState.selected)) {
-            return AppColors.secondaryPrimary;
+            return darkThemeColors['secondaryPrimary']!;
           }
-          return AppColors.card;
+          return darkThemeColors['card']!;
         },
       ),
       yearForegroundColor: WidgetStateProperty.resolveWith(
@@ -189,17 +232,17 @@ abstract class AppTheme {
           if (states.contains(WidgetState.selected)) {
             return Colors.white;
           }
-          return AppColors.text;
+          return darkThemeColors['text']!;
         },
       ),
-      dividerColor: AppColors.secondaryPrimary,
+      dividerColor: darkThemeColors['secondaryPrimary']!,
       dayShape: WidgetStatePropertyAll(
         RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.r),
         ),
       ),
       todayForegroundColor: WidgetStateProperty.all(
-        AppColors.secondaryPrimary,
+        darkThemeColors['secondaryPrimary']!,
       ),
     ),
   );
@@ -207,48 +250,39 @@ abstract class AppTheme {
   // ****************** DEFINE COLOR PALETTE HERE ******************
   static Map<String, Color> lightThemeColors = {
     'greyDark': const Color(0xff8D8D8D),
-    'pending': const Color(0xffFF814A),
     'switchOff': const Color(0xffe9e9eb),
 
     'evenRowColor': const Color(0xFFf1f1f1),
     'secondaryPrimary': const Color(0xffE5B800),
     'primary': const Color(0xffFFDE59),
-    'inputColor': const Color(0xff8D8D8D),
     'grey': const Color(0xffD9D9D9),
     'lightGrey': const Color(0xffC3C3C3),
     'moreLightGrey': const Color(0xffEFEFEF),
     'mediumGrey': const Color(0xffA6A6A6),
-    'darkGrey': const Color(0xff858585),
+    'darkGrey': const Color(0xffD9D9D9),
     'blackShadow': const Color.fromRGBO(0, 0, 0, 0.4),
     'green': const Color(0xff008000),
     'red': const Color(0xffDF1C1C),
     'header': const Color(0xff2D2D2D),
-    'warming': const Color(0xffFF814A),
     'blue': const Color(0xff1F78D1),
     'card': Colors.white,
-    'field': Colors.white,
     'text': const Color(0xff2D2D2D),
     'lightPrimary': const Color(0xFFffe993),
 
     'base': Colors.white,
-    'inverseBase': const Color(0xff797979),
-    'dropShadow': const Color(0xffC3C3C3).withOpacity(0.5),
     'borderCard': const Color(0xffFFFFFF),
-    'message': const Color(0xffEFEFEF),
-    'messageText': const Color(0xff858585),
     'border': const Color(0xffD9D9D9),
     'background': const Color(0xffF5F5F5),
-    'appBar': const Color(0xffF5F5F5),
+    // Restored 18/10/2026: the colour merge removed this key but kept
+    // AppColors.colorWhiteDark, so 21 screens hit a null check (red screen).
+    'whiteDark': const Color(0xFFF2F2F2),
     'indicator': const Color(0xffE9E9E9),
-    'starredCard': Colors.white,
     'black': const Color(0xff2D2D2D),
     'secondaryBlack': const Color(0xff797979),
     'whiteShadow': const Color(0xD9D9D9E0),
     'darkWhiteShadow': const Color(0x9E9E9E9E),
     'white': Colors.white,
     'darkWhite': const Color(0xffF2F2F2),
-    'dialog': Colors.white,
-    'button': const Color(0xffF2F2F2),
     'icon': const Color(0xff2D2D2D),
     'chatBackground': const Color(0xffF5F5F5),
     'chatField': Colors.white,
@@ -260,8 +294,6 @@ abstract class AppTheme {
     'darkRed': const Color(0xff8E1616),
     "lightRed": const Color(0xffFF0000),
 
-    'yellow': const Color(0xffE5B800),
-    'fieldBorder': const Color(0xffE5E5ED),
     'oddRowColor': Colors.white,
     'secondaryText': const Color(0xff797979),
     'spanText': const Color(0xff797979),
@@ -272,25 +304,18 @@ abstract class AppTheme {
 // Stays the same in dark theme
     'borderGrey': const Color(0xffB5B4B4), // Stays the same in dark theme
     'darkerGrey': const Color(0xffcccccc), // Stays the same in dark theme
-    'unBlock': const Color(0xFF4BB609),
     'navyBlue': const Color(0xFF768396),
 
     'greyBack': const Color(0xFFBCCCCC),
     'darkBackGround': const Color(0xFF545454),
     'block': const Color(0xFFDF0C0C),
-    'warning': const Color(0xFFFF814A),
-    'delete': const Color(0xFFDF1C1C),
     'expiringSoon': const Color(0xFF991010),
     'onboardingDotInactive': const Color(0x332D2D2D),
-    'differentGrey': const Color(0xFF9E9E9E),
-    'barrierColor': const Color(0XFFD9D9D9).withOpacity(.9),
+    'barrierColor': const Color(0XFFD9D9D9).withValues(alpha: .9),
     'totalBlack': const Color(0xFF000000),
-    'whiteDark': Color(0xFFF2F2F2),
-    'crimson': const Color(0xFFDF0C0C),
     'whiteDashboardTable': const Color(0xFFF1F1F1),
     'darkDashboardTable': const Color(0xFF28282B),
     'greyIcon': const Color(0xffA6A6A6),
-    'drawerColor': const Color(0xFF797979),
     'blackButton': Colors.black
   };
 
@@ -302,7 +327,6 @@ abstract class AppTheme {
     'evenRowColor': const Color(0xFF545454),
     'oddRowColor': const Color(0xFF28282B),
     'primary': const Color(0xffFFDE59),
-    'inputColor': const Color(0xff8D8D8D),
     'grey': const Color(0xffD9D9D9),
     'lightGrey': const Color(0xffC3C3C3),
     'moreLightGrey': const Color(0xffEFEFEF),
@@ -312,25 +336,18 @@ abstract class AppTheme {
     'green': const Color(0xff008000),
     'red': const Color(0xffDF1C1C),
     'header': const Color(0xFF171717),
-    'warming': const Color(0xffFF814A),
     'blue': const Color(0xff1F78D1),
     'card': const Color(0xff4B4B4B),
-    'field': const Color(0xff4B4B4B),
     'text': Colors.white,
     'base': const Color(0xff797979),
-    'inverseBase': Colors.white,
-    'dropShadow': const Color(0xffC3C3C3).withOpacity(0.5),
     'borderCard': const Color(0xffFFFFFF),
-    'message': const Color(0xffEFEFEF),
-    'messageText': const Color(0xff858585),
     'border': Colors.transparent,
     'navyBlue': const Color(0xFF768396),
     'switchOff': const Color(0xffe9e9eb),
 
     'background': const Color(0xff2D2D2D),
-    'appBar': const Color(0xff2D2D2D),
+    'whiteDark': const Color(0xFFF2F2F2), // restored 18/10/2026 (see light map)
     'indicator': const Color(0xffE9E9E9),
-    'starredCard': Colors.white,
     'black': const Color(0xff2D2D2D),
     'secondaryBlack': Colors.white,
     'whiteShadow': const Color(0xD9D9D9E0),
@@ -339,8 +356,6 @@ abstract class AppTheme {
     'darkWhiteShadow': const Color(0x9E9E9E9E),
     'white': Colors.white,
     'darkWhite': const Color(0xffF2F2F2),
-    'dialog': const Color(0xff2D2D2D),
-    'button': const Color(0xD9D9D9E0),
     'icon': const Color(0xD9D9D9E0),
     'chatBackground': const Color(0xff4B4B4B),
     'chatField': const Color(0xff2D2D2D),
@@ -349,8 +364,6 @@ abstract class AppTheme {
     // Lighter than the light-theme value so it still reads against the
     // dark background, while staying clearly darker than 'red'.
     'darkRed': const Color(0xffB03030),
-    'yellow': const Color(0xffE5B800),
-    'fieldBorder': const Color(0xff797979),
     'secondaryText': const Color(0xffcccccc),
     'spanText': const Color(0xffd3d3d3),
     'secondaryButton': const Color(0xff858585),
@@ -359,34 +372,25 @@ abstract class AppTheme {
     'liteBlue': const Color(0xff1877F2), // Same as light theme
     'borderGrey': const Color(0xffB5B4B4), // Same as light theme
     'darkerGrey': const Color(0xffcccccc), // Same as light theme
-    'crimson': const Color(0xFFDF0C0C),
     'whiteDashboardTable': const Color(0xFFF1F1F1),
     'darkDashboardTable': const Color(0xFF28282B),
-    'drawerColor': const Color(0xFFCCCCCC),
     'blackButton': Colors.white,
     // Keys present in lightThemeColors that must also exist in dark to prevent null crashes:
     'barrierColor': const Color(0xFFD9D9D9),
-    'pending': const Color(0xffFF814A),
     'totalBlack': const Color(0xFF000000),
-    'whiteDark': const Color(0xFFF2F2F2),
     'block': const Color(0xFFDF0C0C),
-    'warning': const Color(0xffFF814A),
-    'delete': const Color(0xFFDF1C1C),
     'expiringSoon': const Color(0xFF991010),
     // FIXED 22/8/2026: was 0xFFF2F2F2 — an almost-white dot on the dark
     // 0xff2D2D2D background, so in dark mode the inactive indicators read
     // brighter than the active one. Matches `darkGrey`, the palette's neutral.
     'onboardingDotInactive': const Color(0xff858585),
-    'differentGrey': const Color(0xFF9E9E9E),
-    'unBlock': const Color(0xFF4BB609),
     'greyBack': const Color(0xFFBCCCCC),
     'darkBackGround': const Color(0xFF545454),
     'lightRed': const Color(0xffFF0000),
   };
 
   static void setCurrentThemeColors() {
-    AppColors.currentThemeColors =
-        isDark ?? false ? darkThemeColors : lightThemeColors;
+    AppColors.currentThemeColors = isDark ? darkThemeColors : lightThemeColors;
     Get.forceAppUpdate();
   }
 
@@ -409,46 +413,22 @@ abstract class AppTheme {
   }
 
   static void interfaceInitTheme(
-      Color primaryColor, Color secondaryColor, bool isDarkMode) =>
+          Color primaryColor, Color secondaryColor, bool isDarkMode) =>
       initTheme(primaryColor, secondaryColor, isDarkMode);
 
   static void interfaceToggleTheme() => toggleTheme();
 
   static void toggleTheme() async {
-    isDark = !isDark!;
+    isDark = !isDark;
     setCurrentThemeColors();
   }
 
-  static Color contrastColor() {
-    final double primaryLuminance = AppColors.primary.computeLuminance();
-    final double secondaryPrimaryLuminance = AppColors.secondaryPrimary.computeLuminance();
-
-
-    // Check if both colors are light or dark
-    if (primaryLuminance > 0.5 && secondaryPrimaryLuminance > 0.5) {
-      return AppColors.black; // Return black for light colors
-    } else if (primaryLuminance <= 0.5 && secondaryPrimaryLuminance <= 0.5) {
-      return AppColors.white; // Return white for dark colors
-    } else {
-      if (primaryLuminance > 0.5) return AppColors.black;
-      return AppColors.white; // Change this to the desired contrasting color
-    }
-  }
-
-  static Color secondaryPrimaryText() {
-    final double secondaryPrimaryLuminance =
-        AppColors.secondaryPrimary.computeLuminance();
-
-    // Check if both colors are light or dark
-    if (secondaryPrimaryLuminance > 0.5) {
-      return AppColors.black; // Return black for light colors
-    } else if (secondaryPrimaryLuminance <= 0.5) {
-      return AppColors.white; // Return white for dark colors
-    } else {
-      if (secondaryPrimaryLuminance > 0.5) return AppColors.black;
-      return AppColors.white; // Change this to the desired contrasting color
-    }
-  }
+  /// Text / icon colour that reads on [fill]: dark on a light fill, white on
+  /// a dark one. ADDED 17/10/2026 (Moataz: "when I hover on an option … if it
+  /// is dark it becomes white, if the secondary colour is light it has to be
+  /// dark") — follows Branding, so a dark brand colour flips the text (K-31).
+  static Color readableOn(Color fill) =>
+      fill.computeLuminance() > 0.5 ? AppColors.black : AppColors.white;
 
   static Color contrastGreyColor() {
     final double primaryLuminance = AppColors.primary.computeLuminance();
@@ -465,480 +445,4 @@ abstract class AppTheme {
       return AppColors.white; // Change this to the desired contrasting color
     }
   }
-}
-
-// ===== Legacy TextStyle Redirects (StyleText) =====
-abstract class StyleText {
-  static final _storage = GetStorage();
-
-  // ✅ CHANGED: Made font families getters that read from storage
-  static String get englishFontFamily => _storage.read('font') ?? 'Cairo';
-  static String get arabicFontFamily => _storage.read('font_arabic') ?? 'CairoArabic';
-
-  // Helper method to apply font family based on locale
-  static TextStyle _withFontFamily(TextStyle style) {
-    return style.copyWith(
-      fontFamily: Get.locale?.languageCode == 'en'
-          ? englishFontFamily
-          : arabicFontFamily,
-    );
-  }
-
-  // ─── Canonical text styles ──────────────────────────────────────────────────
-  //
-  // Naming: fontSize<size>Weight<w400|500|600|700>. Size and weight are the
-  // ONLY dimensions in the name — what you read is exactly what renders.
-  // The colour defaults to AppColors.text; for any other colour use copyWith:
-  //
-  //   StyleText.fontSize14Weight600.copyWith(color: AppColors.white)
-  //
-  // These are the only text styles new code should use.
-
-  static TextStyle get fontSize8Weight400 => _withFontFamily(
-        TextStyle(
-          fontSize: 8.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.regular,
-        ),
-      );
-
-  static TextStyle get fontSize8Weight500 => _withFontFamily(
-        TextStyle(
-          fontSize: 8.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.medium,
-        ),
-      );
-
-  static TextStyle get fontSize10Weight400 => _withFontFamily(
-        TextStyle(
-          fontSize: 10.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.regular,
-        ),
-      );
-
-  static TextStyle get fontSize10Weight500 => _withFontFamily(
-        TextStyle(
-          fontSize: 10.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.medium,
-        ),
-      );
-
-  static TextStyle get fontSize10Weight600 => _withFontFamily(
-        TextStyle(
-          fontSize: 10.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.semiBold,
-        ),
-      );
-
-  static TextStyle get fontSize10Weight700 => _withFontFamily(
-        TextStyle(
-          fontSize: 10.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.bold,
-        ),
-      );
-
-  static TextStyle get fontSize11Weight400 => _withFontFamily(
-        TextStyle(
-          fontSize: 11.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.regular,
-        ),
-      );
-
-  static TextStyle get fontSize11Weight600 => _withFontFamily(
-        TextStyle(
-          fontSize: 11.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.semiBold,
-        ),
-      );
-
-  static TextStyle get fontSize12Weight400 => _withFontFamily(
-        TextStyle(
-          fontSize: 12.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.regular,
-        ),
-      );
-
-  static TextStyle get fontSize12Weight500 => _withFontFamily(
-        TextStyle(
-          fontSize: 12.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.medium,
-        ),
-      );
-
-  static TextStyle get fontSize12Weight600 => _withFontFamily(
-        TextStyle(
-          fontSize: 12.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.semiBold,
-        ),
-      );
-
-  static TextStyle get fontSize13Weight400 => _withFontFamily(
-        TextStyle(
-          fontSize: 13.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.regular,
-        ),
-      );
-
-  static TextStyle get fontSize13Weight500 => _withFontFamily(
-        TextStyle(
-          fontSize: 13.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.medium,
-        ),
-      );
-
-  static TextStyle get fontSize13Weight600 => _withFontFamily(
-        TextStyle(
-          fontSize: 13.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.semiBold,
-        ),
-      );
-
-  static TextStyle get fontSize14Weight400 => _withFontFamily(
-        TextStyle(
-          fontSize: 14.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.regular,
-        ),
-      );
-
-  static TextStyle get fontSize14Weight500 => _withFontFamily(
-        TextStyle(
-          fontSize: 14.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.medium,
-        ),
-      );
-
-  static TextStyle get fontSize14Weight600 => _withFontFamily(
-        TextStyle(
-          fontSize: 14.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.semiBold,
-        ),
-      );
-
-  static TextStyle get fontSize14Weight700 => _withFontFamily(
-        TextStyle(
-          fontSize: 14.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.bold,
-        ),
-      );
-
-  static TextStyle get fontSize15Weight400 => _withFontFamily(
-        TextStyle(
-          fontSize: 15.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.regular,
-        ),
-      );
-
-  static TextStyle get fontSize15Weight500 => _withFontFamily(
-        TextStyle(
-          fontSize: 15.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.medium,
-        ),
-      );
-
-  static TextStyle get fontSize15Weight600 => _withFontFamily(
-        TextStyle(
-          fontSize: 15.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.semiBold,
-        ),
-      );
-
-  static TextStyle get fontSize16Weight400 => _withFontFamily(
-        TextStyle(
-          fontSize: 16.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.regular,
-        ),
-      );
-
-  static TextStyle get fontSize16Weight500 => _withFontFamily(
-        TextStyle(
-          fontSize: 16.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.medium,
-        ),
-      );
-
-  static TextStyle get fontSize16Weight600 => _withFontFamily(
-        TextStyle(
-          fontSize: 16.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.semiBold,
-        ),
-      );
-
-  static TextStyle get fontSize16Weight700 => _withFontFamily(
-        TextStyle(
-          fontSize: 16.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.bold,
-        ),
-      );
-
-  static TextStyle get fontSize18Weight400 => _withFontFamily(
-        TextStyle(
-          fontSize: 18.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.regular,
-        ),
-      );
-
-  static TextStyle get fontSize18Weight500 => _withFontFamily(
-        TextStyle(
-          fontSize: 18.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.medium,
-        ),
-      );
-
-  static TextStyle get fontSize18Weight600 => _withFontFamily(
-        TextStyle(
-          fontSize: 18.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.semiBold,
-        ),
-      );
-
-  static TextStyle get fontSize19Weight400 => _withFontFamily(
-        TextStyle(
-          fontSize: 19.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.regular,
-        ),
-      );
-
-  static TextStyle get fontSize19Weight500 => _withFontFamily(
-        TextStyle(
-          fontSize: 19.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.medium,
-        ),
-      );
-
-  static TextStyle get fontSize19Weight600 => _withFontFamily(
-        TextStyle(
-          fontSize: 19.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.semiBold,
-        ),
-      );
-
-  static TextStyle get fontSize20Weight400 => _withFontFamily(
-        TextStyle(
-          fontSize: 20.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.regular,
-        ),
-      );
-
-  static TextStyle get fontSize20Weight500 => _withFontFamily(
-        TextStyle(
-          fontSize: 20.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.medium,
-        ),
-      );
-
-  static TextStyle get fontSize20Weight600 => _withFontFamily(
-        TextStyle(
-          fontSize: 20.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.semiBold,
-        ),
-      );
-
-  static TextStyle get fontSize21Weight500 => _withFontFamily(
-        TextStyle(
-          fontSize: 21.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.medium,
-        ),
-      );
-
-  static TextStyle get fontSize22Weight500 => _withFontFamily(
-        TextStyle(
-          fontSize: 22.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.medium,
-        ),
-      );
-
-  static TextStyle get fontSize22Weight600 => _withFontFamily(
-        TextStyle(
-          fontSize: 22.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.semiBold,
-        ),
-      );
-
-  static TextStyle get fontSize22Weight700 => _withFontFamily(
-        TextStyle(
-          fontSize: 22.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.bold,
-        ),
-      );
-
-  static TextStyle get fontSize23Weight400 => _withFontFamily(
-        TextStyle(
-          fontSize: 23.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.regular,
-        ),
-      );
-
-  static TextStyle get fontSize23Weight500 => _withFontFamily(
-        TextStyle(
-          fontSize: 23.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.medium,
-        ),
-      );
-
-  static TextStyle get fontSize23Weight600 => _withFontFamily(
-        TextStyle(
-          fontSize: 23.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.semiBold,
-        ),
-      );
-
-  static TextStyle get fontSize23Weight700 => _withFontFamily(
-        TextStyle(
-          fontSize: 23.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.bold,
-        ),
-      );
-
-  static TextStyle get fontSize24Weight500 => _withFontFamily(
-        TextStyle(
-          fontSize: 24.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.medium,
-        ),
-      );
-
-  static TextStyle get fontSize24Weight600 => _withFontFamily(
-        TextStyle(
-          fontSize: 24.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.semiBold,
-        ),
-      );
-
-  static TextStyle get fontSize25Weight400 => _withFontFamily(
-        TextStyle(
-          fontSize: 25.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.regular,
-        ),
-      );
-
-  static TextStyle get fontSize25Weight500 => _withFontFamily(
-        TextStyle(
-          fontSize: 25.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.medium,
-        ),
-      );
-
-  static TextStyle get fontSize25Weight600 => _withFontFamily(
-        TextStyle(
-          fontSize: 25.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.semiBold,
-        ),
-      );
-
-  static TextStyle get fontSize26Weight400 => _withFontFamily(
-        TextStyle(
-          fontSize: 26.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.regular,
-        ),
-      );
-
-  static TextStyle get fontSize26Weight500 => _withFontFamily(
-        TextStyle(
-          fontSize: 26.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.medium,
-        ),
-      );
-
-  static TextStyle get fontSize26Weight600 => _withFontFamily(
-        TextStyle(
-          fontSize: 26.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.semiBold,
-        ),
-      );
-
-  static TextStyle get fontSize28Weight500 => _withFontFamily(
-        TextStyle(
-          fontSize: 28.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.medium,
-        ),
-      );
-
-  static TextStyle get fontSize28Weight600 => _withFontFamily(
-        TextStyle(
-          fontSize: 28.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.semiBold,
-        ),
-      );
-
-  static TextStyle get fontSize30Weight500 => _withFontFamily(
-        TextStyle(
-          fontSize: 30.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.medium,
-        ),
-      );
-
-  static TextStyle get fontSize30Weight600 => _withFontFamily(
-        TextStyle(
-          fontSize: 30.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.semiBold,
-        ),
-      );
-
-  static TextStyle get fontSize35Weight600 => _withFontFamily(
-        TextStyle(
-          fontSize: 35.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.semiBold,
-        ),
-      );
-
-  static TextStyle get fontSize36Weight500 => _withFontFamily(
-        TextStyle(
-          fontSize: 36.sp,
-          color: AppColors.text,
-          fontWeight: AppFontWeights.medium,
-        ),
-      );
 }

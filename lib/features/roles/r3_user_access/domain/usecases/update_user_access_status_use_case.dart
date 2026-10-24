@@ -14,13 +14,14 @@
 ///          was checked, so a failed write still told the employee their
 ///          account had changed. The notification moved to
 ///          `UserAccessCubit._notifyStatusChanged`, which only runs on success.
+library;
 
 import 'package:dartz/dartz.dart';
 
-import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/features/onboarding/o3_authentication/domain/enums/employee_status_enum.dart';
-import 'package:grc_module/features/roles/r3_user_access/data/repository/user_access_repository.dart';
-import 'package:grc_module/features/roles/r3_user_access/domain/entities/user_access_entity.dart';
+import 'package:knowticed_plus/core/network/failure_model.dart';
+import 'package:knowticed_plus/features/onboarding/o3_authentication/domain/enums/employee_status_enum.dart';
+import 'package:knowticed_plus/features/roles/r3_user_access/data/repository/user_access_repository.dart';
+import 'package:knowticed_plus/features/roles/r3_user_access/domain/entities/user_access_entity.dart';
 
 class UpdateUserAccessStatusUseCase {
   final UserAccessRepository repository;

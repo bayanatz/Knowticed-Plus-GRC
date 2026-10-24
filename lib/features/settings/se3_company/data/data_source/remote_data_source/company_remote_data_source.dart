@@ -9,11 +9,12 @@
 /// Added for CR-SKEL-SE3-N01 / N07. `CompanyCubit` held
 /// `FirebaseFirestore.instance` and called `.doc().set(...)` / `.doc().get()`
 /// itself — a Firestore call from the presentation layer.
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:grc_module/features/settings/se3_company/data/models/company_model/company_model.dart';
-import 'package:grc_module/features/settings/se3_company/data/utils/company_collection_paths.dart';
+import 'package:knowticed_plus/features/settings/se3_company/data/models/company_model/company_model.dart';
+import 'package:knowticed_plus/features/settings/se3_company/data/utils/company_collection_paths.dart';
 
 class CompanyRemoteDataSource {
   CompanyRemoteDataSource({FirebaseFirestore? firestore})

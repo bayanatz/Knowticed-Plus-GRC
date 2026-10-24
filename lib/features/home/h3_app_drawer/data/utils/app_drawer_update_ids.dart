@@ -5,7 +5,8 @@
 /// Purpose: Declares `AppDrawerUpdateIds`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
-abstract class AppDrawerUpdateIds{
-  static const String drawer= "drawer";
+abstract class AppDrawerUpdateIds {
+  static const String drawer = "drawer";
 }

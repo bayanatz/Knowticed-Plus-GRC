@@ -24,6 +24,7 @@
 /// update that used it. Two near-identical copies existed (the preview pages
 /// carry their own display-name table), and only this one drives writes, so
 /// this is the one that had to leave the UI.
+library;
 
 abstract final class RequestFieldMapping {
   const RequestFieldMapping._();

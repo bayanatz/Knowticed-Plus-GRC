@@ -12,6 +12,7 @@
 ///
 /// PORTED into services_app under features/settings.
 /// Source: services_app features/employees/domain/entities/…
+library;
 
 import 'package:flutter/foundation.dart';
 

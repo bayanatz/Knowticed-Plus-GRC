@@ -2,28 +2,35 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: user_access_cubit.dart
-/// Purpose: Declares `UserAccessCubit` — the state holder for the user-access
+/// Description: Declares `UserAccessCubit` — the state holder for the user-access
 ///          screen (status filtering, search, sort, and the activate /
 ///          deactivate / schedule write paths).
-/// Author: Knowticed Plus team
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - Every repository result is now folded and a failure
 ///          emits `UserAccessError`; GetX removed; notification side effects
 ///          pulled out of the domain use case into this layer.
+/// Updated: 22/10/2026 - `focusAccount`: a notification's View lands on its
+///          account (pinned, outlined, Unlock dialog when locked).
+library;
 
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
-import 'package:flutter/foundation.dart';
 
-import 'package:grc_module/core/di/app_controllers.dart';
-import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/core/custom/76-date_time_in_arabic.dart';
-import 'package:grc_module/features/onboarding/o3_authentication/domain/enums/employee_status_enum.dart';
-import 'package:grc_module/features/roles/r3_user_access/data/repository/user_access_repository.dart';
-import 'package:grc_module/features/roles/r3_user_access/domain/entities/user_access_entity.dart';
-import 'package:grc_module/features/roles/r3_user_access/domain/enums/sort_option_role.dart';
-import 'package:grc_module/features/roles/r3_user_access/domain/usecases/get_user_access_entities_use_case.dart';
-import 'package:grc_module/features/roles/r3_user_access/domain/usecases/update_user_access_status_use_case.dart';
-import './user_access_state.dart';
+import 'package:knowticed_plus/core/app_services/firebase/live_refresh.dart';
+import 'package:knowticed_plus/core/network/api_constants.dart';
+import 'package:knowticed_plus/core/di/app_controllers.dart';
+import 'package:knowticed_plus/core/network/get_base_url.dart';
+import 'package:knowticed_plus/core/network/failure_model.dart';
+import 'package:knowticed_plus/core/custom/helpers/date_time_in_arabic.dart';
+import 'package:knowticed_plus/features/onboarding/o3_authentication/domain/enums/employee_status_enum.dart';
+import 'package:knowticed_plus/features/roles/r3_user_access/data/repository/user_access_repository.dart';
+import 'package:knowticed_plus/features/roles/r3_user_access/domain/entities/user_access_entity.dart';
+import 'package:knowticed_plus/features/roles/r3_user_access/domain/enums/sort_option_role.dart';
+import 'package:knowticed_plus/features/roles/r3_user_access/domain/usecases/get_user_access_entities_use_case.dart';
+import 'package:knowticed_plus/features/roles/r3_user_access/domain/usecases/update_user_access_status_use_case.dart';
+
+import 'package:knowticed_plus/features/roles/r3_user_access/presentation/controller/user_access_state.dart';
 
 /// App-wide shared UserAccessCubit instance.
 ///
@@ -41,6 +48,13 @@ class UserAccessCubit extends Cubit<UserAccessState> {
         super(UserAccessInitial());
 
   final UserAccessRepository repository;
+  final LiveRefresh _live = LiveRefresh();
+
+  @override
+  Future<void> close() {
+    _live.dispose();
+    return super.close();
+  }
 
   EmployeeStatusEnum selectedStatus = EmployeeStatusEnum.all;
   SortOptionRole? selectedSortOption;
@@ -66,6 +80,83 @@ class UserAccessCubit extends Cubit<UserAccessState> {
   /// state belongs to the page's StatefulWidget. The page owns the controller
   /// and pushes its text down here as a plain value.
   String searchTerm = '';
+
+  /// The account a notification's View asked for — its email or employee id.
+  ///
+  /// ADDED 22/10/2026 (owner: View opens the record, not the module). While
+  /// set, that account is pinned to the top of the list and outlined (see
+  /// [isFocused]), so the admin lands on it whatever the list's order. Cleared
+  /// when the admin picks another status or sort, or leaves the tab.
+  String? focusedAccount;
+
+  /// Set with [focusedAccount] when the account still has to be unlocked;
+  /// consumed by [takeAccountToUnlock] so the Unlock dialog opens once.
+  bool _unlockPromptPending = false;
+
+  /// Function Name: [focusAccount]
+  ///
+  /// Purpose: Land the list on [emailOrId]: every filter and the search are
+  /// cleared so the account is in the list, and it is pinned and outlined.
+  ///
+  /// Parameters:
+  /// - [emailOrId]: the account's email (what the User Access notifications
+  ///   save as `Request_Id`) or its employee id.
+  ///
+  /// Returns: [void]
+  void focusAccount(String emailOrId) {
+    focusedAccount = emailOrId.trim();
+    _unlockPromptPending = true;
+    selectedStatus = EmployeeStatusEnum.all;
+    selectedDepartment = null;
+    selectedTitle = null;
+    searchAccountsStatusEntities('', selectedSortOption);
+  }
+
+  /// Function Name: [clearFocus]
+  ///
+  /// Purpose: Forget the notification's account (the admin moved on).
+  ///
+  /// Returns: [void]
+  void clearFocus() {
+    focusedAccount = null;
+    _unlockPromptPending = false;
+  }
+
+  /// Whether [entity] is the account a notification asked for.
+  bool isFocused(UserAccessEntity entity) {
+    final String? key = focusedAccount?.toLowerCase();
+    if (key == null || key.isEmpty) return false;
+    return entity.email.trim().toLowerCase() == key ||
+        entity.employeeId.trim().toLowerCase() == key;
+  }
+
+  /// Function Name: [takeAccountToUnlock]
+  ///
+  /// Purpose: The focused account, once, if it is locked — so the page can
+  /// open the Unlock dialog for an unlock request / locked notification.
+  ///
+  /// Returns: [UserAccessEntity?] — null when nothing is focused, the list has
+  /// not loaded it yet, or the account is not locked.
+  UserAccessEntity? takeAccountToUnlock() {
+    if (!_unlockPromptPending) return null;
+    for (final UserAccessEntity entity in filteredSortedSelectedEntities) {
+      if (!isFocused(entity)) continue;
+      _unlockPromptPending = false;
+      return (entity.isLocked || entity.isLockedWithRequest) ? entity : null;
+    }
+    return null;
+  }
+
+  /// Moves the focused account to the top of the visible list.
+  void _pinFocused() {
+    if (focusedAccount == null) return;
+    final int index = filteredSortedSelectedEntities.indexWhere(isFocused);
+    if (index <= 0) return;
+    filteredSortedSelectedEntities.insert(
+      0,
+      filteredSortedSelectedEntities.removeAt(index),
+    );
+  }
 
   /// Function Name: [emitSafely]
   ///
@@ -95,17 +186,21 @@ class UserAccessCubit extends Cubit<UserAccessState> {
   ///
   /// Returns: [Future<void>]
   Future<void> getAccountsStatusEntities() async {
-    final Either<Failure, dynamic> result =
-        await GetUserAccessEntitiesUseCase(repository).execute();
+    final Either<Failure, dynamic> result = await GetUserAccessEntitiesUseCase(
+      repository,
+    ).execute();
 
     result.fold(
       (failure) {
-        debugPrint('getAccountsStatusEntities failed: ${failure.errMessage}');
         emitSafely(UserAccessError(failure.errMessage));
       },
       (data) {
         accountStatusEntities = data ?? {};
         searchAccountsStatusEntities(searchTerm, selectedSortOption);
+        _live.watchPaths(
+          <String>[getBaseUrl(ApiConstants.employeesInfo)],
+          getAccountsStatusEntities,
+        );
       },
     );
   }
@@ -135,6 +230,7 @@ class UserAccessCubit extends Cubit<UserAccessState> {
   /// Returns: [void]
   void selectSortOption(SortOptionRole? option) {
     if (option == null) return;
+    clearFocus();
 
     if (option == selectedSortOption) {
       // Deselect. Cleared BEFORE the rebuild, because
@@ -176,20 +272,30 @@ class UserAccessCubit extends Cubit<UserAccessState> {
 
     switch (option) {
       case SortOptionRole.firstName:
-        filteredSortedSelectedEntities.sort((a, b) => directed(a.englishName
-            .split(" ")
-            .first
-            .compareTo(b.englishName.split(" ").first)));
+        filteredSortedSelectedEntities.sort(
+          (a, b) => directed(
+            a.englishName
+                .split(" ")
+                .first
+                .compareTo(b.englishName.split(" ").first),
+          ),
+        );
         break;
       case SortOptionRole.lastName:
-        filteredSortedSelectedEntities.sort((a, b) => directed(a.englishName
-            .split(" ")
-            .last
-            .compareTo(b.englishName.split(" ").last)));
+        filteredSortedSelectedEntities.sort(
+          (a, b) => directed(
+            a.englishName
+                .split(" ")
+                .last
+                .compareTo(b.englishName.split(" ").last),
+          ),
+        );
         break;
       case SortOptionRole.firstLogin:
         filteredSortedSelectedEntities.sort((a, b) {
           // Missing dates stay at the bottom in both directions.
+          // Owner 21/10/2026: both missing → equal (was 1, which broke the sort contract).
+          if (a.firstLogin == null && b.firstLogin == null) return 0;
           if (a.firstLogin == null) return 1;
           if (b.firstLogin == null) return -1;
           return directed(a.firstLogin!.compareTo(b.firstLogin!));
@@ -197,6 +303,8 @@ class UserAccessCubit extends Cubit<UserAccessState> {
         break;
       case SortOptionRole.lastLogin:
         filteredSortedSelectedEntities.sort((a, b) {
+          // Owner 21/10/2026: both missing → equal (was 1, which broke the sort contract).
+          if (a.lastLogin == null && b.lastLogin == null) return 0;
           if (a.lastLogin == null) return 1;
           if (b.lastLogin == null) return -1;
           return directed(a.lastLogin!.compareTo(b.lastLogin!));
@@ -204,6 +312,7 @@ class UserAccessCubit extends Cubit<UserAccessState> {
         break;
     }
 
+    _pinFocused();
     emitSafely(UserAccessLoaded());
   }
 
@@ -217,7 +326,10 @@ class UserAccessCubit extends Cubit<UserAccessState> {
   /// - [option]: Optional sort key applied after filtering.
   ///
   /// Returns: [void]
-  void searchAccountsStatusEntities(String searchValue, SortOptionRole? option) {
+  void searchAccountsStatusEntities(
+    String searchValue,
+    SortOptionRole? option,
+  ) {
     searchTerm = searchValue;
     filteredSortedSelectedEntities = [];
 
@@ -240,7 +352,8 @@ class UserAccessCubit extends Cubit<UserAccessState> {
         continue;
       }
 
-      if (selectedDepartment == null || selectedDepartment == entity.department) {
+      if (selectedDepartment == null ||
+          selectedDepartment == entity.department) {
         filteredSortedSelectedEntities.add(entity);
       }
     }
@@ -248,6 +361,7 @@ class UserAccessCubit extends Cubit<UserAccessState> {
     if (option != null) {
       sortAccountsStatusEntities(option);
     } else {
+      _pinFocused();
       emitSafely(UserAccessLoaded());
     }
   }
@@ -261,6 +375,7 @@ class UserAccessCubit extends Cubit<UserAccessState> {
   ///
   /// Returns: [void]
   void selectStatus(EmployeeStatusEnum newStatus) {
+    clearFocus();
     selectedStatus = newStatus;
     searchAccountsStatusEntities(searchTerm, selectedSortOption);
   }
@@ -278,14 +393,14 @@ class UserAccessCubit extends Cubit<UserAccessState> {
   ///
   /// Returns: [Future<void>]
   Future<void> updateAccountStatus(
-      UserAccessEntity accountStatusAccessEntity) async {
-    final Either<Failure, dynamic> result =
-        await UpdateUserAccessStatusUseCase(repository)
-            .execute(accountStatusAccessEntity);
+    UserAccessEntity accountStatusAccessEntity,
+  ) async {
+    final Either<Failure, dynamic> result = await UpdateUserAccessStatusUseCase(
+      repository,
+    ).execute(accountStatusAccessEntity);
 
     await result.fold(
       (failure) async {
-        debugPrint('updateAccountStatus failed: ${failure.errMessage}');
         emitSafely(UserAccessError(failure.errMessage));
       },
       (_) async {
@@ -307,16 +422,17 @@ class UserAccessCubit extends Cubit<UserAccessState> {
   ///
   /// Returns: [Future<void>]
   Future<void> updateAccessDetails(
-      UserAccessEntity accountStatusAccessEntity) async {
+    UserAccessEntity accountStatusAccessEntity,
+  ) async {
     try {
       emitSafely(UserAccessLoading());
       await repository.updateAccessDetails(accountStatusAccessEntity);
       await getAccountsStatusEntities();
       emitSafely(UserAccessLoaded());
-    } catch (e, stackTrace) {
-      debugPrint('updateAccessDetails failed: $e\n$stackTrace');
+    } catch (e) {
       emitSafely(
-          UserAccessError('Failed to update access details: ${e.toString()}'));
+        UserAccessError('Failed to update access details: ${e.toString()}'),
+      );
     }
   }
 
@@ -342,7 +458,6 @@ class UserAccessCubit extends Cubit<UserAccessState> {
 
     await result.fold(
       (failure) async {
-        debugPrint('scheduleReactivation failed: ${failure.errMessage}');
         emitSafely(UserAccessError(failure.errMessage));
       },
       (_) async {
@@ -380,7 +495,6 @@ class UserAccessCubit extends Cubit<UserAccessState> {
 
     await result.fold(
       (failure) async {
-        debugPrint('scheduleDeactivation failed: ${failure.errMessage}');
         emitSafely(UserAccessError(failure.errMessage));
       },
       (_) async {
@@ -496,8 +610,8 @@ class UserAccessCubit extends Cubit<UserAccessState> {
         body: body,
         arabicBody: arabicBody,
       );
-    } catch (e, stackTrace) {
-      debugPrint('user-access push notification failed: $e\n$stackTrace');
+    } catch (_) {
+      // Best effort: this failure must not stop the action.
     }
   }
 }

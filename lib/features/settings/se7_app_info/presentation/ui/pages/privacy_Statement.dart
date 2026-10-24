@@ -1,37 +1,53 @@
-import 'package:get/get.dart';
-import 'package:grc_module/core/helper/main_helper/export_directory.dart';
+/// Module: settings/se7_app_info
+///
+///*************************** FILE INFO ****************************///
+/// File Name: privacy_statement.dart
+/// Description: `PrivacyStatementPage` page, state and UI of the `PrivacyStatementPage` widget, `_PrivacyError` enum.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
+library;
+
+import 'package:knowticed_plus/core/custom/feedback/custom_empty_state.dart';
+import 'package:knowticed_plus/core/helper/export_directory.dart';
+
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:knowticed_plus/core/helper/knowticed_logo.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 
-import 'package:grc_module/core/theme/app_font_size.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/custom/50-custom_side_frame_master.dart';
-// REMOVED_MODULE: import 'package:grc_module/features/external/services_mangment_module/core/new_theme.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/custom/navigation/custom_side_frame_master.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/features/external/services_mangment_module/core/new_theme.dart';
 import 'package:lottie/lottie.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:grc_module/core/network/api_constants.dart' hide FirebaseCollections;
-import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/custom/5-custom_button.dart';
-import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
-import 'package:grc_module/core/constants/firebase_collections.dart';
-import 'package:grc_module/core/theme/app_animations.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
+import 'package:knowticed_plus/core/network/api_constants.dart'
+    hide FirebaseCollections;
+import 'package:knowticed_plus/generated/l10n.dart';
+import 'package:knowticed_plus/core/helper/format_title.dart';
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_button.dart';
+import 'package:knowticed_plus/core/custom/dialogs/custom_dialog_manager.dart';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/core/constants/firebase_collections.dart';
+import 'package:knowticed_plus/core/theme/app_animations.dart';
+import 'package:knowticed_plus/core/custom/feedback/circle_progress.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
+
 // REMOVED_MODULE: import '../../../../../external/services_mangment_module/Category/presentation/ui/services_admin/Widget/W3_Frame_Screen_tablet.dart';
+
+const bool _kDemoOwnerTools = bool.fromEnvironment('KP_OWNER_TOOLS');
+const String _kDemoPdfUrl =
+    'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
 
 class PrivacyStatementPage extends StatefulWidget {
   const PrivacyStatementPage({super.key});
@@ -55,7 +71,7 @@ class _PrivacyStatementPageState extends State<PrivacyStatementPage> {
   /// AboutThisAppScreen uses.
   ///
   /// CHANGED 8/9/2026 — was `String? _errorMessage` carrying hardcoded English
-  /// ("No data available yet", "Error loading data: <raw Firestore text>")
+  /// ("No data available yet", "Error loading data: `<raw Firestore text>`")
   /// that never reached the screen anyway: the empty state rendered a bare
   /// Lottie and nothing else, so every failure looked identical and silent.
   _PrivacyError? _error;
@@ -135,6 +151,16 @@ class _PrivacyStatementPageState extends State<PrivacyStatementPage> {
 
         _arDocumentUrl = data['arDocumentUrl'] as String?;
         _engDocumentUrl = data['engDocumentUrl'] as String?;
+        // DEMO (Moataz 23/10/2026): owner-tools builds show a sample PDF so
+        // the Download button can be seen before a real file is attached.
+        if (_kDemoOwnerTools) {
+          if (_arDocumentUrl == null || _arDocumentUrl!.isEmpty) {
+            _arDocumentUrl = _kDemoPdfUrl;
+          }
+          if (_engDocumentUrl == null || _engDocumentUrl!.isEmpty) {
+            _engDocumentUrl = _kDemoPdfUrl;
+          }
+        }
         _isLoading = false;
 
         // A document that exists but has no body in this language is the same
@@ -194,7 +220,8 @@ class _PrivacyStatementPageState extends State<PrivacyStatementPage> {
     if (mounted) {
       await CustomDialogManager.showMessage(
         context: context,
-        lottiePath: 'assets/lottie_assets/main_lottie_assets/lottie_warning.json',
+        lottiePath:
+            'assets/lottie_assets/main_lottie_assets/lot_action_delete_role.json',
         title: locale == 'ar'
             ? 'يرجى منح إذن التخزين'
             : 'Please grant storage permission',
@@ -205,13 +232,13 @@ class _PrivacyStatementPageState extends State<PrivacyStatementPage> {
 
   Future<void> _downloadPDF() async {
     final String locale = Localizations.localeOf(context).languageCode;
-    final String? pdfUrl =
-    locale == 'ar' ? _arDocumentUrl : _engDocumentUrl;
+    final String? pdfUrl = locale == 'ar' ? _arDocumentUrl : _engDocumentUrl;
 
     if (pdfUrl == null || pdfUrl.isEmpty) {
       CustomDialogManager.showMessage(
         context: context,
-        lottiePath: 'assets/lottie_assets/main_lottie_assets/lottie_warning.json',
+        lottiePath:
+            'assets/lottie_assets/main_lottie_assets/lot_action_delete_role.json',
         title: locale == 'ar'
             ? 'رابط المستند غير متاح'
             : 'Document link not available',
@@ -224,7 +251,7 @@ class _PrivacyStatementPageState extends State<PrivacyStatementPage> {
 
       final hasPermission = await _requestStoragePermission(locale);
       if (!hasPermission) {
-        setState(() => _isDownloading = false);
+        if (mounted) setState(() => _isDownloading = false);
         return;
       }
 
@@ -246,27 +273,28 @@ class _PrivacyStatementPageState extends State<PrivacyStatementPage> {
         await ExportDirectory.reveal(filePath);
       }
 
+      // CR-KNP-SET-APP-06 (20/10/2026): every setState after an await is
+      // guarded — the user can leave the page while the PDF downloads.
+      if (!mounted) return;
       setState(() => _isDownloading = false);
-      if (mounted) _showSuccessDialog(context, locale, filePath);
+      _showSuccessDialog(context, locale, filePath);
     } catch (e) {
+      if (!mounted) return;
       setState(() => _isDownloading = false);
-      if (mounted) {
-        // Settings bug report p.17: the raw exception text ("Exception:
-        // Could not determine download path") was shown in a red snackbar.
-        // It is now the app's own message dialog with a plain sentence; the
-        // detail goes to the debug log only.
-        debugPrint('Privacy statement download failed: $e');
-        CustomDialogManager.showMessage(
-          context: context,
-          lottiePath: 'assets/lottie_assets/main_lottie_assets/lottie_warning.json',
-          title: locale == 'ar'
-              ? 'حدث خطأ أثناء تنزيل المستند'
-              : 'Could not download the document',
-          subtitle: locale == 'ar'
-              ? 'يرجى المحاولة مرة أخرى'
-              : 'Please try again.',
-        );
-      }
+      // Settings bug report p.17: the raw exception text ("Exception:
+      // Could not determine download path") was shown in a red snackbar.
+      // It is now the app's own message dialog with a plain sentence; the
+      // detail goes to the debug log only.
+      CustomDialogManager.showMessage(
+        context: context,
+        lottiePath:
+            'assets/lottie_assets/main_lottie_assets/lot_action_delete_role.json',
+        title: locale == 'ar'
+            ? 'حدث خطأ أثناء تنزيل المستند'
+            : 'Could not download the document',
+        subtitle:
+            locale == 'ar' ? 'يرجى المحاولة مرة أخرى' : 'Please try again.',
+      );
     }
   }
 
@@ -295,29 +323,34 @@ class _PrivacyStatementPageState extends State<PrivacyStatementPage> {
   }
 
   void _showSuccessDialog(
-      BuildContext context, String locale, String filePath) {
+    BuildContext context,
+    String locale,
+    String filePath,
+  ) {
     showAppDialog(
       context: context,
       barrierDismissible: true,
       builder: (BuildContext context) {
         Future.delayed(const Duration(seconds: 3), () {
+          if (!context.mounted) return;
           if (Navigator.canPop(context)) Navigator.of(context).pop();
         });
         return Dialog(
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16.r)),
+            borderRadius: BorderRadius.circular(16.r),
+          ),
           child: Container(
             decoration: BoxDecoration(
               color: AppColors.card,
               borderRadius: BorderRadius.circular(8.r),
             ),
             width: 411,
-            padding: EdgeInsets.all(15.sp),
+            padding: EdgeInsets.all(16.sp),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Lottie.asset(
-                  'assets/lottie_assets/main_lottie_assets/approved.json',
+                  'assets/lottie_assets/main_lottie_assets/lot_status_success.json',
                   width: 120.w,
                   height: 120.h,
                   repeat: false,
@@ -327,29 +360,31 @@ class _PrivacyStatementPageState extends State<PrivacyStatementPage> {
                   locale == 'ar'
                       ? 'تم تنزيل الملف بنجاح'
                       : FormatHelper.capitalize("File downloaded successfully"),
-                  style: StyleText.fontSize16Weight500
-                      .copyWith(color: AppColors.text),
+                  style: StyleText.fontSize16Weight500.copyWith(
+                    color: AppColors.text,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 12.h),
                 Text(
                   locale == 'ar' ? 'المسار:' : 'Saved to:',
                   style: StyleText.fontSize14Weight400.copyWith(
-                      color: AppColors.text.withOpacity(0.7)),
+                    color: AppColors.text.withValues(alpha: 0.7),
+                  ),
                 ),
                 SizedBox(height: 4.h),
                 Container(
                   width: double.infinity,
-                  padding: EdgeInsets.symmetric(
-                      horizontal: 8.w, vertical: 8.h),
+                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
                   decoration: BoxDecoration(
                     color: AppColors.background,
                     borderRadius: BorderRadius.circular(4.r),
                   ),
                   child: Text(
                     filePath,
-                    style: StyleText.fontSize12Weight400
-                        .copyWith(color: AppColors.text),
+                    style: StyleText.fontSize12Weight400.copyWith(
+                      color: AppColors.text,
+                    ),
                     textAlign: TextAlign.center,
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
@@ -366,7 +401,8 @@ class _PrivacyStatementPageState extends State<PrivacyStatementPage> {
   Widget _buildContent() {
     if (_isLoading) {
       return Center(
-          child: CircleProgressMaster.inline(color: AppColors.primary));
+        child: CircleProgressMaster.inline(color: AppColors.primary),
+      );
     }
 
     if (_error != null || _description == null) {
@@ -382,19 +418,19 @@ class _PrivacyStatementPageState extends State<PrivacyStatementPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Lottie.asset(
-                "assets/lottie_assets/notification_lottie_assets/empty.json",
-                width: 220.w,
-                height: 220.h,
-                repeat: true,
-                fit: BoxFit.contain,
+              CustomEmptyState(
+                lottiePath:
+                    "assets/lottie_assets/main_lottie_assets/lot_empty_state.json",
+                size: 220,
+                verticalPadding: 0,
               ),
               SizedBox(height: 8.h),
               Text(
                 _messageFor(context, error),
                 textAlign: TextAlign.center,
-                style: StyleText.fontSize14Weight500
-                    .copyWith(color: AppColors.secondaryText),
+                style: StyleText.fontSize14Weight500.copyWith(
+                  color: AppColors.secondaryText,
+                ),
               ),
               // Retry is offered only where it can help. A company with no
               // assigned document will not grow one by tapping again.
@@ -407,8 +443,9 @@ class _PrivacyStatementPageState extends State<PrivacyStatementPage> {
                   height: 36,
                   radius: 4.r,
                   color: AppColors.primary,
-                  textStyle: StyleText.fontSize14Weight500
-                      .copyWith(color: AppColors.textButton),
+                  textStyle: StyleText.fontSize14Weight500.copyWith(
+                    color: AppColors.textButton,
+                  ),
                 ),
               ],
             ],
@@ -418,8 +455,11 @@ class _PrivacyStatementPageState extends State<PrivacyStatementPage> {
     }
 
     return Markdown(
-      padding: EdgeInsets.all(15.sp),
-      data: _description!,
+      // D-246: the box hugs its content; the page frame scrolls.
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      padding: EdgeInsets.all(16.sp),
+      data: _withoutLeadingTitle(_description!),
       onTapLink: (text, url, title) async {
         if (url != null) {
           final uri = url.contains('support@')
@@ -428,22 +468,31 @@ class _PrivacyStatementPageState extends State<PrivacyStatementPage> {
           await launchUrl(uri, mode: LaunchMode.externalApplication);
         }
       },
-      styleSheet:
-      MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
-        p: StyleText.fontSize14Weight500
-            .copyWith(color: AppColors.secondaryText, height: 1.6),
-        h1: StyleText.fontSize14Weight500
-            .copyWith(color: AppColors.text, height: 1.6),
-        h3: StyleText.fontSize14Weight500
-            .copyWith(color: AppColors.text, height: 1.6),
-        listBullet: StyleText.fontSize14Weight500
-            .copyWith(color: AppColors.secondaryText, height: 1.6),
+      styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+        // D-246: body 14 in the normal text colour.
+        p: StyleText.fontSize14Weight500.copyWith(
+          color: AppColors.text,
+          height: 1.6,
+        ),
+        h1: StyleText.fontSize14Weight500.copyWith(
+          color: AppColors.text,
+          height: 1.6,
+        ),
+        h3: StyleText.fontSize14Weight500.copyWith(
+          color: AppColors.text,
+          height: 1.6,
+        ),
+        listBullet: StyleText.fontSize14Weight500.copyWith(
+          color: AppColors.text, // 23/10/2026 (Moataz): body text is black
+          height: 1.6,
+        ),
       ),
     );
   }
 
   Widget _buildDownloadButton(String locale) {
     return InkWell(
+      onTapDown: _isDownloading ? null : (_) => HapticController.low(),
       onTap: _isDownloading ? null : _downloadPDF,
       borderRadius: BorderRadius.circular(8.r),
       child: Padding(
@@ -456,12 +505,14 @@ class _PrivacyStatementPageState extends State<PrivacyStatementPage> {
                 width: 16.w,
                 height: 16.h,
                 child: CircleProgressMaster.inline(
-                    strokeWidth: 2,
-                    color: AppColors.secondaryPrimary),
+                  strokeWidth: 2,
+                  color: AppColors.secondaryPrimary,
+                ),
               )
             else
               CustomSvgImage(
-                assetPath: "assets/icons_assets/form_builder_assets/download_arrow.svg",
+                assetPath:
+                    "assets/icons_assets/main_icons_assets/ic_action_download.svg",
                 width: 16.w,
                 height: 16.h,
                 color: AppColors.secondaryPrimary,
@@ -470,14 +521,16 @@ class _PrivacyStatementPageState extends State<PrivacyStatementPage> {
             Text(
               // 21/9/2026 — was the About This Platform label.
               S.of(context).downloadPDFofPrivacyAndPolicy,
-              style: StyleText.fontSize14Weight500
-                  .copyWith(color: AppColors.secondaryPrimary),
+              style: StyleText.fontSize14Weight500.copyWith(
+                color: AppColors.secondaryPrimary,
+              ),
             ),
           ],
         ),
       ),
     );
   }
+
   String _messageFor(BuildContext context, _PrivacyError error) {
     switch (error) {
       case _PrivacyError.failed:
@@ -493,7 +546,7 @@ class _PrivacyStatementPageState extends State<PrivacyStatementPage> {
 
   bool get _hasDocumentUrl =>
       (_arDocumentUrl != null && _arDocumentUrl!.isNotEmpty) ||
-          (_engDocumentUrl != null && _engDocumentUrl!.isNotEmpty);
+      (_engDocumentUrl != null && _engDocumentUrl!.isNotEmpty);
   @override
   Widget build(BuildContext context) {
     final isMobile = ContextExtension(context).isPhone;
@@ -502,168 +555,244 @@ class _PrivacyStatementPageState extends State<PrivacyStatementPage> {
 
     return isMobile
         ? Scaffold(
-      backgroundColor: AppColors.background,
-      body: SideFrameMasterServices(
-        titleText: S.of(context).settings,
-        secondTitle: S.of(context).privacyStatement,
-        onSecondTap: () => Navigator.pop(context),
-        onFirstTap: () => Navigator.pop(context),
-        child: Column(
-          children: [
-            // ── Logo + Date ──────────────────────────────
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SvgPicture.asset(
-                  lightMode
-                      ? "assets/icons_assets/main_icons_assets/light_app_icon.svg"
-                      : "assets/icons_assets/main_icons_assets/logo_app.svg",
-                  width: 50.w,
-                  height: 50.h,
-                  fit: BoxFit.fill,
-                ),
-                const Spacer(),
-                if (_lastUpdateDate != null)
-                  Row(
-                    children: [
-                      Text("${S.of(context).lastUpdate}: ",
-                          style: StyleText.fontSize12Weight500
-                              .copyWith(
-                              color: AppColors.secondaryText)),
-                      Text(_getFormattedDate(context),
-                          style: StyleText.fontSize12Weight500
-                              .copyWith(color: AppColors.text)),
-                    ],
+            backgroundColor: AppColors.background,
+            body: SideFrameMasterServices(
+              titleText: S.of(context).settings,
+              secondTitle: S.of(context).privacyStatement,
+              onSecondTap: () => Navigator.pop(context),
+              onFirstTap: () => Navigator.pop(context),
+              child: Column(
+                children: [
+                  // D-246 / item 169 (21/10/2026): ONE box, like About This
+                  // Platform — logo left + Last Update right on one row,
+                  // the title once, then the text; the box ends after it.
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(16.sp),
+                    decoration: BoxDecoration(
+                      color: AppColors.card,
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // ── Logo + Date ──────────────────────────────
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            CustomSvgImage.natural(
+                              assetPath:
+                                  knowticedLogoAsset(lightMode: lightMode),
+                              width: 50.w,
+                              height: 50.h,
+                              fit: BoxFit.fill,
+                            ),
+                            const Spacer(),
+                            if (_lastUpdateDate != null)
+                              Row(
+                                children: [
+                                  Text(
+                                    "${S.of(context).lastUpdate}: ",
+                                    style:
+                                        StyleText.fontSize12Weight500.copyWith(
+                                      color: AppColors.secondaryText,
+                                    ),
+                                  ),
+                                  Text(
+                                    _getFormattedDate(context),
+                                    style:
+                                        StyleText.fontSize12Weight500.copyWith(
+                                      color: AppColors.text,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                          ],
+                        ),
+                        SizedBox(height: 16.sp),
+                        // ── Title ────────────────────────────────────
+                        Row(
+                          children: [
+                            // Owner 21/10/2026: just the icon (16), no square tile behind it.
+                            CustomSvgImage.natural(
+                              assetPath:
+                                  "assets/icons_assets/settings_assets/ic_page_privacy.svg",
+                              width: 24.sp,
+                              height: 24.sp,
+                            ),
+                            SizedBox(width: 8.sp),
+                            Text(
+                              S.of(context).privacyStatement,
+                              style: StyleText.fontSize16Weight600.copyWith(
+                                color: AppColors.text,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 12.sp),
+                        // ── Content ──────────────────────────────────
+                        _buildContent(),
+                      ],
+                    ),
                   ),
-              ],
-            ),
-            SizedBox(height: 20.sp),
-            // ── Title ────────────────────────────────────
-            Row(
-              children: [
-                CustomSvgImage(
-                    assetPath: "assets/icons_assets/settings_assets/notification_announcement.svg",
-                    width: 25,
-                    height: 25,
-                    fit: BoxFit.fill),
-                SizedBox(width: 5.w),
-                Text(
-                  S.of(context).privacyStatement,
-                  style: StyleText.fontSize16Weight500
-                      .copyWith(color: AppColors.secondaryText),
-                ),
-              ],
-            ),
-            SizedBox(height: 10.sp),
-            // ── Content ──────────────────────────────────
-            Container(
-              height: 0.78.h,
-              padding: const EdgeInsets.only(bottom: 20),
-              decoration: BoxDecoration(
-                color: AppColors.card,
-                borderRadius: BorderRadius.circular(8.r),
+                  // ── Download ─────────────────────────────────
+                  // Guarded like the tablet branch: the button used to show on
+                  // phones even when the document had no URL, and tapping it only
+                  // produced a red "link not available" snackbar.
+                  if (_hasDocumentUrl) _buildDownloadButton(locale),
+                ],
               ),
-              child: _buildContent(),
             ),
-            // ── Download ─────────────────────────────────
-            // Guarded like the tablet branch: the button used to show on
-            // phones even when the document had no URL, and tapping it only
-            // produced a red "link not available" snackbar.
-            if (_hasDocumentUrl) _buildDownloadButton(locale),
-          ],
-        ),
-      ),
-    )
+          )
+        // One card for header + body: two touching rounded boxes left a hairline
+        // seam between them on the desktop (Moataz 23/10/2026).
         : Column(
-      children: [
-        // ── Header ──────────────────────────────────────
-        Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: AppColors.card,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(8.r),
-              topRight: Radius.circular(8.r),
-            ),
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(15.sp),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SvgPicture.asset(
-                      !lightMode
-                          ? "assets/icons_assets/main_icons_assets/light_app_icon.svg"
-                          : "assets/icons_assets/main_icons_assets/logo_app.svg",
-                      width: 50.w,
-                      height: 50.h,
-                      fit: BoxFit.fill,
+            children: [
+              Flexible(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.r),
+                  child: ColoredBox(
+                    color: AppColors.card,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // ── Header ──────────────────────────────────────
+                        Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: AppColors.card,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(8.r),
+                              topRight: Radius.circular(8.r),
+                            ),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.all(16.sp),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    CustomSvgImage.natural(
+                                      assetPath: knowticedLogoAsset(
+                                          lightMode: lightMode),
+                                      width: 50.w,
+                                      height: 50.h,
+                                      fit: BoxFit.fill,
+                                    ),
+                                    const Spacer(),
+                                    if (_lastUpdateDate != null)
+                                      Row(
+                                        children: [
+                                          Text(
+                                            "${S.of(context).lastUpdate}: ",
+                                            style: StyleText.fontSize12Weight500
+                                                .copyWith(
+                                              color: AppColors.secondaryText,
+                                            ),
+                                          ),
+                                          Text(
+                                            _getFormattedDate(context),
+                                            style: StyleText.fontSize12Weight500
+                                                .copyWith(
+                                              color: AppColors.text,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                  ],
+                                ),
+                                SizedBox(height: 20.h),
+                                Row(
+                                  children: [
+                                    // Owner 21/10/2026: just the icon (16), no square tile behind it.
+                                    CustomSvgImage.natural(
+                                      assetPath:
+                                          "assets/icons_assets/settings_assets/ic_page_privacy.svg",
+                                      width: 24.sp,
+                                      height: 24.sp,
+                                    ),
+                                    SizedBox(width: 8.sp),
+                                    Text(
+                                      S.of(context).privacyStatement,
+                                      style: StyleText.fontSize16Weight500
+                                          .copyWith(
+                                        color: AppColors.secondaryText,
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    if (_hasDocumentUrl)
+                                      _buildDownloadButton(locale),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        // ── Content ─────────────────────────────────────
+                        // FIXED 21/9/2026 — "BOTTOM OVERFLOWED BY 34 PIXELS". A screen-height
+                        // fraction (0.57.h / 0.625.h) ignored the settings header card and
+                        // the pane padding above it. settings_layout hands this page a bounded
+                        // height through its own Expanded, so the content takes what is left.
+                        // D-183 (18/10/2026): the card ends after its last field (D-146
+                        // inset) — Flexible, not Expanded; it still scrolls when longer.
+                        // D-215 (20/10/2026): the white section runs to the bottom of the pane.
+                        Flexible(
+                          child: SingleChildScrollView(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: AppColors.card,
+                                borderRadius: const BorderRadius.only(
+                                  bottomLeft: Radius.circular(8),
+                                  bottomRight: Radius.circular(8),
+                                ),
+                              ),
+                              child: _buildContent(),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    const Spacer(),
-                    if (_lastUpdateDate != null)
-                      Row(
-                        children: [
-                          Text("${S.of(context).lastUpdate}: ",
-                              style: StyleText.fontSize12Weight500
-                                  .copyWith(
-                                  color:
-                                  AppColors.secondaryText)),
-                          Text(_getFormattedDate(context),
-                              style: StyleText.fontSize12Weight500
-                                  .copyWith(color: AppColors.text)),
-                        ],
-                      ),
-                  ],
+                  ),
                 ),
-                SizedBox(height: 20.h),
-                Row(
-                  children: [
-                    CustomSvgImage(
-                        assetPath: "assets/icons_assets/settings_assets/notification_announcement.svg",
-                        width: 25,
-                        height: 25,
-                        fit: BoxFit.fill),
-                    SizedBox(width: 5.w),
-                    Text(
-                      S.of(context).privacyStatement,
-                      style: StyleText.fontSize16Weight500.copyWith(
-                          color: AppColors.secondaryText),
-                    ),
-                    const Spacer(),
-                    if (_hasDocumentUrl)
-
-                    _buildDownloadButton(locale),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-        // ── Content ─────────────────────────────────────
-        // FIXED 21/9/2026 — "BOTTOM OVERFLOWED BY 34 PIXELS". A screen-height
-        // fraction (0.57.h / 0.625.h) ignored the settings header card and
-        // the pane padding above it. settings_layout hands this page a bounded
-        // height through its own Expanded, so the content takes what is left.
-        Expanded(
-          child: Container(
-          decoration: BoxDecoration(
-            color: AppColors.card,
-            borderRadius: const BorderRadius.only(
-              bottomLeft: Radius.circular(8),
-              bottomRight: Radius.circular(8),
-            ),
-          ),
-          child: _buildContent(),
-        ),
-        ),
-      ],
-    );
+              ),
+              // D-215 (21/10/2026): the panel has no bottom inset of its own,
+              // so the section ends with the same 15 gap as every other page.
+              SizedBox(height: 16.sp),
+            ],
+          );
   }
 }
 
 /// Why the page has nothing to render. Kept as an enum rather than a String
 /// so the message can be resolved at build time and follow a locale switch.
 enum _PrivacyError { noCompany, empty, failed }
+
+/// D-215 (20/10/2026): the page already shows its title in the header, so a
+/// stored document that starts with the same title (e.g. "# Terms and
+/// Conditions") loses that first heading — the title is written once.
+String _withoutLeadingTitle(String markdown) {
+  final List<String> lines = markdown.split('\n');
+  int i = 0;
+  while (i < lines.length && lines[i].trim().isEmpty) {
+    i++;
+  }
+  if (i >= lines.length) return markdown;
+  final String first = lines[i]
+      .replaceFirst(RegExp(r'^\s*#+\s*'), '')
+      .replaceAll(RegExp(r'[*_:]'), '')
+      .trim()
+      .toLowerCase();
+  const List<String> titles = <String>[
+    'terms and conditions',
+    'terms & conditions',
+    'privacy statement',
+    'privacy policy',
+    'الشروط والأحكام',
+    'بيان الخصوصية',
+    'سياسة الخصوصية',
+  ];
+  if (!titles.contains(first)) return markdown;
+  return lines.sublist(i + 1).join('\n').trimLeft();
+}

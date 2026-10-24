@@ -77,8 +77,8 @@ class _RecordingCardState extends State<RecordingCard>
             },
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 4.w),
-              child: SvgPicture.asset(
-                AppAssets.trash,
+              child: CustomSvgImage.natural(
+                assetPath: AppAssets.trash,
                 width: 18.sp,
                 height: 18.sp,
                 color: AppColors.red,
@@ -143,8 +143,8 @@ class _RecordingCardState extends State<RecordingCard>
               alignment: Alignment.center,
               child: Transform.rotate(
                 angle: context.isArabic ? 3.14 : 0,
-                child: SvgPicture.asset(
-                  AppAssets.send,
+                child: CustomSvgImage.natural(
+                  assetPath: AppAssets.send,
                   width: 16.sp,
                   height: 16.sp,
                   color: AppColors.textButton,

@@ -5,6 +5,7 @@
 /// PURPOSE: handle all the operations related to the system logs.
 /// Author: Amr Mesbah
 /// CREATED AT: 2/2/2025
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
@@ -12,12 +13,12 @@ import 'package:dartz/dartz.dart';
 // package-internal `src/` path that is not part of the public contract and
 // breaks on minor upgrades.
 import 'package:geolocator/geolocator.dart';
-import 'package:grc_module/features/roles/r4_active_directory/data/models/employees_model/new_employee_model.dart';
+import 'package:knowticed_plus/features/roles/r4_active_directory/data/models/employees_model/new_employee_model.dart';
 
-import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
-import 'package:grc_module/features/roles/r5_system_logs/data/data_source/remote_data_source/system_logs_remote_data_source.dart';
-import 'package:grc_module/features/roles/r5_system_logs/data/models/system_logs_model.dart';
+import 'package:knowticed_plus/core/network/failure_model.dart';
+import 'package:knowticed_plus/core/helper/access/modules_enum.dart';
+import 'package:knowticed_plus/features/roles/r5_system_logs/data/data_source/remote_data_source/system_logs_remote_data_source.dart';
+import 'package:knowticed_plus/features/roles/r5_system_logs/data/models/system_logs_model.dart';
 
 class SystemLogsRepository {
   SystemLogsRemoteDataSource systemLogsRemoteDataSource =
@@ -40,21 +41,16 @@ class SystemLogsRepository {
       required Position? currentPosition}) async {
     SystemLogsModel systemLogsModel = SystemLogsModel(
       module: module,
-      userEmail: currentEmployee.email?.lastOrNull,
-      firstName: currentEmployee.firstName?.lastOrNull ?? '',
-      lastName: currentEmployee.lastName?.lastOrNull ?? '',
-      middleName: currentEmployee.middleName?.lastOrNull ?? '',
-      firstNameInArabic:
-          currentEmployee.firstNameInArabic?.lastOrNull ??
-              '',
-      middleNameInArabic:
-          currentEmployee.middleNameInArabic?.lastOrNull ??
-              '',
-      lastNameInArabic:
-          currentEmployee.lastNameInArabic?.lastOrNull ?? '',
-      role: currentEmployee.role?.lastOrNull ?? "",
-      country: currentEmployee.country?.lastOrNull ?? '',
-      city: currentEmployee.city?.lastOrNull ?? '',
+      userEmail: currentEmployee.email.lastOrNull,
+      firstName: currentEmployee.firstName.lastOrNull ?? '',
+      lastName: currentEmployee.lastName.lastOrNull ?? '',
+      middleName: currentEmployee.middleName.lastOrNull ?? '',
+      firstNameInArabic: currentEmployee.firstNameInArabic.lastOrNull ?? '',
+      middleNameInArabic: currentEmployee.middleNameInArabic.lastOrNull ?? '',
+      lastNameInArabic: currentEmployee.lastNameInArabic.lastOrNull ?? '',
+      role: currentEmployee.role.lastOrNull ?? "",
+      country: currentEmployee.country.lastOrNull ?? '',
+      city: currentEmployee.city.lastOrNull ?? '',
       // ✅ FIX: currentPosition is null on macOS (location is skipped);
       // the old `currentPosition!` crashed with a null-check error.
       lat: currentPosition?.latitude.toString() ?? '',

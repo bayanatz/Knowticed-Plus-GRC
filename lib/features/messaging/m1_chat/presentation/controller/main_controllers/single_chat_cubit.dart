@@ -1,25 +1,26 @@
 /// Module: messaging / chat / presentation/controller/main_controllers/single_chat_cubit.dart
+library;
 // Date: 6/8/2024
 // Last update: 28/4/2026
 // Purpose: Concrete cubit for 1-to-1 (single) chat.
 //          Encrypts outgoing text messages and decrypts incoming ones.
 
+import 'package:flutter/foundation.dart';
 import 'dart:async';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
 // ADDED 2/9/2026 — spec section 2.4.
-import 'package:grc_module/features/messaging/main_controller/notifications/messages_notification_service.dart';
-import 'package:grc_module/features/messaging/m1_chat/domain/enum/media_type.dart';
-import 'package:grc_module/core/helper/message_module/main_helper/message_action_types.dart';
+import 'package:knowticed_plus/features/messaging/helpers/notifications/messages_notification_service.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/domain/enum/media_type.dart';
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/main_helper/message_action_types.dart';
 
-import 'package:grc_module/core/enums/message_module/message_types.dart';
-import '../../../../../../core/helper/message_module/interface/entity/base_messaging_interface_parameters.dart';
-import '../../../../m2_connections/domain/entities/single_connection_entity.dart';
-import '../../../../m4_messaging_home/domain/entities/chat_type_entity.dart';
-import '../../../domain/entity/message_entity.dart';
-import '../../../domain/use_cases/single_connection_usecases/clear_connection_num_of_unread_messages_use_case.dart';
-import '../../../domain/use_cases/single_connection_usecases/get_single_chat_messages_use_case.dart';
-import './master_chat_cubit.dart';
+import 'package:knowticed_plus/features/messaging/helpers/enums/message_types.dart';
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/interface/entity/base_messaging_interface_parameters.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/domain/entities/single_connection_entity.dart';
+import 'package:knowticed_plus/features/messaging/m4_messaging_home/domain/entities/chat_type_entity.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/domain/entity/message_entity.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/domain/use_cases/single_connection_usecases/clear_connection_num_of_unread_messages_use_case.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/domain/use_cases/single_connection_usecases/get_single_chat_messages_use_case.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/main_controllers/master_chat_cubit.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // State
@@ -31,7 +32,7 @@ class SingleChatState extends MasterChatState {
   SingleChatState({
     super.otherConnectionSide,
     super.isShowMedia,
-    super.isShowContactInfo,       // ✅ added
+    super.isShowContactInfo, // ✅ added
     super.isExpansionTabletChat,
     super.mediaMessages,
     super.messages,
@@ -53,7 +54,7 @@ class SingleChatState extends MasterChatState {
   SingleChatState copyWith({
     ChatTypeEntity? otherConnectionSide,
     bool? isShowMedia,
-    bool? isShowContactInfo,       // ✅ added
+    bool? isShowContactInfo, // ✅ added
     bool? isExpansionTabletChat,
     Map<MediaType, Map<String, List<MessageEntity>>>? mediaMessages,
     List<MessageEntity>? messages,
@@ -73,15 +74,18 @@ class SingleChatState extends MasterChatState {
     return SingleChatState(
       otherConnectionSide: otherConnectionSide ?? this.otherConnectionSide,
       isShowMedia: isShowMedia ?? this.isShowMedia,
-      isShowContactInfo: isShowContactInfo ?? this.isShowContactInfo,  // ✅ added
-      isExpansionTabletChat: isExpansionTabletChat ?? this.isExpansionTabletChat,
+      isShowContactInfo: isShowContactInfo ?? this.isShowContactInfo, // ✅ added
+      isExpansionTabletChat:
+          isExpansionTabletChat ?? this.isExpansionTabletChat,
       mediaMessages: mediaMessages ?? this.mediaMessages,
       messages: messages ?? this.messages,
       selectMessages: selectMessages ?? this.selectMessages,
       messageActionType: messageActionType ?? this.messageActionType,
-      selectedMessage: selectedMessage != null ? selectedMessage() : this.selectedMessage,
+      selectedMessage:
+          selectedMessage != null ? selectedMessage() : this.selectedMessage,
       newMessageType: newMessageType ?? this.newMessageType,
-      firstUnreadIndex: firstUnreadIndex != null ? firstUnreadIndex() : this.firstUnreadIndex,
+      firstUnreadIndex:
+          firstUnreadIndex != null ? firstUnreadIndex() : this.firstUnreadIndex,
       swiperIndex: swiperIndex ?? this.swiperIndex,
       currentUser: currentUser ?? this.currentUser,
       isSending: isSending ?? this.isSending,
@@ -128,6 +132,7 @@ class SingleChatCubit extends MasterChatCubit {
         chatScrollCubit.scrollMessagesListener,
       );
     } catch (e) {
+      debugPrint('Ignored error: $e');
     }
 
     await getChatMessages();
@@ -154,7 +159,7 @@ class SingleChatCubit extends MasterChatCubit {
 
   @override
   Future<void> getChatMessages() async {
-    emit(state.copyWith(messages: []) as SingleChatState);
+    emit(state.copyWith(messages: []));
     _listenToChatMessages();
   }
 
@@ -185,7 +190,7 @@ class SingleChatCubit extends MasterChatCubit {
           // ✅ Decrypt all text messages before updating the state
           final decryptedMessages = decryptMessagesList(rawMessages);
 
-          emit(state.copyWith(messages: decryptedMessages) as SingleChatState);
+          emit(state.copyWith(messages: decryptedMessages));
 
           getFirstUnreadIndex();
           updateUnSeenMessages();
@@ -279,7 +284,6 @@ class SingleChatCubit extends MasterChatCubit {
         .map((m) => m.messageId)
         .toList();
 
-
     if (unSeenMessagesIds.isNotEmpty) {
       await chatRepository.updateMessagesAsSeen(
         unSeenMessagesIds: unSeenMessagesIds,
@@ -292,6 +296,7 @@ class SingleChatCubit extends MasterChatCubit {
           otherUserId: state.otherUser!.userId,
         );
       } catch (e) {
+        debugPrint('Ignored error: $e');
       }
     }
   }
@@ -310,8 +315,8 @@ class SingleChatCubit extends MasterChatCubit {
       final encryptedText = encryptMessage(plainText);
 
       await textMessageCubit.sendMessage(
-        message: encryptedText,              // 🔒 encrypted for message content
-        previewText: plainText,              // 📝 plain for last message preview
+        message: encryptedText, // 🔒 encrypted for message content
+        previewText: plainText, // 📝 plain for last message preview
         currentUser: state.currentUser!,
         otherConnectionSide: state.otherUser!,
         repliedMessageId: repliedMessageId,

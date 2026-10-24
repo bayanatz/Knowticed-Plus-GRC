@@ -16,21 +16,22 @@
 ///
 /// The class name is kept: `SettingsController.socialController` and the four
 /// section widgets resolve it by that name, and the shell owns its lifecycle.
+library;
 
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 
-import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/controller/settings_controller.dart';
-import 'package:grc_module/features/settings/se2_social/data/models/social_profile_mapper.dart';
-import 'package:grc_module/features/settings/se2_social/data/repository/social_repository.dart';
-import 'package:grc_module/features/settings/se2_social/domain/base_repository/social_base_repository.dart';
-import 'package:grc_module/features/settings/se2_social/domain/entities/academic_entry.dart';
-import 'package:grc_module/features/settings/se2_social/domain/entities/skill_entry.dart';
-import 'package:grc_module/features/settings/se2_social/domain/entities/social_profile.dart';
-import 'package:grc_module/features/settings/se2_social/domain/use_cases/build_social_update.dart';
+import 'package:knowticed_plus/core/network/failure_model.dart';
+import 'package:knowticed_plus/features/settings/presentation/controller/settings_controller.dart';
+import 'package:knowticed_plus/features/settings/se2_social/data/models/social_profile_mapper.dart';
+import 'package:knowticed_plus/features/settings/se2_social/data/repository/social_repository.dart';
+import 'package:knowticed_plus/features/settings/se2_social/domain/base_repository/social_base_repository.dart';
+import 'package:knowticed_plus/features/settings/se2_social/domain/entities/academic_entry.dart';
+import 'package:knowticed_plus/features/settings/se2_social/domain/entities/skill_entry.dart';
+import 'package:knowticed_plus/features/settings/se2_social/domain/entities/social_profile.dart';
+import 'package:knowticed_plus/features/settings/se2_social/domain/use_cases/build_social_update.dart';
 
-part './social_state.dart';
+part 'social_state.dart';
 
 class SocialController extends Cubit<SocialState> {
   SocialController({
@@ -158,11 +159,13 @@ class SocialController extends Cubit<SocialState> {
     _publish();
   }
 
+  /// 21/10/2026 (Moataz): the minus on the LAST skill clears it instead of
+  /// doing nothing — the list keeps one (empty) row to type into.
   void removeSkill(int index) {
     if (index < 0 || index >= _draft.skills.length) return;
-    if (_draft.skills.length <= 1) return;
-    final List<SkillEntry> next = List<SkillEntry>.of(_draft.skills)
-      ..removeAt(index);
+    final List<SkillEntry> next = _draft.skills.length <= 1
+        ? <SkillEntry>[const SkillEntry()]
+        : (List<SkillEntry>.of(_draft.skills)..removeAt(index));
     _draft = _draft.copyWith(skills: next);
     _publish();
   }
@@ -183,13 +186,34 @@ class SocialController extends Cubit<SocialState> {
     _publish();
   }
 
+  /// 21/10/2026 (Moataz): the minus on the LAST hobby clears it, like skills.
   void removeHobby(int index) {
     if (index < 0 || index >= _draft.hobbies.length) return;
-    if (_draft.hobbies.length <= 1) return;
-    final List<String> next = List<String>.of(_draft.hobbies)..removeAt(index);
+    final List<String> next = _draft.hobbies.length <= 1
+        ? <String>['']
+        : (List<String>.of(_draft.hobbies)..removeAt(index));
     _draft = _draft.copyWith(hobbies: next);
     _publish();
   }
+
+  // ── Academic validation ───────────────────────────────────────────────────
+
+  /// 21/10/2026 (Moataz): which academic rows still need a field before the
+  /// page can save. A row is checked only when the user started it and it is
+  /// not exactly a row that was already stored — so an old record with no
+  /// degree no longer blocks a Bio / Skills / Hobbies save, and a blank row
+  /// from "+ Add Degree" (never persisted) blocks nothing.
+  Set<int> get incompleteAcademicRows => <int>{
+        for (int i = 0; i < _draft.academicHistory.length; i++)
+          if (_needsCompletion(_draft.academicHistory[i])) i,
+      };
+
+  bool _needsCompletion(AcademicEntry e) =>
+      !e.isEmpty &&
+      !_original.academicHistory.contains(e) &&
+      (e.degree.trim().isEmpty ||
+          e.university.trim().isEmpty ||
+          e.graduationYear.trim().isEmpty);
 
   // ── Saving ────────────────────────────────────────────────────────────────
 

@@ -2,67 +2,82 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: pin_notification.dart
-/// Purpose: Pinned notifications.
-/// Author: Knowticed Plus team
+/// Description: Pinned notifications.
+/// Author: Amr Mesbah
 /// Created at: 2026
 /// Updated: 12/8/2026 - CR-SKEL-NOTIF-N05/N06/N11/N14: the two UI `try` blocks are gone; the drawer
 ///          cubit is read from the tree; toasts are themed and localized; the
 ///          unsafe casts are guarded.
+library;
 
-import 'package:grc_module/core/custom/35-custom_search_widget_custom.dart';
-import 'package:grc_module/core/custom/51-custom_pop_up.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_button_sizing.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_filter_icon.dart';
+import 'package:knowticed_plus/core/custom/feedback/custom_empty_state.dart';
+import 'package:knowticed_plus/core/custom/inputs/custom_search_widget_custom.dart';
+import 'package:knowticed_plus/core/custom/dialogs/custom_pop_up.dart';
 
-import 'package:grc_module/core/custom/50-custom_side_frame_master.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/custom/navigation/custom_side_frame_master.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-// REMOVED_MODULE: import 'package:grc_module/core/helper/inventory_module/core/custom_button_widget.dart';
-// REMOVED_MODULE: import 'package:grc_module/features/external/knowledge_hub_module/core/theming/new_theme.dart';
-// REMOVED_MODULE: import 'package:grc_module/features/external/todo_new_module/external/tasks_module/core/custom_widgets/SideFrameMasterServices.dart';
-import 'package:lottie/lottie.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/core/helper/inventory_module/core/custom_button_widget.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/features/external/knowledge_hub_module/core/theming/new_theme.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/features/external/todo_new_module/external/tasks_module/core/custom_widgets/SideFrameMasterServices.dart';
 
-import 'package:grc_module/core/custom/69-cross_axis_count_helper.dart';
-import 'package:grc_module/generated/l10n.dart';
-// REMOVED_MODULE: import 'package:grc_module/external/inventory_module/core/drop_down.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
-// REMOVED_MODULE: import 'package:grc_module/external/services_mangment_module/Category/presentation/ui/service_department_manager/mobile/dashBoard_master_mobile/widget/dialog.dart';
-// REMOVED_MODULE: import 'package:grc_module/external/services_mangment_module/core/custom_pop_up.dart';
-import 'package:grc_module/features/notification/presentation/ui/widgets/notification_routing.dart';
-import 'package:grc_module/features/notification/presentation/ui/widgets/notification_filter_row.dart';
-import 'package:grc_module/features/notification/presentation/ui/widgets/notification_card.dart';
-import 'package:grc_module/features/notification/data/models/notification_data_model.dart';
-import 'package:grc_module/features/notification/data/repository/notification_services.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/external/inventory_module/core/drop_down.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/helper/access/main_core_employee_controller.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/external/services_mangment_module/Category/presentation/ui/service_department_manager/mobile/dashBoard_master_mobile/widget/dialog.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/external/services_mangment_module/core/custom_pop_up.dart';
+import 'package:knowticed_plus/features/notification/presentation/ui/widgets/notification_routing.dart';
+import 'package:knowticed_plus/features/notification/presentation/ui/widgets/notification_filter_row.dart';
+import 'package:knowticed_plus/features/notification/presentation/ui/widgets/notification_card.dart';
+import 'package:knowticed_plus/features/notification/data/models/notification_data_model.dart';
+import 'package:knowticed_plus/features/notification/data/repository/notification_services.dart';
+import 'package:knowticed_plus/core/helper/access/modules_enum.dart';
 
+import 'package:knowticed_plus/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/core/custom/feedback/circle_progress.dart';
+import 'package:knowticed_plus/core/theme/app_animations.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
 
-import 'package:grc_module/core/extensions/context_extensions.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
 // ✅ PINNED NOTIFICATIONS PAGE - Shows only isPinned == true
 class PinNotificationLandPage extends StatefulWidget {
   const PinNotificationLandPage({super.key});
 
   @override
-  State<PinNotificationLandPage> createState() => _PinNotificationLandPageState();
+  State<PinNotificationLandPage> createState() =>
+      _PinNotificationLandPageState();
 }
 
 class _PinNotificationLandPageState extends State<PinNotificationLandPage> {
-  final FirestoreNotificationService _notificationService = FirestoreNotificationService();
+  final FirestoreNotificationService _notificationService =
+      FirestoreNotificationService();
+
   /// Resolved lazily rather than in a field initializer, so the page can be
   /// built before the GetX bindings have registered it (CR-SKEL-NOTIF-N06).
-  MainCoreEmployeeController get _employeeController =>
-      Get.find<MainCoreEmployeeController>();  // TODO(knowticed, 12/8/2026): inject
+  MainCoreEmployeeController get _employeeController => Get.find<
+      MainCoreEmployeeController>(); // TODO(knowticed, 12/8/2026): inject
 
   String? _currentUserEmail;
   List<Modules> _allowedModules = [];
+
+  /// The inbox stream, opened ONCE. 22/10/2026 — Owner (View lag): it was
+  /// created inside build(), so every rebuild of this page dropped the
+  /// Firestore listener, opened a new one and flashed the loading spinner.
+  Stream<List<NotificationModelSystem>>? _stream;
 
   @override
   void initState() {
     super.initState();
     _currentUserEmail = _employeeController.employeeEntity?.email;
     _loadAllowedModules();
+    final String? email = _currentUserEmail;
+    if (email != null && email.isNotEmpty) {
+      _stream = _notificationService.streamNotificationsForUser(email);
+    }
   }
 
   void _loadAllowedModules() {
@@ -75,7 +90,9 @@ class _PinNotificationLandPageState extends State<PinNotificationLandPage> {
       Modules.knowledgeHub,
       Modules.qiyas,
       Modules.formBuilder,
-      Modules.tracking,
+      // CHANGED 9/10/2026 (Time Tracker phase 4): the real module, not the
+      // legacy stub — NotificationRouting now resolves `time_tracker` here.
+      Modules.timeTracker,
       Modules.todo,
       Modules.grc,
       Modules.database,
@@ -103,7 +120,9 @@ class _PinNotificationLandPageState extends State<PinNotificationLandPage> {
         body: Center(
           child: Text(
             S.of(context).userEmailNotFound,
-            style: StyleText.fontSize16Weight500.copyWith(color: AppColors.text),
+            style: StyleText.fontSize16Weight500.copyWith(
+              color: AppColors.text,
+            ),
           ),
         ),
       );
@@ -124,10 +143,12 @@ class _PinNotificationLandPageState extends State<PinNotificationLandPage> {
         onFirstTap: () => NotificationRouting.backToInbox(context),
         secondTitle: s.pinned,
         child: StreamBuilder<List<NotificationModelSystem>>(
-          stream: _notificationService.streamNotificationsForUser(_currentUserEmail!),
+          stream: _stream,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircleProgressMaster.inline(color: AppColors.primary));
+              return Center(
+                child: CircleProgressMaster.inline(color: AppColors.primary),
+              );
             }
 
             if (snapshot.hasError) {
@@ -136,7 +157,9 @@ class _PinNotificationLandPageState extends State<PinNotificationLandPage> {
                   // The raw Firestore error is not something a user can
                   // act on; it stays in the console, not on screen.
                   s.errorLoadingNotifications,
-                  style: StyleText.fontSize14Weight400.copyWith(color: AppColors.text),
+                  style: StyleText.fontSize14Weight400.copyWith(
+                    color: AppColors.text,
+                  ),
                 ),
               );
             }
@@ -179,13 +202,15 @@ class _NotificationContentState extends State<_NotificationContent> {
   TextEditingController searchController = TextEditingController();
   String sortOrder = "newest";
 
-  /// Toolbar filters — the same four the inbox carries. All open on
-  /// [NotificationFilters.all], a real option, so "All" reads as selected from
-  /// the first frame.
-  String? senderTypeFilter = NotificationFilters.all;
-  String? byTypeFilter = NotificationFilters.all;
-  String? departmentFilter = NotificationFilters.all;
-  String? timeFilter = NotificationFilters.all;
+  /// False until the user picks a sort: the Sort button stays grey and the
+  /// list is newest first. Picking turns the button yellow; picking the chosen
+  /// row again clears it.
+  bool sortChosen = false;
+
+  /// Toolbar filters — the same four the inbox carries.
+  /// CHANGED 22/10/2026 — Owner: multi-select; nothing ticked = all.
+  NotificationFilterSelection filters =
+      const NotificationFilterSelection.cleared();
 
   /// The pinned and not cleaned notifications this page shows, before the toolbar
   /// narrows them. Feeds the By Type / Department option lists so neither menu
@@ -204,8 +229,6 @@ class _NotificationContentState extends State<_NotificationContent> {
     List<NotificationModelSystem> filtered = widget.allNotifications;
 
     // ✅ DEBUG: Print all notifications before filtering
-    for (var n in filtered) {
-    }
 
     // ✅ ONLY show PINNED notifications (isPinned == true)
     filtered = filtered.where((n) => n.isPinned == true).toList();
@@ -241,18 +264,15 @@ class _NotificationContentState extends State<_NotificationContent> {
     filtered = NotificationFilters.apply(
       source: filtered,
       employeeController: widget.employeeController,
-      senderType: senderTypeFilter,
-      byType: byTypeFilter,
-      department: departmentFilter,
-      time: timeFilter,
+      selection: filters,
     );
 
     // Sort by timestamp
     filtered.sort((a, b) {
       if (sortOrder == "newest") {
-        return (b.timestamp ?? 0).compareTo(a.timestamp ?? 0);
+        return (b.timestamp).compareTo(a.timestamp);
       } else {
-        return (a.timestamp ?? 0).compareTo(b.timestamp ?? 0);
+        return (a.timestamp).compareTo(b.timestamp);
       }
     });
 
@@ -261,7 +281,6 @@ class _NotificationContentState extends State<_NotificationContent> {
 
   // ✅ FIXED: Better module name matching (EXACT MATCH TO MAIN PAGE)
   String _getModuleKeyFromName(String displayName) {
-
     for (Modules module in widget.allowedModules) {
       if (module.getModuleName == displayName) {
         String key = _moduleEnumToKey(module);
@@ -293,7 +312,7 @@ class _NotificationContentState extends State<_NotificationContent> {
         return 'qiyas';
       case Modules.formBuilder:
         return 'formBuilder'; // ✅ Changed from 'services_app'
-      case Modules.tracking:
+      case Modules.timeTracker: // CHANGED 9/10/2026 (was Modules.tracking)
         return 'tracking';
       case Modules.todo:
         return 'todo';
@@ -313,8 +332,9 @@ class _NotificationContentState extends State<_NotificationContent> {
   /// NotificationRouting owns that mapping and collapses the three role-area
   /// keys onto [Modules.roles]. Same helper as notification_page.
   String? _moduleKeyOf(String storedModuleKey) {
-    final Modules? module =
-        NotificationRouting.moduleForStoredKey(storedModuleKey);
+    final Modules? module = NotificationRouting.moduleForStoredKey(
+      storedModuleKey,
+    );
     return module == null ? null : _moduleEnumToKey(module);
   }
 
@@ -365,7 +385,6 @@ class _NotificationContentState extends State<_NotificationContent> {
   void _handleViewNotification(NotificationModelSystem notification) =>
       NotificationRouting.openNotification(context, notification);
 
-
   // WIRED 21/9/2026 — was a no-op. See NotificationRouting.messageSender.
   void _handleMessageSender(NotificationModelSystem notification) =>
       NotificationRouting.messageSender(context, notification);
@@ -376,11 +395,14 @@ class _NotificationContentState extends State<_NotificationContent> {
     var isMobile = ContextExtension(context).isPhone;
     final s = S.of(context);
 
-    List<NotificationModelSystem> filteredNotifications = _getFilteredNotifications();
+    List<NotificationModelSystem> filteredNotifications =
+        _getFilteredNotifications();
     Map<String, int> moduleCounts = _getNotificationCountsByModule();
 
-    return SingleChildScrollView(
-      physics: BouncingScrollPhysics(),
+    // Owner 21/10/2026 14:53 (pinned rows, same as the main page): the rows
+    // above the cards stay put and only the cards scroll. SideFrameBoundedBody
+    // bounds the Column on the phone, where the frame scrolls its child.
+    return SideFrameBoundedBody(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -399,8 +421,8 @@ class _NotificationContentState extends State<_NotificationContent> {
                       : AppColors.secondaryText,
                 ),
                 ...() {
-                  List<Map<String, dynamic>> moduleData = widget.allowedModules
-                      .map((module) {
+                  List<Map<String, dynamic>> moduleData =
+                      widget.allowedModules.map((module) {
                     String moduleKey = _moduleEnumToKey(module);
                     int count = moduleCounts[moduleKey] ?? 0;
                     return {
@@ -413,8 +435,11 @@ class _NotificationContentState extends State<_NotificationContent> {
 
                   // Was `(b['count'] as int)` — a missing or wrongly-typed field threw
                   // during build (CR-SKEL-NOTIF-N11).
-                  moduleData.sort((a, b) => ((b['count'] as num?)?.toInt() ?? 0)
-                      .compareTo((a['count'] as num?)?.toInt() ?? 0));
+                  moduleData.sort(
+                    (a, b) => ((b['count'] as num?)?.toInt() ?? 0).compareTo(
+                      (a['count'] as num?)?.toInt() ?? 0,
+                    ),
+                  );
 
                   return moduleData.map<Widget>((data) {
                     return _statusChip(
@@ -422,7 +447,9 @@ class _NotificationContentState extends State<_NotificationContent> {
                       data['displayName'] as String,
                       isSelected: selectStatus == data['displayName'],
                       onTap: () => setState(
-                          () => selectStatus = data['displayName']?.toString() ?? ''),
+                        () => selectStatus =
+                            data['displayName']?.toString() ?? '',
+                      ),
                       labelColor: selectStatus == data['displayName']
                           ? AppColors.text
                           : AppColors.secondaryText,
@@ -441,13 +468,44 @@ class _NotificationContentState extends State<_NotificationContent> {
                 controller: searchController,
                 onChanged: (val) => setState(() {}),
               ),
-              SizedBox(width: 15.w),
+              SizedBox(width: ButtonSizing.toolbarGap(context)),
+              // Owner 21/10/2026 14:53: on the phone the four filter
+              // dropdowns go into the dialog (same as the main page) and
+              // this Filter icon sits between Search and Sort.
+              if (NotificationFilters.inDialog(context,
+                  isMobile: isMobile)) ...[
+                CustomFilterIcon(
+                  iconOnly: true,
+                  active: filters.isFiltering,
+                  onTap: () async {
+                    final NotificationFilterSelection? picked =
+                        await showNotificationFilterDialog(
+                      context: context,
+                      notifications: _scopedNotifications(),
+                      employeeController: widget.employeeController,
+                      current: filters,
+                    );
+                    if (picked == null || !mounted) return;
+                    setState(() => filters = picked);
+                  },
+                ),
+                SizedBox(width: ButtonSizing.toolbarGap(context)),
+              ],
               CustomPopupMenuButton(
-                title: isMobile ? "" : s.sort,
-                iconPath: "assets/icons_assets/main_icons_assets/sort_lines.svg",
+                // 22/10/2026 — Owner: icon only (the core square) on a phone and
+                // on a tablet in portrait, where the toolbar is too narrow.
+                title: isMobile ||
+                        MediaQuery.orientationOf(context) ==
+                            Orientation.portrait
+                    ? ""
+                    : s.sort,
+                iconPath:
+                    "assets/icons_assets/main_icons_assets/ic_action_sort.svg",
                 backgroundColor: AppColors.card,
                 iconColor: AppColors.secondaryText,
-                width: 100,
+                // Owner 21/10/2026 14:54: the house height (38.sp) like Search and Clean All.
+                width: 100.w,
+                // Raw 38: CustomPopupMenuButton scales it itself (.r).
                 height: 38,
                 options: [
                   // Was a hand-rolled locale ternary; the strings live in
@@ -455,9 +513,15 @@ class _NotificationContentState extends State<_NotificationContent> {
                   PopupOption(value: "newest", label: s.newestFirst),
                   PopupOption(value: "oldest", label: s.oldestFirst),
                 ],
+                selectedValue: sortChosen ? sortOrder : '',
+                onCleared: () => setState(() {
+                  sortChosen = false;
+                  sortOrder = "newest";
+                }),
                 onSelected: (value) {
                   setState(() {
                     sortOrder = value;
+                    sortChosen = true;
                   });
                 },
               ),
@@ -466,69 +530,97 @@ class _NotificationContentState extends State<_NotificationContent> {
           SizedBox(height: 15.sp),
 
           // Sender Type / By Type / Department / Time — same row as the inbox.
-          NotificationFilterRow(
-            notifications: _scopedNotifications(),
-            employeeController: widget.employeeController,
-            isMobile: isMobile,
-            senderType: senderTypeFilter,
-            byType: byTypeFilter,
-            department: departmentFilter,
-            time: timeFilter,
-            onSenderTypeChanged: (v) => setState(() => senderTypeFilter = v),
-            onByTypeChanged: (v) => setState(() => byTypeFilter = v),
-            onDepartmentChanged: (v) => setState(() => departmentFilter = v),
-            onTimeChanged: (v) => setState(() => timeFilter = v),
-          ),
+          if (!NotificationFilters.inDialog(context, isMobile: isMobile))
+            NotificationFilterRow(
+              notifications: _scopedNotifications(),
+              employeeController: widget.employeeController,
+              isMobile: isMobile,
+              selection: filters,
+              // 22/10/2026 — Time = Custom now opens the range calendar here
+              // too (the Pinned and Cleared rows never passed the range).
+              onChanged: (v) => setState(() => filters = v),
+            ),
 
           SizedBox(height: 15.sp),
 
-          // Grid or Empty
-          filteredNotifications.isEmpty
-              ? Center(
-            child: Padding(
-              padding: EdgeInsets.all(40.sp),
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(height: 50.h),
-                    Lottie.asset(
-                      'assets/lottie_assets/notification_lottie_assets/empty.json',
-                      width: 250.w,
-                      height: 250.h,
-                      fit: BoxFit.fill,
-                      repeat: true,
-                    ),
-                  ],
-                ),
-              ),
+          Expanded(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: // Grid or Empty
+                  filteredNotifications.isEmpty
+                      ? Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(40.sp),
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(height: 50.h),
+                                  CustomEmptyState(
+                                    lottiePath:
+                                        'assets/lottie_assets/main_lottie_assets/lot_empty_state.json',
+                                    size: 250,
+                                    verticalPadding: 0,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        )
+                      : isMobile
+                          // Owner 21/10/2026 14:53: on the phone every card is its
+                          // CONTENT height (no fixed cell, no empty band, no "…").
+                          ? ListView.separated(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: filteredNotifications.length,
+                              separatorBuilder: (_, __) =>
+                                  SizedBox(height: 15.sp),
+                              itemBuilder: (context, index) {
+                                final notification =
+                                    filteredNotifications[index];
+                                return _buildNotificationCard(
+                                    notification, isMobile, s);
+                              },
+                            )
+                          : GridView.builder(
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                // Owner 21/10/2026 14:45: one card per row on iPad portrait.
+                                crossAxisCount: (isDesktop &&
+                                        MediaQuery.of(context).orientation ==
+                                            Orientation.landscape)
+                                    ? 2
+                                    : 1,
+                                // 185.sp, matching the inbox — the card is shared now, so
+                                // the tile it sits in has to be too. 180.sp left it 5px short.
+                                // CHANGED 13/9/2026 — one tile height per form factor.
+                                //
+                                // A single 195.sp left a band of empty card under the buttons on
+                                // a phone: mobile shrinks the buttons to 75% (see
+                                // notification_card.dart), the avatar to 30.sp and the label
+                                // sizes with it, so the card needs roughly 25.sp less than a
+                                // desktop one. The body is Flexible now, so that surplus does
+                                // not stretch the text box — it just sits at the bottom of the
+                                // card, which is exactly the gap this removes.
+                                // +1 body line (owner round 4, 7/10/2026): bodies show
+                                // up to 3 lines — see NotificationCard.bodyMaxLines.
+                                // Owner 21/10/2026 14:45: the same card height as the main page.
+                                mainAxisExtent: isMobile ? 170.sp : 152.sp,
+                                crossAxisSpacing: 15.sp,
+                                mainAxisSpacing: 15.sp,
+                              ),
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: filteredNotifications.length,
+                              itemBuilder: (context, index) {
+                                final notification =
+                                    filteredNotifications[index];
+                                return _buildNotificationCard(
+                                    notification, isMobile, s);
+                              },
+                            ),
             ),
-          )
-              : GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: isDesktop ? 2 : 1,
-              // 185.sp, matching the inbox — the card is shared now, so
-              // the tile it sits in has to be too. 180.sp left it 5px short.
-              // CHANGED 13/9/2026 — one tile height per form factor.
-              //
-              // A single 195.sp left a band of empty card under the buttons on
-              // a phone: mobile shrinks the buttons to 75% (see
-              // notification_card.dart), the avatar to 30.sp and the label
-              // sizes with it, so the card needs roughly 25.sp less than a
-              // desktop one. The body is Flexible now, so that surplus does
-              // not stretch the text box — it just sits at the bottom of the
-              // card, which is exactly the gap this removes.
-              mainAxisExtent: isMobile ? 172.sp : 195.sp,
-              crossAxisSpacing: 15.sp,
-              mainAxisSpacing: 15.sp,
-            ),
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: filteredNotifications.length,
-            itemBuilder: (context, index) {
-              final notification = filteredNotifications[index];
-              return _buildNotificationCard(notification, isMobile, s);
-            },
           ),
         ],
       ),
@@ -543,10 +635,16 @@ class _NotificationContentState extends State<_NotificationContent> {
   /// sender chip that overflowed instead of ellipsising, wider buttons —
   /// because every fix only ever landed on the page someone was looking at.
   Widget _buildNotificationCard(
-      NotificationModelSystem notification, bool isMobile, S s) {
-    // No Message button on a system notification: there is nobody to message.
-    final bool hasHumanSender =
-        widget.employeeController.isKnownEmployee(notification.senderEmail);
+    NotificationModelSystem notification,
+    bool isMobile,
+    S s,
+  ) {
+    // No Message button on a system notification (nobody to message) nor on
+    // a To-Do one (personal — owner, 7/10/2026). Same rule the card uses.
+    final bool hasHumanSender = NotificationCard.hasSenderSection(
+      notification,
+      widget.employeeController,
+    );
 
     return NotificationCard(
       notification: notification,
@@ -557,39 +655,46 @@ class _NotificationContentState extends State<_NotificationContent> {
           ? NotificationCardAction(
               title: s.message,
               iconPath:
-                  "assets/icons_assets/roles_assets/chat_messages_bubbles.svg",
+                  "assets/icons_assets/main_icons_assets/ic_comms_chat_double.svg",
               onTap: () => _handleMessageSender(notification),
             )
           : null,
       // Everything on this page is pinned, so this button only ever unpins.
       leadingAction: NotificationCardAction(
         title: s.unpin,
-        iconPath: "assets/icons_assets/notification_assets/pushpin.svg",
-        background: AppColors.darkGrey,
-        foreground: AppColors.white,
+        iconPath: "assets/icons_assets/main_icons_assets/ic_action_pin.svg",
         onTap: () => _handlePinToggle(notification),
       ),
       trailingAction: NotificationCardAction(
         title: s.view,
-        iconPath: "assets/icons_assets/notification_assets/document_search.svg",
+        iconPath:
+            "assets/icons_assets/notification_assets/ic_action_view_document.svg",
         onTap: () => _handleViewNotification(notification),
       ),
     );
   }
 
-  Widget _statusChip(String count, String label, {required bool isSelected, required Color labelColor, required VoidCallback onTap}) {
+  Widget _statusChip(
+    String count,
+    String label, {
+    required bool isSelected,
+    required Color labelColor,
+    required VoidCallback onTap,
+  }) {
     var light = Theme.of(context).brightness == Brightness.light;
     var isMobile = ContextExtension(context).isPhone;
 
     return GestureDetector(
-      onTap: onTap,
+      onTap: withHaptic(onTap, HapticLevel.low),
       child: Row(
         children: [
           Container(
             width: isMobile ? 35.sp : 45.sp,
             height: isMobile ? 35.sp : 45.sp,
             decoration: BoxDecoration(
-              color: light ? (isSelected ? AppColors.primary : AppColors.card) : (isSelected ? AppColors.primary : AppColors.card),
+              color: light
+                  ? (isSelected ? AppColors.primary : AppColors.card)
+                  : (isSelected ? AppColors.primary : AppColors.card),
               borderRadius: BorderRadius.circular(4.r),
             ),
             child: Center(
@@ -597,20 +702,32 @@ class _NotificationContentState extends State<_NotificationContent> {
                 count,
                 style: isMobile
                     ? StyleText.fontSize14Weight400.copyWith(
-                    color: light
-                        ? (isSelected ? AppColors.textButton : AppColors.secondaryText)
-                        : (isSelected ? AppColors.textButton : AppColors.text))
+                        color: light
+                            ? (isSelected
+                                ? AppColors.textButton
+                                : AppColors.secondaryText)
+                            : (isSelected
+                                ? AppColors.textButton
+                                : AppColors.text),
+                      )
                     : StyleText.fontSize20Weight500.copyWith(
-                    color: light
-                        ? (isSelected ? AppColors.textButton : AppColors.secondaryText)
-                        : (isSelected ? AppColors.textButton : AppColors.text)),
+                        color: light
+                            ? (isSelected
+                                ? AppColors.textButton
+                                : AppColors.secondaryText)
+                            : (isSelected
+                                ? AppColors.textButton
+                                : AppColors.text),
+                      ),
               ),
             ),
           ),
           SizedBox(width: 16.sp),
           Text(
             label,
-            style: isMobile ? StyleText.fontSize14Weight600.copyWith(color: labelColor) : StyleText.fontSize16Weight600.copyWith(color: labelColor),
+            style: isMobile
+                ? StyleText.fontSize14Weight600.copyWith(color: labelColor)
+                : StyleText.fontSize16Weight600.copyWith(color: labelColor),
           ),
           SizedBox(width: 30.sp),
         ],

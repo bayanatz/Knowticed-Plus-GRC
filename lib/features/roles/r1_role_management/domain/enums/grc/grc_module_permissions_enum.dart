@@ -14,8 +14,9 @@
 /// what writes Demo_Permissions, and this enum is what reads it back. A
 /// mismatch does not throw; the permission just reads as absent and the
 /// feature silently disappears.
+library;
 
-import 'package:grc_module/features/roles/r1_role_management/domain/entities/module_permissions_sections_permissions.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/entities/module_permissions_sections_permissions.dart';
 
 enum GrcModulePermissions implements ModulePermissionsSectionsPermission {
   createModule,

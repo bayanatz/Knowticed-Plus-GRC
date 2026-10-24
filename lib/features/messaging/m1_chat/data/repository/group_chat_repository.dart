@@ -1,33 +1,43 @@
+/// Module: messaging/m1_chat
+///
+///*************************** FILE INFO ****************************///
+/// File Name: group_chat_repository.dart
+/// Description: `GroupChatRepository` repository.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
+library;
+
 /// Module: messaging / chat / data/repository/group_chat_repository.dart
+import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
-import 'package:flutter/cupertino.dart';
 
-import 'package:grc_module/core/network/message_module/services/error_handler.dart';
-import 'package:grc_module/core/constants/message_module/api_constants.dart';
-import 'package:grc_module/core/enums/message_module/message_types.dart';
-import '../../../../../core/helper/message_module/interface/entity/base_messaging_interface_parameters.dart';
-import '../../../m2_connections/data/models/user_connection_last_message_info_model.dart';
-import '../../../m3_groups/data/models/group_last_message_info.dart';
-import '../../../m3_groups/data/models/group_members.dart';
-import '../../../m3_groups/data/models/group_model.dart';
-import '../../../m3_groups/domain/entities/group_entity.dart';
-import '../../../m3_groups/domain/entities/member_entity.dart';
-import '../../../m4_messaging_home/domain/entities/chat_type_entity.dart';
-import '../../domain/entity/new_message_content_entity.dart';
-import '../../domain/repository/chat_repository/base_chat_repository.dart';
-import '../../domain/enum/reacts.dart';
-import 'react_writer.dart';
-import '../data_source/group_chat_remote_data_source.dart';
-import '../models/group_chat_message_model.dart';
-import '../models/group_member_seen_model.dart';
-import '../models/single_chat_message_model.dart';
-import '../models/sub_models/pin_model.dart';
+import 'package:knowticed_plus/core/network/failure_model.dart';
+import 'package:knowticed_plus/features/messaging/helpers/constants/messaging_api_constants.dart';
+import 'package:knowticed_plus/features/messaging/helpers/enums/message_types.dart';
+
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/interface/entity/base_messaging_interface_parameters.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/data/models/user_connection_last_message_info_model.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/data/models/group_last_message_info.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/data/models/group_members.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/data/models/group_model.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/domain/entities/group_entity.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/domain/entities/member_entity.dart';
+import 'package:knowticed_plus/features/messaging/m4_messaging_home/domain/entities/chat_type_entity.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/domain/entity/new_message_content_entity.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/domain/repository/chat_repository/base_chat_repository.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/domain/enum/reacts.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/repository/react_writer.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/data_source/group_chat_remote_data_source.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/group_chat_message_model.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/group_member_seen_model.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/single_chat_message_model.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/sub_models/pin_model.dart';
 
 class GroupChatRepository implements BaseChatRepository {
   Timestamp _currentTime = Timestamp.now();
   final GroupChatRemoteDataSource chatRemoteDataSource =
-  GroupChatRemoteDataSource();
+      GroupChatRemoteDataSource();
 
   @override
   deleteMessage({
@@ -35,9 +45,13 @@ class GroupChatRepository implements BaseChatRepository {
     required String chatId,
     required String otherId,
     required String currentUserId,
-  }) {
+  }) async {
     chatRemoteDataSource.deleteMessage(
-        messageId: messageId, groupId: chatId, currentUserId: currentUserId);
+      messageId: messageId,
+      groupId: chatId,
+      currentUserId: currentUserId,
+    );
+    return null;
   }
 
   @override
@@ -47,18 +61,20 @@ class GroupChatRepository implements BaseChatRepository {
     required String chatId,
     required String otherId,
     required String currentUserId,
-  }) {
+  }) async {
     chatRemoteDataSource.editTextMessage(
-        newMessageText: newMessageText,
-        messageId: messageId,
-        groupId: chatId,
-        currentUserId: currentUserId);
+      newMessageText: newMessageText,
+      messageId: messageId,
+      groupId: chatId,
+      currentUserId: currentUserId,
+    );
+    return null;
   }
 
   @override
   Stream<Either<Failure, dynamic>> getChatMessages(String chatId) async* {
     Stream<Either<Failure, List<Map<String, dynamic>>>> stream =
-    chatRemoteDataSource.getGroupChatMessages(groupId: chatId);
+        chatRemoteDataSource.getGroupChatMessages(groupId: chatId);
     await for (final data in stream) {
       if (data.isLeft()) {
         yield data;
@@ -72,7 +88,7 @@ class GroupChatRepository implements BaseChatRepository {
         try {
           messages.add(GroupChatMessageModel.fromMap(jsonMessage));
         } catch (e) {
-          debugPrint('⚠️ skipped malformed group chat message ($e): $jsonMessage');
+          debugPrint('Ignored error: $e');
         }
       }
       yield Right(messages);
@@ -108,17 +124,21 @@ class GroupChatRepository implements BaseChatRepository {
     chatRemoteDataSource.startBatch();
     Map<String, dynamic> groupUpdatedData = {};
     _updateGroupLastMessageInfo(
-        groupEntity: groupEntity,
-        currentUser: currentUser,
-        newMessageContent: messageContent,
-        groupUpdatedData: groupUpdatedData);
+      groupEntity: groupEntity,
+      currentUser: currentUser,
+      newMessageContent: messageContent,
+      groupUpdatedData: groupUpdatedData,
+    );
     _updateGroupMembersSeenMessages(
-        groupEntity: groupEntity,
-        currentUser: currentUser,
-        groupedUpdatedData: groupUpdatedData);
+      groupEntity: groupEntity,
+      currentUser: currentUser,
+      groupedUpdatedData: groupUpdatedData,
+    );
 
     chatRemoteDataSource.updateGroupMessageData(
-        groupId: groupEntity.groupId, data: groupUpdatedData);
+      groupId: groupEntity.groupId,
+      data: groupUpdatedData,
+    );
 
     GroupChatMessageModel? messageModel = await _createMessageModel(
       newMessageContent: messageContent,
@@ -141,12 +161,16 @@ class GroupChatRepository implements BaseChatRepository {
   }) async {
     chatRemoteDataSource.startBatch();
     chatRemoteDataSource.updateUserSeenMessages(
-        chatId: chatId,
-        messageId: unSeenMessagesIds,
-        userId: currentUserId!,
-        seenTime: Timestamp.now());
+      chatId: chatId,
+      messageId: unSeenMessagesIds,
+      userId: currentUserId!,
+      seenTime: Timestamp.now(),
+    );
     chatRemoteDataSource.updateUserNumOfUnreadMessages(
-        groupId: chatId, userId: currentUserId!, numOfUnreadMessages: 0);
+      groupId: chatId,
+      userId: currentUserId,
+      numOfUnreadMessages: 0,
+    );
     return await chatRemoteDataSource.commitBatch();
   }
 
@@ -165,19 +189,21 @@ class GroupChatRepository implements BaseChatRepository {
       return result;
     }
     GroupChatMessageModel messageModel = GroupChatMessageModel.fromMap(
-        result.getOrElse(() => {}) as Map<String, dynamic>);
+      result.getOrElse(() => {}) as Map<String, dynamic>,
+    );
     // §10 — pinModel is final; seed it via copyWith when absent, then mutate
     // the PinModel's own lists (that's the PinModel's state, not this model's).
     if (messageModel.pinModel == null) {
       messageModel = messageModel.copyWith(
-          pinModel: PinModel(isPinned: [], userId: [], pinnedAt: []));
+        pinModel: PinModel(isPinned: [], userId: [], pinnedAt: []),
+      );
     }
     messageModel.pinModel!.isPinned.add(state);
     messageModel.pinModel!.userId.add(currentUserId);
     messageModel.pinModel!.pinnedAt.add(Timestamp.now());
     chatRemoteDataSource.updateMessage(messageId, chatId, messageModel.toMap());
+    return null;
   }
-
 
   Future<Either<Failure, void>> updateGroupPinnedMessageId({
     required String groupId,
@@ -226,24 +252,27 @@ class GroupChatRepository implements BaseChatRepository {
     if (newMessageContent.messageType == MessageTypes.text) {
       newMessageContent as TextMessageContentEntity;
       return GroupChatMessageModel(
-          groupId: groupEntity.groupId,
-          messageId:
-          "${currentUser.userId} . ${_currentTime.microsecondsSinceEpoch}",
-          messageContent: newMessageContent.messageContent,
-          messageType: newMessageContent.messageType,
-          senderId: currentUser.userId,
-          sendTime: _currentTime,
-          isDeleted: false,
-          isEdited: false,
-          isForwarded: false,
-          repliedMessageId: newMessageContent.repliedMessageId,
-          mentionedMembers: newMessageContent.messageType == MessageTypes.text
-              ? newMessageContent.mentionedMembers?.keys.toList()
-              : null,
-          seenBy: [
-            GroupMemberSeenModel(
-                memberId: currentUser.userId, seenTime: _currentTime)
-          ]);
+        groupId: groupEntity.groupId,
+        messageId:
+            "${currentUser.userId} . ${_currentTime.microsecondsSinceEpoch}",
+        messageContent: newMessageContent.messageContent,
+        messageType: newMessageContent.messageType,
+        senderId: currentUser.userId,
+        sendTime: _currentTime,
+        isDeleted: false,
+        isEdited: false,
+        isForwarded: false,
+        repliedMessageId: newMessageContent.repliedMessageId,
+        mentionedMembers: newMessageContent.messageType == MessageTypes.text
+            ? newMessageContent.mentionedMembers?.keys.toList()
+            : null,
+        seenBy: [
+          GroupMemberSeenModel(
+            memberId: currentUser.userId,
+            seenTime: _currentTime,
+          ),
+        ],
+      );
     } else if (newMessageContent.messageType == MessageTypes.cameraImage) {
       newMessageContent as ImageMessageContentEntity;
       Either<Failure, String> mediaLink = await chatRemoteDataSource
@@ -251,21 +280,24 @@ class GroupChatRepository implements BaseChatRepository {
       if (mediaLink.isLeft()) return null;
       String mediaLinkString = mediaLink.getOrElse(() => "");
       return GroupChatMessageModel(
-          groupId: groupEntity.groupId,
-          messageContent: newMessageContent.caption,
-          messageId: "${currentUser.userId} . $_currentTime",
-          mediaLink: mediaLinkString,
-          messageType: newMessageContent.messageType,
-          senderId: currentUser.userId,
-          sendTime: _currentTime,
-          isDeleted: false,
-          isEdited: false,
-          isForwarded: false,
-          repliedMessageId: newMessageContent.repliedMessageId,
-          seenBy: [
-            GroupMemberSeenModel(
-                memberId: currentUser.userId, seenTime: _currentTime)
-          ]);
+        groupId: groupEntity.groupId,
+        messageContent: newMessageContent.caption,
+        messageId: "${currentUser.userId} . $_currentTime",
+        mediaLink: mediaLinkString,
+        messageType: newMessageContent.messageType,
+        senderId: currentUser.userId,
+        sendTime: _currentTime,
+        isDeleted: false,
+        isEdited: false,
+        isForwarded: false,
+        repliedMessageId: newMessageContent.repliedMessageId,
+        seenBy: [
+          GroupMemberSeenModel(
+            memberId: currentUser.userId,
+            seenTime: _currentTime,
+          ),
+        ],
+      );
     } else if (newMessageContent.messageType == MessageTypes.video) {
       newMessageContent as VideoMessageContentEntity;
       Either<Failure, String> mediaLink = await chatRemoteDataSource
@@ -274,47 +306,54 @@ class GroupChatRepository implements BaseChatRepository {
       String mediaLinkString = mediaLink.getOrElse(() => "");
       newMessageContent.video.videoFilePath = mediaLinkString;
       return GroupChatMessageModel(
-          groupId: groupEntity.groupId,
-          messageContent: newMessageContent.caption,
-          messageId: "${currentUser.userId} . $_currentTime",
-          mediaLink: mediaLinkString,
-          messageType: newMessageContent.messageType,
-          senderId: currentUser.userId,
-          sendTime: _currentTime,
-          isDeleted: false,
-          isEdited: false,
-          isForwarded: false,
-          repliedMessageId: newMessageContent.repliedMessageId,
-          video: newMessageContent.video,
-          seenBy: [
-            GroupMemberSeenModel(
-                memberId: currentUser.userId, seenTime: _currentTime)
-          ]);
+        groupId: groupEntity.groupId,
+        messageContent: newMessageContent.caption,
+        messageId: "${currentUser.userId} . $_currentTime",
+        mediaLink: mediaLinkString,
+        messageType: newMessageContent.messageType,
+        senderId: currentUser.userId,
+        sendTime: _currentTime,
+        isDeleted: false,
+        isEdited: false,
+        isForwarded: false,
+        repliedMessageId: newMessageContent.repliedMessageId,
+        video: newMessageContent.video,
+        seenBy: [
+          GroupMemberSeenModel(
+            memberId: currentUser.userId,
+            seenTime: _currentTime,
+          ),
+        ],
+      );
     } else if (newMessageContent.messageType == MessageTypes.doc) {
       newMessageContent as DocumentMessageContentEntity;
-      Either<Failure, String> mediaLink = await chatRemoteDataSource
-          .uploadMedia(
-          filePath: newMessageContent.documentMessageModel.docPath);
+      Either<Failure, String> mediaLink =
+          await chatRemoteDataSource.uploadMedia(
+        filePath: newMessageContent.documentMessageModel.docPath,
+      );
       if (mediaLink.isLeft()) return null;
       String docLink = mediaLink.getOrElse(() => "");
       newMessageContent.documentMessageModel.docPath = docLink;
       return GroupChatMessageModel(
-          groupId: groupEntity.groupId,
-          messageContent: null,
-          messageId: "${currentUser.userId} . $_currentTime",
-          mediaLink: docLink,
-          messageType: newMessageContent.messageType,
-          senderId: currentUser.userId,
-          sendTime: _currentTime,
-          isDeleted: false,
-          isEdited: false,
-          isForwarded: false,
-          repliedMessageId: newMessageContent.repliedMessageId,
-          docMessageModel: newMessageContent.documentMessageModel,
-          seenBy: [
-            GroupMemberSeenModel(
-                memberId: currentUser.userId, seenTime: _currentTime)
-          ]);
+        groupId: groupEntity.groupId,
+        messageContent: null,
+        messageId: "${currentUser.userId} . $_currentTime",
+        mediaLink: docLink,
+        messageType: newMessageContent.messageType,
+        senderId: currentUser.userId,
+        sendTime: _currentTime,
+        isDeleted: false,
+        isEdited: false,
+        isForwarded: false,
+        repliedMessageId: newMessageContent.repliedMessageId,
+        docMessageModel: newMessageContent.documentMessageModel,
+        seenBy: [
+          GroupMemberSeenModel(
+            memberId: currentUser.userId,
+            seenTime: _currentTime,
+          ),
+        ],
+      );
     } else if (newMessageContent.messageType == MessageTypes.audio) {
       newMessageContent as AudioMessageContentEntity;
       Either<Failure, String> mediaLink = await chatRemoteDataSource
@@ -323,22 +362,25 @@ class GroupChatRepository implements BaseChatRepository {
       String audioLink = mediaLink.getOrElse(() => "");
       newMessageContent.audio.audioPath = audioLink;
       return GroupChatMessageModel(
-          groupId: groupEntity.groupId,
-          messageContent: null,
-          messageId: "${currentUser.userId} . $_currentTime",
-          mediaLink: audioLink,
-          messageType: newMessageContent.messageType,
-          senderId: currentUser.userId,
-          sendTime: _currentTime,
-          isDeleted: false,
-          isEdited: false,
-          isForwarded: false,
-          audio: newMessageContent.audio,
-          repliedMessageId: newMessageContent.repliedMessageId,
-          seenBy: [
-            GroupMemberSeenModel(
-                memberId: currentUser.userId, seenTime: _currentTime)
-          ]);
+        groupId: groupEntity.groupId,
+        messageContent: null,
+        messageId: "${currentUser.userId} . $_currentTime",
+        mediaLink: audioLink,
+        messageType: newMessageContent.messageType,
+        senderId: currentUser.userId,
+        sendTime: _currentTime,
+        isDeleted: false,
+        isEdited: false,
+        isForwarded: false,
+        audio: newMessageContent.audio,
+        repliedMessageId: newMessageContent.repliedMessageId,
+        seenBy: [
+          GroupMemberSeenModel(
+            memberId: currentUser.userId,
+            seenTime: _currentTime,
+          ),
+        ],
+      );
     } else if (newMessageContent is LocationMessageContentEntity ||
         newMessageContent is ContactMessageContentEntity ||
         newMessageContent is PollMessageContentEntity) {
@@ -352,26 +394,29 @@ class GroupChatRepository implements BaseChatRepository {
                   .contact
                   .encode();
       return GroupChatMessageModel(
-          groupId: groupEntity.groupId,
-          messageContent: payload,
-          messageId: "${currentUser.userId} . $_currentTime",
-          messageType: newMessageContent.messageType,
-          senderId: currentUser.userId,
-          sendTime: _currentTime,
-          isDeleted: false,
-          isEdited: false,
-          isForwarded: false,
-          repliedMessageId: newMessageContent.repliedMessageId,
-          seenBy: [
-            GroupMemberSeenModel(
-                memberId: currentUser.userId, seenTime: _currentTime)
-          ]);
+        groupId: groupEntity.groupId,
+        messageContent: payload,
+        messageId: "${currentUser.userId} . $_currentTime",
+        messageType: newMessageContent.messageType,
+        senderId: currentUser.userId,
+        sendTime: _currentTime,
+        isDeleted: false,
+        isEdited: false,
+        isForwarded: false,
+        repliedMessageId: newMessageContent.repliedMessageId,
+        seenBy: [
+          GroupMemberSeenModel(
+            memberId: currentUser.userId,
+            seenTime: _currentTime,
+          ),
+        ],
+      );
     }
     return null;
   }
 
   // ✅ FIXED: use previewContent (plain text) for last message info instead of encrypted messageContent
-  _updateGroupLastMessageInfo({
+  void _updateGroupLastMessageInfo({
     required GroupEntity groupEntity,
     required BaseMessagingInterfaceParameters currentUser,
     required Map<String, dynamic> groupUpdatedData,
@@ -381,63 +426,72 @@ class GroupChatRepository implements BaseChatRepository {
     if (newMessageContent.messageType == MessageTypes.text) {
       newMessageContent as TextMessageContentEntity;
       // ✅ Use previewContent (plain text) for the tile preview, fall back to messageContent
-      final displayText = newMessageContent.previewContent ?? newMessageContent.messageContent;
+      final displayText =
+          newMessageContent.previewContent ?? newMessageContent.messageContent;
       lastMessageInfo = GroupLastMessageInfo(
-          messageType: newMessageContent.messageType,
-          messageId: "${currentUser.userId} . $_currentTime",
-          textMessage: displayText,
-          senderId: currentUser.userId,
-          lastMessageTime: _currentTime);
+        messageType: newMessageContent.messageType,
+        messageId: "${currentUser.userId} . $_currentTime",
+        textMessage: displayText,
+        senderId: currentUser.userId,
+        lastMessageTime: _currentTime,
+      );
       if (newMessageContent.mentionedMembers != null) {
         _updateMentionList(
-            gorupId: groupEntity,
-            mentions: newMessageContent.mentionedMembers!);
+          gorupId: groupEntity,
+          mentions: newMessageContent.mentionedMembers!,
+        );
       }
     }
     if (newMessageContent.messageType == MessageTypes.cameraImage) {
       newMessageContent as ImageMessageContentEntity;
       lastMessageInfo = GroupLastMessageInfo(
-          messageType: newMessageContent.messageType,
-          messageId: "${currentUser.userId} . $_currentTime",
-          textMessage: newMessageContent.caption,
-          senderId: currentUser.userId,
-          lastMessageTime: _currentTime);
+        messageType: newMessageContent.messageType,
+        messageId: "${currentUser.userId} . $_currentTime",
+        textMessage: newMessageContent.caption,
+        senderId: currentUser.userId,
+        lastMessageTime: _currentTime,
+      );
     }
     if (newMessageContent.messageType == MessageTypes.video) {
       newMessageContent as VideoMessageContentEntity;
       lastMessageInfo = GroupLastMessageInfo(
-          messageType: newMessageContent.messageType,
-          messageId: "${currentUser.userId} . $_currentTime",
-          textMessage: newMessageContent.caption,
-          senderId: currentUser.userId,
-          lastMessageTime: _currentTime);
+        messageType: newMessageContent.messageType,
+        messageId: "${currentUser.userId} . $_currentTime",
+        textMessage: newMessageContent.caption,
+        senderId: currentUser.userId,
+        lastMessageTime: _currentTime,
+      );
     }
     if (newMessageContent.messageType == MessageTypes.doc ||
         newMessageContent.messageType == MessageTypes.audio) {
       lastMessageInfo = GroupLastMessageInfo(
-          messageType: newMessageContent.messageType,
-          messageId: "${currentUser.userId} . $_currentTime",
-          textMessage: null,
-          senderId: currentUser.userId,
-          lastMessageTime: _currentTime);
-      groupUpdatedData.addAll(
-          {GroupModel.GROUP_LAST_MESSAGE_INFO: lastMessageInfo.toMap()});
+        messageType: newMessageContent.messageType,
+        messageId: "${currentUser.userId} . $_currentTime",
+        textMessage: null,
+        senderId: currentUser.userId,
+        lastMessageTime: _currentTime,
+      );
+      groupUpdatedData.addAll({
+        GroupModel.kGroupLastMessageInfo: lastMessageInfo.toMap(),
+      });
     }
     // Bug report #4: location / contact / poll / gallery-image messages used
     // to leave the group's last-message info untouched, so the group card
     // kept saying "You created this group" after messages were sent. Every
     // other type now records a type-only preview.
     lastMessageInfo ??= GroupLastMessageInfo(
-        messageType: newMessageContent.messageType,
-        messageId: "${currentUser.userId} . $_currentTime",
-        textMessage: null,
-        senderId: currentUser.userId,
-        lastMessageTime: _currentTime);
-    groupUpdatedData.addAll(
-        {GroupModel.GROUP_LAST_MESSAGE_INFO: lastMessageInfo.toMap()});
+      messageType: newMessageContent.messageType,
+      messageId: "${currentUser.userId} . $_currentTime",
+      textMessage: null,
+      senderId: currentUser.userId,
+      lastMessageTime: _currentTime,
+    );
+    groupUpdatedData.addAll({
+      GroupModel.kGroupLastMessageInfo: lastMessageInfo.toMap(),
+    });
   }
 
-  _updateGroupMembersSeenMessages({
+  void _updateGroupMembersSeenMessages({
     required GroupEntity groupEntity,
     required BaseMessagingInterfaceParameters currentUser,
     required Map<String, dynamic> groupedUpdatedData,
@@ -447,12 +501,12 @@ class GroupChatRepository implements BaseChatRepository {
       if (member.memberId != currentUser.userId) {
         updateSeenQueries.addAll({
           "${GroupMembers.membersKey}.${member.memberId.replaceAll(".", "---")}.${GroupMember.numOfUnreadMessagesKey}":
-          FieldValue.increment(1)
+              FieldValue.increment(1),
         });
       } else {
         updateSeenQueries.addAll({
           "${GroupMembers.membersKey}.${member.memberId.replaceAll(".", "---")}.${GroupMember.numOfUnreadMessagesKey}":
-          0
+              0,
         });
       }
     }
@@ -464,6 +518,8 @@ class GroupChatRepository implements BaseChatRepository {
     required Map<String, dynamic> mentions,
   }) {
     chatRemoteDataSource.updateGroupMentionList(
-        groupId: gorupId.groupId, mentions: mentions.keys.toList());
+      groupId: gorupId.groupId,
+      mentions: mentions.keys.toList(),
+    );
   }
 }

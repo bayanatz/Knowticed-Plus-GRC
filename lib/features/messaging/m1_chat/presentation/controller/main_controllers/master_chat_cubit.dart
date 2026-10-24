@@ -1,3 +1,12 @@
+/// Module: messaging/m1_chat
+///
+///*************************** FILE INFO ****************************///
+/// File Name: master_chat_cubit.dart
+/// Description: `MasterChatState` state, `MasterChatCubit` cubit (state management).
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
+library;
+
 /// Module: messaging / chat / presentation/controller/main_controllers/master_chat_cubit.dart
 // Date: 6/8/2024
 // Last update: 28/4/2026
@@ -10,33 +19,35 @@ import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grc_module/core/helper/main_helper/extensions.dart';
-import 'package:grc_module/core/helper/message_module/main_helper/incrption.dart';
-import 'package:grc_module/features/messaging/m1_chat/presentation/controller/functions_on_messages_controllers/edit_and_delete_message_cubit.dart';
-import 'package:grc_module/features/messaging/m1_chat/presentation/controller/functions_on_messages_controllers/forward_message_cubit.dart';
-import 'package:grc_module/features/messaging/m1_chat/presentation/controller/functions_on_messages_controllers/overlay_cubit.dart';
-import 'package:grc_module/features/messaging/m1_chat/presentation/controller/functions_on_messages_controllers/pin_message_cubit.dart';
-import 'package:grc_module/features/messaging/m1_chat/presentation/controller/functions_on_messages_controllers/reply_message_cubit.dart';
-import 'package:grc_module/features/messaging/m1_chat/presentation/controller/helper_controllers/chat_scroll_cubit.dart';
-import 'package:grc_module/features/messaging/m1_chat/presentation/controller/message_types_controllers/document_message_cubit.dart';
-import 'package:grc_module/features/messaging/m1_chat/presentation/controller/message_types_controllers/image_message_cubit.dart';
-import 'package:grc_module/features/messaging/m1_chat/presentation/controller/message_types_controllers/record_and_audio_cubit.dart';
-import 'package:grc_module/features/messaging/m1_chat/presentation/controller/message_types_controllers/text_message_cubit.dart';
+import 'package:knowticed_plus/core/helper/extensions.dart';
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/main_helper/incrption.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/functions_on_messages_controllers/edit_and_delete_message_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/functions_on_messages_controllers/forward_message_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/functions_on_messages_controllers/overlay_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/functions_on_messages_controllers/pin_message_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/functions_on_messages_controllers/reply_message_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/helper_controllers/chat_scroll_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/message_types_controllers/document_message_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/message_types_controllers/image_message_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/message_types_controllers/record_and_audio_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/message_types_controllers/text_message_cubit.dart';
 
-import 'package:grc_module/core/services/message_module/audio_record_service.dart';
-import 'package:grc_module/core/enums/message_module/message_types.dart';
-import '../../../../../../core/helper/message_module/interface/entity/base_messaging_interface_parameters.dart';
-import '../../../../m2_connections/domain/entities/single_connection_entity.dart';
-import '../../../../m3_groups/domain/entities/group_entity.dart';
-import '../../../../m4_messaging_home/domain/entities/chat_type_entity.dart';
-import '../../../domain/entity/message_entity.dart';
-import '../../../domain/entity/new_message_content_entity.dart';
-import '../../../domain/enum/media_type.dart';
-import '../../../domain/repository/chat_repository/base_chat_repository.dart';
-import '../../../domain/enum/reacts.dart';
-import '../../../../../../core/helper/message_module/main_helper/message_action_types.dart';
-import '../../../../main_controller/helper/chat_settings_service.dart';
-import '../../../../main_controller/helper/scheduled_messages_service.dart';
+import 'package:knowticed_plus/features/messaging/helpers/services/audio_record_service.dart';
+import 'package:knowticed_plus/features/messaging/helpers/enums/message_types.dart';
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/interface/entity/base_messaging_interface_parameters.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/domain/entities/single_connection_entity.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/domain/entities/group_entity.dart';
+import 'package:knowticed_plus/features/messaging/m4_messaging_home/domain/entities/chat_type_entity.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/domain/entity/message_entity.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/domain/entity/new_message_content_entity.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/domain/enum/media_type.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/domain/repository/chat_repository/base_chat_repository.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/domain/enum/reacts.dart';
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/main_helper/message_action_types.dart';
+import 'package:knowticed_plus/features/messaging/helpers/main/chat_settings_service.dart';
+import 'package:knowticed_plus/features/messaging/helpers/main/scheduled_messages_service.dart';
+
+part 'master_chat_cubit/master_chat_cubit_methods.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // State
@@ -45,7 +56,7 @@ import '../../../../main_controller/helper/scheduled_messages_service.dart';
 class MasterChatState {
   final ChatTypeEntity? otherConnectionSide;
   final bool isShowMedia;
-  final bool isShowContactInfo;  // ✅ NEW
+  final bool isShowContactInfo; // ✅ NEW
   final bool isExpansionTabletChat;
   final Map<MediaType, Map<String, List<MessageEntity>>> mediaMessages;
   final List<MessageEntity> messages;
@@ -68,7 +79,7 @@ class MasterChatState {
   MasterChatState({
     this.otherConnectionSide,
     this.isShowMedia = false,
-    this.isShowContactInfo = false,  // ✅ NEW
+    this.isShowContactInfo = false, // ✅ NEW
     this.isExpansionTabletChat = false,
     this.mediaMessages = const {},
     this.messages = const [],
@@ -92,7 +103,7 @@ class MasterChatState {
   MasterChatState copyWith({
     ChatTypeEntity? otherConnectionSide,
     bool? isShowMedia,
-    bool? isShowContactInfo,  // ✅ NEW
+    bool? isShowContactInfo, // ✅ NEW
     bool? isExpansionTabletChat,
     Map<MediaType, Map<String, List<MessageEntity>>>? mediaMessages,
     List<MessageEntity>? messages,
@@ -111,18 +122,18 @@ class MasterChatState {
     return MasterChatState(
       otherConnectionSide: otherConnectionSide ?? this.otherConnectionSide,
       isShowMedia: isShowMedia ?? this.isShowMedia,
-      isShowContactInfo: isShowContactInfo ?? this.isShowContactInfo,  // ✅ NEW
+      isShowContactInfo: isShowContactInfo ?? this.isShowContactInfo, // ✅ NEW
       isExpansionTabletChat:
-      isExpansionTabletChat ?? this.isExpansionTabletChat,
+          isExpansionTabletChat ?? this.isExpansionTabletChat,
       mediaMessages: mediaMessages ?? this.mediaMessages,
       messages: messages ?? this.messages,
       selectMessages: selectMessages ?? this.selectMessages,
       messageActionType: messageActionType ?? this.messageActionType,
       selectedMessage:
-      selectedMessage != null ? selectedMessage() : this.selectedMessage,
+          selectedMessage != null ? selectedMessage() : this.selectedMessage,
       newMessageType: newMessageType ?? this.newMessageType,
       firstUnreadIndex:
-      firstUnreadIndex != null ? firstUnreadIndex() : this.firstUnreadIndex,
+          firstUnreadIndex != null ? firstUnreadIndex() : this.firstUnreadIndex,
       swiperIndex: swiperIndex ?? this.swiperIndex,
       currentUser: currentUser ?? this.currentUser,
       isSending: isSending ?? this.isSending,
@@ -140,6 +151,10 @@ class MasterChatState {
 // ─────────────────────────────────────────────────────────────────────────────
 
 abstract class MasterChatCubit extends Cubit<MasterChatState> {
+  /// Public [emit] for this cubit's extension / part files and widgets
+  /// ([emit] itself is protected).
+  void emitState(MasterChatState state) => emit(state);
+
   final BaseChatRepository chatRepository;
 
   // ── Encryption ────────────────────────────────────────────────────────────
@@ -148,7 +163,7 @@ abstract class MasterChatCubit extends Cubit<MasterChatState> {
   // ── Controllers ───────────────────────────────────────────────────────────
   final messageFocusNode = FocusNode();
   final TextEditingController textMessageEditingController =
-  TextEditingController();
+      TextEditingController();
   final SwiperController swiperController = SwiperController();
   List<TextEditingController> captionControllers = [];
 
@@ -174,49 +189,6 @@ abstract class MasterChatCubit extends Cubit<MasterChatState> {
     overlayCubit = OverlayCubit();
     forwardMessageCubit = ForwardMessageCubit();
     _initialize();
-  }
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // Async initialization
-  // ─────────────────────────────────────────────────────────────────────────
-
-  Future<void> _initialize() async {
-    try {
-      await AudioRecordService.initializeController();
-    } catch (e) {
-    }
-
-    replyMessageCubit = ReplyMessageCubit(
-      chatRepository: chatRepository,
-      masterChatCubit: this,
-    );
-
-    imageMessageCubit = ImageMessageCubit(
-      masterChatCubit: this,
-      chatRepository: chatRepository,
-    );
-
-    editAndDeleteMessageCubit = EditAndDeleteMessageCubit(
-      chatRepository: chatRepository,
-      masterChatCubit: this,
-    );
-
-    recordAndAudioCubit = RecordAndAudioCubit(
-      chatRepository: chatRepository,
-      masterChatCubit: this,
-    );
-
-    textMessageCubit = TextMessageCubit(chatRepository: chatRepository);
-
-    documentMessageCubit = DocumentMessageCubit(
-      masterChatCubit: this,
-      chatRepository: chatRepository,
-    );
-
-    try {
-      resetResources();
-    } catch (e) {
-    }
   }
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -335,40 +307,6 @@ abstract class MasterChatCubit extends Cubit<MasterChatState> {
     return key.isNotEmpty && ChatSettingsService.isMuted(key);
   }
 
-  /// Drops messages that have disappeared and re-numbers the rest, so
-  /// `index` / `indexOfRepliedMessage` still point at list positions.
-  List<MessageEntity> applyDisappearing(List<MessageEntity> messages) {
-    final since = _disappearingSince;
-    if (since == null) return messages;
-    final int hours = _disappearingHours;
-
-    final Map<int, int> newIndexOf = <int, int>{};
-    final List<MessageEntity> kept = <MessageEntity>[];
-    for (final m in messages) {
-      // "Always": a seen message goes when the chat is next opened, so it
-      // never vanishes while the user is reading it.
-      final bool seenEarlier =
-          m.isSeen && m.time.toDate().isBefore(_chatOpenedAt);
-      if (ChatSettingsService.hasDisappeared(m.time.toDate(), since,
-          hours: hours, isSeen: seenEarlier)) {
-        continue;
-      }
-      newIndexOf[m.index] = kept.length;
-      kept.add(m);
-    }
-    if (kept.length == messages.length) return messages;
-
-    return <MessageEntity>[
-      for (int i = 0; i < kept.length; i++)
-        kept[i].copyWith(
-          index: i,
-          indexOfRepliedMessage: () => kept[i].indexOfRepliedMessage == null
-              ? null
-              : newIndexOf[kept[i].indexOfRepliedMessage!],
-        ),
-    ];
-  }
-
   /// Loads the open chat's settings, then re-applies them to what is on
   /// screen. Call right after a chat is started.
   Future<void> loadChatSettings() async {
@@ -459,8 +397,7 @@ abstract class MasterChatCubit extends Cubit<MasterChatState> {
     for (final controller in captionControllers) {
       controller.dispose();
     }
-    captionControllers =
-        List.generate(count, (_) => TextEditingController());
+    captionControllers = List.generate(count, (_) => TextEditingController());
   }
 
   void updateSwiperIndex(int index) {
@@ -477,7 +414,8 @@ abstract class MasterChatCubit extends Cubit<MasterChatState> {
   }
 
   void removeSelectedMedia(int index) {
-    final updated = List<String>.from(state.selectedMediaPaths)..removeAt(index);
+    final updated = List<String>.from(state.selectedMediaPaths)
+      ..removeAt(index);
     emit(state.copyWith(selectedMediaPaths: updated));
   }
 
@@ -510,45 +448,6 @@ abstract class MasterChatCubit extends Cubit<MasterChatState> {
 
   void setSending(bool value) {
     emit(state.copyWith(isSending: value));
-  }
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // Forward
-  // ─────────────────────────────────────────────────────────────────────────
-
-  /// Re-send [message] into each of [targets] as a new text message.
-  ///
-  /// ADDED 2/9/2026, for the "Forward" item in the long-press menu.
-  ///
-  /// TEXT ONLY — see the note on that menu item. The non-text
-  /// NewMessageContentEntity variants all take a local file path to upload, and
-  /// a received message only has a remote `mediaLink`, so media cannot be
-  /// forwarded until a download-and-re-upload step exists.
-  ///
-  /// Sends are sequential rather than a Future.wait: each one writes the
-  /// recipient's own "last message" document, and firing them together made
-  /// those writes race in the connections list.
-  Future<void> forwardTextMessage({
-    required MessageEntity message,
-    required List<SingleConnectionEntity> targets,
-  }) async {
-    final currentUser = state.currentUser;
-    final String text = message.messageContent ?? '';
-
-    if (currentUser == null || targets.isEmpty || text.isEmpty) return;
-
-    setSending(true);
-    try {
-      for (final target in targets) {
-        await chatRepository.sendNewMessage(
-          currentUser: currentUser,
-          otherConnectionSide: target,
-          messageContent: TextMessageContentEntity(messageContent: text),
-        );
-      }
-    } finally {
-      setSending(false);
-    }
   }
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -596,125 +495,40 @@ abstract class MasterChatCubit extends Cubit<MasterChatState> {
   // Message selection
   // ─────────────────────────────────────────────────────────────────────────
 
+  /// Ticked messages while [MasterChatState.selectMessages] is on, by id.
+  /// Kept on the cubit (not in the state) so the three state classes'
+  /// copyWith stay untouched; every change re-emits to rebuild the ticks.
+  final Set<String> selectedMessageIds = <String>{};
+
   void toggleSelectMessages(bool value) {
+    selectedMessageIds.clear();
     emit(state.copyWith(selectMessages: value));
   }
 
-  void selectMessageToMakeAction({
-    required MessageEntity? message,
-    required MessageActionTypes actionType,
-    required MessageTypes? newMessageType,
-    required BuildContext context,
-  }) {
-    emit(state.copyWith(
-      newMessageType: newMessageType ?? MessageTypes.text,
-      messageActionType: actionType,
-      selectedMessage: () => message,
-    ));
-
-    if (actionType == MessageActionTypes.editMessage) {
-      final raw = message?.messageContent ?? '';
-      textMessageEditingController.text = decryptMessage(raw);
-      editAndDeleteMessageCubit.setEditMessage();
-      messageFocusNode.requestFocus();
-      return;
-    } else if (actionType == MessageActionTypes.replyMessage) {
-      replyMessageCubit.setReplyMessage();
-      return;
-    } else if (actionType == MessageActionTypes.newMessage) {
-      final msgType = state.newMessageType;
-      if (msgType == MessageTypes.cameraImage) {
-        imageMessageCubit.getImageCamera();
-      } else if (msgType == MessageTypes.galleryImage) {
-        imageMessageCubit.getImageGallery();
-      } else if (msgType == MessageTypes.doc) {
-        documentMessageCubit.pickDoc(context: context);
-      } else if (msgType == MessageTypes.audio) {
-        recordAndAudioCubit.pickAudio(context: context);
-      }
-    }
+  /// Forward → selection mode with [first] already ticked (Figma "2 Selected").
+  void startSelection(MessageEntity first) {
+    selectedMessageIds
+      ..clear()
+      ..add(first.messageId);
+    emit(state.copyWith(selectMessages: true));
   }
 
-  Future<void> applySelectedMessageAction(BuildContext context) async {
-    if (state.messageActionType == MessageActionTypes.newMessage) {
-      final hasMedia = state.selectedMediaPaths.isNotEmpty;
-      final hasDocs = state.selectedDocPaths.isNotEmpty;
-
-      if (hasMedia || hasDocs) {
-        // Bug report p.14: the picked-file preview stayed above the input
-        // (with its remove badge) after the message was already in the chat.
-        // Take a copy and clear the preview as soon as sending starts; the
-        // spinner on Send still shows until the upload finishes.
-        final List<String> mediaPaths = List<String>.of(state.selectedMediaPaths);
-        final List<String> docPaths = List<String>.of(state.selectedDocPaths);
-        clearAllSelectedFiles();
-        setSending(true);
-        try {
-          if (hasMedia) {
-            await imageMessageCubit.sendMultipleMedia(mediaPaths);
-          }
-          if (hasDocs) {
-            await documentMessageCubit.sendMultipleDocumentsFromPaths(docPaths);
-          }
-        } catch (e) {
-          debugPrint('[MasterChatCubit] ✗ sending attachments: $e');
-        } finally {
-          setSending(false);
-        }
-      } else {
-        await sendNewMessage();
-      }
+  void toggleMessageSelected(MessageEntity message) {
+    if (!selectedMessageIds.remove(message.messageId)) {
+      selectedMessageIds.add(message.messageId);
     }
-
-    if (state.messageActionType == MessageActionTypes.editMessage) {
-      await editAndDeleteMessageCubit.submitEditMessage(context);
-    }
-
-    if (state.messageActionType == MessageActionTypes.deleteMessage) {
-      await editAndDeleteMessageCubit.deleteMessage();
-    }
-
-    if (state.messageActionType == MessageActionTypes.replyMessage) {
-      await replyMessageCubit.submitMessageReply(context);
-    }
-
-    emit(state.copyWith(
-      messageActionType: MessageActionTypes.newMessage,
-      newMessageType: MessageTypes.text,
-    ));
-    textMessageEditingController.clear();
+    emit(state.copyWith());
   }
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // Reactions
-  // ─────────────────────────────────────────────────────────────────────────
+  /// Only text can be forwarded (see the Forward menu item), so only text
+  /// messages get a tick box.
+  static bool isForwardable(MessageEntity m) =>
+      !m.isDeleted && m.messageType == MessageTypes.text;
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // ✅ Share location / contact (bug report #23)
-  // ─────────────────────────────────────────────────────────────────────────
-
-  Future<bool> _sendContent(NewMessageContentEntity content) async {
-    final me = state.currentUser;
-    final side = state.otherConnectionSide;
-    if (me == null || side == null) {
-      debugPrint('[MasterChatCubit] ✗ share: no open chat');
-      return false;
-    }
-    try {
-      final result = await chatRepository.sendNewMessage(
-        currentUser: me,
-        otherConnectionSide: side,
-        messageContent: content,
-      );
-      final bool ok = result is! Left;
-      debugPrint('[MasterChatCubit] share ${content.messageType.name} → '
-          '${ok ? 'sent' : 'failed: $result'}');
-      return ok;
-    } catch (e) {
-      debugPrint('[MasterChatCubit] ✗ share ${content.messageType.name}: $e');
-      return false;
-    }
-  }
+  /// The ticked messages in chat order (oldest first).
+  List<MessageEntity> get selectedMessages => state.messages
+      .where((MessageEntity m) => selectedMessageIds.contains(m.messageId))
+      .toList();
 
   Future<bool> sendLocationMessage(LocationPayload location) =>
       _sendContent(LocationMessageContentEntity(location: location));
@@ -726,41 +540,6 @@ abstract class MasterChatCubit extends Cubit<MasterChatState> {
   Future<bool> sendPollMessage(PollPayload poll) =>
       _sendContent(PollMessageContentEntity(poll: poll));
 
-  /// Schedule Message dialog (Figma 6799:16821) and scheduled polls.
-  Future<bool> scheduleMessage({
-    String? text,
-    String? attachmentPath,
-    PollPayload? poll,
-    required DateTime sendAt,
-  }) async {
-    final me = state.currentUser;
-    final side = state.otherConnectionSide;
-    final key = chatSettingsKey;
-    if (me == null || side == null || key.isEmpty) return false;
-    final bool isGroup = side is GroupEntity;
-    final String targetId = side is GroupEntity
-        ? side.groupId
-        : side is SingleConnectionEntity
-            ? side.userId
-            : side.otherSideId;
-    final String targetName = side is GroupEntity
-        ? side.primaryLanguageName
-        : side is SingleConnectionEntity
-            ? side.name
-            : side.primaryLanguageName;
-    return ScheduledMessagesService.schedule(
-      senderId: me.userId,
-      chatKey: key,
-      isGroup: isGroup,
-      targetId: targetId,
-      targetName: targetName,
-      sendAt: sendAt,
-      text: text,
-      attachmentPath: attachmentPath,
-      poll: poll,
-    );
-  }
-
   /// Next pending scheduled send in the open chat (yellow appbar banner).
   Stream<DateTime?> nextScheduledMessage() {
     final key = chatSettingsKey;
@@ -771,103 +550,6 @@ abstract class MasterChatCubit extends Cubit<MasterChatState> {
 
   /// This session's own reaction per message id (see [reactToMessage]).
   final Map<String, Reacts> _myReacts = <String, Reacts>{};
-
-  void reactToMessage({
-    required int messageIndex,
-    required Reacts react,
-  }) {
-    final messages = List<MessageEntity>.from(state.messages);
-
-    if (messageIndex < 0 || messageIndex >= messages.length) {
-      return;
-    }
-
-    final message = messages[messageIndex];
-
-    // §10 — reacts field is final; rebuild the list and reassign via copyWith.
-    //
-    // Bug report #24: ONE reaction per user. Changing it replaces the old
-    // one instead of adding a second; the same one again removes it. The
-    // server does the same (ReactWriter) and its snapshot then confirms
-    // this optimistic view.
-    final newReacts = List<Reacts>.from(message.reacts);
-    final Reacts? previous = _myReacts[message.messageId];
-    if (previous != null) newReacts.remove(previous);
-    if (previous == react) {
-      _myReacts.remove(message.messageId);
-    } else {
-      newReacts.add(react);
-      _myReacts[message.messageId] = react;
-    }
-    messages[messageIndex] = message.copyWith(reacts: newReacts);
-
-    emit(state.copyWith(messages: messages));
-
-    final chatId = _resolveChatId();
-    final currentUserId = state.currentUser?.userId ?? '';
-
-    if (chatId.isNotEmpty && currentUserId.isNotEmpty) {
-      chatRepository
-          .addReact(
-        chatId: chatId,
-        messageId: message.messageId,
-        currentUserId: currentUserId,
-        react: react,
-      )
-          .then(
-            (result) => result.fold(
-              (f) {},
-              (_) {},
-        ),
-      );
-    } else {
-    }
-  }
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // ✅ Chat-level Pin (from appbar menu)
-  // ─────────────────────────────────────────────────────────────────────────
-
-  void toggleChatPin() {
-    if (state.chatPinnedMessage != null) {
-      emit(state.copyWith(chatPinnedMessage: () => null));
-    } else {
-      final pinnedMessages =
-      state.messages.where((m) => m.isPinned).toList();
-
-      if (pinnedMessages.isEmpty) {
-        if (state.messages.isNotEmpty) {
-          final lastMsg = state.messages.last;
-          emit(state.copyWith(chatPinnedMessage: () => lastMsg));
-        }
-        return;
-      }
-
-      final latestPinned = pinnedMessages.last;
-      emit(state.copyWith(chatPinnedMessage: () => latestPinned));
-    }
-  }
-
-
-
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // ✅ Star / Unstar a message
-  // ─────────────────────────────────────────────────────────────────────────
-
-  void toggleStarMessage({required int messageIndex}) {
-    final messages = List<MessageEntity>.from(state.messages);
-
-    if (messageIndex < 0 || messageIndex >= messages.length) {
-      return;
-    }
-
-    final message = messages[messageIndex];
-    final newStarred = !message.isStarred;
-
-    messages[messageIndex] = message.copyWith(isStarred: newStarred);
-    emit(state.copyWith(messages: messages));
-  }
 
   // ─────────────────────────────────────────────────────────────────────────
   // ✅ Contact Info panel toggle (side panel like Media/Links/Docs)
@@ -918,7 +600,7 @@ abstract class MasterChatCubit extends Cubit<MasterChatState> {
 
   void getFirstUnreadIndex() {
     final firstUnread =
-    state.messages.indexWhere((element) => element.isSeen == false);
+        state.messages.indexWhere((element) => element.isSeen == false);
 
     if (firstUnread == -1) {
       emit(state.copyWith(firstUnreadIndex: () => null));
@@ -943,9 +625,9 @@ abstract class MasterChatCubit extends Cubit<MasterChatState> {
   Map<String, List<MessageEntity>> handleFilterMediaMessages() {
     final list = state.messages
         .where((m) =>
-    m.messageType == MessageTypes.galleryImage ||
-        m.messageType == MessageTypes.cameraImage ||
-        m.messageType == MessageTypes.video)
+            m.messageType == MessageTypes.galleryImage ||
+            m.messageType == MessageTypes.cameraImage ||
+            m.messageType == MessageTypes.video)
         .toList();
     return filterMessagesListByMonth(list);
   }
@@ -953,16 +635,15 @@ abstract class MasterChatCubit extends Cubit<MasterChatState> {
   Map<String, List<MessageEntity>> handleFilterLinksMessages() {
     final list = state.messages
         .where((m) =>
-    m.messageType == MessageTypes.text &&
-        (m.messageContent?.isLink() ?? false))
+            m.messageType == MessageTypes.text &&
+            (m.messageContent?.isLink() ?? false))
         .toList();
     return filterMessagesListByMonth(list);
   }
 
   Map<String, List<MessageEntity>> handleFilterDocumentMessages() {
-    final list = state.messages
-        .where((m) => m.messageType == MessageTypes.doc)
-        .toList();
+    final list =
+        state.messages.where((m) => m.messageType == MessageTypes.doc).toList();
     return filterMessagesListByMonth(list);
   }
 
@@ -971,11 +652,10 @@ abstract class MasterChatCubit extends Cubit<MasterChatState> {
     final messagesByMonth = <String, List<MessageEntity>>{};
     for (final message in messages) {
       final sendTime = message.time.toDate();
-      final isCurrentMonth = sendTime
-          .isAfter(DateTime(DateTime.now().year, DateTime.now().month));
-      final monthKey = isCurrentMonth
-          ? 'Last Month'
-          : '${sendTime.month}/${sendTime.year}';
+      final isCurrentMonth =
+          sendTime.isAfter(DateTime(DateTime.now().year, DateTime.now().month));
+      final monthKey =
+          isCurrentMonth ? 'Last Month' : '${sendTime.month}/${sendTime.year}';
 
       messagesByMonth.putIfAbsent(monthKey, () => []).add(message);
     }

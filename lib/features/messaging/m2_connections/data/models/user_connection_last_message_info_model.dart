@@ -4,12 +4,13 @@
 /// Purpose: User connection last message info model — messaging Connections sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:grc_module/core/enums/message_module/message_types.dart';
+import 'package:knowticed_plus/features/messaging/helpers/enums/message_types.dart';
 
-class UserConnectionLastMessageInfoModel{
+class UserConnectionLastMessageInfoModel {
   MessageTypes messageType;
   bool? isLastMessageSenderCurrentUser;
   String? textMessage;
@@ -17,7 +18,6 @@ class UserConnectionLastMessageInfoModel{
   int otherUnreadMessagesCount;
   Timestamp? lastMessageTime;
   String? messageId;
-
 
   UserConnectionLastMessageInfoModel({
     required this.messageType,
@@ -29,40 +29,36 @@ class UserConnectionLastMessageInfoModel{
     this.messageId,
   });
 
-
-  static const String MESSAGE_TYPE = 'Message_Type';
-  static const String IS_LAST_MESSAGE_SENDER_CURRENT_USER =
+  static const String kMessageType = 'Message_Type';
+  static const String kIsLastMessageSenderCurrentUser =
       'Is_Last_Message_Sender_Current_User';
-  static const String TEXT_MESSAGE = 'Text_Message';
-  static const String MY_UNREAD_MESSAGES_COUNT = 'My_Unread_Messages_Count';
-  static const String OTHER_UNREAD_MESSAGES_COUNT = 'Other_Unread_Messages_Count';
-  static const String LAST_MESSAGE_TIME = 'Last_Message_Time';
-  static const String MESSAGE_ID = 'Message_Id';
-
-
-
+  static const String kTextMessage = 'Text_Message';
+  static const String kMyUnreadMessagesCount = 'My_Unread_Messages_Count';
+  static const String kOtherUnreadMessagesCount = 'Other_Unread_Messages_Count';
+  static const String kLastMessageTime = 'Last_Message_Time';
+  static const String kMessageId = 'Message_Id';
 
   Map<String, dynamic> toMap() {
     return {
-      MESSAGE_TYPE: messageType.index,
-      IS_LAST_MESSAGE_SENDER_CURRENT_USER: isLastMessageSenderCurrentUser,
-      TEXT_MESSAGE: textMessage,
-      MY_UNREAD_MESSAGES_COUNT: myUnreadMessagesCount,
-      LAST_MESSAGE_TIME: lastMessageTime,
-      OTHER_UNREAD_MESSAGES_COUNT: otherUnreadMessagesCount,
-      MESSAGE_ID: messageId ,
+      kMessageType: messageType.index,
+      kIsLastMessageSenderCurrentUser: isLastMessageSenderCurrentUser,
+      kTextMessage: textMessage,
+      kMyUnreadMessagesCount: myUnreadMessagesCount,
+      kLastMessageTime: lastMessageTime,
+      kOtherUnreadMessagesCount: otherUnreadMessagesCount,
+      kMessageId: messageId,
     };
   }
 
   factory UserConnectionLastMessageInfoModel.fromMap(Map<String, dynamic> map) {
     return UserConnectionLastMessageInfoModel(
-      messageType: MessageTypes.values[map[MESSAGE_TYPE]],
-      isLastMessageSenderCurrentUser: map[IS_LAST_MESSAGE_SENDER_CURRENT_USER],
-      textMessage: map[TEXT_MESSAGE],
-      myUnreadMessagesCount: map[MY_UNREAD_MESSAGES_COUNT],
-      otherUnreadMessagesCount: map[OTHER_UNREAD_MESSAGES_COUNT],
-      lastMessageTime: map[LAST_MESSAGE_TIME],
-      messageId: map[MESSAGE_ID],
+      messageType: MessageTypes.values[map[kMessageType]],
+      isLastMessageSenderCurrentUser: map[kIsLastMessageSenderCurrentUser],
+      textMessage: map[kTextMessage],
+      myUnreadMessagesCount: map[kMyUnreadMessagesCount],
+      otherUnreadMessagesCount: map[kOtherUnreadMessagesCount],
+      lastMessageTime: map[kLastMessageTime],
+      messageId: map[kMessageId],
     );
   }
 }

@@ -1,3 +1,4 @@
+// [module-file:services] — deleted when the services module is split out
 /// Module: home/h1_home_page
 ///
 ///*************************** FILE INFO ****************************///
@@ -28,20 +29,25 @@
 /// the first when it means the second.
 library;
 
+import 'package:knowticed_plus/features/home/h1_home_page/data/helpers/home_button_access.dart';
 import 'package:flutter/material.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/custom/16-custom_card_styles.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
-import 'package:grc_module/core/helper/main_helper/localized_number.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/home_component_model.dart';
-import 'package:grc_module/features/home/h1_home_page/presentation/controller/services_home_stats_cubit.dart';
-import 'package:grc_module/features/home/h1_home_page/presentation/controller/services_home_stats_state.dart';
-import 'package:grc_module/features/home/h1_home_page/presentation/ui/home_widgets/home_widget_shell.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/custom/cards/custom_card_styles.dart';
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/core/helper/localized_number.dart';
+import 'package:knowticed_plus/core/helper/access/modules_enum.dart';
+import 'package:knowticed_plus/features/notification/presentation/ui/widgets/notification_routing.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/home_component_model.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/home_widget_settings.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/presentation/controller/services_home_stats_cubit.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/presentation/controller/services_home_stats_state.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/home_widgets/home_widget_shell.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
 /// Shared scaffolding for every Services card that shows live figures.
 ///
@@ -100,10 +106,15 @@ class RequestService extends StatelessWidget {
   Widget build(BuildContext context) {
     final S l = S.of(context);
     final bool isArabic = context.isArabic;
+    final HomeWidgetSettings settings = model.widgetSettings;
+    // D-242: 1–3 rows (default 2), chosen statuses, period-free scope.
+    final int rowCount = settings.integer(HomeSettingKey.rows, 2);
 
     return _ServicesStatsBuilder(
       builder: (BuildContext context, ServicesHomeStatsCubit stats,
           String Function(int) format, bool ready) {
+        final List<ServiceRequestSummary> recent =
+            ready ? stats.recentFor(settings) : stats.recentRequests;
         return HomeWidgetCard(
           title: l.requestedService,
           icon: HomeWidgetSvg.service,
@@ -113,23 +124,55 @@ class RequestService extends StatelessWidget {
               // An empty queue and an unread queue both render as placeholder
               // rows, so the card keeps its height either way and the grid does
               // not reflow when the figures land.
-              for (final ServiceRequestSummary request
-                  in _rowsOrPlaceholders(stats.recentRequests, ready))
-                HomeEntityRow(
-                  icon: HomeWidgetSvg.serviceRequest,
-                  name: request.name(isArabic),
-                  subtitle: request.department(isArabic).trim().isEmpty
-                      ? l.department
-                      : request.department(isArabic),
-                  trailing: SizedBox(
-                    width: 46.w,
-                    child: HomeCardButton(label: l.view),
+              // Loaded and empty: say so (18/10/2026 — two "—" rows read as broken).
+              if (ready && recent.isEmpty)
+                SizedBox(
+                  width: 220.w,
+                  child: Text(
+                    l.noDataAvailable,
+                    style: StyleText.fontSize12Weight500
+                        .copyWith(color: AppColors.secondaryText),
                   ),
-                ),
+                )
+              else
+                for (final ServiceRequestSummary request
+                    in _rowsOrPlaceholders(recent, ready, rowCount))
+                  HomeEntityRow(
+                    icon: HomeWidgetSvg.serviceRequest,
+                    name: request.name(isArabic),
+                    subtitle: request.department(isArabic).trim().isEmpty
+                        ? l.department
+                        : request.department(isArabic),
+                    trailing: SizedBox(
+                      width: 46.w,
+                      child: HomeCardButton(label: l.view),
+                    ),
+                  ),
             ],
           ),
         );
       },
+    );
+  }
+}
+
+/// Function Name: [openServicesFromHome]
+///
+/// Purpose: Open the Services module from a home card. ADDED 21/10/2026 —
+/// the "Service" card's buttons had no onTap. Same routing as
+/// `openFormBuilderFromHome`: tablet/desktop switches the side-rail module;
+/// phone pushes the module page. The Services module has no shortcut hook,
+/// so every button lands on its main page.
+void openServicesFromHome(BuildContext context) {
+  if (!kpIsPhoneLayout(context)) {
+    final drawer = NotificationRouting.drawerCubit();
+    final int index = drawer.allowedDrawerModules.indexOf(Modules.services);
+    // The user has no Services access — nothing to open.
+    if (index == -1) return;
+    drawer.updateSelectedIndex(index);
+  } else {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (_) => Modules.services.widget),
     );
   }
 }
@@ -147,22 +190,39 @@ class ServicesActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final S l = S.of(context);
+    // D-242: "Buttons shown" — at least one stays; 24/10/2026: and only the
+    // ones the role has permission for.
+    final List<String> shown = HomeButtonAccess.shown(model, <String>[
+      HomeButtonKey.createService,
+      HomeButtonKey.myRequests,
+      HomeButtonKey.viewApproval,
+    ]);
+    final List<Widget> buttons = <Widget>[
+      if (shown.contains(HomeButtonKey.createService))
+        HomeCardButton(
+          label: l.createService,
+          onTap: () => openServicesFromHome(context),
+        ),
+      if (shown.contains(HomeButtonKey.myRequests))
+        HomeCardButton(
+          label: l.myRequests,
+          onTap: () => openServicesFromHome(context),
+        ),
+      if (shown.contains(HomeButtonKey.viewApproval))
+        HomeCardButton(
+          label: l.viewApproval,
+          onTap: () => openServicesFromHome(context),
+        ),
+    ];
+    // Owner 21/10/2026: reference home-card style — as Forms: HomeWidgetCard
+    // header (title + Services icon), narrow width, stacked HomeCardButtons.
     return HomeWidgetCard(
       title: l.service,
-      icon: HomeWidgetSvg.service,
+      icon: Modules.services.iconPath,
       width: kHomeWidgetNarrowWidth,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          HomeCardButton(
-            label: l.createService,
-            icon: HomeWidgetSvg.serviceTap,
-          ),
-          SizedBox(height: 4.h),
-          HomeCardButton(label: l.myRequests),
-          SizedBox(height: 4.h),
-          HomeCardButton(label: l.viewApproval),
-        ],
+      // Equal gaps title → buttons → card edge (Owner 21/10/2026).
+      child: HomeCardButtonStack(
+        buttons: buttons,
       ),
     );
   }
@@ -183,7 +243,7 @@ class ServicesStatus extends StatelessWidget {
           String Function(int) format, bool ready) {
         // (label, bucket key, colour) in the order Figma lists them. The
         // fractions used to be six hardcoded decimals; they are computed below.
-        final List<(String, String, Color)> rows = <(String, String, Color)>[
+        final List<(String, String, Color)> all = <(String, String, Color)>[
           (l.BreachedSLA, ServiceStatusKey.breachedSla, AppColors.darkRed),
           (l.canceled, ServiceStatusKey.cancel, AppColors.lightRed),
           (l.rejected, ServiceStatusKey.rejected, AppColors.red),
@@ -191,25 +251,43 @@ class ServicesStatus extends StatelessWidget {
           (l.approved, ServiceStatusKey.approved, AppColors.green),
           (l.done, ServiceStatusKey.done, AppColors.lightGreen),
         ];
+        // D-242: period + scope + which statuses are drawn (default all six).
+        final HomeWidgetSettings settings = model.widgetSettings;
+        final List<String> shown =
+            settings.list(HomeSettingKey.statuses, ServiceStatusKey.all);
+        final List<(String, String, Color)> rows = all
+            .where(((String, String, Color) r) => shown.contains(r.$2))
+            .toList();
+        final Map<String, int> counts =
+            ready ? stats.countsFor(settings) : stats.statusCounts;
+        // With three or fewer the card drops to one column.
 
         // Bars are scaled to the LARGEST bucket, not to the total — see
         // `ServicesHomeStatsCubit.statusPeak`. Flat while unread, so the card
         // does not animate six bars up from nothing on every rebuild.
-        final int peak = stats.statusPeak;
+        int peak = 0;
+        for (final (String _, String key, Color _) in rows) {
+          final int v = counts[key] ?? 0;
+          if (v > peak) peak = v;
+        }
+        if (peak == 0) peak = 1;
 
+        // Owner 21/10/2026 12:11 ("way 1"): ONE list, one bar row per
+        // status across the full card width; the card keeps its box and the
+        // list scrolls down inside it after the third row (To-Do pattern).
         return HomeWidgetCard(
           title: l.servicesStatus,
           icon: HomeWidgetSvg.service,
-          minHeight: kHomeWidgetTallHeight,
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               for (final (String label, String key, Color color) in rows)
                 HomeProgressRow(
                   label: label,
-                  value: format(stats.statusCounts[key] ?? 0),
-                  fraction:
-                      ready ? (stats.statusCounts[key] ?? 0) / peak : 0,
+                  value: format(counts[key] ?? 0),
+                  fraction: ready ? (counts[key] ?? 0) / peak : 0,
                   color: color,
                 ),
             ],
@@ -233,7 +311,11 @@ class MyServices extends StatelessWidget {
     return _ServicesStatsBuilder(
       builder: (BuildContext context, ServicesHomeStatsCubit stats,
           String Function(int) format, bool ready) {
+        // D-242: period + scope.
+        final Map<String, int> counts =
+            ready ? stats.countsFor(model.widgetSettings) : stats.statusCounts;
         return HomeWidgetCard(
+          hugContent: true,
           title: l.services,
           icon: HomeWidgetSvg.service,
           child: HomeStatTileRow(
@@ -241,20 +323,17 @@ class MyServices extends StatelessWidget {
               HomeStatTile(
                 icon: HomeWidgetSvg.approved,
                 label: l.approved,
-                value:
-                    format(stats.statusCounts[ServiceStatusKey.approved] ?? 0),
+                value: format(counts[ServiceStatusKey.approved] ?? 0),
               ),
               HomeStatTile(
                 icon: HomeWidgetSvg.pending,
                 label: l.pending,
-                value:
-                    format(stats.statusCounts[ServiceStatusKey.pending] ?? 0),
+                value: format(counts[ServiceStatusKey.pending] ?? 0),
               ),
               HomeStatTile(
                 icon: HomeWidgetSvg.rejected,
                 label: l.rejected,
-                value:
-                    format(stats.statusCounts[ServiceStatusKey.rejected] ?? 0),
+                value: format(counts[ServiceStatusKey.rejected] ?? 0),
               ),
             ],
           ),
@@ -278,45 +357,68 @@ class NearBreachedSLA extends StatelessWidget {
   Widget build(BuildContext context) {
     final S l = S.of(context);
     final bool isArabic = context.isArabic;
+    final HomeWidgetSettings settings = model.widgetSettings;
+    final int rowCount = settings.integer(HomeSettingKey.rows, 2);
 
     return _ServicesStatsBuilder(
       builder: (BuildContext context, ServicesHomeStatsCubit stats,
           String Function(int) format, bool ready) {
+        // D-242: the list is requests whose SLA time used reached the warn
+        // level (default 80 %), plus — when switched on — those already
+        // breached; the header is their share of the requests.
+        final List<ServiceRequestSummary> near = ready
+            ? stats
+                .nearBreachFor(settings)
+                .map((ServiceRequestRecord r) => r.summary)
+                .toList()
+            : const <ServiceRequestSummary>[];
         final String percent = ready
-            ? '${LocalizedNumber.of(context, (stats.breachedSlaRatio * 100).round())}%'
+            ? '${LocalizedNumber.of(context, (stats.nearBreachRatio(settings) * 100).round())}%'
             : '—';
 
         return HomeWidgetCard(
           title: l.nearBreachedSLA,
           trailing: Text(
             percent,
-            style: CardStyles.value(11).copyWith(color: AppColors.text),
+            style: CardStyles.value(14).copyWith(color: AppColors.text),
           ),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            // 12:30: the list rows spread down to the bottom inset.
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              for (final ServiceRequestSummary request
-                  in _rowsOrPlaceholders(stats.breachedRequests, ready))
-                HomeEntityRow(
-                  icon: HomeWidgetSvg.serviceRequest,
-                  name: request.name(isArabic),
-                  subtitle: request.department(isArabic).trim().isEmpty
-                      ? l.department
-                      : request.department(isArabic),
-                  trailing: Container(
-                    padding: EdgeInsets.all(4.r),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      borderRadius: BorderRadius.circular(4.r),
-                    ),
-                    child: CustomSvgImage(
-                      assetPath: HomeWidgetSvg.chat,
-                      width: 12.r,
-                      height: 12.r,
-                      color: AppColors.textButton,
+              // Loaded and empty: say so (18/10/2026 — two "—" rows read as broken).
+              if (ready && near.isEmpty)
+                SizedBox(
+                  width: 220.w,
+                  child: Text(
+                    l.noDataAvailable,
+                    style: StyleText.fontSize12Weight500
+                        .copyWith(color: AppColors.secondaryText),
+                  ),
+                )
+              else
+                for (final ServiceRequestSummary request
+                    in _rowsOrPlaceholders(near, ready, rowCount))
+                  HomeEntityRow(
+                    icon: HomeWidgetSvg.serviceRequest,
+                    name: request.name(isArabic),
+                    subtitle: request.department(isArabic).trim().isEmpty
+                        ? l.department
+                        : request.department(isArabic),
+                    trailing: Container(
+                      padding: EdgeInsets.all(4.r),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        borderRadius: BorderRadius.circular(4.r),
+                      ),
+                      child: CustomSvgImage(
+                        assetPath: HomeWidgetSvg.chat,
+                        width: 12.r,
+                        height: 12.r,
+                        color: AppColors.textButton,
+                      ),
                     ),
                   ),
-                ),
             ],
           ),
         );
@@ -334,48 +436,74 @@ class ServiceOverview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final S l = S.of(context);
+    final HomeWidgetSettings settings = model.widgetSettings;
+    // D-242: "Tiles shown" (at least two), period and scope.
+    final List<String> shown = settings.list(
+      HomeSettingKey.tiles,
+      const <String>['services', 'requests', 'sla', 'done'],
+    );
 
     return _ServicesStatsBuilder(
       builder: (BuildContext context, ServicesHomeStatsCubit stats,
           String Function(int) format, bool ready) {
+        final Map<String, int> counts =
+            ready ? stats.countsFor(settings) : stats.statusCounts;
+        final int requests =
+            ready ? stats.totalFor(settings) : stats.totalRequests;
+        final List<(String, HomeStatTile)> tiles = <(String, HomeStatTile)>[
+          (
+            'services',
+            HomeStatTile(
+              icon: HomeWidgetSvg.serviceTap,
+              label: l.totalServices,
+              // The CATALOGUE — how many services exist to be requested.
+              value: format(stats.totalServices),
+              iconColor: AppColors.primary,
+            ),
+          ),
+          (
+            'requests',
+            HomeStatTile(
+              icon: HomeWidgetSvg.serviceRequest,
+              label: l.totalRequests,
+              value: format(requests),
+              iconColor: AppColors.primary,
+            ),
+          ),
+          (
+            'sla',
+            HomeStatTile(
+              icon: HomeWidgetSvg.sla,
+              label: l.totalSLA,
+              // ⚠️ ASSUMPTION: "Total SLA" is read as the number of requests
+              // that have BREACHED their SLA — the only SLA figure a request
+              // document actually carries. If the tile is meant to count
+              // requests that HAVE an SLA defined, that is a different read
+              // (the SLA fields on the service, not the request's state) and
+              // this line is where it changes. D-242 (6): keeps this meaning.
+              value: format(counts[ServiceStatusKey.breachedSla] ?? 0),
+              iconColor: AppColors.primary,
+            ),
+          ),
+          (
+            'done',
+            HomeStatTile(
+              icon: HomeWidgetSvg.done,
+              label: l.totalDone,
+              value: format(counts[ServiceStatusKey.done] ?? 0),
+              iconColor: AppColors.green,
+            ),
+          ),
+        ];
         return HomeWidgetCard(
+          hugContent: true,
           title: l.services,
           icon: HomeWidgetSvg.service,
           width: kHomeWidgetWideWidth,
           child: HomeStatTileRow(
             tiles: <HomeStatTile>[
-              HomeStatTile(
-                icon: HomeWidgetSvg.serviceTap,
-                label: l.totalServices,
-                // The CATALOGUE — how many services exist to be requested.
-                value: format(stats.totalServices),
-                iconColor: AppColors.primary,
-              ),
-              HomeStatTile(
-                icon: HomeWidgetSvg.serviceRequest,
-                label: l.totalRequests,
-                value: format(stats.totalRequests),
-                iconColor: AppColors.primary,
-              ),
-              HomeStatTile(
-                icon: HomeWidgetSvg.sla,
-                label: l.totalSLA,
-                // ⚠️ ASSUMPTION: "Total SLA" is read as the number of requests
-                // that have BREACHED their SLA — the only SLA figure a request
-                // document actually carries. If the tile is meant to count
-                // requests that HAVE an SLA defined, that is a different read
-                // (the SLA fields on the service, not the request's state) and
-                // this line is where it changes.
-                value: format(
-                    stats.statusCounts[ServiceStatusKey.breachedSla] ?? 0),
-                iconColor: AppColors.primary,
-              ),
-              HomeStatTile(
-                icon: HomeWidgetSvg.done,
-                label: l.totalDone,
-                value: format(stats.statusCounts[ServiceStatusKey.done] ?? 0),
-                iconColor: AppColors.green,
-              ),
+              for (final (String key, HomeStatTile tile) in tiles)
+                if (shown.contains(key)) tile,
             ],
           ),
         );
@@ -397,37 +525,43 @@ class MyRequestServices extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final S l = S.of(context);
+    final HomeWidgetSettings settings = model.widgetSettings;
 
     return _ServicesStatsBuilder(
       builder: (BuildContext context, ServicesHomeStatsCubit stats,
           String Function(int) format, bool ready) {
+        // D-242: always my own requests; only the period can change.
+        final Map<String, int> mine = ready
+            ? stats.countsFor(settings, mineOnly: true)
+            : stats.myRequestCounts;
+        // Owner item 197 (21/10/2026): the same three counter tiles as
+        // Approvals (icon over label over number), one size — not a column
+        // of 16-pt glyphs.
         return HomeWidgetCard(
+          hugContent: true,
           title: l.myRequest,
           icon: HomeWidgetSvg.service,
+          // Owner 21/10/2026 13:16: the card hugs its three tiles — no
+          // spare width after the last tile.
           width: kHomeWidgetNarrowWidth,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Text('${l.total} ${format(stats.myRequestTotal)}',
-                  style: CardStyles.label(10)),
-              SizedBox(height: 4.h),
-              // The three glyphs, in the order Figma draws them: rejected,
-              // approved, still waiting.
-              HomeCountLine(
-                icon: HomeWidgetSvg.rejectedStamp,
-                value: format(
-                    stats.myRequestCounts[ServiceStatusKey.rejected] ?? 0),
+          // Owner 21/10/2026 13:17: the same order AND the same three icons
+          // as Approvals — Approved · Pending · Rejected.
+          child: HomeStatTileRow(
+            tiles: <HomeStatTile>[
+              HomeStatTile(
+                icon: HomeWidgetSvg.approved,
+                label: l.approved,
+                value: format(mine[ServiceStatusKey.approved] ?? 0),
               ),
-              HomeCountLine(
-                icon: HomeWidgetSvg.checkGreen,
-                value: format(
-                    stats.myRequestCounts[ServiceStatusKey.approved] ?? 0),
+              HomeStatTile(
+                icon: HomeWidgetSvg.pending,
+                label: l.pending,
+                value: format(mine[ServiceStatusKey.pending] ?? 0),
               ),
-              HomeCountLine(
-                icon: HomeWidgetSvg.hourglass,
-                value: format(
-                    stats.myRequestCounts[ServiceStatusKey.pending] ?? 0),
+              HomeStatTile(
+                icon: HomeWidgetSvg.rejected,
+                label: l.rejected,
+                value: format(mine[ServiceStatusKey.rejected] ?? 0),
               ),
             ],
           ),
@@ -448,9 +582,9 @@ class MyRequestServices extends StatelessWidget {
 /// content.
 List<ServiceRequestSummary> _rowsOrPlaceholders(
   List<ServiceRequestSummary> rows,
-  bool ready,
-) {
-  const int wanted = 2;
+  bool ready, [
+  int wanted = 2,
+]) {
   if (ready && rows.length >= wanted) return rows.take(wanted).toList();
 
   return <ServiceRequestSummary>[

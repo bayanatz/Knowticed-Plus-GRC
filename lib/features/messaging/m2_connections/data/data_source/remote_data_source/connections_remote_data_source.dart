@@ -4,17 +4,17 @@
 /// Purpose: Connections remote data source — messaging Connections sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+library;
 
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 
-import 'package:grc_module/core/network/message_module/services/error_handler.dart';
-import 'package:grc_module/core/constants/message_module/api_constants.dart';
-import 'package:grc_module/core/services/firebase/models/query_data_model.dart';
-import 'package:grc_module/core/services/message_module/firebase/repository/firebase_repository.dart';
-import '../../models/user_connection_last_message_info_model.dart';
-import '../../models/users_connection_model.dart';
+import 'package:knowticed_plus/core/network/failure_model.dart';
+import 'package:knowticed_plus/features/messaging/helpers/constants/messaging_api_constants.dart';
+import 'package:knowticed_plus/core/app_services/firebase/models/query_data_model.dart';
+import 'package:knowticed_plus/features/messaging/helpers/services/firebase/repository/firebase_repository.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/data/models/users_connection_model.dart';
 
 class ConnectionsRemoteDataSource {
   Future<Either<Failure, void>> createNewConnection(
@@ -37,8 +37,7 @@ class ConnectionsRemoteDataSource {
 
   Stream<Either<Failure, List<Map<String, dynamic>>>> getCurrentUserConnection(
       {required String currentUserId}) async* {
-    log(
-        "collection path: ${ApiConstants.usersConnections}/$currentUserId/${ApiConstants.lastMessage}");
+    log("collection path: ${ApiConstants.usersConnections}/$currentUserId/${ApiConstants.lastMessage}");
     // CHANGED 29/9/2026 (bug report p.11): each map now also carries its
     // DOCUMENT ID under [connectionDocIdKey]. The doc id IS the other user's
     // id, and it is the only way to recover a conversation whose document

@@ -2,37 +2,38 @@
 ///
 /// ************************* FILE INFO ******************** ///
 /// FILE NAME: system_logs_controller.dart
-/// PURPOSE: handle all the operations related to the system logs.
+/// Description: handle all the operations related to the system logs.
 /// Author: Amr Mesbah
-/// Created At: 2/2/2025
+/// Created at: 2/2/2025
+library;
+
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
-import 'package:grc_module/features/settings/main_controller/presentation/ui/pages/settings_screen.dart';
-import 'package:grc_module/features/roles/r5_system_logs/data/models/system_logs_model.dart';
+import 'package:knowticed_plus/features/settings/presentation/ui/pages/settings_screen.dart';
+import 'package:knowticed_plus/features/roles/r5_system_logs/data/models/system_logs_model.dart';
 // ADDED 9/9/2026: `systemLogsAction` names the type of the top-level
 // `employee` getter so it can null-check it before passing it on.
 // `settings_screen.dart` exposes the getter but imports are not
 // transitive, so the model has to be imported here too.
-import 'package:grc_module/features/roles/r4_active_directory/data/models/employees_model/new_employee_model.dart';
+import 'package:knowticed_plus/features/roles/r4_active_directory/data/models/employees_model/new_employee_model.dart';
 
-import 'package:grc_module/core/helper/main_helper/csv_helper.dart';
-import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/core/services/geolocator/geolocator_repository.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
-import 'package:grc_module/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
-import 'package:grc_module/features/roles/r5_system_logs/data/repository/system_logs_repository.dart';
-import 'package:grc_module/features/roles/r5_system_logs/domain/enums/system_logs_items.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/controller/employee_controller.dart';
-import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
-import 'package:grc_module/core/di/app_controllers.dart';
+import 'package:knowticed_plus/core/helper/csv_helper.dart';
+import 'package:knowticed_plus/core/network/failure_model.dart';
+import 'package:knowticed_plus/core/app_services/geolocator/geolocator_repository.dart';
+import 'package:knowticed_plus/core/helper/access/modules_enum.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
+import 'package:knowticed_plus/features/roles/r5_system_logs/data/repository/system_logs_repository.dart';
+import 'package:knowticed_plus/features/roles/r5_system_logs/domain/enums/system_logs_items.dart';
+import 'package:knowticed_plus/core/helper/format_title.dart';
+import 'package:knowticed_plus/core/di/app_controllers.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/data/models/role_model.dart'
+    show RoleHistoryModelMethods;
 
-part './system_logs_state.dart';
+part 'system_logs_state.dart';
+part 'system_logs_filter_sets.dart';
 
 /// Converted from GetxController to Cubit. Dependency lookup still goes
 /// through GetX (`Get.put` in main.dart / `Get.find` at call sites) — only the
@@ -82,6 +83,20 @@ class SystemLogsController extends Cubit<SystemLogsState> {
   String? countryValue;
   String? cityValue;
   String? roleValue;
+
+  /// ADDED 9/10/2026 — the module filter: a `Modules.name` (exact match on
+  /// `log.module?.name`), null = every module.
+  String? moduleValue;
+
+  /// ADDED 21/10/2026 — the tablet Filter dialog (X-115 / X-40): every field
+  /// is multi-select and an empty set means "all". See
+  /// `system_logs_filter_sets.dart`.
+  Set<String> moduleFilters = <String>{};
+  Set<String> actionFilters = <String>{};
+  Set<String> roleFilters = <String>{};
+  Set<String> countryFilters = <String>{};
+  Set<String> cityFilters = <String>{};
+  Set<String> employeeFilters = <String>{};
   List<DateTime?> rangeDatePickerValueWithDefaultValue = [];
   DateTime? fromDate;
   DateTime? toDate;
@@ -127,6 +142,50 @@ class SystemLogsController extends Cubit<SystemLogsState> {
     emitSafely(SystemLogsUpdated());
   }
 
+  /// Function Name: [selectModuleFilter]
+  ///
+  /// Purpose: The tablet Module menu (ADDED 9/10/2026): show only [name]'s
+  /// logs, applied at once with the search; picking the active module again,
+  /// or null ("All"), clears it.
+  ///
+  /// Parameters:
+  ///   [String?] name: a `Modules.name`.
+  ///
+  /// Return type: [void]
+  void selectModuleFilter(String? name) {
+    moduleValue = (name == null || name == moduleValue) ? null : name;
+    isFilter = isThereFilter();
+    searchLogs();
+    if (isFilter) _applyFilter();
+    emitSafely(SystemLogsUpdated());
+  }
+
+  /// Function Name: [moduleNamesInLogs]
+  ///
+  /// Purpose: The `Modules.name`s that appear in the loaded logs, in enum
+  /// order — the Module filter's options (ADDED 9/10/2026).
+  ///
+  /// Return type: [List<String>]
+  List<String> get moduleNamesInLogs {
+    final Set<String> seen = <String>{
+      for (final SystemLogsModel log in systemLogsData)
+        if (log.module != null) log.module!.name,
+    };
+    return <String>[
+      for (final Modules m in Modules.values)
+        if (seen.contains(m.name)) m.name,
+    ];
+  }
+
+  /// Function Name: [matchesModule]
+  ///
+  /// Purpose: [log] passes a module filter of [moduleName] (null = any).
+  /// Static and pure so it is unit-tested (ADDED 9/10/2026).
+  ///
+  /// Return type: [bool]
+  static bool matchesModule(SystemLogsModel log, String? moduleName) =>
+      moduleName == null || log.module?.name == moduleName;
+
   Position? currentPosition;
 
   /// Method Name: [getSystemLogs]
@@ -165,15 +224,19 @@ class SystemLogsController extends Cubit<SystemLogsState> {
   }
 
   void _getLocationList() {
-    for (var element in AppControllers.employeeDirectory.allEmployees!) {
-      if (element.city?.lastOrNull != null) {
-        if (!cities.contains(FormatHelper.capitalize(element.city!.last!))) {
-          cities.add(FormatHelper.capitalize(element.city!.last!));
+    // Owner 21/10/2026: employees not loaded yet = no locations (was allEmployees!).
+    for (var element
+        in AppControllers.employeeDirectory.allEmployees ?? const []) {
+      if (element.city.lastOrNull != null) {
+        if (!cities.contains(FormatHelper.capitalize(element.city.last))) {
+          cities.add(FormatHelper.capitalize(element.city.last));
         }
       }
-      if (element.country?.lastOrNull != null) {
-        if (!countries.contains(FormatHelper.capitalize(element.country!.last!))) {
-          countries.add(FormatHelper.capitalize(element.country!.last!));
+      if (element.country.lastOrNull != null) {
+        if (!countries.contains(
+          FormatHelper.capitalize(element.country.last),
+        )) {
+          countries.add(FormatHelper.capitalize(element.country.last));
         }
       }
     }
@@ -229,39 +292,58 @@ class SystemLogsController extends Cubit<SystemLogsState> {
   void sortLogs(String criteria) {
     emitSafely(SystemLogsUpdated());
     switch (criteria) {
+      // Owner 21/10/2026: names sort by the language on screen; a null name sorts as ''.
       case 'First Name':
-        finalSystemLogsList
-            .sort((a, b) => a.firstName?.compareTo(b.firstName ?? '') ?? 0);
+        finalSystemLogsList.sort(
+          (a, b) =>
+              _sortText(exportInArabic ? a.firstNameInArabic : a.firstName)
+                  .compareTo(_sortText(
+                      exportInArabic ? b.firstNameInArabic : b.firstName)),
+        );
         break;
       case 'Last Name':
-        finalSystemLogsList
-            .sort((a, b) => a.lastName?.compareTo(b.lastName ?? '') ?? 0);
+        finalSystemLogsList.sort(
+          (a, b) => _sortText(exportInArabic ? a.lastNameInArabic : a.lastName)
+              .compareTo(
+                  _sortText(exportInArabic ? b.lastNameInArabic : b.lastName)),
+        );
         break;
       case 'Date':
         // Was `b.timestamp?.compareTo(a.timestamp ?? Timestamp.now())`, which
         // forced `cloud_firestore` into the cubit for a sort fallback (§3).
-        finalSystemLogsList.sort((a, b) =>
-            (b.loggedAt ?? DateTime.now()).compareTo(a.loggedAt ?? DateTime.now()));
+        finalSystemLogsList.sort(
+          (a, b) => (b.loggedAt ?? DateTime.now()).compareTo(
+            a.loggedAt ?? DateTime.now(),
+          ),
+        );
 
         break;
       case 'Country':
-        finalSystemLogsList
-            .sort((a, b) => a.country?.compareTo(b.country ?? '') ?? 0);
+        finalSystemLogsList.sort(
+          (a, b) => _sortText(a.country).compareTo(_sortText(b.country)),
+        );
         break;
       case 'City':
-        finalSystemLogsList
-            .sort((a, b) => a.city?.compareTo(b.city ?? '') ?? 0);
+        finalSystemLogsList.sort(
+          (a, b) => _sortText(a.city).compareTo(_sortText(b.city)),
+        );
         break;
       default:
         // Was `b.timestamp?.compareTo(a.timestamp ?? Timestamp.now())`, which
         // forced `cloud_firestore` into the cubit for a sort fallback (§3).
-        finalSystemLogsList.sort((a, b) =>
-            (b.loggedAt ?? DateTime.now()).compareTo(a.loggedAt ?? DateTime.now()));
+        finalSystemLogsList.sort(
+          (a, b) => (b.loggedAt ?? DateTime.now()).compareTo(
+            a.loggedAt ?? DateTime.now(),
+          ),
+        );
         break;
     }
 
     emitSafely(SystemLogsUpdated());
   }
+
+  /// Owner 21/10/2026: null-safe, case-insensitive sort key (null = '').
+  String _sortText(String? value) => (value ?? '').trim().toLowerCase();
 
   /// Method Name: [filterLogs]
   ///
@@ -274,7 +356,9 @@ class SystemLogsController extends Cubit<SystemLogsState> {
         roleValue == null &&
         countryValue == null &&
         cityValue == null &&
-        actionValue == null) {
+        actionValue == null &&
+        moduleValue == null &&
+        !hasFilterSets) {
       isFilter = false;
       // Was `CustomDialogManager.showMessage(context: Get.context!, ...)`.
       // A cubit must not open dialogs (§16), and `Get.context!` was a null-bang
@@ -302,6 +386,8 @@ class SystemLogsController extends Cubit<SystemLogsState> {
         isValid &= _isValidSingleFilter(countryValue, log.country);
         isValid &= _isValidSingleFilter(cityValue, log.city);
         isValid &= _isValidSingleFilter(actionValue, log.action);
+        isValid &= matchesModule(log, moduleValue);
+        isValid &= matchesFilterSets(log);
         isValid &= isValidDateRange(log);
         isValid &= _isValidStartTimeFilter(log);
         isValid &= _isValidEndTimeFilter(log);
@@ -321,15 +407,24 @@ class SystemLogsController extends Cubit<SystemLogsState> {
   /// Return Value: [bool] true if the log date is in the selected date range, false otherwise.
   bool isValidDateRange(SystemLogsModel log) {
     bool isValid = true;
+    // Owner 21/10/2026: a log without a timestamp never matches a date filter (was timestamp!).
+    final DateTime? loggedAt = log.loggedAt;
+    if ((fromDate != null || toDate != null) && loggedAt == null) return false;
     if (fromDate != null) {
-      DateTime logDate = DateTime(log.timestamp!.toDate().year,
-          log.timestamp!.toDate().month, log.timestamp!.toDate().day);
+      DateTime logDate = DateTime(
+        loggedAt!.year,
+        loggedAt.month,
+        loggedAt.day,
+      );
       isValid &=
           logDate.isAtSameMomentAs(fromDate!) || logDate.isAfter(fromDate!);
     }
     if (toDate != null) {
-      DateTime logDate = DateTime(log.timestamp!.toDate().year,
-          log.timestamp!.toDate().month, log.timestamp!.toDate().day);
+      DateTime logDate = DateTime(
+        loggedAt!.year,
+        loggedAt.month,
+        loggedAt.day,
+      );
       isValid &=
           (logDate.isAtSameMomentAs(toDate!) || logDate.isBefore(toDate!));
     }
@@ -352,8 +447,16 @@ class SystemLogsController extends Cubit<SystemLogsState> {
         : DateTime(0, 1, 1, endTime!.hour, endTime!.minute);
 
     if (timeToDateTime != null) {
-      DateTime logTime = DateTime(0, 1, 1, log.timestamp!.toDate().hour,
-          log.timestamp!.toDate().minute);
+      // Owner 21/10/2026: no timestamp = not a match (was timestamp!).
+      final DateTime? loggedAt = log.loggedAt;
+      if (loggedAt == null) return false;
+      DateTime logTime = DateTime(
+        0,
+        1,
+        1,
+        loggedAt.hour,
+        loggedAt.minute,
+      );
       isValid &= (logTime.isBefore(timeToDateTime) ||
           logTime.isAtSameMomentAs(timeToDateTime));
     }
@@ -374,8 +477,16 @@ class SystemLogsController extends Cubit<SystemLogsState> {
         ? null
         : DateTime(0, 1, 1, startTime!.hour, startTime!.minute);
     if (timeFromDateTime != null) {
-      DateTime logTime = DateTime(0, 1, 1, log.timestamp!.toDate().hour,
-          log.timestamp!.toDate().minute);
+      // Owner 21/10/2026: no timestamp = not a match (was timestamp!).
+      final DateTime? loggedAt = log.loggedAt;
+      if (loggedAt == null) return false;
+      DateTime logTime = DateTime(
+        0,
+        1,
+        1,
+        loggedAt.hour,
+        loggedAt.minute,
+      );
       isValid &= logTime.isAfter(timeFromDateTime) ||
           logTime.isAtSameMomentAs(timeFromDateTime);
     }
@@ -383,7 +494,9 @@ class SystemLogsController extends Cubit<SystemLogsState> {
   }
 
   bool _isValidSingleFilter(String? filter, String? value) {
-    return filter == null || value!.toLowerCase() == filter.toLowerCase();
+    // Owner 21/10/2026: a null value doesn't match a set filter (was value!).
+    return filter == null ||
+        (value != null && value.toLowerCase() == filter.toLowerCase());
   }
 
   /// Method Name: [resetFilter]
@@ -396,19 +509,23 @@ class SystemLogsController extends Cubit<SystemLogsState> {
     cityValue = null;
     actionValue = null;
     roleValue = null;
+    moduleValue = null;
+    clearFilterSets();
     startTime = null;
     endTime = null;
     selectedDate = null;
     fromDate = null;
     toDate = null;
     rangeDatePickerValueWithDefaultValue = [];
-    startDate = TextEditingController();
-    endDate = TextEditingController();
+    // Owner 21/10/2026: clear the old controllers instead of leaking new ones each reset
+    // (disposing them could break a date field still attached to them).
+    startDate.clear();
+    endDate.clear();
 
     finalSystemLogsList = [];
-    systemLogsData.forEach((element) {
+    for (var element in systemLogsData) {
       finalSystemLogsList.add(element);
-    });
+    }
     searchAndFilterLogs();
     emitSafely(SystemLogsUpdated());
   }
@@ -417,17 +534,31 @@ class SystemLogsController extends Cubit<SystemLogsState> {
   ///
   /// Description: this method will search the system logs.
   void searchLogs() {
-    String query = searchController.text;
-    finalSystemLogsList = [];
-    final lowerCaseQuery = query.toLowerCase();
+    // Owner 21/10/2026: the name is built from its non-empty parts (no "null" for a
+    // missing middle name) and every word of the query must appear in it.
+    final List<String> words = searchController.text
+        .toLowerCase()
+        .split(RegExp(r'\s+'))
+        .where((String w) => w.isNotEmpty)
+        .toList();
     finalSystemLogsList = systemLogsData.where((log) {
-      return !exportInArabic
-          ? "${log.firstName} ${log.middleName} ${log.lastName}"
-              .toLowerCase()
-              .contains(lowerCaseQuery)
-          : "${log.firstNameInArabic} ${log.middleNameInArabic} ${log.lastNameInArabic}"
-              .contains(lowerCaseQuery);
+      final List<String?> parts = !exportInArabic
+          ? <String?>[log.firstName, log.middleName, log.lastName]
+          : <String?>[
+              log.firstNameInArabic,
+              log.middleNameInArabic,
+              log.lastNameInArabic,
+            ];
+      final String fullName = parts
+          .where((String? p) => p != null && p.trim().isNotEmpty)
+          .map((String? p) => p!.trim())
+          .join(' ')
+          .toLowerCase();
+      return words.every(fullName.contains);
     }).toList();
+    // Owner 21/10/2026: keep the chosen sort after search / filter / module / reset.
+    // Filtering afterwards uses `where`, which keeps this order.
+    if (sortValue != null) sortLogs(sortValue!);
     emitSafely(SystemLogsUpdated());
   }
 
@@ -460,10 +591,21 @@ class SystemLogsController extends Cubit<SystemLogsState> {
     // for any action logged before that — the Roles screen logs 'open Logs' the
     // moment its tab is built. There is nothing useful to write without an
     // actor, so the log is skipped rather than crashed.
-    final NewEmployeeModelHistory? currentEmployee = employee;
+    //
+    // CHANGED 21/10/2026: `employee` is only filled by SettingsController.init,
+    // which ran only when Settings was opened — so a session that never opened
+    // Settings logged NOTHING (no log since 20 Oct 04:59 PM). Load it here
+    // once (init is idempotent) before giving up.
+    NewEmployeeModelHistory? currentEmployee = employee;
     if (currentEmployee == null) {
-      debugPrint(
-          'systemLogsAction("$action") skipped: no signed-in employee loaded yet');
+      try {
+        await AppControllers.settings.init();
+      } catch (_) {
+        // No settings controller yet (signed out): nothing to log.
+      }
+      currentEmployee = employee;
+    }
+    if (currentEmployee == null) {
       return;
     }
 
@@ -473,14 +615,14 @@ class SystemLogsController extends Cubit<SystemLogsState> {
       currentPosition = await GelocatorRepository.getCurrentLocation();
 
       await systemLogsRepository.addActivityLog(
-          module: module,
-          activity: action,
-          currentEmployee: currentEmployee,
-          currentPosition: currentPosition);
-    } catch (e, stackTrace) {
+        module: module,
+        activity: action,
+        currentEmployee: currentEmployee,
+        currentPosition: currentPosition,
+      );
+    } catch (e) {
       // A dropped activity log must never surface to the user or bring down
       // the zone — it is telemetry, not the task they asked for.
-      debugPrint('systemLogsAction("$action") failed: $e\n$stackTrace');
     }
   }
 
@@ -506,8 +648,11 @@ class SystemLogsController extends Cubit<SystemLogsState> {
   /// Description: this method will get all the actions from the system logs.
   void _getActionsList() {
     for (var element in systemLogsData) {
-      if (!actions.contains(FormatHelper.capitalize(element.action!))) {
-        actions.add(FormatHelper.capitalize(element.action!));
+      // Owner 21/10/2026: skip logs with no action (was element.action!).
+      final String? action = element.action;
+      if (action == null) continue;
+      if (!actions.contains(FormatHelper.capitalize(action))) {
+        actions.add(FormatHelper.capitalize(action));
       }
     }
   }
@@ -536,17 +681,16 @@ class SystemLogsController extends Cubit<SystemLogsState> {
       final List<List<dynamic>> rows = [];
       _fillHeaders(rows);
       _fillData(rows);
-      debugPrint('[logs-export] ${rows.length - 1} row(s) -> "$fileName"');
 
-      final saved = await CSVHelper()
-          .exportRowsForUser(fileName: fileName, rows: rows);
+      final saved = await CSVHelper().exportRowsForUser(
+        fileName: fileName,
+        rows: rows,
+      );
       final String? error = saved.fold((l) => l, (_) => null);
       if (error != null) throw Exception(error);
 
-      debugPrint('[logs-export] saved: ${saved.getOrElse(() => '')}');
       emitSafely(SystemLogsExportFinished());
-    } catch (e, stackTrace) {
-      debugPrint('exportSystemLogs failed: $e\n$stackTrace');
+    } catch (e) {
       emitSafely(SystemLogsExportFinished(error: e.toString()));
     }
   }
@@ -589,7 +733,9 @@ class SystemLogsController extends Cubit<SystemLogsState> {
         roleValue != null ||
         countryValue != null ||
         cityValue != null ||
-        actionValue != null) {
+        actionValue != null ||
+        moduleValue != null ||
+        hasFilterSets) {
       isThereFilter = true;
     }
     return isThereFilter;

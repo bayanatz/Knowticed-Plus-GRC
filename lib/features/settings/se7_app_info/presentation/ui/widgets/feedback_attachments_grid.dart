@@ -2,10 +2,10 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: feedback_attachments_grid.dart
-/// Purpose: The "Attach Document" control under each box on the comments and
+/// Description: The "Attach Document" control under each box on the comments and
 ///          feedback form — the uploaded files as cards, plus the button that
 ///          adds another.
-/// Author: Knowticed Plus team
+/// Author: Amr Mesbah
 /// Created at: 1/9/2026
 ///
 /// Figma: MESBAH 7628:7681. The design draws two 265-wide "Attach Document"
@@ -18,18 +18,22 @@
 /// (knowledge_hub/main_controller) — icon, name, size, red remove badge — but
 /// is written here rather than imported because that widget hardcodes
 /// `width: 310.w` and would overflow a 265-wide cell.
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:grc_module/core/custom/1-custom_dropdown.dart' show kFieldLabelGap;
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/features/settings/se7_app_info/domain/entities/app_feedback.dart';
-import 'package:grc_module/features/settings/se7_app_info/presentation/ui/widgets/feedback_display.dart';
-import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
+import 'package:knowticed_plus/core/custom/dropdowns/custom_dropdown.dart'
+    show kFieldLabelGap;
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/features/settings/se7_app_info/domain/entities/app_feedback.dart';
+import 'package:knowticed_plus/features/settings/se7_app_info/presentation/ui/widgets/feedback_display.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
+import 'package:knowticed_plus/core/custom/feedback/circle_progress.dart';
+import 'package:knowticed_plus/core/theme/app_animations.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
 
 class FeedbackAttachmentsGrid extends StatelessWidget {
   const FeedbackAttachmentsGrid({
@@ -75,14 +79,21 @@ class FeedbackAttachmentsGrid extends StatelessWidget {
         // different size or gap makes the two FIELDS start at different
         // heights, which reads as stepped rather than aligned. See the note on
         // kFieldLabelGap in 1-custom_dropdown.dart.
-        Text(
-          S.of(context).attach_document,
-          style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
+        // RichText, not Text (21/10/2026): CustomDropdown draws its label as a
+        // RichText; a Text merges the ambient line height and sits a few px
+        // lower, which put the Priority box out of line with this button.
+        RichText(
+          text: TextSpan(
+            text: S.of(context).attach_document,
+            style: StyleText.fontSize14Weight500
+                .copyWith(color: AppColors.text, fontSize: 14.sp),
+          ),
         ),
         SizedBox(height: kFieldLabelGap.sp),
         LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
-            const double gap = 15;
+            // Owner 21/10/2026 (R-1): 16 between the two columns (was 15).
+            const double gap = 16;
             final int columnCount = columns < 1 ? 1 : columns;
             // `constraints.maxWidth` is finite here — the grid is always given
             // a bounded width by the form's Column. Guarded anyway: an
@@ -137,70 +148,82 @@ class _AttachmentCard extends StatelessWidget {
     final bool lightMode = Theme.of(context).brightness == Brightness.light;
     final String extension = attachment.extension;
 
-    return Container(
-      height: 60.h,
-      decoration: BoxDecoration(
-        color: lightMode ? AppColors.white : AppColors.background,
-        borderRadius: BorderRadius.circular(8.r),
-        border: lightMode
-            ? Border.all(color: AppColors.borderGrey)
-            : Border.all(color: Colors.transparent),
-      ),
-      padding: EdgeInsetsDirectional.only(start: 12.w, end: 8.w),
-      child: Row(
-        children: <Widget>[
-          CustomSvgImage(
-            assetPath: FeedbackDisplay.fileIcon(extension),
-            // Only the silhouette icons are tinted; a tinted PDF glyph would
-            // lose the red that identifies it.
-            color: FeedbackDisplay.iconNeedsTint(extension)
-                ? AppColors.text
-                : null,
-            height: 30.sp,
-            width: 30.sp,
+    // D-146 (Moataz 20/10/2026): the red minus sits in the box's corner at
+    // the same inset from the top and the end (diagonal cut), not centred in
+    // the row.
+    return Stack(
+      children: <Widget>[
+        Container(
+          height: 60.h,
+          decoration: BoxDecoration(
+            color: lightMode ? AppColors.white : AppColors.background,
+            borderRadius: BorderRadius.circular(8.r),
+            border: lightMode
+                ? Border.all(color: AppColors.borderGrey)
+                : Border.all(color: Colors.transparent),
           ),
-          SizedBox(width: 10.w),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  attachment.name,
-                  style: StyleText.fontSize14Weight500
-                      .copyWith(color: AppColors.text),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+          padding: EdgeInsetsDirectional.only(
+              start: 12.w, end: onRemove != null ? 30.w : 8.w),
+          child: Row(
+            children: <Widget>[
+              CustomSvgImage(
+                assetPath: FeedbackDisplay.fileIcon(extension),
+                // Only the silhouette icons are tinted; a tinted PDF glyph would
+                // lose the red that identifies it.
+                color: FeedbackDisplay.iconNeedsTint(extension)
+                    ? AppColors.text
+                    : null,
+                height: 30.sp,
+                width: 30.sp,
+              ),
+              SizedBox(width: 10.w),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      attachment.name,
+                      style: StyleText.fontSize14Weight500.copyWith(
+                        color: AppColors.text,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(height: 4.h),
+                    Text(
+                      FeedbackDisplay.readableSize(attachment.sizeInBytes),
+                      style: StyleText.fontSize12Weight500.copyWith(
+                        color: AppColors.secondaryText,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
-                SizedBox(height: 4.h),
-                Text(
-                  FeedbackDisplay.readableSize(attachment.sizeInBytes),
-                  style: StyleText.fontSize12Weight500
-                      .copyWith(color: AppColors.secondaryText),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-          SizedBox(width: 8.w),
-          if (onRemove != null)
-            GestureDetector(
+        ),
+        if (onRemove != null)
+          PositionedDirectional(
+            top: 10,
+            end: 10,
+            child: GestureDetector(
+              onTapDown: hapticDown(onRemove, HapticLevel.high),
               onTap: onRemove,
               child: Container(
+                width: 16.sp,
+                height: 16.sp,
                 decoration: BoxDecoration(
                   color: AppColors.red,
                   shape: BoxShape.circle,
                 ),
-                child: Icon(
-                  Icons.remove,
-                  size: 12.sp,
-                  color: AppColors.white,
-                ),
+                child: Icon(Icons.remove, size: 12.sp, color: AppColors.white),
               ),
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 }
@@ -222,9 +245,12 @@ class _AddButton extends StatelessWidget {
     return Opacity(
       opacity: isDimmed ? 0.5 : 1.0,
       child: GestureDetector(
+        onTapDown: hapticDown(onTap, HapticLevel.medium),
         onTap: onTap,
         child: Container(
-          height: 36.h,
+          // 38.sp, not .h: CustomDropdown scales its `height: 38` by .sp, so
+          // the same unit here is what keeps the two boxes level (21/10/2026).
+          height: 38.sp, // same height as the Priority box (Moataz 20/10/2026)
           decoration: BoxDecoration(
             color: AppColors.primary,
             borderRadius: BorderRadius.circular(4.r),
@@ -240,26 +266,28 @@ class _AddButton extends StatelessWidget {
                   height: 16.sp,
                   child: CircleProgressMaster.inline(
                     strokeWidth: 2,
-                    valueColor:
-                        AlwaysStoppedAnimation<Color>(AppColors.textButton),
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      AppColors.textButton,
+                    ),
                   ),
                 )
               else
                 CustomSvgImage(
                   assetPath:
-                      'assets/icons_assets/main_icons_assets/bulk_upload_qiyas.svg',
+                      'assets/icons_assets/main_icons_assets/ic_action_upload.svg',
                   color: AppColors.textButton,
                   height: 16.sp,
                   width: 16.sp,
                 ),
-              SizedBox(width: 12.w),
+              SizedBox(width: 16.w),
               Flexible(
                 child: Text(
                   S.of(context).attach_document,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: StyleText.fontSize14Weight500
-                      .copyWith(color: AppColors.textButton),
+                  style: StyleText.fontSize14Weight500.copyWith(
+                    color: AppColors.textButton,
+                  ),
                 ),
               ),
             ],

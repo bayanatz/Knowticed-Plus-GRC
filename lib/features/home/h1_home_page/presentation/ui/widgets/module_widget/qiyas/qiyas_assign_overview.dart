@@ -5,23 +5,26 @@
 /// Purpose: Declares `QiyasAssignOverview`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+/// Updated: 7/10/2026 - Declares its own width (`kHomeWidgetCompactWidth`,
+///          260) instead of `IntrinsicWidth`: home cards now keep their own
+///          width, and the intrinsic width here grew with the topic count
+///          (15 circles ≈ 540) — the status rows scroll horizontally anyway.
+library;
 
-import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/standard_container.dart';
-import 'package:grc_module/features/home/main_controller/helper/qiyas/qiyas_interface_consumer.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/home_widgets/home_widget_shell.dart';
+import 'package:knowticed_plus/features/home/helpers/qiyas/qiyas_interface_consumer.dart';
 
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/features/home/main_controller/helper/qiyas/domain/entities/qiyas_tracker_entity.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/home_component_model.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/features/home/helpers/qiyas/domain/entities/qiyas_tracker_entity.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/home_component_model.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
 class QiyasAssignOverview extends StatefulWidget {
-  QiyasAssignOverview({required this.model, super.key});
-  HomeComponentModel model;
+  const QiyasAssignOverview({required this.model, super.key});
+  final HomeComponentModel model;
 
   @override
   State<QiyasAssignOverview> createState() => _QiyasAssignOverviewState();
@@ -38,80 +41,55 @@ class _QiyasAssignOverviewState extends State<QiyasAssignOverview> {
 
   @override
   Widget build(BuildContext context) {
-    return IntrinsicWidth(
-      child: StandardContainer(
-          child: Column(
-        spacing: 5.sp,
+    // Owner item 199 (21/10/2026): each status is its NAME and its NUMBER
+    // on one line (label 12, number 14/500) in the house card — the
+    // horizontal strip of topic-id circles showed raw ids (D-226) and was
+    // scrolled off the card, so the card read as four names with nothing.
+    final S s = S.of(context);
+    return HomeWidgetCard(
+      title: s.qiyas,
+      icon: 'assets/icons_assets/main_icons_assets/ic_module_qiyas.svg',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                S.of(context).qiyas,
-                style: StyleText.fontSize14Weight500
-                    .copyWith(fontWeight: FontWeight.bold),
-              ),
-              SvgPicture.asset(
-                'assets/icons_assets/roles_assets/analytics_chart_cycle.svg',
-                width: 20,
-                height: 20,
-                color: AppColors.primary,
-              )
-            ],
-          ),
-          Container(),
           statusRow(
-              'Approved', AppColors.green, trackerEntity?.approvedTopics ?? []),
-          statusRow('Partial Assignation', Color(0xFFFF814A),
+              s.approved, AppColors.green, trackerEntity?.approvedTopics ?? []),
+          statusRow(s.partialAssignation, const Color(0xFFFF814A),
               trackerEntity?.partialAssigned ?? []),
-          statusRow('Assigned', AppColors.secondaryPrimary,
+          statusRow(s.assigned, AppColors.secondaryPrimary,
               trackerEntity?.assigned ?? []),
           statusRow(
-              'Not Assigned', AppColors.grey, trackerEntity?.notAssigned ?? []),
+              s.notAssigned, AppColors.grey, trackerEntity?.notAssigned ?? []),
         ],
-      )),
+      ),
     );
   }
 
   Widget statusRow(String statusTitle, Color color, List<String> ids) {
-    return Column(
-      spacing: 5.sp,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          statusTitle,
-          style: StyleText.fontSize12Weight400,
-        ),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            spacing: 5.sp,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              for (int i = 0;
-                  i <
-                      (trackerEntity == null
-                          ? 15
-                          : trackerEntity!.numberOfTopics);
-                  i++)
-                CircleAvatar(
-                  backgroundColor: getIndexId(i, ids) != null
-                      ? color
-                      : AppColors.secondaryButton,
-                  radius: 15.sp,
-                  child: Text(
-                    getIndexId(i, ids) ?? '',
-                    style: StyleText.fontSize10Weight400,
-                  ),
-                )
-            ],
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 1.h),
+      child: Row(
+        children: [
+          Container(
+            width: 8.r,
+            height: 8.r,
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
           ),
-        )
-      ],
+          SizedBox(width: 8.w),
+          Text(statusTitle,
+              style: StyleText.fontSize12Weight400
+                  .copyWith(color: AppColors.text)),
+          SizedBox(width: 16.w),
+          Text(trackerEntity == null ? '—' : '${ids.length}',
+              style: StyleText.fontSize14Weight500
+                  .copyWith(color: AppColors.text)),
+        ],
+      ),
     );
   }
 
-  fetchData() async {
+  Future<void> fetchData() async {
     trackerEntity = await QiyasInterfaceConsumer().getTopicsAssignStatus();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       setState(() {});

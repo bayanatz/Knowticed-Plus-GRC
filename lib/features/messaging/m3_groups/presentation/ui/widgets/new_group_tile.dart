@@ -4,35 +4,34 @@
 /// Purpose: New group tile — messaging Groups sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+library;
 
 // Date: 1/9/2024
 // By: Nada Mohammed
 // Last update: 3/9/2024
 // Objectives: This file is responsible for providing the community new group tile used in the community feature.
 
+import 'package:knowticed_plus/features/messaging/m3_groups/presentation/ui/widgets/group_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:grc_module/core/helper/main_helper/localized_number.dart';
-import 'package:grc_module/core/helper/message_module/main_helper/localized_text_helper.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/core/helper/localized_number.dart';
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/main_helper/localized_text_helper.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
-
-import 'package:grc_module/core/network/message_module/routes/app_routes.dart';
-import 'package:grc_module/core/constants/message_module/app_assets.dart';
-import 'package:grc_module/core/helper/main_helper/date_time_helper.dart';
-import 'package:grc_module/core/helper/main_helper/spacing_helper.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import '../../../../m1_chat/presentation/controller/main_controllers/group_chat_cubit.dart';
-import '../../../../m1_chat/presentation/ui/pages/chat_mobile_view.dart';
-import '../../../../m2_connections/presentation/controller/connections_controller.dart';
-import '../../../domain/entities/group_entity.dart';
-import '../../controller/groups_controller.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
-import '../../../../main_controller/helper/chat_settings_service.dart';
-import '../../../../main_controller/helper/chat_state_icons.dart';
+import 'package:knowticed_plus/core/helper/date_time_helper.dart';
+import 'package:knowticed_plus/features/messaging/helpers/spacing_helper.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/main_controllers/group_chat_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/ui/pages/chat_mobile_view.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/presentation/controller/connections_controller.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/domain/entities/group_entity.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/presentation/controller/groups_controller.dart';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/features/messaging/helpers/main/chat_settings_service.dart';
+import 'package:knowticed_plus/features/messaging/helpers/main/chat_state_icons.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
 
 class NewGroupTile extends StatelessWidget {
   final GroupEntity groupEntity;
@@ -88,14 +87,17 @@ class NewGroupTile extends StatelessWidget {
     var isTablet = ContextExtension(context).isTablett;
 
     return GestureDetector(
+      onTapDown: (_) => HapticController.medium(),
       onTap: () => _handleTap(context),
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.field,
-          borderRadius: BorderRadius.circular(4.r), // bug report #3: cards use 4.r
+          color: AppColors.card,
+          borderRadius:
+              BorderRadius.circular(4.r), // bug report #3: cards use 4.r
         ),
         padding: EdgeInsetsDirectional.all(8.sp),
         child: Column(
+          spacing: 4.sp,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -108,28 +110,18 @@ class NewGroupTile extends StatelessWidget {
                     context,
                     DateTimeHelper.formatDate(groupEntity.createdAt.toDate()),
                   ),
-                  style: StyleText.fontSize12Weight500.copyWith(color: AppColors.inputColor)
+                  style: StyleText.fontSize12Weight500
+                      .copyWith(color: AppColors.greyDark)
                       .copyWith(fontSize: 10.sp, height: 1),
                 ),
               ],
             ),
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CircleAvatar(
-                  backgroundColor: AppColors.background,
-                  radius: 20.r,
-                  backgroundImage: (groupEntity.groupImage != null)
-                      ? NetworkImage(groupEntity.groupImage!)
-                      : null,
-                  child: groupEntity.groupImage == null
-                      ? SvgPicture.asset(
-                    AppAssets.message,
-                    color: AppColors.text,
-                    width: 20.sp,
-                    height: 20.sp,
-                  )
-                      : null,
-                ),
+                // 20/10/2026 (owner): same picture as the group card — the
+                // photo, or the people icon (not an empty grey circle).
+                GroupAvatar(imageUrl: groupEntity.groupImage, size: 30.sp),
                 horizontalSpace(5),
                 Expanded(
                   child: BlocBuilder<GroupsCubit, GroupsState>(
@@ -152,7 +144,7 @@ class NewGroupTile extends StatelessWidget {
                                   groupEntity.primaryLanguageName,
                               secondaryLanguageText: groupEntity.groupNameAr,
                             ),
-                            overflow: TextOverflow.ellipsis,
+                            // 20/10/2026 (owner): the name in full (wraps).
                             style: StyleText.fontSize14Weight500
                                 .copyWith(height: 1.3),
                           ),
@@ -161,8 +153,10 @@ class NewGroupTile extends StatelessWidget {
                             Text(
                               S.of(context).youCreatedThisGroup,
                               style: isTablet
-                                  ? StyleText.fontSize12Weight500.copyWith(color: AppColors.secondaryPrimary)
-                                  : StyleText.fontSize12Weight500.copyWith(color: AppColors.secondaryPrimary),
+                                  ? StyleText.fontSize12Weight500.copyWith(
+                                      color: AppColors.secondaryPrimary)
+                                  : StyleText.fontSize12Weight500.copyWith(
+                                      color: AppColors.secondaryPrimary),
                             ),
                         ],
                       );

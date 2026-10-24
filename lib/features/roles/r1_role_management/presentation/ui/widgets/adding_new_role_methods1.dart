@@ -2,7 +2,7 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: adding_new_role_methods1.dart
-/// Purpose: Declares `AddingNewRoleMethods1`.
+/// Purpose: Declares `_AddingNewRoleMethods1`.
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
 /// Updated: 25/8/2026 - Script-locked the four text boxes and tightened the
@@ -22,14 +22,16 @@ part of '../pages/adding_new_role.dart';
 // `.sp` is resolved at call time, so these are getters, not consts.
 double get _kModuleTileSide => 48.sp;
 double get _kModuleTileGap => 6.sp;
+
 /// Two lines of 10.sp text at a 1.2 line height (24.sp), plus a little slack
 /// so a taller-rendering glyph can't trip a pixel overflow.
 double get _kModuleLabelHeight => 26.sp;
+
 /// Total height of one grid cell — feeds `mainAxisExtent`.
 double get kModuleCellExtent =>
     _kModuleTileSide + _kModuleTileGap + _kModuleLabelHeight;
 
-extension AddingNewRoleMethods1 on _AddingNewRoleState {
+extension _AddingNewRoleMethods1 on _AddingNewRoleState {
   // REMOVED 12/8/2026: `_containsArabic` / `_containsEnglish` — dead wrappers
   // over `controller.containsArabic` / `controller.containsEnglish` with no
   // call sites left in this part file. Call the RoleCubit methods directly.
@@ -64,7 +66,8 @@ extension AddingNewRoleMethods1 on _AddingNewRoleState {
 
     await CustomDialogManager.showDialogFlow(
       context: context,
-      confirmLottie: 'assets/lottie_assets/roles_lottie_assets/Edit Document.json',
+      confirmLottie:
+          'assets/lottie_assets/main_lottie_assets/lot_action_edit_document.json',
       confirmTitle: S.of(context).changeRoleStatus,
       confirmSubtitle: newValue
           ? S.of(context).areYouSureYouWantToActivateThisRole
@@ -110,16 +113,16 @@ extension AddingNewRoleMethods1 on _AddingNewRoleState {
         fillColor: AppColors.background,
         borderRadius: BorderRadius.circular(4.r),
         height: 36,
-        valueStyle: StyleText.fontSize14Weight500.copyWith(
-            color: AppColors.secondaryText),
+        valueStyle: StyleText.fontSize14Weight500
+            .copyWith(color: AppColors.secondaryText),
         hintStyle: StyleText.fontSize14Weight500
-            .copyWith(color: AppColors.secondaryText.withOpacity(.5)),
-        labelStyle:
-        StyleText.fontSize16Weight400.copyWith(fontSize: 14.sp),
+            .copyWith(color: AppColors.secondaryText.withValues(alpha: .5)),
+        labelStyle: StyleText.fontSize16Weight400.copyWith(fontSize: 14.sp),
         onChanged: (value) => controller.emitSafely(RoleModuleSelected()),
       ),
     );
   }
+
   Widget _buildArabicNameField() {
     // ✅ Forced RTL: the Directionality flips the label row and the counter,
     // textDirection/textAlign flip the typed value and the hint.
@@ -137,16 +140,16 @@ extension AddingNewRoleMethods1 on _AddingNewRoleState {
         fillColor: AppColors.background,
         borderRadius: BorderRadius.circular(4.r),
         height: 36,
-        valueStyle: StyleText.fontSize14Weight500.copyWith(
-            color: AppColors.secondaryText),
+        valueStyle: StyleText.fontSize14Weight500
+            .copyWith(color: AppColors.secondaryText),
         hintStyle: StyleText.fontSize14Weight500
-            .copyWith(color: AppColors.secondaryText.withOpacity(.5)),
-        labelStyle:
-        StyleText.fontSize16Weight400.copyWith(fontSize: 14.sp),
+            .copyWith(color: AppColors.secondaryText.withValues(alpha: .5)),
+        labelStyle: StyleText.fontSize16Weight400.copyWith(fontSize: 14.sp),
         onChanged: (value) => controller.emitSafely(RoleModuleSelected()),
       ),
     );
   }
+
   Widget _buildEnglishDescriptionField() {
     return Directionality(
       textDirection: ui.TextDirection.ltr,
@@ -177,15 +180,15 @@ extension AddingNewRoleMethods1 on _AddingNewRoleState {
         showCharCount: true,
         fillColor: AppColors.background,
         borderRadius: BorderRadius.circular(4.r),
-        valueStyle: StyleText.fontSize14Weight500.copyWith(
-            color: AppColors.secondaryText),
+        valueStyle: StyleText.fontSize14Weight500
+            .copyWith(color: AppColors.secondaryText),
         hintStyle: StyleText.fontSize14Weight500
-            .copyWith(color: AppColors.secondaryText.withOpacity(.5)),
-        labelStyle:
-        StyleText.fontSize16Weight400.copyWith(fontSize: 14.sp),
+            .copyWith(color: AppColors.secondaryText.withValues(alpha: .5)),
+        labelStyle: StyleText.fontSize16Weight400.copyWith(fontSize: 14.sp),
       ),
     );
   }
+
   Widget _buildArabicDescriptionField() {
     return Directionality(
       textDirection: ui.TextDirection.rtl,
@@ -208,15 +211,15 @@ extension AddingNewRoleMethods1 on _AddingNewRoleState {
         showCharCount: true,
         fillColor: AppColors.background,
         borderRadius: BorderRadius.circular(4.r),
-        valueStyle: StyleText.fontSize14Weight500.copyWith(
-            color: AppColors.secondaryText),
+        valueStyle: StyleText.fontSize14Weight500
+            .copyWith(color: AppColors.secondaryText),
         hintStyle: StyleText.fontSize14Weight500
-            .copyWith(color: AppColors.secondaryText.withOpacity(.5)),
-        labelStyle:
-        StyleText.fontSize16Weight400.copyWith(fontSize: 14.sp),
+            .copyWith(color: AppColors.secondaryText.withValues(alpha: .5)),
+        labelStyle: StyleText.fontSize16Weight400.copyWith(fontSize: 14.sp),
       ),
     );
   }
+
   Widget _moduleItem(Modules module, BuildContext context) {
     String moduleString = _moduleEnumToString(module);
     bool isSelected = controller.selectedModules.contains(moduleString);
@@ -225,6 +228,7 @@ extension AddingNewRoleMethods1 on _AddingNewRoleState {
     bool isHighlighted = isSelected || module == Modules.settings;
 
     return InkWell(
+      onTapDown: (_) => HapticController.low(),
       onTap: () async {
         if (module != Modules.settings) {
           await controller.selectModule(moduleString);
@@ -236,10 +240,10 @@ extension AddingNewRoleMethods1 on _AddingNewRoleState {
           // The tile is a true square: 48.sp a side, but never wider than the
           // cell it sits in, so a narrow column can't stretch it into a
           // rectangle or overflow the grid.
-          final double tileSide =
-              constraints.maxWidth.isFinite && constraints.maxWidth < _kModuleTileSide
-                  ? constraints.maxWidth
-                  : _kModuleTileSide;
+          final double tileSide = constraints.maxWidth.isFinite &&
+                  constraints.maxWidth < _kModuleTileSide
+              ? constraints.maxWidth
+              : _kModuleTileSide;
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -263,7 +267,7 @@ extension AddingNewRoleMethods1 on _AddingNewRoleState {
                 padding: EdgeInsets.all(6.sp),
                 decoration: BoxDecoration(
                   color:
-                  isHighlighted ? AppColors.primary : AppColors.background,
+                      isHighlighted ? AppColors.primary : AppColors.background,
                   borderRadius: BorderRadius.circular(4.sp),
                 ),
                 child: CustomSvgImage(
@@ -299,13 +303,15 @@ extension AddingNewRoleMethods1 on _AddingNewRoleState {
                     textAlign: TextAlign.center,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: StyleText.fontSize12Weight400.copyWith(color: AppColors.secondaryBlack).copyWith(
-                      fontSize: 10.sp,
-                      height: 1.2,
-                      color: AppColors.text,
-                      fontWeight:
-                          isHighlighted ? FontWeight.w600 : FontWeight.w400,
-                    ),
+                    style: StyleText.fontSize12Weight400
+                        .copyWith(color: AppColors.secondaryBlack)
+                        .copyWith(
+                          fontSize: 10.sp,
+                          height: 1.2,
+                          color: AppColors.text,
+                          fontWeight:
+                              isHighlighted ? FontWeight.w600 : FontWeight.w400,
+                        ),
                   ),
                 ),
               ),
@@ -315,6 +321,7 @@ extension AddingNewRoleMethods1 on _AddingNewRoleState {
       ),
     );
   }
+
   /// Whether the first step of role creation is complete enough to continue.
   ///
   /// ADDED 13/8/2026: "التالي" was always enabled and styled as a live primary
@@ -397,6 +404,7 @@ extension AddingNewRoleMethods1 on _AddingNewRoleState {
 
     await controller.ensureSettingsSelected();
 
+    if (!context.mounted) return;
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => BlocProvider<RoleCubit>.value(

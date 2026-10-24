@@ -9,16 +9,15 @@
 /// Updated: 11/8/2026 - CR-SKEL-SE1-N15/N18: text direction now comes from the
 ///          widget tree instead of `Get.locale` (§13), which also removes the
 ///          GetX import; Colors.transparent routed through AppColors.
-import 'dart:ui' as ui;
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:grc_module/core/custom/2-custom_textfield.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/core/custom/inputs/custom_textfield.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
 class NameSection extends StatefulWidget {
   // ── First name ────────────────────────────────────────────────────────────
@@ -108,8 +107,7 @@ class _NameSectionState extends State<NameSection> {
   }
 
   /// Reads the locale from the tree, not from GetX (§13).
-  ui.TextDirection get _direction =>
-      Directionality.of(context);
+  TextDirection get _direction => Directionality.of(context);
 
   // ── Single field builder — used by both layouts ───────────────────────────
   Widget _nameField({
@@ -165,8 +163,7 @@ class _NameSectionState extends State<NameSection> {
     final isVertical =
         MediaQuery.of(context).orientation == Orientation.portrait;
     // Phone spacing scale (mobile only — every other breakpoint keeps its
-    // original value): 10.sp between fields, 15.sp after a title.
-    final isPhone = ContextExtension(context).isPhone;
+    // original value): 10.sp between fields, 16.sp after a title.
 
     return Theme(
       data: Theme.of(context).copyWith(hoverColor: AppColors.transparent),
@@ -179,7 +176,7 @@ class _NameSectionState extends State<NameSection> {
               style:
                   StyleText.fontSize16Weight600.copyWith(color: AppColors.text),
             ),
-            SizedBox(height: isPhone ? 15.sp : 16.h),
+            SizedBox(height: 12.sp),
           ],
           isVertical
               ? _buildVerticalLayout(context)
@@ -190,7 +187,6 @@ class _NameSectionState extends State<NameSection> {
   }
 
   Widget _buildVerticalLayout(BuildContext context) {
-    final isPhone = ContextExtension(context).isPhone;
     final fields = _fields(context);
 
     return Column(
@@ -198,8 +194,7 @@ class _NameSectionState extends State<NameSection> {
       children: [
         for (int i = 0; i < fields.length; i++) ...[
           fields[i],
-          if (i != fields.length - 1)
-            SizedBox(height: isPhone ? 10.sp : 16.h),
+          if (i != fields.length - 1) SizedBox(height: 12.sp),
         ],
       ],
     );
@@ -214,7 +209,7 @@ class _NameSectionState extends State<NameSection> {
       children: [
         for (int i = 0; i < fields.length; i++) ...[
           Expanded(child: fields[i]),
-          if (i != fields.length - 1) SizedBox(width: 12.w),
+          if (i != fields.length - 1) SizedBox(width: 16.w),
         ],
       ],
     );

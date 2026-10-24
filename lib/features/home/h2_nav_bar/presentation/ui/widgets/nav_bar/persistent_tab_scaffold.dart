@@ -6,18 +6,17 @@
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Extracted from the oversized model.dart as part of
 ///          breaking up the vendored persistent-nav-bar god files.
+library;
 
 import 'dart:math';
-import 'dart:ui';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:grc_module/features/home/h2_nav_bar/persistent_nav_bar.dart';
+import 'package:knowticed_plus/features/home/h2_nav_bar/persistent_nav_bar.dart';
 
 class PersistentTabScaffold extends StatefulWidget {
   PersistentTabScaffold({
     required this.tabBar,
     required this.tabBuilder,
-    final Key? key,
+    super.key,
     this.controller,
     this.backgroundColor,
     this.resizeToAvoidBottomInset = true,
@@ -27,11 +26,10 @@ class PersistentTabScaffold extends StatefulWidget {
     this.hideNavigationBarWhenKeyboardShows,
     this.itemCount,
     this.animatePadding = false,
-  })  : assert(
+  }) : assert(
             controller == null || controller.index < itemCount!,
             "The PersistentTabController's current index ${controller.index} is "
-            "out of bounds for the tab bar with ${tabBar.navBarEssentials!.items!.length} tabs"),
-        super(key: key);
+            "out of bounds for the tab bar with ${tabBar.navBarEssentials!.items!.length} tabs");
 
   final PersistentBottomNavBar tabBar;
 
@@ -56,7 +54,7 @@ class PersistentTabScaffold extends StatefulWidget {
   final bool animatePadding;
 
   @override
-  _PersistentTabScaffoldState createState() => _PersistentTabScaffoldState();
+  State<PersistentTabScaffold> createState() => _PersistentTabScaffoldState();
 }
 
 class _PersistentTabScaffoldState extends State<PersistentTabScaffold> {
@@ -198,18 +196,18 @@ class _PersistentTabScaffoldState extends State<PersistentTabScaffold> {
     }
 
     return DecoratedBox(
-      decoration:
-          widget.tabBar.navBarDecoration!.borderRadius != BorderRadius.zero
-              ? BoxDecoration(
-                  color: CupertinoColors.black.withOpacity(0),
-                  borderRadius: widget.tabBar.navBarDecoration!.borderRadius,
-                )
-              : BoxDecoration(color: CupertinoColors.black.withOpacity(1)),
+      decoration: widget.tabBar.navBarDecoration!.borderRadius !=
+              BorderRadius.zero
+          ? BoxDecoration(
+              color: CupertinoColors.black.withValues(alpha: 0),
+              borderRadius: widget.tabBar.navBarDecoration!.borderRadius,
+            )
+          : BoxDecoration(color: CupertinoColors.black.withValues(alpha: 1)),
       child: Stack(
         children: <Widget>[
           content,
           MediaQuery(
-            data: existingMediaQuery.copyWith(textScaleFactor: 1),
+            data: existingMediaQuery.copyWith(textScaler: TextScaler.linear(1)),
             child: Align(
               alignment: Alignment.bottomCenter,
               child: widget.tabBar.copyWith(
@@ -269,6 +267,7 @@ class _TabSwitchingView extends StatefulWidget {
 class _TabSwitchingViewState extends State<_TabSwitchingView>
     with TickerProviderStateMixin {
   final List<bool> shouldBuildTab = <bool>[];
+  Locale? _lastLocale;
   final List<FocusScopeNode> tabFocusNodes = <FocusScopeNode>[];
   final List<FocusScopeNode> discardedNodes = <FocusScopeNode>[];
   late List<AnimationController?> _animationControllers;
@@ -297,8 +296,26 @@ class _TabSwitchingViewState extends State<_TabSwitchingView>
     _initAnimationControllers();
   }
 
+  /// Set once the first controllers exist, so a rebuild with a different tab
+  /// count can dispose the previous ones.
+  bool _controllersReady = false;
+
   void _initAnimationControllers() {
     if (widget.screenTransitionAnimation!.animateTabTransition) {
+      // 24/10/2026 (Moataz: Bottom bar Done lags and throws me out): the old
+      // controllers were left running when the tab count changed, and their
+      // listeners looked themselves up by index in the NEW, shorter list —
+      // a RangeError on every frame of the animation. Dispose the old ones
+      // and keep the last-tab index inside the new count.
+      if (_controllersReady) {
+        for (final AnimationController? c in _animationControllers) {
+          c?.dispose();
+        }
+      }
+      _controllersReady = true;
+      if (_lastIndex != null && _lastIndex! >= widget.tabCount!) {
+        _lastIndex = widget.tabCount! - 1;
+      }
       _animationControllers =
           List<AnimationController?>.filled(widget.tabCount!, null);
       _animations = List<Animation<double>?>.filled(widget.tabCount!, null);
@@ -312,9 +329,9 @@ class _TabSwitchingViewState extends State<_TabSwitchingView>
       }
 
       for (int i = 0; i < widget.tabCount!; ++i) {
-        _animationControllers[i]!.addListener(() {
-          if (_animationControllers[i]!.isCompleted &&
-              _animationCompletionIndex) {
+        final AnimationController controller = _animationControllers[i]!;
+        controller.addListener(() {
+          if (controller.isCompleted && _animationCompletionIndex) {
             setState(() {
               if (!widget.stateManagement!) {
                 key = UniqueKey();
@@ -436,6 +453,16 @@ class _TabSwitchingViewState extends State<_TabSwitchingView>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    // 24/10/2026 (Moataz: the language switch froze ~3 s): a language change
+    // used to rebuild every tab that had ever been opened, hidden ones too.
+    // The hidden tabs are dropped instead and built again when opened.
+    final Locale locale = Localizations.localeOf(context);
+    if (_lastLocale != null && _lastLocale != locale) {
+      for (int i = 0; i < shouldBuildTab.length; i++) {
+        if (i != widget.currentTabIndex) shouldBuildTab[i] = false;
+      }
+    }
+    _lastLocale = locale;
     _focusActiveTab();
   }
 

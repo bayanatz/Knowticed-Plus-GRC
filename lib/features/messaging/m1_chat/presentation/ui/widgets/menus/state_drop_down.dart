@@ -8,17 +8,18 @@
 ///
 /// Lives in the messaging feature rather than lib/core because it resolves
 /// labels through ChatActionsEnum, a messaging domain type.
+library;
 
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 
-import 'package:grc_module/core/constants/message_module/app_assets.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:knowticed_plus/features/messaging/helpers/constants/messaging_assets.dart';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
 
-import '../../../../domain/enum/chat_actions.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/domain/enum/chat_actions.dart';
 
 class StateDropDown extends StatelessWidget {
   const StateDropDown({
@@ -68,6 +69,8 @@ class StateDropDown extends StatelessWidget {
     final double rowHeight = 35.sp;
 
     return PopupMenuButton<Enum>(
+      tooltip: '', // no hover "Show menu" bubble (18/10/2026)
+
       // Anchor to the BOTTOM of the trigger rather than covering it.
       position: PopupMenuPosition.under,
       offset: Offset(xOffset, yOffset),
@@ -111,10 +114,11 @@ class StateDropDown extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SvgPicture.asset(AppAssets.sort),
+                CustomSvgImage.natural(assetPath: AppAssets.sort),
                 Text(
                   isAr ? 'ترتيب' : 'Sort',
-                  style: StyleText.fontSize14Weight500.copyWith(color: AppColors.secondaryBlack),
+                  style: StyleText.fontSize14Weight500
+                      .copyWith(color: AppColors.secondaryBlack),
                 ),
               ],
             ),
@@ -122,7 +126,6 @@ class StateDropDown extends StatelessWidget {
     );
   }
 }
-
 
 /// One row of [StateDropDown]: opaque, and primary / textButton when hovered
 /// or selected.

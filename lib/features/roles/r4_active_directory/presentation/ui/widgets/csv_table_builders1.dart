@@ -2,8 +2,9 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: csv_table_builders1.dart
-/// Purpose: Declares `CsvTableBuilders1`.
-/// Author: Knowticed Plus team
+/// Description: Declares `CsvTableBuilders1`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
 /// Updated: 25/8/2026 - Toolbar, tabs and badges localized (text + numerals).
 /// Updated: 25/8/2026 - Toolbar actions gated on the Active Directory
@@ -50,28 +51,13 @@ extension CsvTableBuilders1 on CustomCsvTable {
   bool get _canEditUploadedDocument =>
       RolesModuleAccess.activeDirectory(ActiveDirectory.editUploadedDocument);
 
-  /// A count rendered in the reader's numerals.
-  ///
-  /// ADDED 25/8/2026. The tab badges and the filter badge printed
-  /// `count.toString()` — always Latin figures — so an Arabic user read
-  /// "بيانات المستخدمين 87" with the number in the wrong script.
-  ///
-  /// `LocalizedDigits` is the app's shared helper. It maps a bare `ar` to
-  /// `ar_EG` internally, because CLDR's generic Arabic is Latin-digit and
-  /// `NumberFormat.decimalPattern('ar')` would hand "87" straight back.
-  String _localizedCount(BuildContext context, int value) =>
-      LocalizedDigits.apply(
-        value.toString(),
-        Localizations.localeOf(context).languageCode,
-      );
-
   // ─── Header ──────────────────────────────────────────────────────────────
 
   Widget _buildHeader(
-      ActiveDirectoryController controller,
-      BuildContext context,
-      bool isVertical,
-      ) {
+    ActiveDirectoryController controller,
+    BuildContext context,
+    bool isVertical,
+  ) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 12.h),
       child: BlocBuilder<ActiveDirectoryController, ActiveDirectoryState>(
@@ -96,8 +82,8 @@ extension CsvTableBuilders1 on CustomCsvTable {
                     if (controller.selectedIndex == 1)
                       _actionButton(
                         icon: controller.isEditMode
-                            ? 'assets/icons_assets/messaging_assets/close_x_teal.svg'
-                            : 'assets/icons_assets/main_icons_assets/edit_pencil_square.svg',
+                            ? 'assets/icons_assets/main_icons_assets/ic_action_cancel.svg'
+                            : 'assets/icons_assets/main_icons_assets/ic_action_edit.svg',
                         // LOCALIZED 25/8/2026: every label on this toolbar was an
                         // English literal.
                         label: controller.isEditMode
@@ -108,7 +94,8 @@ extension CsvTableBuilders1 on CustomCsvTable {
                       ),
                     if (controller.selectedIndex == 0)
                       _actionButton(
-                        icon: 'assets/icons_assets/main_icons_assets/edit_pencil_square.svg',
+                        icon:
+                            'assets/icons_assets/main_icons_assets/ic_action_edit.svg',
                         label: S.of(context).edit,
                         onTap: () => controller.toggleEditMode(),
                       ),
@@ -116,7 +103,7 @@ extension CsvTableBuilders1 on CustomCsvTable {
                   const Spacer(),
                   if (_canExportData)
                     _actionButton(
-                      icon: 'assets/icons_assets/watermark/export.svg',
+                      icon: AppAssets.export,
                       label: S.of(context).export,
                       // CHANGED 29/8/2026: show the simple File Name / Download
                       // card (CustomDialogManager.showExport) and export directly,
@@ -144,7 +131,8 @@ extension CsvTableBuilders1 on CustomCsvTable {
                     SizedBox(width: 0.008.w),
                   if (_canRestoreData)
                     _actionButton(
-                      icon: 'assets/icons_assets/watermark/restore.svg',
+                      icon:
+                          'assets/icons_assets/main_icons_assets/ic_restore.svg',
                       label: S.of(context).restore,
                       // CHANGED 30/8/2026. This button used to open the
                       // "backup restored successfully" dialog and nothing
@@ -192,7 +180,9 @@ extension CsvTableBuilders1 on CustomCsvTable {
   /// selected chip is already the only one with a primary-filled box, so the
   /// label does not need to carry the same signal twice.
   Widget _buildTabBar(
-      ActiveDirectoryController controller, BuildContext context) {
+    ActiveDirectoryController controller,
+    BuildContext context,
+  ) {
     return StatusChipFilter(
       selectedKey: controller.selectedIndex == 1
           ? _kInvalidDataTabKey
@@ -221,10 +211,10 @@ extension CsvTableBuilders1 on CustomCsvTable {
   // ─── Toolbar ──────────────────────────────────────────────────────────────
 
   Widget _buildToolbar(
-      ActiveDirectoryController controller,
-      BuildContext context,
-      bool isVertical,
-      ) {
+    ActiveDirectoryController controller,
+    BuildContext context,
+    bool isVertical,
+  ) {
     return Row(
       children: [
         _buildSearchBar(controller),
@@ -235,7 +225,7 @@ extension CsvTableBuilders1 on CustomCsvTable {
         if (controller.selectedIndex == 0 && _canUploadDocument) ...[
           SizedBox(width: 0.008.w),
           _actionButton(
-            icon: 'assets/icons_assets/watermark/upload.svg',
+            icon: 'assets/icons_assets/main_icons_assets/ic_upload.svg',
             label: S.of(context).upload,
             // CHANGED 29/8/2026: show the Upload card first, then run the
             // normal file upload from its "Browse Files" button.
@@ -255,72 +245,15 @@ extension CsvTableBuilders1 on CustomCsvTable {
     );
   }
 
+  // Owner 21/10/2026: the house Filter button (grey card fill, primary only while a filter is on) — was a yellow hand-built button.
   Widget _filterButton(
-      BuildContext context, ActiveDirectoryController controller) {
-    final bool active = controller.hasActiveFilters;
-    return InkWell(
+    BuildContext context,
+    ActiveDirectoryController controller,
+  ) {
+    return CustomFilterIcon(
+      title: S.of(context).Filter,
+      active: controller.hasActiveFilters,
       onTap: () => _showFilterPanel(context),
-      borderRadius: BorderRadius.circular(8),
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Container(
-            width: 100.sp,
-            height: 38.sp,
-            decoration: BoxDecoration(
-              color:  AppColors.primary,
-              borderRadius: BorderRadius.circular(8.r),
-            ),
-            child: Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SvgPicture.asset(
-                    'assets/icons_assets/main_icons_assets/filter_sliders.svg',
-                    width: 14.w,
-                    height: 14.h,
-                    color: AppColors.textButton,
-
-                  ),
-                  SizedBox(width: 5.w),
-                  Text(
-                    S.of(context).Filter,
-                    style: StyleText.fontSize16Weight500.copyWith(
-                      fontSize: FontConstants.fontSize013.w,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textButton,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          // // Active-filter badge
-          // if (active)
-          //   Positioned(
-          //     top: -6,
-          //     right: -6,
-          //     child: Container(
-          //       width: 16.r,
-          //       height: 16.r,
-          //       decoration: BoxDecoration(
-          //         color: AppColors.primary,
-          //         shape: BoxShape.circle,
-          //       ),
-          //       child: Center(
-          //         child: Text(
-          //           _localizedCount(context, controller.activeFilterCount),
-          //           style: AppFontStyle.cairoRegularStyle.copyWith(
-          //             fontSize: 8.sp,
-          //             fontWeight: FontWeight.w700,
-          //             color: AppColors.black,
-          //           ),
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-        ],
-      ),
     );
   }
 
@@ -331,7 +264,7 @@ extension CsvTableBuilders1 on CustomCsvTable {
     return AppSearchTextField(
       controller: controller.searchController,
       onChanged: (value) => controller.onSearchChanged(value),
-      fillColor: AppColors.field,
+      fillColor: AppColors.card,
       borderRadius: BorderRadius.circular(8),
     );
   }
@@ -344,18 +277,20 @@ extension CsvTableBuilders1 on CustomCsvTable {
     bool isActive = false,
   }) {
     final Color bgColor = isActive
-        ? AppColors.red
+        ? AppColors.darkGrey
         : isOutlined
-        ? AppColors.transparent
-        : AppColors.primary;
+            ? AppColors.transparent
+            : AppColors.primary;
     final Color iconColor = AppColors.textButton;
 
     return InkWell(
+      onTapDown: hapticDown(onTap, HapticLevel.low),
       onTap: onTap,
       borderRadius: BorderRadius.circular(8),
+      // Owner 21/10/2026: house toolbar sizes (ToolbarStyle / ButtonSizing) — was 16 icon + 10.sp text.
       child: Container(
-        width: 100.sp,
-        height: 38.sp,
+        width: ToolbarStyle.labelledWidth,
+        height: ButtonSizing.height,
         decoration: BoxDecoration(
           color: bgColor,
           borderRadius: BorderRadius.circular(8.r),
@@ -365,27 +300,25 @@ extension CsvTableBuilders1 on CustomCsvTable {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SvgPicture.asset(
-                icon,
-                width: 16.sp,
-                height: 16.sp,
-                fit: BoxFit.fill,
+              CustomSvgImage.natural(
+                assetPath: icon,
+                width: ToolbarStyle.iconSize,
+                height: ToolbarStyle.iconSize,
+                fit: BoxFit.scaleDown,
                 colorFilter: ColorFilter.mode(
-                  isActive ? AppColors.white : iconColor,
+                  isActive ? AppColors.text : iconColor,
                   BlendMode.srcIn,
                 ),
               ),
-              SizedBox(width: 5.w),
+              SizedBox(width: ToolbarStyle.iconTextGap),
               Text(
                 label,
-                style: StyleText.fontSize16Weight500.copyWith(
-                  fontSize: FontConstants.fontSize013.w,
-                  fontWeight: FontWeight.w600,
-                  color: isActive
-                      ? AppColors.white
-                      : isOutlined
+                style: ToolbarStyle.label(
+                  isActive
                       ? AppColors.text
-                      : AppColors.textButton,
+                      : isOutlined
+                          ? AppColors.text
+                          : AppColors.textButton,
                 ),
               ),
             ],
@@ -396,5 +329,4 @@ extension CsvTableBuilders1 on CustomCsvTable {
   }
 
   // ─── Edit mode bottom bar ─────────────────────────────────────────────────
-
 }

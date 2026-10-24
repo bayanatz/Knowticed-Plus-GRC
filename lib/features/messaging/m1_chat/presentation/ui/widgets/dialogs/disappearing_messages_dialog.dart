@@ -12,10 +12,11 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
-import '../../../../../../../core/custom/57-custom_dialog_manager.dart';
-import '../../../controller/main_controllers/master_chat_cubit.dart';
-import 'chat_dialog_widgets.dart';
+import 'package:knowticed_plus/core/custom/dialogs/custom_dialog_manager.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/main_controllers/master_chat_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/ui/widgets/dialogs/chat_dialog_widgets.dart';
 
 /// Hours per option; 0 = Always, -1 = Off (null in the cubit).
 enum DisappearingOption {
@@ -94,7 +95,10 @@ class _DisappearingMessagesDialogState
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          ChatDialogTitle(isAr ? 'الرسائل المؤقتة' : 'Disappearing Messages'),
+          ChatDialogTitle(
+            S.of(context).disappearingMessages,
+            icon: 'assets/icons_assets/main_icons_assets/ic_time_clock.svg',
+          ),
           SizedBox(height: 8.h),
           ChatDialogSubtitle(isAr
               ? 'اجعل الرسائل في هذه المحادثة تختفي'
@@ -109,7 +113,7 @@ class _DisappearingMessagesDialogState
             ),
           SizedBox(height: 16.h),
           ChatDialogButtons(
-            primaryLabel: isAr ? 'تطبيق' : 'Apply',
+            primaryLabel: S.of(context).apply,
             onPrimary: () => Navigator.of(context).pop(_selected),
           ),
         ],

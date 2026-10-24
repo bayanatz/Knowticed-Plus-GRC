@@ -1,94 +1,91 @@
 /// Module: messaging / chat / presentation/ui/pages/chat_mobile_view.dart
+library;
 // Date: 6/8/2024
 // By: Nada Mohammed , Youssef Ashraf
 // Last update: 6/8/2024
 // Objectives: This file is responsible for the direct messaging view.
-import 'dart:ui' as ui;
 
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
-import '../../../../../../core/helper/main_helper/extensions.dart' hide ContextExtension;
-import '../../../domain/enum/reacts.dart';
-import '../../../domain/entity/new_message_content_entity.dart'
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/ui/widgets/bubbles/bubble_width.dart';
+import 'package:knowticed_plus/core/helper/format_title.dart';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/domain/enum/reacts.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/domain/entity/new_message_content_entity.dart'
     show LocationPayload, ContactPayload, PollPayload;
+import 'package:intl/intl.dart' show DateFormat;
+import 'package:knowticed_plus/core/custom/buttons/custom_button.dart';
 import 'package:url_launcher/url_launcher.dart' show launchUrl, LaunchMode;
-import 'package:grc_module/core/helper/message_module/main_helper/messaging_interface_implementation.dart'
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/main_helper/messaging_interface_implementation.dart'
     show MessagingInterfaceImplementation, OpenChatResult, showOpenChatFailure;
 import 'package:audio_waveforms/audio_waveforms.dart';
-import 'package:grc_module/core/custom/46-custom_image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:flutter_timer_countdown/flutter_timer_countdown.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/domain/entities/single_connection_entity.dart';
+import 'package:knowticed_plus/features/messaging/m4_messaging_home/domain/entities/chat_type_entity.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/domain/entities/group_entity.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/domain/entities/member_entity.dart';
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/main_helper/localized_text_helper.dart';
+import 'package:knowticed_plus/core/custom/pickers/custom_image_picker.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
-import 'package:grc_module/features/messaging/m1_chat/presentation/controller/helper_controllers/chat_scroll_cubit.dart';
-import 'package:grc_module/core/enums/message_module/permissions/messages_permissions.dart';
-import 'package:grc_module/core/enums/message_module/permissions/messages_permissions_sections.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
-import 'package:lottie/lottie.dart';
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
+import 'package:knowticed_plus/core/helper/access/main_core_employee_controller.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/helper_controllers/chat_scroll_cubit.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/messages/messages_permissions_enum.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/messages/messages_sections_enum.dart';
+import 'package:knowticed_plus/core/helper/access/modules_enum.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:video_player/video_player.dart';
 
-import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
 
-import 'package:grc_module/core/network/message_module/routes/app_routes.dart';
-import 'package:grc_module/core/services/message_module/audio_record_service.dart';
-import 'package:grc_module/core/constants/message_module/app_assets.dart';
-import 'package:grc_module/core/enums/message_module/message_types.dart';
-import 'package:grc_module/core/helper/main_helper/date_time_helper.dart';
-import 'package:grc_module/core/helper/main_helper/get_dialog_helper.dart';
-import 'package:grc_module/core/helper/main_helper/haptic_feedback_helper.dart';
-import 'package:grc_module/core/helper/main_helper/localized_number.dart';
-import 'package:grc_module/core/helper/main_helper/spacing_helper.dart';
-import 'package:grc_module/core/theme/app_font_weights.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:knowticed_plus/features/messaging/helpers/services/audio_record_service.dart';
+import 'package:knowticed_plus/features/messaging/helpers/constants/messaging_assets.dart';
+import 'package:knowticed_plus/features/messaging/helpers/enums/message_types.dart';
+import 'package:knowticed_plus/core/helper/date_time_helper.dart';
+import 'package:knowticed_plus/features/messaging/helpers/haptic_feedback_helper.dart';
+import 'package:knowticed_plus/core/helper/localized_number.dart';
+import 'package:knowticed_plus/features/messaging/helpers/spacing_helper.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
 
-import '../../../../../../core/helper/message_module/interface/controller/messaging_init_controller.dart';
-import '../../../../m2_connections/presentation/controller/community_controller.dart';
-import '../../../../m3_groups/presentation/ui/widgets/avatar_chat.dart';
-import '../../../data/models/chat_enums.dart';
-import '../../controller/message_controller.dart';
-import '../widgets/cards/message_date_card.dart';
-import '../../../../m2_connections/presentation/controller/connections_controller.dart';
-import '../../../../m3_groups/presentation/controller/groups_controller.dart';
-import '../../../data/models/message/audio_message_model.dart';
-import '../../../data/models/message/message_model.dart';
-import '../../../domain/entity/group_message_entity.dart';
-import '../../../domain/entity/message_entity.dart';
-import '../../../domain/enum/file_types.dart';
-import '../../../../../../core/helper/message_module/main_helper/message_action_types.dart';
-import '../../../../../../core/helper/message_module/main_helper/update_ui_ids.dart';
-import '../../controller/main_controllers/master_chat_cubit.dart';
-import '../../../../main_controller/helper/poll_votes_service.dart';
-import '../../../../../../core/custom/23-custom_check_box.dart';
-import '../../controller/message_types_controllers/record_and_audio_cubit.dart';
-import '../widgets/app_bar/message_mobile_appbar.dart';
-import '../widgets/media_links_widget.dart';
-import '../widgets/menus/message_overlay/forward_message_dialog.dart';
-import '../widgets/pinned_message.dart';
-import '../widgets/send_new_message/mobile_new_message.dart';
-import '../widgets/video_player_view.dart';
-import './all_chat_view_tablet.dart';
-import 'package:grc_module/features/messaging/m1_chat/presentation/controller/functions_on_messages_controllers/forward_message_cubit.dart';
-import 'package:grc_module/features/messaging/m1_chat/presentation/controller/functions_on_messages_controllers/pin_message_cubit.dart';
-import 'package:grc_module/features/messaging/m1_chat/presentation/controller/functions_on_messages_controllers/reply_message_cubit.dart';
-import 'package:grc_module/features/messaging/m1_chat/presentation/controller/functions_on_messages_controllers/edit_and_delete_message_cubit.dart';
-import 'package:grc_module/features/messaging/m1_chat/presentation/controller/functions_on_messages_controllers/overlay_cubit.dart';
-import 'package:grc_module/features/messaging/m1_chat/presentation/controller/message_types_controllers/record_and_audio_cubit.dart';
-import 'package:grc_module/features/messaging/m1_chat/presentation/controller/message_types_controllers/image_message_cubit.dart';
-import 'package:grc_module/features/messaging/m1_chat/presentation/controller/message_types_controllers/text_message_cubit.dart';
-import 'package:grc_module/features/messaging/m1_chat/presentation/controller/message_types_controllers/document_message_cubit.dart';
-import 'package:grc_module/features/messaging/m2_connections/presentation/controller/connections_controller.dart';
-import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
-import 'package:grc_module/core/custom/88-stacked_avatars.dart';
-import 'package:grc_module/core/custom/74-custom_stacked_avatars.dart';
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/interface/controller/messaging_init_controller.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/presentation/controller/community_controller.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/message_controller.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/ui/widgets/cards/message_date_card.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/presentation/controller/connections_controller.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/presentation/controller/groups_controller.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/message/audio_message_model.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/message/message_model.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/domain/entity/group_message_entity.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/domain/entity/message_entity.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/domain/enum/file_types.dart';
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/main_helper/message_action_types.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/main_controllers/master_chat_cubit.dart';
+import 'package:knowticed_plus/features/messaging/helpers/main/poll_votes_service.dart';
+import 'package:knowticed_plus/core/custom/inputs/custom_check_box.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/message_types_controllers/record_and_audio_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/ui/widgets/app_bar/message_mobile_appbar.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/ui/widgets/media_links_widget.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/ui/widgets/menus/message_overlay/forward_message_dialog.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/ui/widgets/send_new_message/mobile_new_message.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/ui/widgets/video_player_view.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/functions_on_messages_controllers/forward_message_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/functions_on_messages_controllers/pin_message_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/functions_on_messages_controllers/reply_message_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/functions_on_messages_controllers/edit_and_delete_message_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/functions_on_messages_controllers/overlay_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/message_types_controllers/image_message_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/message_types_controllers/text_message_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/message_types_controllers/document_message_cubit.dart';
+import 'package:knowticed_plus/core/custom/dialogs/custom_dialog_manager.dart';
+import 'package:knowticed_plus/core/custom/cards/stacked_avatars.dart';
+import 'package:knowticed_plus/core/custom/cards/custom_stacked_avatars.dart';
+import 'package:knowticed_plus/core/theme/app_animations.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart'
+    show HapticController, HapticLevel;
 part '../widgets/bubbles/audio_bubble.dart';
 part '../widgets/bubbles/default_bubble.dart';
 part '../widgets/bubbles/deleted_bubble.dart';
@@ -182,11 +179,11 @@ class ChatMobileView extends StatelessWidget {
         bloc: masterChatCubit,
         builder: (context, state) {
           return Scaffold(
-            backgroundColor: AppColors.field,
-            resizeToAvoidBottomInset: ContextExtension(context).isLandscape ? false : true,
+            backgroundColor: AppColors.card,
+            resizeToAvoidBottomInset:
+                ContextExtension(context).isLandscape ? false : true,
             body: SafeArea(
               child: Column(
-
                 children: [
                   MessageMobileAppBar(),
                   Expanded(

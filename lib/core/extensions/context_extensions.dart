@@ -5,15 +5,35 @@
 /// Purpose: Declares `ContextExtension`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
+/// ONE phone / tablet rule for the whole app (17/10/2026, macOS resize test:
+/// the shell switched on window WIDTH while pages used the SHORTEST side, so a
+/// ~600-wide Mac window showed the iPad sidebar with phone pages inside).
+/// Phones are portrait-locked, so on iOS / Android the shortest side is the
+/// width anyway; on a desktop window (macOS / Windows / Linux / web) only the
+/// width counts — a wide but short window is still a tablet layout.
+bool kpIsPhoneLayout(BuildContext context) {
+  final Size size = MediaQuery.sizeOf(context);
+  final bool desktop = kIsWeb ||
+      defaultTargetPlatform == TargetPlatform.macOS ||
+      defaultTargetPlatform == TargetPlatform.windows ||
+      defaultTargetPlatform == TargetPlatform.linux;
+  // Desktop: below 800 wide is the phone layout (Moataz 17/10/2026: a ~730
+  // window "needs to be a mobile" — the iPad-portrait layout is cramped
+  // there). Phones / iPads keep the 600 shortest-side rule.
+  return desktop ? size.width < 800 : size.shortestSide < 600;
+}
 
 extension ContextExtension on BuildContext {
   double get screenWidth => MediaQuery.of(this).size.width;
   double get screenHeight => MediaQuery.of(this).size.height;
-  bool get isTablet => MediaQuery.of(this).size.shortestSide >= 600;
+  bool get isTablet => !kpIsPhoneLayout(this);
   // alias used by some widgets
-  bool get isTablett => MediaQuery.of(this).size.shortestSide >= 600;
+  bool get isTablett => !kpIsPhoneLayout(this);
 
   /// Active language code, read from [Localizations] rather than GetX.
   ///
@@ -30,8 +50,9 @@ extension ContextExtension on BuildContext {
   /// only, so this is the complement of [isArabic].
   bool get isEnglish => !isArabic;
 
-  bool get isLandscape => MediaQuery.of(this).orientation == Orientation.landscape;
-  bool get isPhone => MediaQuery.of(this).size.shortestSide < 600;
+  bool get isLandscape =>
+      MediaQuery.of(this).orientation == Orientation.landscape;
+  bool get isPhone => kpIsPhoneLayout(this);
 
   /// Wide-and-landscape layout check.
   ///
@@ -67,4 +88,3 @@ extension FormNavigationExtension on BuildContext {
     return Navigator.of(this).pushNamed<T>(routeName, arguments: arguments);
   }
 }
-

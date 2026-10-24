@@ -6,17 +6,18 @@
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Extracted from the oversized styles.dart as part of
 ///          breaking up the vendored persistent-nav-bar god files.
+library;
 
-import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/features/home/h2_nav_bar/persistent_nav_bar.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/features/home/h2_nav_bar/persistent_nav_bar.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
 
 class BottomNavStyle19 extends StatelessWidget {
   const BottomNavStyle19({
-    final Key? key,
+    super.key,
     this.navBarEssentials = const NavBarEssentials(items: null),
-  }) : super(key: key);
+  });
   final NavBarEssentials? navBarEssentials;
 
   Widget _buildItem(final PersistentBottomNavBarItem item,
@@ -67,8 +68,8 @@ class BottomNavStyle19 extends StatelessWidget {
           Transform.translate(
             offset: const Offset(0, -20),
             child: CurvedBazier(
-              color: navBarEssentials?.backgroundColor?.withOpacity(
-                      navBarEssentials!
+              color: navBarEssentials?.backgroundColor?.withValues(
+                      alpha: navBarEssentials!
                           .items![navBarEssentials!.selectedIndex!].opacity) ??
                   Colors.white,
               index: navBarEssentials?.selectedIndex ?? 0,
@@ -114,10 +115,11 @@ class BottomNavStyle19 extends StatelessWidget {
                               width: itemWidth,
                               decoration: BoxDecoration(
                                 color: navBarEssentials?.backgroundColor
-                                        ?.withOpacity(navBarEssentials!
-                                            .items![navBarEssentials!
-                                                .selectedIndex!]
-                                            .opacity) ??
+                                        ?.withValues(
+                                            alpha: navBarEssentials!
+                                                .items![navBarEssentials!
+                                                    .selectedIndex!]
+                                                .opacity) ??
                                     Colors.white,
                                 shape: BoxShape.circle,
                               ),
@@ -134,6 +136,7 @@ class BottomNavStyle19 extends StatelessWidget {
                     final int index = navBarEssentials!.items!.indexOf(item);
                     return Expanded(
                       child: GestureDetector(
+                        onTapDown: (_) => HapticController.low(),
                         onTap: () {
                           if (navBarEssentials!.items![index].onPressed !=
                               null) {

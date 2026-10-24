@@ -8,14 +8,16 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../../../core/custom/23-custom_check_box.dart';
-import '../../../../../../../core/custom/32-custom_svg.dart';
-import '../../../../../../../core/helper/message_module/interface/entity/user_category.dart';
-import '../../../../../../../core/helper/message_module/main_helper/localized_text_helper.dart';
-import '../../../../../../../core/theme/app_colors.dart';
-import '../../../../../../../core/theme/app_theme.dart';
-import '../../../../../m2_connections/domain/entities/single_connection_entity.dart';
-import 'chat_dialog_widgets.dart';
+import 'package:knowticed_plus/core/custom/inputs/custom_check_box.dart';
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/interface/entity/user_category.dart';
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/main_helper/localized_text_helper.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/domain/entities/single_connection_entity.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/ui/widgets/dialogs/chat_dialog_widgets.dart';
+import 'package:knowticed_plus/core/theme/app_animations.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
 
 /// Shows the picker and returns the selected colleagues (empty = cancelled).
 Future<List<SingleConnectionEntity>> showContactPickerDialog(
@@ -94,7 +96,7 @@ class _ContactPickerDialogState extends State<_ContactPickerDialog> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             ChatDialogBadgeHeader(
-              icon: 'assets/icons_assets/messaging_assets/contact_book.svg',
+              icon: '',
               title: isAr ? 'جهة اتصال' : 'Contact',
             ),
             SizedBox(height: 16.h),
@@ -107,10 +109,11 @@ class _ContactPickerDialogState extends State<_ContactPickerDialog> {
                     radius: 4,
                     onChanged: (_) => setState(() {}),
                     prefix: Padding(
-                      padding: EdgeInsetsDirectional.only(start: 10.w, end: 6.w),
+                      padding:
+                          EdgeInsetsDirectional.only(start: 10.w, end: 6.w),
                       child: CustomSvgImage(
                         assetPath:
-                            'assets/icons_assets/main_icons_assets/search_magnifier_alt.svg',
+                            'assets/icons_assets/main_icons_assets/ic_action_search_thin.svg',
                         width: 16.r,
                         height: 16.r,
                         fit: BoxFit.contain,
@@ -201,7 +204,7 @@ class _DepartmentDropdown extends StatelessWidget {
       height: 38.h,
       padding: EdgeInsets.symmetric(horizontal: 10.w),
       decoration: BoxDecoration(
-        color: AppColors.field,
+        color: AppColors.card,
         borderRadius: BorderRadius.circular(4.r),
       ),
       child: DropdownButtonHideUnderline(
@@ -217,8 +220,8 @@ class _DepartmentDropdown extends StatelessWidget {
           items: <DropdownMenuItem<String?>>[
             DropdownMenuItem<String?>(
               value: null,
-              child: Text(isAr ? 'كل الأقسام' : 'All Departments',
-                  style: style),
+              child:
+                  Text(isAr ? 'كل الأقسام' : 'All Departments', style: style),
             ),
             for (final UserCategory d in departments)
               DropdownMenuItem<String?>(
@@ -259,12 +262,12 @@ class _ContactCard extends StatelessWidget {
         color: AppColors.secondaryBlack, letterSpacing: -0.8224, height: 1.2);
 
     return InkWell(
-      onTap: onTap,
+      onTap: withHaptic(onTap, HapticLevel.low),
       borderRadius: BorderRadius.circular(8.r),
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
         decoration: BoxDecoration(
-          color: AppColors.field,
+          color: AppColors.card,
           borderRadius: BorderRadius.circular(8.r),
         ),
         child: Row(
@@ -318,7 +321,8 @@ class _ContactCard extends StatelessWidget {
   }
 
   Widget _placeholder() => CustomSvgImage(
-        assetPath: 'assets/icons_assets/main_icons_assets/assets_male.svg',
+        assetPath:
+            'assets/icons_assets/main_icons_assets/ic_user_avatar_male.png',
         width: 40.r,
         height: 40.r,
         fit: BoxFit.fill,

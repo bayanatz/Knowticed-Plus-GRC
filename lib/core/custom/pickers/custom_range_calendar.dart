@@ -1,0 +1,523 @@
+/// Module: core
+///
+///*************************** FILE INFO ****************************///
+/// File Name: custom_dropdown_range_calendar.dart
+/// Description: Declares `CustomRangeCalendar`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
+/// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+/// Updated: 13/10/2026 - `showRangePicker` opens the range calendar on its
+///          own (opt-in; the field itself is unchanged).
+library;
+
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
+import 'dart:math' as math;
+
+import 'package:calendar_date_picker2/calendar_date_picker2.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+
+import 'package:knowticed_plus/core/extensions/context_extensions.dart'
+    show kpIsPhoneLayout;
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_animations.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
+// For `kDropdownHintColor` — the single placeholder grey all three dropdowns
+// share. Imported rather than redeclared: a local copy is exactly how this
+// widget ended up with a different hint colour from `CustomDropdown`.
+import 'package:knowticed_plus/core/custom/dropdowns/custom_dropdown.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
+
+class CustomRangeCalendar extends StatefulWidget {
+  final DateTime? startDate;
+  final DateTime? endDate;
+  final void Function(DateTime? start, DateTime? end)? onChanged;
+  final String? label;
+  final String? hint;
+  final String? errorText;
+  final String? helperText;
+  final bool required;
+  final bool enabled;
+  final Color? fillColor;
+  final BorderRadius? borderRadius;
+  final DateTime? firstDate;
+  final DateTime? lastDate;
+  final String Function(DateTime)? dateFormatter;
+
+  /// Separator between from/to — defaults to "  →  "
+  final String? separator;
+
+  final TextStyle? labelStyle;
+  final TextStyle? valueStyle;
+
+  /// Size / weight / family of the placeholder.
+  ///
+  /// The COLOUR is not taken from here — it is always [kDropdownHintColor].
+  final TextStyle? hintStyle;
+  final TextStyle? errorStyle;
+  final TextStyle? helperStyle;
+
+  const CustomRangeCalendar({
+    super.key,
+    this.startDate,
+    this.endDate,
+    this.onChanged,
+    this.label,
+    this.hint,
+    this.errorText,
+    this.helperText,
+    this.required = false,
+    this.enabled = true,
+    this.fillColor,
+    this.borderRadius,
+    this.firstDate,
+    this.lastDate,
+    this.dateFormatter,
+    this.separator,
+    this.labelStyle,
+    this.valueStyle,
+    this.hintStyle,
+    this.errorStyle,
+    this.helperStyle,
+  });
+
+  /// ADDED 13/10/2026 (Time Tracker owner review): opens the same range
+  /// calendar this field opens, without the field — for a menu item
+  /// ("Custom") that should go straight to one date-range picker. Returns
+  /// [start, end] (end may be null when only one day was tapped), or null
+  /// when the picker was cancelled.
+  static Future<List<DateTime?>?> showRangePicker(
+    BuildContext context, {
+    DateTime? start,
+    DateTime? end,
+    DateTime? firstDate,
+    DateTime? lastDate,
+  }) =>
+      _CustomRangeCalendarState._show(
+        context,
+        start: start,
+        end: end,
+        firstDate: firstDate,
+        lastDate: lastDate,
+        standards: true,
+      );
+
+  @override
+  State<CustomRangeCalendar> createState() => _CustomRangeCalendarState();
+}
+
+class _CustomRangeCalendarState extends State<CustomRangeCalendar> {
+  Future<void> _openPicker() async {
+    if (!widget.enabled) return;
+    final result = await CustomRangeCalendar.showRangePicker(
+      context,
+      start: widget.startDate,
+      end: widget.endDate,
+      firstDate: widget.firstDate,
+      lastDate: widget.lastDate,
+    );
+    if (result != null) {
+      widget.onChanged?.call(
+        result.isNotEmpty ? result[0] : null,
+        result.length > 1 ? result[1] : null,
+      );
+    }
+  }
+
+  static Future<List<DateTime?>?> _show(
+    BuildContext context, {
+    DateTime? start,
+    DateTime? end,
+    DateTime? firstDate,
+    DateTime? lastDate,
+    bool standards = false,
+  }) {
+    // [standards] (13/10/2026, `showRangePicker` only): the app's dialog
+    // standard — scale-in entrance, yellow button shrinks on press, haptics
+    // Set Date = MEDIUM, Cancel = LOW. The field keeps its old behaviour.
+    // 22/10/2026 (Moataz): this dialog now matches the single-date picker
+    // (`custom_date_pic.dart`): the app's own chevrons, a gap between the
+    // month / year labels and their arrows, and Cancel / Set Date the same
+    // distance from the dialog's edges on every side (diagonal cut).
+    final bool isTablet = !kpIsPhoneLayout(context);
+    final bool isArabic = !Get.locale.toString().contains('en');
+    final Widget ok =
+        _buildActionButton(S.of(context).setDate, isTablet: isTablet);
+    final Widget cancel = _buildActionButton(
+      S.of(context).Cancel,
+      isCancel: true,
+      isTablet: isTablet,
+    );
+    return showCalendarDatePicker2Dialog(
+      builder: standards
+          ? (BuildContext ctx, Widget? dialog) => ScaleInContent(child: dialog!)
+          : null,
+      context: context,
+      dialogBackgroundColor: AppColors.card,
+      barrierDismissible: true,
+      value: [start, end],
+      config: CalendarDatePicker2WithActionButtonsConfig(
+        firstDate: firstDate ?? DateTime(1900),
+        lastDate: lastDate ?? DateTime(2100),
+        calendarType: CalendarDatePicker2Type.range,
+        calendarViewMode: CalendarDatePicker2Mode.day,
+        closeDialogOnCancelTapped: true,
+        closeDialogOnOkTapped: true,
+        currentDate: start ?? DateTime.now(),
+        centerAlignModePicker: true,
+        dayBorderRadius: BorderRadius.circular(8.r),
+        dayBuilder: _buildDay,
+        // A start inset keeps the label and its chevron from reading as one
+        // glyph; the package places the icon straight after the label.
+        customModePickerIcon: Padding(
+          padding: EdgeInsetsDirectional.only(start: isTablet ? 12.sp : 10.sp),
+          child: CustomSvgImage(
+            assetPath:
+                'assets/icons_assets/main_icons_assets/ic_nav_chevron_down.svg',
+            height: isTablet ? 16.sp : null,
+            fit: BoxFit.fitHeight,
+            color: AppColors.primary,
+          ),
+        ),
+        // Gap between the month picker and the year picker.
+        modePickersGap: isTablet ? 20.sp : 16.sp,
+        // The package positions these by physical side, so in Arabic
+        // "previous month" is the arrow on the right.
+        lastMonthIcon: _monthArrow(
+          isArabic
+              ? 'assets/icons_assets/main_icons_assets/ic_nav_chevron_right.svg'
+              : 'assets/icons_assets/main_icons_assets/ic_nav_chevron_left.svg',
+          isTablet,
+        ),
+        nextMonthIcon: _monthArrow(
+          isArabic
+              ? 'assets/icons_assets/main_icons_assets/ic_nav_chevron_left.svg'
+              : 'assets/icons_assets/main_icons_assets/ic_nav_chevron_right.svg',
+          isTablet,
+        ),
+        okButton: standards
+            ? Listener(
+                onPointerUp: (_) => HapticController.medium(),
+                child: ShrinkOnTap(child: ok),
+              )
+            : ok,
+        cancelButton: standards
+            ? Listener(
+                onPointerUp: (_) => HapticController.low(),
+                child: cancel,
+              )
+            : cancel,
+        weekdayLabelTextStyle: StyleText.fontSize16Weight400.copyWith(
+          color: AppColors.primary,
+        ),
+        controlsTextStyle: StyleText.fontSize14Weight400.copyWith(
+          color: AppColors.primary,
+        ),
+        selectedYearTextStyle: StyleText.fontSize14Weight400.copyWith(
+          color: AppColors.primary,
+        ),
+        selectedDayHighlightColor: AppColors.primary,
+        selectedRangeHighlightColor: AppColors.primary.withValues(alpha: 0.15),
+        dayTextStyle: StyleText.fontSize14Weight400.copyWith(
+          color: AppColors.text,
+        ),
+        selectedDayTextStyle: StyleText.fontSize14Weight400.copyWith(
+          color: AppColors.textButton,
+        ),
+        yearTextStyle: StyleText.fontSize14Weight400.copyWith(
+          color: AppColors.text,
+        ),
+        todayTextStyle: StyleText.fontSize14Weight400.copyWith(
+          color: AppColors.text,
+        ),
+        // Same on all four sides (diagonal cut) — as the single-date picker.
+        buttonPadding:
+            EdgeInsets.symmetric(horizontal: 23.5.sp, vertical: 20.sp),
+      ),
+      dialogSize: isTablet
+          ? Size(520.sp, _kPickerContentHeight + 6)
+          : Size(360.w, math.max(416.h, _kPickerContentHeight + 6)),
+      borderRadius: BorderRadius.circular(10.r),
+      useSafeArea: true,
+    );
+  }
+
+  static Widget _buildDay({
+    required DateTime date,
+    BoxDecoration? decoration,
+    bool? isDisabled,
+    bool? isSelected,
+    bool? isToday,
+    TextStyle? textStyle,
+  }) {
+    final now = DateTime.now();
+    final isTodayDate =
+        date.day == now.day && date.month == now.month && date.year == now.year;
+    return Center(
+      child: Container(
+        width: 25.sp,
+        height: 25.sp,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8.r),
+          color: isSelected == true ? AppColors.primary : AppColors.card,
+          border: Border.all(
+            color: isTodayDate ? AppColors.primary : AppColors.transparent,
+          ),
+        ),
+        child: Center(
+          child: Text(
+            date.day.toString(),
+            style: StyleText.fontSize14Weight400.copyWith(
+              color: isSelected == true
+                  ? AppColors.textButton
+                  : AppColors.secondaryText,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  static Widget _buildActionButton(
+    String label, {
+    bool isCancel = false,
+    bool isTablet = false,
+  }) {
+    final Widget button = Container(
+      height: 38.sp,
+      width: isTablet ? 150.sp : 120.sp,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8.r),
+        color: isCancel ? AppColors.darkGrey : AppColors.primary,
+      ),
+      child: Center(
+        child: Text(
+          label,
+          style: StyleText.fontSize14Weight400.copyWith(
+            color: isCancel ? AppColors.text : AppColors.textButton,
+          ),
+        ),
+      ),
+    );
+    // The package lays the two out in a Row that hugs the trailing edge, so
+    // Cancel carries a wide END inset that pushes it to the leading edge.
+    return GestureDetector(
+      child: isCancel
+          ? Padding(
+              padding:
+                  EdgeInsetsDirectional.only(end: isTablet ? 126.sp : 10.sp),
+              child: button,
+            )
+          : button,
+    );
+  }
+
+  /// One month-navigation chevron, tinted like the month / year header.
+  static Widget _monthArrow(String assetPath, bool isTablet) => Padding(
+        padding: EdgeInsets.symmetric(horizontal: 4.sp),
+        child: CustomSvgImage(
+          assetPath: assetPath,
+          height: isTablet ? 16.sp : 14.sp,
+          width: isTablet ? 16.sp : 14.sp,
+          fit: BoxFit.contain,
+          color: AppColors.primary,
+        ),
+      );
+
+  /// Calendar block (raw) + the package's gap + the button row and its
+  /// padding — see `custom_date_pic.dart` for how this was derived.
+  static double get _kPickerContentHeight => 346.0 + 10.0 + (38 + 40).sp;
+
+  String _formatDate(DateTime d) =>
+      widget.dateFormatter?.call(d) ??
+      '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
+
+  String get _displayText {
+    final sep = widget.separator ?? '  →  ';
+    if (widget.startDate != null && widget.endDate != null) {
+      return '${_formatDate(widget.startDate!)}$sep${_formatDate(widget.endDate!)}';
+    } else if (widget.startDate != null) {
+      return '${_formatDate(widget.startDate!)}$sep...';
+    }
+    return '';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final hasError = widget.errorText != null && widget.errorText!.isNotEmpty;
+    final radius = widget.borderRadius ?? BorderRadius.circular(8.r);
+    final isDisabled = !widget.enabled;
+    final displayText = _displayText;
+    final isEmpty = displayText.isEmpty;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (widget.label != null) ...[
+          RichText(
+            text: TextSpan(
+              text: widget.label,
+              style: widget.labelStyle ??
+                  StyleText.fontSize14Weight500.copyWith(
+                    color: hasError
+                        ? AppColors.red
+                        : isDisabled
+                            ? AppColors.text.withValues(alpha: 0.4)
+                            : AppColors.text,
+                  ),
+              children: widget.required
+                  ? [
+                      TextSpan(
+                        text: ' *',
+                        style: StyleText.fontSize14Weight500.copyWith(
+                          color: AppColors.red,
+                        ),
+                      ),
+                    ]
+                  : [],
+            ),
+          ),
+          SizedBox(height: 6.sp),
+        ],
+        GestureDetector(
+          onTapDown: hapticDown(_openPicker, HapticLevel.low),
+          onTap: _openPicker,
+          child: InputDecorator(
+            isFocused: false,
+            isEmpty: isEmpty,
+            decoration: InputDecoration(
+              isDense: true,
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 12.sp,
+                vertical: 12.sp,
+              ),
+              filled: true,
+              fillColor: isDisabled
+                  // CHANGED 17/10/2026 (K-30): default was AppColors.card while
+                  // every other field defaults to AppColors.background (fields
+                  // sit on cards). All 5 screens pass their own fillColor, so
+                  // nothing in the app changes.
+                  ? (widget.fillColor ?? AppColors.background)
+                      .withValues(alpha: 0.5)
+                  : widget.fillColor ?? AppColors.background,
+              border: OutlineInputBorder(
+                borderRadius: radius,
+                borderSide: BorderSide.none,
+              ),
+              enabledBorder: hasError
+                  ? OutlineInputBorder(
+                      borderRadius: radius,
+                      borderSide: BorderSide(
+                        color: AppColors.red,
+                        width: 1.5.sp,
+                      ),
+                    )
+                  : OutlineInputBorder(
+                      borderRadius: radius,
+                      borderSide: BorderSide.none,
+                    ),
+              focusedBorder: hasError
+                  ? OutlineInputBorder(
+                      borderRadius: radius,
+                      borderSide: BorderSide(
+                        color: AppColors.red,
+                        width: 1.5.sp,
+                      ),
+                    )
+                  : OutlineInputBorder(
+                      borderRadius: radius,
+                      borderSide: BorderSide.none,
+                    ),
+              disabledBorder: OutlineInputBorder(
+                borderRadius: radius,
+                borderSide: BorderSide.none,
+              ),
+              // ── prefixIcon removed ──
+              prefixIcon: null,
+              prefixIconConstraints: const BoxConstraints(),
+              // ── calendar icon now on the right, arrow removed ──
+              suffixIcon: Padding(
+                padding: EdgeInsets.only(left: 8.sp, right: 12.sp),
+                child: CustomSvgImage(
+                  assetPath:
+                      'assets/icons_assets/main_icons_assets/ic_time_calendar.svg',
+                  width: 18.sp,
+                  height: 18.sp,
+                  fit: BoxFit.contain,
+                  colorFilter: ColorFilter.mode(
+                    hasError
+                        ? AppColors.red
+                        : isDisabled
+                            ? AppColors.text.withValues(alpha: 0.3)
+                            : AppColors.text.withValues(alpha: 0.5),
+                    BlendMode.srcIn,
+                  ),
+                ),
+              ),
+              suffixIconConstraints: const BoxConstraints(),
+              hintText: isEmpty ? (widget.hint ?? '') : null,
+              // The colour is forced last on purpose — see
+              // [kDropdownHintColor]. `hintStyle` still decides size, weight
+              // and family; it can no longer decide the grey.
+              hintStyle: (widget.hintStyle ?? StyleText.fontSize14Weight400)
+                  .copyWith(color: kDropdownHintColor),
+              errorText: null,
+            ),
+            child: !isEmpty
+                ? Text(
+                    displayText,
+                    style: widget.valueStyle ??
+                        StyleText.fontSize14Weight400.copyWith(
+                          color: isDisabled
+                              ? AppColors.text.withValues(alpha: 0.4)
+                              : AppColors.text,
+                        ),
+                    overflow: TextOverflow.ellipsis,
+                  )
+                : const SizedBox.shrink(),
+          ),
+        ),
+        if (hasError) ...[
+          SizedBox(height: 4.sp),
+          Text(
+            widget.errorText!,
+            style: widget.errorStyle ??
+                StyleText.fontSize12Weight400.copyWith(color: AppColors.red),
+          ),
+        ] else if (widget.helperText != null) ...[
+          SizedBox(height: 4.sp),
+          Text(
+            widget.helperText!,
+            style: widget.helperStyle ??
+                StyleText.fontSize12Weight400.copyWith(
+                  color: AppColors.text.withValues(alpha: 0.5),
+                ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+/*
+// ── Usage ─────────────────────────────────────────────────────────────────────
+DateTime? _from;
+DateTime? _to;
+
+CustomRangeCalendar(
+  label: 'Duration',
+  hint: 'Select date range',
+  required: true,
+  startDate: _from,
+  endDate: _to,
+  separator: '  →  ',
+  // errorText: 'Please select a range',
+  onChanged: (start, end) => setState(() {
+    _from = start;
+    _to = end;
+  }),
+)
+*/

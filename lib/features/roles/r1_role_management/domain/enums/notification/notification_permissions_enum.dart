@@ -38,9 +38,10 @@
 ///
 /// ⚠️ The five labels below were added to `intl_en.arb` / `intl_ar.arb` with
 /// this file. `notificationControl` (the section heading) already existed.
+library;
 
-import 'package:grc_module/features/roles/r1_role_management/domain/entities/module_permissions_sections_permissions.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/entities/module_permissions_sections_permissions.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
 enum NotificationPermissions implements ModulePermissionsSectionsPermission {
   editNotification,

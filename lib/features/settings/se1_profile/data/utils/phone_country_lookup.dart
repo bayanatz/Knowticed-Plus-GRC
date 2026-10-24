@@ -18,9 +18,10 @@
 /// — comparing "EG" to "20" — so it always fell through to the Egyptian
 /// default. This matches on `Country.code` first (what is actually stored) and
 /// still accepts a dial code, so records that stored one keep working.
+library;
 
-import 'package:grc_module/core/helper/main_helper/countries.dart';
-import 'package:grc_module/features/settings/se1_profile/domain/entities/personal_profile.dart';
+import 'package:knowticed_plus/core/constants/countries_list.dart';
+import 'package:knowticed_plus/features/settings/se1_profile/domain/entities/personal_profile.dart';
 
 abstract class PhoneCountryLookup {
   /// Function Name: [find]
@@ -55,6 +56,12 @@ abstract class PhoneCountryLookup {
     final Country? country = find(codeOrDialCode) ?? _fallback;
     return country == null ? '' : '+${country.dialCode}';
   }
+
+  /// Flag then dial code, the same everywhere (R-39, Moataz 23/10/2026):
+  /// "🇪🇬 +20". The code is wrapped as a left-to-right run so an Arabic screen
+  /// does not turn it into "20+".
+  static String flagAndCode(String codeOrDialCode) =>
+      '${flagOf(codeOrDialCode)} \u2066${dialCodeOf(codeOrDialCode)}\u2069';
 
   static Country? get _fallback => find(PersonalProfile.defaultCountryCode);
 }

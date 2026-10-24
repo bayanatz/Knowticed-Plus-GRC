@@ -2,12 +2,15 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: sign_in_screen.dart
-/// Purpose: The sign-in screen — email/password, biometrics and the language toggle.
-/// Author: Knowticed Plus team
+/// Description: The sign-in screen — email/password, biometrics and the language toggle.
+/// Author: Amr Mesbah
 /// Created at: 2026
 /// Updated: 12/8/2026 - CR-SKEL-O3-N20/N21/N22: the `try/catch` moved to `AppVersionReader`; the two
 ///          hardcoded English hints and the AR/EN toggle are localized; the locale
 ///          comes from the tree; the two raw `Colors.*` route through AppColors.
+/// Updated: 9/10/2026 - DEBUG-ONLY "🧪 Test employee" button under Sign In
+///          (compile-time `kDebugTestEmployeeSwitchBuild`, absent in release).
+library;
 
 /// Date Created :12/November/2023
 /// Developer Name : Bassem Mohamed
@@ -28,39 +31,44 @@
 /// with Knowticed's field styling (8px radius, tinted prefix icon, 0.01.h
 /// content padding) so the two apps render identically.
 
-import 'dart:io';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart'
+    show kpIsPhoneLayout;
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:grc_module/core/constants/app_constants.dart';
+import 'package:knowticed_plus/core/constants/app_constants.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:grc_module/core/custom/5-custom_button.dart';
-import 'package:grc_module/features/onboarding/o3_authentication/data/utils/app_version_reader.dart';
-import 'package:grc_module/features/onboarding/o3_authentication/data/utils/login_access_probe.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_button.dart';
+import 'package:knowticed_plus/features/onboarding/o3_authentication/data/utils/app_version_reader.dart';
+import 'package:knowticed_plus/features/onboarding/o3_authentication/data/utils/login_access_probe.dart';
 
-import 'package:grc_module/core/custom/2-custom_textfield.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/custom/76-date_time_in_arabic.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_font_size.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/theme/haptic_controller.dart';
-import 'package:grc_module/core/custom/64-custom_response_dialog.dart';
-import 'package:grc_module/core/helper/main_helper/functions.dart';
-import 'package:grc_module/features/onboarding/o3_authentication/presentation/controller/biometrics_controller.dart';
-import 'package:grc_module/features/onboarding/o3_authentication/presentation/controller/login_controller.dart';
-import 'package:grc_module/features/onboarding/o3_authentication/presentation/ui/widgets/forgot_password_dialog.dart';
-import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/main.dart';
-import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:knowticed_plus/core/custom/inputs/custom_textfield.dart';
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
+import 'package:knowticed_plus/core/custom/helpers/date_time_in_arabic.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/extensions/screen_fraction_extension.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
+import 'package:knowticed_plus/core/custom/dialogs/custom_response_dialog.dart';
+import 'package:knowticed_plus/features/onboarding/helpers/functions.dart';
+import 'package:knowticed_plus/features/onboarding/o3_authentication/presentation/controller/biometrics_controller.dart';
+import 'package:knowticed_plus/features/onboarding/o3_authentication/presentation/controller/login_controller.dart';
+import 'package:knowticed_plus/features/onboarding/o3_authentication/presentation/ui/widgets/forgot_password_dialog.dart';
+import 'package:knowticed_plus/features/onboarding/o3_authentication/presentation/ui/widgets/sign_in_network_hero.dart';
+// ADDED 9/10/2026 — DEBUG-ONLY "Switch to test employee" entry point.
+import 'package:knowticed_plus/features/onboarding/o3_authentication/data/utils/debug_test_employee_switch.dart';
+import 'package:knowticed_plus/features/onboarding/o3_authentication/presentation/ui/widgets/debug_test_employee_widgets.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
+import 'package:knowticed_plus/core/theme/app_animations.dart';
 
 /// Hero artwork shared by the portrait header and the landscape side panel —
 /// the same file Knowticed uses.
-const String kSignInHeroImage = 'assets/png_assets/loginPhoto.jpeg';
+const String kSignInHeroImage =
+    'assets/icons_assets/onboarding_assets/img_login_background.jpeg';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -77,11 +85,22 @@ class _SignInScreenState extends State<SignInScreen> {
   late final LoginController loginController = Get.put(LoginController());
   final HapticController hapticController = Get.put(HapticController());
 
+  /// What the form is doing, so the landscape "Org Network" panel can react
+  /// (field focused → network lights up, Sign In → modules light in turn).
+  final ValueNotifier<SignInHeroMode> _heroMode =
+      ValueNotifier<SignInHeroMode>(SignInHeroMode.idle);
+
   @override
   void initState() {
     super.initState();
     _checkCanBiometrics();
     _getAppVersion();
+  }
+
+  @override
+  void dispose() {
+    _heroMode.dispose();
+    super.dispose();
   }
 
   Future<bool> _checkCanBiometrics() async {
@@ -121,6 +140,17 @@ class _SignInScreenState extends State<SignInScreen> {
       // `currentThemeColors`, so they always match the active palette — which
       // is what makes this screen follow dark mode after a logout.
       backgroundColor: AppColors.background,
+      // 24/10/2026 (Moataz: "when I open the keyboard the page scrolls, it is
+      // not a good experience while typing"): in portrait the page used to
+      // shrink to the room above the keyboard and then scroll to keep the
+      // field visible, which pushed the network off the top. On a screen tall
+      // enough (every phone since the 6s Plus, and iPads) the fields and the
+      // Sign In button already sit above the keyboard, so the page stays put
+      // and the keyboard simply covers the footer. Short screens keep the old
+      // behaviour so the form is never hidden.
+      resizeToAvoidBottomInset: !(isPortrait &&
+          kSignInNetworkHero &&
+          MediaQuery.sizeOf(context).height >= 780),
       body: isPortrait ? _portraitLayout() : _landscapeLayout(),
     );
   }
@@ -144,17 +174,15 @@ class _SignInScreenState extends State<SignInScreen> {
           _field(
             controller: controller.emailcontroller,
             hint: S.of(context).enterYourEmail,
-            asset: 'assets/icons_assets/main_icons_assets/mail-inbox-app.svg',
+            asset: 'assets/icons_assets/main_icons_assets/ic_comms_email.svg',
             keyboardType: TextInputType.emailAddress,
           ),
           SizedBox(height: 10.sp),
           SizedBox(
-
             child: _field(
               controller: controller.passcontroller,
               hint: S.of(context).enterYourPassword,
-              asset:
-                  'assets/icons_assets/main_icons_assets/password-protection.svg',
+              asset: 'assets/icons_assets/onboarding_assets/ic_password.svg',
 
               obscureText: true, // renders the built-in eye toggle
               // CHANGED 21/9/2026 — '*' (U+002A) is a superscript-height glyph,
@@ -165,10 +193,26 @@ class _SignInScreenState extends State<SignInScreen> {
               // font, so it came from a fallback font and still sat below the
               // icon/eye centre line. '•' is in the font and is the platform
               // default mask; it lines up with the icons.
-              obscuringCharacter: '\u2022',
+              // CHANGED 18/10/2026 (Moataz): stars, not dots — '•' showed as
+              // small boxes on macOS. Both field icons are now the line set
+              // (1.25 at 24) so they share one weight (was bold + filled).
+              // CHANGED 23/10/2026 (Moataz: "the stars are not vertically
+              // aligned in the field", then "bigger, bolder and darker than
+              // the email text"). '*' sits ~3pt above the icon / eye centre
+              // line. '✱' (heavy asterisk) centred it but is a bold symbol
+              // glyph, so the mask looked heavier and darker than the typed
+              // email; '✳' turns into an emoji on macOS. '＊' (U+FF0A, the
+              // full-width asterisk) is drawn at regular text weight on the
+              // centre line, in the field's own colour; it is a whole em wide,
+              // so the -4 spacing pulls it back to a normal width — applied
+              // only while the password is hidden. Measured on macOS and iOS
+              // with the app fonts.
+              obscuringCharacter: '＊',
+              obscuredLetterSpacing: -4,
               onTap: () => hapticController.triggerHapticFeedback(
-                  vibration: VibrateType.lightImpact,
-                  hapticFeedback: HapticFeedback.lightImpact),
+                vibration: VibrateType.lightImpact,
+                hapticFeedback: HapticFeedback.lightImpact,
+              ),
             ),
           ),
           SizedBox(height: 10.sp),
@@ -176,11 +220,13 @@ class _SignInScreenState extends State<SignInScreen> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               GestureDetector(
+                onTapDown:
+                    hapticDown(_onForgotPasswordPressed, HapticLevel.low),
                 onTap: _onForgotPasswordPressed,
                 child: Text(
                   S.of(context).forgotPassword,
                   style: StyleText.fontSize14Weight400.copyWith(
-                    fontSize: FontConstants.fontSize018.h,
+                    fontSize: 14.sp,
                     color: AppColors.text,
                   ),
                 ),
@@ -195,7 +241,10 @@ class _SignInScreenState extends State<SignInScreen> {
           // Password?". Tablet / desktop keep the 300pt centred button.
           customButton(
             color: AppColors.primary,
-            width: MediaQuery.sizeOf(context).shortestSide < 600
+            // 24/10/2026 (Moataz: "I like the mobile more"): the tablet in
+            // portrait spans the form column too, as the phone does. Only the
+            // landscape split panel keeps the 300 centred button.
+            width: (kpIsPhoneLayout(context) || isPortrait)
                 ? double.infinity
                 : 300.sp,
             height: 38.sp,
@@ -204,7 +253,14 @@ class _SignInScreenState extends State<SignInScreen> {
             textStyle: StyleText.fontSize16Weight600.copyWith(
               color: AppColors.textButton,
             ),
-          )
+          ),
+          // ADDED 9/10/2026 — DEBUG-ONLY "🧪 Test employee" (owner option B).
+          // `kDebugTestEmployeeSwitchBuild` is a compile-time constant, false
+          // in release/profile, so this button and the picker are tree-shaken.
+          if (kDebugTestEmployeeSwitchBuild) ...<Widget>[
+            SizedBox(height: 12.sp),
+            const DebugTestEmployeeSignInButton(),
+          ],
         ],
       ),
     );
@@ -220,26 +276,40 @@ class _SignInScreenState extends State<SignInScreen> {
     TextInputType? keyboardType,
     bool obscureText = false,
     String obscuringCharacter = '•',
+    double? obscuredLetterSpacing,
     VoidCallback? onTap,
   }) {
+    // 18/10/2026 (Moataz): an email is the same address in any case, so the
+    // email field types lower case only — no auto-capital first letter, no
+    // autocorrect. Sign-in lower-cases it as well.
+    final bool isEmail = keyboardType == TextInputType.emailAddress;
     return CustomTextField(
       height: 36,
       controller: controller,
       hint: hint,
       keyboardType: keyboardType,
+      textCapitalization: TextCapitalization.none,
+      autocorrect: !isEmail,
+      enableSuggestions: !isEmail,
+      inputFormatters:
+          isEmail ? <TextInputFormatter>[_LowerCaseFormatter()] : null,
       obscureText: obscureText,
       obscuringCharacter: obscuringCharacter,
+      obscuredLetterSpacing: obscuredLetterSpacing,
       onTap: onTap,
       fillColor: AppColors.card,
-      valueStyle: StyleText.fontSize14Weight400
-          .copyWith(color: AppColors.secondaryText),
-      hintStyle: StyleText.fontSize14Weight500
-          .copyWith(color: AppColors.secondaryText),
+      valueStyle: StyleText.fontSize14Weight400.copyWith(
+        color: AppColors.secondaryText,
+      ),
+      hintStyle: StyleText.fontSize14Weight500.copyWith(
+        color: AppColors.secondaryText,
+      ),
+      // 18/10/2026: 22.sp square (was 2% of the window height, too small).
       prefixIcon: CustomSvgImage(
         assetPath: asset,
-        width: 0.020.h,
-        height: 0.020.h,
-        fit: BoxFit.scaleDown,
+        width: 22.sp,
+        height: 22.sp,
+        fit: BoxFit.contain,
         color: AppColors.primary,
       ),
     );
@@ -247,8 +317,9 @@ class _SignInScreenState extends State<SignInScreen> {
 
   void _onForgotPasswordPressed() {
     hapticController.triggerHapticFeedback(
-        vibration: VibrateType.mediumImpact,
-        hapticFeedback: HapticFeedback.mediumImpact);
+      vibration: VibrateType.mediumImpact,
+      hapticFeedback: HapticFeedback.mediumImpact,
+    );
     showAppDialog(
       context: context,
       builder: (_) => const ForgotPasswordDialog(),
@@ -257,8 +328,9 @@ class _SignInScreenState extends State<SignInScreen> {
 
   Future<void> _onSignInPressed() async {
     hapticController.triggerHapticFeedback(
-        vibration: VibrateType.mediumImpact,
-        hapticFeedback: HapticFeedback.mediumImpact);
+      vibration: VibrateType.mediumImpact,
+      hapticFeedback: HapticFeedback.mediumImpact,
+    );
 
     // Email is normalised to lower case so sign-in is case-insensitive.
     final String email =
@@ -267,17 +339,24 @@ class _SignInScreenState extends State<SignInScreen> {
 
     if (email.isEmpty || password.isEmpty) {
       showAppDialog(
-      // Login error -> shake once.
-      destructive: true,
+        // Login error -> shake once.
+        destructive: true,
         context: context,
         builder: (_) => ResponseDialog(
           title: S.of(context).missingInformation,
           subtitle: S.of(context).pleaseEnterBothEmailAndPasswordToSignIn,
-          lottieAsset: "assets/lottie_assets/main_lottie_assets/error.json",
+          lottieAsset:
+              "assets/lottie_assets/main_lottie_assets/lot_status_error.json",
         ),
       );
       return;
     }
+
+    // Every module in the network lights in turn while the sign-in runs.
+    _heroMode.value = SignInHeroMode.waking;
+    Future<void>.delayed(const Duration(milliseconds: 3000), () {
+      if (mounted) _heroMode.value = SignInHeroMode.idle;
+    });
 
     if (await checkInternet()) {
       // DIAGNOSTIC 7/9/2026 — the "Authentication Error /
@@ -299,6 +378,7 @@ class _SignInScreenState extends State<SignInScreen> {
       // the handling lives inside the probe.
       await LoginAccessProbe.run(email);
 
+      if (!mounted) return;
       loginController.login(context, email, password);
     } else {
       if (!mounted) return;
@@ -307,7 +387,8 @@ class _SignInScreenState extends State<SignInScreen> {
         builder: (_) => ResponseDialog(
           title: S.of(context).error,
           subtitle: S.of(context).pleaseCheckYourInternetConnection,
-          lottieAsset: "assets/lottie_assets/main_lottie_assets/internet.json",
+          lottieAsset:
+              "assets/lottie_assets/main_lottie_assets/lot_error_no_internet.json",
         ),
       );
     }
@@ -317,15 +398,21 @@ class _SignInScreenState extends State<SignInScreen> {
   // Shared chrome
   // ───────────────────────────────────────────────────────────────────────
 
-  Widget _logo({required double width, required double height}) => SizedBox(
-        width: width,
+  /// 22/10/2026 (Moataz, phone: "too small … I feel it's compressed"): the
+  /// box was 1.2 wide per 1 high with `BoxFit.fill`, but the logo is drawn
+  /// 48 × 36 (4 : 3), so it was squeezed ~10% sideways. The box now has the
+  /// logo's own 4 : 3 shape and `contain` never distorts it; a company logo
+  /// from storage keeps its own shape inside the same box.
+  Widget _logo({required double height}) => SizedBox(
+        width: height * 48 / 36,
         height: height,
         child: storage.read('logo') == null
-            ? SvgPicture.asset(
-                'assets/icons_assets/main_icons_assets/knowticed_logo.svg',
-                fit: BoxFit.fill,
+            ? CustomSvgImage.natural(
+                assetPath:
+                    'assets/icons_assets/main_icons_assets/logo_knowticed.svg',
+                fit: BoxFit.contain,
               )
-            : SvgPicture.network(storage.read('logo'), fit: BoxFit.fill),
+            : SvgPicture.network(storage.read('logo'), fit: BoxFit.contain),
       );
 
   /// Title + tagline. The tagline steps down from semi-bold 22 (landscape) to
@@ -333,16 +420,31 @@ class _SignInScreenState extends State<SignInScreen> {
   Widget _headings({required bool isPortrait}) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            S.of(context).demoAppPlus,
-            style: StyleText.fontSize28Weight500
-                .copyWith(color: AppColors.text, fontWeight: FontWeight.w700),
+          // 23/10/2026 (Moataz): in Arabic the product name sits on the LEFT;
+          // the Arabic tagline under it stays on the right.
+          Align(
+            alignment: Directionality.of(context) == TextDirection.rtl
+                ? Alignment.centerLeft
+                : AlignmentDirectional.centerStart,
+            child: Text(
+              S.of(context).demoAppPlus,
+              // 24/10/2026 (Moataz): the product name is Latin, so it keeps the
+              // English font in Arabic too — the Arabic font drew its "Plus"
+              // in a different shape from the English screen.
+              style: StyleText.fontSize28Weight500.copyWith(
+                color: AppColors.text,
+                fontWeight: FontWeight.w700,
+                fontFamily: StyleText.englishFontFamily,
+              ),
+            ),
           ),
           SizedBox(height: isPortrait ? 8 : 10.h),
           Text(
             S.of(context).navigateTheDigitalFrontierWithEase,
-            style: StyleText.fontSize20Weight500
-                .copyWith(color: AppColors.text, fontWeight: FontWeight.w500),
+            style: StyleText.fontSize20Weight500.copyWith(
+              color: AppColors.text,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ],
       );
@@ -350,7 +452,7 @@ class _SignInScreenState extends State<SignInScreen> {
   Widget _copyright() => Text(
         '${S.of(context).copyright}© ${DateTime.now().year} Knowticed. ${S.of(context).allRIGHTSRESERVED}',
         style: StyleText.fontSize14Weight400.copyWith(
-          fontSize: FontConstants.fontSize018.h,
+          fontSize: 14.sp,
           color: AppColors.text,
         ),
         textAlign: TextAlign.center,
@@ -361,7 +463,7 @@ class _SignInScreenState extends State<SignInScreen> {
             ? '${S.of(context).version} ...'
             : '${S.of(context).version} ${localizeNumber(appVersion)}',
         style: StyleText.fontSize14Weight400.copyWith(
-          fontSize: FontConstants.fontSize018.h,
+          fontSize: 14.sp,
           color: AppColors.text,
         ),
         textAlign: TextAlign.center,
@@ -378,8 +480,9 @@ class _SignInScreenState extends State<SignInScreen> {
           Get.updateLocale(locale);
           box.write('LocaleData', locale.toString());
           hapticController.triggerHapticFeedback(
-              vibration: VibrateType.heavyImpact,
-              hapticFeedback: HapticFeedback.heavyImpact);
+            vibration: VibrateType.heavyImpact,
+            hapticFeedback: HapticFeedback.heavyImpact,
+          );
         },
         child: Text(
           // The label names the language you would switch *to*, so it is the
@@ -390,7 +493,7 @@ class _SignInScreenState extends State<SignInScreen> {
               ? S.of(context).arabic
               : S.of(context).english,
           style: StyleText.fontSize20Weight500.copyWith(
-            fontSize: FontConstants.fontSize020.h,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w600,
             color: AppColors.text,
           ),
@@ -409,23 +512,47 @@ class _SignInScreenState extends State<SignInScreen> {
         children: [
           Stack(
             children: [
-              Image.asset(
-                kSignInHeroImage,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                height: 0.45.h,
-              ),
-              Positioned(
-                top: 0.07.h,
-                left: _isArabic ? 0.89.w : 0.045.w,
-                child: _logo(
-                  width: .06.h,
-                  height: storage.read('logo') == null ? .05.h : .06.h,
+              // 24/10/2026 (Moataz): phones and portrait tablets get the same
+              // network panel as the landscape layout; it carries the logo.
+              if (kSignInNetworkHero)
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 280),
+                  curve: Curves.easeOutCubic,
+                  width: double.infinity,
+                  // Same total height as the photo had; the padding below keeps
+                  // the logo at the top of the network clear of the status bar /
+                  // Dynamic Island. While the keyboard is open the network
+                  // shrinks to a banner (Moataz 24/10/2026: "the page scrolls
+                  // when the keyboard opens, not good while typing"), so the
+                  // fields rise above the keyboard and nothing has to scroll.
+                  height: MediaQuery.viewInsetsOf(context).bottom > 0
+                      ? 0.24.h
+                      : 0.45.h,
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).padding.top,
+                    ),
+                    child: SignInNetworkHero(mode: _heroMode),
+                  ),
+                )
+              else
+                Image.asset(
+                  kSignInHeroImage,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  height: 0.45.h,
                 ),
-              ),
+              // 22/10/2026: 64 high (was ~5% of the screen, ~44), on the
+              // same 4% side line as the title and fields below; start-
+              // aligned so Arabic mirrors it without a hand-made offset.
+              if (!kSignInNetworkHero)
+                PositionedDirectional(
+                  top: 0.07.h,
+                  start: 0.04.w,
+                  child: _logo(height: 64.sp),
+                ),
             ],
           ),
-
           SizedBox(height: 20.sp),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 0.04.w),
@@ -433,10 +560,24 @@ class _SignInScreenState extends State<SignInScreen> {
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 0.04.w),
-            child: _signInForm(isPortrait: true),
+            // Focus in the form lights up the network above it, as on the
+            // landscape layout.
+            child: Focus(
+              canRequestFocus: false,
+              skipTraversal: true,
+              onFocusChange: (bool focused) {
+                if (_heroMode.value == SignInHeroMode.waking) return;
+                _heroMode.value =
+                    focused ? SignInHeroMode.active : SignInHeroMode.idle;
+              },
+              child: _signInForm(isPortrait: true),
+            ),
           ),
           Padding(
-            padding: EdgeInsets.only(top: 0.11.h),
+            // 24/10/2026 (Moataz, phone): the copyright and version sat on the
+            // screen's rounded edge — lifted ~4% of the height, with the same
+            // room kept under them.
+            padding: EdgeInsets.only(top: 0.07.h, bottom: 0.05.h),
             child: Center(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -457,85 +598,155 @@ class _SignInScreenState extends State<SignInScreen> {
   // Landscape — tablet and desktop
   // ───────────────────────────────────────────────────────────────────────
 
+  /// The network panel takes this share of the width (about 48%; the photo
+  /// panel was 38%). 24/10/2026 (Moataz: "push the right side, take more space").
+  static const double _networkHeroDivisor = 2.1;
+
+  /// Side padding of the landscape form panel. With the network panel the
+  /// language toggle, logo, form and copyright share one 440-wide column
+  /// centred in the panel; otherwise it is the old 0.07.h.
+  double get _formSidePad {
+    final double base = 0.07.h;
+    if (!kSignInNetworkHero) return base;
+    final double w = MediaQuery.of(context).size.width;
+    final double centred = (w - w / _networkHeroDivisor - 440) / 2;
+    return centred > base ? centred : base;
+  }
+
   Widget _landscapeLayout() {
     final bool isKeyboardVisible =
         MediaQuery.of(context).viewInsets.bottom != 0;
-    final bool isMobilePlatform = Platform.isAndroid || Platform.isIOS;
 
     return Stack(
       children: [
         Row(
           children: [
-            Container(
-              width: MediaQuery.of(context).size.width / 2.6,
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(kSignInHeroImage),
-                  fit: BoxFit.fill,
+            // 24/10/2026 (Moataz): the "Org Network" panel replaces the photo.
+            // Set `kSignInNetworkHero` to false (sign_in_network_hero.dart) to
+            // bring the photo back — that one flag switches the panel, the
+            // logo position and the form width below.
+            if (kSignInNetworkHero)
+              SizedBox(
+                width: MediaQuery.of(context).size.width / _networkHeroDivisor,
+                child: SignInNetworkHero(mode: _heroMode),
+              )
+            else
+              Container(
+                width: MediaQuery.of(context).size.width / 2.6,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(kSignInHeroImage),
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                child: Stack(
+                  children: [
+                    BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 0.0, sigmaY: 0.0),
+                      child: Container(color: AppColors.transparent),
+                    ),
+                    Container(color: AppColors.white.withValues(alpha: 0.19)),
+                  ],
                 ),
               ),
-              child: Stack(
-                children: [
-                  BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 0.0, sigmaY: 0.0),
-                    child: Container(color: AppColors.transparent),
-                  ),
-                  Container(color: AppColors.white.withOpacity(0.19)),
-                ],
-              ),
-            ),
             Expanded(
               child: Container(
                 color: AppColors.background,
                 height: double.infinity,
-                child: Center(
-                  child: SingleChildScrollView(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 0.07.h),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _headings(isPortrait: false),
-                          _signInForm(isPortrait: false),
-                        ],
+                // One column for the whole panel (18/10/2026): the language
+                // toggle sits on the fields' end edge, the form is centred, and
+                // copyright + version are centred on the same axis as Sign In.
+                // They used to be Positioned at three unrelated offsets.
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: _formSidePad),
+                  child: Column(
+                    children: [
+                      SizedBox(height: 0.070.h),
+                      Align(
+                        alignment: AlignmentDirectional.centerEnd,
+                        child: _languageToggle(),
                       ),
-                    ),
+                      Expanded(
+                        child: Center(
+                          child: SingleChildScrollView(
+                            // With the network panel the form is a narrow,
+                            // centred column (the fields used to stretch the
+                            // whole panel) and focus in it wakes the network.
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth:
+                                    kSignInNetworkHero ? 440 : double.infinity,
+                              ),
+                              child: Focus(
+                                canRequestFocus: false,
+                                skipTraversal: true,
+                                onFocusChange: (bool focused) {
+                                  if (_heroMode.value ==
+                                      SignInHeroMode.waking) {
+                                    return;
+                                  }
+                                  _heroMode.value = focused
+                                      ? SignInHeroMode.active
+                                      : SignInHeroMode.idle;
+                                },
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // With the network panel the form comes in
+                                    // piece by piece instead of all at once.
+                                    if (kSignInNetworkHero) ...[
+                                      SignInRise(
+                                        delay:
+                                            const Duration(milliseconds: 500),
+                                        child: _headings(isPortrait: false),
+                                      ),
+                                      SignInRise(
+                                        delay:
+                                            const Duration(milliseconds: 750),
+                                        child: _signInForm(isPortrait: false),
+                                      ),
+                                    ] else ...[
+                                      _headings(isPortrait: false),
+                                      _signInForm(isPortrait: false),
+                                    ],
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      if (!isKeyboardVisible) ...[
+                        _copyright(),
+                        SizedBox(height: 10.sp),
+                        _versionLabel(),
+                        SizedBox(height: 0.030.h),
+                      ],
+                    ],
                   ),
                 ),
               ),
             ),
           ],
         ),
-        Positioned(
-          top: 0.070.h,
-          left: _isArabic ? 0.9.w : 0.030.w,
-          child: _logo(
-            width: .095.h,
-            height: storage.read('logo') == null ? .07.h : .095.h,
-          ),
-        ),
-        if (!isKeyboardVisible)
+        // 24/10/2026 (Moataz: "there are two logos"): the network panel carries
+        // the logo at its core, so the corner logo is only drawn with the photo.
+        if (!kSignInNetworkHero)
           Positioned(
-            bottom: 0.070.h,
-            right: isMobilePlatform
-                ? (_isArabic ? 0.55.w : 0.19.w)
-                : (_isArabic ? 0.55.w : 0.185.w),
-            child: _copyright(),
+            top: 0.070.h,
+            left: _isArabic ? 0.9.w : 0.030.w,
+            child: _logo(height: .07.h),
           ),
-        if (!isKeyboardVisible)
-          Positioned(
-            bottom: 0.030.h,
-            right: _isArabic ? 0.65.w : 0.28.w,
-            child: _versionLabel(),
-          ),
-        Positioned(
-          top: 0.070.h,
-          right: _isArabic ? null : 0.050.w,
-          left: _isArabic ? 0.050.w : null,
-          child: _languageToggle(),
-        ),
       ],
     );
   }
+}
+
+/// Lower-cases whatever is typed or pasted into the email field.
+class _LowerCaseFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+          TextEditingValue oldValue, TextEditingValue newValue) =>
+      newValue.copyWith(text: newValue.text.toLowerCase());
 }

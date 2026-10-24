@@ -1,10 +1,12 @@
 /// Module: messaging / chat / presentation/controller/functions_on_messages_controllers/reply_message_cubit.dart
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grc_module/features/messaging/m1_chat/presentation/controller/main_controllers/master_chat_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/main_controllers/master_chat_cubit.dart';
 
-import '../../../domain/repository/chat_repository/base_chat_repository.dart';
-import '../../../../../../core/helper/message_module/main_helper/message_action_types.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/domain/repository/chat_repository/base_chat_repository.dart';
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/main_helper/message_action_types.dart';
 
 /// ******************************** FILE INFO *****************************
 /// Class Name: ReplyMessageCubit
@@ -80,12 +82,12 @@ class ReplyMessageCubit extends Cubit<ReplyMessageState> {
   /// Function Name : submitMessageReply
   /// Purpose: function to submit message reply by calling sendNewMessage with replied message id
   Future<void> submitMessageReply(BuildContext context) async {
-
     final selectedMessage = masterChatCubit.state.selectedMessage;
     if (selectedMessage != null) {
       await masterChatCubit.sendNewMessage(
         repliedMessageId: selectedMessage.messageId,
       );
+      if (!context.mounted) return;
       cancelReply(context);
     }
   }

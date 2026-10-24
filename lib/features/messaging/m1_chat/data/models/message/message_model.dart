@@ -1,15 +1,16 @@
 /// Module: messaging / chat / data/models/message/message_model.dart
+library;
 // By: Nada Mohammed , Youssef Ashraf
 
 import 'dart:io';
 
-import 'package:grc_module/core/helper/main_helper/date_time_helper.dart';
-import '../location_message_model.dart';
-import '../../../domain/enum/reacts.dart';
-import './audio_message_model.dart';
-import './doc_message_model.dart';
-import './poll_message_model.dart';
-import './video_message_model.dart';
+import 'package:knowticed_plus/core/helper/date_time_helper.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/location_message_model.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/domain/enum/reacts.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/message/audio_message_model.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/message/doc_message_model.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/message/poll_message_model.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/message/video_message_model.dart';
 
 /// §10 — model purity: all data fields are `final`; mutations go through
 /// [copyWith] (which is lossless), and (de)serialization uses static-const

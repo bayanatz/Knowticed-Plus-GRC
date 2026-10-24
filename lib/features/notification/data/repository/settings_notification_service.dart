@@ -2,13 +2,16 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: settings_notification_service.dart
-/// Purpose: Notifications raised by the Settings change-request flow —
+/// Description: Notifications raised by the Settings change-request flow —
 ///          Personal Information, Health Insurance and Emergency Contact
 ///          submitted / approved / rejected.
-/// Author: Knowticed Plus team
+/// Author: Amr Mesbah
 /// Created at: 23/8/2026
 /// Updated: 24/8/2026 - `changeRequestSubmitted` now resolves its own audience
 ///          and fans out; Emergency Contact became a kind of its own.
+/// Updated: 22/10/2026 - Every method takes the change request's id and saves
+///          it as `Request_Id`, so View opens that request (reviewer's preview
+///          or the requester's request — see `SettingsScreen`).
 ///
 /// ─── WHY IT EXISTS ───────────────────────────────────────────────────
 /// `settings_events.dart` has carried the change-request events since the
@@ -44,11 +47,11 @@ library;
 
 import 'package:flutter/foundation.dart';
 
-import 'package:grc_module/core/enums/template_variable.dart';
-import 'package:grc_module/features/notification/domain/enums/settings_module/settings_events.dart';
-import 'package:grc_module/features/notification/domain/enums/settings_module/settings_notification_pages.dart';
-import 'package:grc_module/features/notification/services/app_notification_sender.dart';
-import 'package:grc_module/features/roles/r2_user_management/data/repository/user_requests_approvers_repository.dart';
+import 'package:knowticed_plus/core/enums/template_variable.dart';
+import 'package:knowticed_plus/features/notification/domain/enums/settings/settings_events.dart';
+import 'package:knowticed_plus/features/notification/domain/enums/settings/settings_notification_pages.dart';
+import 'package:knowticed_plus/features/notification/helpers/services/app_notification_sender.dart';
+import 'package:knowticed_plus/features/roles/r2_user_management/data/repository/user_requests_approvers_repository.dart';
 
 /// Which settings section a change request came from.
 ///
@@ -99,8 +102,26 @@ enum SettingsRequestKind {
   }
 }
 
+/// What [SettingsNotificationService.debugSendOverride] receives.
+typedef SettingsEventSend = Future<int> Function({
+  required SettingsNotificationEvent event,
+  required String pageKey,
+  required List<String> receiverEmails,
+  required String requestId,
+});
+
 class SettingsNotificationService {
   SettingsNotificationService._();
+
+  /// Tests only: records the send instead of writing Firestore / FCM. Returns
+  /// how many receivers it "sent" to.
+  @visibleForTesting
+  static SettingsEventSend? debugSendOverride;
+
+  /// Tests only: the reviewers [changeRequestSubmitted] resolves.
+  @visibleForTesting
+  static Future<List<String>> Function(String requesterEmail)?
+      debugReviewersOverride;
 
   static final UserRequestsApproversRepository _approvers =
       UserRequestsApproversRepository();
@@ -120,70 +141,72 @@ class SettingsNotificationService {
   /// - [employeeEmail]: Who raised it — the sender of this notification.
   /// - [employeeName]: Shown in the body.
   /// - [isArabic]: Language to send the batch in.
+  /// - [reviewersOverride]: Debug tools only — send to these instead.
   ///
   /// Returns: [Future<int>] how many reviewers were notified.
   static Future<int> changeRequestSubmitted({
+    required String requestId,
     required String section,
     required String employeeEmail,
     required String employeeName,
     bool isArabic = false,
+    List<String>? reviewersOverride,
   }) async {
     try {
-      // EVERY eligible reviewer, the submitter included.
+      // CHANGED 9/10/2026 (owner decision) — every eligible reviewer EXCEPT
+      // the submitter.
       //
-      // FIXED 25/8/2026 (second attempt). This first excluded the submitter
-      // outright, then excluded them only when other reviewers remained. Both
-      // were wrong, and for the same reason: whether someone needs to see a
-      // request is decided by whether they have to act on it, not by who typed
-      // it. A reviewer who edits their own profile still has a request sitting
-      // in their queue, and the notification is how that queue announces
-      // itself. Suppressing it left them with the "approved" notification and
-      // no "needs your action" notification — the decision arrived without the
-      // thing to decide.
-      //
-      // Do not reintroduce a sender filter here. If duplicate-looking cards
-      // ever become a problem, the fix belongs in how the inbox groups them,
-      // not in refusing to write one.
-      final List<String> reviewers = await _approvers.approverEmails();
+      // The 25/8/2026 note that used to stand here kept the submitter on the
+      // list because "whether someone needs to see a request is decided by
+      // whether they have to act on it" — and at the time a reviewer could
+      // approve their own request. That is now blocked (SelfApprovalRule: the
+      // review screen hides Approve / Reject and RequestsRepository refuses
+      // it), so the submitter no longer has anything to act on and the
+      // "needs your action" notification would be wrong. The same test still
+      // decides it; only the answer changed. The exclusion lives in
+      // UserRequestsApproversRepository.approverEmails(requesterEmail:).
+      // [reviewersOverride] (22/10/2026): the debug "View test" sender
+      // addresses the signed-in user instead of the resolved reviewers.
+      final List<String> reviewers = reviewersOverride ??
+          await (debugReviewersOverride != null
+              ? debugReviewersOverride!(employeeEmail)
+              : _approvers.approverEmails(requesterEmail: employeeEmail));
 
       if (reviewers.isEmpty) {
-        if (kDebugMode) {
-          debugPrint(
-            '[settings-notify] no reviewer resolved for "$section" — nobody '
-            'holds Users_Requests and no Master Admin was found, so no '
-            'submitted notification was sent.',
-          );
-        }
+        if (kDebugMode) {}
         return 0;
       }
 
-      if (kDebugMode) {
-        debugPrint(
-          '[settings-notify] "$section" submitted by $employeeEmail → '
-          'notifying ${reviewers.length} reviewer(s): ${reviewers.join(', ')}',
+      if (kDebugMode) {}
+
+      final SettingsRequestKind kind = SettingsRequestKind.fromSection(section);
+      final SettingsEventSend? override = debugSendOverride;
+      if (override != null) {
+        return await override(
+          event: _submittedEventFor(kind),
+          pageKey: _reviewPageFor(kind),
+          receiverEmails: reviewers,
+          requestId: requestId.trim(),
         );
       }
 
-      final SettingsRequestKind kind = SettingsRequestKind.fromSection(section);
-
-      return AppNotificationSender.sendEventToAll(
+      return await AppNotificationSender.sendEventToAll(
         event: _submittedEventFor(kind),
         pageKey: _reviewPageFor(kind),
         senderEmail: employeeEmail,
         receiverEmails: reviewers,
         isArabic: isArabic,
+        requestId: requestId.trim(),
         variables: <TemplateVariable, String>{
           TemplateVariable.employeeName: employeeName,
         },
       );
-    } catch (e, stackTrace) {
+    } catch (e) {
       // Never rethrown — a submission must not fail because its notification
       // did. Recorded rather than swallowed silently: a fan-out that quietly
       // returns 0 is exactly the failure that is impossible to diagnose from
       // the UI, because the request itself still saves correctly.
-      if (kDebugMode) {
-        debugPrint('[settings-notify] fan-out failed: $e\n$stackTrace');
-      }
+      if (kDebugMode) {}
       return 0;
     }
   }
@@ -202,12 +225,22 @@ class SettingsNotificationService {
   ///
   /// Returns: [Future<bool>] true when the notification was sent.
   static Future<bool> changeRequestApproved({
+    required String requestId,
     required String section,
     required String employeeEmail,
     required String approverEmail,
     bool isArabic = false,
   }) {
     final SettingsRequestKind kind = SettingsRequestKind.fromSection(section);
+    final SettingsEventSend? override = debugSendOverride;
+    if (override != null) {
+      return override(
+        event: _approvedEventFor(kind),
+        pageKey: SettingsNotificationPage.myRequestPage.key,
+        receiverEmails: <String>[employeeEmail],
+        requestId: requestId.trim(),
+      ).then((int sent) => sent > 0);
+    }
 
     return AppNotificationSender.sendEvent(
       event: _approvedEventFor(kind),
@@ -215,6 +248,7 @@ class SettingsNotificationService {
       senderEmail: approverEmail,
       receiverEmail: employeeEmail,
       isArabic: isArabic,
+      requestId: requestId.trim(),
     );
   }
 
@@ -239,6 +273,7 @@ class SettingsNotificationService {
   ///
   /// Returns: [Future<bool>] true when the notification was sent.
   static Future<bool> changeRequestRejected({
+    required String requestId,
     required String section,
     required String employeeEmail,
     required String approverEmail,
@@ -247,6 +282,15 @@ class SettingsNotificationService {
   }) {
     final SettingsRequestKind kind = SettingsRequestKind.fromSection(section);
     final String trimmed = reason.trim();
+    final SettingsEventSend? override = debugSendOverride;
+    if (override != null) {
+      return override(
+        event: _rejectedEventFor(kind),
+        pageKey: SettingsNotificationPage.myRequestPage.key,
+        receiverEmails: <String>[employeeEmail],
+        requestId: requestId.trim(),
+      ).then((int sent) => sent > 0);
+    }
 
     return AppNotificationSender.sendEvent(
       event: _rejectedEventFor(kind),
@@ -254,13 +298,16 @@ class SettingsNotificationService {
       senderEmail: approverEmail,
       receiverEmail: employeeEmail,
       isArabic: isArabic,
+      requestId: requestId.trim(),
       variables: <TemplateVariable, String>{
         TemplateVariable.rejectionReason: trimmed.isEmpty ? '-' : trimmed,
       },
     );
   }
 
-  static SettingsNotificationEvent _submittedEventFor(SettingsRequestKind kind) {
+  static SettingsNotificationEvent _submittedEventFor(
+    SettingsRequestKind kind,
+  ) {
     switch (kind) {
       case SettingsRequestKind.healthInsurance:
         return SettingsNotificationEvent

@@ -18,12 +18,13 @@
 /// `roles/r3_user_access` as well as by auth. Its natural home is
 /// `core/theme/`; it sits with the enum's own feature because this pass is not
 /// permitted to add files under `lib/core`.
+library;
 
 import 'package:flutter/material.dart';
 
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/features/onboarding/o3_authentication/domain/enums/employee_status_enum.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/features/onboarding/o3_authentication/domain/enums/employee_status_enum.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
 extension EmployeeStatusStyle on EmployeeStatusEnum {
   /// The accent colour for this status, used by pills and filter chips.

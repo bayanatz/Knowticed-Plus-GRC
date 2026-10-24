@@ -1,14 +1,16 @@
 /// Module: messaging / chat / presentation/controller/message_types_controllers/text_message_cubit.dart
+library;
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../../core/helper/message_module/interface/entity/base_messaging_interface_parameters.dart';
-import '../../../../m3_groups/domain/entities/member_entity.dart';
-import '../../../../m4_messaging_home/domain/entities/chat_type_entity.dart';
-import '../../../data/repository/group_chat_repository.dart';
-import '../../../data/repository/single_chat_repository.dart';
-import '../../../domain/repository/chat_repository/base_chat_repository.dart';
-import '../../../domain/use_cases/group_chat_use_cases/send_text_message_use_case.dart';
-import '../../../domain/use_cases/single_connection_usecases/send_text_message_use_case.dart';
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/interface/entity/base_messaging_interface_parameters.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/domain/entities/member_entity.dart';
+import 'package:knowticed_plus/features/messaging/m4_messaging_home/domain/entities/chat_type_entity.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/repository/group_chat_repository.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/repository/single_chat_repository.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/domain/repository/chat_repository/base_chat_repository.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/domain/use_cases/group_chat_use_cases/send_text_message_use_case.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/domain/use_cases/single_connection_usecases/send_text_message_use_case.dart';
 
 /// ******************************** FILE INFO *****************************
 /// Class Name: TextMessageCubit
@@ -70,7 +72,6 @@ class TextMessageCubit extends Cubit<TextMessageState> {
     ));
 
     try {
-
       if (chatRepository is SingleChatRepository) {
         await SendTextMessageUseCase(chatRepository).execute(
           messageText: message,

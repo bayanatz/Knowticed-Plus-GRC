@@ -5,14 +5,14 @@
 /// Purpose: Declares `UserText`.
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:grc_module/core/theme/app_font_size.dart';
 
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/features/roles/r4_active_directory/presentation/ui/widgets/fields/default_csv_field.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/features/roles/r4_active_directory/presentation/ui/widgets/fields/default_csv_field.dart';
 
 /// A table cell widget that switches between a plain [Text] (read mode)
 /// and an inline [TextField] (edit mode).
@@ -49,8 +49,12 @@ class UserText extends StatefulWidget {
   final Function(String)? onChanged;
   final Color? fillColor;
 
+  /// Owner 21/10/2026: read mode drops the fixed 38 cell height so the row is as tall as an
+  /// Attendance table row (the edit field keeps its height).
+  final bool compact;
+
   const UserText({
-    Key? key,
+    super.key,
     required this.text,
     required this.isEditable,
     required this.onChanged,
@@ -59,10 +63,11 @@ class UserText extends StatefulWidget {
     this.validator,
     this.titleValidator,
     this.fillColor,
-  }) : super(key: key);
+    this.compact = false,
+  });
 
   @override
-  _UserTextState createState() => _UserTextState();
+  State<UserText> createState() => _UserTextState();
 }
 
 class _UserTextState extends State<UserText> {
@@ -74,8 +79,8 @@ class _UserTextState extends State<UserText> {
     super.initState();
     _controller = TextEditingController(text: widget.text);
     _controller.addListener(() {
-      final error =
-          widget.validator != null && widget.validator!(_controller.text) != null;
+      final error = widget.validator != null &&
+          widget.validator!(_controller.text) != null;
       if (error != hasError) {
         setState(() => hasError = error);
       }
@@ -113,7 +118,7 @@ class _UserTextState extends State<UserText> {
       // Use a SizedBox with the same height as the read-mode text so the
       // DataRow height never changes when a cell enters/exits edit mode.
       return Padding(
-        padding:  EdgeInsets.symmetric(vertical: 6.h),
+        padding: EdgeInsets.symmetric(vertical: 6.h),
         child: SizedBox(
           height: cellH,
           child: ClipRRect(
@@ -148,14 +153,14 @@ class _UserTextState extends State<UserText> {
     // ── READ MODE ──────────────────────────────────────────────────────────
     // Wrap in the same SizedBox height so the DataRow never reflowed.
     return SizedBox(
-      height: cellH,
+      height: widget.compact ? null : cellH,
       child: Align(
         alignment: AlignmentDirectional.centerStart,
         child: Text(
           widget.text.isEmpty ? '-' : widget.text,
           style: widget.style ??
               StyleText.fontSize16Weight600.copyWith(
-                color: lightMode ? AppColors.black : AppColors.white,
+                color: AppColors.text,
               ),
           maxLines: 1,
           textAlign: TextAlign.start,

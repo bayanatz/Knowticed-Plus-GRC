@@ -4,11 +4,15 @@
 /// File Name: settings_permissions_sections.dart
 /// Purpose: Enum for Settings Permission Sections in the application
 /// Created by: Mohamed Elrashidy
-import 'package:grc_module/features/roles/r1_role_management/domain/entities/module_permissions_sections.dart';
-import 'package:grc_module/features/roles/r1_role_management/domain/entities/module_permissions_sections_permissions.dart';
-import './settings_permissions.dart';
-import './social_permissions.dart';
-enum SettingsPermissionsSections implements ModulePermissionsSections, ModulePermissionsSectionsPermission {
+library;
+
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/entities/module_permissions_sections.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/entities/module_permissions_sections_permissions.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/settings/settings_permissions.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/settings/social_permissions.dart';
+
+enum SettingsPermissionsSections
+    implements ModulePermissionsSections, ModulePermissionsSectionsPermission {
   settings,
   socialPermissions;
 

@@ -5,6 +5,7 @@
 /// Purpose: Declares `ModulePermissionsSectionsPermission`.
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 abstract class ModulePermissionsSectionsPermission {
   /// Whether the permission is a child permission or not

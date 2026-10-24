@@ -11,17 +11,20 @@
 ///          constructor argument, resolved once by the caller — and the
 ///          14-line commented-out print block is deleted.
 ///          Earlier: added support for both contacts from the history model.
+library;
 
 import 'package:flutter/material.dart';
-import 'package:grc_module/core/custom/2-custom_textfield.dart';
+import 'package:knowticed_plus/features/settings/se1_profile/data/utils/phone_country_lookup.dart';
+import 'package:knowticed_plus/features/roles/r4_active_directory/data/models/employees_model/mobile_phone_model.dart';
+import 'package:knowticed_plus/core/custom/inputs/custom_textfield.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:grc_module/core/theme/app_font_size.dart';
-import 'package:grc_module/features/roles/r4_active_directory/data/models/employees_model/new_employee_model.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/features/roles/r4_active_directory/data/models/employees_model/new_employee_model.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
-import 'package:grc_module/features/settings/main_controller/presentation/ui/widgets/settings_header.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/features/settings/presentation/ui/widgets/settings_header.dart';
+import 'package:knowticed_plus/core/helper/format_title.dart';
+import 'package:knowticed_plus/core/helper/stored_value_ar.dart';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart';
 
 class EmergencyContactInformationSection extends StatelessWidget {
   const EmergencyContactInformationSection({
@@ -41,7 +44,10 @@ class EmergencyContactInformationSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var isMobile = ContextExtension(context).isPhone;
-    bool isTablet = MediaQuery.of(context).size.shortestSide > 600;
+    // D-205 (20/10/2026): view pages stack one field per row on iPad
+    // PORTRAIT as well as on the phone; landscape keeps the rows.
+    final bool stack =
+        isMobile || MediaQuery.of(context).orientation == Orientation.portrait;
 
     final NewEmployeeModelHistory? currentEmployeeHistory = employeeHistory;
     // Initialize variables for contact data
@@ -133,25 +139,43 @@ class EmergencyContactInformationSection extends StatelessWidget {
       text: FormatHelper.capitalize(lastName),
     );
     final relationshipController = TextEditingController(
-      text: FormatHelper.capitalize(relationship),
+      text: StoredValueAr.of(context, FormatHelper.capitalize(relationship)),
     );
     final emailController = TextEditingController(
       text: email,
     );
+    // D-219 (20/10/2026): the view shows the phone WITH its country code —
+    // flag + code + number in one field — read from the stored phone details.
+    final List<MobilePhone> phoneDetails = currentEmployeeHistory == null
+        ? const <MobilePhone>[]
+        : (isFirstContact
+            ? currentEmployeeHistory.firstContactPhoneDetails
+            : currentEmployeeHistory.secondContactPhoneDetails);
+    // Moataz 23/10/2026: every view page shows flag + code; a contact saved
+    // without a code gets Egypt's, as the edit pages do.
+    final String? storedIso = phoneDetails.isNotEmpty
+        ? phoneDetails.last.countryCode?.lastOrNull
+        : null;
+    final String phoneIso =
+        (storedIso == null || storedIso.isEmpty) ? 'EG' : storedIso;
+    if (phone.isNotEmpty) {
+      phone = '${PhoneCountryLookup.flagAndCode(phoneIso)} $phone';
+    }
+
     final mobilePhoneController = TextEditingController(
       text: phone,
     );
     final languageController = TextEditingController(
-      text: FormatHelper.capitalize(language),
+      text: StoredValueAr.of(context, FormatHelper.capitalize(language)),
     );
     final countryController = TextEditingController(
-      text: FormatHelper.capitalize(country),
+      text: StoredValueAr.of(context, FormatHelper.capitalize(country)),
     );
     final provinceController = TextEditingController(
-      text: FormatHelper.capitalize(province),
+      text: StoredValueAr.of(context, FormatHelper.capitalize(province)),
     );
     final cityController = TextEditingController(
-      text: FormatHelper.capitalize(city),
+      text: StoredValueAr.of(context, FormatHelper.capitalize(city)),
     );
     final streetController = TextEditingController(
       text: FormatHelper.capitalize(street),
@@ -163,196 +187,205 @@ class EmergencyContactInformationSection extends StatelessWidget {
         : S.of(context).secondEmergencyContact;
 
     return Padding(
-      padding: EdgeInsets.only(right: 15.sp,left: 15.sp,top: context.isPhone ? 0.sp : 15.sp,bottom: 15.sp),
+      padding: EdgeInsets.only(
+          right: 16.sp,
+          left: 16.sp,
+          // D-243: 24 before a new group title inside the one box (the
+          // first contact follows Health Insurance, which has no bottom
+          // inset; the second follows the first's bottom 16).
+          top: isFirstContact ? 24.sp : 8.sp,
+          bottom: 16.sp),
       child: Column(
         children: [
-          SizedBox(height: 15.sp,),
+          // D-216 (20/10/2026): the card's own 15 top padding is the inset on
+          // tablet / desktop — no second gap above the header.
+          // D-223: the first contact keeps its 15 under Health Insurance; the
+          // second sits 15 under the first (its bottom inset).
           SettingsHeader(
-            // 0: the Padding wrapping this section already applies 15.sp on
+            // 0: the Padding wrapping this section already applies 16.sp on
             // each side, so SettingsHeader must not add its own on top.
             horizontalPadding: 0,
-            imagePath: 'assets/icons_assets/main_icons_assets/emergency_contact_person.svg',
+            imagePath:
+                'assets/icons_assets/main_icons_assets/ic_user_emergency_contact.svg',
             text: headerText,
           ),
-          // Mobile only: 15.sp after a section title.
-          isMobile ? SizedBox(height: 0.sp) : SizedBox(height: 10.sp),
-          SizedBox(height: isTablet ? 0 : 0.02.h),
+          // Mobile only: 16.sp after a section title.
+          SizedBox(height: 12.sp),
 
           // First Row/Column: First Name, Last Name, Relationship
-          isMobile
+          stack
               ? Column(
-            children: [
-              CustomTextField(
-                label: S.of(context).firstName,
-                hint: '-',
-                controller: firstNameController,
-                enabled: false,
-              ),
-              isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 16),
-              CustomTextField(
-                label: S.of(context).lastName,
-                hint: '-',
-                controller: lastNameController,
-                enabled: false,
-              ),
-             isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 16),
-              CustomTextField(
-                label: S.of(context).relationship,
-                hint: '-',
-                controller: relationshipController,
-                enabled: false,
-              ),
-            ],
-          )
+                  children: [
+                    CustomTextField(
+                      label: S.of(context).firstName,
+                      hint: '-',
+                      controller: firstNameController,
+                      enabled: false,
+                    ),
+                    SizedBox(height: 12.sp),
+                    CustomTextField(
+                      label: S.of(context).lastName,
+                      hint: '-',
+                      controller: lastNameController,
+                      enabled: false,
+                    ),
+                    SizedBox(height: 12.sp),
+                    CustomTextField(
+                      label: S.of(context).relationship,
+                      hint: '-',
+                      controller: relationshipController,
+                      enabled: false,
+                    ),
+                  ],
+                )
               : Row(
-            children: [
-              Expanded(
-                child: CustomTextField(
-                  label: S.of(context).firstName,
-                  hint: '-',
-                  controller: firstNameController,
-                  enabled: false,
+                  children: [
+                    Expanded(
+                      child: CustomTextField(
+                        label: S.of(context).firstName,
+                        hint: '-',
+                        controller: firstNameController,
+                        enabled: false,
+                      ),
+                    ),
+                    SizedBox(width: 16.w), // R-1
+                    Expanded(
+                      child: CustomTextField(
+                        label: S.of(context).lastName,
+                        hint: '-',
+                        controller: lastNameController,
+                        enabled: false,
+                      ),
+                    ),
+                    SizedBox(width: 16.w), // R-1
+                    Expanded(
+                      child: CustomTextField(
+                        label: S.of(context).relationship,
+                        hint: '-',
+                        controller: relationshipController,
+                        enabled: false,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              SizedBox(width: 12),
-              Expanded(
-                child: CustomTextField(
-                  label: S.of(context).lastName,
-                  hint: '-',
-                  controller: lastNameController,
-                  enabled: false,
-                ),
-              ),
-              SizedBox(width: 12),
-              Expanded(
-                child: CustomTextField(
-                  label: S.of(context).relationship,
-                  hint: '-',
-                  controller: relationshipController,
-                  enabled: false,
-                ),
-              ),
-            ],
-          ),
 
-          isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 15.sp),
+          SizedBox(height: 12.sp),
           // Second Row/Column: Email, Mobile Phone, Language
-          isMobile
+          stack
               ? Column(
-            children: [
-              CustomTextField(
-                label: S.of(context).email,
-                hint: '-',
-                controller: emailController,
-                enabled: false,
-              ),
-              isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 16),
-              CustomTextField(
-                label: S.of(context).phoneNumber,
-                hint: '-',
-                controller: mobilePhoneController,
-                enabled: false,
-              ),
-              isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 16),
-              CustomTextField(
-                label: S.of(context).language,
-                hint: '-',
-                controller: languageController,
-                enabled: false,
-              ),
-            ],
-          )
+                  children: [
+                    CustomTextField(
+                      label: S.of(context).email,
+                      hint: '-',
+                      controller: emailController,
+                      enabled: false,
+                    ),
+                    SizedBox(height: 12.sp),
+                    CustomTextField(
+                      label: S.of(context).phoneNumber,
+                      hint: '-',
+                      controller: mobilePhoneController,
+                      enabled: false,
+                    ),
+                    SizedBox(height: 12.sp),
+                    CustomTextField(
+                      label: S.of(context).language,
+                      hint: '-',
+                      controller: languageController,
+                      enabled: false,
+                    ),
+                  ],
+                )
               : Row(
-            children: [
-              Expanded(
-                child: CustomTextField(
-                  label: S.of(context).email,
-                  hint: "-",
-                  controller: emailController,
-                  enabled: false,
+                  children: [
+                    Expanded(
+                      child: CustomTextField(
+                        label: S.of(context).email,
+                        hint: "-",
+                        controller: emailController,
+                        enabled: false,
+                      ),
+                    ),
+                    SizedBox(width: 16.w), // R-1
+                    Expanded(
+                      child: CustomTextField(
+                        label: S.of(context).phoneNumber,
+                        hint: '-',
+                        controller: mobilePhoneController,
+                        enabled: false,
+                      ),
+                    ),
+                    SizedBox(width: 16.w), // R-1
+                    Expanded(
+                      child: CustomTextField(
+                        label: S.of(context).language,
+                        hint: '-',
+                        controller: languageController,
+                        enabled: false,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              SizedBox(width: 12),
-              Expanded(
-                child: CustomTextField(
-                  label: S.of(context).phoneNumber,
-                  hint: '-',
-                  controller: mobilePhoneController,
-                  enabled: false,
-                ),
-              ),
-              SizedBox(width: 12),
-              Expanded(
-                child: CustomTextField(
-                  label: S.of(context).language,
-                  hint: '-',
-                  controller: languageController,
-                  enabled: false,
-                ),
-              ),
-            ],
-          ),
-          isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 15.sp),
-
+          SizedBox(height: 12.sp),
 
           // Third Row/Column: Country, Province, City
-          isMobile
+          stack
               ? Column(
-            children: [
-              CustomTextField(
-                label: S.of(context).country,
-                hint: '-',
-                controller: countryController,
-                enabled: false,
-              ),
-              isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 16),
-              CustomTextField(
-                label: S.of(context).province,
-                hint: '-',
-                controller: provinceController,
-                enabled: false,
-              ),
-              isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 16),
-              CustomTextField(
-                label: S.of(context).city,
-                hint: '-',
-                controller: cityController,
-                enabled: false,
-              ),
-            ],
-          )
+                  children: [
+                    CustomTextField(
+                      label: S.of(context).country,
+                      hint: '-',
+                      controller: countryController,
+                      enabled: false,
+                    ),
+                    SizedBox(height: 12.sp),
+                    CustomTextField(
+                      label: S.of(context).province,
+                      hint: '-',
+                      controller: provinceController,
+                      enabled: false,
+                    ),
+                    SizedBox(height: 12.sp),
+                    CustomTextField(
+                      label: S.of(context).city,
+                      hint: '-',
+                      controller: cityController,
+                      enabled: false,
+                    ),
+                  ],
+                )
               : Row(
-            children: [
-              Expanded(
-                child: CustomTextField(
-                  label: S.of(context).country,
-                  hint: '-',
-                  controller: countryController,
-                  enabled: false,
+                  children: [
+                    Expanded(
+                      child: CustomTextField(
+                        label: S.of(context).country,
+                        hint: '-',
+                        controller: countryController,
+                        enabled: false,
+                      ),
+                    ),
+                    SizedBox(width: 16.w), // R-1
+                    Expanded(
+                      child: CustomTextField(
+                        label: S.of(context).province,
+                        hint: '-',
+                        controller: provinceController,
+                        enabled: false,
+                      ),
+                    ),
+                    SizedBox(width: 16.w), // R-1
+                    Expanded(
+                      child: CustomTextField(
+                        label: S.of(context).city,
+                        hint: '-',
+                        controller: cityController,
+                        enabled: false,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              SizedBox(width: 12),
-              Expanded(
-                child: CustomTextField(
-                  label: S.of(context).province,
-                  hint: '-',
-                  controller: provinceController,
-                  enabled: false,
-                ),
-              ),
-              SizedBox(width: 12),
-              Expanded(
-                child: CustomTextField(
-                  label: S.of(context).city,
-                  hint: '-',
-                  controller: cityController,
-                  enabled: false,
-                ),
-              ),
-            ],
-          ),
 
-          isMobile ? SizedBox(height: 10.sp) : SizedBox(height: 15.sp),
+          SizedBox(height: 12.sp),
 
           // Fourth Row: Street (full width on both mobile and desktop)
           CustomTextField(

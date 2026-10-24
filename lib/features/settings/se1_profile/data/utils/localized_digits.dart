@@ -23,6 +23,7 @@
 /// So the substitution the class was created to replace really did do
 /// something the passthrough did not, and every caller passing `'ar'` had been
 /// getting Latin figures back since. [_resolveLocale] closes that gap.
+library;
 
 import 'package:intl/intl.dart';
 
@@ -35,8 +36,10 @@ abstract class LocalizedDigits {
   /// module — while CLDR's bare `ar` is Latin-digit. `ar_EG` is the closest
   /// standard locale carrying the digits we want, and it is used here ONLY as
   /// a source of numerals; nothing about it reaches the user as a region.
+  // CHANGED 17/10/2026 (D-145): numbers are always Western digits, so Arabic
+  // no longer borrows ar_EG (the only intl locale with Arabic-Indic digits).
   static const Map<String, String> _digitLocaleOverrides = <String, String>{
-    'ar': 'ar_EG',
+    'ar': 'en',
   };
 
   /// Function Name: [apply]

@@ -5,9 +5,10 @@
 /// Purpose: Declares `CardCheckLists`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/card_model/checklist_item.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/card_model/checklist_item.dart';
 
 class CardCheckLists {
   List<String>? checkListTitle;

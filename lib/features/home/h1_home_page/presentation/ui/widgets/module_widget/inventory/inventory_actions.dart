@@ -5,73 +5,78 @@
 /// Purpose: Declares `InventoryActions`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
-import 'package:get/get.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/helpers/home_button_access.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/home_widget_settings.dart';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart'
+    show kpIsPhoneLayout;
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 
-import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/standard_container.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/home_component_model.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/home_component_model.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/home_widgets/home_widget_shell.dart';
+import 'package:knowticed_plus/core/helper/access/modules_enum.dart';
+import 'package:knowticed_plus/features/notification/presentation/ui/widgets/notification_routing.dart';
 
-import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/features/home/h1_home_page/presentation/ui/home_widgets/home_widget_shell.dart';
+/// Function Name: [openInventoryFromHome]
+///
+/// Purpose: Open the Inventory module from a home card. ADDED 21/10/2026 —
+/// the "Inventory" and "New Request" cards' buttons had empty onTaps. Same
+/// routing as `openFormBuilderFromHome`: tablet/desktop switches the
+/// side-rail module; phone pushes the module page. Inventory has no shortcut
+/// hook, so every button lands on its main page.
+void openInventoryFromHome(BuildContext context) {
+  if (!kpIsPhoneLayout(context)) {
+    final drawer = NotificationRouting.drawerCubit();
+    final int index = drawer.allowedDrawerModules.indexOf(Modules.inventory);
+    // The user has no Inventory access — nothing to open.
+    if (index == -1) return;
+    drawer.updateSelectedIndex(index);
+  } else {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (_) => Modules.inventory.widget),
+    );
+  }
+}
+
 class InventoryActions extends StatelessWidget {
-  InventoryActions({super.key, required this.model});
-  HomeComponentModel model;
+  const InventoryActions({super.key, required this.model});
+  final HomeComponentModel model;
   @override
   Widget build(BuildContext context) {
-    return StandardContainer(
-        child: SizedBox(
-      width: 140.sp,
-      child: Column(
-        spacing: 5.sp,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                S.of(context).inventory,
-                style: StyleText.fontSize14Weight500
-                    .copyWith(fontWeight: FontWeight.bold),
-              ),
-              SvgPicture.asset(
-                'assets/icons_assets/roles_assets/inventory_warehouse.svg',
-                width: 20,
-                height: 20,
-                color: AppColors.primary,
-              )
-            ],
-          ),
-          Container(),
-          // CHANGED 12/9/2026 — the action buttons are `HomeCardButton`, not
-          // `customButton` / `customButtonWithSvg`.
-          //
-          // Those two enforce the app-wide ButtonSizing rule: 135.sp on tablet, 38.sp on
-          // mobile, or — when the label does not fit that — no width at all, in which
-          // case the button hugs its own text. So every button in a card came out a
-          // different width from the one above it, and narrower than the card holding
-          // them. `HomeCardButton` is the component the newer home cards already use
-          // (home_widget_shell.dart); it is full-width by default, which is what Figma
-          // draws for stacked card actions and what makes every card agree.
-          HomeCardButton(
-            label: S.of(context).addProduct,
-            icon: 'assets/icons_assets/roles_assets/inventory_warehouse.svg',
-            onTap: () {},
-          ),
-          HomeCardButton(
-            label: S.of(context).order,
-            onTap: () {},
-          ),
-          HomeCardButton(
-            label: S.of(context).approvals,
-            onTap: () {},
-          ),
+    final S l = S.of(context);
+    final List<String> shown = HomeButtonAccess.shown(model, <String>[
+      HomeButtonKey.addProduct,
+      HomeButtonKey.order,
+      HomeButtonKey.approvals,
+    ]);
+    // Owner 21/10/2026: reference home-card style — as Forms: HomeWidgetCard
+    // header (title + Inventory icon), narrow width, stacked HomeCardButtons.
+    return HomeWidgetCard(
+      title: l.inventory,
+      icon: Modules.inventory.iconPath,
+      width: kHomeWidgetNarrowWidth,
+      // Equal gaps title → buttons → card edge (Owner 21/10/2026).
+      child: HomeCardButtonStack(
+        buttons: <Widget>[
+          if (shown.contains(HomeButtonKey.addProduct))
+            HomeCardButton(
+              label: l.addProduct,
+              onTap: () => openInventoryFromHome(context),
+            ),
+          if (shown.contains(HomeButtonKey.order))
+            HomeCardButton(
+              label: l.order,
+              onTap: () => openInventoryFromHome(context),
+            ),
+          if (shown.contains(HomeButtonKey.approvals))
+            HomeCardButton(
+              label: l.approvals,
+              onTap: () => openInventoryFromHome(context),
+            ),
         ],
       ),
-    ));
+    );
   }
 }

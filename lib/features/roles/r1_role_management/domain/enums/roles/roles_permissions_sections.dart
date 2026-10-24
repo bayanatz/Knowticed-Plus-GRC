@@ -5,16 +5,19 @@
 /// Purpose: Declares `RolePermissionsSections`.
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
-// REMOVED_MODULE: import 'package:grc_module/features/external/services_app_module/core/constants/strings.dart';
-import 'package:grc_module/features/roles/r1_role_management/domain/enums/roles/role_management_permission.dart';
-import 'package:grc_module/features/roles/r1_role_management/domain/enums/roles/user_access_permission.dart';
-import 'package:grc_module/features/roles/r1_role_management/domain/enums/roles/user_management_permission.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/features/external/services_app_module/core/constants/strings.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/roles/role_management_permission.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/roles/user_access_permission.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/roles/user_management_permission.dart';
 
-import 'package:grc_module/features/roles/r1_role_management/domain/entities/module_permissions_sections.dart';
-import 'package:grc_module/features/roles/r1_role_management/domain/entities/module_permissions_sections_permissions.dart';
-import './active_directory_permission.dart';
-enum RolePermissionsSections implements ModulePermissionsSections, ModulePermissionsSectionsPermission {
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/entities/module_permissions_sections.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/entities/module_permissions_sections_permissions.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/roles/active_directory_permission.dart';
+
+enum RolePermissionsSections
+    implements ModulePermissionsSections, ModulePermissionsSectionsPermission {
   roleManagement,
   userAccess,
   userManagement,

@@ -18,48 +18,49 @@ class CaptionField extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isArabic = Get.locale?.languageCode == 'ar';
     return Obx(
-          () => Row(
+      () => Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Expanded(
             child: ConstrainedBox(
-                constraints: BoxConstraints(
-                ),
+                constraints: BoxConstraints(),
                 child: CustomTextField(
                   minLines: 1,
                   height: 36,
-                  textAlign: isArabic == null
-                      ? TextAlign.start
-                      : isArabic == true
-                      ? TextAlign.right
-                      : TextAlign.left,
+                  textAlign:
+                      isArabic == true ? TextAlign.right : TextAlign.left,
                   hint: S.of(context).addCaption,
                   maxLines: 1,
                   showCharCount: false,
-                  hintStyle: StyleText.fontSize12Weight400.copyWith(color: AppColors.secondaryBlack),
+                  hintStyle: StyleText.fontSize12Weight400
+                      .copyWith(color: AppColors.secondaryBlack),
                   fillColor: AppColors.card,
                   width: double.infinity,
-                  controller: controller
-                      .captionControllers[controller.state.swiperIndex], // Fixed: access through state
+                  controller: controller.captionControllers[controller
+                      .state.swiperIndex], // Fixed: access through state
                   contentPadding: const EdgeInsetsDirectional.only(
                       top: 7, bottom: 7, start: 9, end: 9),
-                  onChanged: controller.setCurrentMessage,)),
+                  onChanged: controller.setCurrentMessage,
+                )),
           ),
           SizedBox(
             width: 30.w,
           ),
           GestureDetector(
+              onTapDown: (_) => HapticController.medium(),
               onTap: () {
-                if (ContextExtension(context).isTablett || ContextExtension(context).isLandscape) {
+                if (ContextExtension(context).isTablett ||
+                    ContextExtension(context).isLandscape) {
                   Get.back();
                 } else {
                   Get.until(
-                        (route) => Get.currentRoute == Routes.message,
+                    (route) => Get.currentRoute == Routes.message,
                   );
                 }
                 for (int i = 0; i < files.length; i++) {
-                  final mimeType = lookupMimeType(files[i].path!);
-                  controller.applySelectedMessageAction(context); // Fixed: pass context
+                  lookupMimeType(files[i].path!);
+                  controller.applySelectedMessageAction(
+                      context); // Fixed: pass context
                 }
               },
               child: Container(
@@ -74,7 +75,8 @@ class CaptionField extends StatelessWidget {
                 alignment: Alignment.center,
                 child: Text(
                   S.of(context).send,
-                  style: StyleText.fontSize12Weight500.copyWith(color: AppColors.textButton),
+                  style: StyleText.fontSize12Weight500
+                      .copyWith(color: AppColors.textButton),
                 ),
               )),
         ],

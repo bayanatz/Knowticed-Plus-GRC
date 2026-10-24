@@ -5,6 +5,7 @@
 /// Purpose: Declares `AcademicHistoryEntity`.
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 /// Flattened, read-only view of [AcademicHistory] (academic_model.dart).
 ///
@@ -45,5 +46,5 @@ class AcademicHistoryEntity {
     this.yearOfGraduationStatus,
     this.gpaStatus,
   });
-  toJson() {}
+  void toJson() {}
 }

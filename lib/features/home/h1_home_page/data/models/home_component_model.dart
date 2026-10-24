@@ -6,23 +6,36 @@
 /// Author: Amr Mesbah
 /// Created at: 21/9/2025
 /// Updated: 11/8/2026 - Fields made final, explicit toMap() type, copyWith.
+/// Updated: 21/10/2026 - D-242: [settings] — the values the user chose in the
+///          widget's gear dialog, saved with the placed copy (row / column).
+library;
 
-import 'package:grc_module/features/home/h1_home_page/domain/enums/home_components.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/home_widget_settings.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/domain/enums/home_components.dart';
 
 class HomeComponentModel {
   const HomeComponentModel({
     required this.component,
     required this.rowNumber,
     required this.columnNumber,
+    this.settings = const <String, dynamic>{},
   });
 
   final HomeComponents component;
   final int rowNumber;
   final int columnNumber;
 
+  /// What the user changed in this copy's settings dialog. Empty = the widget
+  /// behaves exactly as it did before settings existed (D-242 (4)).
+  final Map<String, dynamic> settings;
+
   static const String componentKey = 'Component';
   static const String rowNumberKey = 'Row_Number';
   static const String columnNumberKey = 'Column_Number';
+  static const String settingsKey = 'Settings';
+
+  /// The typed reader the widgets use.
+  HomeWidgetSettings get widgetSettings => HomeWidgetSettings(settings);
 
   /// Function Name: [toMap]
   ///
@@ -34,6 +47,9 @@ class HomeComponentModel {
       componentKey: component.databaseName,
       rowNumberKey: rowNumber,
       columnNumberKey: columnNumber,
+      // Written only when something was changed, so layouts of widgets nobody
+      // touched stay byte-for-byte what they were.
+      if (settings.isNotEmpty) settingsKey: settings,
     };
   }
 
@@ -46,15 +62,18 @@ class HomeComponentModel {
     HomeComponents? component,
     int? rowNumber,
     int? columnNumber,
+    Map<String, dynamic>? settings,
   }) {
     return HomeComponentModel(
       component: component ?? this.component,
       rowNumber: rowNumber ?? this.rowNumber,
       columnNumber: columnNumber ?? this.columnNumber,
+      settings: settings ?? this.settings,
     );
   }
 
   factory HomeComponentModel.fromMap(Map<String, dynamic> map) {
+    final Object? stored = map[settingsKey];
     return HomeComponentModel(
       // orElse: stored layouts may name components this build removed.
       component: HomeComponents.values.firstWhere(
@@ -63,6 +82,9 @@ class HomeComponentModel {
       ),
       rowNumber: map[rowNumberKey] as int,
       columnNumber: map[columnNumberKey] as int,
+      settings: stored is Map
+          ? Map<String, dynamic>.from(stored)
+          : const <String, dynamic>{},
     );
   }
 }

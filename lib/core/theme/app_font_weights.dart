@@ -5,6 +5,7 @@
 /// Purpose: Declares `AppFontWeights`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 // Date: 29/9/2024
 // By: Youssef Ashraf, Nada Mohammed, Mohammed Ashraf

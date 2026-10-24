@@ -4,18 +4,15 @@
 // Objectives: This file is responsible for providing a widget that contains the chat profile header used in the chat profile screen.
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-
-import 'package:grc_module/core/constants/message_module/app_assets.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import '../../../../m1_chat/presentation/controller/main_controllers/master_chat_cubit.dart';
-import '../../../../m1_chat/presentation/controller/message_controller.dart';
-import 'package:grc_module/core/custom/46-custom_image_picker.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/features/messaging/helpers/constants/messaging_assets.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/main_controllers/master_chat_cubit.dart';
+import 'package:knowticed_plus/core/custom/pickers/custom_image_picker.dart';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart';
 
 class GroupChatProfileHeader extends StatelessWidget {
   final String title;
@@ -44,18 +41,18 @@ class GroupChatProfileHeader extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8.r),
                   image: getChatProfileImage(context) != null
                       ? DecorationImage(
-                    fit: BoxFit.cover,
-                    image: appImageProvider(
-                      getChatProfileImage(context),
-                    ),
-                  )
+                          fit: BoxFit.cover,
+                          image: appImageProvider(
+                            getChatProfileImage(context)!,
+                          ),
+                        )
                       : DecorationImage(
-                      fit: BoxFit.cover,
-                      image: getChatProfileImage(context) != null
-                          ? appImageProvider(
-                        getChatProfileImage(context),
-                      )
-                          : appImageProvider(AppAssets.profile)),
+                          fit: BoxFit.cover,
+                          image: getChatProfileImage(context) != null
+                              ? appImageProvider(
+                                  getChatProfileImage(context)!,
+                                )
+                              : appImageProvider(AppAssets.profile)),
                 ),
               ),
             ),
@@ -84,25 +81,30 @@ class GroupChatProfileHeader extends StatelessWidget {
                           //alignment: AlignmentDirectional.s,
                           children: [
                             CircleAvatar(
-                              backgroundImage: appImageProvider(AppAssets.user),
+                              backgroundImage:
+                                  appImageProvider(AppAssets.profile),
                               radius: 15,
                             ),
                             Padding(
-                              padding: const EdgeInsetsDirectional.only(start: 20),
+                              padding:
+                                  const EdgeInsetsDirectional.only(start: 20),
                               child: CircleAvatar(
-                                backgroundImage: appImageProvider(AppAssets.user3),
+                                backgroundImage:
+                                    appImageProvider(AppAssets.profile),
                                 radius: 15,
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsetsDirectional.only(start: 40),
+                              padding:
+                                  const EdgeInsetsDirectional.only(start: 40),
                               child: CircleAvatar(
-                                  backgroundImage: appImageProvider(AppAssets.user2),
+                                  backgroundImage:
+                                      appImageProvider(AppAssets.profile),
                                   radius: 15),
                             ),
                             Padding(
                               padding:
-                              const EdgeInsetsDirectional.only(start: 60),
+                                  const EdgeInsetsDirectional.only(start: 60),
                               child: CircleAvatar(
                                 backgroundColor: Colors.white,
                                 radius: 15,
@@ -111,7 +113,10 @@ class GroupChatProfileHeader extends StatelessWidget {
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: AppColors.black,
-                                    fontSize: ContextExtension(context).isTablett ? 13 : 10,
+                                    fontSize:
+                                        ContextExtension(context).isTablett
+                                            ? 13
+                                            : 10,
                                   ),
                                 ),
                               ),
@@ -130,7 +135,7 @@ class GroupChatProfileHeader extends StatelessWidget {
     );
   }
 
-  getChatProfileImage(BuildContext context) {
+  String? getChatProfileImage(BuildContext context) {
     // Access otherConnectionSide through state (DI via Bloc — §3).
     return context.read<MasterChatCubit>().state.otherConnectionSide?.imageUri;
   }

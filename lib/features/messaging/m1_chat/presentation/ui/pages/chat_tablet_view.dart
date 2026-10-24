@@ -1,19 +1,18 @@
 /// Module: messaging / chat / presentation/ui/pages/chat_tablet_view.dart
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:grc_module/core/helper/main_helper/spacing_helper.dart';
-import '../../../../m2_connections/presentation/controller/connections_controller.dart';
-import '../../../../m3_groups/domain/entities/group_entity.dart';
-import '../../controller/main_controllers/master_chat_cubit.dart';
-import '../../controller/main_controllers/single_chat_cubit.dart';
-import '../../controller/message_types_controllers/record_and_audio_cubit.dart';
-import '../widgets/app_bar/message_tablet_appbar.dart';
-import '../widgets/media_links_widget.dart';
-import '../widgets/pinned_message.dart';
-import '../widgets/send_new_message/tablet_new_message.dart';
-import './chat_mobile_view.dart';
+import 'package:knowticed_plus/features/messaging/helpers/spacing_helper.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/presentation/controller/connections_controller.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/domain/entities/group_entity.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/main_controllers/master_chat_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/main_controllers/single_chat_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/ui/widgets/app_bar/message_tablet_appbar.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/ui/widgets/send_new_message/tablet_new_message.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/ui/pages/chat_mobile_view.dart';
 
 class ChatTabletView extends StatelessWidget {
   const ChatTabletView({super.key});
@@ -36,7 +35,7 @@ class ChatTabletView extends StatelessWidget {
     return BlocBuilder<MasterChatCubit, MasterChatState>(
       builder: (context, state) {
         return PopScope(
-          onPopInvoked: (didPop) {},
+          onPopInvokedWithResult: (didPop, result) {},
           child: Row(
             children: [
               // ── Chat Column (always visible) ──────────────────
@@ -54,11 +53,14 @@ class ChatTabletView extends StatelessWidget {
                         ),
                       ),
                     ),
+                    // 18/10/2026 (D-146 / D-184): + and Send sit the SAME
+                    // distance from the panel's sides and its bottom (was 25
+                    // at the sides, 10 below).
                     Padding(
-                      padding: EdgeInsets.only(
-                        bottom: 0.sp,
-                        left: 25.sp,
-                        right: 25.sp,
+                      padding: EdgeInsetsDirectional.only(
+                        start: 25.sp,
+                        end: 25.sp,
+                        bottom: 25.sp,
                       ),
                       child: NewMessageTablet(),
                     ),

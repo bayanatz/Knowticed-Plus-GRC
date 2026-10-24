@@ -5,10 +5,9 @@
 /// Purpose: Nationalities list.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
-import 'package:get/get.dart';
-
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
 List<String> nationality = [
   S.current.afghan,

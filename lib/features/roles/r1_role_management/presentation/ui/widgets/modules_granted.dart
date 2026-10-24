@@ -5,20 +5,23 @@
 /// Purpose: Declares `ModulesGranted`.
 /// Author: Knowticed Plus team
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
+import 'package:knowticed_plus/core/extensions/context_extensions.dart'
+    show kpIsPhoneLayout;
 import 'package:flutter/material.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
-// REMOVED_MODULE: import 'package:grc_module/features/external/services_mangment_module/core/new_theme.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/features/external/services_mangment_module/core/new_theme.dart';
 
-import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/features/roles/r1_role_management/data/models/role_model.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
-import 'package:grc_module/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/data/models/role_model.dart';
+import 'package:knowticed_plus/core/helper/access/modules_enum.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
 
 class ModulesGranted extends StatefulWidget {
   const ModulesGranted({super.key});
@@ -39,17 +42,16 @@ class _ModulesGrantedState extends State<ModulesGranted> {
 
   @override
   Widget build(BuildContext context) {
-    bool isTablet = MediaQuery.of(context).size.width > 600;
+    bool isTablet = !kpIsPhoneLayout(context);
 
     // Get modules directly from selected role
-    List<String> moduleStrings = controller.selectedRole?.currentSelectedModules ?? [];
-
+    List<String> moduleStrings =
+        controller.selectedRole?.currentSelectedModules ?? [];
 
     // Convert to enums. The name -> enum map (and the rule that unknown names
     // are skipped) lives on RoleCubit; this widget used to keep a private copy
     // of the switch plus a try/catch, which §11.2 forbids in widgets.
     final List<Modules> moduleEnums = controller.moduleEnumsFor(moduleStrings);
-
 
     return Column(
       spacing: 8.sp,
@@ -64,6 +66,7 @@ class _ModulesGrantedState extends State<ModulesGranted> {
             InkWell(
               splashColor: AppColors.transparent,
               hoverColor: AppColors.transparent,
+              onTapDown: (_) => HapticController.low(),
               onTap: () {
                 setState(() {
                   isHide = !isHide;
@@ -96,39 +99,39 @@ class _ModulesGrantedState extends State<ModulesGranted> {
             // Role QA p.26: less padding around the module grid (was 15).
             padding: EdgeInsets.all(8.sp),
             decoration: BoxDecoration(
-              color: AppColors.field,
+              color: AppColors.card,
               borderRadius: BorderRadius.circular(8.sp),
             ),
             child: moduleEnums.isEmpty
                 ? Center(
-              child: Padding(
-                padding: EdgeInsets.all(20.sp),
-                child: Text(
-                  S.of(context).noModulesGranted,
-                  style: StyleText.fontSize14Weight400,
-                ),
-              ),
-            )
+                    child: Padding(
+                      padding: EdgeInsets.all(20.sp),
+                      child: Text(
+                        S.of(context).noModulesGranted,
+                        style: StyleText.fontSize14Weight400,
+                      ),
+                    ),
+                  )
                 : GridView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: moduleEnums.length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: isTablet ? 14 : 4,
-                mainAxisSpacing: 10.sp,
-                crossAxisSpacing: 10.sp,
-                // FIXED 29/8/2026: a fixed `mainAxisExtent: 55.w` made each
-                // grid tile a wide rectangle, and the icon box (forced to fill
-                // the tile) stretched with it. A square childAspectRatio keeps
-                // every cell — and the tile centred in it — square.
-                // Role QA p.26: each tile now carries the module name under
-                // the icon, so the cell is taller than it is wide.
-                childAspectRatio: isTablet ? 0.8 : 0.72,
-              ),
-              itemBuilder: (_, index) {
-                return _moduleItem(moduleEnums[index]);
-              },
-            ),
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: moduleEnums.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: isTablet ? 14 : 4,
+                      mainAxisSpacing: 10.sp,
+                      crossAxisSpacing: 10.sp,
+                      // FIXED 29/8/2026: a fixed `mainAxisExtent: 55.w` made each
+                      // grid tile a wide rectangle, and the icon box (forced to fill
+                      // the tile) stretched with it. A square childAspectRatio keeps
+                      // every cell — and the tile centred in it — square.
+                      // Role QA p.26: each tile now carries the module name under
+                      // the icon, so the cell is taller than it is wide.
+                      childAspectRatio: isTablet ? 0.8 : 0.72,
+                    ),
+                    itemBuilder: (_, index) {
+                      return _moduleItem(moduleEnums[index]);
+                    },
+                  ),
           )
       ],
     );
@@ -149,8 +152,8 @@ class _ModulesGrantedState extends State<ModulesGranted> {
             color: AppColors.primary,
             borderRadius: BorderRadius.circular(4.sp),
           ),
-          child: CustomSvgImage(assetPath:
-            module.iconPath,
+          child: CustomSvgImage(
+            assetPath: module.iconPath,
             height: 24.sp,
             width: 24.sp,
             fit: BoxFit.contain,
@@ -179,5 +182,4 @@ class _ModulesGrantedState extends State<ModulesGranted> {
   // REMOVED 12/8/2026: private `_stringToModuleEnum` switch — a drifted
   // duplicate of RoleCubit.stringToModuleEnum (it listed 'employees' twice and
   // was missing hr / crm / notification). Use the cubit's map instead.
-
 }

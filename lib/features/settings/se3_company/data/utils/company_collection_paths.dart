@@ -12,8 +12,9 @@
 /// inline — the `Demo/` prefix hardcoded twice, in a file that also read
 /// `ApiConstants.baseUri` (which already contains it). Deriving from `baseUri`
 /// means a tenant change cannot leave one of the two behind.
+library;
 
-import 'package:grc_module/core/network/api_constants.dart';
+import 'package:knowticed_plus/core/network/api_constants.dart';
 
 abstract final class CompanyCollectionPaths {
   const CompanyCollectionPaths._();

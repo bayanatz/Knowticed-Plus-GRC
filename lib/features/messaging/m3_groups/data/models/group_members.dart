@@ -4,6 +4,7 @@
 /// Purpose: Group members — messaging Groups sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -87,6 +88,7 @@ class GroupMember {
       categoryIdKey: categoryId,
     };
   }
+
   factory GroupMember.fromMap(Map<String, dynamic> map) {
     return GroupMember(
       memberId: map[memberIdKey] as String,

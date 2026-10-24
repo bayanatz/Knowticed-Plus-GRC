@@ -38,6 +38,7 @@ class ImageBubble extends StatelessWidget {
               Column(
                 children: [
                   GestureDetector(
+                    onTapDown: (_) => HapticController.low(),
                     onTap: () {
                       /*   Get.toNamed(Routes.imageInteract,
                             arguments: {'image': messageModel.image!});*/
@@ -64,7 +65,7 @@ class ImageBubble extends StatelessWidget {
                 messageModel.messageContent ?? '',
                 style: isMe
                     ? StyleText.fontSize14Weight400
-                    .copyWith(color: AppColors.textButton)
+                        .copyWith(color: AppColors.textButton)
                     : StyleText.fontSize14Weight400,
                 softWrap: true,
               ),

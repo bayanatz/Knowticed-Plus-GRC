@@ -6,13 +6,14 @@
 /// Author: Knowticed Plus team
 /// Created at: 13/8/2026
 /// Updated: 1/9/2026 - Added [listForEmployee] for the "Request Details" list.
+library;
 
 import 'dart:typed_data';
 
 import 'package:dartz/dartz.dart';
 
-import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/features/settings/se7_app_info/domain/entities/app_feedback.dart';
+import 'package:knowticed_plus/core/network/failure_model.dart';
+import 'package:knowticed_plus/features/settings/se7_app_info/domain/entities/app_feedback.dart';
 
 abstract class FeedbackBaseRepository {
   /// Function Name: [submit]

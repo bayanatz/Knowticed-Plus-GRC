@@ -31,13 +31,14 @@
 ///
 /// ⚠️ [getDataBaseName] is stored in Firestore. Renaming one orphans every
 /// role document already written with it.
+library;
 
-import 'package:grc_module/features/roles/r1_role_management/domain/entities/module_permissions_sections.dart';
-import 'package:grc_module/features/roles/r1_role_management/domain/entities/module_permissions_sections_permissions.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/entities/module_permissions_sections.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/entities/module_permissions_sections_permissions.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
-import 'messages_permissions_enum.dart';
-import 'more_permissions_enum.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/messages/messages_permissions_enum.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/messages/more_permissions_enum.dart';
 
 enum MessagesPermissionsSections
     implements ModulePermissionsSections, ModulePermissionsSectionsPermission {

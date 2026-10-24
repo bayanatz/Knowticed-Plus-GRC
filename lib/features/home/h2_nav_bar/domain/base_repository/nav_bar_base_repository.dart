@@ -8,6 +8,7 @@
 ///
 /// Which modules a company may see is business logic, so it gets a domain
 /// contract rather than living as a raw Firestore call inside the cubit.
+library;
 
 abstract class NavBarBaseRepository {
   /// Function Name: [getCompanyLicensedModules]

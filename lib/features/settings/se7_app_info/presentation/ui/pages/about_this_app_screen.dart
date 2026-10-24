@@ -25,26 +25,29 @@
 ///
 /// The `arDocumentUrl` / `engDocumentUrl` fields are still in Firestore; this
 /// page simply no longer offers them as downloads.
+library;
 
+import 'package:knowticed_plus/core/extensions/context_extensions.dart'
+    show kpIsPhoneLayout;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:knowticed_plus/core/helper/knowticed_logo.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:grc_module/core/constants/firebase_collections.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/custom/50-custom_side_frame_master.dart';
-import 'package:grc_module/core/custom/5-custom_button.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
-import 'package:grc_module/core/network/api_constants.dart'
+import 'package:knowticed_plus/core/constants/firebase_collections.dart';
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
+import 'package:knowticed_plus/core/custom/navigation/custom_side_frame_master.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_button.dart';
+import 'package:knowticed_plus/core/custom/feedback/circle_progress.dart';
+import 'package:knowticed_plus/core/helper/format_title.dart';
+import 'package:knowticed_plus/core/network/api_constants.dart'
     hide FirebaseCollections;
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
 class AboutThisAppScreen extends StatefulWidget {
   const AboutThisAppScreen({super.key});
@@ -54,7 +57,8 @@ class AboutThisAppScreen extends StatefulWidget {
 }
 
 class _AboutThisAppScreenState extends State<AboutThisAppScreen> {
-  static const String _icon = 'assets/icons_assets/main_icons_assets/about.svg';
+  static const String _icon =
+      'assets/icons_assets/settings_assets/ic_page_about.svg';
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -173,7 +177,7 @@ class _AboutThisAppScreenState extends State<AboutThisAppScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isTablet = MediaQuery.of(context).size.shortestSide > 600;
+    final bool isTablet = !kpIsPhoneLayout(context);
 
     if (!isTablet) {
       // Phones push this as its own route, so it owns a Scaffold — the same
@@ -196,10 +200,7 @@ class _AboutThisAppScreenState extends State<AboutThisAppScreen> {
           child: Column(
             children: <Widget>[
               _header(context),
-              SizedBox(
-                height: _phoneContentHeight(context),
-                child: _contentPane(context),
-              ),
+              _contentPane(context),
             ],
           ),
         ),
@@ -208,27 +209,34 @@ class _AboutThisAppScreenState extends State<AboutThisAppScreen> {
 
     // Tablet / desktop: rendered inside settings_layout's Expanded, which does
     // hand down a bounded height — so `Expanded` is correct here.
+    // D-246 (21/10/2026): the box ENDS after the content with the normal gap
+    // (Flexible + a shrink-wrapped body), not at the bottom edge.
+    // One card for header + body: two touching rounded boxes left a hairline
+    // seam between them on the desktop (Moataz 23/10/2026).
     return Column(
       children: <Widget>[
-        _header(context),
-        Expanded(child: _contentPane(context)),
+        Flexible(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8.r),
+            child: ColoredBox(
+              color: AppColors.card,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  _header(context),
+                  // Owner 21/10/2026: scrolls inside the box like Privacy / Terms (the
+                  // shrink-wrapped body overflowed the pane when the text was long).
+                  Flexible(
+                    child: SingleChildScrollView(child: _contentPane(context)),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        SizedBox(height: 16.sp),
       ],
     );
-  }
-
-  /// Height handed to the scrollable document pane on phones.
-  ///
-  /// The frame above it (safe area + breadcrumb + the 20.sp gap the frame
-  /// inserts) takes roughly a fifth of the viewport, and this page's own header
-  /// card sits under that. What is left is what the markdown gets. It is a
-  /// fraction rather than a measured value on purpose: the pane lives inside
-  /// the frame's SingleChildScrollView, so being a little short just means the
-  /// page scrolls, and being a little tall is impossible to hit.
-  double _phoneContentHeight(BuildContext context) {
-    final MediaQueryData mq = MediaQuery.of(context);
-    final double usable =
-        mq.size.height - mq.padding.top - mq.padding.bottom;
-    return usable * 0.72;
   }
 
   /// Title card above the content.
@@ -247,18 +255,17 @@ class _AboutThisAppScreenState extends State<AboutThisAppScreen> {
         ),
       ),
       child: Padding(
-        padding: EdgeInsets.all(15.sp),
+        padding: EdgeInsets.all(16.sp),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Row(
+              // Owner 21/10/2026: top-aligned, the same as Privacy / Terms.
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 // Same asset choice as privacy_Statement.dart's pane.
-                SvgPicture.asset(
-                  !lightMode
-                      ? 'assets/icons_assets/main_icons_assets/light_app_icon.svg'
-                      : 'assets/icons_assets/main_icons_assets/logo_app.svg',
+                CustomSvgImage.natural(
+                  assetPath: knowticedLogoAsset(lightMode: lightMode),
                   width: 50.w,
                   height: 50.h,
                   fit: BoxFit.fill,
@@ -274,19 +281,24 @@ class _AboutThisAppScreenState extends State<AboutThisAppScreen> {
                 ],
               ],
             ),
+            // Owner 21/10/2026: 20 under the logo row, as on Privacy / Terms.
             SizedBox(height: 20.h),
+            // D-246: the title ONCE — "About Knowticed Plus" with its section
+            // icon (the same 30 tile + 16 icon as Terms / Privacy); the body's
+            // own first heading is stripped below so it is not repeated.
             Row(
               children: <Widget>[
-                CustomSvgImage(
+                // Owner 21/10/2026: just the icon (16), no square tile behind it.
+                CustomSvgImage.natural(
                   assetPath: _icon,
-                  width: 25,
-                  height: 25,
-                  fit: BoxFit.fill,
+                  width: 24.sp,
+                  height: 24.sp,
                 ),
-                SizedBox(width: 5.w),
+                SizedBox(width: 8.sp),
                 Expanded(
                   child: Text(
-                    FormatHelper.capitalize(S.of(context).aboutThisPlatform),
+                    S.of(context).aboutKnowticedPlus,
+                    // Owner 21/10/2026: same title style as Privacy / Terms.
                     style: StyleText.fontSize16Weight500
                         .copyWith(color: AppColors.secondaryText),
                   ),
@@ -325,8 +337,12 @@ class _AboutThisAppScreenState extends State<AboutThisAppScreen> {
     }
 
     return Markdown(
-      padding: EdgeInsets.all(15.sp),
-      data: _description!,
+      // D-246: the box hugs its content; the page frame scrolls.
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      padding: EdgeInsets.all(16.sp),
+      data: _withoutLeadingHeading(
+          _description!, S.of(context).aboutKnowticedPlus),
       onTapLink: (String text, String? url, String title) async {
         if (url == null) return;
         final Uri link = url.contains('@') && !url.startsWith('http')
@@ -338,7 +354,7 @@ class _AboutThisAppScreenState extends State<AboutThisAppScreen> {
       // identically.
       styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
         p: StyleText.fontSize14Weight500.copyWith(
-          color: AppColors.secondaryText,
+          color: AppColors.text,
           height: 1.6,
         ),
         h1: StyleText.fontSize16Weight600.copyWith(
@@ -354,7 +370,7 @@ class _AboutThisAppScreenState extends State<AboutThisAppScreen> {
           height: 1.8,
         ),
         listBullet: StyleText.fontSize14Weight500.copyWith(
-          color: AppColors.secondaryText,
+          color: AppColors.text, // 23/10/2026 (Moataz): body text is black
           height: 1.6,
         ),
       ),
@@ -367,6 +383,23 @@ class _AboutThisAppScreenState extends State<AboutThisAppScreen> {
   String _formattedLastUpdate(BuildContext context) {
     final String locale = Localizations.localeOf(context).languageCode;
     return DateFormat('dd MMMM yyyy', locale).format(_lastUpdateDate!);
+  }
+
+  /// Drops a first-line markdown heading ("# About …") — the header above
+  /// already shows the title once (D-246).
+  static String _withoutLeadingHeading(String markdown, String title) {
+    final List<String> lines = markdown.trimLeft().split('\n');
+    if (lines.isNotEmpty) {
+      final String first =
+          lines.first.trim().replaceFirst(RegExp(r'^#+\s*'), '').trim();
+      // A markdown heading, or the title written as a plain first line.
+      if (lines.first.trimLeft().startsWith('#') ||
+          first.toLowerCase() == title.trim().toLowerCase() ||
+          first.toLowerCase() == 'about knowticed plus') {
+        lines.removeAt(0);
+      }
+    }
+    return lines.join('\n').trimLeft();
   }
 
   Widget _errorState(BuildContext context, _AboutError error) {

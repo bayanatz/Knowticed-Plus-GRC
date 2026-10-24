@@ -5,6 +5,7 @@
 /// Purpose: Declares `ScheduleController`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 /// *************************** FILE INFO ****************************
 /// File Name: schedule_controller.dart
@@ -12,24 +13,28 @@
 /// Author: Amr Mesbah
 /// Created at: 11/2/2025
 
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
+import 'package:get_it/get_it.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:grc_module/features/home/h1_home_page/presentation/controller/skeleton_home_controller.dart';
-import 'package:grc_module/features/home/main_controller/helper/todo_new_module/todo_stub.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/presentation/controller/skeleton_home_controller.dart';
+import 'package:knowticed_plus/features/todo/data/services/todo_access.dart';
+import 'package:knowticed_plus/features/todo/domain/base_repository/todo_base_repository.dart';
+import 'package:knowticed_plus/features/todo/domain/entities/todo_entity.dart';
 
-import 'package:grc_module/features/home/main_controller/helper/events/events_stub.dart';
-import 'package:grc_module/features/home/main_controller/helper/events/controllers/events_controllers/model/event_model.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/board_model/board_model.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/card_model/card_model.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/card_model/checklist_item.dart';
+import 'package:knowticed_plus/features/home/helpers/events/events_stub.dart';
+import 'package:knowticed_plus/features/home/helpers/events/controllers/events_controllers/model/event_model.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/board_model/board_model.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/card_model/card_model.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/card_model/checklist_item.dart';
 
-import 'package:grc_module/core/helper/role/modules_enum.dart';
-import 'package:grc_module/core/helper/main_helper/calnder_size.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/controller/employee_controller.dart';
+import 'package:knowticed_plus/core/helper/access/modules_enum.dart';
+import 'package:knowticed_plus/features/home/helpers/calendar_size.dart';
 
-part './schedule_state.dart';
+part 'schedule_state.dart';
 
 /// Converted from GetxController to Cubit.
 ///
@@ -39,9 +44,12 @@ part './schedule_state.dart';
 /// constructor: GetX does not drive lifecycle callbacks on a Cubit, so
 /// getAnyWorkToDO() would otherwise never fire on creation.
 ///
-/// NOTE: the `todoController.update()` / `eventsEmployeeController.update()`
-/// calls below are left untouched — those are GetX calls on *other*
-/// controllers (TodoController / EventsEmployeeController), not on this class.
+/// NOTE: the `eventsEmployeeController.update()` calls below are left
+/// untouched — those are GetX calls on *another* controller, not on this class.
+///
+/// To-dos (7/10/2026) come from the new To-Do module: this cubit listens to
+/// `TodoBaseRepository.watchTodos` for the signed-in user and emits
+/// [ScheduleUpdated] on every change, so the upcoming schedule rebuilds live.
 class ScheduleController extends Cubit<ScheduleState> {
   ScheduleController() : super(ScheduleInitial()) {
     getAnyWorkToDO();
@@ -49,7 +57,7 @@ class ScheduleController extends Cubit<ScheduleState> {
 
   List<EventModel> inviteAtEvents = [];
   List<EventModel> surveyEvents = [];
-  List<TodoModel> todoList = [];
+  List<TodoEntity> todoList = [];
   List<BoardModel> boardsModel = [];
   List<CardModel> cardsModel = [];
 
@@ -71,39 +79,89 @@ class ScheduleController extends Cubit<ScheduleState> {
 
   DateTime selectedDate = DateTime.now();
 
-  TodoController todoController = Get.find();
+  // To-Do module source (get_it, registered in main()).
+  final TodoBaseRepository _todoRepository =
+      GetIt.instance<TodoBaseRepository>();
+  final TodoAccess _todoAccess = GetIt.instance<TodoAccess>();
+  StreamSubscription<List<TodoEntity>>? _todoSubscription;
+  String _todoOwner = '';
+  List<TodoEntity> _allTodos = <TodoEntity>[];
   //TaskController taskController = Get.find();
   EventsEmployeeController eventsEmployeeController = Get.find();
 
   /// Method Name: [getAnyWorkToDO]
   ///
   /// Purpose: This method is responsible for fetching all the work that the user has to do on the selected date.
-  getAnyWorkToDO() async {
+  Future<void> getAnyWorkToDO() async {
     await Future.wait(
         [getTodo(), getEvents(), getSurveyEvents(), getTasks(), getServices()]);
   }
 
   /// Method Name: [getTodo]
   ///
-  /// Purpose: This method is responsible for fetching all the todos that the user has to do on the selected date.
+  /// Purpose: Collects the signed-in user's to-dos that fall on [selectedDate]
+  /// (see [_isTodoOnDay]). Starts the live to-do subscription on first use.
   Future<void> getTodo() async {
     isThereTodo = false;
     todoList = [];
     if (!Get.find<SkeletonHomeController>().modules.contains(Modules.todo)) {
-      todoController.update();
       return;
     }
-    for (TodoModel todo in todoController.allTodoList) {
-/*       Map<String, int> todoSplitDate =
-          HomeHelper.splitDateString(todo.date!.date!.last!);
-      if (todoSplitDate['year'] == selectedDate.year &&
-          todoSplitDate['month'] == selectedDate.month &&
-          todoSplitDate['day'] == selectedDate.day) {
-        todoList.add(todo);
-      } */
-    }
-    todoController.update();
+    _ensureTodoSubscription();
+    todoList = _allTodos
+        .where((TodoEntity todo) => _isTodoOnDay(todo, selectedDate))
+        .toList();
     if (todoList.isNotEmpty) isThereTodo = true;
+  }
+
+  /// Method Name: [_ensureTodoSubscription]
+  ///
+  /// Purpose: (Re)subscribes to the user's to-dos when nobody is listening yet
+  /// or the signed-in email changed. No-op before login.
+  void _ensureTodoSubscription() {
+    final String email = _todoAccess.currentUserEmail;
+    if (email.isEmpty) return;
+    if (_todoSubscription != null && email == _todoOwner) return;
+    _todoSubscription?.cancel();
+    _todoOwner = email;
+    _todoSubscription = _todoRepository
+        .watchTodos(ownerEmail: email)
+        .listen(_onTodos, onError: _onTodosError);
+  }
+
+  void _onTodos(List<TodoEntity> todos) {
+    _allTodos = todos;
+    getTodo();
+    if (!isClosed) emit(ScheduleUpdated());
+  }
+
+  /// A failed read leaves the schedule without to-dos rather than stale ones.
+  void _onTodosError(Object error) {
+    _allTodos = <TodoEntity>[];
+    getTodo();
+    if (!isClosed) emit(ScheduleUpdated());
+  }
+
+  /// Method Name: [_isTodoOnDay]
+  ///
+  /// Purpose: Whether [todo] belongs on [day]'s schedule — a live (not done,
+  /// not deleted) to-do whose recurrence lands on [day], or whose scheduled
+  /// start..end range covers any part of [day].
+  bool _isTodoOnDay(TodoEntity todo, DateTime day) {
+    if (todo.isDeleted || todo.isDone) return false;
+    final DateTime? anchor = todo.recurrenceAnchor;
+    if (todo.hasFrequency &&
+        anchor != null &&
+        todo.frequency.occursOn(anchor: anchor, day: day)) {
+      return true;
+    }
+    if (!todo.isScheduled) return false;
+    final DateTime? start = todo.startAt ?? todo.endAt;
+    final DateTime? end = todo.endAt ?? todo.startAt;
+    if (start == null || end == null) return false;
+    final DateTime dayStart = DateTime(day.year, day.month, day.day);
+    final DateTime dayEnd = DateTime(day.year, day.month, day.day + 1);
+    return start.isBefore(dayEnd) && !end.isBefore(dayStart);
   }
 
   /// Method Name: [getEvents]
@@ -158,7 +216,7 @@ class ScheduleController extends Cubit<ScheduleState> {
                   surveyId: event.surveyId) ==
               null &&
           eventsEmployeeController.acceptInvitation(eventId: event.id) &&
-          eventDate.isBefore(selectedDate!.add(Duration(
+          eventDate.isBefore(selectedDate.add(Duration(
               hours: DateTime.now().hour, minutes: DateTime.now().minute)))) {
         surveyEvents.add(event);
       }
@@ -194,8 +252,6 @@ class ScheduleController extends Cubit<ScheduleState> {
       return;
     }
 
-    String memberId =
-        Get.find<EmployeeController>().employee!.email!.last!;
     /*  for (var board in taskController.allBoards) {
       for (var card in board.cards) {
         //Skip cards with a null start date
@@ -285,18 +341,8 @@ class ScheduleController extends Cubit<ScheduleState> {
     if (!Get.find<SkeletonHomeController>().modules.contains(Modules.todo)) {
       return false;
     }
-    bool isExist = false;
-/*     for (TodoModel todo in todoController.allTodoList) {
-      Map<String, int> splitDate =
-          HomeHelper.splitDateString(todo.date!.date!.last!);
-      if (splitDate['year'] == currentDate.year &&
-          splitDate['month'] == currentDate.month &&
-          splitDate['day'] == currentDate.day) {
-        isExist = true;
-        break;
-      }
-    } */
-    return isExist;
+    _ensureTodoSubscription();
+    return _allTodos.any((TodoEntity todo) => _isTodoOnDay(todo, currentDate));
   }
 
   /// Method Name: [isDayHasRequestServices]
@@ -400,8 +446,14 @@ class ScheduleController extends Cubit<ScheduleState> {
   /// Purpose: This method is responsible for updating the upcoming schedule list.
   ///
   /// Parameters: [selectedDate] of type [DateTime] - The selected date.
-  updateUpcomingSchedule(DateTime selectedDate) {
+  void updateUpcomingSchedule(DateTime selectedDate) {
     this.selectedDate = selectedDate;
     getAnyWorkToDO();
+  }
+
+  @override
+  Future<void> close() async {
+    await _todoSubscription?.cancel();
+    return super.close();
   }
 }

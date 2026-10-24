@@ -6,7 +6,7 @@
 /// Author: Knowticed Plus team
 /// Created at: 11/8/2026
 
-part of './social_controller.dart';
+part of 'social_controller.dart';
 
 sealed class SocialState {
   const SocialState();

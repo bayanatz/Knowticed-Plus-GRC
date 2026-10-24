@@ -11,22 +11,22 @@
 ///          the try/catch around the list-growing loop is gone with the loop it
 ///          guarded; the hardcoded Arabic hint now comes from the l10n bundle;
 ///          raw colours and the inline TextStyle route through the theme.
-import 'dart:ui' as ui;
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-import 'package:grc_module/core/extensions/context_extensions.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/haptic_controller.dart';
-import 'package:grc_module/core/custom/2-custom_textfield.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/ui/widgets/settings_header.dart';
-import 'package:grc_module/features/settings/se2_social/presentation/ui/widgets/add_more_button.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/core/helper/format_title.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
+import 'package:knowticed_plus/core/custom/inputs/custom_textfield.dart';
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
+import 'package:knowticed_plus/features/settings/presentation/ui/widgets/settings_header.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_add_row_button.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
 class Hobbies extends StatefulWidget {
   const Hobbies({
@@ -103,7 +103,7 @@ class _HobbiesState extends State<Hobbies> {
   @override
   Widget build(BuildContext context) {
     final bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
-    final bool isTablet = MediaQuery.of(context).size.width > 600;
+    final bool isTablet = !kpIsPhoneLayout(context);
     final bool lightMode = Theme.of(context).brightness == Brightness.light;
     final bool isMobile = ContextExtension(context).isPhone;
 
@@ -115,26 +115,30 @@ class _HobbiesState extends State<Hobbies> {
             )
           : null,
       padding: EdgeInsets.only(
-        top: 15.sp,
+        top: 16.sp,
         right: 0.sp,
         left: 0.sp,
-        bottom: isMobile ? 15.sp : 0.sp,
+        bottom: isMobile ? 16.sp : 0.sp,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           SettingsHeader(
-            imagePath:
-                'assets/icons_assets/settings_assets/hobbies_interests.svg',
+            imagePath: 'assets/icons_assets/settings_assets/ic_hr_hobbies.svg',
             text: FormatHelper.capitalize(S.of(context).hobbies),
           ),
-          SizedBox(height: 10.sp),
+          SizedBox(height: 12.sp),
 
           // Two per row on tablet/desktop, one per row on phones.
           _hobbiesGrid(context, lightMode, isArabic),
 
-          SizedBox(height: 10.sp),
-          AddMoreButton(onPressed: _addHobby),
+          SizedBox(height: 12.sp),
+          // 21/10/2026: same 16 inset as the fields on the phone.
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: isMobile ? 16.sp : 0),
+            child: CustomAddRowButton(
+                label: S.of(context).addHobby, onTap: _addHobby),
+          ),
           SizedBox(height: ContextExtension(context).isPhone ? 0.sp : 10.sp),
         ],
       ),
@@ -146,7 +150,11 @@ class _HobbiesState extends State<Hobbies> {
     final bool isPhone = ContextExtension(context).isPhone;
     final double gap = 10.sp;
 
-    if (isPhone) {
+    // D-225 / item 109 (21/10/2026): one per row beside the Settings menu
+    // on iPad portrait too — nothing cut ("Stakeholder Management" in full).
+    final bool stack =
+        isPhone || MediaQuery.of(context).orientation == Orientation.portrait;
+    if (stack) {
       return Column(
         children: <Widget>[
           for (int i = 0; i < count; i++) ...<Widget>[
@@ -184,7 +192,8 @@ class _HobbiesState extends State<Hobbies> {
   Widget _hobbyRow(
       BuildContext context, int index, bool lightMode, bool isArabic) {
     return Padding(
-      padding:  EdgeInsets.symmetric(horizontal: ContextExtension(context).isPhone ? 15.sp : 0.sp),
+      padding: EdgeInsets.symmetric(
+          horizontal: ContextExtension(context).isPhone ? 16.sp : 0.sp),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
@@ -201,7 +210,7 @@ class _HobbiesState extends State<Hobbies> {
                 LengthLimitingTextInputFormatter(100),
               ],
               enabled: true,
-              textDirection: isArabic ? ui.TextDirection.rtl : ui.TextDirection.ltr,
+              textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
               textAlign: TextAlign.start,
               onChanged: (String value) =>
                   widget.onHobbyChanged(index, value.trim()),
@@ -210,23 +219,25 @@ class _HobbiesState extends State<Hobbies> {
             ),
           ),
           SizedBox(width: 8.sp),
-          if (widget.hobbies.length > 1)
-            InkWell(
-              onTap: () => widget.onRemove(index),
-              child: Container(
-                padding: EdgeInsets.all(6.sp),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(4.r),
-                ),
-                child: CustomSvgImage(
-                  assetPath:
-                      'assets/icons_assets/main_icons_assets/cancel_minus_circle.svg',
-                  width: 15.sp,
-                  fit: BoxFit.fill,
-                  height: 15.sp,
-                ),
+          // 21/10/2026 (Moataz): always shown — on the last hobby it clears
+          // the field (SocialController.removeHobby).
+          InkWell(
+            onTapDown: (_) => HapticController.high(),
+            onTap: () => widget.onRemove(index),
+            child: Container(
+              padding: EdgeInsets.all(6.sp),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4.r),
+              ),
+              child: CustomSvgImage(
+                assetPath:
+                    'assets/icons_assets/main_icons_assets/ic_status_blocked_minus_circle.svg',
+                width: 16.sp,
+                fit: BoxFit.fill,
+                height: 16.sp,
               ),
             ),
+          ),
         ],
       ),
     );

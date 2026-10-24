@@ -2,71 +2,49 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: import_page_methods2.dart
-/// Purpose: Declares `ImportPageMethods2`.
-/// Author: Knowticed Plus team
+/// Description: Declares `_ImportPageMethods2`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
 
 part of '../pages/import_page.dart';
 
-extension ImportPageMethods2 on _UploadFileTabletRolesState {
+extension _ImportPageMethods2 on _UploadFileTabletRolesState {
   void _showHeaderErrorDialog(List<String> missingHeaders) {
-    showAppDialog(
+    CustomDialogManager.showMessage(
       context: context,
-      barrierDismissible: true,
-      builder: (_) => AlertDialog(
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Lottie.asset(
-              'assets/lottie_assets/roles_lottie_assets/rejected.json',
-              width: 90.sp,
-              height: 90.sp,
-              fit: BoxFit.contain,
-            ),
-            SizedBox(height: 16.sp),
-            Text(
-              "Warning Invalid Column Title",
-              style: StyleText.fontSize20Weight500.copyWith(
-                  color: AppColors.text
-              ),
-            ),
-            SizedBox(height: 16.sp),
-            Text(
-              "Some required columns are missing: ${missingHeaders.join(', ')}",
-              style: StyleText.fontSize12Weight500.copyWith(
-                  color: AppColors.secondaryText
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text("OK"),
-          ),
-        ],
-      ),
+      lottiePath:
+          'assets/lottie_assets/main_lottie_assets/lot_status_error.json',
+      title: S.of(context).headerMismatch,
+      subtitle: "${S.of(context).missingColumns}: ${missingHeaders.join(', ')}",
+      closeAfter: const Duration(seconds: 5),
     );
   }
+
   void _showMissingHeadersWarning(List<String> missingHeaders) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Warning Invalid Column Title: ${missingHeaders.join(', ')}'),
+        content: Text(
+          'Warning Invalid Column Title: ${missingHeaders.join(', ')}',
+        ),
         duration: Duration(seconds: 3),
         backgroundColor: AppColors.orange,
       ),
     );
   }
+
   void _showAdditionalColumnsWarning(List<String> additionalHeaders) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Warning Additional Column: ${additionalHeaders.join(', ')}'),
+        content: Text(
+          'Warning Additional Column: ${additionalHeaders.join(', ')}',
+        ),
         duration: Duration(seconds: 3),
         backgroundColor: AppColors.orange,
       ),
     );
   }
+
   Future<bool> requestStoragePermission() async {
     try {
       if (Platform.isAndroid) {

@@ -25,11 +25,12 @@
 ///
 /// Every string below is an existing ARB key with an Arabic translation, so
 /// this adds no new l10n entries.
+library;
 
 import 'package:flutter/widgets.dart';
 
-import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/features/roles/r2_user_management/domain/enums/user_access_status.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
+import 'package:knowticed_plus/features/roles/r2_user_management/domain/enums/user_access_status.dart';
 
 /// The display name of a [UserAccessStatus] in the app's current language.
 extension UserAccessStatusLabel on UserAccessStatus {

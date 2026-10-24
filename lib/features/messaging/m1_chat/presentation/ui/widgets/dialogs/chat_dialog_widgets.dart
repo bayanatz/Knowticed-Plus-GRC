@@ -1,19 +1,30 @@
 /// Module: messaging / chat / presentation/ui/widgets/dialogs/chat_dialog_widgets.dart
-/// Purpose: Building blocks shared by the chat dialogs from Figma section
+/// Description: Building blocks shared by the chat dialogs from Figma section
 ///          6290:740 — Schedule Message, Mute Notifications, Disappearing
 ///          Messages, Contact and Poll.
-/// Created At: 30/9/2026
+/// Author: Amr Mesbah
+/// Created at: 30/9/2026
 library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:intl/intl.dart';
+import 'package:knowticed_plus/core/custom/pickers/custom_time_picker.dart';
 
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_button.dart';
+import 'package:knowticed_plus/core/custom/dialogs/custom_filter_frame.dart';
+import 'package:knowticed_plus/core/custom/dropdowns/custom_dropdown.dart'
+    show kDropdownFillColor, kDropdownHintColor;
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
+import 'package:knowticed_plus/core/custom/dialogs/custom_dialog_manager.dart';
+import 'package:knowticed_plus/core/custom/inputs/field_sizing.dart';
+import 'package:knowticed_plus/core/custom/pickers/custom_date_field.dart';
+import 'package:knowticed_plus/core/helper/localized_date.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/theme/app_animations.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
 
 bool chatDialogIsAr(BuildContext context) =>
     Localizations.localeOf(context).languageCode == 'ar';
@@ -40,20 +51,20 @@ Future<T?> showChatDialog<T>({
   );
 }
 
-/// Centered 20 Medium title ("Schedule Message", "Mute Notifications", …).
+/// Dialog title: the app's header — a 30 yellow circle with the [icon], then
+/// the title (`CustomDialogHeader`). CHANGED 20/10/2026 (owner: "we always
+/// put the title and the circle"); was a centred title without an icon.
 class ChatDialogTitle extends StatelessWidget {
-  const ChatDialogTitle(this.text, {super.key});
+  const ChatDialogTitle(this.text, {super.key, required this.icon});
   final String text;
+  final String icon;
 
   @override
-  Widget build(BuildContext context) => Text(
-        text,
-        textAlign: TextAlign.center,
-        style: StyleText.fontSize20Weight500.copyWith(color: AppColors.text),
-      );
+  Widget build(BuildContext context) =>
+      CustomDialogHeader(title: text, icon: icon);
 }
 
-/// Centered 12 Regular grey subtitle.
+/// 12 Regular grey subtitle under the header (start-aligned like it).
 class ChatDialogSubtitle extends StatelessWidget {
   const ChatDialogSubtitle(this.text, {super.key});
   final String text;
@@ -61,14 +72,16 @@ class ChatDialogSubtitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Text(
         text,
-        textAlign: TextAlign.center,
-        style: StyleText.fontSize12Weight400
-            .copyWith(color: AppColors.secondaryBlack),
+        style: StyleText.fontSize12Weight400.copyWith(
+          color: AppColors.secondaryBlack,
+        ),
       );
 }
 
-/// Header with a 30px yellow badge + icon and a 16 Medium title
-/// (Contact / Poll dialogs).
+/// Header of the Contact / Poll dialogs: the app's circle header; an empty
+/// [icon] shows the title alone (contact dialog: icon removed 17/10/2026).
+/// CHANGED 20/10/2026: the badge is the round one of every dialog (was a
+/// square).
 class ChatDialogBadgeHeader extends StatelessWidget {
   const ChatDialogBadgeHeader({
     super.key,
@@ -80,33 +93,16 @@ class ChatDialogBadgeHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          width: 30.r,
-          height: 30.r,
-          padding: EdgeInsets.all(6.r),
-          decoration: BoxDecoration(
-            color: AppColors.primary,
-            borderRadius: BorderRadius.circular(4.r),
-          ),
-          child: CustomSvgImage(
-            assetPath: icon,
-            fit: BoxFit.contain,
-            color: AppColors.textButton,
-          ),
-        ),
-        SizedBox(width: 8.w),
-        Text(title,
-            style:
-                StyleText.fontSize16Weight500.copyWith(color: AppColors.text)),
-      ],
+    if (icon.isNotEmpty) return CustomDialogHeader(title: title, icon: icon);
+    return Text(
+      title,
+      style: StyleText.fontSize18Weight500.copyWith(color: AppColors.text),
     );
   }
 }
 
 /// Figma radio option: 16px ring, 5px gap, 14 Medium label — dark when
-/// selected, grey otherwise.
+/// selected, grey otherwise. No hover / press highlight (owner 20/10/2026).
 class ChatRadioOption<T> extends StatelessWidget {
   const ChatRadioOption({
     super.key,
@@ -124,9 +120,10 @@ class ChatRadioOption<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool selected = value == groupValue;
-    return InkWell(
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTapDown: (_) => HapticController.low(),
       onTap: () => onChanged(value),
-      borderRadius: BorderRadius.circular(4.r),
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 6.h),
         child: Row(
@@ -169,7 +166,10 @@ class ChatRadioOption<T> extends StatelessWidget {
   }
 }
 
-/// Cancel (grey) + primary (yellow) buttons, 135x38, radius 8.
+/// Cancel (grey) at the left edge, the primary (yellow) at the right edge,
+/// same width, in both languages — the filter dialog's row (X-73). CHANGED
+/// 20/10/2026 (owner: the two buttons were centred, so their gaps to the
+/// dialog's edges did not match the dialog's padding).
 class ChatDialogButtons extends StatelessWidget {
   const ChatDialogButtons({
     super.key,
@@ -184,51 +184,36 @@ class ChatDialogButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isAr = chatDialogIsAr(context);
+    final S s = S.of(context);
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      textDirection: TextDirection.ltr,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Flexible(
-          child: _button(
-            label: isAr ? 'إلغاء' : 'Cancel',
-            color: AppColors.disabledButton.withValues(alpha: 0.8),
-            textColor: AppColors.black,
-            onTap: onCancel ?? () => Navigator.of(context).pop(),
+        SizedBox(
+          width: 130.w,
+          child: customButton(
+            title: s.cancel,
+            haptic: HapticController.low,
+            function: onCancel ?? () => Navigator.of(context).pop(),
+            color: AppColors.secondaryAction,
+            textStyle: StyleText.fontSize16Weight500
+                .copyWith(color: AppColors.onSecondaryAction),
           ),
         ),
-        SizedBox(width: 12.w),
-        Flexible(
-          child: _button(
-            label: primaryLabel,
-            color: AppColors.primary,
-            textColor: AppColors.textButton,
-            onTap: onPrimary,
+        SizedBox(
+          width: 130.w,
+          child: ShrinkOnTap(
+            child: customButton(
+              title: primaryLabel,
+              haptic: HapticController.medium,
+              function: onPrimary,
+              color: AppColors.primary,
+              textStyle: StyleText.fontSize16Weight500
+                  .copyWith(color: AppColors.textButton),
+            ),
           ),
         ),
       ],
-    );
-  }
-
-  Widget _button({
-    required String label,
-    required Color color,
-    required Color textColor,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(8.r),
-      child: Container(
-        width: 135.w,
-        height: 38.h,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(8.r),
-        ),
-        child: Text(label,
-            style: StyleText.fontSize14Weight500.copyWith(color: textColor)),
-      ),
     );
   }
 }
@@ -241,13 +226,16 @@ class ChatFieldLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Padding(
         padding: EdgeInsets.only(bottom: 6.h),
-        child: Text(text,
-            style:
-                StyleText.fontSize14Weight500.copyWith(color: AppColors.text)),
+        child: Text(
+          text,
+          style: StyleText.fontSize14Weight500.copyWith(color: AppColors.text),
+        ),
       );
 }
 
-/// Grey #f5f5f5 text field of the Figma dialogs.
+/// Text field of the chat dialogs: the app's field colours (fill
+/// `kDropdownFillColor`, hint `kDropdownHintColor`) — CHANGED 20/10/2026
+/// (owner): it had the dialog's own colour, so it could not be seen.
 class ChatTextField extends StatelessWidget {
   const ChatTextField({
     super.key,
@@ -279,10 +267,11 @@ class ChatTextField extends StatelessWidget {
       decoration: InputDecoration(
         isDense: true,
         filled: true,
-        fillColor: AppColors.field,
+        fillColor: kDropdownFillColor,
         hintText: hint,
-        hintStyle: StyleText.fontSize12Weight400
-            .copyWith(color: AppColors.secondaryBlack),
+        hintStyle: StyleText.fontSize12Weight400.copyWith(
+          color: kDropdownHintColor,
+        ),
         prefixIcon: prefix,
         prefixIconConstraints: BoxConstraints(minWidth: 32.w),
         contentPadding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
@@ -296,7 +285,9 @@ class ChatTextField extends StatelessWidget {
   }
 }
 
-/// "Choose Date" field with the calendar icon.
+/// "Choose Date": the app's date field and calendar (`CustomDateField`,
+/// today or later). CHANGED 20/10/2026 (owner: "choose the package of the
+/// date picker right") — was the plain Material date picker.
 class ChatDateField extends StatelessWidget {
   const ChatDateField({super.key, required this.value, required this.onPicked});
   final DateTime? value;
@@ -304,76 +295,53 @@ class ChatDateField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isAr = chatDialogIsAr(context);
-    return _PickerBox(
-      text: value == null
-          ? (isAr ? 'اختر التاريخ' : 'Choose Date')
-          : DateFormat('dd MMM yyyy').format(value!),
-      hasValue: value != null,
-      icon: 'assets/icons_assets/roles_assets/calendar.svg',
-      onTap: () async {
-        final DateTime now = DateTime.now();
-        final DateTime? d = await showDatePicker(
-          context: context,
-          initialDate: value ?? now,
-          firstDate: DateTime(now.year, now.month, now.day),
-          lastDate: DateTime(now.year + 5),
-        );
+    return CustomDateField(
+      value: value,
+      hint: S.of(context).chooseDate,
+      disablePastDates: true,
+      onChanged: (DateTime? d) {
         if (d != null) onPicked(d);
       },
     );
   }
 }
 
-/// "Choose time" field with the clock icon.
+/// "Choose Time": drawn like the date field next to it (36 high, the app's
+/// field colours, clock at the end); opens the time picker every module uses.
+/// Times read "09:00 AM". CHANGED 20/10/2026 (owner): "Time" capitalised,
+/// field colours, no hover highlight.
 class ChatTimeField extends StatelessWidget {
   const ChatTimeField({super.key, required this.value, required this.onPicked});
   final TimeOfDay? value;
   final ValueChanged<TimeOfDay> onPicked;
 
-  @override
-  Widget build(BuildContext context) {
-    final bool isAr = chatDialogIsAr(context);
-    return _PickerBox(
-      text: value == null
-          ? (isAr ? 'اختر الوقت' : 'Choose time')
-          : value!.format(context),
-      hasValue: value != null,
-      icon: 'assets/icons_assets/main_icons_assets/clock_circle.svg',
-      onTap: () async {
-        final TimeOfDay? t = await showTimePicker(
-          context: context,
-          initialTime: value ?? TimeOfDay.now(),
-        );
-        if (t != null) onPicked(t);
-      },
+  Future<void> _pick(BuildContext context) async {
+    final TimeOfDay? t = await showKpTimePicker(
+      context: context,
+      initialTime: value ?? TimeOfDay.now(),
     );
+    if (t != null) onPicked(t);
   }
-}
-
-class _PickerBox extends StatelessWidget {
-  const _PickerBox({
-    required this.text,
-    required this.hasValue,
-    required this.icon,
-    required this.onTap,
-  });
-
-  final String text;
-  final bool hasValue;
-  final String icon;
-  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(4.r),
+    final TimeOfDay? time = value;
+    final String text = time == null
+        ? S.of(context).chooseTime
+        : LocalizedDate.of(
+            context,
+            DateTime(2000, 1, 1, time.hour, time.minute),
+            pattern: 'hh:mm a',
+          );
+    return GestureDetector(
+      onTapDown: (_) => HapticController.low(),
+      onTap: () => _pick(context),
       child: Container(
-        height: 36.h,
-        padding: EdgeInsets.symmetric(horizontal: 10.w),
+        height: FieldSizing.height.sp,
+        // The date field's insets, so both hints and icons line up.
+        padding: EdgeInsetsDirectional.only(start: 16.sp, end: 14.sp),
         decoration: BoxDecoration(
-          color: AppColors.field,
+          color: kDropdownFillColor,
           borderRadius: BorderRadius.circular(4.r),
         ),
         child: Row(
@@ -384,16 +352,17 @@ class _PickerBox extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: StyleText.fontSize12Weight400.copyWith(
-                  color: hasValue ? AppColors.text : AppColors.secondaryBlack,
+                  color: time == null ? kDropdownHintColor : AppColors.text,
                 ),
               ),
             ),
             CustomSvgImage(
-              assetPath: icon,
+              assetPath:
+                  'assets/icons_assets/main_icons_assets/ic_time_clock.svg',
               width: 16.r,
               height: 16.r,
               fit: BoxFit.contain,
-              color: AppColors.secondaryBlack,
+              color: kDropdownHintColor,
             ),
           ],
         ),

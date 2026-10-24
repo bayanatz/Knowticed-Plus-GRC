@@ -2,34 +2,37 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: role_management_home.dart
-/// Purpose: Declares `PlatFormRoleContainer`.
-/// Author: Knowticed Plus team
+/// Description: Declares `PlatFormRoleContainer`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
+import 'package:knowticed_plus/features/roles/helpers/roles_module_access.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/roles/role_management_permission.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
-import 'package:grc_module/features/roles/r1_role_management/presentation/ui/widgets/role_overview.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/presentation/ui/widgets/role_overview.dart';
 import 'package:flutter/services.dart';
 
-import 'package:grc_module/features/roles/r5_system_logs/data/role_log_service.dart';
-import 'package:grc_module/core/theme/haptic_controller.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
-import 'package:grc_module/features/roles/r1_role_management/data/models/role_model.dart';
-import 'package:grc_module/features/roles/r1_role_management/presentation/ui/widgets/export_role_widget.dart';
-import 'package:grc_module/features/roles/r1_role_management/presentation/ui/widgets/grid_table_export.dart';
-import 'package:grc_module/features/roles/r1_role_management/presentation/ui/widgets/platform_roles_header.dart';
-import 'package:grc_module/features/roles/r1_role_management/presentation/ui/widgets/roles_filter_row.dart';
-import 'package:grc_module/features/roles/r1_role_management/presentation/ui/widgets/table_widget.dart';
-import 'package:grc_module/core/di/app_controllers.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
-import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:knowticed_plus/features/roles/r5_system_logs/data/role_log_service.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
+import 'package:knowticed_plus/core/custom/feedback/circle_progress.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/data/models/role_model.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/presentation/ui/widgets/export_role_widget.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/presentation/ui/widgets/grid_table_export.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/presentation/ui/widgets/platform_roles_header.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/presentation/ui/widgets/roles_filter_row.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/presentation/ui/widgets/table_widget.dart';
+import 'package:knowticed_plus/core/di/app_controllers.dart';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/core/theme/app_animations.dart';
 
 class PlatFormRoleContainer extends StatefulWidget {
-  const PlatFormRoleContainer.RoleManagementHome({super.key});
+  const PlatFormRoleContainer.roleManagementHome({super.key});
 
   @override
   State<PlatFormRoleContainer> createState() => _PlatFormRoleContainerState();
@@ -45,7 +48,9 @@ class _PlatFormRoleContainerState extends State<PlatFormRoleContainer> {
     // CLEAR SEARCH WHEN PAGE LOADS
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<RoleCubit>().searchController.clear();
-      context.read<RoleCubit>().getUnDeletedRoles(); // CHANGED: Call getUnDeletedRoles instead of filterRoles
+      context
+          .read<RoleCubit>()
+          .getUnDeletedRoles(); // CHANGED: Call getUnDeletedRoles instead of filterRoles
       RoleLogService.log(RoleLogService.pageRoleManagementHome);
     });
   }
@@ -56,62 +61,15 @@ class _PlatFormRoleContainerState extends State<PlatFormRoleContainer> {
     RoleCubit controller = context.read<RoleCubit>();
 
     return BlocBuilder<RoleCubit, RoleState>(
-        buildWhen: (previous, current) =>
-        current is RoleLoading ||        // ADD THIS
-            current is RoleStatusSelected ||
-            current is RoleFetched ||
-            current is RoleFiltered ||
-            current is RoleError,            // ADD THIS
-        builder: (context, state) {
-
-          // ADD THIS LOADING CHECK
-          if (state is RoleLoading) {
-            return Column(
-              spacing: 15.sp,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                PlatformRolesHeader(),
-                Row(
-                  children: [
-                    RolesFilterRow(),
-                    Spacer(),
-                    ViewToggleButtons(
-                      isGridView: isGridView,
-                      onTableViewTap: () {
-                        setState(() {
-                          isGridView = withLowHaptic(false);
-                        });
-                      },
-                      onGridViewTap: () {
-                        setState(() {
-                          isGridView = withLowHaptic(true);
-                        });
-                      },
-                      showExport: true,
-                      onExportTap: () {
-                        hapticController.triggerHapticFeedback(
-                            vibration: VibrateType.heavyImpact,
-                            hapticFeedback: HapticFeedback.heavyImpact
-                        );
-
-                        showAppDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (_) => RoleExportDialog(
-                            roles: controller.filteredRoles,
-                          ),
-                        );
-                      },
-                    )
-                  ],
-                ),
-                Expanded(
-                  child: CircleProgressMaster(),
-                )
-              ],
-            );
-          }
-
+      buildWhen: (previous, current) =>
+          current is RoleLoading || // ADD THIS
+          current is RoleStatusSelected ||
+          current is RoleFetched ||
+          current is RoleFiltered ||
+          current is RoleError, // ADD THIS
+      builder: (context, state) {
+        // ADD THIS LOADING CHECK
+        if (state is RoleLoading) {
           return Column(
             spacing: 15.sp,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -119,8 +77,8 @@ class _PlatFormRoleContainerState extends State<PlatFormRoleContainer> {
               PlatformRolesHeader(),
               Row(
                 children: [
-                  RolesFilterRow(),
-                  Spacer(),
+                  Expanded(child: RolesFilterRow()),
+                  SizedBox(width: 8.sp),
                   ViewToggleButtons(
                     isGridView: isGridView,
                     onTableViewTap: () {
@@ -133,68 +91,117 @@ class _PlatFormRoleContainerState extends State<PlatFormRoleContainer> {
                         isGridView = withLowHaptic(true);
                       });
                     },
-                    showExport: true,
+                    // Owner 21/10/2026: gated by this tab's own Export_Role_Data permission.
+                    showExport: RolesModuleAccess.roleManagement(
+                        RoleManagement.exportRoleData),
                     onExportTap: () {
                       hapticController.triggerHapticFeedback(
-                          vibration: VibrateType.heavyImpact,
-                          hapticFeedback: HapticFeedback.heavyImpact
+                        vibration: VibrateType.heavyImpact,
+                        hapticFeedback: HapticFeedback.heavyImpact,
                       );
 
                       showAppDialog(
                         context: context,
                         barrierDismissible: false,
-                        builder: (_) => RoleExportDialog(
-                          roles: controller.filteredRoles,
-                        ),
+                        builder: (_) =>
+                            RoleExportDialog(roles: controller.filteredRoles),
                       );
                     },
-                  )
+                  ),
                 ],
               ),
-              Expanded(
-                child: controller.filteredRoles.isEmpty
-                    ? LayoutBuilder(
-                  builder: (context, constraints) {
-                    // FIXED 8/9/2026: the animation was pinned to 400.sp square
-                    // with BoxFit.fill. Whatever height Expanded had left after
-                    // the header, filter row and any active search chips, this
-                    // asked for 400.sp anyway — "A RenderFlex overflowed by 53
-                    // pixels on the bottom". It now takes the smaller of 400.sp
-                    // and the space actually available, so it shrinks instead
-                    // of overflowing.
-                    final double size = [
-                      400.sp,
-                      constraints.maxWidth,
-                      constraints.maxHeight,
-                    ].reduce((a, b) => a < b ? a : b);
-
-                    return Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Lottie.asset(
-                            'assets/lottie_assets/notification_lottie_assets/empty.json',
-                            width: size,
-                            height: size,
-                            fit: BoxFit.contain,
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                )
-                    : BounceSwitcher(
-                  // Bounce when switching list <-> grid view.
-                  triggerValue: isGridView,
-                  child: isGridView
-                    ? _buildGridView(controller.filteredRoles)
-                    : _buildTableView(controller.filteredRoles),
-                ),
-              )
+              Expanded(child: CircleProgressMaster()),
             ],
           );
-        });
+        }
+
+        return Column(
+          spacing: 15.sp,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            PlatformRolesHeader(),
+            // Owner 21/10/2026: Load / Remove Demo Data buttons removed (UI only; RoleDemoDataButtons + the demo service stay).
+            Row(
+              children: [
+                // Owner 21/10/2026: Expanded (was Spacer) — the standard status chip row scrolls sideways and needs a bounded width.
+                Expanded(child: RolesFilterRow()),
+                SizedBox(width: 8.sp),
+                ViewToggleButtons(
+                  isGridView: isGridView,
+                  onTableViewTap: () {
+                    setState(() {
+                      isGridView = withLowHaptic(false);
+                    });
+                  },
+                  onGridViewTap: () {
+                    setState(() {
+                      isGridView = withLowHaptic(true);
+                    });
+                  },
+                  // Owner 21/10/2026: gated by this tab's own Export_Role_Data permission.
+                  showExport: RolesModuleAccess.roleManagement(
+                      RoleManagement.exportRoleData),
+                  onExportTap: () {
+                    hapticController.triggerHapticFeedback(
+                      vibration: VibrateType.heavyImpact,
+                      hapticFeedback: HapticFeedback.heavyImpact,
+                    );
+
+                    showAppDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (_) =>
+                          RoleExportDialog(roles: controller.filteredRoles),
+                    );
+                  },
+                ),
+              ],
+            ),
+            Expanded(
+              child: controller.filteredRoles.isEmpty
+                  ? LayoutBuilder(
+                      builder: (context, constraints) {
+                        // FIXED 8/9/2026: the animation was pinned to 400.sp square
+                        // with BoxFit.fill. Whatever height Expanded had left after
+                        // the header, filter row and any active search chips, this
+                        // asked for 400.sp anyway — "A RenderFlex overflowed by 53
+                        // pixels on the bottom". It now takes the smaller of 400.sp
+                        // and the space actually available, so it shrinks instead
+                        // of overflowing.
+                        final double size = [
+                          400.sp,
+                          constraints.maxWidth,
+                          constraints.maxHeight,
+                        ].reduce((a, b) => a < b ? a : b);
+
+                        return Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Lottie.asset(
+                                'assets/lottie_assets/main_lottie_assets/lot_empty_state.json',
+                                width: size,
+                                height: size,
+                                fit: BoxFit.contain,
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    )
+                  : BounceSwitcher(
+                      // Bounce when switching list <-> grid view.
+                      triggerValue: isGridView,
+                      child: isGridView
+                          ? _buildGridView(controller.filteredRoles)
+                          : _buildTableView(controller.filteredRoles),
+                    ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Widget _buildGridView(List<RoleHistoryModel> roles) {
@@ -202,7 +209,7 @@ class _PlatFormRoleContainerState extends State<PlatFormRoleContainer> {
       child: Column(
         spacing: 10.sp,
         children: [
-          for (RoleHistoryModel role in roles) RoleOverview(role: role)
+          for (RoleHistoryModel role in roles) RoleOverview(role: role),
         ],
       ),
     );
@@ -210,10 +217,7 @@ class _PlatFormRoleContainerState extends State<PlatFormRoleContainer> {
 
   Widget _buildTableView(List<RoleHistoryModel> roles) {
     return SingleChildScrollView(
-      child: RoleTableView(
-        roles: roles,
-        locale: context.languageCode,
-      ),
+      child: RoleTableView(roles: roles, locale: context.languageCode),
     );
   }
 }

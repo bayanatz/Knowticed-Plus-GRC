@@ -1,0 +1,136 @@
+import 'package:knowticed_plus/core/extensions/context_extensions.dart'
+    show kpIsPhoneLayout;
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:knowticed_plus/core/custom/pickers/custom_image_picker.dart';
+import 'package:knowticed_plus/features/org_chart/presentation/employees_views/employee_views_mobile/employee_personal_info.dart';
+import 'package:knowticed_plus/features/roles/r4_active_directory/data/models/employees_model/new_employee_model.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+
+class EmployeeInfoWidget extends StatefulWidget {
+  final String firstName;
+  final String lastName;
+  final String profession;
+  final String email;
+  final String? bio;
+  final String? image;
+  final String? phone;
+  final double reviewRating;
+  final NewEmployeeModelHistory? employeeModel;
+
+  const EmployeeInfoWidget({
+    super.key,
+    required this.firstName,
+    required this.lastName,
+    required this.profession,
+    required this.email,
+    required this.bio,
+    required this.reviewRating,
+    required this.image,
+    required this.phone,
+    required this.employeeModel,
+  });
+
+  @override
+  State<EmployeeInfoWidget> createState() => _EmployeeInfoWidgetState();
+}
+
+class _EmployeeInfoWidgetState extends State<EmployeeInfoWidget> {
+  // NOTE: this used to hold `RoleController` + `UsersAccessController` (GetX)
+  // and call `usersAccessController.getUserAcess(email)` from initState.
+  //
+  // Neither was doing anything: `addRoleController` and `accessTypeEmployee`
+  // were declared but never read, and `getUserAcess()` in the source app has
+  // its body commented out — it returns an unassigned field, so the awaited
+  // call plus setState() was a no-op rebuild.
+  //
+  // skeleton_app's equivalents are cubits:
+  //   roles/r1_role_management/presentation/controller/role_cubit.dart  (RoleCubit)
+  //   roles/r3_user_access/presentation/controller/user_access_cubit.dart (UserAccessCubit)
+  // UserAccessCubit has no per-employee lookup — it loads the full list via
+  // getAccountsStatusEntities(). Wire that in here if you need the real
+  // access type for this employee.
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    !kpIsPhoneLayout(context);
+    bool isVertical =
+        MediaQuery.of(context).orientation == Orientation.portrait;
+
+    return Center(
+      child: Container(
+        color: AppColors.card,
+        width: double.infinity,
+        child: Column(
+          children: [
+            Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(width: 2, color: AppColors.lightPrimary),
+                ),
+                padding: EdgeInsets.all(0.007.h),
+                child: CircleAvatar(
+                  radius: isVertical ? 40 : 40,
+                  backgroundColor: Colors.transparent,
+                  backgroundImage: appImageProvider(
+                      'assets/icons_assets/main_icons_assets/ic_user_avatar_male.png'),
+                )
+                //widget.image == null
+                // ? CircleAvatar(
+                //     radius: isVertical ? 80 : 80.0,
+                //     backgroundColor: Colors.transparent,
+                //     backgroundImage:
+                //         appImageProvider('assets/icons_assets/main_icons_assets/ic_user_avatar_male.png'),
+                //   )
+                // : CircleAvatar(
+                //     radius: isVertical ? 50 : 80.0,
+                //     backgroundImage: NetworkImage(widget.image!),
+                //   ),
+                ),
+            // Bug report p.10 ("increase padding"): these gaps were 0.02.h /
+            // 0.01.h — ScreenUtil scales the NUMBER, so 0.01.h is a fraction
+            // of a pixel and the avatar, name, title and bio touched.
+            SizedBox(height: 12.sp),
+            Text(
+              '${widget.firstName} ${widget.lastName}'.capitalize as String,
+              textAlign: TextAlign.center,
+              // Bug report #8: app type scale (StyleText) instead of the
+              // old cairo + FontConstants.h sizes.
+              style: StyleText.fontSize20Weight600
+                  .copyWith(color: AppColors.text, height: 1.2),
+            ),
+            SizedBox(height: 8.sp),
+            Text(
+              capitalize(widget.profession),
+              textAlign: TextAlign.center,
+              style: StyleText.fontSize16Weight400
+                  .copyWith(color: AppColors.text, height: 1.2),
+            ),
+            SizedBox(height: 12.sp),
+            SizedBox(
+              height: 320.h, // your fixed height
+              child: SingleChildScrollView(
+                physics: BouncingScrollPhysics(), // optional
+                child: Text(
+                  widget.bio != null && widget.bio!.isNotEmpty
+                      ? capitalize(widget.bio!)
+                      : "",
+                  textAlign: TextAlign.center,
+                  style: StyleText.fontSize14Weight400
+                      .copyWith(color: AppColors.text, height: 1.2),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}

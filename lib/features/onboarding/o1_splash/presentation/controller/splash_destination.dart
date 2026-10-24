@@ -9,6 +9,7 @@
 /// Added for CR-SKEL-O1-N03. The decision was an `if/else` inside an animation
 /// status listener that read persistence directly and pushed a
 /// `MaterialPageRoute` — routing policy embedded in a widget.
+library;
 
 enum SplashDestination {
   /// Biometric sign-in is enabled and credentials exist, so

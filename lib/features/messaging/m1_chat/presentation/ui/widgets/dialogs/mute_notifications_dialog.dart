@@ -7,10 +7,11 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
-import '../../../../../../../core/custom/57-custom_dialog_manager.dart';
-import '../../../controller/main_controllers/master_chat_cubit.dart';
-import 'chat_dialog_widgets.dart';
+import 'package:knowticed_plus/core/custom/dialogs/custom_dialog_manager.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/main_controllers/master_chat_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/ui/widgets/dialogs/chat_dialog_widgets.dart';
 
 enum MuteOption { eightHours, oneWeek, always }
 
@@ -73,17 +74,16 @@ class _MuteNotificationsDialogState extends State<_MuteNotificationsDialog> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          ChatDialogTitle(isAr ? 'كتم الإشعارات' : 'Mute Notifications'),
-          SizedBox(height: 8.h),
-          Center(
-            child: SizedBox(
-              width: 264.w,
-              child: ChatDialogSubtitle(isAr
-                  ? 'لن يرى أحد في هذه المحادثة أنك كتمتها، وستظل تتلقى إشعاراً إذا تمت الإشارة إليك.'
-                  : 'No One Else In This Chat Will See That You Muted It, '
-                      'And You Will Still Be Notified If You Are Mentioned.'),
-            ),
+          ChatDialogTitle(
+            S.of(context).muteNotifications,
+            icon:
+                'assets/icons_assets/main_icons_assets/ic_comms_notification_bell.svg',
           ),
+          SizedBox(height: 8.h),
+          ChatDialogSubtitle(isAr
+              ? 'لن يرى أحد في هذه المحادثة أنك كتمتها، وستظل تتلقى إشعاراً إذا تمت الإشارة إليك.'
+              : 'No One Else In This Chat Will See That You Muted It, '
+                  'And You Will Still Be Notified If You Are Mentioned.'),
           SizedBox(height: 12.h),
           for (final MuteOption o in MuteOption.values)
             ChatRadioOption<MuteOption>(

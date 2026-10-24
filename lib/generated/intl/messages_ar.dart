@@ -22,42 +22,402 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m0(n) => "العنوان رقم ${n}: الولاية/المحافظة مطلوبة.";
 
-  static String m1(number) => "جهة الاتصال ${number}: البريد الإلكتروني مطلوب";
+  static String m1(dueDate) => "تم تعيين دليل لك والموعد النهائي هو ${dueDate}";
 
-  static String m2(n) => "جهة الاتصال رقم ${n}: رقم الفاكس مطلوب.";
+  static String m2(criteria, document) => "وثيقة قياس ${criteria}-${document}";
 
-  static String m3(number) => "جهة الاتصال ${number}: الاسم الأول مطلوب";
+  static String m3(name, evidence) => "موظفك ${name} تم تعيين له ${evidence}";
 
-  static String m4(number) => "جهة الاتصال ${number}: اسم العائلة مطلوب";
+  static String m4(name) => "موظفك ${name} لم يقم بتحميل الدليل المطلوب منه";
 
-  static String m5(n) => "جهة الاتصال رقم ${n}: الاسم الأوسط مطلوب.";
+  static String m5(name) =>
+      "تمت الموافقة على دليل ${name} بشكل نهائي من قبل المدير";
 
-  static String m6(number) => "جهة الاتصال ${number}: رقم الهاتف مطلوب";
+  static String m6(name) => "المدير رفض دليل ${name}";
 
-  static String m7(n) => "جهة الاتصال رقم ${n}: اللغة المفضلة مطلوبة.";
+  static String m7(name) => "لديك طلب من ${name} يحتاج إلى اتخاذ إجراء";
 
-  static String m8(n) => "جهة الاتصال رقم ${n}: المسمى الوظيفي مطلوب.";
+  static String m8(name) =>
+      "لقد وافقت على دليل ${name}، في انتظار موافقة المدير";
 
-  static String m9(number) =>
+  static String m9(name) => "لقد رفضت دليل ${name}";
+
+  static String m10(start, end) => "مهمة نشطة من ${start} إلى ${end}";
+
+  static String m11(date) => "المهمة اكتملت في ${date}";
+
+  static String m12(date) => "الموعد النهائي للمهمة هو ${date}";
+
+  static String m13(date) => "مهمة متكررة - التكرار التالي في ${date}";
+
+  static String m14(date) => "مهمة متكررة يوميًا - التكرار التالي في ${date}";
+
+  static String m15(date) => "مهمة متكررة شهريًا - التكرار التالي في ${date}";
+
+  static String m16(date) => "مهمة متكررة أسبوعيًا - التكرار التالي في ${date}";
+
+  static String m17(start) => "مهمة مجدولة للبدء في ${start}";
+
+  static String m18(start, end) =>
+      "مهمة مجدولة للبدء في ${start} والانتهاء في ${end}";
+
+  static String m19(number) => "جهة الاتصال ${number}: البريد الإلكتروني مطلوب";
+
+  static String m20(n) => "جهة الاتصال رقم ${n}: رقم الفاكس مطلوب.";
+
+  static String m21(number) => "جهة الاتصال ${number}: الاسم الأول مطلوب";
+
+  static String m22(number) => "جهة الاتصال ${number}: اسم العائلة مطلوب";
+
+  static String m23(n) => "جهة الاتصال رقم ${n}: الاسم الأوسط مطلوب.";
+
+  static String m24(number) => "جهة الاتصال ${number}: رقم الهاتف مطلوب";
+
+  static String m25(n) => "جهة الاتصال رقم ${n}: اللغة المفضلة مطلوبة.";
+
+  static String m26(n) => "جهة الاتصال رقم ${n}: المسمى الوظيفي مطلوب.";
+
+  static String m27(number) =>
       "جهة الاتصال ${number}: يرجى إدخال بريد إلكتروني صحيح";
 
-  static String m10(count) => "العملاء: ${count}";
+  static String m28(count) => "العملاء: ${count}";
 
-  static String m11(date) => "تاريخ الإنشاء: ${date}";
+  static String m29(date) => "تاريخ الإنشاء: ${date}";
 
-  static String m12(count) => "الأخطاء: ${count}";
+  static String m30(count) => "الأخطاء: ${count}";
 
-  static String m13(title) => "تفاصيل ${title}";
+  static String m31(title) =>
+      "هل تريد نقل \"${title}\" إلى المحذوفة؟ لن تظهر في القائمة مع الاحتفاظ بصلاحيات الوصول إليها، ويمكنك استعادتها من تبويب المحذوفة.";
 
-  static String m14(documentName) => "تعديل تفاصيل ${documentName}";
+  static String m32(departments) =>
+      "ما زال يحتاج مستوى صلاحية وكلا التاريخين: ${departments}.";
 
-  static String m15(count) => "معاينة ${count} نتيجة";
+  static String m33(title) =>
+      "هل تريد استعادة \"${title}\"؟ ستعود إلى المسودات كما كانت قبل الحذف.";
 
-  static String m16(field) =>
+  static String m34(title) =>
+      "هل تريد استعادة \"${title}\"؟ ستعود إلى قائمة قواعد البيانات مع بقاء صلاحيات الوصول كما هي.";
+
+  static String m35(titleMinLength) =>
+      "يجب ألا يقل العنوان عن ${titleMinLength} حرفين";
+
+  static String m36(count) =>
+      "يختار الوصول المفتوح والمقيد الأشخاص بطرق مختلفة، لذلك سيتم مسح ${count} أشخاص تم اختيارهم هنا وسيلزم اختيارهم من جديد.";
+
+  static String m37(title) =>
+      "هل أنت متأكد من حذف \"${title}\"؟ سيتم حذف صلاحيات الوصول إليها ولا يمكن التراجع عن ذلك.";
+
+  static String m38(title) => "تم حذف \"${title}\" وصلاحيات الوصول الخاصة بها.";
+
+  static String m39(title) => "تفاصيل ${title}";
+
+  static String m40(title) => "تعديل ${title}";
+
+  static String m41(fileName) => "تم حفظ ${fileName} وفتح قائمة المشاركة.";
+
+  static String m42(count) =>
+      "الوصول الشخصي لك وحدك. سيؤدي الحفظ إلى إلغاء وصول ${count} أشخاص لديهم الصلاحية الآن.";
+
+  static String m43(min) => "يجب ألا يقل العنوان عن ${min} حروف";
+
+  static String m44(minColumns, maxColumns) =>
+      "أدخل عدد أعمدة بين ${minColumns} و ${maxColumns}";
+
+  static String m45(date, time) => "التاريخ: ${date} في ${time}";
+
+  static String m46(name) =>
+      "هل أنت متأكد من حذف \"${name}\"؟ لا يمكن التراجع عن هذا.";
+
+  static String m47(name) => "تم حذف \"${name}\".";
+
+  static String m48(name) => "تعديل ${name}";
+
+  static String m49(count) => "${count} حقول";
+
+  static String m50(headings) =>
+      "تم تجاهل هذه العناوين لعدم وجود أعمدة لها في الجدول: ${headings}";
+
+  static String m51(count) =>
+      "يوجد ${count} خلايا لا تطابق نوع أعمدتها، وهي محددة باللون الأحمر.";
+
+  static String m52(titleMinLength) =>
+      "يجب ألا يقل اسم الجدول عن ${titleMinLength} حرفين";
+
+  static String m53(ordinal) => "العمود ${ordinal}";
+
+  static String m54(count) =>
+      "هل تريد إزالة وصول الأشخاص الـ${count} جميعاً؟ سيظلون مسجلين كـ\"محذوفين\" في جدول الوصول.";
+
+  static String m55(name) => "هل تريد حذف \"${name}\" وكل ما تم إدخاله فيه؟";
+
+  static String m56(count) =>
+      "تقليل عدد الأعمدة سيحذف ${count} أعمدة قمت بتسميتها بالفعل. هل تريد المتابعة؟";
+
+  static String m57(minRows, maxRows) =>
+      "أدخل عدد صفوف بين ${minRows} و ${maxRows}";
+
+  static String m58(name) => "تفاصيل ${name}";
+
+  static String m59(domains) =>
+      "لا يوجد موظفون تجريبيون في هذه الشركة (البريد الذي ينتهي بـ ${domains}).";
+
+  static String m60(domains) =>
+      "يمكن استخدام الحسابات التجريبية فقط (البريد الذي ينتهي بـ ${domains}).";
+
+  static String m61(companyId) => "هذا الحساب يتبع شركة أخرى (${companyId}).";
+
+  static String m62(status) => "الحالة: ${status}";
+
+  static String m63(status) =>
+      "لا يمكن لهذا الحساب تسجيل الدخول لأن حالته \"${status}\".";
+
+  static String m64(title) => "تفاصيل ${title}";
+
+  static String m65(documentName) => "تعديل تفاصيل ${documentName}";
+
+  static String m66(ordinal) => "اختر حقل العمود ${ordinal}";
+
+  static String m67(ordinal) => "العمود ${ordinal}";
+
+  static String m68(count) =>
+      "تم ملء ${count} حقلًا ببيانات تجريبية. حقول الصورة والمرفق والتوقيع تحتاج ملفًا حقيقيًا.";
+
+  static String m69(count) => "رقم الهاتف يجب أن يكون ${count} أرقام";
+
+  static String m70(count) => "رقم الهاتف أرقام فقط (${count} أرقام)";
+
+  static String m71(ordinal) => "الصف ${ordinal}";
+
+  static String m72(notifications, events, email) =>
+      "إرسال جميع إشعارات منشئ النماذج (${notifications}) وإضافة جميع أحداث التقويم (${events}) إلى حسابك (${email})؟";
+
+  static String m73(sent, attempted, written, tried) =>
+      "الإشعارات: ${sent}/${attempted}\nالتقويم: ${written}/${tried}";
+
+  static String m74(notifications, events) =>
+      "${notifications} إشعارًا و${events} أحداث تقويم لمنشئ النماذج إلى حسابك";
+
+  static String m75(min, max) => "المسموح ${min}–${max}";
+
+  static String m76(min, max) => "أدخل رقمًا من ${min} إلى ${max}.";
+
+  static String m77(n) => "اختر ${n} على الأقل.";
+
+  static String m78(n) => "اختر ${n} كحد أقصى.";
+
+  static String m79(n) => "أبقِ ${n} على الأقل";
+
+  static String m80(n) => "${n} محددة";
+
+  static String m81(name) => "إعدادات ${name}";
+
+  static String m82(extension) => "مرفق (${extension})";
+
+  static String m83(date, time) => "${date} في ${time}";
+
+  static String m84(extension) => "نوع الملف: .${extension}";
+
+  static String m85(fileType) => "معاينة ${fileType}";
+
+  static String m86(fileType) => "جارٍ تحميل ملف ${fileType}...";
+
+  static String m87(fileType) =>
+      "المعاينة غير متاحة لملفات ${fileType}.\nيرجى تنزيل الملف لعرضه.";
+
+  static String m88(fileExtension, status) =>
+      "مستند تجريبي تم إنشاؤه تلقائياً بحالة \"${status}\" لاختبار جميع شاشات مركز المعرفة.";
+
+  static String m89(tokens) => "المتغيرات المتاحة: ${tokens}";
+
+  static String m90(example) =>
+      "ملاحظة: سيتم استبدال المتغيرات مثل ${example} بالقيم الفعلية عند إرسال الإشعار";
+
+  static String m91(module) =>
+      "سيتم إرجاع نص كل إشعارات \"${module}\" إلى النص الافتراضي المعتمد، وسيتم فقدان أي تعديلات سابقة. هل تريد المتابعة؟";
+
+  static String m92(count) =>
+      "${count} من علاقات الإشراف تحتاج إلى مراجعة الموارد البشرية";
+
+  static String m93(count) =>
+      "تعذّر تحميل ${count} من الملفات الشخصية ولن تظهر";
+
+  static String m94(count) => "معاينة ${count} نتيجة";
+
+  static String m95(module) =>
+      "سيتم إرجاع نص كل إشعارات \"${module}\" إلى النص الافتراضي المعتمد، وسيتم فقدان أي تعديلات سابقة. هل تريد المتابعة؟";
+
+  static String m96(count) =>
+      "يوجد ${count} موظفين لديهم هذا الدور. انقلهم إلى دور آخر من إدارة المستخدمين ثم احذفه.";
+
+  static String m97(field) =>
       "${field} المحدد غير موجود. يرجى التحقق من الإدخال";
 
-  static String m17(field, error) =>
+  static String m98(field, error) =>
       "${field} المحدد ${error}! يرجى التحقق من الإدخال";
+
+  static String m99(section) =>
+      "لا يمكنك إلغاء تحديد \'${section}\' لأنك أدخلت بيانات نسبة اتفاقية مستوى الخدمة. يرجى مسح حقول اتفاقية مستوى الخدمة أولاً أو إبقاء المربع محددًا.";
+
+  static String m100(number) => "رقم ${number}";
+
+  static String m101(name) =>
+      "اسم الخدمة \"${name}\" موجود بالفعل. الرجاء اختيار اسم آخر.";
+
+  static String m102(section) =>
+      "يرجى تفعيل خانة \'${section}\' عند استخدام خيارات الإشعار الخاصة بها";
+
+  static String m103(section) =>
+      "يرجى تفعيل خانة \'${section}\' عند استخدام خيارات الإشعار أو إدخال نسب اتفاقية مستوى الخدمة";
+
+  static String m104(count) => "${count} غياب";
+
+  static String m105(count) => "${count} غيابات";
+
+  static String m106(count) => "${count} غيابا";
+
+  static String m107(count) => "تعيين (${count})";
+
+  static String m108(date) => "تاريخ التعيين: ${date}";
+
+  static String m109(taken) => "استراحة ${taken} دقيقة، والاستراحات غير مسموحة";
+
+  static String m110(taken, allowed) =>
+      "استراحة ${taken} دقيقة، والمسموح ${allowed} دقيقة";
+
+  static String m111(minutes) => "استراحات ${minutes} دقيقة";
+
+  static String m112(time) => "سجل الحضور الساعة ${time} دون انصراف";
+
+  static String m113(date) => "تاريخ الإنشاء: ${date}";
+
+  static String m114(date, time) => "${date} الساعة ${time}";
+
+  static String m115(count) => "${count} أيام";
+
+  static String m116(count) => "${count} يوما";
+
+  static String m117(count) => "${count} يوم";
+
+  static String m118(count, files) =>
+      "تمت إضافة ${count} سجلا تجريبيا و${files} مستندا.";
+
+  static String m119(count) => "تم حذف ${count} سجلا تجريبيا.";
+
+  static String m120(name, year) =>
+      "هنا تحدد عدد أيام الإجازة المستحقة لـ ${name} في ${year} (إجمالي الأيام). الأيام المستخدمة تُحسب من طلبات الإجازة المعتمدة ولا تُعدّل هنا. المتبقي = إجمالي الأيام − الأيام المستخدمة.";
+
+  static String m121(count) => "تم اختيار ${count} موظفين";
+
+  static String m122(days, left) =>
+      "يحتاج هذا الطلب إلى ${days} يوم إجازة، والمتبقي ${left} فقط.";
+
+  static String m123(name, date) => "بواسطة ${name} في ${date}";
+
+  static String m124(date) => "من ${date}";
+
+  static String m125(h, m) => "${h} س ${m} د";
+
+  static String m126(value) => "${value} ساعة";
+
+  static String m127(line) => "السطر ${line}";
+
+  static String m128(year) =>
+      "عدّل إجمالي الأيام لكل موظف لسنة ${year}. السنة الفارغة تعني ${year}، والسنوات الأخرى تُتخطّى. لا يُحذف أي شيء.";
+
+  static String m129(create, update, unchanged, skip) =>
+      "${create} جديد · ${update} محدث · ${unchanged} بدون تغيير · ${skip} متجاهل";
+
+  static String m130(column) => "قيمة غير مقروءة في “${column}”";
+
+  static String m131(year) => "يمكن استيراد سنة ${year} فقط";
+
+  static String m132(date) => "آخر تحديث: ${date}";
+
+  static String m133(minutes) => "التأخير بعد ${minutes} دقيقة";
+
+  static String m134(count) =>
+      "${count} من الموظفين معينون في هذا الموقع. يرجى إعادة تعيينهم أولا.";
+
+  static String m135(name) => "الموقع: ${name}";
+
+  static String m136(count) => "${count} محدد";
+
+  static String m137(count) => "${count} م";
+
+  static String m138(count) => "${count} دقيقة";
+
+  static String m139(count) => "${count} دقيقة";
+
+  static String m140(count) => "+${count} أخرى";
+
+  static String m141(year) => "لا توجد طلبات إجازة في ${year}.";
+
+  static String m142(time) => "المتبقي من الإيقاف المؤقت: ${time}";
+
+  static String m143(time) => "انتهى وقت الإيقاف المؤقت (زيادة ${time})";
+
+  static String m144(minutes) => "إيقاف مؤقت حتى ${minutes} دقيقة";
+
+  static String m145(time) => "متوقف مؤقتاً: ${time}";
+
+  static String m146(time) => "يمكنك التذكير مرة أخرى بعد ${time}";
+
+  static String m147(date) => "تم إرسال التذكير في ${date}";
+
+  static String m148(location) => "القواعد من ${location}";
+
+  static String m149(date, start, end) => "${date}، ${start} – ${end}";
+
+  static String m150(role, decision) => "${role} · ${decision}";
+
+  static String m151(role) => "مبرر ${role}";
+
+  static String m152(start, end) => "${start} إلى ${end}";
+
+  static String m153(date) => "تاريخ الرفع: ${date}";
+
+  static String m154(year) =>
+      "حمل النموذج، وحدد إجمالي أيام كل موظف لسنة ${year}، ثم ارفعه. السنة الفارغة تعني ${year}، ويتم تجاهل السنوات الأخرى. لا يتم حذف أي شيء.";
+
+  static String m155(count) => "الطلبات: ${count}";
+
+  static String m156(count) => "بانتظار القرار منذ ${count}";
+
+  static String m157(year, days) =>
+      "المتبقي من رصيد إجازات ${year} هو ${days} فقط.";
+
+  static String m158(count) =>
+      "تمت إضافة ${count} مهام تجريبية. ستصل التذكيرات خلال نحو ثلاث دقائق.";
+
+  static String m159(count) => "تمت إزالة ${count} مهام تجريبية.";
+
+  static String m160(count) => "تم إرسال ${count} تذكيرات.";
+
+  static String m161(count, unit) => "كل ${count} ${unit}";
+
+  static String m162(value) => "التكرار: ${value}";
+
+  static String m163(date, time) => "مجدولة: ${date} الساعة ${time}";
+
+  static String m164(module, limit, assigned) =>
+      "الحد الأقصى لمستخدمي ${module} هو ${limit}، وتم تعيين ${assigned} بالفعل.";
+
+  static String m165(module) =>
+      "تعذرت قراءة حد المستخدمين لـ ${module}، لذلك لم يتم منح أي صلاحية.";
+
+  static String m166(module, assigned, limit) =>
+      "${module}: ${assigned} من أصل ${limit}";
+
+  static String m167(remaining) => "يمكن إضافة ${remaining} فقط.";
+
+  static String m168(limit, assigned) =>
+      "الحد الأقصى لعدد مستخدمي الشركة هو ${limit}، وتم تعيين ${assigned} بالفعل.";
+
+  static String m169(assigned, limit) =>
+      "المستخدمون: ${assigned} من أصل ${limit}";
+
+  static String m170(role) =>
+      "تعذر العثور على الدور \"${role}\"، لذلك لا يمكن التحقق من حدود المستخدمين الخاصة به.";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -264,6 +624,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "تم طلب الخدمة بنجاح",
     ),
     "about": MessageLookupByLibrary.simpleMessage("عن"),
+    "aboutKnowticedPlus": MessageLookupByLibrary.simpleMessage(
+      "عن Knowticed Plus",
+    ),
     "aboutThisApp": MessageLookupByLibrary.simpleMessage("عن هذا التطبيق"),
     "aboutThisPlatform": MessageLookupByLibrary.simpleMessage("عن هذه المنصة"),
     "aboveBaselineColor": MessageLookupByLibrary.simpleMessage(
@@ -276,6 +639,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "access": MessageLookupByLibrary.simpleMessage("الوصول"),
     "accessBegins": MessageLookupByLibrary.simpleMessage("بداية الوصول"),
     "accessBlocked": MessageLookupByLibrary.simpleMessage("تم منع من الدخول"),
+    "accessChangedElsewhere": MessageLookupByLibrary.simpleMessage(
+      "قام شخص آخر بتغيير هذا الوصول بعد أن فتحته. أغلق هذه الشاشة وافتحها مرة أخرى لرؤية تغييراته.",
+    ),
     "accessDenied": MessageLookupByLibrary.simpleMessage("تم رفض الوصول"),
     "accessDeniedWrongly": MessageLookupByLibrary.simpleMessage(
       "رفض الوصول بالخطأ",
@@ -299,6 +665,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "access_revoked": MessageLookupByLibrary.simpleMessage("تم إلغاء الصلاحية"),
     "accessoriesReturned": MessageLookupByLibrary.simpleMessage(
       "الملحقات المُعادة",
+    ),
+    "accountDataLoadError": MessageLookupByLibrary.simpleMessage(
+      "تعذر تحميل بيانات حسابك.",
     ),
     "accountLocked": MessageLookupByLibrary.simpleMessage("حساب مقفل"),
     "accountLockedMessage": MessageLookupByLibrary.simpleMessage(
@@ -346,11 +715,16 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "addControlOwner": MessageLookupByLibrary.simpleMessage("إضافة مالك ضابط"),
     "addController": MessageLookupByLibrary.simpleMessage("إضافة مراقب"),
+    "addDegree": MessageLookupByLibrary.simpleMessage("إضافة درجة علمية"),
     "addDepartmentsOrSwitchOffLimitAvailability":
         MessageLookupByLibrary.simpleMessage(
           "أضف الأقسام أو أوقف تفعيل تقييد إتاحة الأقسام",
         ),
+    "addEmergencyContact": MessageLookupByLibrary.simpleMessage(
+      "إضافة جهة اتصال للطوارئ",
+    ),
     "addEmployee": MessageLookupByLibrary.simpleMessage("إضافة موظف"),
+    "addHobby": MessageLookupByLibrary.simpleMessage("إضافة هواية"),
     "addLocation": MessageLookupByLibrary.simpleMessage("إضافة موقع"),
     "addMember": MessageLookupByLibrary.simpleMessage("إضافة عضو"),
     "addNewControlChampion": MessageLookupByLibrary.simpleMessage(
@@ -368,8 +742,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "إضافة ضوابط السياسة",
     ),
     "addProduct": MessageLookupByLibrary.simpleMessage("إضافة منتج"),
+    "addSecondEmergencyContact": MessageLookupByLibrary.simpleMessage(
+      "إضافة جهة اتصال طوارئ ثانية",
+    ),
     "addService": MessageLookupByLibrary.simpleMessage("إضافة خدمة"),
     "addShift": MessageLookupByLibrary.simpleMessage("إضافة وردية"),
+    "addSkill": MessageLookupByLibrary.simpleMessage("إضافة مهارة"),
     "addStartDateOrSwitchOffSchedulePublishing":
         MessageLookupByLibrary.simpleMessage(
           "أضف تاريخ البدء أو أوقف تفعيل الجدولة للنشر",
@@ -484,6 +862,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "allowPause": MessageLookupByLibrary.simpleMessage(
       "السماح بالإيقاف المؤقت",
     ),
+    "allowRemoveContributorsDocuments": MessageLookupByLibrary.simpleMessage(
+      "السماح بإزالة مستندات المساهمين",
+    ),
     "allowsRemovingDocumentsOwnedByAnyone":
         MessageLookupByLibrary.simpleMessage(
           "السماح بإزالة المستندات المملوكة لأي شخص",
@@ -540,6 +921,36 @@ class MessageLookup extends MessageLookupByLibrary {
       "تفاصيل طلب الموافقة",
     ),
     "approvals": MessageLookupByLibrary.simpleMessage("الموافقات"),
+    "approvalsAddCommentFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر إضافة التعليق.",
+    ),
+    "approvalsApproveFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر اعتماد المستند.",
+    ),
+    "approvalsNoApprovePermission": MessageLookupByLibrary.simpleMessage(
+      "ليس لديك صلاحية اعتماد المستندات.",
+    ),
+    "approvalsNoRejectPermission": MessageLookupByLibrary.simpleMessage(
+      "ليس لديك صلاحية رفض المستندات.",
+    ),
+    "approvalsNotPendingInQueue": MessageLookupByLibrary.simpleMessage(
+      "هذا المستند لا ينتظر موافقتك. يرجى التحديث.",
+    ),
+    "approvalsRecordActionFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر تسجيل هذا الإجراء.",
+    ),
+    "approvalsRejectFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر رفض المستند.",
+    ),
+    "approvalsSessionExpired": MessageLookupByLibrary.simpleMessage(
+      "انتهت جلستك. يرجى تسجيل الدخول مرة أخرى.",
+    ),
+    "approvalsStatusUpdateFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر تحديث الحالة.",
+    ),
+    "approvalsUnreadableDocs": MessageLookupByLibrary.simpleMessage(
+      "مستندات تعذرت قراءتها:",
+    ),
     "approve": MessageLookupByLibrary.simpleMessage("قبول"),
     "approveAndReject": MessageLookupByLibrary.simpleMessage("الموافقة والرفض"),
     "approveEvidence": MessageLookupByLibrary.simpleMessage(
@@ -568,6 +979,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "arabicFirstNameMissing": MessageLookupByLibrary.simpleMessage(
       "الاسم الأول بالعربية مفقود",
     ),
+    "arabicFont": MessageLookupByLibrary.simpleMessage("الخط العربي"),
     "arabicJobTitleRequired": MessageLookupByLibrary.simpleMessage(
       "المسمى الوظيفي بالعربية مطلوب",
     ),
@@ -1025,6 +1437,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "bachelor": MessageLookupByLibrary.simpleMessage("بكالوريوس"),
     "bachelorDegree": MessageLookupByLibrary.simpleMessage("درجة البكالوريوس"),
     "back": MessageLookupByLibrary.simpleMessage("الرجوع"),
+    "backToEdit": MessageLookupByLibrary.simpleMessage("العودة للتعديل"),
     "bahamian": MessageLookupByLibrary.simpleMessage("باهامي"),
     "bahraini": MessageLookupByLibrary.simpleMessage("بحريني"),
     "bangladeshi": MessageLookupByLibrary.simpleMessage("بنغلاديشي"),
@@ -1086,6 +1499,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "booklet": MessageLookupByLibrary.simpleMessage("كتيّب"),
     "bosnian": MessageLookupByLibrary.simpleMessage("بوسني"),
     "bothLanguages": MessageLookupByLibrary.simpleMessage("كلاهما"),
+    "bottomBar": MessageLookupByLibrary.simpleMessage("الشريط السفلي"),
+    "bottomBarAvailable": MessageLookupByLibrary.simpleMessage(
+      "الوحدات المتاحة",
+    ),
+    "bottomBarFull": MessageLookupByLibrary.simpleMessage(
+      "الشريط ممتلئ — احذف وحدة لإضافة أخرى.",
+    ),
+    "bottomBarHint": MessageLookupByLibrary.simpleMessage(
+      "اضغط + لإضافة وحدة. اسحب المقبض لإعادة الترتيب.",
+    ),
+    "bottomBarInBar": MessageLookupByLibrary.simpleMessage("في الشريط"),
     "branch": MessageLookupByLibrary.simpleMessage("فرع"),
     "branchName": MessageLookupByLibrary.simpleMessage("اسم الفرع"),
     "branchNameRequired": MessageLookupByLibrary.simpleMessage(
@@ -1146,7 +1570,114 @@ class MessageLookup extends MessageLookupByLibrary {
     "cabinet": MessageLookupByLibrary.simpleMessage("خزانة"),
     "cad": MessageLookupByLibrary.simpleMessage("دولار كندي"),
     "cairo": MessageLookupByLibrary.simpleMessage("القاهرة"),
+    "calKnowledgeDocument": MessageLookupByLibrary.simpleMessage(
+      "وثيقة معرفية",
+    ),
+    "calModuleDatabase": MessageLookupByLibrary.simpleMessage("قاعدة البيانات"),
+    "calModuleEvents": MessageLookupByLibrary.simpleMessage("الأحداث"),
+    "calModuleFormBuilder": MessageLookupByLibrary.simpleMessage(
+      "منشئ النماذج",
+    ),
+    "calModuleGrc": MessageLookupByLibrary.simpleMessage(
+      "الحوكمة والمخاطر والالتزام",
+    ),
+    "calModuleInventory": MessageLookupByLibrary.simpleMessage("المخزون"),
+    "calModuleKnowledgeHub": MessageLookupByLibrary.simpleMessage(
+      "مركز المعرفة",
+    ),
+    "calModuleMessages": MessageLookupByLibrary.simpleMessage("الرسائل"),
+    "calModuleOrgChart": MessageLookupByLibrary.simpleMessage("الموظفين"),
+    "calModuleQiyas": MessageLookupByLibrary.simpleMessage("قياس"),
+    "calModuleRoleManagement": MessageLookupByLibrary.simpleMessage(
+      "إدارة الأدوار",
+    ),
+    "calModuleServiceManagement": MessageLookupByLibrary.simpleMessage(
+      "إدارة الخدمات",
+    ),
+    "calModuleSettings": MessageLookupByLibrary.simpleMessage("الإعدادات"),
+    "calModuleTasks": MessageLookupByLibrary.simpleMessage("المهام"),
+    "calModuleTodo": MessageLookupByLibrary.simpleMessage("قائمة المهام"),
+    "calModuleTracking": MessageLookupByLibrary.simpleMessage("التتبع"),
+    "calNoEvents": MessageLookupByLibrary.simpleMessage("لا توجد أحداث"),
+    "calQiyasApprovedByManager": MessageLookupByLibrary.simpleMessage(
+      "تمت الموافقة على الدليل الخاص بك بشكل نهائي من قبل المدير",
+    ),
+    "calQiyasApprovedBySupervisor": MessageLookupByLibrary.simpleMessage(
+      "تمت الموافقة على الدليل الخاص بك من قبل المشرف، في انتظار موافقة المدير",
+    ),
+    "calQiyasAssigned": m1,
+    "calQiyasDocumentName": m2,
+    "calQiyasEmployeeAssigned": m3,
+    "calQiyasEmployeeOverdue": m4,
+    "calQiyasManagerApproved": m5,
+    "calQiyasManagerRejected": m6,
+    "calQiyasRejectedByManager": MessageLookupByLibrary.simpleMessage(
+      "تم رفض الدليل الخاص بك من قبل المدير. يرجى إعادة التقديم",
+    ),
+    "calQiyasRejectedBySupervisor": MessageLookupByLibrary.simpleMessage(
+      "تم رفض الدليل الخاص بك من قبل المشرف. يرجى إعادة التقديم",
+    ),
+    "calQiyasRequestNeedsAction": m7,
+    "calQiyasSubmitted": MessageLookupByLibrary.simpleMessage(
+      "تم تقديم الدليل الخاص بك وفي انتظار موافقة المشرف",
+    ),
+    "calQiyasUploadNow": MessageLookupByLibrary.simpleMessage(
+      "يجب عليك تحميل الدليل الخاص بك على الفور",
+    ),
+    "calQiyasYouApproved": m8,
+    "calQiyasYouRejected": m9,
+    "calRoleKnowledgeHubAdmin": MessageLookupByLibrary.simpleMessage(
+      "مسؤول مركز المعرفة",
+    ),
+    "calRoleSuperAdmin": MessageLookupByLibrary.simpleMessage("المسؤول الأعلى"),
+    "calRoleSupervisor": MessageLookupByLibrary.simpleMessage("المشرف"),
+    "calServiceFallback": MessageLookupByLibrary.simpleMessage("خدمة"),
+    "calServiceRequestFallback": MessageLookupByLibrary.simpleMessage(
+      "طلب خدمة",
+    ),
+    "calStatusApprovedBySupervisor": MessageLookupByLibrary.simpleMessage(
+      "تمت الموافقة من المشرف",
+    ),
+    "calStatusAssigned": MessageLookupByLibrary.simpleMessage("معين"),
+    "calStatusBillingCycles": MessageLookupByLibrary.simpleMessage(
+      "دورات الفوترة",
+    ),
+    "calStatusDue": MessageLookupByLibrary.simpleMessage("مستحق"),
+    "calStatusDuration": MessageLookupByLibrary.simpleMessage("المدة"),
+    "calStatusExpiring": MessageLookupByLibrary.simpleMessage("منتهي الصلاحية"),
+    "calStatusFrequency": MessageLookupByLibrary.simpleMessage("التكرار"),
+    "calStatusInProgress": MessageLookupByLibrary.simpleMessage("قيد التنفيذ"),
+    "calStatusMilestone": MessageLookupByLibrary.simpleMessage("معلم"),
+    "calStatusOverdue": MessageLookupByLibrary.simpleMessage("متأخر"),
+    "calStatusPendingApproval": MessageLookupByLibrary.simpleMessage(
+      "الموافقة المعلقة",
+    ),
+    "calStatusPendingRequests": MessageLookupByLibrary.simpleMessage(
+      "الطلبات المعلقة",
+    ),
+    "calStatusRelease": MessageLookupByLibrary.simpleMessage("إصدار"),
+    "calStatusReminders": MessageLookupByLibrary.simpleMessage("تذكيرات"),
+    "calStatusRenewal": MessageLookupByLibrary.simpleMessage("تجديد"),
+    "calStatusScheduled": MessageLookupByLibrary.simpleMessage("مجدول"),
+    "calStatusSla": MessageLookupByLibrary.simpleMessage("SLA"),
+    "calStatusUpdated": MessageLookupByLibrary.simpleMessage("تم التحديث"),
+    "calTodoActive": m10,
+    "calTodoCompleted": m11,
+    "calTodoDeadline": m12,
+    "calTodoOverdue": MessageLookupByLibrary.simpleMessage(
+      "المهمة متأخرة! يجب إكمالها على الفور",
+    ),
+    "calTodoRecurring": m13,
+    "calTodoRecurringDaily": m14,
+    "calTodoRecurringMonthly": m15,
+    "calTodoRecurringWeekly": m16,
+    "calTodoScheduled": m17,
+    "calTodoScheduledRange": m18,
+    "calTodoTaskFallback": MessageLookupByLibrary.simpleMessage("مهمة"),
     "calendar": MessageLookupByLibrary.simpleMessage("التقويم"),
+    "calendarSomeSourcesFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر تحميل بعض الأحداث. يرجى المحاولة لاحقاً.",
+    ),
     "cambodian": MessageLookupByLibrary.simpleMessage("كمبودي"),
     "camera": MessageLookupByLibrary.simpleMessage("الكاميرا"),
     "cameroonian": MessageLookupByLibrary.simpleMessage("كاميروني"),
@@ -1168,6 +1699,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "canceledByHr": MessageLookupByLibrary.simpleMessage(
       "أُلغي بواسطة شؤون الموظفين",
     ),
+    "cancellationReason": MessageLookupByLibrary.simpleMessage("سبب الإلغاء"),
     "cancelled": MessageLookupByLibrary.simpleMessage("ملغى"),
     "cannotBeNull": MessageLookupByLibrary.simpleMessage(
       "لا يمكن أن تكون القيمة \"null\"",
@@ -1335,6 +1867,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "commentAndFeedback": MessageLookupByLibrary.simpleMessage(
       "التعليق والملاحظات",
     ),
+    "commentAuthorNotFound": MessageLookupByLibrary.simpleMessage(
+      "تعذر العثور على بيانات الموظف الخاصة بك، لذلك لم يتم نشر التعليق. حاول مرة أخرى.",
+    ),
     "commentNotFound": MessageLookupByLibrary.simpleMessage("لا توجد تعليقات"),
     "comments": MessageLookupByLibrary.simpleMessage("التعليقات"),
     "commentsAndFeedback": MessageLookupByLibrary.simpleMessage(
@@ -1497,15 +2032,15 @@ class MessageLookup extends MessageLookupByLibrary {
       "معلومات التواصل",
     ),
     "contactManager": MessageLookupByLibrary.simpleMessage("التواصل مع المدير"),
-    "contactNumberEmail": m1,
-    "contactNumberFaxNumber": m2,
-    "contactNumberFirstName": m3,
-    "contactNumberLastName": m4,
-    "contactNumberMiddleName": m5,
-    "contactNumberPhoneNumber": m6,
-    "contactNumberPreferredLanguage": m7,
-    "contactNumberTitle": m8,
-    "contactNumberValidEmail": m9,
+    "contactNumberEmail": m19,
+    "contactNumberFaxNumber": m20,
+    "contactNumberFirstName": m21,
+    "contactNumberLastName": m22,
+    "contactNumberMiddleName": m23,
+    "contactNumberPhoneNumber": m24,
+    "contactNumberPreferredLanguage": m25,
+    "contactNumberTitle": m26,
+    "contactNumberValidEmail": m27,
     "continueText": MessageLookupByLibrary.simpleMessage("متابعة"),
     "continueToNextProduct": MessageLookupByLibrary.simpleMessage(
       "المتابعة إلى المنتج التالي",
@@ -1710,6 +2245,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "createNewRequest": MessageLookupByLibrary.simpleMessage("انشاء طلب جديد"),
     "createOrder": MessageLookupByLibrary.simpleMessage("إنشاء طلب"),
+    "createOther": MessageLookupByLibrary.simpleMessage("إنشاء موظف آخر"),
     "createPoll": MessageLookupByLibrary.simpleMessage("إنشاء استطلاع"),
     "createRoleManagement": MessageLookupByLibrary.simpleMessage(
       "إنشاء إدارة الأدوار",
@@ -1743,6 +2279,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "created_at": MessageLookupByLibrary.simpleMessage("تاريخ الإنشاء"),
     "created_by": MessageLookupByLibrary.simpleMessage("أنشئ بواسطة"),
+    "creatingEmployee": MessageLookupByLibrary.simpleMessage(
+      "جارٍ إنشاء الموظف...",
+    ),
     "creatingForm": MessageLookupByLibrary.simpleMessage("إنشاء نموذج"),
     "creatingModules": MessageLookupByLibrary.simpleMessage("إنشاء الوحدات"),
     "creatingNewLocation": MessageLookupByLibrary.simpleMessage(
@@ -1765,6 +2304,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "creatingService": MessageLookupByLibrary.simpleMessage(
       "جاري إنشاء الخدمة",
     ),
+    "creatingToDoList": MessageLookupByLibrary.simpleMessage(
+      "إنشاء قائمة مهام",
+    ),
     "creatingToDoTitle": MessageLookupByLibrary.simpleMessage("إنشاء مهمة"),
     "creatingToDodialoge": MessageLookupByLibrary.simpleMessage("إنشاء مهمة"),
     "creatingTransaction": MessageLookupByLibrary.simpleMessage(
@@ -1780,15 +2322,26 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmActive": MessageLookupByLibrary.simpleMessage("نشط"),
     "crmAdd": MessageLookupByLibrary.simpleMessage("إضافة"),
     "crmAddAddress": MessageLookupByLibrary.simpleMessage("إضافة عنوان"),
+    "crmAddBillingContract": MessageLookupByLibrary.simpleMessage(
+      "إضافة باقة فوترة وعقد",
+    ),
     "crmAddCategory": MessageLookupByLibrary.simpleMessage("إضافة فئة"),
     "crmAddDiscount": MessageLookupByLibrary.simpleMessage("إضافة خصم"),
     "crmAddField": MessageLookupByLibrary.simpleMessage("إضافة حقل"),
+    "crmAddFieldAndSection": MessageLookupByLibrary.simpleMessage(
+      "إضافة حقل وقسم",
+    ),
     "crmAddMoreLink": MessageLookupByLibrary.simpleMessage("إضافة رابط آخر"),
     "crmAddNewClient": MessageLookupByLibrary.simpleMessage("إضافة عميل جديد"),
+    "crmAddNote": MessageLookupByLibrary.simpleMessage("ملاحظة"),
     "crmAddRelationship": MessageLookupByLibrary.simpleMessage("إضافة علاقة"),
     "crmAddRow": MessageLookupByLibrary.simpleMessage("سطر"),
     "crmAddStage": MessageLookupByLibrary.simpleMessage("إضافة مرحلة"),
     "crmAddTag": MessageLookupByLibrary.simpleMessage("إضافة وسم"),
+    "crmAddTemplate": MessageLookupByLibrary.simpleMessage("إضافة قالب"),
+    "crmAddTemplateSubtitle": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد من إضافة هذا القالب؟",
+    ),
     "crmAddTerm": MessageLookupByLibrary.simpleMessage("إضافة مصطلح"),
     "crmAddType": MessageLookupByLibrary.simpleMessage("إضافة نوع"),
     "crmAddView": MessageLookupByLibrary.simpleMessage("إضافة عرض"),
@@ -1803,6 +2356,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmAll": MessageLookupByLibrary.simpleMessage("الكل"),
     "crmAllCity": MessageLookupByLibrary.simpleMessage("كل المدن"),
     "crmAllCountry": MessageLookupByLibrary.simpleMessage("كل الدول"),
+    "crmAllFieldsAndSectionsAssigned": MessageLookupByLibrary.simpleMessage(
+      "تم تعيين جميع الحقول والأقسام بالفعل",
+    ),
     "crmAllStatus": MessageLookupByLibrary.simpleMessage("كل الحالات"),
     "crmAllTypes": MessageLookupByLibrary.simpleMessage("جميع الأنواع"),
     "crmAllowMultipleEmails": MessageLookupByLibrary.simpleMessage(
@@ -1824,12 +2380,32 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmAutoAddHttps": MessageLookupByLibrary.simpleMessage(
       "إضافة HTTPS تلقائياً",
     ),
+    "crmAutoRenewal": MessageLookupByLibrary.simpleMessage("التجديد التلقائي"),
+    "crmBilling": MessageLookupByLibrary.simpleMessage("الفوترة"),
+    "crmBillingContractDeletedSuccess": MessageLookupByLibrary.simpleMessage(
+      "تم حذف باقة الفوترة والعقد بنجاح.",
+    ),
+    "crmBillingContractDetails": MessageLookupByLibrary.simpleMessage(
+      "تفاصيل الفوترة والعقد",
+    ),
+    "crmBillingContractSavedSuccess": MessageLookupByLibrary.simpleMessage(
+      "تم حفظ باقة الفوترة والعقد بنجاح.",
+    ),
+    "crmBillingContractUpdatedSuccess": MessageLookupByLibrary.simpleMessage(
+      "تم تحديث باقة الفوترة والعقد بنجاح.",
+    ),
+    "crmBillingCycle": MessageLookupByLibrary.simpleMessage("دورة الفوترة"),
+    "crmBillingDesc": MessageLookupByLibrary.simpleMessage(
+      "إدارة قالب الفاتورة والملفات والرسائل والملاحظات والألوان.",
+    ),
+    "crmBillingDetails": MessageLookupByLibrary.simpleMessage("تفاصيل الفوترة"),
     "crmBoth": MessageLookupByLibrary.simpleMessage("كلاهما"),
     "crmBulkUpload": MessageLookupByLibrary.simpleMessage("رفع بالجملة"),
     "crmBusinessInitiationDate": MessageLookupByLibrary.simpleMessage(
       "تاريخ بدء النشاط",
     ),
     "crmBy": MessageLookupByLibrary.simpleMessage("بواسطة: "),
+    "crmByAuthor": MessageLookupByLibrary.simpleMessage("بواسطة: "),
     "crmCategories": MessageLookupByLibrary.simpleMessage("الفئات"),
     "crmCategoriesAddPrompt": MessageLookupByLibrary.simpleMessage(
       "اضغط على زر الإضافة لإنشاء فئة جديدة",
@@ -1844,6 +2420,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "تم حفظ الفئة بنجاح",
     ),
     "crmCategorySection": MessageLookupByLibrary.simpleMessage("قسم"),
+    "crmChoice": MessageLookupByLibrary.simpleMessage("خيار"),
     "crmChoices": MessageLookupByLibrary.simpleMessage("خيارات"),
     "crmChoose": MessageLookupByLibrary.simpleMessage("اختر"),
     "crmCities": MessageLookupByLibrary.simpleMessage("المدن"),
@@ -1869,9 +2446,10 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "crmClientType": MessageLookupByLibrary.simpleMessage("نوع العميل"),
     "crmClients": MessageLookupByLibrary.simpleMessage("العملاء"),
-    "crmClientsCount": m10,
+    "crmClientsCount": m28,
     "crmClientsStatus": MessageLookupByLibrary.simpleMessage("حالة العملاء"),
     "crmCode": MessageLookupByLibrary.simpleMessage("الكود"),
+    "crmColors": MessageLookupByLibrary.simpleMessage("الألوان"),
     "crmColumn": MessageLookupByLibrary.simpleMessage("عمود"),
     "crmCompanies": MessageLookupByLibrary.simpleMessage("الشركات"),
     "crmCompany": MessageLookupByLibrary.simpleMessage("الشركات"),
@@ -1881,9 +2459,26 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmConstraints": MessageLookupByLibrary.simpleMessage("القيود"),
     "crmContactChannel": MessageLookupByLibrary.simpleMessage("قناة التواصل"),
     "crmContinents": MessageLookupByLibrary.simpleMessage("القارات"),
+    "crmContractDetails": MessageLookupByLibrary.simpleMessage("تفاصيل العقد"),
+    "crmContractDuration": MessageLookupByLibrary.simpleMessage(
+      "مدة العقد (شهور)",
+    ),
+    "crmContractTerms": MessageLookupByLibrary.simpleMessage(
+      "شروط وأحكام العقد",
+    ),
+    "crmContracts": MessageLookupByLibrary.simpleMessage("العقود"),
+    "crmContractsDesc": MessageLookupByLibrary.simpleMessage(
+      "إدارة قالب العقد والملفات والرسائل والملاحظات والألوان.",
+    ),
     "crmControlActivity": MessageLookupByLibrary.simpleMessage("الأنشطة"),
     "crmControlActivityDesc": MessageLookupByLibrary.simpleMessage(
       "إنشاء وإدارة أنواع الأنشطة لعملائك",
+    ),
+    "crmControlBillingAndContracts": MessageLookupByLibrary.simpleMessage(
+      "الفوترة والعقود",
+    ),
+    "crmControlBillingAndContractsDesc": MessageLookupByLibrary.simpleMessage(
+      "إدارة كافة عمليات الفوترة والعقود.",
     ),
     "crmControlClientsTypes": MessageLookupByLibrary.simpleMessage(
       "أنواع العملاء",
@@ -1891,9 +2486,23 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmControlClientsTypesDesc": MessageLookupByLibrary.simpleMessage(
       "إدارة أنواع العملاء وعرض التفاصيل",
     ),
+    "crmControlCommissions": MessageLookupByLibrary.simpleMessage("العمولات"),
+    "crmControlCommissionsDesc": MessageLookupByLibrary.simpleMessage(
+      "إدارة وإنشاء باقات العمولات.",
+    ),
+    "crmControlConvert": MessageLookupByLibrary.simpleMessage("التحويل"),
+    "crmControlConvertDesc": MessageLookupByLibrary.simpleMessage(
+      "إدارة كافة مراحل تحويل العملاء المحتملين إلى عملاء.",
+    ),
     "crmControlDeals": MessageLookupByLibrary.simpleMessage("الصفقات"),
     "crmControlDealsDesc": MessageLookupByLibrary.simpleMessage(
       "إدارة جميع الصفقات ومسار المبيعات",
+    ),
+    "crmControlDeliveryRules": MessageLookupByLibrary.simpleMessage(
+      "قواعد التوصيل",
+    ),
+    "crmControlDeliveryRulesDesc": MessageLookupByLibrary.simpleMessage(
+      "تحديد كيفية حساب رسوم وشروط التوصيل.",
     ),
     "crmControlDiscount": MessageLookupByLibrary.simpleMessage("الخصومات"),
     "crmControlDiscountDesc": MessageLookupByLibrary.simpleMessage(
@@ -1903,9 +2512,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmControlPermissionsDesc": MessageLookupByLibrary.simpleMessage(
       "إدارة جميع الصلاحيات لموظفيك",
     ),
+    "crmControlReasons": MessageLookupByLibrary.simpleMessage("الأسباب"),
+    "crmControlReasonsDesc": MessageLookupByLibrary.simpleMessage(
+      "إدارة الأسباب المتاحة لكل حالة عميل.",
+    ),
     "crmControlRelationship": MessageLookupByLibrary.simpleMessage("العلاقات"),
     "crmControlRelationshipDesc": MessageLookupByLibrary.simpleMessage(
       "إنشاء وإدارة أنواع العلاقات لعملائك",
+    ),
+    "crmControlTeamTypes": MessageLookupByLibrary.simpleMessage("أنواع الفرق"),
+    "crmControlTeamTypesDesc": MessageLookupByLibrary.simpleMessage(
+      "إدارة أنواع الفرق",
     ),
     "crmControlTeams": MessageLookupByLibrary.simpleMessage("الفرق"),
     "crmControlTeamsDesc": MessageLookupByLibrary.simpleMessage("إدارة موظفيك"),
@@ -1922,9 +2539,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmCountry": MessageLookupByLibrary.simpleMessage("الدولة"),
     "crmCountryCode": MessageLookupByLibrary.simpleMessage("رمز الدولة"),
     "crmCrNumber": MessageLookupByLibrary.simpleMessage("رقم السجل التجاري"),
-    "crmCreationDate": m11,
+    "crmCreationBy": MessageLookupByLibrary.simpleMessage("تم الإنشاء بواسطة"),
+    "crmCreationDate": m29,
     "crmCreationDateLabel": MessageLookupByLibrary.simpleMessage(
       "تاريخ الإنشاء",
+    ),
+    "crmCustomGrid": MessageLookupByLibrary.simpleMessage("شبكة مخصصة"),
+    "crmCustomGridLimitReached": MessageLookupByLibrary.simpleMessage(
+      "تم الوصول للحد الأقصى",
+    ),
+    "crmCustomGridSaveFailedDesc": MessageLookupByLibrary.simpleMessage(
+      "فشل في حفظ حقول الشبكة المخصصة.",
     ),
     "crmDashboardTab": MessageLookupByLibrary.simpleMessage("لوحة التحكم"),
     "crmDate": MessageLookupByLibrary.simpleMessage("التاريخ"),
@@ -1932,6 +2557,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmDateRangeTo": MessageLookupByLibrary.simpleMessage("نطاق التاريخ إلى"),
     "crmDealCategory": MessageLookupByLibrary.simpleMessage("الفئة"),
     "crmDealStage": MessageLookupByLibrary.simpleMessage("المرحلة"),
+    "crmDeleteBillingContractConfirm": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد من رغبتك في حذف باقة الفوترة والعقد هذه؟",
+    ),
     "crmDeleteCategory": MessageLookupByLibrary.simpleMessage("حذف الفئة"),
     "crmDeleteCategoryConfirm": MessageLookupByLibrary.simpleMessage(
       "هل أنت متأكد من رغبتك في حذف هذه الفئة؟",
@@ -1947,8 +2575,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmDeleteTagConfirm": MessageLookupByLibrary.simpleMessage(
       "هل أنت متأكد من رغبتك في حذف هذا الوسم؟",
     ),
+    "crmDeleteTemplate": MessageLookupByLibrary.simpleMessage("حذف القالب"),
+    "crmDeleteTemplateSubtitle": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد من حذف هذا القالب؟",
+    ),
+    "crmDepositPercentage": MessageLookupByLibrary.simpleMessage(
+      "نسبة الدفعة الأولى (%)",
+    ),
     "crmDescription": MessageLookupByLibrary.simpleMessage("الوصف"),
     "crmDetails": MessageLookupByLibrary.simpleMessage("التفاصيل"),
+    "crmDigitalSeal": MessageLookupByLibrary.simpleMessage("الختم الرقمي"),
     "crmDiscard": MessageLookupByLibrary.simpleMessage("تجاهل"),
     "crmDiscountDeletedSuccess": MessageLookupByLibrary.simpleMessage(
       "تم حذف قاعدة الخصم بنجاح",
@@ -1973,14 +2609,26 @@ class MessageLookup extends MessageLookupByLibrary {
       "تم العثور على عميل مشابه في النظام؛ يرجى المراجعة قبل المتابعة.",
     ),
     "crmEdit": MessageLookupByLibrary.simpleMessage("تعديل"),
+    "crmEditBilling": MessageLookupByLibrary.simpleMessage("تعديل الفوترة"),
+    "crmEditBillingContract": MessageLookupByLibrary.simpleMessage(
+      "تعديل باقة الفوترة والعقد",
+    ),
     "crmEditCategory": MessageLookupByLibrary.simpleMessage("تعديل الفئة"),
+    "crmEditContract": MessageLookupByLibrary.simpleMessage("تعديل العقد"),
+    "crmEditCustomGrid": MessageLookupByLibrary.simpleMessage(
+      "تعديل الشبكة المخصصة",
+    ),
     "crmEditDiscount": MessageLookupByLibrary.simpleMessage("تعديل الخصم"),
+    "crmEditField": MessageLookupByLibrary.simpleMessage("تعديل الحقل"),
+    "crmEditMerge": MessageLookupByLibrary.simpleMessage("تعديل الدمج"),
     "crmEditRelationship": MessageLookupByLibrary.simpleMessage(
       "تعديل العلاقة",
     ),
     "crmEditRule": MessageLookupByLibrary.simpleMessage("تعديل القاعدة"),
+    "crmEditSection": MessageLookupByLibrary.simpleMessage("تعديل القسم"),
     "crmEditStage": MessageLookupByLibrary.simpleMessage("تعديل مرحلة"),
     "crmEditTag": MessageLookupByLibrary.simpleMessage("تعديل وسم"),
+    "crmEditTemplate": MessageLookupByLibrary.simpleMessage("تعديل القالب"),
     "crmEditTerm": MessageLookupByLibrary.simpleMessage("تعديل المصطلح"),
     "crmEditType": MessageLookupByLibrary.simpleMessage("تعديل تفاصيل النوع"),
     "crmEmail": MessageLookupByLibrary.simpleMessage("البريد الإلكتروني"),
@@ -1993,7 +2641,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmEntityName": MessageLookupByLibrary.simpleMessage("اسم الكيان"),
     "crmEntityNameAr": MessageLookupByLibrary.simpleMessage("اسم الكيان"),
     "crmEntryType": MessageLookupByLibrary.simpleMessage("نوع الإدخال"),
-    "crmErrorCount": m12,
+    "crmError": MessageLookupByLibrary.simpleMessage("خطأ"),
+    "crmErrorCount": m30,
     "crmErrorMessage": MessageLookupByLibrary.simpleMessage("رسالة الخطأ"),
     "crmExport": MessageLookupByLibrary.simpleMessage("تصدير"),
     "crmExportComingSoon": MessageLookupByLibrary.simpleMessage(
@@ -2003,20 +2652,39 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmFieldDetails": MessageLookupByLibrary.simpleMessage("تفاصيل الحقل"),
     "crmFieldName": MessageLookupByLibrary.simpleMessage("اسم الحقل"),
     "crmFieldNameAr": MessageLookupByLibrary.simpleMessage("اسم الحقل"),
+    "crmFieldNotFound": MessageLookupByLibrary.simpleMessage("الحقل غير موجود"),
     "crmFieldRequired": MessageLookupByLibrary.simpleMessage("الحقل مطلوب"),
     "crmFieldRequiredAr": MessageLookupByLibrary.simpleMessage("الحقل مطلوب"),
     "crmFieldType": MessageLookupByLibrary.simpleMessage("نوع الحقل"),
+    "crmFieldsAndSections": MessageLookupByLibrary.simpleMessage(
+      "الحقول والأقسام",
+    ),
+    "crmFieldsCount": MessageLookupByLibrary.simpleMessage("الحقول: "),
+    "crmFifthRow": MessageLookupByLibrary.simpleMessage("الصف الخامس"),
     "crmFileTypes": MessageLookupByLibrary.simpleMessage("أنواع الملفات"),
+    "crmFiles": MessageLookupByLibrary.simpleMessage("الملفات"),
     "crmFilter": MessageLookupByLibrary.simpleMessage("تصفية"),
+    "crmFinancialRules": MessageLookupByLibrary.simpleMessage(
+      "القواعد المالية والضرائب",
+    ),
+    "crmFirstRow": MessageLookupByLibrary.simpleMessage("الصف الأول"),
     "crmFixedAmount": MessageLookupByLibrary.simpleMessage("مبلغ ثابت"),
     "crmFormat": MessageLookupByLibrary.simpleMessage("الصيغة"),
     "crmFormatExample": MessageLookupByLibrary.simpleMessage("مثال على الصيغة"),
+    "crmFourthRow": MessageLookupByLibrary.simpleMessage("الصف الرابع"),
     "crmFrom": MessageLookupByLibrary.simpleMessage("من"),
+    "crmGeneralSetting": MessageLookupByLibrary.simpleMessage(
+      "الإعدادات العامة",
+    ),
     "crmGovernment": MessageLookupByLibrary.simpleMessage("الجهات الحكومية"),
     "crmGovernmentSector": MessageLookupByLibrary.simpleMessage(
       "القطاع الحكومي",
     ),
+    "crmGracePeriod": MessageLookupByLibrary.simpleMessage(
+      "فترة السماح (أيام)",
+    ),
     "crmHide": MessageLookupByLibrary.simpleMessage("إخفاء"),
+    "crmHighlightingColor": MessageLookupByLibrary.simpleMessage("التمييز"),
     "crmImageTypes": MessageLookupByLibrary.simpleMessage("أنواع الصور"),
     "crmImport": MessageLookupByLibrary.simpleMessage("استيراد"),
     "crmInactive": MessageLookupByLibrary.simpleMessage("غير نشط"),
@@ -2025,10 +2693,21 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmInvalidUrl": MessageLookupByLibrary.simpleMessage("رابط غير صالح"),
     "crmItems": MessageLookupByLibrary.simpleMessage("العناصر"),
     "crmLastUpdate": MessageLookupByLibrary.simpleMessage("آخر تحديث"),
+    "crmLateFee": MessageLookupByLibrary.simpleMessage("رسوم التأخير (%)"),
+    "crmLayout": MessageLookupByLibrary.simpleMessage("التخطيط"),
+    "crmLayoutSavedSuccess": MessageLookupByLibrary.simpleMessage(
+      "تم حفظ التخطيط بنجاح.",
+    ),
+    "crmLikelihood": MessageLookupByLibrary.simpleMessage("الاحتمالية"),
+    "crmLink": MessageLookupByLibrary.simpleMessage("الرابط"),
+    "crmLogo": MessageLookupByLibrary.simpleMessage("الشعار"),
     "crmMakeFieldRequired": MessageLookupByLibrary.simpleMessage(
       "جعل هذا الحقل مطلوباً",
     ),
     "crmMasterTemplate": MessageLookupByLibrary.simpleMessage("القالب الرئيسي"),
+    "crmMax4FieldsCanBeSelected": MessageLookupByLibrary.simpleMessage(
+      "يمكن تحديد 4 حقول كحد أقصى.",
+    ),
     "crmMaxCharacters": MessageLookupByLibrary.simpleMessage(
       "الحد الأقصى للأحرف",
     ),
@@ -2039,8 +2718,23 @@ class MessageLookup extends MessageLookupByLibrary {
       "الحد الأقصى للكمية",
     ),
     "crmMergeAddLevel": MessageLookupByLibrary.simpleMessage("إضافة مستوى"),
+    "crmMergeAddLikelihoodLevel": MessageLookupByLibrary.simpleMessage(
+      "إضافة مستوى الاحتمالية",
+    ),
     "crmMergeChooseColor": MessageLookupByLibrary.simpleMessage("اختر"),
     "crmMergeColor": MessageLookupByLibrary.simpleMessage("اللون"),
+    "crmMergeCriteria": MessageLookupByLibrary.simpleMessage("المعيار"),
+    "crmMergeCriteriaAndWeights": MessageLookupByLibrary.simpleMessage(
+      "إعداد المعايير والأوزان",
+    ),
+    "crmMergeCriteriaEmail": MessageLookupByLibrary.simpleMessage(
+      "البريد الإلكتروني",
+    ),
+    "crmMergeCriteriaFullName": MessageLookupByLibrary.simpleMessage(
+      "الاسم الكامل",
+    ),
+    "crmMergeCriteriaId": MessageLookupByLibrary.simpleMessage("المعرف"),
+    "crmMergeCriteriaPhone": MessageLookupByLibrary.simpleMessage("الهاتف"),
     "crmMergeDays": MessageLookupByLibrary.simpleMessage("أيام"),
     "crmMergeDeleteConfirm": MessageLookupByLibrary.simpleMessage(
       "هل أنت متأكد من حذف هذا المستوى؟",
@@ -2053,6 +2747,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "تعديل تفاصيل المستوى",
     ),
     "crmMergeHours": MessageLookupByLibrary.simpleMessage("ساعات"),
+    "crmMergeLevel": MessageLookupByLibrary.simpleMessage("المستوى"),
     "crmMergeLevelDetails": MessageLookupByLibrary.simpleMessage(
       "تفاصيل المستوى",
     ),
@@ -2066,6 +2761,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "crmMergeRangeFrom": MessageLookupByLibrary.simpleMessage("النطاق من"),
     "crmMergeRangeTo": MessageLookupByLibrary.simpleMessage("النطاق إلى"),
+    "crmMergeSaveFailed": MessageLookupByLibrary.simpleMessage(
+      "فشل حفظ مستوى الدمج",
+    ),
     "crmMergeSettings": MessageLookupByLibrary.simpleMessage("الإعدادات"),
     "crmMergeSortRangeAsc": MessageLookupByLibrary.simpleMessage(
       "النطاق (من الأقل إلى الأعلى)",
@@ -2074,8 +2772,11 @@ class MessageLookup extends MessageLookupByLibrary {
       "النطاق (من الأعلى إلى الأقل)",
     ),
     "crmMergeUndoMode": MessageLookupByLibrary.simpleMessage("وضع التراجع"),
+    "crmMergeUnit": MessageLookupByLibrary.simpleMessage("الوحدة"),
     "crmMergeWeeks": MessageLookupByLibrary.simpleMessage("أسابيع"),
+    "crmMergeWeight": MessageLookupByLibrary.simpleMessage("الوزن"),
     "crmMergeYears": MessageLookupByLibrary.simpleMessage("سنوات"),
+    "crmMessage": MessageLookupByLibrary.simpleMessage("رسالة"),
     "crmMinimumQuantity": MessageLookupByLibrary.simpleMessage(
       "الحد الأدنى للكمية",
     ),
@@ -2092,9 +2793,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "crmNameArabic": MessageLookupByLibrary.simpleMessage("الاسم"),
     "crmNationalId": MessageLookupByLibrary.simpleMessage("الهوية الوطنية"),
+    "crmNewest": MessageLookupByLibrary.simpleMessage("الأحدث"),
     "crmNext": MessageLookupByLibrary.simpleMessage("التالي"),
     "crmNextActivity": MessageLookupByLibrary.simpleMessage("النشاط القادم"),
     "crmNo": MessageLookupByLibrary.simpleMessage("رقم"),
+    "crmNoBillingContractsFound": MessageLookupByLibrary.simpleMessage(
+      "لا توجد باقات فوترة وعقود.",
+    ),
     "crmNoCategoriesAvailable": MessageLookupByLibrary.simpleMessage(
       "لا توجد فئات متاحة",
     ),
@@ -2110,6 +2815,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmNoTagsAvailable": MessageLookupByLibrary.simpleMessage(
       "لا توجد وسوم متاحة",
     ),
+    "crmNoTemplateId": MessageLookupByLibrary.simpleMessage(
+      "لا يوجد معرف للقالب",
+    ),
     "crmNoTemplates": MessageLookupByLibrary.simpleMessage(
       "لا توجد قوالب متاحة بعد",
     ),
@@ -2118,10 +2826,14 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "crmNote": MessageLookupByLibrary.simpleMessage("ملاحظة"),
     "crmNoteArabic": MessageLookupByLibrary.simpleMessage("ملاحظة"),
+    "crmNotes": MessageLookupByLibrary.simpleMessage("ملاحظات"),
     "crmNumberOfColumns": MessageLookupByLibrary.simpleMessage("عدد الأعمدة"),
+    "crmNumberOfFields": MessageLookupByLibrary.simpleMessage("عدد الحقول"),
     "crmOK": MessageLookupByLibrary.simpleMessage("حسناً"),
+    "crmOldest": MessageLookupByLibrary.simpleMessage("الأقدم"),
     "crmOwner": MessageLookupByLibrary.simpleMessage("المالك"),
     "crmPage": MessageLookupByLibrary.simpleMessage("صفحة"),
+    "crmPaymentTerms": MessageLookupByLibrary.simpleMessage("شروط الدفع"),
     "crmPercentage": MessageLookupByLibrary.simpleMessage("نسبة مئوية (%)"),
     "crmPerson": MessageLookupByLibrary.simpleMessage("فرد"),
     "crmPersons": MessageLookupByLibrary.simpleMessage("الأفراد"),
@@ -2182,6 +2894,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmProductsCategory": MessageLookupByLibrary.simpleMessage("فئة المنتجات"),
     "crmProspect": MessageLookupByLibrary.simpleMessage("محتمل"),
     "crmProvince": MessageLookupByLibrary.simpleMessage("المنطقة / المحافظة"),
+    "crmRange": MessageLookupByLibrary.simpleMessage("المدى"),
     "crmRelationship": MessageLookupByLibrary.simpleMessage("العلاقات"),
     "crmRelationshipAddPrompt": MessageLookupByLibrary.simpleMessage(
       "اضغط على زر الإضافة لإضافة علاقة جديدة",
@@ -2209,6 +2922,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmRemoveRelationshipConfirm": MessageLookupByLibrary.simpleMessage(
       "هل أنت متأكد من رغبتك في حذف هذه العلاقة بالكامل؟",
     ),
+    "crmRemoveSection": MessageLookupByLibrary.simpleMessage("إزالة القسم"),
+    "crmRemoveSectionSubtitle": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد من إزالة هذا القسم؟",
+    ),
     "crmRemoveSelection": MessageLookupByLibrary.simpleMessage("إزالة المحدد"),
     "crmRemoveTerm": MessageLookupByLibrary.simpleMessage("حذف المصطلح"),
     "crmRemoveTermConfirm": MessageLookupByLibrary.simpleMessage(
@@ -2217,16 +2934,19 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmRemovedSuccessfully": MessageLookupByLibrary.simpleMessage(
       "تمت الإزالة بنجاح .",
     ),
+    "crmRequireDeposit": MessageLookupByLibrary.simpleMessage("طلب دفعة أولى"),
     "crmRequiredField": MessageLookupByLibrary.simpleMessage("هذا الحقل مطلوب"),
     "crmRetry": MessageLookupByLibrary.simpleMessage("إعادة المحاولة"),
     "crmReviewBulkUpload": MessageLookupByLibrary.simpleMessage(
       "مراجعة الرفع الجماعي",
     ),
+    "crmRow": MessageLookupByLibrary.simpleMessage("الصف"),
     "crmRule": MessageLookupByLibrary.simpleMessage("القاعدة"),
     "crmRuleDetails": MessageLookupByLibrary.simpleMessage("تفاصيل القاعدة"),
     "crmRuleName": MessageLookupByLibrary.simpleMessage("اسم القاعدة"),
     "crmRuleNameAr": MessageLookupByLibrary.simpleMessage("اسم القاعدة"),
     "crmSave": MessageLookupByLibrary.simpleMessage("حفظ"),
+    "crmSaveAsSection": MessageLookupByLibrary.simpleMessage("حفظ كقسم"),
     "crmSaveCategory": MessageLookupByLibrary.simpleMessage("حفظ الفئة"),
     "crmSaveCategoryConfirm": MessageLookupByLibrary.simpleMessage(
       "هل أنت متأكد من رغبتك في حفظ هذه الفئة؟",
@@ -2237,6 +2957,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmSaveClientRecord": MessageLookupByLibrary.simpleMessage(
       "حفظ بيانات العميل",
     ),
+    "crmSaveFailed": MessageLookupByLibrary.simpleMessage("فشل الحفظ"),
     "crmSaveForLater": MessageLookupByLibrary.simpleMessage("حفظ للمستقبل"),
     "crmSaveFormat": MessageLookupByLibrary.simpleMessage("صيغة الحفظ"),
     "crmSaveRelationship": MessageLookupByLibrary.simpleMessage("حفظ العلاقة"),
@@ -2255,7 +2976,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "الأقسام المحفوظة",
     ),
     "crmSavedView": MessageLookupByLibrary.simpleMessage("العرض المحفوظ"),
+    "crmSaving": MessageLookupByLibrary.simpleMessage("جاري الحفظ..."),
     "crmSearch": MessageLookupByLibrary.simpleMessage("بحث"),
+    "crmSecondRow": MessageLookupByLibrary.simpleMessage("الصف الثاني"),
     "crmSection": MessageLookupByLibrary.simpleMessage("قسم"),
     "crmSectionBlacklist": MessageLookupByLibrary.simpleMessage(
       "القائمة السوداء",
@@ -2296,6 +3019,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "crmSectionName": MessageLookupByLibrary.simpleMessage("اسم القسم"),
     "crmSectionNameAr": MessageLookupByLibrary.simpleMessage("اسم القسم"),
+    "crmSectionNotFound": MessageLookupByLibrary.simpleMessage(
+      "القسم غير موجود",
+    ),
     "crmSectionProducts": MessageLookupByLibrary.simpleMessage("المنتجات"),
     "crmSectionProductsDesc": MessageLookupByLibrary.simpleMessage(
       "إدارة المنتجات الخاصة بك",
@@ -2326,6 +3052,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmShowBothLanguages": MessageLookupByLibrary.simpleMessage(
       "إظهار لغة AR + EN",
     ),
+    "crmSignature": MessageLookupByLibrary.simpleMessage("التوقيع"),
+    "crmSixthRow": MessageLookupByLibrary.simpleMessage("الصف السادس"),
     "crmSize": MessageLookupByLibrary.simpleMessage("الحجم"),
     "crmSort": MessageLookupByLibrary.simpleMessage("ترتيب"),
     "crmSortNameAZ": MessageLookupByLibrary.simpleMessage("الاسم تصاعدي"),
@@ -2378,7 +3106,17 @@ class MessageLookup extends MessageLookupByLibrary {
       "اضغط على زر الإضافة لإنشاء وسم جديد",
     ),
     "crmTaxNumber": MessageLookupByLibrary.simpleMessage("الرقم الضريبي"),
+    "crmTaxPercentage": MessageLookupByLibrary.simpleMessage(
+      "نسبة الضريبة (%)",
+    ),
     "crmTeams": MessageLookupByLibrary.simpleMessage("الفرق"),
+    "crmTemplateActive": MessageLookupByLibrary.simpleMessage("نشط"),
+    "crmTemplateCreatedSuccess": MessageLookupByLibrary.simpleMessage(
+      "تم إنشاء القالب بنجاح",
+    ),
+    "crmTemplateDeleted": MessageLookupByLibrary.simpleMessage("محذوف"),
+    "crmTemplateDetails": MessageLookupByLibrary.simpleMessage("تفاصيل القالب"),
+    "crmTemplateInactive": MessageLookupByLibrary.simpleMessage("غير نشط"),
     "crmTemplates": MessageLookupByLibrary.simpleMessage("القوالب"),
     "crmTermAddedSuccess": MessageLookupByLibrary.simpleMessage(
       "تمت إضافة المصطلح بنجاح",
@@ -2395,7 +3133,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "crmTermsCount": MessageLookupByLibrary.simpleMessage("الشروط:"),
     "crmTermsDetails": MessageLookupByLibrary.simpleMessage("تفاصيل المصطلح"),
+    "crmTextColor": MessageLookupByLibrary.simpleMessage("النص"),
     "crmTextHere": MessageLookupByLibrary.simpleMessage("أدخل النص هنا"),
+    "crmThirdRow": MessageLookupByLibrary.simpleMessage("الصف الثالث"),
     "crmTime": MessageLookupByLibrary.simpleMessage("الوقت"),
     "crmTo": MessageLookupByLibrary.simpleMessage("إلى"),
     "crmToAddSectionHint": MessageLookupByLibrary.simpleMessage(
@@ -2409,6 +3149,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmTypes": MessageLookupByLibrary.simpleMessage("الأنواع"),
     "crmTypesCount": MessageLookupByLibrary.simpleMessage("الأنواع:"),
     "crmUnique": MessageLookupByLibrary.simpleMessage("فريد"),
+    "crmUpload": MessageLookupByLibrary.simpleMessage("رفع"),
     "crmValidateImportedClients": MessageLookupByLibrary.simpleMessage(
       "التحقق من بيانات العملاء المستوردة قبل التفعيل",
     ),
@@ -2427,6 +3168,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "crmWarningLanguageCheckTitle": MessageLookupByLibrary.simpleMessage(
       "تحذير فحص اللغة",
     ),
+    "crmWatermark": MessageLookupByLibrary.simpleMessage("العلامة المائية"),
     "crmWebsite": MessageLookupByLibrary.simpleMessage("الموقع الإلكتروني"),
     "crmWriteHere": MessageLookupByLibrary.simpleMessage("اكتب هنا"),
     "croatian": MessageLookupByLibrary.simpleMessage("كرواتي"),
@@ -2443,6 +3185,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "مالك الضابط الحالي",
     ),
     "currentLabel": MessageLookupByLibrary.simpleMessage("حالية"),
+    "currentTag": MessageLookupByLibrary.simpleMessage("الحالي"),
     "current_details": MessageLookupByLibrary.simpleMessage("التفاصيل الحالية"),
     "custom": MessageLookupByLibrary.simpleMessage("مخصص"),
     "customTable": MessageLookupByLibrary.simpleMessage("جدول مخصص"),
@@ -2496,12 +3239,875 @@ class MessageLookup extends MessageLookupByLibrary {
     "days": MessageLookupByLibrary.simpleMessage("ايام"),
     "daysAgo": MessageLookupByLibrary.simpleMessage("قبل أيام"),
     "daysOff": MessageLookupByLibrary.simpleMessage("أيام الإجازة"),
+    "dbAccessStatusActive": MessageLookupByLibrary.simpleMessage("نشط"),
+    "dbAccessStatusDeactivated": MessageLookupByLibrary.simpleMessage("موقوف"),
+    "dbAccessStatusRemoved": MessageLookupByLibrary.simpleMessage("مُزال"),
+    "dbAccessStatusScheduled": MessageLookupByLibrary.simpleMessage("مجدول"),
+    "dbAccessTypeOpen": MessageLookupByLibrary.simpleMessage("وصول مفتوح"),
+    "dbAccessTypePersonal": MessageLookupByLibrary.simpleMessage("وصول شخصي"),
+    "dbAccessTypeRestricted": MessageLookupByLibrary.simpleMessage("وصول مقيد"),
+    "dbArabicDatabaseTitleLabel": MessageLookupByLibrary.simpleMessage(
+      "عنوان قاعدة بيانات",
+    ),
+    "dbArabicDescriptionLabel": MessageLookupByLibrary.simpleMessage("الوصف"),
+    "dbArabicHint": MessageLookupByLibrary.simpleMessage("اكتب هنا"),
+    "dbArabicTableNameLabel": MessageLookupByLibrary.simpleMessage(
+      "اسم الجدول",
+    ),
+    "dbColumnTypeCurrency": MessageLookupByLibrary.simpleMessage("عملة"),
+    "dbColumnTypeDate": MessageLookupByLibrary.simpleMessage("تاريخ"),
+    "dbColumnTypeGeneral": MessageLookupByLibrary.simpleMessage("عام"),
+    "dbColumnTypeNumber": MessageLookupByLibrary.simpleMessage("رقم"),
+    "dbColumnTypePercentage": MessageLookupByLibrary.simpleMessage(
+      "نسبة مئوية",
+    ),
+    "dbColumnTypeTime": MessageLookupByLibrary.simpleMessage("وقت"),
+    "dbCommentNoIdCannotDelete": MessageLookupByLibrary.simpleMessage(
+      "هذا التعليق بلا معرّف، لذا لا يمكن حذفه.",
+    ),
+    "dbCommentNoIdCannotReact": MessageLookupByLibrary.simpleMessage(
+      "هذا التعليق بلا معرّف، لذا لا يمكن التفاعل معه.",
+    ),
+    "dbCommentNoLongerExists": MessageLookupByLibrary.simpleMessage(
+      "هذا التعليق لم يعد موجودًا.",
+    ),
+    "dbCommentsAccessHintPrivate": MessageLookupByLibrary.simpleMessage(
+      "خاص: يمكن للمسؤولين فقط عرض التعليقات وإدارتها.",
+    ),
+    "dbCommentsAccessHintShared": MessageLookupByLibrary.simpleMessage(
+      "مشترك: يمكن لجميع الموظفين عرض التعليقات والرد عليها والتفاعل معها.",
+    ),
+    "dbCommentsAccessPrivate": MessageLookupByLibrary.simpleMessage("خاص"),
+    "dbCommentsAccessShared": MessageLookupByLibrary.simpleMessage("مشترك"),
+    "dbCreateAccess": MessageLookupByLibrary.simpleMessage("الوصول:"),
+    "dbCreateAccessManagement": MessageLookupByLibrary.simpleMessage(
+      "إدارة الوصول",
+    ),
+    "dbCreateAccessManagementCrumb": MessageLookupByLibrary.simpleMessage(
+      "إدارة الوصول",
+    ),
+    "dbCreateAccessRequired": MessageLookupByLibrary.simpleMessage(
+      "اختر نوع الوصول",
+    ),
+    "dbCreateAddMembers": MessageLookupByLibrary.simpleMessage("إضافة أعضاء"),
+    "dbCreateAll": MessageLookupByLibrary.simpleMessage("الكل"),
+    "dbCreateApply": MessageLookupByLibrary.simpleMessage("تطبيق"),
+    "dbCreateChoosePermissions": MessageLookupByLibrary.simpleMessage(
+      "اختر الصلاحيات",
+    ),
+    "dbCreateClose": MessageLookupByLibrary.simpleMessage("إغلاق"),
+    "dbCreateConfirmCreateSubtitle": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد من إنشاء قاعدة البيانات هذه؟",
+    ),
+    "dbCreateConfirmCreateTitle": MessageLookupByLibrary.simpleMessage(
+      "قاعدة بيانات جديدة",
+    ),
+    "dbCreateCouldNotSave": MessageLookupByLibrary.simpleMessage(
+      "تعذر حفظ قاعدة البيانات. تحقق من الاتصال وحاول مرة أخرى.",
+    ),
+    "dbCreateCreate": MessageLookupByLibrary.simpleMessage("إنشاء"),
+    "dbCreateCreateDatabase": MessageLookupByLibrary.simpleMessage(
+      "إنشاء قاعدة بيانات",
+    ),
+    "dbCreateCreateNewDatabase": MessageLookupByLibrary.simpleMessage(
+      "إنشاء قاعدة بيانات جديدة",
+    ),
+    "dbCreateCreation": MessageLookupByLibrary.simpleMessage("الإنشاء:"),
+    "dbCreateCreationDate": MessageLookupByLibrary.simpleMessage(
+      "تاريخ الإنشاء",
+    ),
+    "dbCreateDatabase": MessageLookupByLibrary.simpleMessage("قاعدة البيانات"),
+    "dbCreateDatabaseBuilder": MessageLookupByLibrary.simpleMessage(
+      "منشئ قواعد البيانات",
+    ),
+    "dbCreateDate": MessageLookupByLibrary.simpleMessage("التاريخ"),
+    "dbCreateDelete": MessageLookupByLibrary.simpleMessage("حذف"),
+    "dbCreateDeleteConfirmSubtitle": m31,
+    "dbCreateDeleteConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "حذف قاعدة البيانات",
+    ),
+    "dbCreateDeleteFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر حذف قاعدة البيانات. تحقق من الاتصال وحاول مرة أخرى.",
+    ),
+    "dbCreateDeleteFailedTitle": MessageLookupByLibrary.simpleMessage(
+      "تعذر الحذف",
+    ),
+    "dbCreateDeleted": MessageLookupByLibrary.simpleMessage("المحذوفة"),
+    "dbCreateDepartment": MessageLookupByLibrary.simpleMessage("القسم"),
+    "dbCreateDeselectAll": MessageLookupByLibrary.simpleMessage(
+      "إلغاء تحديد الكل",
+    ),
+    "dbCreateDiscard": MessageLookupByLibrary.simpleMessage("تجاهل"),
+    "dbCreateDiscardConfirmSubtitle": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد من تجاهل قاعدة البيانات هذه؟",
+    ),
+    "dbCreateDiscardConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "تجاهل التغييرات",
+    ),
+    "dbCreateDraftSavedSubtitle": MessageLookupByLibrary.simpleMessage(
+      "تم حفظ قاعدة البيانات ضمن المسودات. لم يتم منح أي صلاحيات وصول بعد.",
+    ),
+    "dbCreateDraftSavedTitle": MessageLookupByLibrary.simpleMessage(
+      "تم الحفظ كمسودة",
+    ),
+    "dbCreateDrafts": MessageLookupByLibrary.simpleMessage("المسودات"),
+    "dbCreateDuplicateTitle": MessageLookupByLibrary.simpleMessage(
+      "توجد قاعدة بيانات بهذا الاسم بالفعل. غيّر الاسم وحاول مرة أخرى.",
+    ),
+    "dbCreateEdit": MessageLookupByLibrary.simpleMessage("تعديل"),
+    "dbCreateEditNotAvailable": MessageLookupByLibrary.simpleMessage(
+      "لم يتم تفعيل تعديل قاعدة بيانات محفوظة بعد.",
+    ),
+    "dbCreateEditNotAvailableTitle": MessageLookupByLibrary.simpleMessage(
+      "التعديل غير متاح بعد",
+    ),
+    "dbCreateEmployeeInformation": MessageLookupByLibrary.simpleMessage(
+      "بيانات الموظف",
+    ),
+    "dbCreateEndBeforeStart": MessageLookupByLibrary.simpleMessage(
+      "يجب أن يكون تاريخ النهاية بعد تاريخ البداية",
+    ),
+    "dbCreateEndDateOfAccess": MessageLookupByLibrary.simpleMessage(
+      "تاريخ نهاية الوصول",
+    ),
+    "dbCreateErrorTitle": MessageLookupByLibrary.simpleMessage("حدث خطأ ما"),
+    "dbCreateFilter": MessageLookupByLibrary.simpleMessage("تصفية"),
+    "dbCreateFinishTheseFirst": MessageLookupByLibrary.simpleMessage(
+      "أكمل هذه قبل منح الوصول:",
+    ),
+    "dbCreateGrantAccess": MessageLookupByLibrary.simpleMessage("منح الوصول"),
+    "dbCreateIncompleteGrants": MessageLookupByLibrary.simpleMessage(
+      "اختر مستوى الصلاحية وكلا التاريخين لكل مجموعة.",
+    ),
+    "dbCreateIncompleteGrantsFor": m32,
+    "dbCreateIncompleteTitle": MessageLookupByLibrary.simpleMessage(
+      "معلومات ناقصة",
+    ),
+    "dbCreateLastUpdate": MessageLookupByLibrary.simpleMessage("آخر تحديث"),
+    "dbCreateNext": MessageLookupByLibrary.simpleMessage("التالي"),
+    "dbCreateNextStepPending": MessageLookupByLibrary.simpleMessage(
+      "تم حفظ البيانات. لم يتم ربط شاشة إدارة الوصول بعد.",
+    ),
+    "dbCreateNextStepPendingTitle": MessageLookupByLibrary.simpleMessage(
+      "تم حفظ البيانات",
+    ),
+    "dbCreateNo": MessageLookupByLibrary.simpleMessage("لا"),
+    "dbCreateNoDatabasesYet": MessageLookupByLibrary.simpleMessage(
+      "لا توجد قواعد بيانات بعد",
+    ),
+    "dbCreateNoDeletedDatabases": MessageLookupByLibrary.simpleMessage(
+      "لا توجد عناصر محذوفة.",
+    ),
+    "dbCreateNoEmployeesFound": MessageLookupByLibrary.simpleMessage(
+      "لا يوجد موظفون",
+    ),
+    "dbCreateNoMembersSelected": MessageLookupByLibrary.simpleMessage(
+      "لم يتم اختيار أعضاء بعد",
+    ),
+    "dbCreateNoOfTables": MessageLookupByLibrary.simpleMessage("عدد الجداول:"),
+    "dbCreateOpen": MessageLookupByLibrary.simpleMessage("مفتوح"),
+    "dbCreatePermissions": MessageLookupByLibrary.simpleMessage("الصلاحيات"),
+    "dbCreatePersonal": MessageLookupByLibrary.simpleMessage("شخصي"),
+    "dbCreatePickDepartmentFirst": MessageLookupByLibrary.simpleMessage(
+      "اختر قسماً واحداً أو أكثر لتحديد صلاحياته واختيار الأشخاص.",
+    ),
+    "dbCreatePickSomeoneFirst": MessageLookupByLibrary.simpleMessage(
+      "اختر شخصًا واحدًا على الأقل قبل المتابعة.",
+    ),
+    "dbCreateReset": MessageLookupByLibrary.simpleMessage("إعادة تعيين"),
+    "dbCreateRestore": MessageLookupByLibrary.simpleMessage("استعادة"),
+    "dbCreateRestoreConfirmSubtitleDraft": m33,
+    "dbCreateRestoreConfirmSubtitleLive": m34,
+    "dbCreateRestoreConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "استعادة قاعدة البيانات",
+    ),
+    "dbCreateRestoreFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذرت استعادة قاعدة البيانات. تحقق من الاتصال وحاول مرة أخرى.",
+    ),
+    "dbCreateRestoreFailedTitle": MessageLookupByLibrary.simpleMessage(
+      "تعذرت الاستعادة",
+    ),
+    "dbCreateRestricted": MessageLookupByLibrary.simpleMessage("مقيد"),
+    "dbCreateRetry": MessageLookupByLibrary.simpleMessage("إعادة المحاولة"),
+    "dbCreateReview": MessageLookupByLibrary.simpleMessage("مراجعة"),
+    "dbCreateSaveDraftSubtitle": MessageLookupByLibrary.simpleMessage(
+      "هل تريد حفظ قاعدة البيانات كمسودة؟ ستجدها ضمن المسودات.",
+    ),
+    "dbCreateSaveDraftTitle": MessageLookupByLibrary.simpleMessage(
+      "حفظ لوقت لاحق",
+    ),
+    "dbCreateSaveForLater": MessageLookupByLibrary.simpleMessage(
+      "حفظ لوقت لاحق",
+    ),
+    "dbCreateSearch": MessageLookupByLibrary.simpleMessage("بحث"),
+    "dbCreateSelectAccess": MessageLookupByLibrary.simpleMessage(
+      "اختر نوع الوصول",
+    ),
+    "dbCreateSelectAll": MessageLookupByLibrary.simpleMessage("تحديد الكل"),
+    "dbCreateSort": MessageLookupByLibrary.simpleMessage("ترتيب"),
+    "dbCreateStartDateOfAccess": MessageLookupByLibrary.simpleMessage(
+      "تاريخ بداية الوصول",
+    ),
+    "dbCreateSuccessSubtitle": MessageLookupByLibrary.simpleMessage(
+      "تم إنشاء قاعدة البيانات بنجاح",
+    ),
+    "dbCreateSuccessTitle": MessageLookupByLibrary.simpleMessage("تم بنجاح"),
+    "dbCreateSummary": MessageLookupByLibrary.simpleMessage("الملخص"),
+    "dbCreateTitleArRequired": MessageLookupByLibrary.simpleMessage(
+      "العنوان بالعربية مطلوب",
+    ),
+    "dbCreateTitleEnRequired": MessageLookupByLibrary.simpleMessage(
+      "العنوان بالإنجليزية مطلوب",
+    ),
+    "dbCreateTitleTooShort": m35,
+    "dbCreateTotalDepartments": MessageLookupByLibrary.simpleMessage(
+      "إجمالي الأقسام",
+    ),
+    "dbCreateTotalEmployees": MessageLookupByLibrary.simpleMessage(
+      "إجمالي الموظفين",
+    ),
+    "dbCreateYes": MessageLookupByLibrary.simpleMessage("نعم"),
+    "dbDatabaseNoLongerExists": MessageLookupByLibrary.simpleMessage(
+      "قاعدة البيانات هذه لم تعد موجودة.",
+    ),
+    "dbDetailsAccess": MessageLookupByLibrary.simpleMessage("الوصول"),
+    "dbDetailsAccessBegins": MessageLookupByLibrary.simpleMessage(
+      "بداية الوصول",
+    ),
+    "dbDetailsAccessCrumb": MessageLookupByLibrary.simpleMessage("الوصول"),
+    "dbDetailsAccessEnds": MessageLookupByLibrary.simpleMessage("نهاية الوصول"),
+    "dbDetailsAccessManagement": MessageLookupByLibrary.simpleMessage(
+      "إدارة الوصول",
+    ),
+    "dbDetailsAccessManagementLabel": MessageLookupByLibrary.simpleMessage(
+      "إدارة الوصول:",
+    ),
+    "dbDetailsAccessSavedSubtitle": MessageLookupByLibrary.simpleMessage(
+      "تم تعديل قاعدة البيانات بنجاح",
+    ),
+    "dbDetailsAccessSavedTitle": MessageLookupByLibrary.simpleMessage(
+      "تم تحديث الوصول",
+    ),
+    "dbDetailsAccessTypeChangeSubtitle": m36,
+    "dbDetailsAccessTypeChangeTitle": MessageLookupByLibrary.simpleMessage(
+      "تغيير نوع الوصول؟",
+    ),
+    "dbDetailsActiveChip": MessageLookupByLibrary.simpleMessage("نشط"),
+    "dbDetailsAll": MessageLookupByLibrary.simpleMessage("الكل"),
+    "dbDetailsApply": MessageLookupByLibrary.simpleMessage("تطبيق"),
+    "dbDetailsChoosePermissions": MessageLookupByLibrary.simpleMessage(
+      "اختر الصلاحيات",
+    ),
+    "dbDetailsClose": MessageLookupByLibrary.simpleMessage("إغلاق"),
+    "dbDetailsColAccessStatus": MessageLookupByLibrary.simpleMessage(
+      "حالة الوصول",
+    ),
+    "dbDetailsColAccessType": MessageLookupByLibrary.simpleMessage(
+      "نوع الوصول",
+    ),
+    "dbDetailsColDepartment": MessageLookupByLibrary.simpleMessage("القسم"),
+    "dbDetailsColEnd": MessageLookupByLibrary.simpleMessage(
+      "تاريخ نهاية الوصول",
+    ),
+    "dbDetailsColGrantor": MessageLookupByLibrary.simpleMessage("مانح الوصول"),
+    "dbDetailsColJobTitle": MessageLookupByLibrary.simpleMessage(
+      "المسمى الوظيفي",
+    ),
+    "dbDetailsColName": MessageLookupByLibrary.simpleMessage("اسم الموظف"),
+    "dbDetailsColStart": MessageLookupByLibrary.simpleMessage(
+      "تاريخ بداية الوصول",
+    ),
+    "dbDetailsCouldNotLoad": MessageLookupByLibrary.simpleMessage(
+      "تعذر قراءة قاعدة البيانات. تحقق من الاتصال وحاول مرة أخرى.",
+    ),
+    "dbDetailsCouldNotSave": MessageLookupByLibrary.simpleMessage(
+      "تعذر حفظ التغييرات. تحقق من الاتصال وحاول مرة أخرى.",
+    ),
+    "dbDetailsCreationLabel": MessageLookupByLibrary.simpleMessage("الإنشاء:"),
+    "dbDetailsDatabase": MessageLookupByLibrary.simpleMessage("قاعدة البيانات"),
+    "dbDetailsDatabaseDetails": MessageLookupByLibrary.simpleMessage(
+      "تفاصيل قاعدة البيانات",
+    ),
+    "dbDetailsDate": MessageLookupByLibrary.simpleMessage("التاريخ"),
+    "dbDetailsDeactivatedChip": MessageLookupByLibrary.simpleMessage("موقوف"),
+    "dbDetailsDelete": MessageLookupByLibrary.simpleMessage("حذف"),
+    "dbDetailsDeleteConfirmSubtitle": m37,
+    "dbDetailsDeleteConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "حذف قاعدة البيانات",
+    ),
+    "dbDetailsDeleteFailedTitle": MessageLookupByLibrary.simpleMessage(
+      "تعذر الحذف",
+    ),
+    "dbDetailsDeletedNoAccessChange": MessageLookupByLibrary.simpleMessage(
+      "قاعدة البيانات هذه محذوفة. استعدها قبل تغيير من لديه صلاحية الوصول.",
+    ),
+    "dbDetailsDeletedSubtitle": m38,
+    "dbDetailsDeletedTitle": MessageLookupByLibrary.simpleMessage(
+      "تم حذف قاعدة البيانات",
+    ),
+    "dbDetailsDepartment": MessageLookupByLibrary.simpleMessage("القسم"),
+    "dbDetailsDepartmentLabel": MessageLookupByLibrary.simpleMessage("القسم:"),
+    "dbDetailsDescriptionLabel": MessageLookupByLibrary.simpleMessage("الوصف:"),
+    "dbDetailsDeselectAll": MessageLookupByLibrary.simpleMessage(
+      "إلغاء تحديد الكل",
+    ),
+    "dbDetailsDetailsCrumb": m39,
+    "dbDetailsDiscardChanges": MessageLookupByLibrary.simpleMessage(
+      "تجاهل التغييرات",
+    ),
+    "dbDetailsDiscardConfirmSubtitle": MessageLookupByLibrary.simpleMessage(
+      "لم يتم حفظ تغييراتك. هل تريد الخروج بدون حفظ؟",
+    ),
+    "dbDetailsDiscardConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "تجاهل التغييرات",
+    ),
+    "dbDetailsDuplicateTitle": MessageLookupByLibrary.simpleMessage(
+      "توجد قاعدة بيانات أخرى بهذا الاسم. غيّره وحاول مرة أخرى.",
+    ),
+    "dbDetailsEdit": MessageLookupByLibrary.simpleMessage("تعديل"),
+    "dbDetailsEditAccess": MessageLookupByLibrary.simpleMessage("تعديل الوصول"),
+    "dbDetailsEditConfirmSubtitle": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد من تعديل قاعدة البيانات هذه؟",
+    ),
+    "dbDetailsEditConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "تعديل قاعدة البيانات",
+    ),
+    "dbDetailsEditSuccessSubtitle": MessageLookupByLibrary.simpleMessage(
+      "تم تعديل قاعدة البيانات بنجاح",
+    ),
+    "dbDetailsEditingAccessManagement": MessageLookupByLibrary.simpleMessage(
+      "تعديل إدارة الوصول",
+    ),
+    "dbDetailsEditingCrumb": m40,
+    "dbDetailsEditingDatabaseAccess": MessageLookupByLibrary.simpleMessage(
+      "تعديل صلاحيات قاعدة البيانات",
+    ),
+    "dbDetailsEmployeeInformation": MessageLookupByLibrary.simpleMessage(
+      "بيانات الموظف",
+    ),
+    "dbDetailsEndDateOfAccess": MessageLookupByLibrary.simpleMessage(
+      "تاريخ نهاية الوصول",
+    ),
+    "dbDetailsErrorTitle": MessageLookupByLibrary.simpleMessage("حدث خطأ ما"),
+    "dbDetailsExpand": MessageLookupByLibrary.simpleMessage("عرض"),
+    "dbDetailsExport": MessageLookupByLibrary.simpleMessage("تصدير"),
+    "dbDetailsExportDone": m41,
+    "dbDetailsExportDoneTitle": MessageLookupByLibrary.simpleMessage(
+      "تم التصدير",
+    ),
+    "dbDetailsExportEmpty": MessageLookupByLibrary.simpleMessage(
+      "لا توجد صلاحيات معروضة لتصديرها.",
+    ),
+    "dbDetailsExportEmptyTitle": MessageLookupByLibrary.simpleMessage(
+      "لا شيء للتصدير",
+    ),
+    "dbDetailsExportFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر كتابة قائمة الصلاحيات في ملف.",
+    ),
+    "dbDetailsExportFailedTitle": MessageLookupByLibrary.simpleMessage(
+      "تعذر التصدير",
+    ),
+    "dbDetailsFilter": MessageLookupByLibrary.simpleMessage("تصفية"),
+    "dbDetailsGrantAccess": MessageLookupByLibrary.simpleMessage("منح الوصول"),
+    "dbDetailsHide": MessageLookupByLibrary.simpleMessage("إخفاء"),
+    "dbDetailsIncompleteGrants": MessageLookupByLibrary.simpleMessage(
+      "اختر مستوى الصلاحية وكلا التاريخين لكل مجموعة.",
+    ),
+    "dbDetailsIncompleteRows": MessageLookupByLibrary.simpleMessage(
+      "اختر مستوى الصلاحية وكلا التاريخين لكل شخص اخترته.",
+    ),
+    "dbDetailsIncompleteTitle": MessageLookupByLibrary.simpleMessage(
+      "معلومات ناقصة",
+    ),
+    "dbDetailsJobTitleLabel": MessageLookupByLibrary.simpleMessage(
+      "المسمى الوظيفي:",
+    ),
+    "dbDetailsLastEditLabel": MessageLookupByLibrary.simpleMessage(
+      "آخر تعديل:",
+    ),
+    "dbDetailsNo": MessageLookupByLibrary.simpleMessage("لا"),
+    "dbDetailsNoAccessMatches": MessageLookupByLibrary.simpleMessage(
+      "لا توجد صلاحيات مطابقة لهذه التصفية.",
+    ),
+    "dbDetailsNoAccessYet": MessageLookupByLibrary.simpleMessage(
+      "لم يتم منح صلاحية الوصول لأحد بعد.",
+    ),
+    "dbDetailsNoDescription": MessageLookupByLibrary.simpleMessage(
+      "لم تتم إضافة وصف.",
+    ),
+    "dbDetailsNoEmployeesFound": MessageLookupByLibrary.simpleMessage(
+      "لا يوجد موظفون",
+    ),
+    "dbDetailsNothingChanged": MessageLookupByLibrary.simpleMessage(
+      "لم يتم تغيير أي شيء في هذه الشاشة بعد.",
+    ),
+    "dbDetailsNothingChangedTitle": MessageLookupByLibrary.simpleMessage(
+      "لا توجد تغييرات",
+    ),
+    "dbDetailsPermissions": MessageLookupByLibrary.simpleMessage("الصلاحيات"),
+    "dbDetailsPersonalAccessExplainer": MessageLookupByLibrary.simpleMessage(
+      "قاعدة البيانات الشخصية ملك لك وحدك. لا يتم منح الوصول لأي شخص آخر، لذلك لا يوجد ما يتم ضبطه هنا.",
+    ),
+    "dbDetailsPersonalDropsGrants": m42,
+    "dbDetailsPersonalDropsGrantsTitle": MessageLookupByLibrary.simpleMessage(
+      "إزالة جميع الصلاحيات؟",
+    ),
+    "dbDetailsPickDepartmentFirst": MessageLookupByLibrary.simpleMessage(
+      "اختر قسمًا أو أكثر بالأعلى، ثم اختر الأشخاص داخله.",
+    ),
+    "dbDetailsPickSomeoneFirst": MessageLookupByLibrary.simpleMessage(
+      "اختر شخصًا واحدًا على الأقل قبل المتابعة.",
+    ),
+    "dbDetailsRemovedChip": MessageLookupByLibrary.simpleMessage("مُزال"),
+    "dbDetailsReset": MessageLookupByLibrary.simpleMessage("إعادة تعيين"),
+    "dbDetailsRetry": MessageLookupByLibrary.simpleMessage("إعادة المحاولة"),
+    "dbDetailsReview": MessageLookupByLibrary.simpleMessage("مراجعة"),
+    "dbDetailsSave": MessageLookupByLibrary.simpleMessage("حفظ"),
+    "dbDetailsScheduledChip": MessageLookupByLibrary.simpleMessage("مجدول"),
+    "dbDetailsSearch": MessageLookupByLibrary.simpleMessage("بحث"),
+    "dbDetailsSelectAll": MessageLookupByLibrary.simpleMessage("تحديد الكل"),
+    "dbDetailsSelectPermission": MessageLookupByLibrary.simpleMessage(
+      "اختر الصلاحية",
+    ),
+    "dbDetailsSort": MessageLookupByLibrary.simpleMessage("ترتيب"),
+    "dbDetailsStartDateOfAccess": MessageLookupByLibrary.simpleMessage(
+      "تاريخ بداية الوصول",
+    ),
+    "dbDetailsSummary": MessageLookupByLibrary.simpleMessage("الملخص"),
+    "dbDetailsTable": MessageLookupByLibrary.simpleMessage("جدول"),
+    "dbDetailsTitleArRequired": MessageLookupByLibrary.simpleMessage(
+      "العنوان بالعربية مطلوب",
+    ),
+    "dbDetailsTitleEnRequired": MessageLookupByLibrary.simpleMessage(
+      "العنوان بالإنجليزية مطلوب",
+    ),
+    "dbDetailsTitleTooShort": m43,
+    "dbDetailsTotalDepartments": MessageLookupByLibrary.simpleMessage(
+      "إجمالي الأقسام",
+    ),
+    "dbDetailsTotalEmployees": MessageLookupByLibrary.simpleMessage(
+      "إجمالي الموظفين",
+    ),
+    "dbDetailsYes": MessageLookupByLibrary.simpleMessage("نعم"),
+    "dbEmployeeListLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر تحميل قائمة الموظفين. حاول مرة أخرى.",
+    ),
+    "dbEnglishDatabaseTitleLabel": MessageLookupByLibrary.simpleMessage(
+      "Database Title",
+    ),
+    "dbEnglishDescriptionLabel": MessageLookupByLibrary.simpleMessage(
+      "Description",
+    ),
+    "dbEnglishHint": MessageLookupByLibrary.simpleMessage("Text here"),
+    "dbExportFailedMessage": MessageLookupByLibrary.simpleMessage(
+      "تعذر تصدير البيانات",
+    ),
+    "dbImportModeAppend": MessageLookupByLibrary.simpleMessage("إضافة"),
+    "dbImportModeOverwrite": MessageLookupByLibrary.simpleMessage("استبدال"),
+    "dbListSeparator": MessageLookupByLibrary.simpleMessage("، "),
+    "dbNoCompanySignedIn": MessageLookupByLibrary.simpleMessage(
+      "لم يتم تسجيل الدخول إلى أي شركة، لذا لا يمكن الوصول إلى قواعد البيانات.",
+    ),
+    "dbNoIdCannotDelete": MessageLookupByLibrary.simpleMessage(
+      "لا يمكن حذف قاعدة البيانات هذه لأنها بلا معرّف.",
+    ),
+    "dbNoIdCannotRead": MessageLookupByLibrary.simpleMessage(
+      "لا يمكن قراءة قاعدة البيانات هذه لأنها بلا معرّف.",
+    ),
+    "dbNoIdCannotReadOrSave": MessageLookupByLibrary.simpleMessage(
+      "لا يمكن قراءة قاعدة البيانات هذه أو حفظها لأنها بلا معرّف.",
+    ),
+    "dbNoIdCannotRestore": MessageLookupByLibrary.simpleMessage(
+      "لا يمكن استعادة قاعدة البيانات هذه لأنها بلا معرّف.",
+    ),
+    "dbNoIdCannotSave": MessageLookupByLibrary.simpleMessage(
+      "لا يمكن حفظ قاعدة البيانات هذه لأنها بلا معرّف.",
+    ),
+    "dbNoIdCannotUpdate": MessageLookupByLibrary.simpleMessage(
+      "لا يمكن تحديث قاعدة البيانات هذه لأنها بلا معرّف.",
+    ),
+    "dbNoRequestsToExport": MessageLookupByLibrary.simpleMessage(
+      "لا توجد طلبات للتصدير",
+    ),
+    "dbPermissionCustom": MessageLookupByLibrary.simpleMessage("مخصص"),
+    "dbPermissionEdit": MessageLookupByLibrary.simpleMessage("تعديل"),
+    "dbPermissionExport": MessageLookupByLibrary.simpleMessage("تصدير"),
+    "dbPermissionFullAccess": MessageLookupByLibrary.simpleMessage("وصول كامل"),
+    "dbPermissionView": MessageLookupByLibrary.simpleMessage("عرض"),
+    "dbRequesterDepartment": MessageLookupByLibrary.simpleMessage(
+      "قسم مقدم الطلب",
+    ),
+    "dbSortAscending": MessageLookupByLibrary.simpleMessage("تصاعدي"),
+    "dbSortDescending": MessageLookupByLibrary.simpleMessage("تنازلي"),
+    "dbSortLastUpdated": MessageLookupByLibrary.simpleMessage("آخر تحديث"),
+    "dbStoragePermissionMessage": MessageLookupByLibrary.simpleMessage(
+      "يلزم إذن التخزين لتصدير الملف",
+    ),
+    "dbStoragePermissionTitle": MessageLookupByLibrary.simpleMessage(
+      "تم رفض الإذن",
+    ),
+    "dbTableAccess": MessageLookupByLibrary.simpleMessage("الوصول"),
+    "dbTableAccessCrumb": MessageLookupByLibrary.simpleMessage("الوصول"),
+    "dbTableAccessLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذّر تحميل قائمة الصلاحيات الحالية. الحفظ الآن سيزيل صلاحيات الجميع الحالية، لذا حاول مرة أخرى أولاً.",
+    ),
+    "dbTableAccessSavedSubtitle": MessageLookupByLibrary.simpleMessage(
+      "تم تحديث الوصول للجدول.",
+    ),
+    "dbTableAccesses": MessageLookupByLibrary.simpleMessage("الوصول"),
+    "dbTableAddColumn": MessageLookupByLibrary.simpleMessage("عمود"),
+    "dbTableAddRow": MessageLookupByLibrary.simpleMessage("صف"),
+    "dbTableAllDepartments": MessageLookupByLibrary.simpleMessage("كل الأقسام"),
+    "dbTableAllFields": MessageLookupByLibrary.simpleMessage("كل الحقول"),
+    "dbTableCardColumns": MessageLookupByLibrary.simpleMessage("عدد الأعمدة:"),
+    "dbTableCardRows": MessageLookupByLibrary.simpleMessage("عدد الصفوف:"),
+    "dbTableClose": MessageLookupByLibrary.simpleMessage("إغلاق"),
+    "dbTableColJobTitle": MessageLookupByLibrary.simpleMessage(
+      "المسمى الوظيفي",
+    ),
+    "dbTableColName": MessageLookupByLibrary.simpleMessage("اسم الموظف"),
+    "dbTableColPicture": MessageLookupByLibrary.simpleMessage("صورة الموظف"),
+    "dbTableColumnCleanupFailed": MessageLookupByLibrary.simpleMessage(
+      "تم حفظ الجدول، لكن تعذّر تنظيف القيم القديمة في صفوفه. قد تظهر القيم التي لم تعد تناسب عمودًا تم تغييره كأخطاء عند تعديل البيانات.",
+    ),
+    "dbTableColumnCountRange": m44,
+    "dbTableColumnFirst": MessageLookupByLibrary.simpleMessage("العمود الأول"),
+    "dbTableColumnName": MessageLookupByLibrary.simpleMessage("اسم العمود"),
+    "dbTableColumnNameHint": MessageLookupByLibrary.simpleMessage("اسم الموظف"),
+    "dbTableColumnSecond": MessageLookupByLibrary.simpleMessage(
+      "العمود الثاني",
+    ),
+    "dbTableColumnThird": MessageLookupByLibrary.simpleMessage("العمود الثالث"),
+    "dbTableCommentDate": m45,
+    "dbTableCommentFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر نشر تعليقك. تحقق من الاتصال وحاول مرة أخرى.",
+    ),
+    "dbTableComments": MessageLookupByLibrary.simpleMessage("التعليقات"),
+    "dbTableCommentsAccess": MessageLookupByLibrary.simpleMessage(
+      "الوصول للتعليقات",
+    ),
+    "dbTableCommentsLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر تحميل التعليقات.",
+    ),
+    "dbTableCommentsPrivate": MessageLookupByLibrary.simpleMessage(
+      "التعليقات على هذا الجدول خاصة، لذا يمكن للمسؤولين فقط النشر.",
+    ),
+    "dbTableConfirmAccessSubtitle": MessageLookupByLibrary.simpleMessage(
+      "هل تريد حفظ قواعد الوصول هذه للجدول؟",
+    ),
+    "dbTableConfirmAccessTitle": MessageLookupByLibrary.simpleMessage(
+      "الوصول للجدول",
+    ),
+    "dbTableConfirmCreateSubtitle": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد من إنشاء هذا الجدول؟",
+    ),
+    "dbTableConfirmCreateTitle": MessageLookupByLibrary.simpleMessage(
+      "جدول جديد",
+    ),
+    "dbTableCouldNotDelete": MessageLookupByLibrary.simpleMessage(
+      "تعذر حذف الجدول. تحقق من الاتصال وحاول مرة أخرى.",
+    ),
+    "dbTableCouldNotSave": MessageLookupByLibrary.simpleMessage(
+      "تعذر حفظ الجدول. تحقق من الاتصال وحاول مرة أخرى.",
+    ),
+    "dbTableCreate": MessageLookupByLibrary.simpleMessage("إنشاء"),
+    "dbTableCreatedSubtitle": MessageLookupByLibrary.simpleMessage(
+      "تم إنشاء الجدول بنجاح",
+    ),
+    "dbTableCreatingTable": MessageLookupByLibrary.simpleMessage("إنشاء جدول"),
+    "dbTableCreationDateLabel": MessageLookupByLibrary.simpleMessage(
+      "تاريخ الإنشاء:",
+    ),
+    "dbTableDataType": MessageLookupByLibrary.simpleMessage("نوع البيانات"),
+    "dbTableDatabase": MessageLookupByLibrary.simpleMessage("قاعدة البيانات"),
+    "dbTableDelete": MessageLookupByLibrary.simpleMessage("حذف"),
+    "dbTableDeleteCommentSubtitle": MessageLookupByLibrary.simpleMessage(
+      "هل تريد حذف هذا التعليق؟ لا يمكن استرجاعه.",
+    ),
+    "dbTableDeleteCommentTitle": MessageLookupByLibrary.simpleMessage(
+      "حذف التعليق",
+    ),
+    "dbTableDeleteFailedTitle": MessageLookupByLibrary.simpleMessage(
+      "فشل الحذف",
+    ),
+    "dbTableDeleteTableSubtitle": m46,
+    "dbTableDeleteTableTitle": MessageLookupByLibrary.simpleMessage(
+      "حذف الجدول",
+    ),
+    "dbTableDeletedSubtitle": m47,
+    "dbTableDeletedTitle": MessageLookupByLibrary.simpleMessage("تم الحذف"),
+    "dbTableDepartment": MessageLookupByLibrary.simpleMessage("القسم"),
+    "dbTableDescriptionLabel": MessageLookupByLibrary.simpleMessage("الوصف:"),
+    "dbTableDeselectAll": MessageLookupByLibrary.simpleMessage(
+      "إلغاء تحديد الكل",
+    ),
+    "dbTableDiscard": MessageLookupByLibrary.simpleMessage("تجاهل"),
+    "dbTableDiscardAccessSubtitle": MessageLookupByLibrary.simpleMessage(
+      "هل تريد تجاهل التغييرات التي أجريتها على الوصول لهذا الجدول؟",
+    ),
+    "dbTableDiscardChanges": MessageLookupByLibrary.simpleMessage(
+      "تجاهل التغييرات",
+    ),
+    "dbTableDiscardConfirmSubtitle": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد من تجاهل هذا الجدول؟",
+    ),
+    "dbTableDiscardConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "تجاهل التغييرات",
+    ),
+    "dbTableDiscardRowsSubtitle": MessageLookupByLibrary.simpleMessage(
+      "سيتم فقدان تغييراتك على بيانات هذا الجدول.",
+    ),
+    "dbTableDislike": MessageLookupByLibrary.simpleMessage("عدم إعجاب"),
+    "dbTableDuplicateColumn": MessageLookupByLibrary.simpleMessage(
+      "تكرار العمود",
+    ),
+    "dbTableDuplicateName": MessageLookupByLibrary.simpleMessage(
+      "يوجد جدول بهذا الاسم في قاعدة البيانات بالفعل. غيّر الاسم وحاول مرة أخرى.",
+    ),
+    "dbTableEdit": MessageLookupByLibrary.simpleMessage("تعديل"),
+    "dbTableEditingTableAccess": MessageLookupByLibrary.simpleMessage(
+      "تعديل الوصول للجدول",
+    ),
+    "dbTableEditingTableDataCrumb": m48,
+    "dbTableEditingTableName": MessageLookupByLibrary.simpleMessage(
+      "تعديل اسم الجدول",
+    ),
+    "dbTableEmployeeInformation": MessageLookupByLibrary.simpleMessage(
+      "بيانات الموظف",
+    ),
+    "dbTableEndBeforeStart": MessageLookupByLibrary.simpleMessage(
+      "يجب أن يكون تاريخ النهاية بعد تاريخ البداية",
+    ),
+    "dbTableEnterColumnNumber": MessageLookupByLibrary.simpleMessage(
+      "أدخل عدد الأعمدة",
+    ),
+    "dbTableEnterRowNumber": MessageLookupByLibrary.simpleMessage(
+      "أدخل عدد الصفوف",
+    ),
+    "dbTableErrorTitle": MessageLookupByLibrary.simpleMessage("حدث خطأ ما"),
+    "dbTableExpand": MessageLookupByLibrary.simpleMessage("عرض"),
+    "dbTableExport": MessageLookupByLibrary.simpleMessage("تصدير"),
+    "dbTableFieldsSelectedOne": MessageLookupByLibrary.simpleMessage(
+      "حقل واحد",
+    ),
+    "dbTableFieldsSelectedOther": m49,
+    "dbTableFilter": MessageLookupByLibrary.simpleMessage("تصفية"),
+    "dbTableHide": MessageLookupByLibrary.simpleMessage("إخفاء"),
+    "dbTableImport": MessageLookupByLibrary.simpleMessage("استيراد"),
+    "dbTableImportMatchedNothing": MessageLookupByLibrary.simpleMessage(
+      "لا يوجد أي عنوان في هذا الملف يطابق أعمدة هذا الجدول.",
+    ),
+    "dbTableImportTable": MessageLookupByLibrary.simpleMessage("استيراد جدول"),
+    "dbTableImportUnmatchedHeadings": m50,
+    "dbTableIncompleteGrant": MessageLookupByLibrary.simpleMessage(
+      "اختر مستوى الصلاحية وكلا التاريخين قبل الحفظ.",
+    ),
+    "dbTableIncompleteTitle": MessageLookupByLibrary.simpleMessage(
+      "معلومات ناقصة",
+    ),
+    "dbTableInvalidCellsSubtitleOne": MessageLookupByLibrary.simpleMessage(
+      "خلية واحدة لا تطابق نوع عمودها، وهي محددة باللون الأحمر.",
+    ),
+    "dbTableInvalidCellsSubtitleOther": m51,
+    "dbTableLastEditLabel": MessageLookupByLibrary.simpleMessage("آخر تعديل:"),
+    "dbTableLike": MessageLookupByLibrary.simpleMessage("إعجاب"),
+    "dbTableNameArRequired": MessageLookupByLibrary.simpleMessage(
+      "اسم الجدول بالعربية مطلوب",
+    ),
+    "dbTableNameEnRequired": MessageLookupByLibrary.simpleMessage(
+      "اسم الجدول بالإنجليزية مطلوب",
+    ),
+    "dbTableNameTooShort": m52,
+    "dbTableNo": MessageLookupByLibrary.simpleMessage("لا"),
+    "dbTableNoDatabaseId": MessageLookupByLibrary.simpleMessage(
+      "قاعدة البيانات هذه بلا معرّف، لذا لا يمكن قراءة جداولها أو حفظها.",
+    ),
+    "dbTableNoDescription": MessageLookupByLibrary.simpleMessage("لا يوجد وصف"),
+    "dbTableNoEmployeesFound": MessageLookupByLibrary.simpleMessage(
+      "لا يوجد موظفون",
+    ),
+    "dbTableNoIdCannotComment": MessageLookupByLibrary.simpleMessage(
+      "هذا الجدول بلا معرّف، لذا لا يمكن إضافة تعليقات عليه.",
+    ),
+    "dbTableNoIdCannotDelete": MessageLookupByLibrary.simpleMessage(
+      "هذا الجدول بلا معرّف، لذا لا يمكن حذفه.",
+    ),
+    "dbTableNoIdCannotSave": MessageLookupByLibrary.simpleMessage(
+      "هذا الجدول بلا معرّف، لذا لا يمكن حفظه.",
+    ),
+    "dbTableNoIdCannotSaveAccess": MessageLookupByLibrary.simpleMessage(
+      "هذا الجدول بلا معرّف، لذا لا يمكن حفظ صلاحيات الوصول إليه.",
+    ),
+    "dbTableNoLongerExists": MessageLookupByLibrary.simpleMessage(
+      "هذا الجدول لم يعد موجودًا.",
+    ),
+    "dbTableNoMembersSelected": MessageLookupByLibrary.simpleMessage(
+      "لم يتم اختيار أعضاء بعد",
+    ),
+    "dbTableNoNamedColumns": MessageLookupByLibrary.simpleMessage(
+      "لا توجد أعمدة مسماة في هذا الجدول بعد. استخدم \"تعديل\" لإضافة عناوينها.",
+    ),
+    "dbTableNoOfColumns": MessageLookupByLibrary.simpleMessage("عدد الأعمدة"),
+    "dbTableNoOfRows": MessageLookupByLibrary.simpleMessage("عدد الصفوف"),
+    "dbTableNotSavedRows": MessageLookupByLibrary.simpleMessage(
+      "لم يتم حفظ هذا الجدول بعد، لذا لا يمكن كتابة صفوفه.",
+    ),
+    "dbTableNotSavedYet": MessageLookupByLibrary.simpleMessage(
+      "لم يتم حفظ هذا الجدول بعد.",
+    ),
+    "dbTableNothingChanged": MessageLookupByLibrary.simpleMessage(
+      "لم يتم تغيير أي شيء في هذه الشاشة بعد.",
+    ),
+    "dbTableNothingChangedTitle": MessageLookupByLibrary.simpleMessage(
+      "لا توجد تغييرات",
+    ),
+    "dbTableNothingToPreview": MessageLookupByLibrary.simpleMessage(
+      "املأ خلية واحدة على الأقل قبل معاينة الجدول.",
+    ),
+    "dbTableNthColumn": m53,
+    "dbTablePermissions": MessageLookupByLibrary.simpleMessage("الصلاحيات"),
+    "dbTablePickSomeoneFirst": MessageLookupByLibrary.simpleMessage(
+      "اختر شخصًا واحدًا على الأقل قبل المتابعة.",
+    ),
+    "dbTablePreview": MessageLookupByLibrary.simpleMessage("معاينة"),
+    "dbTablePreviewCrumb": MessageLookupByLibrary.simpleMessage("معاينة"),
+    "dbTableRedo": MessageLookupByLibrary.simpleMessage("إعادة"),
+    "dbTableRemoveAllAccess": MessageLookupByLibrary.simpleMessage(
+      "إزالة كل الوصول",
+    ),
+    "dbTableRemoveAllAccessSubtitleOne": MessageLookupByLibrary.simpleMessage(
+      "هل تريد إزالة وصول شخص واحد؟ سيظل مسجلاً كـ\"محذوف\" في جدول الوصول.",
+    ),
+    "dbTableRemoveAllAccessSubtitleOther": m54,
+    "dbTableRemoveColumn": MessageLookupByLibrary.simpleMessage("حذف العمود"),
+    "dbTableRemoveColumnSubtitle": m55,
+    "dbTableRemoveColumnsSubtitleOne": MessageLookupByLibrary.simpleMessage(
+      "تقليل عدد الأعمدة سيحذف عمودًا واحدًا قمت بتسميته بالفعل. هل تريد المتابعة؟",
+    ),
+    "dbTableRemoveColumnsSubtitleOther": m56,
+    "dbTableRemoveColumnsTitle": MessageLookupByLibrary.simpleMessage(
+      "حذف أعمدة",
+    ),
+    "dbTableRemoveSelection": MessageLookupByLibrary.simpleMessage(
+      "حذف المحدد",
+    ),
+    "dbTableRetry": MessageLookupByLibrary.simpleMessage("إعادة المحاولة"),
+    "dbTableReview": MessageLookupByLibrary.simpleMessage("مراجعة"),
+    "dbTableRowCountRange": m57,
+    "dbTableRowNumber": MessageLookupByLibrary.simpleMessage("م"),
+    "dbTableRowsLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر تحميل صفوف الجدول. أعد المحاولة قبل التعديل حتى لا تُفقد أي صفوف محفوظة.",
+    ),
+    "dbTableRowsSavedSubtitle": MessageLookupByLibrary.simpleMessage(
+      "تم حفظ بيانات الجدول.",
+    ),
+    "dbTableSave": MessageLookupByLibrary.simpleMessage("حفظ"),
+    "dbTableSavedSubtitle": MessageLookupByLibrary.simpleMessage(
+      "تم حفظ التغييرات.",
+    ),
+    "dbTableSearch": MessageLookupByLibrary.simpleMessage("بحث"),
+    "dbTableSelectAll": MessageLookupByLibrary.simpleMessage("تحديد الكل"),
+    "dbTableSelectCommentsAccess": MessageLookupByLibrary.simpleMessage(
+      "اختر الوصول للتعليقات",
+    ),
+    "dbTableSelectDataType": MessageLookupByLibrary.simpleMessage(
+      "اختر نوع البيانات",
+    ),
+    "dbTableSelectViewableFields": MessageLookupByLibrary.simpleMessage(
+      "اختر الحقول المرئية",
+    ),
+    "dbTableSend": MessageLookupByLibrary.simpleMessage("إرسال"),
+    "dbTableSignInToComment": MessageLookupByLibrary.simpleMessage(
+      "سجّل الدخول لترك تعليق.",
+    ),
+    "dbTableSignInToReact": MessageLookupByLibrary.simpleMessage(
+      "سجّل الدخول للتفاعل مع تعليق.",
+    ),
+    "dbTableSuccessTitle": MessageLookupByLibrary.simpleMessage("تم بنجاح"),
+    "dbTableSummary": MessageLookupByLibrary.simpleMessage("الملخص"),
+    "dbTableTableDetails": MessageLookupByLibrary.simpleMessage(
+      "تفاصيل الجدول",
+    ),
+    "dbTableTableDetailsCrumb": m58,
+    "dbTableTableHasNoNamedColumns": MessageLookupByLibrary.simpleMessage(
+      "لا توجد أعمدة مسماة في هذا الجدول بعد، لذا لا توجد حقول لتقييدها.",
+    ),
+    "dbTableTablesLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر تحميل الجداول.",
+    ),
+    "dbTableTotalDepartments": MessageLookupByLibrary.simpleMessage(
+      "إجمالي الأقسام",
+    ),
+    "dbTableTotalEmployees": MessageLookupByLibrary.simpleMessage(
+      "إجمالي الموظفين",
+    ),
+    "dbTableTypeOfImport": MessageLookupByLibrary.simpleMessage(
+      "نوع الاستيراد",
+    ),
+    "dbTableUndo": MessageLookupByLibrary.simpleMessage("تراجع"),
+    "dbTableUploadFile": MessageLookupByLibrary.simpleMessage("رفع ملف"),
+    "dbTableViewableFields": MessageLookupByLibrary.simpleMessage(
+      "الحقول المرئية",
+    ),
+    "dbTableWriteAComment": MessageLookupByLibrary.simpleMessage(
+      "اكتب تعليقًا",
+    ),
+    "dbTableYes": MessageLookupByLibrary.simpleMessage("نعم"),
     "deactivateUser": MessageLookupByLibrary.simpleMessage("تعطيل المستخدم"),
     "deactivatedForNow": MessageLookupByLibrary.simpleMessage("معطل حاليًا"),
     "deactivatingUserAccount": MessageLookupByLibrary.simpleMessage(
       "جاري تعطيل حساب المستخدم",
     ),
     "deathVacation": MessageLookupByLibrary.simpleMessage("إجازة وفاة"),
+    "debugSwitchToTestEmployee": MessageLookupByLibrary.simpleMessage(
+      "🧪 التبديل إلى موظف تجريبي",
+    ),
+    "debugTestEmployeeBadge": MessageLookupByLibrary.simpleMessage(
+      "تطوير: موظف تجريبي",
+    ),
+    "debugTestEmployeeButton": MessageLookupByLibrary.simpleMessage(
+      "🧪 موظف تجريبي",
+    ),
+    "debugTestEmployeeCannotSwitch": MessageLookupByLibrary.simpleMessage(
+      "لا يمكن التبديل",
+    ),
+    "debugTestEmployeeCompanyAdmin": MessageLookupByLibrary.simpleMessage(
+      "لا يمكن استخدام حساب مدير الشركة مع التبديل التجريبي.",
+    ),
+    "debugTestEmployeeCompanyId": MessageLookupByLibrary.simpleMessage(
+      "رقم الشركة",
+    ),
+    "debugTestEmployeeConfirmSwitch": MessageLookupByLibrary.simpleMessage(
+      "سيتم تسجيل خروجك من هذه الجلسة لاختيار موظف تجريبي.",
+    ),
+    "debugTestEmployeeDebugOnly": MessageLookupByLibrary.simpleMessage(
+      "هذه الميزة متاحة في نسخ التطوير فقط.",
+    ),
+    "debugTestEmployeeEmpty": m59,
+    "debugTestEmployeeHint": MessageLookupByLibrary.simpleMessage(
+      "متاح في نسخ التطوير فقط. يسجل الدخول بالحساب التجريبي المختار دون كلمة المرور، مع التحقق من دوره وحالته وتواريخ الوصول.",
+    ),
+    "debugTestEmployeeLoad": MessageLookupByLibrary.simpleMessage("تحميل"),
+    "debugTestEmployeeLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر تحميل موظفي هذه الشركة.",
+    ),
+    "debugTestEmployeeNoDepartment": MessageLookupByLibrary.simpleMessage(
+      "بدون قسم",
+    ),
+    "debugTestEmployeeNoRole": MessageLookupByLibrary.simpleMessage("بدون دور"),
+    "debugTestEmployeeNotActivated": MessageLookupByLibrary.simpleMessage(
+      "هذا الحساب غير مفعل بعد. يجب أن يكمل أول تسجيل دخول (تغيير كلمة المرور) قبل استخدامه هنا.",
+    ),
+    "debugTestEmployeeNotActivatedNote": MessageLookupByLibrary.simpleMessage(
+      "غير مفعل بعد (يسجل الدخول كأنه مفعل في نسخة التطوير)",
+    ),
+    "debugTestEmployeeNotTestEmail": m60,
+    "debugTestEmployeeOtherCompany": m61,
+    "debugTestEmployeeStatus": m62,
+    "debugTestEmployeeStatusBlocked": m63,
+    "debugTestEmployeeTitle": MessageLookupByLibrary.simpleMessage(
+      "🧪 الموظفون التجريبيون",
+    ),
     "dec": MessageLookupByLibrary.simpleMessage("ديسمبر"),
     "defaultPassword": MessageLookupByLibrary.simpleMessage(
       "كلمة المرور الافتراضية",
@@ -2531,6 +4137,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "حذف الرسائل المميزة بنجمة",
     ),
     "deleteSupplier": MessageLookupByLibrary.simpleMessage("حذف المورد"),
+    "deleteToDo": MessageLookupByLibrary.simpleMessage("حذف المهام"),
     "deleted": MessageLookupByLibrary.simpleMessage("تم الحذف"),
     "deletedGrcModule": MessageLookupByLibrary.simpleMessage(
       "وحدة GRC المحذوفة",
@@ -2626,6 +4233,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "department_operations": MessageLookupByLibrary.simpleMessage("العمليات"),
     "department_sales": MessageLookupByLibrary.simpleMessage("المبيعات"),
     "departments": MessageLookupByLibrary.simpleMessage("الاقسام"),
+    "departmentsLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر تحميل الأقسام، لذلك قد يكون فلتر الأقسام فارغًا.",
+    ),
     "departmentsScore": MessageLookupByLibrary.simpleMessage("درجات الأقسام"),
     "departmentsWeight": MessageLookupByLibrary.simpleMessage("وزن الأقسام"),
     "des": MessageLookupByLibrary.simpleMessage("تنازلي"),
@@ -2656,7 +4266,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "designIssue": MessageLookupByLibrary.simpleMessage("مشكلة في التصميم"),
     "desktopView": MessageLookupByLibrary.simpleMessage("عرض سطح المكتب"),
     "details": MessageLookupByLibrary.simpleMessage("تفاصيل"),
-    "detailsOfTitle": m13,
+    "detailsOfTitle": m64,
     "detailsPageTitle": MessageLookupByLibrary.simpleMessage(
       "تفاصيل قائمة المهام",
     ),
@@ -2688,6 +4298,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "doYouWantToSaveThisRoleAsDraft": MessageLookupByLibrary.simpleMessage(
       "هل تريد حفظ هذا الدور كمسودة؟",
+    ),
+    "doYouWantToSubmitAllProducts": MessageLookupByLibrary.simpleMessage(
+      "هل تريد إرسال جميع المنتجات؟",
     ),
     "doctorate": MessageLookupByLibrary.simpleMessage("دكتوراه"),
     "document": MessageLookupByLibrary.simpleMessage("مستند"),
@@ -2782,6 +4395,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "dragDropHere": MessageLookupByLibrary.simpleMessage(
       "اسحب وأسقط الملفات هنا",
     ),
+    "drawerReorder": MessageLookupByLibrary.simpleMessage("ترتيب"),
+    "drawerReorderDone": MessageLookupByLibrary.simpleMessage("تم"),
     "drivingLicense": MessageLookupByLibrary.simpleMessage("رخصة القيادة"),
     "drivingLicenseId": MessageLookupByLibrary.simpleMessage(
       "رقم رخصة القيادة",
@@ -2792,6 +4407,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "dueDateOfReturn": MessageLookupByLibrary.simpleMessage(
       "تاريخ الاسترجاع المتوقع",
     ),
+    "duplicate": MessageLookupByLibrary.simpleMessage("تكرار"),
     "duplicateEmails": MessageLookupByLibrary.simpleMessage(
       "البريد الإلكتروني مكرر",
     ),
@@ -2824,6 +4440,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "edit": MessageLookupByLibrary.simpleMessage("تعديل"),
     "editAccess": MessageLookupByLibrary.simpleMessage("تعديل الوصول"),
     "editAccount": MessageLookupByLibrary.simpleMessage("تعديل الحساب"),
+    "editAndResend": MessageLookupByLibrary.simpleMessage(
+      "تعديل وإعادة الإرسال",
+    ),
     "editContact": MessageLookupByLibrary.simpleMessage("تعديل جهة الاتصال"),
     "editControlScreenNotImplemented": MessageLookupByLibrary.simpleMessage(
       "شاشة تعديل الضابط غير مطبقة بعد",
@@ -2870,6 +4489,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "تعديل مزود الخدمة",
     ),
     "editSuccess": MessageLookupByLibrary.simpleMessage("تعديل الخدمة"),
+    "editToDo": MessageLookupByLibrary.simpleMessage("تعديل المهام"),
     "editUploadedDocument": MessageLookupByLibrary.simpleMessage(
       "تعديل المستند المرفوع",
     ),
@@ -2882,12 +4502,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "editingAccessDetails": MessageLookupByLibrary.simpleMessage(
       "تعديل تفاصيل الوصول",
     ),
+    "editingCompanyInformation": MessageLookupByLibrary.simpleMessage(
+      "تعديل بيانات الشركة",
+    ),
     "editingControl": MessageLookupByLibrary.simpleMessage("تعديل الضابط"),
     "editingControls": MessageLookupByLibrary.simpleMessage("تعديل الضوابط"),
     "editingControlsWeight": MessageLookupByLibrary.simpleMessage(
       "تعديل أوزان الضوابط",
     ),
-    "editingDocumentDetails": m14,
+    "editingDocumentDetails": m65,
     "editingEmployeeDetails": MessageLookupByLibrary.simpleMessage(
       "تعديل بيانات الموظف",
     ),
@@ -2903,6 +4526,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "editingModules": MessageLookupByLibrary.simpleMessage("تعديل الوحدات"),
     "editingMyPersonalData": MessageLookupByLibrary.simpleMessage(
       "تعديل بياناتي الشخصية",
+    ),
+    "editingPersonalInformation": MessageLookupByLibrary.simpleMessage(
+      "تعديل المعلومات الشخصية",
     ),
     "editingPoliciesWeight": MessageLookupByLibrary.simpleMessage(
       "تعديل أوزان السياسات",
@@ -2921,6 +4547,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "editingService": MessageLookupByLibrary.simpleMessage("تعديل الخدمة"),
     "editingSupplierDetails": MessageLookupByLibrary.simpleMessage(
       "تعديل تفاصيل المورد",
+    ),
+    "editingToDoList": MessageLookupByLibrary.simpleMessage(
+      "تعديل قائمة المهام",
     ),
     "editingToDoTitle": MessageLookupByLibrary.simpleMessage("تعديل مهمة"),
     "editingToDodialog": MessageLookupByLibrary.simpleMessage("تعديل مهمة"),
@@ -3115,6 +4744,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "employeeDetailsUpdatedSuccessfully": MessageLookupByLibrary.simpleMessage(
       "تم تحديث بيانات الموظف بنجاح",
     ),
+    "employeeDirectoryLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر تحميل قائمة الموظفين. لا يزال الأشخاص الموجودون في هذا الوصول معروضين.",
+    ),
     "employeeEmail": MessageLookupByLibrary.simpleMessage(
       "البريد الإلكتروني للموظف",
     ),
@@ -3233,6 +4865,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "engaged": MessageLookupByLibrary.simpleMessage("خاطب"),
     "engineering": MessageLookupByLibrary.simpleMessage("هندسة"),
     "english": MessageLookupByLibrary.simpleMessage("الإنجليزية"),
+    "englishFont": MessageLookupByLibrary.simpleMessage("الخط الإنجليزي"),
     "englishLanguageMandatory": MessageLookupByLibrary.simpleMessage(
       "اللغة الإنجليزية إلزامية",
     ),
@@ -3448,6 +5081,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "errorRejectingDocument": MessageLookupByLibrary.simpleMessage(
       "خطأ في رفض المستند",
     ),
+    "errorSavingSupplier": MessageLookupByLibrary.simpleMessage(
+      "خطأ في حفظ المورد",
+    ),
     "errorSubmittingRequest": MessageLookupByLibrary.simpleMessage(
       "خطأ أثناء إرسال الطلب",
     ),
@@ -3613,6 +5249,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "failedToCreateServiceRequest": MessageLookupByLibrary.simpleMessage(
       "فشل إنشاء طلب الخدمة. يرجى المحاولة مرة أخرى.",
     ),
+    "failedToCreateStorageLocation": MessageLookupByLibrary.simpleMessage(
+      "تعذر إنشاء موقع التخزين. يرجى المحاولة مرة أخرى.",
+    ),
     "failedToDownloadFile": MessageLookupByLibrary.simpleMessage("فشل التحميل"),
     "failedToLoadDepartments": MessageLookupByLibrary.simpleMessage(
       "فشل في تحميل الأقسام",
@@ -3633,6 +5272,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "failedToSaveRolePleaseTryAgain": MessageLookupByLibrary.simpleMessage(
       "فشل حفظ الدور. برجاء المحاولة مرة أخرى.",
     ),
+    "failedToSaveStorageLocation": MessageLookupByLibrary.simpleMessage(
+      "تعذر حفظ موقع التخزين. يرجى المحاولة مرة أخرى.",
+    ),
+    "failedToSaveSupplierCheckConnection": MessageLookupByLibrary.simpleMessage(
+      "تعذر حفظ المورد. يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى.",
+    ),
     "failedToUpdateAccess": MessageLookupByLibrary.simpleMessage(
       "فشل تحديث الصلاحيات",
     ),
@@ -3642,11 +5287,153 @@ class MessageLookup extends MessageLookupByLibrary {
     "failedToUpdateProduct": MessageLookupByLibrary.simpleMessage(
       "فشل في تحديث المنتج",
     ),
+    "failedToUpdateStatus": MessageLookupByLibrary.simpleMessage(
+      "تعذر تحديث الحالة. يرجى المحاولة مرة أخرى.",
+    ),
+    "failedToUpdateStorageLocation": MessageLookupByLibrary.simpleMessage(
+      "تعذر تحديث موقع التخزين. يرجى المحاولة مرة أخرى.",
+    ),
     "family": MessageLookupByLibrary.simpleMessage("العائلة"),
     "faxNumber": MessageLookupByLibrary.simpleMessage("رقم الفاكس"),
     "faxNumberRequired": MessageLookupByLibrary.simpleMessage(
       "رقم الفاكس مطلوب.",
     ),
+    "fbAccessGrantedSuccessfully": MessageLookupByLibrary.simpleMessage(
+      "تم منح الوصول بنجاح",
+    ),
+    "fbAccessListLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذّر تحميل قائمة من لديهم صلاحية الوصول إلى هذا النموذج، لذلك تم إيقاف المشاركة. يرجى المحاولة مرة أخرى.",
+    ),
+    "fbAddHint": MessageLookupByLibrary.simpleMessage("إضافة تلميح"),
+    "fbAddOptionOr": MessageLookupByLibrary.simpleMessage("أضف خيارًا أو"),
+    "fbAddOptions": MessageLookupByLibrary.simpleMessage("إضافة خيارات"),
+    "fbAddOther": MessageLookupByLibrary.simpleMessage("أضف \"أخرى\""),
+    "fbAddTitle": MessageLookupByLibrary.simpleMessage("إضافة عنوان"),
+    "fbAnswersCount": MessageLookupByLibrary.simpleMessage("الإجابات"),
+    "fbArabicOnly": MessageLookupByLibrary.simpleMessage(
+      "يجب إدخال النص بالعربية فقط",
+    ),
+    "fbChooseAlignment": MessageLookupByLibrary.simpleMessage("اختر المحاذاة"),
+    "fbChooseArrangement": MessageLookupByLibrary.simpleMessage("اختر الترتيب"),
+    "fbChooseFieldOfColumn": m66,
+    "fbColor": MessageLookupByLibrary.simpleMessage("اللون"),
+    "fbColumnTitle": m67,
+    "fbDateHint": MessageLookupByLibrary.simpleMessage("يوم / شهر / سنة"),
+    "fbDeleteGroup": MessageLookupByLibrary.simpleMessage("حذف المجموعة"),
+    "fbDeletedDate": MessageLookupByLibrary.simpleMessage("تاريخ الحذف"),
+    "fbDeletingFormDetails": MessageLookupByLibrary.simpleMessage(
+      "تفاصيل النموذج المحذوف",
+    ),
+    "fbDemoAnswersFilled": m68,
+    "fbDemoFilledPhone": MessageLookupByLibrary.simpleMessage(
+      "تم ملء البيانات التجريبية — اضغط التالي لعرض جميع أنواع الحقول.",
+    ),
+    "fbDemoFilledTablet": MessageLookupByLibrary.simpleMessage(
+      "تم ملء البيانات التجريبية — أُضيفت جميع أنواع الحقول. راجعها ثم اضغط نشر.",
+    ),
+    "fbDownloadFormPdfConfirm": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد أنك تريد تنزيل هذا النموذج بصيغة PDF؟",
+    ),
+    "fbEditPermissionReviewHint": MessageLookupByLibrary.simpleMessage(
+      "يتيح لهم ذلك مراجعة إجاباتهم وإجراء أي تعديلات لازمة عليها",
+    ),
+    "fbEditingFormDetails": MessageLookupByLibrary.simpleMessage(
+      "تعديل تفاصيل النموذج",
+    ),
+    "fbEnglishOnly": MessageLookupByLibrary.simpleMessage(
+      "يجب إدخال النص بالإنجليزية فقط",
+    ),
+    "fbEnterGroupName": MessageLookupByLibrary.simpleMessage(
+      "أدخل اسم المجموعة",
+    ),
+    "fbFillDemoData": MessageLookupByLibrary.simpleMessage(
+      "ملء بيانات تجريبية",
+    ),
+    "fbFormDataNotReady": MessageLookupByLibrary.simpleMessage(
+      "لم تُجهَّز بيانات النموذج بعد. يرجى المحاولة مرة أخرى.",
+    ),
+    "fbFormNotFound": MessageLookupByLibrary.simpleMessage("النموذج غير موجود"),
+    "fbGroupNameAndDescriptionRequired": MessageLookupByLibrary.simpleMessage(
+      "اسم المجموعة والوصف مطلوبان",
+    ),
+    "fbInvalidEmailExample": MessageLookupByLibrary.simpleMessage(
+      "أدخل بريدًا إلكترونيًا صحيحًا، مثل: name@company.com",
+    ),
+    "fbInvalidLinkExample": MessageLookupByLibrary.simpleMessage(
+      "أدخل رابطًا صحيحًا، مثل: https://www.example.com",
+    ),
+    "fbLatitudeHint": MessageLookupByLibrary.simpleMessage("خط العرض:"),
+    "fbLimitation": MessageLookupByLibrary.simpleMessage("الحد الأقصى"),
+    "fbLongitudeHint": MessageLookupByLibrary.simpleMessage("خط الطول:"),
+    "fbMaximumSelection": MessageLookupByLibrary.simpleMessage(
+      "الحد الأقصى للاختيار",
+    ),
+    "fbMediaESignatures": MessageLookupByLibrary.simpleMessage(
+      "التوقيع الإلكتروني",
+    ),
+    "fbMediaImages": MessageLookupByLibrary.simpleMessage("الصور"),
+    "fbMinutes": MessageLookupByLibrary.simpleMessage("دقيقة"),
+    "fbNoDataFound": MessageLookupByLibrary.simpleMessage("لا توجد بيانات"),
+    "fbNoGroupSelected": MessageLookupByLibrary.simpleMessage(
+      "لم يتم اختيار مجموعة",
+    ),
+    "fbNoPermissionSection": MessageLookupByLibrary.simpleMessage(
+      "ليس لديك صلاحية لعرض هذا القسم.",
+    ),
+    "fbNoPersonsFound": MessageLookupByLibrary.simpleMessage(
+      "لم يتم العثور على أشخاص",
+    ),
+    "fbNoResultsFound": MessageLookupByLibrary.simpleMessage("لا توجد نتائج"),
+    "fbPhoneDigitsCount": m69,
+    "fbPhoneDigitsOnly": m70,
+    "fbPickAColor": MessageLookupByLibrary.simpleMessage("اختر لونًا"),
+    "fbPickColor": MessageLookupByLibrary.simpleMessage("اختر اللون"),
+    "fbPleaseSelectAtLeastOnePerson": MessageLookupByLibrary.simpleMessage(
+      "الرجاء اختيار شخص واحد على الأقل",
+    ),
+    "fbReminderSentSuccessfully": MessageLookupByLibrary.simpleMessage(
+      "تم إرسال التذكير بنجاح",
+    ),
+    "fbRemindersSent": MessageLookupByLibrary.simpleMessage(
+      "التذكيرات المرسلة",
+    ),
+    "fbRequired": MessageLookupByLibrary.simpleMessage("مطلوب"),
+    "fbResendIn": MessageLookupByLibrary.simpleMessage("إعادة الإرسال بعد"),
+    "fbResendNow": MessageLookupByLibrary.simpleMessage("إعادة الإرسال الآن"),
+    "fbResults": MessageLookupByLibrary.simpleMessage("النتائج"),
+    "fbRowTitle": m71,
+    "fbSelectDocument": MessageLookupByLibrary.simpleMessage("اختر المستند"),
+    "fbSending": MessageLookupByLibrary.simpleMessage("جارٍ الإرسال…"),
+    "fbSent": MessageLookupByLibrary.simpleMessage("تم الإرسال"),
+    "fbSortMostMembers": MessageLookupByLibrary.simpleMessage("الأكثر أعضاءً"),
+    "fbSortNameAsc": MessageLookupByLibrary.simpleMessage("الاسم (أ-ي)"),
+    "fbSortNameDesc": MessageLookupByLibrary.simpleMessage("الاسم (ي-أ)"),
+    "fbStreetNumber": MessageLookupByLibrary.simpleMessage("رقم الشارع"),
+    "fbTestNotificationsButton": MessageLookupByLibrary.simpleMessage(
+      "اختبار الإشعارات والتقويم",
+    ),
+    "fbTestNotificationsConfirm": m72,
+    "fbTestNotificationsDone": MessageLookupByLibrary.simpleMessage(
+      "افتح الإشعارات والتقويم للتحقق من جميع أحداث منشئ النماذج.",
+    ),
+    "fbTestNotificationsPartial": m73,
+    "fbTestNotificationsSubtitle": m74,
+    "fbTestNotificationsTitle": MessageLookupByLibrary.simpleMessage(
+      "اختبار إشعارات منشئ النماذج",
+    ),
+    "fbTextFormattingStyles": MessageLookupByLibrary.simpleMessage(
+      "أنماط تنسيق النص",
+    ),
+    "fbTextSize": MessageLookupByLibrary.simpleMessage("حجم النص"),
+    "fbTimeHint": MessageLookupByLibrary.simpleMessage("ساعة : دقيقة"),
+    "fbTitle": MessageLookupByLibrary.simpleMessage("العنوان"),
+    "fbTotalPages": MessageLookupByLibrary.simpleMessage("إجمالي الصفحات"),
+    "fbTypeOfDocument": MessageLookupByLibrary.simpleMessage("نوع المستند"),
+    "fbUploadESignature": MessageLookupByLibrary.simpleMessage(
+      "رفع التوقيع الإلكتروني",
+    ),
+    "fbUsedBy": MessageLookupByLibrary.simpleMessage("مستخدم بواسطة"),
+    "fbUsers": MessageLookupByLibrary.simpleMessage("المستخدمون"),
     "feb": MessageLookupByLibrary.simpleMessage("فبراير"),
     "feedbackClosed": MessageLookupByLibrary.simpleMessage("مغلق"),
     "feedbackFixed": MessageLookupByLibrary.simpleMessage("تم الإصلاح"),
@@ -3764,16 +5551,25 @@ class MessageLookup extends MessageLookupByLibrary {
     "forgotPassword2": MessageLookupByLibrary.simpleMessage("نسيت كلمة المرور"),
     "forklift": MessageLookupByLibrary.simpleMessage("رافعة شوكية"),
     "form": MessageLookupByLibrary.simpleMessage("نموذج"),
+    "formAccessSaveFailed": MessageLookupByLibrary.simpleMessage(
+      "تم حفظ النموذج، ولكن تعذر حفظ قائمة الوصول. يرجى مشاركة النموذج مرة أخرى.",
+    ),
     "formBuilder": MessageLookupByLibrary.simpleMessage("منشئ النماذج"),
     "formCreated": MessageLookupByLibrary.simpleMessage("تم إنشاء النموذج"),
     "formDetails": MessageLookupByLibrary.simpleMessage("تفاصيل النموذج"),
     "formDownloadAsPdf": MessageLookupByLibrary.simpleMessage(
       "تنزيل النموذج بصيغة PDF",
     ),
+    "formEditingClosed": MessageLookupByLibrary.simpleMessage(
+      "تم إغلاق هذا النموذج، لذلك لم يعد بالإمكان تعديل إجابتك.",
+    ),
     "formName": MessageLookupByLibrary.simpleMessage("اسم النموذج"),
     "formPermissions": MessageLookupByLibrary.simpleMessage("صلاحيات النموذج"),
     "formPermissionsModule": MessageLookupByLibrary.simpleMessage(
       "وحدة صلاحيات النموذج",
+    ),
+    "formSaveFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر حفظ النموذج. يرجى المحاولة مرة أخرى.",
     ),
     "formStatusDeleted": MessageLookupByLibrary.simpleMessage("المحذوفة"),
     "formStatusDrafts": MessageLookupByLibrary.simpleMessage("المسودات"),
@@ -3787,10 +5583,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "formatCsv": MessageLookupByLibrary.simpleMessage("CSV"),
     "formatExcel": MessageLookupByLibrary.simpleMessage("إكسل (.xlsx)"),
     "formatPdf": MessageLookupByLibrary.simpleMessage("PDF"),
+    "formerEmployee": MessageLookupByLibrary.simpleMessage("موظف سابق"),
     "formresponsivepage": MessageLookupByLibrary.simpleMessage(
       "FormResponsivePage",
     ),
     "forms": MessageLookupByLibrary.simpleMessage("نماذج"),
+    "formsLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر تحميل النماذج. يرجى المحاولة مرة أخرى.",
+    ),
     "formsSubmission": MessageLookupByLibrary.simpleMessage("تقديم النماذج"),
     "forwardMessage": MessageLookupByLibrary.simpleMessage(
       "إعادة توجيه الرسالة",
@@ -3901,6 +5701,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "greek": MessageLookupByLibrary.simpleMessage("يوناني"),
     "grenadian": MessageLookupByLibrary.simpleMessage("غرينادي"),
     "group": MessageLookupByLibrary.simpleMessage("مجموعة"),
+    "groupActionFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر حفظ المجموعة. يرجى المحاولة مرة أخرى.",
+    ),
+    "groupAdmin": MessageLookupByLibrary.simpleMessage("مشرف"),
     "groupCreatedSuccessfully": MessageLookupByLibrary.simpleMessage(
       "تم إنشاء المجموعة بنجاح",
     ),
@@ -3910,10 +5714,16 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "groupMessages": MessageLookupByLibrary.simpleMessage("رسائل المجموعات"),
     "groupName": MessageLookupByLibrary.simpleMessage("اسم المجموعة"),
+    "groupNeedsMembers": MessageLookupByLibrary.simpleMessage(
+      "يرجى اختيار عضو واحد على الأقل",
+    ),
     "groupedBarChart": MessageLookupByLibrary.simpleMessage("مخطط أعمدة مجمّع"),
     "groups": MessageLookupByLibrary.simpleMessage("المجموعات"),
     "groupsCommon": MessageLookupByLibrary.simpleMessage("المجموعات المشتركة"),
     "groupsInCommon": MessageLookupByLibrary.simpleMessage("مجموعات مشتركة"),
+    "groupsLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر تحميل المجموعات. يرجى المحاولة مرة أخرى.",
+    ),
     "guatemalan": MessageLookupByLibrary.simpleMessage("غواتيمالي"),
     "guidelines": MessageLookupByLibrary.simpleMessage("إرشادات"),
     "guineaBissauan": MessageLookupByLibrary.simpleMessage("غيني بيساوي"),
@@ -3979,7 +5789,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "hideFormDetails": MessageLookupByLibrary.simpleMessage(
       "إخفاء تفاصيل النموذج",
     ),
-    "high": MessageLookupByLibrary.simpleMessage("عالٍ"),
+    "high": MessageLookupByLibrary.simpleMessage("عالي"),
     "highSchool": MessageLookupByLibrary.simpleMessage("الثانوية العامة"),
     "hindi": MessageLookupByLibrary.simpleMessage("الهندية"),
     "hindiLanguage": MessageLookupByLibrary.simpleMessage("الهندية"),
@@ -3996,9 +5806,35 @@ class MessageLookup extends MessageLookupByLibrary {
     "hobbies": MessageLookupByLibrary.simpleMessage("الهوايات"),
     "hobbys": MessageLookupByLibrary.simpleMessage("الهواية"),
     "home": MessageLookupByLibrary.simpleMessage("الرئيسية"),
+    "homeCardLoadFailed": MessageLookupByLibrary.simpleMessage("تعذّر التحميل"),
+    "homeContentLanguage": MessageLookupByLibrary.simpleMessage("ar"),
+    "homeDateLocale": MessageLookupByLibrary.simpleMessage("ar"),
+    "homeHeaderIconArabic": MessageLookupByLibrary.simpleMessage("ع"),
+    "homeHeaderIconHubApproval": MessageLookupByLibrary.simpleMessage(
+      "موافقات المركز",
+    ),
     "homeLayout": MessageLookupByLibrary.simpleMessage("تخطيط الصفحة الرئيسية"),
+    "homeLayoutAccountLoading": MessageLookupByLibrary.simpleMessage(
+      "لا يزال حسابك قيد التحميل. يرجى المحاولة مرة أخرى.",
+    ),
+    "homeLayoutLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذّر تحميل تخطيط الصفحة الرئيسية.",
+    ),
+    "homeLayoutNotLoadedSaveBlocked": MessageLookupByLibrary.simpleMessage(
+      "لم يتم تحميل تخطيط الصفحة الرئيسية بعد، لذا لا يمكن حفظه. أعد تحميله ثم حاول مرة أخرى.",
+    ),
+    "homeLayoutSaveFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذّر حفظ تخطيط الصفحة الرئيسية. يرجى المحاولة مرة أخرى.",
+    ),
+    "homeLayoutSaveUnexpected": MessageLookupByLibrary.simpleMessage(
+      "حدث خطأ أثناء حفظ تخطيط الصفحة الرئيسية.",
+    ),
     "homeNumber": MessageLookupByLibrary.simpleMessage("رقم المنزل"),
     "homePreview": MessageLookupByLibrary.simpleMessage("معاينة الرئيسية"),
+    "homeQuoteUnknownAuthor": MessageLookupByLibrary.simpleMessage("غير معروف"),
+    "homeScheduleLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذّر تحميل مهامك",
+    ),
     "homeScreenAllTitle": MessageLookupByLibrary.simpleMessage("الكل"),
     "homeScreenCreateToDoListTitle": MessageLookupByLibrary.simpleMessage(
       "إنشاء قائمة مهام",
@@ -4041,6 +5877,75 @@ class MessageLookup extends MessageLookupByLibrary {
       "تخزين بتحكم في الرطوبة",
     ),
     "hungarian": MessageLookupByLibrary.simpleMessage("هنغاري"),
+    "hwsAllDepartments": MessageLookupByLibrary.simpleMessage("كل الأقسام"),
+    "hwsAllRequests": MessageLookupByLibrary.simpleMessage("كل الطلبات"),
+    "hwsAllTasks": MessageLookupByLibrary.simpleMessage("كل المهام"),
+    "hwsAllTime": MessageLookupByLibrary.simpleMessage("كل الوقت"),
+    "hwsAllowed": m75,
+    "hwsAlsoListBreached": MessageLookupByLibrary.simpleMessage(
+      "عرض الطلبات المتجاوزة أيضًا",
+    ),
+    "hwsButtonsShown": MessageLookupByLibrary.simpleMessage("الأزرار المعروضة"),
+    "hwsCount": MessageLookupByLibrary.simpleMessage("العدّ"),
+    "hwsCountsShown": MessageLookupByLibrary.simpleMessage("الأعداد المعروضة"),
+    "hwsCustomRange": MessageLookupByLibrary.simpleMessage("نطاق مخصص"),
+    "hwsDue": MessageLookupByLibrary.simpleMessage("الاستحقاق"),
+    "hwsDueDate": MessageLookupByLibrary.simpleMessage("تاريخ الاستحقاق"),
+    "hwsDueThisWeek": MessageLookupByLibrary.simpleMessage(
+      "مستحقة هذا الأسبوع",
+    ),
+    "hwsDueToday": MessageLookupByLibrary.simpleMessage("مستحقة اليوم"),
+    "hwsErrEndBeforeStart": MessageLookupByLibrary.simpleMessage(
+      "يجب أن يكون تاريخ النهاية بعد تاريخ البداية.",
+    ),
+    "hwsErrNumber": m76,
+    "hwsErrPickAtLeast": m77,
+    "hwsErrPickAtMost": m78,
+    "hwsErrPickDate": MessageLookupByLibrary.simpleMessage("اختر تاريخًا."),
+    "hwsGear": MessageLookupByLibrary.simpleMessage("الإعدادات"),
+    "hwsKeepAtLeast": m79,
+    "hwsMyDepartment": MessageLookupByLibrary.simpleMessage("قسمي"),
+    "hwsNameServiceActions": MessageLookupByLibrary.simpleMessage(
+      "إجراءات الخدمة",
+    ),
+    "hwsNameServiceOverview": MessageLookupByLibrary.simpleMessage(
+      "نظرة عامة على الخدمات",
+    ),
+    "hwsNameTodoCounts": MessageLookupByLibrary.simpleMessage("أعداد المهام"),
+    "hwsNameTodoPriorities": MessageLookupByLibrary.simpleMessage(
+      "أولويات المهام",
+    ),
+    "hwsNameTodoTasks": MessageLookupByLibrary.simpleMessage("المهام"),
+    "hwsNewest": MessageLookupByLibrary.simpleMessage("الأحدث"),
+    "hwsOpenTasks": MessageLookupByLibrary.simpleMessage("المهام المفتوحة"),
+    "hwsOpenTasksOnly": MessageLookupByLibrary.simpleMessage(
+      "المهام المفتوحة فقط",
+    ),
+    "hwsOrder": MessageLookupByLibrary.simpleMessage("الترتيب"),
+    "hwsPeriod": MessageLookupByLibrary.simpleMessage("الفترة"),
+    "hwsPrioritiesShown": MessageLookupByLibrary.simpleMessage(
+      "الأولويات المعروضة",
+    ),
+    "hwsPriority": MessageLookupByLibrary.simpleMessage("الأولوية"),
+    "hwsRequestsShown": MessageLookupByLibrary.simpleMessage(
+      "الطلبات المعروضة",
+    ),
+    "hwsSelectedCount": m80,
+    "hwsShow": MessageLookupByLibrary.simpleMessage("عرض"),
+    "hwsStatuses": MessageLookupByLibrary.simpleMessage("الحالات"),
+    "hwsStatusesShown": MessageLookupByLibrary.simpleMessage(
+      "الحالات المعروضة",
+    ),
+    "hwsTasksShown": MessageLookupByLibrary.simpleMessage("المهام المعروضة"),
+    "hwsThisYear": MessageLookupByLibrary.simpleMessage("هذا العام"),
+    "hwsTilesShown": MessageLookupByLibrary.simpleMessage("البطاقات المعروضة"),
+    "hwsTitle": m81,
+    "hwsUnitPercent": MessageLookupByLibrary.simpleMessage("%"),
+    "hwsUnitRows": MessageLookupByLibrary.simpleMessage("صفوف"),
+    "hwsUnitTasks": MessageLookupByLibrary.simpleMessage("مهام"),
+    "hwsWarnWhenSla": MessageLookupByLibrary.simpleMessage(
+      "تنبيه عندما يبلغ الوقت المستهلك من اتفاقية الخدمة",
+    ),
     "hybrid": MessageLookupByLibrary.simpleMessage("هجين"),
     "hybrid2": MessageLookupByLibrary.simpleMessage("هجين"),
     "iAgreeToThePrivacyPolicyAndTermsAndConditions":
@@ -4066,7 +5971,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "ils": MessageLookupByLibrary.simpleMessage("شيكل إسرائيلي"),
     "image": MessageLookupByLibrary.simpleMessage("صورة"),
     "imageAsset": MessageLookupByLibrary.simpleMessage(
-      "assets/icons_assets/main_icons_assets/check_circle_green.svg",
+      "assets/icons_assets/main_icons_assets/ic_status_success_small.svg",
     ),
     "imageDeletedSuccessfully": MessageLookupByLibrary.simpleMessage(
       "تم حذف الصورة بنجاح",
@@ -4078,6 +5983,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "import": MessageLookupByLibrary.simpleMessage("تصدير"),
     "importContacts": MessageLookupByLibrary.simpleMessage(
       "استيراد جهات الاتصال",
+    ),
+    "importFileNoHeadings": MessageLookupByLibrary.simpleMessage(
+      "لا يحتوي الملف على صف عناوين.",
+    ),
+    "importFileNoRows": MessageLookupByLibrary.simpleMessage(
+      "لا يحتوي الملف على أي صفوف.",
+    ),
+    "importFileUnreadable": MessageLookupByLibrary.simpleMessage(
+      "تعذرت قراءة هذا الملف. استخدم ملف ‎.csv‎ أو ‎.xlsx‎.",
     ),
     "importUsersData": MessageLookupByLibrary.simpleMessage(
       "استيراد بيانات المستخدمين",
@@ -4290,6 +6204,170 @@ class MessageLookup extends MessageLookupByLibrary {
     "k3rd": MessageLookupByLibrary.simpleMessage("3rd"),
     "kazakhstani": MessageLookupByLibrary.simpleMessage("كازاخستاني"),
     "kenyan": MessageLookupByLibrary.simpleMessage("كيني"),
+    "khApprovalFailed": MessageLookupByLibrary.simpleMessage("تعذرت الموافقة"),
+    "khArabicDocumentDescription": MessageLookupByLibrary.simpleMessage(
+      "وصف الوثيقة",
+    ),
+    "khArabicDocumentName": MessageLookupByLibrary.simpleMessage("إسم الوثيقة"),
+    "khAttachment": MessageLookupByLibrary.simpleMessage("مرفق"),
+    "khBackfillDone": MessageLookupByLibrary.simpleMessage(
+      "المستندات التي تم تحديثها:",
+    ),
+    "khBackfillFailed": MessageLookupByLibrary.simpleMessage("تعذر التحديث."),
+    "khBackfillRunning": MessageLookupByLibrary.simpleMessage("جارٍ التحديث…"),
+    "khBackfillTitle": MessageLookupByLibrary.simpleMessage(
+      "تحديث ظهور المستندات",
+    ),
+    "khCommentAttachment": m82,
+    "khCommentDeleted": MessageLookupByLibrary.simpleMessage("تم حذف التعليق"),
+    "khCommentsLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذّر تحميل التعليقات",
+    ),
+    "khCsvEmpty": MessageLookupByLibrary.simpleMessage("ملف CSV فارغ"),
+    "khCsvParseFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذّرت قراءة ملف CSV",
+    ),
+    "khDateAtTime": m83,
+    "khDateHint": MessageLookupByLibrary.simpleMessage("يوم/شهر/سنة"),
+    "khDaysAgoShort": MessageLookupByLibrary.simpleMessage("يوم"),
+    "khDocTypeFrameWork": MessageLookupByLibrary.simpleMessage("إطار عمل"),
+    "khDocTypeVideoRecording": MessageLookupByLibrary.simpleMessage(
+      "تسجيل فيديو",
+    ),
+    "khDocTypeWorkshop": MessageLookupByLibrary.simpleMessage("ورشة عمل"),
+    "khDocumentApproved": MessageLookupByLibrary.simpleMessage(
+      "تمت الموافقة على المستند بنجاح",
+    ),
+    "khDocumentApprovedBody": MessageLookupByLibrary.simpleMessage(
+      "تمت الموافقة على المستند وأصبح منشوراً.",
+    ),
+    "khDocumentAttachment": MessageLookupByLibrary.simpleMessage("مرفق مستند"),
+    "khDocumentNotFound": MessageLookupByLibrary.simpleMessage(
+      "تعذر العثور على المستند.",
+    ),
+    "khDownloadToView": MessageLookupByLibrary.simpleMessage(
+      "يرجى تنزيل الملف لعرضه",
+    ),
+    "khEditReasonNotSaved": MessageLookupByLibrary.simpleMessage(
+      "تم حفظ التعديل، لكن تعذّر حفظ سبب التعديل. يرجى المحاولة مرة أخرى.",
+    ),
+    "khEnglishDocumentDescription": MessageLookupByLibrary.simpleMessage(
+      "وصف الوثيقة بالإنجليزية",
+    ),
+    "khEnglishDocumentName": MessageLookupByLibrary.simpleMessage(
+      "اسم الوثيقة بالإنجليزية",
+    ),
+    "khExcelEmpty": MessageLookupByLibrary.simpleMessage("ملف Excel فارغ"),
+    "khExcelParseFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذّرت قراءة ملف Excel",
+    ),
+    "khFailedToLoadImage": MessageLookupByLibrary.simpleMessage(
+      "تعذر تحميل الصورة",
+    ),
+    "khFileLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذّر تحميل الملف",
+    ),
+    "khFileType": m84,
+    "khFileTypePreview": m85,
+    "khFileUploadFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر رفع الملف",
+    ),
+    "khFileUploaded": MessageLookupByLibrary.simpleMessage(
+      "تم رفع الملف بنجاح",
+    ),
+    "khHoursAgoShort": MessageLookupByLibrary.simpleMessage("ساعة"),
+    "khImageAttachment": MessageLookupByLibrary.simpleMessage("مرفق صورة"),
+    "khJustNow": MessageLookupByLibrary.simpleMessage("الآن"),
+    "khLoadingFileType": m86,
+    "khLoadingVideo": MessageLookupByLibrary.simpleMessage(
+      "جارٍ تحميل الفيديو...",
+    ),
+    "khMinutesAgoShort": MessageLookupByLibrary.simpleMessage("دقيقة"),
+    "khNoCommentsBeFirst": MessageLookupByLibrary.simpleMessage(
+      "لا توجد تعليقات بعد. كن أول من يعلّق!",
+    ),
+    "khPreviewNotAvailable": MessageLookupByLibrary.simpleMessage(
+      "المعاينة غير متاحة",
+    ),
+    "khPreviewNotAvailableForType": m87,
+    "khPublishedDocuments": MessageLookupByLibrary.simpleMessage(
+      "المستندات المنشورة",
+    ),
+    "khRejectionFailed": MessageLookupByLibrary.simpleMessage("تعذر الرفض"),
+    "khRemoveAttachment": MessageLookupByLibrary.simpleMessage("إزالة المرفق"),
+    "khRemoveDocumentFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر سحب المستند. يرجى المحاولة مرة أخرى.",
+    ),
+    "khRemovedDocuments": MessageLookupByLibrary.simpleMessage(
+      "المستندات المحذوفة",
+    ),
+    "khSeedBody": MessageLookupByLibrary.simpleMessage(
+      "سيتم إنشاء مستندات تجريبية، واحد لكل نوع ملف، موزعة على جميع الحالات.",
+    ),
+    "khSeedCreating": MessageLookupByLibrary.simpleMessage("جارٍ الإنشاء…"),
+    "khSeedDescription": m88,
+    "khSeedDone": MessageLookupByLibrary.simpleMessage(
+      "تم إنشاء مستندات تجريبية:",
+    ),
+    "khSeedFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر إنشاء المستندات التجريبية.",
+    ),
+    "khSeedFileCsv": MessageLookupByLibrary.simpleMessage("بيانات CSV"),
+    "khSeedFileDoc": MessageLookupByLibrary.simpleMessage("خطاب Word قديم"),
+    "khSeedFileDocx": MessageLookupByLibrary.simpleMessage("إرشادات Word"),
+    "khSeedFileGif": MessageLookupByLibrary.simpleMessage("صورة GIF متحركة"),
+    "khSeedFileJpg": MessageLookupByLibrary.simpleMessage("صورة JPG"),
+    "khSeedFileMov": MessageLookupByLibrary.simpleMessage("فيديو MOV"),
+    "khSeedFileMp3": MessageLookupByLibrary.simpleMessage("تسجيل صوتي MP3"),
+    "khSeedFileMp4": MessageLookupByLibrary.simpleMessage("فيديو MP4"),
+    "khSeedFilePdf": MessageLookupByLibrary.simpleMessage("سياسة PDF"),
+    "khSeedFilePng": MessageLookupByLibrary.simpleMessage("مخطط PNG"),
+    "khSeedFilePpt": MessageLookupByLibrary.simpleMessage(
+      "عرض PowerPoint قديم",
+    ),
+    "khSeedFilePptx": MessageLookupByLibrary.simpleMessage("عرض PowerPoint"),
+    "khSeedFileTxt": MessageLookupByLibrary.simpleMessage("ملاحظة نصية"),
+    "khSeedFileWebm": MessageLookupByLibrary.simpleMessage("فيديو ورشة WEBM"),
+    "khSeedFileWebp": MessageLookupByLibrary.simpleMessage("صورة WEBP"),
+    "khSeedFileXls": MessageLookupByLibrary.simpleMessage("تقرير Excel قديم"),
+    "khSeedFileXlsx": MessageLookupByLibrary.simpleMessage("تقرير Excel"),
+    "khSeedStateApprovedPublishesLater": MessageLookupByLibrary.simpleMessage(
+      "معتمد (يُنشر لاحقاً)",
+    ),
+    "khSeedStateArchived": MessageLookupByLibrary.simpleMessage("مؤرشف"),
+    "khSeedStatePendingApproval": MessageLookupByLibrary.simpleMessage(
+      "بانتظار الموافقة",
+    ),
+    "khSeedStatePublished": MessageLookupByLibrary.simpleMessage("منشور"),
+    "khSeedStatePublishedAfterApproval": MessageLookupByLibrary.simpleMessage(
+      "منشور بعد الموافقة",
+    ),
+    "khSeedStatePublishedScheduledWindow": MessageLookupByLibrary.simpleMessage(
+      "منشور (فترة مجدولة)",
+    ),
+    "khSeedStateRejected": MessageLookupByLibrary.simpleMessage("مرفوض"),
+    "khSeedStateRemoved": MessageLookupByLibrary.simpleMessage("محذوف"),
+    "khSeedStateScheduled": MessageLookupByLibrary.simpleMessage("مجدول"),
+    "khSeedTitle": MessageLookupByLibrary.simpleMessage("إنشاء معرفة تجريبية"),
+    "khSheetEmpty": MessageLookupByLibrary.simpleMessage("الورقة فارغة"),
+    "khSomeDetailsLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذّر تحميل بعض التفاصيل",
+    ),
+    "khUnknownDepartment": MessageLookupByLibrary.simpleMessage(
+      "قسم غير معروف",
+    ),
+    "khUnknownUser": MessageLookupByLibrary.simpleMessage("مستخدم غير معروف"),
+    "khUnreadableRecords": MessageLookupByLibrary.simpleMessage(
+      "سجلات تعذرت قراءتها:",
+    ),
+    "khUnsupportedFileType": MessageLookupByLibrary.simpleMessage(
+      "نوع ملف غير مدعوم",
+    ),
+    "khUploaded": MessageLookupByLibrary.simpleMessage("المرفوعة"),
+    "khVideoLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذّر تحميل الفيديو",
+    ),
+    "khWriteHere": MessageLookupByLibrary.simpleMessage("اكتب هنا"),
     "kindlyAssignARoleToTheEmployeeThisIsARequiredFieldForAc":
         MessageLookupByLibrary.simpleMessage(
           "يرجى تعيين دور للموظف. هذا حقل مطلوب لصلاحيات الوصول.",
@@ -4421,6 +6499,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "limitedDepartmentAvailability": MessageLookupByLibrary.simpleMessage(
       "تقييد إتاحة الأقسام",
     ),
+    "lineChart": MessageLookupByLibrary.simpleMessage("مخطط خطي"),
     "linkInvalid": MessageLookupByLibrary.simpleMessage("الرابط غير صالح"),
     "links": MessageLookupByLibrary.simpleMessage("الروابط"),
     "lithuanian": MessageLookupByLibrary.simpleMessage("ليتواني"),
@@ -4484,6 +6563,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "logOut": MessageLookupByLibrary.simpleMessage("خروج"),
     "logicIssue": MessageLookupByLibrary.simpleMessage("مشكلة في المنطق"),
     "login": MessageLookupByLibrary.simpleMessage("تسجيل الدخول"),
+    "logo": MessageLookupByLibrary.simpleMessage("الشعار"),
     "logout": MessageLookupByLibrary.simpleMessage("تسجيل الخروج"),
     "london": MessageLookupByLibrary.simpleMessage("لندن"),
     "longitude": MessageLookupByLibrary.simpleMessage("خط الطول"),
@@ -4584,6 +6664,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "may": MessageLookupByLibrary.simpleMessage("مايو"),
     "mechanical": MessageLookupByLibrary.simpleMessage("ميكانيكا"),
     "media": MessageLookupByLibrary.simpleMessage("الوسائط"),
+    "mediaDownloaded": MessageLookupByLibrary.simpleMessage(
+      "تم تنزيل الملفات بنجاح",
+    ),
     "mediaLinksAndDocs": MessageLookupByLibrary.simpleMessage(
       "الوسائط والروابط والمستندات",
     ),
@@ -4722,8 +6805,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "nationalities": MessageLookupByLibrary.simpleMessage("الجنسيات"),
     "nationality": MessageLookupByLibrary.simpleMessage("الجنسية"),
     "nauruan": MessageLookupByLibrary.simpleMessage("ناوروي"),
+    "navLoading": MessageLookupByLibrary.simpleMessage("جارٍ التحميل..."),
+    "navLoadingModules": MessageLookupByLibrary.simpleMessage(
+      "جارٍ تحميل الوحدات...",
+    ),
+    "navModulesLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذّر تحميل بعض الوحدات.",
+    ),
     "navigateTheDigitalFrontierWithEase": MessageLookupByLibrary.simpleMessage(
-      "انطلق في الأفق الرقمية بكل بسهولة",
+      "انطلق في الآفاق الرقمية بكل سهولة",
     ),
     "nearBreachedSLA": MessageLookupByLibrary.simpleMessage(
       "قريب من تجاوز اتفاقية مستوى الخدمة",
@@ -4760,6 +6850,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "newSupplierAdded": MessageLookupByLibrary.simpleMessage(
       "تم إضافة مورد جديد",
     ),
+    "newTag": MessageLookupByLibrary.simpleMessage("الجديد"),
     "newZealander": MessageLookupByLibrary.simpleMessage("نيوزيلندي"),
     "new_details": MessageLookupByLibrary.simpleMessage("التفاصيل الجديدة"),
     "newestFirst": MessageLookupByLibrary.simpleMessage("الأحدث أولاً"),
@@ -4845,6 +6936,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "لا توجد بيانات خبرة متاحة",
     ),
     "noFileSelected": MessageLookupByLibrary.simpleMessage("لم يتم تحديد ملف"),
+    "noFilesToDownload": MessageLookupByLibrary.simpleMessage(
+      "لا توجد ملفات للتنزيل. اختر الأشخاص ونوع الوسائط.",
+    ),
     "noFormFound": MessageLookupByLibrary.simpleMessage("لا توجد نماذج"),
     "noGrcModulesFound": MessageLookupByLibrary.simpleMessage(
       "لم يتم العثور على وحدات حوكمة",
@@ -4876,14 +6970,19 @@ class MessageLookup extends MessageLookupByLibrary {
     "noNearBreachedSLAServices": MessageLookupByLibrary.simpleMessage(
       "لا توجد خدمات قريبة من تجاوز اتفاقية مستوى الخدمة",
     ),
+    "noNoteAdded": MessageLookupByLibrary.simpleMessage("لا توجد ملاحظة."),
     "noOfControls": MessageLookupByLibrary.simpleMessage("عدد الضوابط"),
     "noOfDepartments": MessageLookupByLibrary.simpleMessage("عدد الأقسام"),
+    "noOptions": MessageLookupByLibrary.simpleMessage("لا توجد خيارات"),
     "noOrdersFound": MessageLookupByLibrary.simpleMessage("لا توجد طلبات"),
     "noOwnersAssigned": MessageLookupByLibrary.simpleMessage(
       "لا يوجد مالكون معينون",
     ),
     "noPeopleFound": MessageLookupByLibrary.simpleMessage(
       "لم يتم العثور على أشخاص",
+    ),
+    "noPermissionCreateForm": MessageLookupByLibrary.simpleMessage(
+      "ليس لديك صلاحية لإنشاء النماذج",
     ),
     "noPermissionNeeded": MessageLookupByLibrary.simpleMessage(
       "لا توجد إعدادات صلاحيات مطلوبة لهذه الوحدات.",
@@ -4973,6 +7072,59 @@ class MessageLookup extends MessageLookupByLibrary {
       "الملاحظات والمشاهدات",
     ),
     "notice": MessageLookupByLibrary.simpleMessage("انتبه"),
+    "notifAvailableVariables": m89,
+    "notifBodyArabic": MessageLookupByLibrary.simpleMessage(
+      "نص الرسالة (بالعربية)",
+    ),
+    "notifBodyEnglish": MessageLookupByLibrary.simpleMessage(
+      "نص الرسالة (بالإنجليزية)",
+    ),
+    "notifChannelEmail": MessageLookupByLibrary.simpleMessage(
+      "البريد الإلكتروني",
+    ),
+    "notifChannelPush": MessageLookupByLibrary.simpleMessage("إشعار الهاتف"),
+    "notifChannelType": MessageLookupByLibrary.simpleMessage("نوع الإشعار"),
+    "notifClose": MessageLookupByLibrary.simpleMessage("إغلاق"),
+    "notifNoPermissions": MessageLookupByLibrary.simpleMessage(
+      "لا توجد صلاحيات لعرض الإشعارات",
+    ),
+    "notifNoVariables": MessageLookupByLibrary.simpleMessage(
+      "لا توجد متغيرات لهذا الإشعار",
+    ),
+    "notifPreviewBody": MessageLookupByLibrary.simpleMessage("النص:"),
+    "notifPreviewNote": m90,
+    "notifPreviewSubject": MessageLookupByLibrary.simpleMessage("العنوان:"),
+    "notifPreviewTitle": MessageLookupByLibrary.simpleMessage("معاينة الإشعار"),
+    "notifResetDefault": MessageLookupByLibrary.simpleMessage(
+      "إعادة تعيين الافتراضي",
+    ),
+    "notifResetDefaultMessages": MessageLookupByLibrary.simpleMessage(
+      "استعادة الرسائل الافتراضية",
+    ),
+    "notifResetModuleAction": MessageLookupByLibrary.simpleMessage(
+      "إعادة تعيين كل إشعارات هذه الوحدة",
+    ),
+    "notifResetModuleBody": m91,
+    "notifResetModuleTitle": MessageLookupByLibrary.simpleMessage(
+      "إعادة تعيين إشعارات الوحدة",
+    ),
+    "notifSelectChannel": MessageLookupByLibrary.simpleMessage(
+      "اختر نوع الإشعار",
+    ),
+    "notifSelectEventFirst": MessageLookupByLibrary.simpleMessage(
+      "اختر نوع إشعار أولاً",
+    ),
+    "notifServiceManagement": MessageLookupByLibrary.simpleMessage(
+      "إدارة الخدمات",
+    ),
+    "notifStatus": MessageLookupByLibrary.simpleMessage("حالة الإشعار"),
+    "notifSubjectArabic": MessageLookupByLibrary.simpleMessage(
+      "العنوان (بالعربية)",
+    ),
+    "notifSubjectEnglish": MessageLookupByLibrary.simpleMessage(
+      "العنوان (بالإنجليزية)",
+    ),
+    "notifWriteHere": MessageLookupByLibrary.simpleMessage("اكتب هنا"),
     "notification": MessageLookupByLibrary.simpleMessage("الإشعارات"),
     "notificationControl": MessageLookupByLibrary.simpleMessage(
       "التحكم في الإشعارات",
@@ -5062,6 +7214,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "opacity": MessageLookupByLibrary.simpleMessage("الشفافية"),
     "open": MessageLookupByLibrary.simpleMessage("مفتوح"),
     "openAccess": MessageLookupByLibrary.simpleMessage("وصول مفتوح"),
+    "openFile": MessageLookupByLibrary.simpleMessage("فتح الملف"),
     "openingFile": MessageLookupByLibrary.simpleMessage("جاري فتح الملف"),
     "operations": MessageLookupByLibrary.simpleMessage("العمليات"),
     "operationsDepartment": MessageLookupByLibrary.simpleMessage(
@@ -5097,6 +7250,32 @@ class MessageLookup extends MessageLookupByLibrary {
     "orders": MessageLookupByLibrary.simpleMessage("الطلبات"),
     "ordersHistory": MessageLookupByLibrary.simpleMessage("تفاصيل الطلب"),
     "orgChart": MessageLookupByLibrary.simpleMessage("الهيكل التنظيمي"),
+    "orgChartBrokenLinks": m92,
+    "orgChartCheckConnection": MessageLookupByLibrary.simpleMessage(
+      "تحقق من اتصالك وحاول مرة أخرى",
+    ),
+    "orgChartDepartmentsLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذّر تحميل الأقسام",
+    ),
+    "orgChartEmployeeIdMissing": MessageLookupByLibrary.simpleMessage(
+      "لا يوجد معرّف أو بريد إلكتروني لهذا الموظف، لذلك لا يمكن فتح ملفه الشخصي",
+    ),
+    "orgChartEmployeeNotFound": MessageLookupByLibrary.simpleMessage(
+      "لم يتم العثور على الملف الشخصي لهذا الموظف",
+    ),
+    "orgChartLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذّر تحميل الهيكل التنظيمي",
+    ),
+    "orgChartProfileLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذّر تحميل هذا الملف الشخصي",
+    ),
+    "orgChartProfilesSkipped": m93,
+    "orgChartReportingLoop": MessageLookupByLibrary.simpleMessage(
+      "علاقة إشراف دائرية",
+    ),
+    "orgChartSupervisorNotFound": MessageLookupByLibrary.simpleMessage(
+      "المشرف غير موجود",
+    ),
     "organizationChart": MessageLookupByLibrary.simpleMessage(
       "الهيكل التنظيمي",
     ),
@@ -5117,6 +7296,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "overall": MessageLookupByLibrary.simpleMessage("الإجمالي"),
     "overdue": MessageLookupByLibrary.simpleMessage("متأخر"),
     "overdueReturn": MessageLookupByLibrary.simpleMessage("إرجاع متأخر"),
+    "ownRequestReviewNote": MessageLookupByLibrary.simpleMessage(
+      "هذا طلبك الخاص. يجب أن يوافق عليه مراجع آخر أو يرفضه.",
+    ),
     "owner": MessageLookupByLibrary.simpleMessage("المالك"),
     "owningDepartment": MessageLookupByLibrary.simpleMessage("القسم المالك"),
     "owningStatus": MessageLookupByLibrary.simpleMessage("حالة المالك"),
@@ -5136,6 +7318,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "paraguayan": MessageLookupByLibrary.simpleMessage("باراغوي"),
     "parent": MessageLookupByLibrary.simpleMessage("والد/والدة"),
     "partTime": MessageLookupByLibrary.simpleMessage("دوام جزئي"),
+    "partialAssignation": MessageLookupByLibrary.simpleMessage("تعيين جزئي"),
     "partiallyReceived": MessageLookupByLibrary.simpleMessage(
       "تم الاستلام جزئياً",
     ),
@@ -5173,6 +7356,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "pause": MessageLookupByLibrary.simpleMessage("إيقاف مؤقت"),
     "paymentMethod": MessageLookupByLibrary.simpleMessage("طريقة الدفع"),
     "paymentType": MessageLookupByLibrary.simpleMessage("نوع الدفع"),
+    "pdfCouldNotBeGenerated": MessageLookupByLibrary.simpleMessage(
+      "تعذر إنشاء ملف PDF. يرجى المحاولة مرة أخرى.",
+    ),
+    "pdfNoPages": MessageLookupByLibrary.simpleMessage("لا توجد صفحة للتنزيل."),
+    "pdfNotReady": MessageLookupByLibrary.simpleMessage(
+      "معاينة ملف PDF غير جاهزة بعد.",
+    ),
     "pending": MessageLookupByLibrary.simpleMessage("قيد الانتظار"),
     "pendingProjects": MessageLookupByLibrary.simpleMessage("المشاريع المعلقة"),
     "pendingSubmissions": MessageLookupByLibrary.simpleMessage(
@@ -5190,6 +7380,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "يجب أن يختلف البريد الشخصي عن بريد العمل",
     ),
     "personalBranding": MessageLookupByLibrary.simpleMessage("الهوية الشخصية"),
+    "personalBrandingResetToCompanyDefaults":
+        MessageLookupByLibrary.simpleMessage(
+          "تمت إعادة الهوية الشخصية إلى إعدادات الشركة الافتراضية",
+        ),
     "personalData": MessageLookupByLibrary.simpleMessage("بيانات شخصية"),
     "personalEmail": MessageLookupByLibrary.simpleMessage(
       "البريد الإلكتروني الشخصي",
@@ -5400,6 +7594,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "pleaseSelectAtLeastOneDepartment": MessageLookupByLibrary.simpleMessage(
       "الرجاء اختيار قسم واحد على الأقل",
     ),
+    "pleaseSelectAtLeastOneFilter": MessageLookupByLibrary.simpleMessage(
+      "يرجى اختيار عامل تصفية واحد على الأقل.",
+    ),
     "pleaseSelectAtLeastOneRowToRemove": MessageLookupByLibrary.simpleMessage(
       "الرجاء تحديد صف واحد على الأقل للإزالة.",
     ),
@@ -5555,11 +7752,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "present": MessageLookupByLibrary.simpleMessage("حاضر"),
     "presentation": MessageLookupByLibrary.simpleMessage("عرض تقديمي"),
     "preview": MessageLookupByLibrary.simpleMessage("معاينة"),
+    "previewCompanyInformation": MessageLookupByLibrary.simpleMessage(
+      "معاينة معلومات الشركة",
+    ),
     "previewExport": MessageLookupByLibrary.simpleMessage("معاينة التصدير"),
     "previewHealthInsuranceChanges": MessageLookupByLibrary.simpleMessage(
       "معاينة التأمين الصحي",
     ),
-    "previewMatches": m15,
+    "previewMatches": m94,
+    "previewPersonalInformation": MessageLookupByLibrary.simpleMessage(
+      "معاينة المعلومات الشخصية",
+    ),
     "previewingPolicyAndControls": MessageLookupByLibrary.simpleMessage(
       "معاينة السياسة والضوابط",
     ),
@@ -5663,6 +7866,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "بسّط التواصل عبر الرسائل المباشرة والمحادثات الجماعية، بما يضمن بقاء الجميع على اطلاع وتفاعل. تعزز ميزة المحادثة سرعة اتخاذ القرار وترفع إنتاجية الفريق.",
     ),
     "reason": MessageLookupByLibrary.simpleMessage("السبب"),
+    "reasonForCancellation": MessageLookupByLibrary.simpleMessage(
+      "سبب الإلغاء",
+    ),
     "reasonForRejection": MessageLookupByLibrary.simpleMessage("سبب الرفض"),
     "reasonForRequest": MessageLookupByLibrary.simpleMessage("سبب الطلب"),
     "reasonMustBeAtLeast10Characters": MessageLookupByLibrary.simpleMessage(
@@ -5729,6 +7935,18 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "remindAll": MessageLookupByLibrary.simpleMessage("تذكير الجميع"),
     "reminder": MessageLookupByLibrary.simpleMessage("تذكير"),
+    "reminderFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر إرسال التذكير.",
+    ),
+    "reminderSent": MessageLookupByLibrary.simpleMessage(
+      "تم إرسال التذكير إلى مشرفك.",
+    ),
+    "reminderTooSoon": MessageLookupByLibrary.simpleMessage(
+      "تم إرسال تذكير بالفعل خلال آخر 24 ساعة",
+    ),
+    "reminderTryTomorrow": MessageLookupByLibrary.simpleMessage(
+      "تم إرسال التذكير — حاول مرة أخرى غدًا",
+    ),
     "remote": MessageLookupByLibrary.simpleMessage("عن بُعد"),
     "remoteStatus": MessageLookupByLibrary.simpleMessage("حالة العمل عن بُعد"),
     "remove": MessageLookupByLibrary.simpleMessage("حذف"),
@@ -5743,6 +7961,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "removeKnowledge": MessageLookupByLibrary.simpleMessage("إزالة المعرفة"),
     "removeKnowledge_ar": MessageLookupByLibrary.simpleMessage("حذف المعرفة"),
     "removeMember": MessageLookupByLibrary.simpleMessage("إزالة العضو"),
+    "removeMySubmissionsDocuments": MessageLookupByLibrary.simpleMessage(
+      "إزالة مستندات طلباتي",
+    ),
     "removeSelection": MessageLookupByLibrary.simpleMessage("إزالة التحديد"),
     "remove_access": MessageLookupByLibrary.simpleMessage("إزالة الصلاحيات"),
     "remove_access_confirmation": MessageLookupByLibrary.simpleMessage(
@@ -5784,6 +8005,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "requestCancelation": MessageLookupByLibrary.simpleMessage("طلب إلغاء"),
     "requestCancelled": MessageLookupByLibrary.simpleMessage("تم إلغاء الطلب"),
     "requestDate": MessageLookupByLibrary.simpleMessage("تاريخ الطلب"),
+    "requestDecisionUnverifiable": MessageLookupByLibrary.simpleMessage(
+      "تعذر التحقق من هذا القرار، لذلك لم يتم حفظ أي شيء. يرجى تسجيل الدخول مرة أخرى والمحاولة من جديد.",
+    ),
     "requestDescription": MessageLookupByLibrary.simpleMessage("وصف الطلب"),
     "requestDescriptionAr": MessageLookupByLibrary.simpleMessage(
       "وصف الطلب (عربي)",
@@ -5887,6 +8111,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "resetBranding": MessageLookupByLibrary.simpleMessage(
       "إعادة تعيين العلامة التجارية",
     ),
+    "resetModuleNotifications": MessageLookupByLibrary.simpleMessage(
+      "إعادة تعيين إشعارات الوحدة",
+    ),
+    "resetModuleNotificationsBody": m95,
     "resetPassword": MessageLookupByLibrary.simpleMessage(
       "إعادة تعيين كلمة المرور",
     ),
@@ -5921,6 +8149,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "restoreRequestType": MessageLookupByLibrary.simpleMessage(
       "هل أنت متأكد أنك تريد استعادة نوع الطلب؟",
     ),
+    "restoreToDo": MessageLookupByLibrary.simpleMessage("استعادة المهام"),
     "restoredGrcModule": MessageLookupByLibrary.simpleMessage(
       "وحدة GRC المستعادة",
     ),
@@ -5952,6 +8181,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "إعادة تقديم الدليل",
     ),
     "result": MessageLookupByLibrary.simpleMessage("النتيجة"),
+    "resultsLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر تحميل النتائج. يرجى المحاولة مرة أخرى.",
+    ),
     "resultsPermissions": MessageLookupByLibrary.simpleMessage(
       "صلاحيات النتائج",
     ),
@@ -5962,10 +8194,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "retrieve": MessageLookupByLibrary.simpleMessage("استرجاع"),
     "retrieveProduct": MessageLookupByLibrary.simpleMessage("استرجاع المنتج"),
     "retry": MessageLookupByLibrary.simpleMessage("إعادة المحاولة"),
+    "retryEmployeeCreation": MessageLookupByLibrary.simpleMessage(
+      "إعادة محاولة إنشاء الموظف",
+    ),
     "returnDate": MessageLookupByLibrary.simpleMessage("تاريخ الإرجاع"),
     "returned": MessageLookupByLibrary.simpleMessage("تم الإرجاع"),
+    "retypeColumnsSubtitle": MessageLookupByLibrary.simpleMessage(
+      "سيتم مسح الخلايا التي لا تتوافق مع النوع الجديد للعمود. هل تريد المتابعة؟",
+    ),
+    "retypeColumnsTitle": MessageLookupByLibrary.simpleMessage(
+      "تغيير نوع العمود؟",
+    ),
     "review": MessageLookupByLibrary.simpleMessage("مراجعة"),
     "reviewedDate": MessageLookupByLibrary.simpleMessage("تاريخ المراجعة"),
+    "revisionRequested": MessageLookupByLibrary.simpleMessage("مطلوب تعديل"),
     "riskManagement": MessageLookupByLibrary.simpleMessage("إدارة المخاطر"),
     "riskManager": MessageLookupByLibrary.simpleMessage("مدير الخطر"),
     "riyadh": MessageLookupByLibrary.simpleMessage("الرياض"),
@@ -5976,11 +8218,26 @@ class MessageLookup extends MessageLookupByLibrary {
     "roleDeletedSuccessfully": MessageLookupByLibrary.simpleMessage(
       "تم حذف الدور بنجاح",
     ),
+    "roleDemoDone": MessageLookupByLibrary.simpleMessage(
+      "تم تحميل البيانات التجريبية",
+    ),
+    "roleDemoLoad": MessageLookupByLibrary.simpleMessage(
+      "تحميل بيانات تجريبية",
+    ),
+    "roleDemoRemove": MessageLookupByLibrary.simpleMessage(
+      "إزالة البيانات التجريبية",
+    ),
+    "roleDemoRemoved": MessageLookupByLibrary.simpleMessage(
+      "تمت إزالة البيانات التجريبية",
+    ),
+    "roleDemoWorking": MessageLookupByLibrary.simpleMessage("جار التنفيذ"),
     "roleDescription": MessageLookupByLibrary.simpleMessage("وصف الدور"),
     "roleDescriptionArabic": MessageLookupByLibrary.simpleMessage(
       "وصف الدور (عربي)",
     ),
     "roleDetails": MessageLookupByLibrary.simpleMessage("تفاصيل الدور"),
+    "roleInUse": MessageLookupByLibrary.simpleMessage("الدور مستخدم"),
+    "roleInUseMessage": m96,
     "roleInformation": MessageLookupByLibrary.simpleMessage("معلومات الدور"),
     "roleManagement": MessageLookupByLibrary.simpleMessage("إدارة الأدوار"),
     "roleManagementModule": MessageLookupByLibrary.simpleMessage(
@@ -6040,6 +8297,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "saveTo": MessageLookupByLibrary.simpleMessage("حفظ في"),
     "savedAsDraft": MessageLookupByLibrary.simpleMessage("تم الحفظ كمسودة"),
     "savedColors": MessageLookupByLibrary.simpleMessage("الألوان المحفوظة"),
+    "savedTo": MessageLookupByLibrary.simpleMessage("تم الحفظ في"),
     "savedToHistory": MessageLookupByLibrary.simpleMessage("تم الحفظ في السجل"),
     "saving": MessageLookupByLibrary.simpleMessage("جاري الحفظ..."),
     "savingAddresses": MessageLookupByLibrary.simpleMessage(
@@ -6089,6 +8347,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "secondBackup": MessageLookupByLibrary.simpleMessage(
       "النسخة الاحتياطية الثانية",
     ),
+    "secondContactIncomplete": MessageLookupByLibrary.simpleMessage(
+      "املأ جميع حقول جهة اتصال الطوارئ الثانية، أو اتركها فارغة بالكامل.",
+    ),
+    "secondContactOptionalHint": MessageLookupByLibrary.simpleMessage(
+      "اختياري. إذا أضفت جهة اتصال ثانية، فاملأ جميع حقولها.",
+    ),
     "secondEmergencyContact": MessageLookupByLibrary.simpleMessage(
       "جهة الاتصال الطارئة الثانية",
     ),
@@ -6131,6 +8395,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "selectAssetConditions": MessageLookupByLibrary.simpleMessage(
       "اختر حالة الأصل",
+    ),
+    "selectAtLeastOneDepartment": MessageLookupByLibrary.simpleMessage(
+      "يرجى اختيار قسم واحد على الأقل",
     ),
     "selectAtLeastOneEmployee": MessageLookupByLibrary.simpleMessage(
       "يرجى تحديد موظف واحد على الأقل",
@@ -6176,6 +8443,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "selectLocation": MessageLookupByLibrary.simpleMessage("اختر الموقع"),
     "selectLogicIssue": MessageLookupByLibrary.simpleMessage(
       "اختر مشكلة المنطق",
+    ),
+    "selectMaritalStatus": MessageLookupByLibrary.simpleMessage(
+      "اختر الحالة الاجتماعية",
     ),
     "selectMethodOfPayment": MessageLookupByLibrary.simpleMessage(
       "اختر وسيلة الدفع",
@@ -6225,6 +8495,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "اختر تاريخ البداية",
     ),
     "selectStartTime": MessageLookupByLibrary.simpleMessage("اختر وقت"),
+    "selectStateOrProvince": MessageLookupByLibrary.simpleMessage(
+      "اختر المحافظة",
+    ),
     "selectStorageLocation": MessageLookupByLibrary.simpleMessage(
       "اختر موقع التخزين",
     ),
@@ -6249,6 +8522,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "selected": MessageLookupByLibrary.simpleMessage("محدد"),
     "selectedModules": MessageLookupByLibrary.simpleMessage("الوحدات المحددة"),
     "selectpriority": MessageLookupByLibrary.simpleMessage("اختار الاولوية"),
+    "selfApprovalBlocked": MessageLookupByLibrary.simpleMessage(
+      "لا يمكنك الموافقة على طلبك أو رفضه. يجب أن يتخذ مراجع آخر القرار.",
+    ),
     "semiAnnual": MessageLookupByLibrary.simpleMessage("نصف سنوي"),
     "send": MessageLookupByLibrary.simpleMessage("ارسال"),
     "sendReminder": MessageLookupByLibrary.simpleMessage("إرسال تذكير"),
@@ -6319,6 +8595,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "shareEmailsAndSocialDataInBio": MessageLookupByLibrary.simpleMessage(
       "مشاركة البريد الإلكتروني والبيانات الاجتماعية في النبذة",
     ),
+    "shareFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذرت مشاركة النموذج. يرجى المحاولة مرة أخرى.",
+    ),
+    "shareNeedsPeopleAndDates": MessageLookupByLibrary.simpleMessage(
+      "يرجى اختيار الأشخاص وتاريخي الوصول",
+    ),
     "shareSocialInformation": MessageLookupByLibrary.simpleMessage(
       "مشاركة المعلومات الاجتماعية",
     ),
@@ -6371,6 +8653,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "showHRNotifications": MessageLookupByLibrary.simpleMessage(
       "إظهار إشعارات الموارد البشرية",
     ),
+    "showInFolder": MessageLookupByLibrary.simpleMessage("إظهار في المجلد"),
     "showInventoryNotifications": MessageLookupByLibrary.simpleMessage(
       "إظهار إشعارات المخزون",
     ),
@@ -6487,6 +8770,7 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "تعذر حفظ بعض تعيينات المشرفين/المالكين",
         ),
+    "soon": MessageLookupByLibrary.simpleMessage("قريبًا"),
     "sort": MessageLookupByLibrary.simpleMessage("ترتيب"),
     "southAfrican": MessageLookupByLibrary.simpleMessage("جنوب أفريقي"),
     "southKorean": MessageLookupByLibrary.simpleMessage("كوري جنوبي"),
@@ -6497,8 +8781,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "الرموز الخاصة غير مسموحة",
     ),
     "specification": MessageLookupByLibrary.simpleMessage("المواصفات"),
-    "specifiedDoesNotExist": m16,
-    "specifiedError": m17,
+    "specifiedDoesNotExist": m97,
+    "specifiedError": m98,
     "spouse": MessageLookupByLibrary.simpleMessage("زوج/زوجة"),
     "sriLankan": MessageLookupByLibrary.simpleMessage("سريلانكي"),
     "ss": MessageLookupByLibrary.simpleMessage("تعديل"),
@@ -6610,6 +8894,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "submissions": MessageLookupByLibrary.simpleMessage("الطلبات"),
     "submit": MessageLookupByLibrary.simpleMessage("إرسال"),
     "submitEvidence": MessageLookupByLibrary.simpleMessage("تقديم الدليل"),
+    "submitFailedTryAgain": MessageLookupByLibrary.simpleMessage(
+      "تعذر إرسال إجابتك. يرجى المحاولة مرة أخرى.",
+    ),
     "submitForApproval": MessageLookupByLibrary.simpleMessage("إرسال للموافقة"),
     "submitForm": MessageLookupByLibrary.simpleMessage("تقديم النموذج"),
     "submitRequest": MessageLookupByLibrary.simpleMessage("تقديم الطلب"),
@@ -6777,6 +9064,240 @@ class MessageLookup extends MessageLookupByLibrary {
     "supplierRank": MessageLookupByLibrary.simpleMessage("تصنيف المورد"),
     "suppliers": MessageLookupByLibrary.simpleMessage("الموردين"),
     "surinamer": MessageLookupByLibrary.simpleMessage("سورينامي"),
+    "svcArFieldHint": MessageLookupByLibrary.simpleMessage("اكتب هنا"),
+    "svcArFieldServiceDescription": MessageLookupByLibrary.simpleMessage(
+      "وصف الخدمة",
+    ),
+    "svcArFieldServiceName": MessageLookupByLibrary.simpleMessage("اسم الخدمة"),
+    "svcAssignProvider": MessageLookupByLibrary.simpleMessage(
+      "تعيين مقدم الخدمة",
+    ),
+    "svcCancelRequestFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر إلغاء الطلب. يرجى المحاولة مرة أخرى.",
+    ),
+    "svcCancelSavedNotifyFailed": MessageLookupByLibrary.simpleMessage(
+      "تم إلغاء الطلب، لكن تعذّر إشعار مقدم الخدمة.",
+    ),
+    "svcCannotUncheckSlaSection": m99,
+    "svcChatAttachmentPdf": MessageLookupByLibrary.simpleMessage("مستند PDF"),
+    "svcChatDeleteFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر حذف الرسالة.",
+    ),
+    "svcChatEditFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر تعديل الرسالة.",
+    ),
+    "svcChatLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر تحميل التعليقات.",
+    ),
+    "svcChatNotAuthor": MessageLookupByLibrary.simpleMessage(
+      "يمكن لكاتب الرسالة فقط تعديلها أو حذفها.",
+    ),
+    "svcChatSendFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر إرسال الرسالة.",
+    ),
+    "svcChatUploadFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر رفع الملف.",
+    ),
+    "svcDecimalsNotAllowed": MessageLookupByLibrary.simpleMessage(
+      "الأرقام العشرية غير مسموحة",
+    ),
+    "svcDecisionFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذّر حفظ قرارك. يرجى المحاولة مرة أخرى.",
+    ),
+    "svcDecisionSavedNotifyFailed": MessageLookupByLibrary.simpleMessage(
+      "تم حفظ القرار، لكن تعذّر إشعار الشخص التالي.",
+    ),
+    "svcDepartmentNotSpecified": MessageLookupByLibrary.simpleMessage(
+      "القسم غير محدد",
+    ),
+    "svcDraftNotSaved": MessageLookupByLibrary.simpleMessage(
+      "تعذر حفظ المسودة. يرجى التحقق من الاتصال والمحاولة مرة أخرى.",
+    ),
+    "svcDraftsLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذّر تحميل المسودات. يرجى المحاولة لاحقاً.",
+    ),
+    "svcDropExcelHere": MessageLookupByLibrary.simpleMessage(
+      "أفلت ملف الإكسل هنا",
+    ),
+    "svcEnFieldHint": MessageLookupByLibrary.simpleMessage("Text here"),
+    "svcEnFieldServiceDescription": MessageLookupByLibrary.simpleMessage(
+      "Service Description",
+    ),
+    "svcEnFieldServiceName": MessageLookupByLibrary.simpleMessage(
+      "Service Name",
+    ),
+    "svcExcelFileInvalid": MessageLookupByLibrary.simpleMessage(
+      "قد يكون الملف تالفًا أو يحتوي على بيانات غير صالحة.\n\nيرجى التأكد من:\n• أن الملف بصيغة إكسل صالحة (.xlsx أو .xls)\n• أن جميع الخلايا تحتوي على بيانات صالحة\n• عدم وجود خلايا مدمجة في صف العناوين",
+    ),
+    "svcExcelNoValidData": MessageLookupByLibrary.simpleMessage(
+      "لم يتم العثور على بيانات صالحة في ملف الإكسل.",
+    ),
+    "svcExcelNoWorksheets": MessageLookupByLibrary.simpleMessage(
+      "لم يتم العثور على أي أوراق عمل في ملف الإكسل.",
+    ),
+    "svcImagePickFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذّر اختيار الصورة. يرجى المحاولة مرة أخرى.",
+    ),
+    "svcImageUploadFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذّر رفع الصورة. يرجى المحاولة مرة أخرى.",
+    ),
+    "svcImageUploadInProgress": MessageLookupByLibrary.simpleMessage(
+      "يرجى الانتظار حتى يكتمل رفع الصورة.",
+    ),
+    "svcLoadingDraftServices": MessageLookupByLibrary.simpleMessage(
+      "جاري تحميل الخدمات المسودة...",
+    ),
+    "svcMasterStep1Fields": MessageLookupByLibrary.simpleMessage(
+      "تضيف أسماء الخدمات (بالعربية والإنجليزية)، وتحدد أوصاف الخدمات، ومدة الخدمة ووحدة الوقت، وتعيّن الإدارات المالكة، وتختار مقدمي الخدمة، وتضبط إعدادات الإتاحة والموافقات.",
+    ),
+    "svcMasterStep1Format": MessageLookupByLibrary.simpleMessage(
+      "تأكد من أن الملف يتبع الصيغة المطلوبة لتجنب أخطاء التحقق.",
+    ),
+    "svcMasterStep1Intro": MessageLookupByLibrary.simpleMessage(
+      "أنت على وشك رفع عدة خدمات دفعة واحدة باستخدام ملف بصيغة محددة. في هذه الخطوة سوف:",
+    ),
+    "svcMasterStep1Next": MessageLookupByLibrary.simpleMessage(
+      "بعد إتمام هذه الخطوة بنجاح ستنتقل إلى: طلبات الخدمة.",
+    ),
+    "svcMasterStep1Preview": MessageLookupByLibrary.simpleMessage(
+      "بعد الرفع ستراجع جميع السجلات في وضع المعاينة، وسيتم تمييز أي بيانات ناقصة أو غير صحيحة.",
+    ),
+    "svcMasterStep2Fields": MessageLookupByLibrary.simpleMessage(
+      "في هذه الخطوة سوف: تعيّن مقدمي الطلبات والإدارات، وتحدد تواريخ الطلبات وحالاتها، وتعيّن منفذي الطلبات.",
+    ),
+    "svcMasterStep2Intro": MessageLookupByLibrary.simpleMessage(
+      "أنت على وشك رفع طلبات خدمة مرتبطة بالخدمات التي تم إنشاؤها في الخطوة الأولى.",
+    ),
+    "svcMasterStep2Requires": MessageLookupByLibrary.simpleMessage(
+      "يجب إكمال الخطوة الأولى بنجاح قبل رفع الطلبات.",
+    ),
+    "svcMasterStep2Verify": MessageLookupByLibrary.simpleMessage(
+      "سيتحقق النظام من وجود جميع الخدمات والمستخدمين قبل التأكيد.",
+    ),
+    "svcNoEmployeesAvailable": MessageLookupByLibrary.simpleMessage(
+      "لا يوجد موظفون متاحون",
+    ),
+    "svcNoEmployeesMatch": MessageLookupByLibrary.simpleMessage(
+      "لا يوجد موظفون يطابقون بحثك",
+    ),
+    "svcNoProviderAssigned": MessageLookupByLibrary.simpleMessage(
+      "لم يتم تعيين مقدم خدمة لهذا الطلب",
+    ),
+    "svcNoServiceProvider": MessageLookupByLibrary.simpleMessage(
+      "لا يوجد مقدم خدمة",
+    ),
+    "svcNoServicesToExport": MessageLookupByLibrary.simpleMessage(
+      "لا توجد خدمات للتصدير",
+    ),
+    "svcNotAvailable": MessageLookupByLibrary.simpleMessage("غير متوفر"),
+    "svcNotYourTurnToDecide": MessageLookupByLibrary.simpleMessage(
+      "ليس دورك لاتخاذ قرار بشأن هذا الطلب.",
+    ),
+    "svcOrdinal1": MessageLookupByLibrary.simpleMessage("الأول"),
+    "svcOrdinal10": MessageLookupByLibrary.simpleMessage("العاشر"),
+    "svcOrdinal2": MessageLookupByLibrary.simpleMessage("الثاني"),
+    "svcOrdinal3": MessageLookupByLibrary.simpleMessage("الثالث"),
+    "svcOrdinal4": MessageLookupByLibrary.simpleMessage("الرابع"),
+    "svcOrdinal5": MessageLookupByLibrary.simpleMessage("الخامس"),
+    "svcOrdinal6": MessageLookupByLibrary.simpleMessage("السادس"),
+    "svcOrdinal7": MessageLookupByLibrary.simpleMessage("السابع"),
+    "svcOrdinal8": MessageLookupByLibrary.simpleMessage("الثامن"),
+    "svcOrdinal9": MessageLookupByLibrary.simpleMessage("التاسع"),
+    "svcOrdinalNumber": m100,
+    "svcPlannedHours": MessageLookupByLibrary.simpleMessage("الساعات المخططة"),
+    "svcProviderUpdateFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذّر تحديث مقدم الخدمة. يرجى المحاولة مرة أخرى.",
+    ),
+    "svcReminderSent": MessageLookupByLibrary.simpleMessage(
+      "تم إرسال التذكير.",
+    ),
+    "svcRequestMovedToInProgress": MessageLookupByLibrary.simpleMessage(
+      "تم نقل الطلب إلى قيد التنفيذ.",
+    ),
+    "svcRequestNoLongerPending": MessageLookupByLibrary.simpleMessage(
+      "هذا الطلب لم يعد قيد الانتظار، لذا لا يمكن قبوله أو رفضه.",
+    ),
+    "svcRequestNotFound": MessageLookupByLibrary.simpleMessage(
+      "هذا الطلب لم يعد موجوداً.",
+    ),
+    "svcRequestSavedNotifyFailed": MessageLookupByLibrary.simpleMessage(
+      "تم حفظ الطلب، لكن تعذّر إشعار المعتمد.",
+    ),
+    "svcSelectedDepartments": MessageLookupByLibrary.simpleMessage(
+      "الأقسام المحددة",
+    ),
+    "svcServiceDeleteFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذّر حذف الخدمة. يرجى المحاولة مرة أخرى.",
+    ),
+    "svcServiceDescriptionArabicColumn": MessageLookupByLibrary.simpleMessage(
+      "وصف الخدمة (عربي)",
+    ),
+    "svcServiceDescriptionEnglishColumn": MessageLookupByLibrary.simpleMessage(
+      "وصف الخدمة (إنجليزي)",
+    ),
+    "svcServiceNameAlreadyExists": m101,
+    "svcServiceNameArabicColumn": MessageLookupByLibrary.simpleMessage(
+      "اسم الخدمة (عربي)",
+    ),
+    "svcServiceNameEnglishColumn": MessageLookupByLibrary.simpleMessage(
+      "اسم الخدمة (إنجليزي)",
+    ),
+    "svcServiceNotInUploadedList": MessageLookupByLibrary.simpleMessage(
+      "الخدمة غير موجودة في قائمة الخدمات المرفوعة",
+    ),
+    "svcServiceSaveFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر حفظ الخدمة. يرجى المحاولة مرة أخرى.",
+    ),
+    "svcSlaEnableSection": m102,
+    "svcSlaEnableSectionWithSla": m103,
+    "svcSlaWholeNumbersOnly": MessageLookupByLibrary.simpleMessage(
+      "يرجى إدخال أرقام صحيحة فقط في حقول النسبة. الأرقام العشرية غير مسموحة.",
+    ),
+    "svcSomethingWentWrong": MessageLookupByLibrary.simpleMessage(
+      "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+    ),
+    "svcStatusSavedNotifyFailed": MessageLookupByLibrary.simpleMessage(
+      "تم حفظ الحالة، لكن تعذّر إشعار مقدم الطلب.",
+    ),
+    "svcStepInformation": MessageLookupByLibrary.simpleMessage(
+      "معلومات الخطوة",
+    ),
+    "svcStoragePermissionDenied": MessageLookupByLibrary.simpleMessage(
+      "تم رفض إذن الوصول إلى التخزين. يرجى منح الإذن للوصول إلى الملفات.",
+    ),
+    "svcTryAgainLater": MessageLookupByLibrary.simpleMessage(
+      "يرجى المحاولة مرة أخرى لاحقًا",
+    ),
+    "svcUniqueDepartmentRequesters": MessageLookupByLibrary.simpleMessage(
+      "الأقسام الطالبة الفريدة",
+    ),
+    "svcUnitDayMany": MessageLookupByLibrary.simpleMessage("أيام"),
+    "svcUnitDayOne": MessageLookupByLibrary.simpleMessage("يوم"),
+    "svcUnitDayTwo": MessageLookupByLibrary.simpleMessage("يومين"),
+    "svcUnitHourMany": MessageLookupByLibrary.simpleMessage("ساعات"),
+    "svcUnitHourOne": MessageLookupByLibrary.simpleMessage("ساعة"),
+    "svcUnitHourTwo": MessageLookupByLibrary.simpleMessage("ساعتين"),
+    "svcUnitMinuteMany": MessageLookupByLibrary.simpleMessage("دقائق"),
+    "svcUnitMinuteOne": MessageLookupByLibrary.simpleMessage("دقيقة"),
+    "svcUnitMinuteTwo": MessageLookupByLibrary.simpleMessage("دقيقتين"),
+    "svcUnitMonthMany": MessageLookupByLibrary.simpleMessage("أشهر"),
+    "svcUnitMonthOne": MessageLookupByLibrary.simpleMessage("شهر"),
+    "svcUnitMonthTwo": MessageLookupByLibrary.simpleMessage("شهرين"),
+    "svcUnitSecondMany": MessageLookupByLibrary.simpleMessage("ثوانٍ"),
+    "svcUnitSecondOne": MessageLookupByLibrary.simpleMessage("ثانية"),
+    "svcUnitSecondTwo": MessageLookupByLibrary.simpleMessage("ثانيتين"),
+    "svcUnitWeekMany": MessageLookupByLibrary.simpleMessage("أسابيع"),
+    "svcUnitWeekOne": MessageLookupByLibrary.simpleMessage("أسبوع"),
+    "svcUnitWeekTwo": MessageLookupByLibrary.simpleMessage("أسبوعين"),
+    "svcUnitYearMany": MessageLookupByLibrary.simpleMessage("سنوات"),
+    "svcUnitYearOne": MessageLookupByLibrary.simpleMessage("سنة"),
+    "svcUnitYearTwo": MessageLookupByLibrary.simpleMessage("سنتين"),
+    "svcUploadInvalidRequestedDate": MessageLookupByLibrary.simpleMessage(
+      "يجب أن يكون تنسيق التاريخ مثل: 12 Feb 2023",
+    ),
+    "svcUploadInvalidState": MessageLookupByLibrary.simpleMessage(
+      "يجب أن تكون الحالة: pending أو approved أو done",
+    ),
     "swazi": MessageLookupByLibrary.simpleMessage("سوازيلندي"),
     "swedish": MessageLookupByLibrary.simpleMessage("سويدي"),
     "swiftCode": MessageLookupByLibrary.simpleMessage("رمز SWIFT/BIC"),
@@ -6794,6 +9315,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "systemsLogs": MessageLookupByLibrary.simpleMessage("سجلات النظام"),
     "table": MessageLookupByLibrary.simpleMessage("جدول"),
     "tableChart": MessageLookupByLibrary.simpleMessage("مخطط جدولي"),
+    "tableRowsChangedElsewhere": MessageLookupByLibrary.simpleMessage(
+      "قام شخص آخر بحفظ هذا الجدول بعد أن فتحته. أعد التحميل لرؤية تغييراته، ثم أعد تغييراتك.",
+    ),
+    "tableRowsLoadFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر تحميل الصفوف، لذلك لا يمكن حفظ أي شيء. حاول مرة أخرى.",
+    ),
     "tabletView": MessageLookupByLibrary.simpleMessage("تابلت"),
     "tabulated": MessageLookupByLibrary.simpleMessage("مجدول"),
     "tagalogLanguage": MessageLookupByLibrary.simpleMessage("التاغالوغية"),
@@ -6911,6 +9438,1532 @@ class MessageLookup extends MessageLookupByLibrary {
     "thursday": MessageLookupByLibrary.simpleMessage("الخميس"),
     "time": MessageLookupByLibrary.simpleMessage("الوقت"),
     "timeTracker": MessageLookupByLibrary.simpleMessage("تتبع الوقت"),
+    "timeTrackerAbsence": MessageLookupByLibrary.simpleMessage("غياب"),
+    "timeTrackerAbsencesCount": m104,
+    "timeTrackerAbsencesFew": m105,
+    "timeTrackerAbsencesMany": m106,
+    "timeTrackerAbsent": MessageLookupByLibrary.simpleMessage("غائب"),
+    "timeTrackerAbsentToday": MessageLookupByLibrary.simpleMessage(
+      "غائب اليوم",
+    ),
+    "timeTrackerAccessGranted": MessageLookupByLibrary.simpleMessage(
+      "لقد منحت الصلاحية بنجاح",
+    ),
+    "timeTrackerAccessGrantedTitle": MessageLookupByLibrary.simpleMessage(
+      "تم منح الصلاحية",
+    ),
+    "timeTrackerActionFailed": MessageLookupByLibrary.simpleMessage(
+      "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+    ),
+    "timeTrackerActivateLocationConfirm": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد أنك تريد تفعيل هذا الموقع؟",
+    ),
+    "timeTrackerActivateRequestTypeConfirm":
+        MessageLookupByLibrary.simpleMessage(
+          "هل أنت متأكد أنك تريد تفعيل نوع الطلب هذا؟",
+        ),
+    "timeTrackerActive": MessageLookupByLibrary.simpleMessage("نشط"),
+    "timeTrackerAddedBy": MessageLookupByLibrary.simpleMessage("أضيف بواسطة"),
+    "timeTrackerAddressFromPin": MessageLookupByLibrary.simpleMessage(
+      "تمت تعبئة الدولة والمنطقة والمدينة من موقع الدبوس.",
+    ),
+    "timeTrackerAddressNotFound": MessageLookupByLibrary.simpleMessage(
+      "لم يتم العثور على مكان لهذا العنوان. جرّب عنوانًا أكمل أو اضغط على الخريطة.",
+    ),
+    "timeTrackerAll": MessageLookupByLibrary.simpleMessage("الكل"),
+    "timeTrackerAllClear": MessageLookupByLibrary.simpleMessage(
+      "لا يوجد ما يحتاج إلى متابعتك الآن.",
+    ),
+    "timeTrackerAllDay": MessageLookupByLibrary.simpleMessage("طوال اليوم"),
+    "timeTrackerAllEmployees": MessageLookupByLibrary.simpleMessage(
+      "كل الموظفين",
+    ),
+    "timeTrackerAllowBreaks": MessageLookupByLibrary.simpleMessage(
+      "السماح بالاستراحات في الحضور",
+    ),
+    "timeTrackerAllowDifferentLocation": MessageLookupByLibrary.simpleMessage(
+      "السماح بموقع عمل مختلف",
+    ),
+    "timeTrackerAllowGeofence": MessageLookupByLibrary.simpleMessage(
+      "تفعيل السياج الجغرافي",
+    ),
+    "timeTrackerAllowPause": MessageLookupByLibrary.simpleMessage(
+      "السماح بالإيقاف المؤقت",
+    ),
+    "timeTrackerAllowedLocationsRequired": MessageLookupByLibrary.simpleMessage(
+      "اختر موقعا واحدا على الأقل.",
+    ),
+    "timeTrackerAlreadyCheckedOut": MessageLookupByLibrary.simpleMessage(
+      "لقد سجلت انصرافك بالفعل. تعرض الشاشة الآن آخر بيانات حضورك.",
+    ),
+    "timeTrackerApprovalCycle": MessageLookupByLibrary.simpleMessage(
+      "دورة الموافقة",
+    ),
+    "timeTrackerApprovalJustification": MessageLookupByLibrary.simpleMessage(
+      "المبرر",
+    ),
+    "timeTrackerApprovalPermissions": MessageLookupByLibrary.simpleMessage(
+      "الموافقات",
+    ),
+    "timeTrackerApprovalsAllDepartments": MessageLookupByLibrary.simpleMessage(
+      "الموافقات — جميع الأقسام",
+    ),
+    "timeTrackerApproveAndReject": MessageLookupByLibrary.simpleMessage(
+      "الموافقة والرفض",
+    ),
+    "timeTrackerApproveCancellation": MessageLookupByLibrary.simpleMessage(
+      "قبول الإلغاء",
+    ),
+    "timeTrackerApproveCancellationConfirm":
+        MessageLookupByLibrary.simpleMessage(
+          "هل أنت متأكد أنك تريد قبول إلغاء هذا الطلب؟",
+        ),
+    "timeTrackerApproveRequest": MessageLookupByLibrary.simpleMessage(
+      "قبول الطلب",
+    ),
+    "timeTrackerApproveRequestConfirm": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد أنك تريد قبول هذا الطلب؟",
+    ),
+    "timeTrackerApproved": MessageLookupByLibrary.simpleMessage("مقبول"),
+    "timeTrackerApprovedByColumn": MessageLookupByLibrary.simpleMessage(
+      "تمت الموافقة بواسطة",
+    ),
+    "timeTrackerArabicNameRequired": MessageLookupByLibrary.simpleMessage(
+      "اكتب الاسم بالعربية.",
+    ),
+    "timeTrackerAssign": MessageLookupByLibrary.simpleMessage("تعيين"),
+    "timeTrackerAssignCount": m107,
+    "timeTrackerAssignDate": m108,
+    "timeTrackerAssignDateLabel": MessageLookupByLibrary.simpleMessage(
+      "تاريخ التعيين",
+    ),
+    "timeTrackerAssignEmployee": MessageLookupByLibrary.simpleMessage(
+      "تعيين موظف",
+    ),
+    "timeTrackerAssigned": MessageLookupByLibrary.simpleMessage("معينون"),
+    "timeTrackerAssignedBy": MessageLookupByLibrary.simpleMessage(
+      "عُيّن بواسطة",
+    ),
+    "timeTrackerAssignedEmployees": MessageLookupByLibrary.simpleMessage(
+      "الموظفون المعينون",
+    ),
+    "timeTrackerAssignmentRemoved": MessageLookupByLibrary.simpleMessage(
+      "لقد أزلت تعيين هذا الموظف بنجاح",
+    ),
+    "timeTrackerAssignmentRemovedEntry": MessageLookupByLibrary.simpleMessage(
+      "أُلغي التعيين",
+    ),
+    "timeTrackerAssignmentRemovedTitle": MessageLookupByLibrary.simpleMessage(
+      "تمت إزالة التعيين",
+    ),
+    "timeTrackerAttachments": MessageLookupByLibrary.simpleMessage("المرفقات"),
+    "timeTrackerAttachmentsRequired": MessageLookupByLibrary.simpleMessage(
+      "يتطلب نوع الطلب هذا إرفاق ملف.",
+    ),
+    "timeTrackerAttendanceChanged": MessageLookupByLibrary.simpleMessage(
+      "تم تغيير حضورك من شاشة أو جهاز آخر وتم تحديث الشاشة. يرجى مراجعته والمحاولة مرة أخرى.",
+    ),
+    "timeTrackerAttendanceDate": MessageLookupByLibrary.simpleMessage(
+      "تاريخ الحضور",
+    ),
+    "timeTrackerAttendanceExportName": MessageLookupByLibrary.simpleMessage(
+      "تقرير الحضور",
+    ),
+    "timeTrackerAttendanceHistory": MessageLookupByLibrary.simpleMessage(
+      "سجل الحضور",
+    ),
+    "timeTrackerAttendancePermissions": MessageLookupByLibrary.simpleMessage(
+      "الحضور",
+    ),
+    "timeTrackerAttendanceUpdatedTitle": MessageLookupByLibrary.simpleMessage(
+      "تم تحديث الحضور",
+    ),
+    "timeTrackerBreak": MessageLookupByLibrary.simpleMessage("الاستراحة"),
+    "timeTrackerBreakLengthHint": MessageLookupByLibrary.simpleMessage("30"),
+    "timeTrackerBreakLengthRequired": MessageLookupByLibrary.simpleMessage(
+      "اكتب مدة الاستراحة.",
+    ),
+    "timeTrackerBreakNotAllowedLine": m109,
+    "timeTrackerBreakTime": MessageLookupByLibrary.simpleMessage(
+      "وقت الاستراحة",
+    ),
+    "timeTrackerBreakWarningLine": m110,
+    "timeTrackerBreakWarnings": MessageLookupByLibrary.simpleMessage(
+      "تنبيهات قواعد الاستراحة",
+    ),
+    "timeTrackerBreaksMinutes": m111,
+    "timeTrackerCancelRequest": MessageLookupByLibrary.simpleMessage(
+      "إلغاء الطلب",
+    ),
+    "timeTrackerCancelRequestAfterApproving":
+        MessageLookupByLibrary.simpleMessage("إلغاء الطلب بعد الموافقة"),
+    "timeTrackerCancelRequestConfirm": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد أنك تريد إلغاء هذا الطلب؟",
+    ),
+    "timeTrackerCancelTransaction": MessageLookupByLibrary.simpleMessage(
+      "إلغاء المعاملة",
+    ),
+    "timeTrackerCanceled": MessageLookupByLibrary.simpleMessage("ملغي"),
+    "timeTrackerCanceledByHr": MessageLookupByLibrary.simpleMessage(
+      "ألغته الموارد البشرية",
+    ),
+    "timeTrackerCancellationApproved": MessageLookupByLibrary.simpleMessage(
+      "لقد قبلت إلغاء هذا الطلب بنجاح",
+    ),
+    "timeTrackerCancellationApprovedTitle":
+        MessageLookupByLibrary.simpleMessage("تم قبول الإلغاء"),
+    "timeTrackerCancellationRejected": MessageLookupByLibrary.simpleMessage(
+      "لم يتغير قبول الطلب",
+    ),
+    "timeTrackerCancellationRejectedTitle":
+        MessageLookupByLibrary.simpleMessage("تم رفض الإلغاء"),
+    "timeTrackerCancellationRequested": MessageLookupByLibrary.simpleMessage(
+      "لقد طلبت إلغاء هذا الطلب بنجاح",
+    ),
+    "timeTrackerCancellationReviewNote": MessageLookupByLibrary.simpleMessage(
+      "هذا الطلب المعتمد قيد الإلغاء — المعتمدون يراجعون طلب الإلغاء.",
+    ),
+    "timeTrackerChangeLocationStatus": MessageLookupByLibrary.simpleMessage(
+      "تغيير حالة الموقع",
+    ),
+    "timeTrackerChangeRequestTypeStatus": MessageLookupByLibrary.simpleMessage(
+      "تغيير حالة نوع الطلب",
+    ),
+    "timeTrackerChangingStatus": MessageLookupByLibrary.simpleMessage(
+      "تغيير الحالة",
+    ),
+    "timeTrackerChartAttendanceSummary": MessageLookupByLibrary.simpleMessage(
+      "ملخص الحضور",
+    ),
+    "timeTrackerChartLateArrivalsHistory": MessageLookupByLibrary.simpleMessage(
+      "سجل التأخر عن الحضور",
+    ),
+    "timeTrackerChartMonthlyAttendance": MessageLookupByLibrary.simpleMessage(
+      "سجل الحضور الشهري",
+    ),
+    "timeTrackerChartMonthlyRequestsByType":
+        MessageLookupByLibrary.simpleMessage("الطلبات الشهرية حسب النوع"),
+    "timeTrackerChartMonthlyRequestsVolume":
+        MessageLookupByLibrary.simpleMessage("عدد الطلبات الشهري"),
+    "timeTrackerChartRequestsByStatus": MessageLookupByLibrary.simpleMessage(
+      "الطلبات حسب الحالة",
+    ),
+    "timeTrackerChartRequestsByType": MessageLookupByLibrary.simpleMessage(
+      "الطلبات حسب النوع",
+    ),
+    "timeTrackerChartWorkLocationDistribution":
+        MessageLookupByLibrary.simpleMessage("توزيع مواقع العمل"),
+    "timeTrackerCheckIn": MessageLookupByLibrary.simpleMessage("تسجيل الحضور"),
+    "timeTrackerCheckInAndOut": MessageLookupByLibrary.simpleMessage(
+      "تسجيل الحضور والانصراف",
+    ),
+    "timeTrackerCheckInAvailable": MessageLookupByLibrary.simpleMessage(
+      "يمكنك تسجيل الحضور والانصراف.",
+    ),
+    "timeTrackerCheckInDate": MessageLookupByLibrary.simpleMessage(
+      "تاريخ الحضور",
+    ),
+    "timeTrackerCheckInPermissions": MessageLookupByLibrary.simpleMessage(
+      "تسجيل الحضور والانصراف",
+    ),
+    "timeTrackerCheckInRequired": MessageLookupByLibrary.simpleMessage(
+      "اختر تاريخ ووقت الحضور.",
+    ),
+    "timeTrackerCheckInTime": MessageLookupByLibrary.simpleMessage(
+      "وقت الحضور",
+    ),
+    "timeTrackerCheckOut": MessageLookupByLibrary.simpleMessage(
+      "تسجيل الانصراف",
+    ),
+    "timeTrackerCheckOutAfterCheckIn": MessageLookupByLibrary.simpleMessage(
+      "يجب أن يكون الانصراف بعد الحضور.",
+    ),
+    "timeTrackerCheckOutConfirmBody": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد أنك تريد تسجيل الانصراف؟",
+    ),
+    "timeTrackerCheckOutConfirmTitle": MessageLookupByLibrary.simpleMessage(
+      "تسجيل الانصراف",
+    ),
+    "timeTrackerCheckOutDate": MessageLookupByLibrary.simpleMessage(
+      "تاريخ الانصراف",
+    ),
+    "timeTrackerCheckOutRequired": MessageLookupByLibrary.simpleMessage(
+      "اختر تاريخ ووقت الانصراف.",
+    ),
+    "timeTrackerCheckOutSameDay": MessageLookupByLibrary.simpleMessage(
+      "يجب أن يكون الانصراف في نفس يوم الحضور",
+    ),
+    "timeTrackerCheckOutSameOrNextDay": MessageLookupByLibrary.simpleMessage(
+      "يجب أن يكون الانصراف في يوم الحضور أو في اليوم التالي",
+    ),
+    "timeTrackerCheckOutTime": MessageLookupByLibrary.simpleMessage(
+      "وقت الانصراف",
+    ),
+    "timeTrackerCheckedInNoCheckOut": m112,
+    "timeTrackerCheckedInNow": MessageLookupByLibrary.simpleMessage(
+      "مسجل الحضور الآن",
+    ),
+    "timeTrackerCheckedInSuccess": MessageLookupByLibrary.simpleMessage(
+      "تم تسجيل حضورك بنجاح",
+    ),
+    "timeTrackerCheckedOutSuccess": MessageLookupByLibrary.simpleMessage(
+      "تم تسجيل انصرافك بنجاح",
+    ),
+    "timeTrackerChooseEmployee": MessageLookupByLibrary.simpleMessage(
+      "اختر الموظف",
+    ),
+    "timeTrackerChooseHere": MessageLookupByLibrary.simpleMessage("اختر هنا"),
+    "timeTrackerChooseLocation": MessageLookupByLibrary.simpleMessage(
+      "اختر الموقع",
+    ),
+    "timeTrackerChooseMembers": MessageLookupByLibrary.simpleMessage(
+      "اختر الأعضاء",
+    ),
+    "timeTrackerChooseOneDepartment": MessageLookupByLibrary.simpleMessage(
+      "اختر قسما واحدا على الأقل، أو أوقف التقييد.",
+    ),
+    "timeTrackerChooseOneLocation": MessageLookupByLibrary.simpleMessage(
+      "اختر موقعا واحدا على الأقل، أو أوقف التقييد.",
+    ),
+    "timeTrackerChooseTheDate": MessageLookupByLibrary.simpleMessage(
+      "اختر التاريخ",
+    ),
+    "timeTrackerChooseType": MessageLookupByLibrary.simpleMessage("اختر النوع"),
+    "timeTrackerChooseWorkLocation": MessageLookupByLibrary.simpleMessage(
+      "اختر موقع العمل",
+    ),
+    "timeTrackerCity": MessageLookupByLibrary.simpleMessage("المدينة"),
+    "timeTrackerCityAr": MessageLookupByLibrary.simpleMessage("مدينة"),
+    "timeTrackerClientSite": MessageLookupByLibrary.simpleMessage(
+      "موقع العميل",
+    ),
+    "timeTrackerColumnNo": MessageLookupByLibrary.simpleMessage("م"),
+    "timeTrackerCommentDeleted": MessageLookupByLibrary.simpleMessage(
+      "لقد حذفت هذا التعليق بنجاح",
+    ),
+    "timeTrackerCommentDeletedTitle": MessageLookupByLibrary.simpleMessage(
+      "تم حذف التعليق",
+    ),
+    "timeTrackerCommentOnApprovals": MessageLookupByLibrary.simpleMessage(
+      "التعليق على الموافقات",
+    ),
+    "timeTrackerCommentOnRequests": MessageLookupByLibrary.simpleMessage(
+      "التعليق على الطلبات",
+    ),
+    "timeTrackerConfirmedTitle": MessageLookupByLibrary.simpleMessage(
+      "تم التأكيد",
+    ),
+    "timeTrackerCoordinatesRequired": MessageLookupByLibrary.simpleMessage(
+      "السياج الجغرافي يحتاج إلى خط العرض وخط الطول.",
+    ),
+    "timeTrackerCountry": MessageLookupByLibrary.simpleMessage("الدولة"),
+    "timeTrackerCountryAr": MessageLookupByLibrary.simpleMessage("دولة"),
+    "timeTrackerCounts": MessageLookupByLibrary.simpleMessage("العدد"),
+    "timeTrackerCreateGroup": MessageLookupByLibrary.simpleMessage(
+      "إنشاء مجموعة",
+    ),
+    "timeTrackerCreateGroupConfirm": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد أنك تريد إنشاء هذه المجموعة؟",
+    ),
+    "timeTrackerCreateLocation": MessageLookupByLibrary.simpleMessage(
+      "إنشاء موقع",
+    ),
+    "timeTrackerCreateLocationConfirm": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد أنك تريد إنشاء هذا الموقع؟",
+    ),
+    "timeTrackerCreateRequest": MessageLookupByLibrary.simpleMessage(
+      "إنشاء طلب",
+    ),
+    "timeTrackerCreateRequestConfirm": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد أنك تريد إنشاء هذا الطلب؟",
+    ),
+    "timeTrackerCreateRequestType": MessageLookupByLibrary.simpleMessage(
+      "إنشاء نوع طلب",
+    ),
+    "timeTrackerCreateRequestTypeConfirm": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد أنك تريد إنشاء نوع الطلب هذا؟",
+    ),
+    "timeTrackerCreateTransactionConfirm": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد أنك تريد إنشاء هذه المعاملة؟",
+    ),
+    "timeTrackerCreatedDateValue": m113,
+    "timeTrackerCreatingNewGroup": MessageLookupByLibrary.simpleMessage(
+      "إنشاء مجموعة جديدة",
+    ),
+    "timeTrackerCreatingNewLocation": MessageLookupByLibrary.simpleMessage(
+      "إنشاء موقع جديد",
+    ),
+    "timeTrackerCreatingNewRequest": MessageLookupByLibrary.simpleMessage(
+      "إنشاء طلب جديد",
+    ),
+    "timeTrackerCreatingRequest": MessageLookupByLibrary.simpleMessage(
+      "إنشاء طلب",
+    ),
+    "timeTrackerCreatingRequestType": MessageLookupByLibrary.simpleMessage(
+      "إنشاء نوع طلب",
+    ),
+    "timeTrackerCreatingTransaction": MessageLookupByLibrary.simpleMessage(
+      "إنشاء معاملة",
+    ),
+    "timeTrackerCreationDate": MessageLookupByLibrary.simpleMessage(
+      "تاريخ الإنشاء",
+    ),
+    "timeTrackerCurrentAssignment": MessageLookupByLibrary.simpleMessage(
+      "التعيين الحالي",
+    ),
+    "timeTrackerCustomDateSelector": MessageLookupByLibrary.simpleMessage(
+      "اختيار تاريخ مخصص",
+    ),
+    "timeTrackerCustomOverridesLocation": MessageLookupByLibrary.simpleMessage(
+      "مخصص — يتجاوز قواعد الموقع",
+    ),
+    "timeTrackerCustomRulesEmployee": MessageLookupByLibrary.simpleMessage(
+      "قواعد مخصصة لهذا الموظف",
+    ),
+    "timeTrackerCustomRulesGroup": MessageLookupByLibrary.simpleMessage(
+      "قواعد مخصصة لهذه المجموعة",
+    ),
+    "timeTrackerCustomRulesTag": MessageLookupByLibrary.simpleMessage(
+      "قواعد مخصصة",
+    ),
+    "timeTrackerDashboardPermissions": MessageLookupByLibrary.simpleMessage(
+      "لوحة المعلومات",
+    ),
+    "timeTrackerDate": MessageLookupByLibrary.simpleMessage("التاريخ"),
+    "timeTrackerDateAtTime": m114,
+    "timeTrackerDateFrom": MessageLookupByLibrary.simpleMessage("من تاريخ"),
+    "timeTrackerDateRangeError": MessageLookupByLibrary.simpleMessage(
+      "يجب أن يكون تاريخ النهاية في يوم البداية أو بعده.",
+    ),
+    "timeTrackerDateRequested": MessageLookupByLibrary.simpleMessage(
+      "تاريخ تقديم الطلب",
+    ),
+    "timeTrackerDateTo": MessageLookupByLibrary.simpleMessage("إلى تاريخ"),
+    "timeTrackerDaysFew": m115,
+    "timeTrackerDaysMany": m116,
+    "timeTrackerDaysValue": m117,
+    "timeTrackerDeactivateLocationConfirm":
+        MessageLookupByLibrary.simpleMessage(
+          "هل أنت متأكد أنك تريد إلغاء تفعيل هذا الموقع؟",
+        ),
+    "timeTrackerDeactivateRequestTypeConfirm":
+        MessageLookupByLibrary.simpleMessage(
+          "هل أنت متأكد أنك تريد إلغاء تفعيل نوع الطلب هذا؟",
+        ),
+    "timeTrackerDeductedFromBalance": MessageLookupByLibrary.simpleMessage(
+      "المخصوم من الرصيد",
+    ),
+    "timeTrackerDeductsFromVacation": MessageLookupByLibrary.simpleMessage(
+      "يخصم من رصيد الإجازات",
+    ),
+    "timeTrackerDeleteCommentConfirm": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد أنك تريد حذف هذا التعليق؟",
+    ),
+    "timeTrackerDeleteGroup": MessageLookupByLibrary.simpleMessage(
+      "حذف المجموعة",
+    ),
+    "timeTrackerDeleteGroupConfirm": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد أنك تريد حذف هذه المجموعة؟",
+    ),
+    "timeTrackerDeleteLocation": MessageLookupByLibrary.simpleMessage(
+      "حذف الموقع",
+    ),
+    "timeTrackerDeleteLocationConfirm": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد أنك تريد حذف هذا الموقع؟",
+    ),
+    "timeTrackerDeletedGroupTitle": MessageLookupByLibrary.simpleMessage(
+      "تم حذف المجموعة",
+    ),
+    "timeTrackerDeletingComment": MessageLookupByLibrary.simpleMessage(
+      "حذف التعليق",
+    ),
+    "timeTrackerDeletingGroups": MessageLookupByLibrary.simpleMessage(
+      "حذف المجموعة",
+    ),
+    "timeTrackerDeletingLocation": MessageLookupByLibrary.simpleMessage(
+      "حذف الموقع",
+    ),
+    "timeTrackerDemoAlreadyLoaded": MessageLookupByLibrary.simpleMessage(
+      "البيانات التجريبية محملة بالفعل.",
+    ),
+    "timeTrackerDemoLoad": MessageLookupByLibrary.simpleMessage(
+      "تحميل البيانات التجريبية",
+    ),
+    "timeTrackerDemoLoadDone": m118,
+    "timeTrackerDemoRemove": MessageLookupByLibrary.simpleMessage(
+      "حذف البيانات التجريبية",
+    ),
+    "timeTrackerDemoRemoveDone": m119,
+    "timeTrackerDemoTools": MessageLookupByLibrary.simpleMessage(
+      "أدوات البيانات التجريبية",
+    ),
+    "timeTrackerDemoToolsHint": MessageLookupByLibrary.simpleMessage(
+      "متاحة في نسخ التطوير فقط. تضيف سجلات نموذجية واقعية إلى كل تبويبات متتبع الوقت، ولا تغير أي سجل موجود.",
+    ),
+    "timeTrackerDepartment": MessageLookupByLibrary.simpleMessage("القسم"),
+    "timeTrackerDepartmentAvailability": MessageLookupByLibrary.simpleMessage(
+      "التوفر حسب القسم",
+    ),
+    "timeTrackerDescription": MessageLookupByLibrary.simpleMessage("الوصف"),
+    "timeTrackerDescriptionAr": MessageLookupByLibrary.simpleMessage(
+      "وصف الطلب",
+    ),
+    "timeTrackerDescriptionRequired": MessageLookupByLibrary.simpleMessage(
+      "يتطلب نوع الطلب هذا كتابة وصف.",
+    ),
+    "timeTrackerDifferentLocationNotAllowed":
+        MessageLookupByLibrary.simpleMessage(
+          "غير مسموح لك بالعمل من موقع مختلف.",
+        ),
+    "timeTrackerDownloadTemplate": MessageLookupByLibrary.simpleMessage(
+      "تنزيل النموذج",
+    ),
+    "timeTrackerEditGroup": MessageLookupByLibrary.simpleMessage(
+      "تعديل المجموعة",
+    ),
+    "timeTrackerEditGroupConfirm": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد أنك تريد تعديل هذه المجموعة؟",
+    ),
+    "timeTrackerEditLocation": MessageLookupByLibrary.simpleMessage(
+      "تعديل الموقع",
+    ),
+    "timeTrackerEditLocationConfirm": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد أنك تريد تعديل هذا الموقع؟",
+    ),
+    "timeTrackerEditRequestType": MessageLookupByLibrary.simpleMessage(
+      "تعديل نوع الطلب",
+    ),
+    "timeTrackerEditRequestTypeConfirm": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد أنك تريد تعديل نوع الطلب هذا؟",
+    ),
+    "timeTrackerEditVacationBalance": MessageLookupByLibrary.simpleMessage(
+      "تعديل رصيد الإجازات",
+    ),
+    "timeTrackerEditVacationConfirm": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد أنك تريد تعديل رصيد الإجازات هذا ؟",
+    ),
+    "timeTrackerEditVacationExplain": m120,
+    "timeTrackerEdited": MessageLookupByLibrary.simpleMessage("معدل"),
+    "timeTrackerEditedGroupTitle": MessageLookupByLibrary.simpleMessage(
+      "تم تعديل المجموعة",
+    ),
+    "timeTrackerEditingGroup": MessageLookupByLibrary.simpleMessage(
+      "تعديل المجموعة",
+    ),
+    "timeTrackerEditingGroupDetails": MessageLookupByLibrary.simpleMessage(
+      "تعديل تفاصيل المجموعة",
+    ),
+    "timeTrackerEditingLocation": MessageLookupByLibrary.simpleMessage(
+      "تعديل الموقع",
+    ),
+    "timeTrackerEditingRequestType": MessageLookupByLibrary.simpleMessage(
+      "تعديل نوع الطلب",
+    ),
+    "timeTrackerEmail": MessageLookupByLibrary.simpleMessage(
+      "البريد الإلكتروني",
+    ),
+    "timeTrackerEmployeeDashboard": MessageLookupByLibrary.simpleMessage(
+      "لوحة الموظف",
+    ),
+    "timeTrackerEmployeeDetails": MessageLookupByLibrary.simpleMessage(
+      "تفاصيل الموظف",
+    ),
+    "timeTrackerEmployeeInformation": MessageLookupByLibrary.simpleMessage(
+      "معلومات الموظفين",
+    ),
+    "timeTrackerEmployeeName": MessageLookupByLibrary.simpleMessage(
+      "اسم الموظف",
+    ),
+    "timeTrackerEmployeePermissions": MessageLookupByLibrary.simpleMessage(
+      "الموظفين",
+    ),
+    "timeTrackerEmployeesAllDepartments": MessageLookupByLibrary.simpleMessage(
+      "الموظفين — جميع الأقسام",
+    ),
+    "timeTrackerEmployeesExportName": MessageLookupByLibrary.simpleMessage(
+      "تقرير الموظفين",
+    ),
+    "timeTrackerEmployeesInScope": MessageLookupByLibrary.simpleMessage(
+      "الموظفون المشمولون",
+    ),
+    "timeTrackerEmployeesSelected": m121,
+    "timeTrackerEnDescription": MessageLookupByLibrary.simpleMessage(
+      "Description",
+    ),
+    "timeTrackerEnGroupName": MessageLookupByLibrary.simpleMessage(
+      "Group Name",
+    ),
+    "timeTrackerEnLocationName": MessageLookupByLibrary.simpleMessage(
+      "Location Name",
+    ),
+    "timeTrackerEnRequestName": MessageLookupByLibrary.simpleMessage(
+      "Request Name",
+    ),
+    "timeTrackerEndAfterStart": MessageLookupByLibrary.simpleMessage(
+      "يجب أن تكون النهاية بعد البداية.",
+    ),
+    "timeTrackerEndDate": MessageLookupByLibrary.simpleMessage("تاريخ النهاية"),
+    "timeTrackerEndDateRequired": MessageLookupByLibrary.simpleMessage(
+      "اختر تاريخ الانتهاء.",
+    ),
+    "timeTrackerEndTime": MessageLookupByLibrary.simpleMessage("وقت الانتهاء"),
+    "timeTrackerEndTimeRequired": MessageLookupByLibrary.simpleMessage(
+      "اختر وقت الانتهاء.",
+    ),
+    "timeTrackerExceedsBalance": m122,
+    "timeTrackerExcuseLeave": MessageLookupByLibrary.simpleMessage("إذن"),
+    "timeTrackerExcused": MessageLookupByLibrary.simpleMessage("بعذر"),
+    "timeTrackerExportAttendance": MessageLookupByLibrary.simpleMessage(
+      "تصدير الحضور",
+    ),
+    "timeTrackerExportEmployees": MessageLookupByLibrary.simpleMessage(
+      "تصدير الموظفين",
+    ),
+    "timeTrackerExportEmpty": MessageLookupByLibrary.simpleMessage(
+      "لا توجد بيانات للتصدير.",
+    ),
+    "timeTrackerExportItem": MessageLookupByLibrary.simpleMessage("البند"),
+    "timeTrackerExportLocations": MessageLookupByLibrary.simpleMessage(
+      "تصدير المواقع",
+    ),
+    "timeTrackerExportRequestTypes": MessageLookupByLibrary.simpleMessage(
+      "تصدير أنواع الطلبات",
+    ),
+    "timeTrackerExportRequests": MessageLookupByLibrary.simpleMessage(
+      "تصدير الطلبات",
+    ),
+    "timeTrackerExportSection": MessageLookupByLibrary.simpleMessage("الجزء"),
+    "timeTrackerExportVacationBalances": MessageLookupByLibrary.simpleMessage(
+      "تصدير أرصدة الإجازات",
+    ),
+    "timeTrackerExportValue": MessageLookupByLibrary.simpleMessage("القيمة"),
+    "timeTrackerFileTooLarge": MessageLookupByLibrary.simpleMessage(
+      "حجم الملف أكبر من ١٠ ميجابايت.",
+    ),
+    "timeTrackerFilterDay": MessageLookupByLibrary.simpleMessage("اليوم"),
+    "timeTrackerFilterType": MessageLookupByLibrary.simpleMessage("النوع"),
+    "timeTrackerFiltersTitle": MessageLookupByLibrary.simpleMessage(
+      "عوامل التصفية",
+    ),
+    "timeTrackerFrequentAbsences": MessageLookupByLibrary.simpleMessage(
+      "ثلاثة غيابات أو أكثر هذا الشهر",
+    ),
+    "timeTrackerGeofencePreview": MessageLookupByLibrary.simpleMessage(
+      "الموقع على الخريطة",
+    ),
+    "timeTrackerGeofenceRadius": MessageLookupByLibrary.simpleMessage(
+      "نصف قطر السياج الجغرافي (متر)",
+    ),
+    "timeTrackerGeofenceRadiusColumn": MessageLookupByLibrary.simpleMessage(
+      "نصف قطر السياج الجغرافي",
+    ),
+    "timeTrackerGeofencing": MessageLookupByLibrary.simpleMessage(
+      "السياج الجغرافي",
+    ),
+    "timeTrackerGoogleMap": MessageLookupByLibrary.simpleMessage("خرائط جوجل"),
+    "timeTrackerGoogleMapsHint": MessageLookupByLibrary.simpleMessage(
+      "https://www.google.com/maps/place",
+    ),
+    "timeTrackerGrantAccess": MessageLookupByLibrary.simpleMessage(
+      "منح الصلاحية",
+    ),
+    "timeTrackerGroupButton": MessageLookupByLibrary.simpleMessage("مجموعة"),
+    "timeTrackerGroupCreated": MessageLookupByLibrary.simpleMessage(
+      "لقد أنشأت هذه المجموعة بنجاح",
+    ),
+    "timeTrackerGroupCreationTitle": MessageLookupByLibrary.simpleMessage(
+      "إنشاء المجموعة",
+    ),
+    "timeTrackerGroupDeleted": MessageLookupByLibrary.simpleMessage(
+      "لقد حذفت هذه المجموعة بنجاح",
+    ),
+    "timeTrackerGroupDescriptionAr": MessageLookupByLibrary.simpleMessage(
+      "وصف المجموعة",
+    ),
+    "timeTrackerGroupEdited": MessageLookupByLibrary.simpleMessage(
+      "لقد عدلت هذه المجموعة بنجاح",
+    ),
+    "timeTrackerGroupInformation": MessageLookupByLibrary.simpleMessage(
+      "معلومات المجموعة",
+    ),
+    "timeTrackerGroupName": MessageLookupByLibrary.simpleMessage(
+      "اسم المجموعة",
+    ),
+    "timeTrackerGroupNameAr": MessageLookupByLibrary.simpleMessage(
+      "اسم المجموعة",
+    ),
+    "timeTrackerGroupNameLabel": MessageLookupByLibrary.simpleMessage(
+      "المجموعة",
+    ),
+    "timeTrackerGroupPermissions": MessageLookupByLibrary.simpleMessage(
+      "المجموعات",
+    ),
+    "timeTrackerGroupRulesTag": MessageLookupByLibrary.simpleMessage(
+      "قواعد المجموعة",
+    ),
+    "timeTrackerHistoryBy": m123,
+    "timeTrackerHistoryFrom": m124,
+    "timeTrackerHourUnit": MessageLookupByLibrary.simpleMessage("ساعة"),
+    "timeTrackerHoursMinutesShort": m125,
+    "timeTrackerHrApproval": MessageLookupByLibrary.simpleMessage(
+      "موافقة الموارد البشرية",
+    ),
+    "timeTrackerHrDashboard": MessageLookupByLibrary.simpleMessage(
+      "لوحة معلومات الموارد البشرية",
+    ),
+    "timeTrackerHrDashboardAllDepartments":
+        MessageLookupByLibrary.simpleMessage(
+          "لوحة معلومات الموارد البشرية — جميع الأقسام",
+        ),
+    "timeTrackerHrDashboardExportName": MessageLookupByLibrary.simpleMessage(
+      "تقرير لوحة الموارد البشرية",
+    ),
+    "timeTrackerHrDashboardFilterByEmployee":
+        MessageLookupByLibrary.simpleMessage(
+          "لوحة معلومات الموارد البشرية — التصفية حسب الموظف",
+        ),
+    "timeTrackerHrOwnsSetup": MessageLookupByLibrary.simpleMessage(
+      "تتم إدارة المواقع والورديات وتعيينات الموظفين من وحدة الموارد البشرية.",
+    ),
+    "timeTrackerHrStep": MessageLookupByLibrary.simpleMessage(
+      "الموارد البشرية",
+    ),
+    "timeTrackerHrsValue": m126,
+    "timeTrackerImport": MessageLookupByLibrary.simpleMessage("استيراد"),
+    "timeTrackerImportActionCreate": MessageLookupByLibrary.simpleMessage(
+      "جديد",
+    ),
+    "timeTrackerImportActionSkip": MessageLookupByLibrary.simpleMessage(
+      "متجاهل",
+    ),
+    "timeTrackerImportActionUnchanged": MessageLookupByLibrary.simpleMessage(
+      "بدون تغيير",
+    ),
+    "timeTrackerImportActionUpdate": MessageLookupByLibrary.simpleMessage(
+      "تحديث",
+    ),
+    "timeTrackerImportConfirm": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد أنك تريد استيراد هذه المواقع؟",
+    ),
+    "timeTrackerImportDone": MessageLookupByLibrary.simpleMessage(
+      "لقد استوردت المواقع بنجاح",
+    ),
+    "timeTrackerImportDoneTitle": MessageLookupByLibrary.simpleMessage(
+      "تم استيراد المواقع",
+    ),
+    "timeTrackerImportDuplicate": MessageLookupByLibrary.simpleMessage(
+      "هذا الاسم مكرر في الملف",
+    ),
+    "timeTrackerImportDuplicateEmail": MessageLookupByLibrary.simpleMessage(
+      "هذا البريد الإلكتروني مكرر في الملف",
+    ),
+    "timeTrackerImportFileError": MessageLookupByLibrary.simpleMessage(
+      "تعذرت قراءة الملف. يرجى استخدام نموذج CSV أو Excel.",
+    ),
+    "timeTrackerImportHelp": MessageLookupByLibrary.simpleMessage(
+      "نزل النموذج واملأ صفا لكل موقع، ثم ارفعه بصيغة CSV أو Excel. الصف الذي يطابق اسمه موقعا موجودا يحدث ذلك الموقع (الخلية الفارغة تحتفظ بالقيمة الحالية)، وكل صف آخر ينشئ موقعا جديدا. لا يحذف أي شيء.",
+    ),
+    "timeTrackerImportLine": m127,
+    "timeTrackerImportLocations": MessageLookupByLibrary.simpleMessage(
+      "استيراد المواقع",
+    ),
+    "timeTrackerImportNoNameColumn": MessageLookupByLibrary.simpleMessage(
+      "الملف لا يحتوي على عمود “Location Name”. يرجى استخدام النموذج.",
+    ),
+    "timeTrackerImportNothing": MessageLookupByLibrary.simpleMessage(
+      "لا يوجد ما يمكن استيراده.",
+    ),
+    "timeTrackerImportStep1Balances": MessageLookupByLibrary.simpleMessage(
+      "ملف جدول (CSV)، سطر لكل موظف، معبّأ مسبقاً بالأرصدة الحالية للسنة المختارة. يُستورد إجمالي الأيام فقط؛ اسم الموظف والإدارة والمسمى الوظيفي والأيام المستخدمة والمتبقية للمساعدة في معرفة الموظف ولا تتغير.",
+    ),
+    "timeTrackerImportStep1Locations": MessageLookupByLibrary.simpleMessage(
+      "ملف جدول (CSV)، سطر لكل موقع. الأسطر الموجودة فيه هي مواقعك الحالية — تبيّن طريقة تعبئة كل عمود. الأعمدة: الاسم، رابط الخريطة، العنوان، ساعات العمل، القواعد.",
+    ),
+    "timeTrackerImportStep1Title": MessageLookupByLibrary.simpleMessage(
+      "حمّل النموذج",
+    ),
+    "timeTrackerImportStep2Balances": m128,
+    "timeTrackerImportStep2Locations": MessageLookupByLibrary.simpleMessage(
+      "أضف سطراً لكل موقع جديد أو عدّل القيم في سطر موجود (نفس الاسم = تحديث). الخانة الفارغة تُبقي القيمة المحفوظة. لا يُحذف أي شيء.",
+    ),
+    "timeTrackerImportStep2Title": MessageLookupByLibrary.simpleMessage(
+      "عبّئ البيانات",
+    ),
+    "timeTrackerImportStep3Body": MessageLookupByLibrary.simpleMessage(
+      "اختر الملف بعد تعبئته (CSV أو Excel). سترى ما سيُضاف أو يُحدّث أو يُتخطّى قبل حفظ أي شيء.",
+    ),
+    "timeTrackerImportStep3Title": MessageLookupByLibrary.simpleMessage(
+      "ارفع الملف",
+    ),
+    "timeTrackerImportSummary": m129,
+    "timeTrackerImportTemplateName": MessageLookupByLibrary.simpleMessage(
+      "نموذج المواقع",
+    ),
+    "timeTrackerImportUnknownEmployee": MessageLookupByLibrary.simpleMessage(
+      "لا يوجد موظف بهذا البريد الإلكتروني",
+    ),
+    "timeTrackerImportUnreadable": m130,
+    "timeTrackerImportVacationBalances": MessageLookupByLibrary.simpleMessage(
+      "استيراد أرصدة الإجازات",
+    ),
+    "timeTrackerImportWrongYear": m131,
+    "timeTrackerInactive": MessageLookupByLibrary.simpleMessage("غير نشط"),
+    "timeTrackerInquiriesAndComments": MessageLookupByLibrary.simpleMessage(
+      "الاستفسارات والتعليقات",
+    ),
+    "timeTrackerJobTitle": MessageLookupByLibrary.simpleMessage(
+      "المسمى الوظيفي",
+    ),
+    "timeTrackerLastUpdate": MessageLookupByLibrary.simpleMessage("آخر تحديث"),
+    "timeTrackerLastUpdateValue": m132,
+    "timeTrackerLate": MessageLookupByLibrary.simpleMessage("متأخر"),
+    "timeTrackerLateAbsentRanking": MessageLookupByLibrary.simpleMessage(
+      "ترتيب التأخير والغياب",
+    ),
+    "timeTrackerLateAfter": MessageLookupByLibrary.simpleMessage(
+      "التأخير بعد (دقائق)",
+    ),
+    "timeTrackerLateAfterGraceHint": MessageLookupByLibrary.simpleMessage(
+      "الدقائق بعد البداية قبل احتساب التأخير (مثال: 15)",
+    ),
+    "timeTrackerLateAfterHint": MessageLookupByLibrary.simpleMessage("0"),
+    "timeTrackerLateAfterMinutes": m133,
+    "timeTrackerLateAfterTooLong": MessageLookupByLibrary.simpleMessage(
+      "يجب أن تكون مدة التأخير أقصر من يوم العمل.",
+    ),
+    "timeTrackerLateHistory": MessageLookupByLibrary.simpleMessage(
+      "سجل التأخير",
+    ),
+    "timeTrackerLateToday": MessageLookupByLibrary.simpleMessage("متأخر اليوم"),
+    "timeTrackerLatitude": MessageLookupByLibrary.simpleMessage("خط العرض"),
+    "timeTrackerLatitudeInvalid": MessageLookupByLibrary.simpleMessage(
+      "اكتب خط عرض بين -90 و 90.",
+    ),
+    "timeTrackerLeavingTime": MessageLookupByLibrary.simpleMessage(
+      "وقت المغادرة",
+    ),
+    "timeTrackerLimitDepartmentAvailability":
+        MessageLookupByLibrary.simpleMessage("تقييد التوفر حسب القسم"),
+    "timeTrackerLimitLocationAvailability":
+        MessageLookupByLibrary.simpleMessage("تقييد التوفر حسب الموقع"),
+    "timeTrackerLoadError": MessageLookupByLibrary.simpleMessage(
+      "تعذر تحميل تتبع الوقت. يرجى المحاولة مرة أخرى.",
+    ),
+    "timeTrackerLocation": MessageLookupByLibrary.simpleMessage("الموقع"),
+    "timeTrackerLocationAtGoogleMaps": MessageLookupByLibrary.simpleMessage(
+      "الموقع على خرائط جوجل",
+    ),
+    "timeTrackerLocationAvailability": MessageLookupByLibrary.simpleMessage(
+      "التوفر حسب الموقع",
+    ),
+    "timeTrackerLocationCreated": MessageLookupByLibrary.simpleMessage(
+      "لقد أنشأت موقعا جديدا بنجاح",
+    ),
+    "timeTrackerLocationCreatedTitle": MessageLookupByLibrary.simpleMessage(
+      "تم إنشاء الموقع",
+    ),
+    "timeTrackerLocationDeleted": MessageLookupByLibrary.simpleMessage(
+      "لقد حذفت هذا الموقع بنجاح",
+    ),
+    "timeTrackerLocationDeletedTitle": MessageLookupByLibrary.simpleMessage(
+      "تم حذف الموقع",
+    ),
+    "timeTrackerLocationDenied": MessageLookupByLibrary.simpleMessage(
+      "الوصول إلى الموقع متوقف لتطبيق نوتيسد. اسمح به من إعدادات جهازك لتسجيل الحضور في المكتب، أو اختر عن بعد أو موقع العميل إن كان مسموحا لك.",
+    ),
+    "timeTrackerLocationDeniedSetup": MessageLookupByLibrary.simpleMessage(
+      "الوصول إلى الموقع متوقف لتطبيق Knowticed. اسمح به من إعدادات جهازك، أو اكتب خط العرض وخط الطول.",
+    ),
+    "timeTrackerLocationDescription": MessageLookupByLibrary.simpleMessage(
+      "وصف الموقع",
+    ),
+    "timeTrackerLocationEdited": MessageLookupByLibrary.simpleMessage(
+      "لقد عدلت هذا الموقع بنجاح",
+    ),
+    "timeTrackerLocationEditedTitle": MessageLookupByLibrary.simpleMessage(
+      "تم تعديل الموقع",
+    ),
+    "timeTrackerLocationHistory": MessageLookupByLibrary.simpleMessage(
+      "سجل المواقع",
+    ),
+    "timeTrackerLocationInUse": m134,
+    "timeTrackerLocationInUseTitle": MessageLookupByLibrary.simpleMessage(
+      "الموقع قيد الاستخدام",
+    ),
+    "timeTrackerLocationMatches": MessageLookupByLibrary.simpleMessage(
+      "موقعك يطابق موقع الشركة",
+    ),
+    "timeTrackerLocationName": MessageLookupByLibrary.simpleMessage(
+      "اسم الموقع",
+    ),
+    "timeTrackerLocationNameAr": MessageLookupByLibrary.simpleMessage(
+      "اسم الموقع",
+    ),
+    "timeTrackerLocationNeededTitle": MessageLookupByLibrary.simpleMessage(
+      "الموقع مطلوب",
+    ),
+    "timeTrackerLocationNotAllowed": MessageLookupByLibrary.simpleMessage(
+      "لا يمكنك تسجيل الحضور في هذا الموقع.",
+    ),
+    "timeTrackerLocationPermissions": MessageLookupByLibrary.simpleMessage(
+      "المواقع",
+    ),
+    "timeTrackerLocationRequired": MessageLookupByLibrary.simpleMessage(
+      "اختر الموقع.",
+    ),
+    "timeTrackerLocationServiceOff": MessageLookupByLibrary.simpleMessage(
+      "خدمات الموقع متوقفة على هذا الجهاز. شغلها لتسجيل الحضور في المكتب.",
+    ),
+    "timeTrackerLocationSetting": MessageLookupByLibrary.simpleMessage(
+      "إعدادات الموقع",
+    ),
+    "timeTrackerLocationStatusChanged": MessageLookupByLibrary.simpleMessage(
+      "لقد غيرت حالة هذا الموقع بنجاح",
+    ),
+    "timeTrackerLocationUnavailable": MessageLookupByLibrary.simpleMessage(
+      "تعذر تحديد موقعك. يرجى المحاولة مرة أخرى.",
+    ),
+    "timeTrackerLocationValue": m135,
+    "timeTrackerLocationsExportName": MessageLookupByLibrary.simpleMessage(
+      "تقرير المواقع",
+    ),
+    "timeTrackerLongitude": MessageLookupByLibrary.simpleMessage("خط الطول"),
+    "timeTrackerLongitudeInvalid": MessageLookupByLibrary.simpleMessage(
+      "اكتب خط طول بين -180 و 180.",
+    ),
+    "timeTrackerMainLocation": MessageLookupByLibrary.simpleMessage("الرئيسي"),
+    "timeTrackerManagerApproval": MessageLookupByLibrary.simpleMessage(
+      "موافقة المدير",
+    ),
+    "timeTrackerManagerStep": MessageLookupByLibrary.simpleMessage("المدير"),
+    "timeTrackerMapView": MessageLookupByLibrary.simpleMessage("خريطة"),
+    "timeTrackerMapsUrlInvalid": MessageLookupByLibrary.simpleMessage(
+      "أدخل رابط خريطة يبدأ بـ https:// (خرائط جوجل أو خرائط آبل).",
+    ),
+    "timeTrackerMaxPauseMinutes": MessageLookupByLibrary.simpleMessage(
+      "أقصى مدة للإيقاف المؤقت (بالدقائق)",
+    ),
+    "timeTrackerMembers": MessageLookupByLibrary.simpleMessage("الأعضاء"),
+    "timeTrackerMembersRequired": MessageLookupByLibrary.simpleMessage(
+      "اختر عضوا واحدا على الأقل.",
+    ),
+    "timeTrackerMembersSelected": m136,
+    "timeTrackerMetersValue": m137,
+    "timeTrackerMinTotalHoursHint": MessageLookupByLibrary.simpleMessage(
+      "على الأقل (ساعات)",
+    ),
+    "timeTrackerMinsValue": m138,
+    "timeTrackerMinutes": MessageLookupByLibrary.simpleMessage("الدقائق"),
+    "timeTrackerMinutesValue": m139,
+    "timeTrackerMissingCheckOuts": MessageLookupByLibrary.simpleMessage(
+      "انصراف غير مسجل أمس",
+    ),
+    "timeTrackerMockedLocation": MessageLookupByLibrary.simpleMessage(
+      "جهازك يستخدم موقعا وهميا. يرجى إيقافه لتسجيل الحضور.",
+    ),
+    "timeTrackerMoreItems": m140,
+    "timeTrackerMyDashboard": MessageLookupByLibrary.simpleMessage("لوحتي"),
+    "timeTrackerNameRequired": MessageLookupByLibrary.simpleMessage(
+      "اكتب الاسم.",
+    ),
+    "timeTrackerNeedsAttention": MessageLookupByLibrary.simpleMessage(
+      "يحتاج إلى متابعة",
+    ),
+    "timeTrackerNo": MessageLookupByLibrary.simpleMessage("لا"),
+    "timeTrackerNoAccess": MessageLookupByLibrary.simpleMessage(
+      "ليس لديك صلاحية الوصول إلى تتبع الوقت.",
+    ),
+    "timeTrackerNoBalanceApprover": MessageLookupByLibrary.simpleMessage(
+      "لا يوجد رصيد إجازات لهذا الموظف بعد. يرجى تحديده من أرصدة الإجازات أولا.",
+    ),
+    "timeTrackerNoBalanceEmployee": MessageLookupByLibrary.simpleMessage(
+      "لم يتم تحديد رصيد إجازات لك بعد. يرجى التواصل مع الموارد البشرية.",
+    ),
+    "timeTrackerNoBreak": MessageLookupByLibrary.simpleMessage("بدون استراحة"),
+    "timeTrackerNoBreakWarnings": MessageLookupByLibrary.simpleMessage(
+      "لا توجد تنبيهات للاستراحة في هذه الفترة.",
+    ),
+    "timeTrackerNoBreaks": MessageLookupByLibrary.simpleMessage(
+      "بدون استراحات",
+    ),
+    "timeTrackerNoComments": MessageLookupByLibrary.simpleMessage(
+      "لا توجد تعليقات بعد.",
+    ),
+    "timeTrackerNoDataYet": MessageLookupByLibrary.simpleMessage(
+      "لا توجد بيانات لهذه الفترة بعد.",
+    ),
+    "timeTrackerNoHistory": MessageLookupByLibrary.simpleMessage(
+      "لا توجد تغييرات بعد.",
+    ),
+    "timeTrackerNoLimit": MessageLookupByLibrary.simpleMessage("بلا حد"),
+    "timeTrackerNoPause": MessageLookupByLibrary.simpleMessage(
+      "بدون إيقاف مؤقت",
+    ),
+    "timeTrackerNoPendingApprovals": MessageLookupByLibrary.simpleMessage(
+      "لا توجد موافقات معلقة",
+    ),
+    "timeTrackerNoPermission": MessageLookupByLibrary.simpleMessage(
+      "ليست لديك صلاحية للقيام بذلك.",
+    ),
+    "timeTrackerNoRequestTypesAvailable": MessageLookupByLibrary.simpleMessage(
+      "لا يوجد نوع طلب متاح لك بعد. اطلب من الموارد البشرية إضافته.",
+    ),
+    "timeTrackerNoVacationsInYear": m141,
+    "timeTrackerNotAssigned": MessageLookupByLibrary.simpleMessage(
+      "لم يتم تعيينك في موقع عمل بعد. اطلب من الموارد البشرية تعيينك قبل تسجيل الحضور.",
+    ),
+    "timeTrackerNotAssignedYet": MessageLookupByLibrary.simpleMessage(
+      "لم يُعيَّن في موقع بعد.",
+    ),
+    "timeTrackerNotRequired": MessageLookupByLibrary.simpleMessage("غير مطلوب"),
+    "timeTrackerOff": MessageLookupByLibrary.simpleMessage("معطّل"),
+    "timeTrackerOffice": MessageLookupByLibrary.simpleMessage("المكتب"),
+    "timeTrackerOn": MessageLookupByLibrary.simpleMessage("مفعّل"),
+    "timeTrackerOnLeaveToday": MessageLookupByLibrary.simpleMessage(
+      "في إجازة اليوم",
+    ),
+    "timeTrackerOncomingTime": MessageLookupByLibrary.simpleMessage(
+      "وقت الحضور",
+    ),
+    "timeTrackerOneAbsence": MessageLookupByLibrary.simpleMessage("غياب واحد"),
+    "timeTrackerOneDay": MessageLookupByLibrary.simpleMessage("يوم واحد"),
+    "timeTrackerOpenInGoogleMaps": MessageLookupByLibrary.simpleMessage(
+      "فتح في خرائط جوجل",
+    ),
+    "timeTrackerOptional": MessageLookupByLibrary.simpleMessage("اختياري"),
+    "timeTrackerOthers": MessageLookupByLibrary.simpleMessage("أخرى"),
+    "timeTrackerOverall": MessageLookupByLibrary.simpleMessage("الإجمالي"),
+    "timeTrackerOverdueApprovals": MessageLookupByLibrary.simpleMessage(
+      "موافقات معلقة لأكثر من يومين",
+    ),
+    "timeTrackerPause": MessageLookupByLibrary.simpleMessage("إيقاف مؤقت"),
+    "timeTrackerPauseAllowed": MessageLookupByLibrary.simpleMessage(
+      "الإيقاف المؤقت مسموح",
+    ),
+    "timeTrackerPauseLeft": m142,
+    "timeTrackerPauseLimitHint": MessageLookupByLibrary.simpleMessage(
+      "أطول إيقاف مؤقت بالدقائق (فارغ = بدون حد)",
+    ),
+    "timeTrackerPauseOver": m143,
+    "timeTrackerPauseTooLong": MessageLookupByLibrary.simpleMessage(
+      "أقصى مدة للإيقاف المؤقت 1440 دقيقة (يوم واحد).",
+    ),
+    "timeTrackerPauseUpToMinutes": m144,
+    "timeTrackerPausedFor": m145,
+    "timeTrackerPending": MessageLookupByLibrary.simpleMessage("قيد الانتظار"),
+    "timeTrackerPendingApprovals": MessageLookupByLibrary.simpleMessage(
+      "الموافقات المعلقة",
+    ),
+    "timeTrackerPendingWithColumn": MessageLookupByLibrary.simpleMessage(
+      "بانتظار",
+    ),
+    "timeTrackerPersonalDashboard": MessageLookupByLibrary.simpleMessage(
+      "لوحة المعلومات الشخصية",
+    ),
+    "timeTrackerPhoneNumber": MessageLookupByLibrary.simpleMessage(
+      "رقم الهاتف",
+    ),
+    "timeTrackerPickTypeFirst": MessageLookupByLibrary.simpleMessage(
+      "اختر نوع الطلب أولاً — وسيعرض النموذج ما يحتاجه فقط.",
+    ),
+    "timeTrackerPostalCode": MessageLookupByLibrary.simpleMessage(
+      "الرمز البريدي",
+    ),
+    "timeTrackerPresent": MessageLookupByLibrary.simpleMessage("حاضر"),
+    "timeTrackerRadiusHint": MessageLookupByLibrary.simpleMessage("500"),
+    "timeTrackerRadiusRequired": MessageLookupByLibrary.simpleMessage(
+      "اكتب نصف القطر بالمتر (حتى 50000).",
+    ),
+    "timeTrackerRangeCustom": MessageLookupByLibrary.simpleMessage("مخصص"),
+    "timeTrackerRangeDay": MessageLookupByLibrary.simpleMessage("يوم"),
+    "timeTrackerRangeMonth": MessageLookupByLibrary.simpleMessage("شهر"),
+    "timeTrackerRangeTime": MessageLookupByLibrary.simpleMessage("الوقت"),
+    "timeTrackerRangeWeek": MessageLookupByLibrary.simpleMessage("أسبوع"),
+    "timeTrackerRangeYear": MessageLookupByLibrary.simpleMessage("سنة"),
+    "timeTrackerRankingEmpty": MessageLookupByLibrary.simpleMessage(
+      "لا توجد أيام تأخير أو غياب في هذه الفترة.",
+    ),
+    "timeTrackerReasonOfCancellation": MessageLookupByLibrary.simpleMessage(
+      "سبب الإلغاء",
+    ),
+    "timeTrackerReasonOfRejection": MessageLookupByLibrary.simpleMessage(
+      "سبب الرفض",
+    ),
+    "timeTrackerReasonsOfCancellation": MessageLookupByLibrary.simpleMessage(
+      "أسباب الإلغاء",
+    ),
+    "timeTrackerReasonsOfRejection": MessageLookupByLibrary.simpleMessage(
+      "أسباب الرفض",
+    ),
+    "timeTrackerReassign": MessageLookupByLibrary.simpleMessage("إعادة تعيين"),
+    "timeTrackerReassignEmployeeLocation": MessageLookupByLibrary.simpleMessage(
+      "إعادة تعيين موقع الموظف",
+    ),
+    "timeTrackerRejectCancellation": MessageLookupByLibrary.simpleMessage(
+      "رفض الإلغاء",
+    ),
+    "timeTrackerRejectCancellationConfirm":
+        MessageLookupByLibrary.simpleMessage(
+          "هل أنت متأكد أنك تريد رفض إلغاء هذا الطلب؟",
+        ),
+    "timeTrackerRejectRequest": MessageLookupByLibrary.simpleMessage(
+      "رفض الطلب",
+    ),
+    "timeTrackerRejectRequestConfirm": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد أنك تريد رفض هذا الطلب؟",
+    ),
+    "timeTrackerRejected": MessageLookupByLibrary.simpleMessage("مرفوض"),
+    "timeTrackerRemainingDays": MessageLookupByLibrary.simpleMessage("المتبقي"),
+    "timeTrackerRemindAgainIn": m146,
+    "timeTrackerReminderRule": MessageLookupByLibrary.simpleMessage(
+      "يمكنك إرسال تذكير مرة واحدة كل ٢٤ ساعة فقط. لا تتردد في التواصل مع مشرفك مباشرة للمساعدة",
+    ),
+    "timeTrackerReminderSentOn": m147,
+    "timeTrackerRemote": MessageLookupByLibrary.simpleMessage("عن بعد"),
+    "timeTrackerRemove": MessageLookupByLibrary.simpleMessage("إزالة"),
+    "timeTrackerRemoveAssignmentConfirm": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد أنك تريد إزالة تعيين هذا الموظف؟",
+    ),
+    "timeTrackerRemoveEmployeeAssignment": MessageLookupByLibrary.simpleMessage(
+      "إزالة تعيين الموظف",
+    ),
+    "timeTrackerRemoveRequestType": MessageLookupByLibrary.simpleMessage(
+      "إزالة نوع الطلب",
+    ),
+    "timeTrackerRemoveRequestTypeConfirm": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد أنك تريد إزالة نوع الطلب هذا؟",
+    ),
+    "timeTrackerRemoved": MessageLookupByLibrary.simpleMessage("تمت الإزالة"),
+    "timeTrackerRemovedBy": MessageLookupByLibrary.simpleMessage("أزيل بواسطة"),
+    "timeTrackerRemovedDate": MessageLookupByLibrary.simpleMessage(
+      "تاريخ الإزالة",
+    ),
+    "timeTrackerRemovingAssignment": MessageLookupByLibrary.simpleMessage(
+      "إزالة التعيين",
+    ),
+    "timeTrackerRemovingRequestType": MessageLookupByLibrary.simpleMessage(
+      "إزالة نوع الطلب",
+    ),
+    "timeTrackerRequestApproved": MessageLookupByLibrary.simpleMessage(
+      "لقد قبلت هذا الطلب بنجاح",
+    ),
+    "timeTrackerRequestAttachments": MessageLookupByLibrary.simpleMessage(
+      "مرفقات الطلب",
+    ),
+    "timeTrackerRequestCanceled": MessageLookupByLibrary.simpleMessage(
+      "لقد ألغيت هذا الطلب بنجاح",
+    ),
+    "timeTrackerRequestCanceledTitle": MessageLookupByLibrary.simpleMessage(
+      "تم إلغاء الطلب",
+    ),
+    "timeTrackerRequestCancellationTitle": MessageLookupByLibrary.simpleMessage(
+      "طلب إلغاء",
+    ),
+    "timeTrackerRequestChangedMeanwhile": MessageLookupByLibrary.simpleMessage(
+      "تم تعديل هذا الطلب للتو من شخص آخر. يرجى مراجعته والمحاولة مرة أخرى.",
+    ),
+    "timeTrackerRequestDate": MessageLookupByLibrary.simpleMessage(
+      "تاريخ الطلب",
+    ),
+    "timeTrackerRequestDescription": MessageLookupByLibrary.simpleMessage(
+      "وصف الطلب",
+    ),
+    "timeTrackerRequestDetails": MessageLookupByLibrary.simpleMessage(
+      "تفاصيل الطلب",
+    ),
+    "timeTrackerRequestName": MessageLookupByLibrary.simpleMessage("اسم الطلب"),
+    "timeTrackerRequestNameAr": MessageLookupByLibrary.simpleMessage(
+      "اسم الطلب",
+    ),
+    "timeTrackerRequestNotFound": MessageLookupByLibrary.simpleMessage(
+      "هذا الطلب غير متاح.",
+    ),
+    "timeTrackerRequestOverlaps": MessageLookupByLibrary.simpleMessage(
+      "لديك طلب بالفعل في هذا الوقت",
+    ),
+    "timeTrackerRequestPermissions": MessageLookupByLibrary.simpleMessage(
+      "الطلبات",
+    ),
+    "timeTrackerRequestRejected": MessageLookupByLibrary.simpleMessage(
+      "لقد رفضت هذا الطلب بنجاح",
+    ),
+    "timeTrackerRequestSubmitted": MessageLookupByLibrary.simpleMessage(
+      "تم تقديم طلبك بنجاح",
+    ),
+    "timeTrackerRequestTimeline": MessageLookupByLibrary.simpleMessage(
+      "الجدول الزمني للطلبات",
+    ),
+    "timeTrackerRequestToCancellation": MessageLookupByLibrary.simpleMessage(
+      "طلب الإلغاء",
+    ),
+    "timeTrackerRequestTransaction": MessageLookupByLibrary.simpleMessage(
+      "طلب معاملة",
+    ),
+    "timeTrackerRequestType": MessageLookupByLibrary.simpleMessage("نوع الطلب"),
+    "timeTrackerRequestTypeCreated": MessageLookupByLibrary.simpleMessage(
+      "لقد أنشأت نوع الطلب هذا بنجاح",
+    ),
+    "timeTrackerRequestTypeCreatedTitle": MessageLookupByLibrary.simpleMessage(
+      "تم إنشاء نوع الطلب",
+    ),
+    "timeTrackerRequestTypeEdited": MessageLookupByLibrary.simpleMessage(
+      "لقد عدلت نوع الطلب هذا بنجاح",
+    ),
+    "timeTrackerRequestTypeEditedTitle": MessageLookupByLibrary.simpleMessage(
+      "تم تعديل نوع الطلب",
+    ),
+    "timeTrackerRequestTypePermissions": MessageLookupByLibrary.simpleMessage(
+      "أنواع الطلبات",
+    ),
+    "timeTrackerRequestTypeRemoved": MessageLookupByLibrary.simpleMessage(
+      "لقد أزلت نوع الطلب هذا بنجاح",
+    ),
+    "timeTrackerRequestTypeRemovedTitle": MessageLookupByLibrary.simpleMessage(
+      "تمت إزالة نوع الطلب",
+    ),
+    "timeTrackerRequestTypeRequired": MessageLookupByLibrary.simpleMessage(
+      "اختر نوع الطلب.",
+    ),
+    "timeTrackerRequestTypeRestored": MessageLookupByLibrary.simpleMessage(
+      "أصبح نوع الطلب نشطًا مرة أخرى.",
+    ),
+    "timeTrackerRequestTypeRestoredTitle": MessageLookupByLibrary.simpleMessage(
+      "تمت استعادة نوع الطلب",
+    ),
+    "timeTrackerRequestTypeStatusChanged": MessageLookupByLibrary.simpleMessage(
+      "لقد غيرت حالة نوع الطلب هذا بنجاح",
+    ),
+    "timeTrackerRequestTypesExportName": MessageLookupByLibrary.simpleMessage(
+      "تقرير أنواع الطلبات",
+    ),
+    "timeTrackerRequestWord": MessageLookupByLibrary.simpleMessage("طلب"),
+    "timeTrackerRequestedBy": MessageLookupByLibrary.simpleMessage(
+      "مقدم الطلب",
+    ),
+    "timeTrackerRequestedTimeframe": MessageLookupByLibrary.simpleMessage(
+      "الفترة",
+    ),
+    "timeTrackerRequestsExportName": MessageLookupByLibrary.simpleMessage(
+      "تقرير الطلبات",
+    ),
+    "timeTrackerRequestsTitle": MessageLookupByLibrary.simpleMessage("الطلبات"),
+    "timeTrackerRequired": MessageLookupByLibrary.simpleMessage("مطلوب"),
+    "timeTrackerRequiresAttachments": MessageLookupByLibrary.simpleMessage(
+      "يتطلب مرفقات",
+    ),
+    "timeTrackerRequiresDescription": MessageLookupByLibrary.simpleMessage(
+      "يتطلب وصفا",
+    ),
+    "timeTrackerRestore": MessageLookupByLibrary.simpleMessage("استعادة"),
+    "timeTrackerRestoreRequestTypeConfirm":
+        MessageLookupByLibrary.simpleMessage(
+          "سيعود نوع الطلب نشطًا ويمكن للموظفين استخدامه في الطلبات الجديدة.",
+        ),
+    "timeTrackerRestoringRequestType": MessageLookupByLibrary.simpleMessage(
+      "استعادة نوع الطلب",
+    ),
+    "timeTrackerResume": MessageLookupByLibrary.simpleMessage("استئناف"),
+    "timeTrackerRetry": MessageLookupByLibrary.simpleMessage("إعادة المحاولة"),
+    "timeTrackerRulesFromLocation": m148,
+    "timeTrackerRulesFromLocationTag": MessageLookupByLibrary.simpleMessage(
+      "من الموقع",
+    ),
+    "timeTrackerRulesLabel": MessageLookupByLibrary.simpleMessage("القواعد"),
+    "timeTrackerSameDayTimeframe": m149,
+    "timeTrackerSatelliteView": MessageLookupByLibrary.simpleMessage(
+      "قمر صناعي",
+    ),
+    "timeTrackerScreensComingSoon": MessageLookupByLibrary.simpleMessage(
+      "يجري إنشاء شاشات تتبع الوقت وستظهر هنا قريبا.",
+    ),
+    "timeTrackerSearchAddress": MessageLookupByLibrary.simpleMessage(
+      "ابحث عن عنوان أو مكان",
+    ),
+    "timeTrackerSearchApprovalsHint": MessageLookupByLibrary.simpleMessage(
+      "ابحث بالموظف أو النوع أو القسم",
+    ),
+    "timeTrackerSearchAttendanceHint": MessageLookupByLibrary.simpleMessage(
+      "ابحث بالتاريخ أو الحالة أو الوقت",
+    ),
+    "timeTrackerSearching": MessageLookupByLibrary.simpleMessage("جارٍ البحث…"),
+    "timeTrackerSectionAddress": MessageLookupByLibrary.simpleMessage(
+      "العنوان",
+    ),
+    "timeTrackerSectionAttendanceRules": MessageLookupByLibrary.simpleMessage(
+      "قواعد الحضور",
+    ),
+    "timeTrackerSectionAvailability": MessageLookupByLibrary.simpleMessage(
+      "الإتاحة",
+    ),
+    "timeTrackerSectionComingSoon": MessageLookupByLibrary.simpleMessage(
+      "هذا القسم قادم قريبا.",
+    ),
+    "timeTrackerSectionHistory": MessageLookupByLibrary.simpleMessage("السجل"),
+    "timeTrackerSectionMap": MessageLookupByLibrary.simpleMessage(
+      "الموقع على الخريطة",
+    ),
+    "timeTrackerSectionRequirements": MessageLookupByLibrary.simpleMessage(
+      "متطلبات الطلب",
+    ),
+    "timeTrackerSelectLocation": MessageLookupByLibrary.simpleMessage(
+      "اختر الموقع",
+    ),
+    "timeTrackerSelectState": MessageLookupByLibrary.simpleMessage(
+      "اختر الولاية أو المحافظة",
+    ),
+    "timeTrackerSendRequestReminder": MessageLookupByLibrary.simpleMessage(
+      "إرسال تذكير",
+    ),
+    "timeTrackerSickLeave": MessageLookupByLibrary.simpleMessage("إجازة مرضية"),
+    "timeTrackerSortNameAsc": MessageLookupByLibrary.simpleMessage(
+      "الاسم (أ إلى ي)",
+    ),
+    "timeTrackerSortNameDesc": MessageLookupByLibrary.simpleMessage(
+      "الاسم (ي إلى أ)",
+    ),
+    "timeTrackerSortNewest": MessageLookupByLibrary.simpleMessage(
+      "الأحدث أولا",
+    ),
+    "timeTrackerStartDate": MessageLookupByLibrary.simpleMessage(
+      "تاريخ البداية",
+    ),
+    "timeTrackerStartDateRequired": MessageLookupByLibrary.simpleMessage(
+      "اختر تاريخ البدء.",
+    ),
+    "timeTrackerStartShift": MessageLookupByLibrary.simpleMessage(
+      "بدء الوردية",
+    ),
+    "timeTrackerStartTime": MessageLookupByLibrary.simpleMessage("وقت البدء"),
+    "timeTrackerStartTimeRequired": MessageLookupByLibrary.simpleMessage(
+      "اختر وقت البدء.",
+    ),
+    "timeTrackerStateOrProvince": MessageLookupByLibrary.simpleMessage(
+      "الولاية أو المحافظة",
+    ),
+    "timeTrackerStateOrProvinceAr": MessageLookupByLibrary.simpleMessage(
+      "ولاية او محافظة",
+    ),
+    "timeTrackerStatus": MessageLookupByLibrary.simpleMessage("الحالة"),
+    "timeTrackerStatusChangedTitle": MessageLookupByLibrary.simpleMessage(
+      "تم تغيير الحالة",
+    ),
+    "timeTrackerStepDecision": m150,
+    "timeTrackerStepJustification": m151,
+    "timeTrackerStepNotYet": MessageLookupByLibrary.simpleMessage("لم يحن بعد"),
+    "timeTrackerSubmittedTransaction": MessageLookupByLibrary.simpleMessage(
+      "تم إرسال المعاملة",
+    ),
+    "timeTrackerSuccessful": MessageLookupByLibrary.simpleMessage("تم بنجاح"),
+    "timeTrackerTabApprovals": MessageLookupByLibrary.simpleMessage(
+      "الموافقات",
+    ),
+    "timeTrackerTabAttendance": MessageLookupByLibrary.simpleMessage("الحضور"),
+    "timeTrackerTabDashboard": MessageLookupByLibrary.simpleMessage(
+      "لوحة المعلومات",
+    ),
+    "timeTrackerTabEmployees": MessageLookupByLibrary.simpleMessage("الموظفين"),
+    "timeTrackerTabLocations": MessageLookupByLibrary.simpleMessage("المواقع"),
+    "timeTrackerTabOverview": MessageLookupByLibrary.simpleMessage("نظرة عامة"),
+    "timeTrackerTabRequestTypes": MessageLookupByLibrary.simpleMessage(
+      "أنواع الطلبات",
+    ),
+    "timeTrackerTabRequests": MessageLookupByLibrary.simpleMessage("الطلبات"),
+    "timeTrackerTabVacationBalances": MessageLookupByLibrary.simpleMessage(
+      "أرصدة الإجازات",
+    ),
+    "timeTrackerTapMapHint": MessageLookupByLibrary.simpleMessage(
+      "اضغط على الخريطة لتحديد الموقع. الدائرة الصفراء هي نطاق تسجيل الحضور.",
+    ),
+    "timeTrackerTerrainView": MessageLookupByLibrary.simpleMessage("التضاريس"),
+    "timeTrackerTextHereAr": MessageLookupByLibrary.simpleMessage("اكتب هنا"),
+    "timeTrackerTextHereEn": MessageLookupByLibrary.simpleMessage("Text here"),
+    "timeTrackerTimeframeValue": m152,
+    "timeTrackerTitle": MessageLookupByLibrary.simpleMessage("تتبع الوقت"),
+    "timeTrackerTitleLabel": MessageLookupByLibrary.simpleMessage(
+      "المسمى الوظيفي",
+    ),
+    "timeTrackerTotal": MessageLookupByLibrary.simpleMessage("الإجمالي"),
+    "timeTrackerTotalDays": MessageLookupByLibrary.simpleMessage(
+      "إجمالي الأيام",
+    ),
+    "timeTrackerTotalDaysHint": MessageLookupByLibrary.simpleMessage(
+      "مثال: 21",
+    ),
+    "timeTrackerTotalDaysInvalid": MessageLookupByLibrary.simpleMessage(
+      "أدخل عدد الأيام، بخانة عشرية واحدة على الأكثر.",
+    ),
+    "timeTrackerTotalDaysRequired": MessageLookupByLibrary.simpleMessage(
+      "أدخل إجمالي الأيام.",
+    ),
+    "timeTrackerTotalDaysTooLarge": MessageLookupByLibrary.simpleMessage(
+      "السنة لا تتجاوز 366 يوما.",
+    ),
+    "timeTrackerTotalTime": MessageLookupByLibrary.simpleMessage(
+      "إجمالي الوقت",
+    ),
+    "timeTrackerTrackerApprover": MessageLookupByLibrary.simpleMessage(
+      "موافقات التتبع",
+    ),
+    "timeTrackerTransactionButton": MessageLookupByLibrary.simpleMessage(
+      "معاملة",
+    ),
+    "timeTrackerTransactionDescriptionRequired":
+        MessageLookupByLibrary.simpleMessage("اكتب سبب تصحيح هذا الحضور."),
+    "timeTrackerTransactionDocument": MessageLookupByLibrary.simpleMessage(
+      "مستند المعاملة",
+    ),
+    "timeTrackerTransactionDocumentRequired":
+        MessageLookupByLibrary.simpleMessage("أرفق مستندا يدعم هذا التصحيح."),
+    "timeTrackerTransactionInFuture": MessageLookupByLibrary.simpleMessage(
+      "لا يمكن أن تكون المعاملة في المستقبل.",
+    ),
+    "timeTrackerTransactionSubmitted": MessageLookupByLibrary.simpleMessage(
+      "تم إرسال هذه المعاملة بنجاح",
+    ),
+    "timeTrackerTransactionTooLong": MessageLookupByLibrary.simpleMessage(
+      "لا يمكن أن يتجاوز التصحيح 24 ساعة",
+    ),
+    "timeTrackerTransactionsWaiting": MessageLookupByLibrary.simpleMessage(
+      "معاملات بانتظار القرار",
+    ),
+    "timeTrackerTwoAbsences": MessageLookupByLibrary.simpleMessage("غيابان"),
+    "timeTrackerTwoDays": MessageLookupByLibrary.simpleMessage("يومان"),
+    "timeTrackerUnassigned": MessageLookupByLibrary.simpleMessage("غير معينين"),
+    "timeTrackerUnderReview": MessageLookupByLibrary.simpleMessage(
+      "قيد المراجعة",
+    ),
+    "timeTrackerUnitHours": MessageLookupByLibrary.simpleMessage("ساعة"),
+    "timeTrackerUnitMins": MessageLookupByLibrary.simpleMessage("دقيقة"),
+    "timeTrackerUpdatedBy": MessageLookupByLibrary.simpleMessage(
+      "آخر تعديل بواسطة",
+    ),
+    "timeTrackerUploadFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر رفع الملف. يرجى المحاولة مرة أخرى.",
+    ),
+    "timeTrackerUploadFile": MessageLookupByLibrary.simpleMessage("رفع ملف"),
+    "timeTrackerUploadedOn": m153,
+    "timeTrackerUseLocationRules": MessageLookupByLibrary.simpleMessage(
+      "استخدام قواعد الموقع",
+    ),
+    "timeTrackerUseMyLocation": MessageLookupByLibrary.simpleMessage(
+      "استخدام موقعي الحالي",
+    ),
+    "timeTrackerUsedDays": MessageLookupByLibrary.simpleMessage("المستخدم"),
+    "timeTrackerVacation": MessageLookupByLibrary.simpleMessage("إجازة"),
+    "timeTrackerVacationBalancePermissions":
+        MessageLookupByLibrary.simpleMessage("رصيد الإجازات"),
+    "timeTrackerVacationBalanceShort": MessageLookupByLibrary.simpleMessage(
+      "رصيد الإجازات",
+    ),
+    "timeTrackerVacationBalancesExportName":
+        MessageLookupByLibrary.simpleMessage("تقرير أرصدة الإجازات"),
+    "timeTrackerVacationEdited": MessageLookupByLibrary.simpleMessage(
+      "لقد قمت بتعديل رصيد الإجازات بنجاح",
+    ),
+    "timeTrackerVacationEditedTitle": MessageLookupByLibrary.simpleMessage(
+      "تم تعديل رصيد الإجازات",
+    ),
+    "timeTrackerVacationHistory": MessageLookupByLibrary.simpleMessage(
+      "سجل الإجازات",
+    ),
+    "timeTrackerVacationImportConfirm": MessageLookupByLibrary.simpleMessage(
+      "هل أنت متأكد أنك تريد استيراد أرصدة الإجازات هذه ؟",
+    ),
+    "timeTrackerVacationImportDone": MessageLookupByLibrary.simpleMessage(
+      "لقد قمت باستيراد أرصدة الإجازات بنجاح",
+    ),
+    "timeTrackerVacationImportDoneTitle": MessageLookupByLibrary.simpleMessage(
+      "تم استيراد أرصدة الإجازات",
+    ),
+    "timeTrackerVacationImportHelp": m154,
+    "timeTrackerVacationImportNoColumns": MessageLookupByLibrary.simpleMessage(
+      "يحتاج الملف إلى عمودي “Email” و“Total Days”. يرجى استخدام النموذج.",
+    ),
+    "timeTrackerVacationRequestsCount": m155,
+    "timeTrackerVacationTemplateName": MessageLookupByLibrary.simpleMessage(
+      "نموذج أرصدة الإجازات",
+    ),
+    "timeTrackerVacations": MessageLookupByLibrary.simpleMessage("الإجازات"),
+    "timeTrackerVacationsCredit": MessageLookupByLibrary.simpleMessage(
+      "رصيد الإجازات",
+    ),
+    "timeTrackerViewApprovals": MessageLookupByLibrary.simpleMessage(
+      "عرض الموافقات",
+    ),
+    "timeTrackerViewAttendance": MessageLookupByLibrary.simpleMessage(
+      "عرض الحضور",
+    ),
+    "timeTrackerViewEmployees": MessageLookupByLibrary.simpleMessage(
+      "عرض الموظفين",
+    ),
+    "timeTrackerViewGroups": MessageLookupByLibrary.simpleMessage(
+      "عرض المجموعات",
+    ),
+    "timeTrackerViewLocations": MessageLookupByLibrary.simpleMessage(
+      "عرض المواقع",
+    ),
+    "timeTrackerViewRequestTypes": MessageLookupByLibrary.simpleMessage(
+      "عرض أنواع الطلبات",
+    ),
+    "timeTrackerViewRequests": MessageLookupByLibrary.simpleMessage(
+      "عرض الطلبات",
+    ),
+    "timeTrackerViewVacationBalances": MessageLookupByLibrary.simpleMessage(
+      "عرض أرصدة الإجازات",
+    ),
+    "timeTrackerWaitingDays": m156,
+    "timeTrackerWorkEndRequired": MessageLookupByLibrary.simpleMessage(
+      "اختر وقت نهاية العمل.",
+    ),
+    "timeTrackerWorkEndTime": MessageLookupByLibrary.simpleMessage(
+      "وقت انتهاء العمل",
+    ),
+    "timeTrackerWorkFromDifferentLocation":
+        MessageLookupByLibrary.simpleMessage("العمل من موقع مختلف"),
+    "timeTrackerWorkLocation": MessageLookupByLibrary.simpleMessage(
+      "موقع العمل",
+    ),
+    "timeTrackerWorkLocationType": MessageLookupByLibrary.simpleMessage(
+      "نوع موقع العمل",
+    ),
+    "timeTrackerWorkLocations": MessageLookupByLibrary.simpleMessage(
+      "مواقع العمل",
+    ),
+    "timeTrackerWorkLocationsHint": MessageLookupByLibrary.simpleMessage(
+      "الموقع الأول هو الموقع الرئيسي، وتطبق ساعاته وقواعده.",
+    ),
+    "timeTrackerWorkSchedule": MessageLookupByLibrary.simpleMessage(
+      "جدول العمل",
+    ),
+    "timeTrackerWorkStartRequired": MessageLookupByLibrary.simpleMessage(
+      "اختر وقت بداية العمل.",
+    ),
+    "timeTrackerWorkStartTime": MessageLookupByLibrary.simpleMessage(
+      "وقت بدء العمل",
+    ),
+    "timeTrackerWorkTimesSame": MessageLookupByLibrary.simpleMessage(
+      "لا يمكن أن يتساوى وقت بدء العمل ووقت انتهائه.",
+    ),
+    "timeTrackerWorkingDays": MessageLookupByLibrary.simpleMessage(
+      "أيام العمل",
+    ),
+    "timeTrackerWorkingDaysRequired": MessageLookupByLibrary.simpleMessage(
+      "اختر يوم عمل واحد على الأقل.",
+    ),
+    "timeTrackerWriteComment": MessageLookupByLibrary.simpleMessage(
+      "اكتب تعليقك",
+    ),
+    "timeTrackerWrongLocationBody": MessageLookupByLibrary.simpleMessage(
+      "موقع تسجيل الحضور لا يطابق الموقع المحدد من الشركة. يرجى تسجيل الحضور من الموقع الصحيح.",
+    ),
+    "timeTrackerWrongLocationTitle": MessageLookupByLibrary.simpleMessage(
+      "موقع غير صحيح",
+    ),
+    "timeTrackerYearBalanceShort": m157,
+    "timeTrackerYes": MessageLookupByLibrary.simpleMessage("نعم"),
+    "timeTrackerYourTabs": MessageLookupByLibrary.simpleMessage(
+      "أقسام تتبع الوقت المتاحة لك",
+    ),
     "timeUnit": MessageLookupByLibrary.simpleMessage("وحدة الزمن"),
     "timeminutes": MessageLookupByLibrary.simpleMessage("timeMinutes"),
     "title": MessageLookupByLibrary.simpleMessage("المسمى الوظيفي"),
@@ -6922,12 +10975,75 @@ class MessageLookup extends MessageLookupByLibrary {
     "tnd": MessageLookupByLibrary.simpleMessage("دينار تونسي"),
     "to": MessageLookupByLibrary.simpleMessage("إلى"),
     "toDo": MessageLookupByLibrary.simpleMessage("مهام"),
+    "toDoListDetails": MessageLookupByLibrary.simpleMessage(
+      "تفاصيل قائمة المهام",
+    ),
     "toDoListTitle": MessageLookupByLibrary.simpleMessage("قائمة المهام"),
+    "toDoPermissions": MessageLookupByLibrary.simpleMessage(
+      "صلاحيات قائمة المهام",
+    ),
     "toWhichTypesOfRequestsDoesThisApply": MessageLookupByLibrary.simpleMessage(
       "على أي أنواع من الطلبات ينطبق هذا؟",
     ),
     "today": MessageLookupByLibrary.simpleMessage("اليوم"),
     "todo": MessageLookupByLibrary.simpleMessage("قائمة المهام"),
+    "todoChoose": MessageLookupByLibrary.simpleMessage("اختر"),
+    "todoCompletionDate": MessageLookupByLibrary.simpleMessage("تاريخ الإنجاز"),
+    "todoDateHint": MessageLookupByLibrary.simpleMessage("يوم/شهر/سنة"),
+    "todoDatesRequired": MessageLookupByLibrary.simpleMessage(
+      "تاريخ البدء وتاريخ الانتهاء مطلوبان.",
+    ),
+    "todoDayUnit": MessageLookupByLibrary.simpleMessage("يوم"),
+    "todoDebugFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر إكمال الإجراء. يرجى المحاولة مرة أخرى.",
+    ),
+    "todoDebugLoad": MessageLookupByLibrary.simpleMessage("تحميل مهام تجريبية"),
+    "todoDebugLoadDone": m158,
+    "todoDebugRemove": MessageLookupByLibrary.simpleMessage(
+      "إزالة المهام التجريبية",
+    ),
+    "todoDebugRemoveDone": m159,
+    "todoDebugSweep": MessageLookupByLibrary.simpleMessage(
+      "إرسال التذكيرات المستحقة الآن",
+    ),
+    "todoDebugSweepDone": m160,
+    "todoDebugTools": MessageLookupByLibrary.simpleMessage(
+      "أدوات العرض التجريبي",
+    ),
+    "todoDebugToolsHint": MessageLookupByLibrary.simpleMessage(
+      "متاحة في نسخ التطوير فقط. تصل التذكيرات المستحقة بعد نحو ثلاث دقائق من تحميل المهام التجريبية.",
+    ),
+    "todoDeletionDate": MessageLookupByLibrary.simpleMessage("تاريخ الحذف"),
+    "todoEndAfterStart": MessageLookupByLibrary.simpleMessage(
+      "يجب أن يكون تاريخ الانتهاء بعد تاريخ البدء.",
+    ),
+    "todoEveryInterval": m161,
+    "todoFrequencyBadge": m162,
+    "todoHomeNoOpen": MessageLookupByLibrary.simpleMessage(
+      "لا توجد مهام مفتوحة",
+    ),
+    "todoItemHint": MessageLookupByLibrary.simpleMessage("أضف عنصراً"),
+    "todoLoadError": MessageLookupByLibrary.simpleMessage("تعذر تحميل المهام."),
+    "todoMarkDone": MessageLookupByLibrary.simpleMessage("تعيين كمكتملة"),
+    "todoNoAccess": MessageLookupByLibrary.simpleMessage(
+      "ليس لديك صلاحية الوصول إلى قائمة المهام.",
+    ),
+    "todoNoPermission": MessageLookupByLibrary.simpleMessage(
+      "ليس لديك صلاحية لتنفيذ هذا الإجراء.",
+    ),
+    "todoNotFound": MessageLookupByLibrary.simpleMessage(
+      "لم تعد هذه المهمة موجودة.",
+    ),
+    "todoRemoveItem": MessageLookupByLibrary.simpleMessage("إزالة العنصر"),
+    "todoSaveError": MessageLookupByLibrary.simpleMessage(
+      "تعذر حفظ المهمة. يرجى المحاولة مرة أخرى.",
+    ),
+    "todoScheduledAt": m163,
+    "todoTimeHint": MessageLookupByLibrary.simpleMessage("٠٠:٠٠"),
+    "todoWeekDaysRequired": MessageLookupByLibrary.simpleMessage(
+      "اختر يوماً واحداً على الأقل.",
+    ),
+    "todoWeekUnit": MessageLookupByLibrary.simpleMessage("أسبوع"),
     "togolese": MessageLookupByLibrary.simpleMessage("توجولي"),
     "tongan": MessageLookupByLibrary.simpleMessage("تونغي"),
     "top": MessageLookupByLibrary.simpleMessage("الأعلى"),
@@ -7076,6 +11192,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "unpinnedSuccessfully": MessageLookupByLibrary.simpleMessage(
       "تم إلغاء التثبيت بنجاح",
     ),
+    "unreadableDocuments": MessageLookupByLibrary.simpleMessage(
+      "مستندات تعذرت قراءتها:",
+    ),
     "unsuccessful": MessageLookupByLibrary.simpleMessage("غير ناجح"),
     "unsupportedCharactersInPassportNumber":
         MessageLookupByLibrary.simpleMessage(
@@ -7110,6 +11229,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "uploadEvidence": MessageLookupByLibrary.simpleMessage("رفع الدليل"),
     "uploadFailed": MessageLookupByLibrary.simpleMessage("فشل في التحميل"),
+    "uploadFailedTryAgain": MessageLookupByLibrary.simpleMessage(
+      "فشل الرفع، يرجى المحاولة مرة أخرى",
+    ),
     "uploadNationalIdBack": MessageLookupByLibrary.simpleMessage(
       "رفع الهوية الوطنية (الخلف)",
     ),
@@ -7165,6 +11287,26 @@ class MessageLookup extends MessageLookupByLibrary {
     "userEmailNotFound": MessageLookupByLibrary.simpleMessage(
       "لم يتم العثور على البريد الإلكتروني للمستخدم",
     ),
+    "userIdAndEmailCannotBeChanged": MessageLookupByLibrary.simpleMessage(
+      "لا يمكن تغيير رقم المستخدم والبريد الإلكتروني.",
+    ),
+    "userLimitCheckFailed": MessageLookupByLibrary.simpleMessage(
+      "تعذر التحقق من حدود المستخدمين، لذلك لم يتم منح أي صلاحية. يرجى المحاولة مرة أخرى.",
+    ),
+    "userLimitChecking": MessageLookupByLibrary.simpleMessage(
+      "جار التحقق من حدود المستخدمين…",
+    ),
+    "userLimitModuleReached": m164,
+    "userLimitModuleUnverifiable": m165,
+    "userLimitModuleUsage": m166,
+    "userLimitSeatsLeft": m167,
+    "userLimitTotalReached": m168,
+    "userLimitTotalUnverifiable": MessageLookupByLibrary.simpleMessage(
+      "تعذرت قراءة حد مستخدمي الشركة، لذلك لم يتم منح أي صلاحية.",
+    ),
+    "userLimitTotalUsage": m169,
+    "userLimitUnknownRole": m170,
+    "userLimitsTitle": MessageLookupByLibrary.simpleMessage("حدود المستخدمين"),
     "userManagement": MessageLookupByLibrary.simpleMessage("إدارة المستخدمين"),
     "userManagementModule": MessageLookupByLibrary.simpleMessage(
       "وحدة إدارة المستخدمين",
@@ -7241,6 +11383,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "عرض مواقع التخزين",
     ),
     "viewSubmissions": MessageLookupByLibrary.simpleMessage("عرض الإرسالات"),
+    "viewToDo": MessageLookupByLibrary.simpleMessage("عرض المهام"),
     "viewTrainingReports": MessageLookupByLibrary.simpleMessage(
       "عرض تقارير التدريب",
     ),
@@ -7297,6 +11440,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "watermarkModules": MessageLookupByLibrary.simpleMessage(
       "وحدات العلامة المائية",
+    ),
+    "watermarkNoPermission": MessageLookupByLibrary.simpleMessage(
+      "ليس لديك صلاحية لتغيير العلامة المائية.",
     ),
     "watermarkOpacity": MessageLookupByLibrary.simpleMessage(
       "شفافية العلامة المائية",
@@ -7593,6 +11739,7 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "تم تقديم طلب إعادة تعيين المالك الخاص بك",
         ),
+    "youreAllClear": MessageLookupByLibrary.simpleMessage("لا توجد أحداث"),
     "zambian": MessageLookupByLibrary.simpleMessage("زامبي"),
     "zimbabwean": MessageLookupByLibrary.simpleMessage("زيمبابوي"),
     "zipCodeOrPostalCode": MessageLookupByLibrary.simpleMessage(

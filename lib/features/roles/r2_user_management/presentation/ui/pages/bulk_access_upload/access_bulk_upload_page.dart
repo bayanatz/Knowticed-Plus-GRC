@@ -2,15 +2,16 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: access_bulk_upload_page.dart
-/// Purpose: "Bulk Upload" step 1 — drop or browse for the import workbook
+/// Description: "Bulk Upload" step 1 — drop or browse for the import workbook
 ///          (Figma 4717:35944). Opened by the Import button on the User
 ///          Management home.
-/// Author: Knowticed Plus team
-/// Created At: 21/9/2026 — bug report p.1. Same layout as the GRC assignee
+/// Author: Amr Mesbah
+/// Created at: 21/9/2026 — bug report p.1. Same layout as the GRC assignee
 ///          and services bulk uploads: an Expanded drop zone over a pinned
 ///          Discard / Browse Files row.
 library;
 
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
 import 'dart:io';
 
 import 'package:desktop_drop/desktop_drop.dart';
@@ -18,21 +19,21 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart' hide Border, BorderStyle;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:grc_module/core/custom/50-custom_side_frame_master.dart';
-import 'package:grc_module/core/custom/5-custom_button.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
-import 'package:grc_module/core/di/app_controllers.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
-import 'package:grc_module/features/roles/r2_user_management/domain/entities/user_permission_entity.dart';
-import 'package:grc_module/features/roles/r2_user_management/presentation/controller/user_management_cubit.dart';
-import 'package:grc_module/features/roles/r2_user_management/presentation/ui/pages/bulk_access_upload/access_bulk_upload_cubit.dart';
-import 'package:grc_module/features/roles/r2_user_management/presentation/ui/pages/bulk_access_upload/access_bulk_upload_parser.dart';
-import 'package:grc_module/features/roles/r2_user_management/presentation/ui/pages/bulk_access_upload/access_bulk_upload_preview_page.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/core/custom/navigation/custom_side_frame_master.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_button.dart';
+import 'package:knowticed_plus/core/custom/feedback/circle_progress.dart';
+import 'package:knowticed_plus/core/di/app_controllers.dart';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
+import 'package:knowticed_plus/features/roles/r2_user_management/domain/entities/user_permission_entity.dart';
+import 'package:knowticed_plus/features/roles/r2_user_management/presentation/controller/user_management_cubit.dart';
+import 'package:knowticed_plus/features/roles/r2_user_management/presentation/ui/pages/bulk_access_upload/access_bulk_upload_cubit.dart';
+import 'package:knowticed_plus/features/roles/r2_user_management/presentation/ui/pages/bulk_access_upload/access_bulk_upload_parser.dart';
+import 'package:knowticed_plus/features/roles/r2_user_management/presentation/ui/pages/bulk_access_upload/access_bulk_upload_preview_page.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
 
 class AccessBulkUploadPage extends StatefulWidget {
   /// The User Management cubit: supplies the repository and the current
@@ -82,7 +83,9 @@ class _AccessBulkUploadPageState extends State<AccessBulkUploadPage> {
     if (!name.endsWith('.xlsx') &&
         !name.endsWith('.xls') &&
         !name.endsWith('.csv')) {
-      setState(() => _errorMessage = S.of(context).pleaseDropAnExcelFileXlsxOrXls);
+      setState(
+        () => _errorMessage = S.of(context).pleaseDropAnExcelFileXlsxOrXls,
+      );
       return;
     }
     await _process(await file.readAsBytes(), file.name);
@@ -106,14 +109,19 @@ class _AccessBulkUploadPageState extends State<AccessBulkUploadPage> {
       case AccessBulkParseSuccess(:final rows):
         await _openPreview(rows);
       case AccessBulkParseInvalid(:final missingHeaders):
-        setState(() => _errorMessage = missingHeaders.isEmpty
-            ? _tr(
-                'This file could not be read. Open it in Excel and save it again as .xlsx or .csv, then retry.',
-                'تعذرت قراءة هذا الملف. افتحه في إكسل واحفظه مرة أخرى بصيغة ‎.xlsx أو ‎.csv ثم أعد المحاولة.')
-            : '${_tr('Missing columns', 'أعمدة مفقودة')}: ${missingHeaders.join(', ')}\n'
-                '${_tr('Expected columns', 'الأعمدة المتوقعة')}: ${accessBulkUploadHeaders.join(', ')}');
+        setState(
+          () => _errorMessage = missingHeaders.isEmpty
+              ? _tr(
+                  'This file could not be read. Open it in Excel and save it again as .xlsx or .csv, then retry.',
+                  'تعذرت قراءة هذا الملف. افتحه في إكسل واحفظه مرة أخرى بصيغة ‎.xlsx أو ‎.csv ثم أعد المحاولة.',
+                )
+              : '${_tr('Missing columns', 'أعمدة مفقودة')}: ${missingHeaders.join(', ')}\n'
+                  '${_tr('Expected columns', 'الأعمدة المتوقعة')}: ${accessBulkUploadHeaders.join(', ')}',
+        );
       case AccessBulkParseEmpty():
-        setState(() => _errorMessage = S.of(context).noDataRowsFoundInTheExcelFile);
+        setState(
+          () => _errorMessage = S.of(context).noDataRowsFoundInTheExcelFile,
+        );
     }
   }
 
@@ -166,12 +174,14 @@ class _AccessBulkUploadPageState extends State<AccessBulkUploadPage> {
                 onDragExited: (_) => setState(() => _isDragging = false),
                 onDragDone: _onDragDone,
                 child: GestureDetector(
+                  onTapDown:
+                      _isProcessing ? null : (_) => HapticController.medium(),
                   onTap: _isProcessing ? null : _browse,
                   child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
                       color: _isDragging
-                          ? AppColors.primary.withOpacity(0.1)
+                          ? AppColors.primary.withValues(alpha: 0.1)
                           : AppColors.card,
                       borderRadius: BorderRadius.circular(8.r),
                     ),
@@ -183,8 +193,9 @@ class _AccessBulkUploadPageState extends State<AccessBulkUploadPage> {
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  SvgPicture.asset(
-                                    'assets/icons_assets/main_icons_assets/uploadfile.svg',
+                                  CustomSvgImage.natural(
+                                    assetPath:
+                                        'assets/icons_assets/main_icons_assets/ic_cloud_upload.svg',
                                     width: 100.sp,
                                     height: 100.sp,
                                   ),
@@ -197,8 +208,10 @@ class _AccessBulkUploadPageState extends State<AccessBulkUploadPage> {
                                   SizedBox(height: 8.sp),
                                   Text(
                                     S.of(context).or,
-                                    style: StyleText.fontSize16Weight500
-                                        .copyWith(color: AppColors.secondaryText),
+                                    style:
+                                        StyleText.fontSize16Weight500.copyWith(
+                                      color: AppColors.secondaryText,
+                                    ),
                                   ),
                                   if (_errorMessage != null) ...[
                                     SizedBox(height: 16.sp),
@@ -219,21 +232,26 @@ class _AccessBulkUploadPageState extends State<AccessBulkUploadPage> {
             ),
             SizedBox(height: 26.sp),
             Row(
+              textDirection: TextDirection
+                  .ltr, // X-73: Cancel left, action right in both languages
+
               children: [
                 customButton(
                   title: S.of(context).discard,
                   function: () => Navigator.pop(context),
-                  color: AppColors.secondaryButton,
-                  textStyle: StyleText.fontSize16Weight600
-                      .copyWith(color: AppColors.blackButton),
+                  color: AppColors.darkGrey,
+                  textStyle: StyleText.fontSize16Weight600.copyWith(
+                    color: AppColors.text,
+                  ),
                 ),
                 const Spacer(),
                 customButton(
                   title: S.of(context).browseFiles,
                   function: _isProcessing ? () {} : _browse,
                   color: AppColors.primary,
-                  textStyle: StyleText.fontSize16Weight600
-                      .copyWith(color: AppColors.textButton),
+                  textStyle: StyleText.fontSize16Weight600.copyWith(
+                    color: AppColors.textButton,
+                  ),
                 ),
               ],
             ),

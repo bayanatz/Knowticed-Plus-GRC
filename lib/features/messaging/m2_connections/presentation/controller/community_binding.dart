@@ -4,10 +4,9 @@
 // Objectives: This file is responsible for providing the community binding used in the community feature.
 import 'package:get/get.dart';
 
-import '../../../m1_chat/presentation/controller/message_controller.dart';
-import '../../../m1_chat/presentation/controller/media_controller.dart';
-import '../../../m3_groups/presentation/controller/groups_controller.dart';
-import './community_controller.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/message_controller.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/media_controller.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/presentation/controller/community_controller.dart';
 
 class CommunityBinding implements Bindings {
   @override

@@ -17,8 +17,6 @@
 /// about Settings. Wrap any widget with [WatermarkPreview] to stamp it.
 library;
 
-import 'dart:ui' as ui;
-
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -29,47 +27,51 @@ import 'package:flutter/material.dart';
 // DateFormat is the only thing this file needs from intl.
 import 'package:intl/intl.dart' show DateFormat;
 
-import 'package:grc_module/core/di/app_controllers.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/features/settings/se8_watermark/domain/entities/watermark_settings.dart';
+import 'package:knowticed_plus/core/di/app_controllers.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/features/roles/r4_active_directory/domain/entities/employee_entity.dart';
+import 'package:knowticed_plus/features/settings/se8_watermark/domain/entities/watermark_settings.dart';
 
 /// The stamp exactly as the preview should render it.
 ///
 /// Built from the SIGNED-IN employee so an admin previews their own identity
 /// rather than a fake sample — the point of the feature is that the stamp
 /// identifies whoever is looking at the screen.
-String watermarkStampText(WatermarkSettings settings) {
+///
+/// [preview] is `true` only on the Settings screen: there a missing value
+/// falls back to a sample ("name@company.com") so the layout still shows.
+/// The live overlay ([WatermarkLayer]) passes `false` and gets an EMPTY
+/// string instead, so a screen is never stamped with a fake identity
+/// (CR-KNP-SET-APP-01, 20/10/2026).
+String watermarkStampText(WatermarkSettings settings, {bool preview = false}) {
   final StringBuffer buffer = StringBuffer();
 
+  // CHANGED 20/10/2026 (CR-KNP-SET-APP-01) — was `dynamic` + try/catch reading
+  // a `mobileNumber` getter that does not exist on EmployeeEntityPro, so the
+  // phone stamp ALWAYS fell back to '+000 000 0000'. Typed now; the real
+  // field is `mobilePhone` (a PhoneNumber) and its full form is
+  // `completeNumber`.
   String employeeValue() {
-    // Guarded twice over. `isEmployeeRegistered` covers the cold-start case
-    // where Settings opens before the controller is in the locator; the
-    // try/catch covers the field names on `employeeEntity` — `email`,
-    // `firstName` and `lastName` are used throughout
-    // MainCoreEmployeeController, but the PHONE field's name was not
-    // verifiable from here, so a miss degrades to the placeholder instead of
-    // throwing inside a build. If you know the real getter, name it below and
-    // the guard becomes redundant rather than load-bearing.
     if (!AppControllers.isEmployeeRegistered) return '';
-    try {
-      final dynamic employee = AppControllers.employee.employeeEntity;
-      if (employee == null) return '';
-      switch (settings.field) {
-        case WatermarkField.employeeEmail:
-          return (employee.email ?? '').toString();
-        case WatermarkField.employeePhone:
-          return (employee.mobileNumber ?? '').toString();
-        case WatermarkField.employeeName:
-          return '${employee.firstName ?? ''} ${employee.lastName ?? ''}'
-              .trim();
-      }
-    } catch (_) {
-      return '';
+    final EmployeeEntityPro? employee = AppControllers.employee.employeeEntity;
+    if (employee == null) return '';
+    switch (settings.field) {
+      case WatermarkField.employeeEmail:
+        return employee.email ?? '';
+      case WatermarkField.employeePhone:
+        return employee.mobilePhone?.completeNumber ?? '';
+      case WatermarkField.employeeName:
+        return '${employee.firstName ?? ''} ${employee.lastName ?? ''}'.trim();
     }
   }
 
-  final String value = employeeValue();
-  buffer.write(value.trim().isEmpty ? _placeholderFor(settings.field) : value);
+  final String value = employeeValue().trim();
+  if (value.isEmpty) {
+    if (!preview) return '';
+    buffer.write(_placeholderFor(settings.field));
+  } else {
+    buffer.write(value);
+  }
 
   final DateTime now = DateTime.now();
   if (settings.showDate) {
@@ -101,7 +103,7 @@ class WatermarkPainter extends CustomPainter {
 
   /// Resolved once by the caller (which has a BuildContext) rather than read
   /// from a global: the stamp has to be able to render inside a painter.
-  final ui.TextDirection textDirection;
+  final TextDirection textDirection;
 
   const WatermarkPainter({
     required this.settings,
@@ -131,7 +133,8 @@ class WatermarkPainter extends CustomPainter {
         style: StyleText.fontSize16Weight500.copyWith(
           fontSize: settings.fontSize,
           fontWeight: FontWeight.w500,
-          color: settings.color.withOpacity(settings.opacity.clamp(0.0, 1.0)),
+          color: settings.color
+              .withValues(alpha: settings.opacity.clamp(0.0, 1.0)),
         ),
       ),
       textDirection: textDirection,
@@ -189,7 +192,7 @@ class WatermarkPainter extends CustomPainter {
           ..color = settings.color
               // A quarter of the text's opacity. At parity the pill is as loud
               // as the text and the whole surface turns into a block of colour.
-              .withOpacity((settings.opacity * 0.25).clamp(0.0, 1.0))
+              .withValues(alpha: (settings.opacity * 0.25).clamp(0.0, 1.0))
           ..style = PaintingStyle.fill)
         : null;
     final double padX = settings.fontSize * 0.5;

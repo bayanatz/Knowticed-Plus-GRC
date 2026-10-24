@@ -2,10 +2,10 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: ad_mobile_export_details_page.dart
-/// Purpose: Declares `AdMobileExportDetailsPage` — the PHONE BODY of the
+/// Description: Declares `AdMobileExportDetailsPage` — the PHONE BODY of the
 ///          Active Directory tab.
-/// Author: Knowticed Plus team
-/// Created At: 9/9/2026
+/// Author: Amr Mesbah
+/// Created at: 9/9/2026
 /// Updated: 9/9/2026 - This is now what the Active Directory TAB renders on a
 ///          phone (see `CsvView`), not a page pushed from an Export button.
 ///          The frame is the tab's content, so the widget draws no Scaffold,
@@ -29,21 +29,22 @@
 /// records `nationality = -1`), so that dropdown is drawn with an empty option
 /// list: the row is where Figma puts it and it starts working the day the
 /// column exists, rather than being silently dropped from the screen.
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:grc_module/core/custom/1-custom_dropdown.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
-import 'package:grc_module/core/di/app_controllers.dart';
+import 'package:knowticed_plus/core/custom/dropdowns/custom_dropdown.dart';
+import 'package:knowticed_plus/core/custom/feedback/circle_progress.dart';
+import 'package:knowticed_plus/core/helper/format_title.dart';
+import 'package:knowticed_plus/core/di/app_controllers.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grc_module/features/roles/r4_active_directory/domain/enums/employee_data.dart';
-import 'package:grc_module/features/roles/r4_active_directory/presentation/controller/active_directory_controller.dart';
-import 'package:grc_module/features/roles/r4_active_directory/presentation/ui/pages/ad_mobile_export_preview_page.dart';
-import 'package:grc_module/features/roles/shared_mobile_export/mobile_export_widgets.dart';
-import 'package:grc_module/features/settings/se1_profile/data/utils/localized_digits.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/features/roles/r4_active_directory/domain/enums/employee_data.dart';
+import 'package:knowticed_plus/features/roles/r4_active_directory/presentation/controller/active_directory_controller.dart';
+import 'package:knowticed_plus/features/roles/r4_active_directory/presentation/ui/pages/ad_mobile_export_preview_page.dart';
+import 'package:knowticed_plus/features/roles/presentation/ui/widgets/shared_mobile_export/mobile_export_widgets.dart';
+import 'package:knowticed_plus/features/settings/se1_profile/data/utils/localized_digits.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
 /// Column positions inside a `usersData` row.
 ///
@@ -162,15 +163,17 @@ class _AdMobileExportDetailsPageState extends State<AdMobileExportDetailsPage> {
     }
 
     return _ctrl.usersData
-        .where((row) =>
-            matches(row, _department, _Column.department) &&
-            matches(row, _role, _Column.role) &&
-            matches(row, _title, _Column.title) &&
-            matches(row, _workLocation, _Column.workLocation) &&
-            matches(row, _supervisor, _Column.supervisor) &&
-            matches(row, _gender, _Column.gender) &&
-            matches(row, _nationality, _Column.nationality) &&
-            matches(row, _country, _Column.country))
+        .where(
+          (row) =>
+              matches(row, _department, _Column.department) &&
+              matches(row, _role, _Column.role) &&
+              matches(row, _title, _Column.title) &&
+              matches(row, _workLocation, _Column.workLocation) &&
+              matches(row, _supervisor, _Column.supervisor) &&
+              matches(row, _gender, _Column.gender) &&
+              matches(row, _nationality, _Column.nationality) &&
+              matches(row, _country, _Column.country),
+        )
         .cast<List<dynamic>>()
         .toList();
   }

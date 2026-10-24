@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get_utils/get_utils.dart';
 
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/custom/81-hover_example.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/custom/layout/hover_example.dart';
 
-import 'package:grc_module/core/custom/58-default_switch_button.dart';
+import 'package:knowticed_plus/core/custom/inputs/default_switch_button.dart';
 
 class SwitchButtonTitleSubTitle extends StatelessWidget {
   const SwitchButtonTitleSubTitle({

@@ -5,10 +5,10 @@
 /// Purpose: contains all data items needed about employee in the active_directory file.
 /// Author: Mohamed Elrashidy
 /// created at: 15/12/2024
+library;
 
-import 'package:grc_module/core/helper/role/validator.dart';
-import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/core/helper/validation/validator.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
 enum EmployeeDataItems {
   id,
@@ -301,14 +301,16 @@ enum EmployeeDataItems {
         return (value) {
           return Validator.text(
               value,
-              S.current.kindlyEnterTheNameOfTheDepartmentToCompleteTheAssignmen);
+              S.current
+                  .kindlyEnterTheNameOfTheDepartmentToCompleteTheAssignmen);
         };
       case EmployeeDataItems.departmentArabicName:
         return (value) {
           return Validator.isArabic(
               value,
               S.current.pleaseProvideTheDepartmentNameInArabicForBilingualConsi,
-              S.current.thisFieldAcceptsArabicOnlyPleaseProvideYourEntryInArabi2);
+              S.current
+                  .thisFieldAcceptsArabicOnlyPleaseProvideYourEntryInArabi2);
         };
       case EmployeeDataItems.supervisorEmail:
         return (value) {
@@ -321,20 +323,23 @@ enum EmployeeDataItems {
         return (value) {
           return Validator.text(
               value,
-              S.current.kindlyAssignARoleToTheEmployeeThisIsARequiredFieldForAc);
+              S.current
+                  .kindlyAssignARoleToTheEmployeeThisIsARequiredFieldForAc);
         };
       case EmployeeDataItems.englishTitle:
         return (value) {
           return Validator.text(
               value,
-              S.current.pleaseEnterTheEmployeeSJobTitleItIsEssentialForInternal);
+              S.current
+                  .pleaseEnterTheEmployeeSJobTitleItIsEssentialForInternal);
         };
       case EmployeeDataItems.arabicTitle:
         return (value) {
           return Validator.isArabic(
               value,
               S.current.kindlyProvideTheArabicTranslationOfTheJobTitleForBiling,
-              S.current.thisFieldAcceptsArabicOnlyPleaseProvideYourEntryInArabi2);
+              S.current
+                  .thisFieldAcceptsArabicOnlyPleaseProvideYourEntryInArabi2);
         };
       case EmployeeDataItems.workLocation:
         return (value) {
@@ -433,7 +438,9 @@ enum EmployeeDataItems {
         };
       case EmployeeDataItems.departmentArabicName:
         return (value) {
-          return Validator.isArabic(value, S.current.arabicDepartmentNameMissing,
+          return Validator.isArabic(
+              value,
+              S.current.arabicDepartmentNameMissing,
               S.current.arabicLanguageMandatory);
         };
       case EmployeeDataItems.supervisorEmail:

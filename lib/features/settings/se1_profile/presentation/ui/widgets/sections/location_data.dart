@@ -11,17 +11,19 @@
 ///          REMOVED_MODULE import and the unused `lightMode` / `isTablet`
 ///          locals are gone, and Colors.transparent is routed through
 ///          AppColors.
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:grc_module/core/extensions/context_extensions.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/custom/2-custom_textfield.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/ui/widgets/settings_header.dart';
-import 'package:grc_module/features/settings/se1_profile/domain/entities/personal_profile.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/core/helper/format_title.dart';
+import 'package:knowticed_plus/core/helper/stored_value_ar.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/custom/inputs/custom_textfield.dart';
+import 'package:knowticed_plus/features/settings/presentation/ui/widgets/settings_header.dart';
+import 'package:knowticed_plus/features/settings/se1_profile/domain/entities/personal_profile.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
 class LocationData extends StatefulWidget {
   const LocationData({super.key, required this.profile});
@@ -47,24 +49,37 @@ class _LocationDataState extends State<LocationData> {
         TextEditingController(text: _display(widget.profile.country));
     _provinceController =
         TextEditingController(text: _display(widget.profile.province));
-    _cityController = TextEditingController(text: _display(widget.profile.city));
+    _cityController =
+        TextEditingController(text: _display(widget.profile.city));
     _streetController =
         TextEditingController(text: _display(widget.profile.street));
   }
 
   @override
-  void didUpdateWidget(covariant LocationData oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.profile != widget.profile) {
-      _countryController.text = _display(widget.profile.country);
-      _provinceController.text = _display(widget.profile.province);
-      _cityController.text = _display(widget.profile.city);
-      _streetController.text = _display(widget.profile.street);
-    }
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // The screen language can change while the page is open.
+    _fill();
   }
 
-  static String _display(String value) =>
-      value.isEmpty ? '' : FormatHelper.capitalize(value);
+  void _fill() {
+    _countryController.text = _display(widget.profile.country);
+    _provinceController.text = _display(widget.profile.province);
+    _cityController.text = _display(widget.profile.city);
+    _streetController.text = _display(widget.profile.street);
+  }
+
+  @override
+  void didUpdateWidget(covariant LocationData oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.profile != widget.profile) _fill();
+  }
+
+  /// Owner 24/10/2026: a value picked from the dropdown is saved in English
+  /// but read in the screen's language, as it is on the edit page.
+  String _display(String value) => value.isEmpty
+      ? ''
+      : StoredValueAr.of(context, FormatHelper.capitalize(value));
 
   @override
   void dispose() {
@@ -85,106 +100,117 @@ class _LocationDataState extends State<LocationData> {
       decoration: isPhone
           // Mobile only: rounded like each card on the edit page.
           ? BoxDecoration(
-          borderRadius: BorderRadius.circular(8.r),
-        color:  AppColors.card,
-      )
+              borderRadius: BorderRadius.circular(8.r),
+              color: AppColors.card,
+            )
           : BoxDecoration(
-        borderRadius: BorderRadius.circular(0),
-        color:  AppColors.card,
-      ),
+              borderRadius: BorderRadius.circular(0),
+              color: AppColors.card,
+            ),
       child: Column(
         children: [
-          SizedBox(height: 12.sp),
+          // 20/10/2026 (Moataz "consistency in padding"): the Contact card
+          // above already ends with 15, so no extra gap here — phone → Location
+          // is the same 15 as Status → Contact.
+          // D-223: the Contact group above ends with its 15 inset.
+          // D-243: Contact's bottom 16 + 8 = 24 before this group title.
+          SizedBox(height: 8.sp),
           SettingsHeader(
-              imagePath: 'assets/icons_assets/settings_assets/location_city_pin.svg',
+              // 16.sp on every device, the same inset as the fields below
+              // (18/10/2026). The default is 16.sp on a phone but 0 on
+              // iPad / desktop, so the heading sat 15 left of the fields.
+              horizontalPadding: 16.sp,
+              imagePath:
+                  'assets/icons_assets/settings_assets/ic_place_city.svg',
               text: S.of(context).location),
           Padding(
-            padding: EdgeInsets.only(top: 0.sp,right: 15.sp,left: 15.sp, bottom: 15.sp),
+            padding: EdgeInsets.only(
+                top: 0.sp, right: 16.sp, left: 16.sp, bottom: 16.sp),
             child: Column(
               children: [
-
-
-
-                // Mobile only: 15.sp after a section title. Others keep 10.sp.
-                SizedBox(height: isPhone ? 15.sp : 10.sp),
+                // Mobile only: 16.sp after a section title. Others keep 10.sp.
+                // Item 172 (21/10/2026): the same 16 after the title as the
+                // Contact group above.
+                SizedBox(height: 12.sp),
 
                 // Country, Province, City in one row
                 isPortrait
                     ? Column(
-                  children: [
-                    // Country Field
-                    CustomTextField(
-                          label: S.of(context).country,
-                          hint: S.of(context).enterYourCountry,
-                          controller: _countryController,
-                          enabled: false,
-                        ),
-                    // Mobile only: matches the 16.h the edit page uses between fields.
-                    isPhone ? SizedBox(height: 10.sp) : SizedBox(height: 16.h),
-
-                    // Province Field
-                    CustomTextField(
-                          label: S.of(context).stateOrProvince,
-                          hint: S.of(context).enterYourStateOrProvince,
-                          controller: _provinceController,
-                          enabled: false,
-                        ),
-                    // Mobile only: matches the 16.h the edit page uses between fields.
-                    isPhone ? SizedBox(height: 10.sp) : SizedBox(height: 16.h),
-
-                    // City Field
-                    CustomTextField(
-                          label: S.of(context).city,
-                          hint: S.of(context).enterYourCity,
-                          controller: _cityController,
-                          enabled: false,
-                        ),
-                    isPhone ? SizedBox() : SizedBox(height: 16.h),
-                  ],
-                )
-                // Three equal columns separated by a 12.w gap — the same grid the
-                // Name and Contact rows use, so every field lines up vertically.
-                    : Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Country Field
-                    Expanded(
-                      child: CustomTextField(
+                        children: [
+                          // Country Field
+                          CustomTextField(
                             label: S.of(context).country,
                             hint: S.of(context).enterYourCountry,
                             controller: _countryController,
                             enabled: false,
                           ),
-                    ),
+                          // Mobile only: matches the 16.h the edit page uses between fields.
+                          SizedBox(height: 12.sp),
 
-                    SizedBox(width: 12.w),
-
-                    // Province Field
-                    Expanded(
-                      child: CustomTextField(
+                          // Province Field
+                          CustomTextField(
                             label: S.of(context).stateOrProvince,
-                            hint: '_',
+                            hint: S.of(context).enterYourStateOrProvince,
                             controller: _provinceController,
                             enabled: false,
                           ),
-                    ),
+                          // Mobile only: matches the 16.h the edit page uses between fields.
+                          SizedBox(height: 12.sp),
 
-                    SizedBox(width: 12.w),
-
-                    // City Field
-                    Expanded(
-                      child: CustomTextField(
+                          // City Field
+                          CustomTextField(
                             label: S.of(context).city,
                             hint: S.of(context).enterYourCity,
                             controller: _cityController,
                             enabled: false,
                           ),
-                    ),
-                  ],
-                ),
+                        ],
+                      )
+                    // Three equal columns separated by a 16.w gap (R-1) — the same grid the
+                    // Name and Contact rows use, so every field lines up vertically.
+                    : Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Country Field
+                          Expanded(
+                            child: CustomTextField(
+                              label: S.of(context).country,
+                              hint: S.of(context).enterYourCountry,
+                              controller: _countryController,
+                              enabled: false,
+                            ),
+                          ),
+
+                          SizedBox(width: 16.w),
+
+                          // Province Field
+                          Expanded(
+                            child: CustomTextField(
+                              label: S.of(context).stateOrProvince,
+                              hint: '_',
+                              controller: _provinceController,
+                              enabled: false,
+                            ),
+                          ),
+
+                          SizedBox(width: 16.w),
+
+                          // City Field
+                          Expanded(
+                            child: CustomTextField(
+                              label: S.of(context).city,
+                              hint: S.of(context).enterYourCity,
+                              controller: _cityController,
+                              enabled: false,
+                            ),
+                          ),
+                        ],
+                      ),
 
                 // Mobile only: matches the 16.h the edit page uses between fields.
-                SizedBox(height: isPhone ? 10.sp : 16.h),
+                // Item 172: ONE gap before Street, the same as between the
+                // fields above it.
+                SizedBox(height: 12.sp),
 
                 // Street Field (Full Width)
                 CustomTextField(
@@ -194,7 +220,7 @@ class _LocationDataState extends State<LocationData> {
                   enabled: false,
                 ),
 
-               // isPhone ? SizedBox() : SizedBox(height: 16.h),
+                // isPhone ? SizedBox() : SizedBox(height: 16.h),
               ],
             ),
           ),

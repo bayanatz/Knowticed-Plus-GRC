@@ -1,3 +1,4 @@
+// [module-file:services] — deleted when the services module is split out
 /// Module: home/h1_home_page
 ///
 ///*************************** FILE INFO ****************************///

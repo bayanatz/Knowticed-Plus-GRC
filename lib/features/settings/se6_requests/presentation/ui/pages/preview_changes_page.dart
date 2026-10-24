@@ -2,7 +2,7 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: preview_changes_page.dart
-/// Purpose: Reviews personal-information edits before they are submitted.
+/// Description: Reviews personal-information edits before they are submitted.
 /// Author: Amr Mesbah
 /// Created at: 13/11/2024
 /// Updated: 11/8/2026 - CR-SKEL-SE6-N01/N02/N06: the Firestore submit and its try/catch moved into
@@ -10,47 +10,51 @@
 ///          shared PhoneCountryLookup; raw colours route through AppColors.
 ///
 /// REMAINING (N05): still ~1,100 LOC.
+library;
 
 ///*************************** FILE INFO ****************************///
-/// Purpose: Preview page for comparing old and new personal information
-/// Author: Claude AI Assistant
-/// Created At: 27/10/2025
+/// Description: Preview page for comparing old and new personal information
 /// Modified: Mobile responsive layout - vertical stacking on mobile
-import 'package:grc_module/core/custom/66-circle_progress.dart';
-import 'package:grc_module/core/custom/2-custom_textfield.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/custom/inputs/current_new_value_pair.dart';
+import 'package:knowticed_plus/core/custom/inputs/custom_textfield.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
 
 import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
-import 'package:grc_module/core/helper/main_helper/arabic_number_format.dart';
-// REMOVED_MODULE: import 'package:grc_module/core/helper/inventory_module/core/text_field.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-// REMOVED_MODULE: import 'package:grc_module/features/external/services_mangment_module/core/new_theme.dart';
-import 'package:intl/intl.dart';
-import 'package:lottie/lottie.dart';
-import 'package:grc_module/core/custom/50-custom_side_frame_master.dart';
-import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/features/settings/se1_profile/data/utils/phone_country_lookup.dart';
-import 'package:grc_module/features/settings/se1_profile/domain/entities/personal_profile.dart';
-import 'package:grc_module/features/settings/se6_requests/domain/entities/change_request.dart';
-import 'package:grc_module/features/settings/se6_requests/domain/entities/field_change.dart';
-import 'package:grc_module/features/settings/se6_requests/presentation/controller/requests_cubit.dart';
-import 'package:grc_module/features/settings/se6_requests/presentation/ui/widgets/request_error_dialog.dart';
+import 'package:dartz/dartz.dart' show Either;
+import 'package:knowticed_plus/core/app_services/firebase/repository/firebase_repository.dart';
+import 'package:knowticed_plus/core/helper/format_title.dart';
+import 'package:knowticed_plus/core/network/api_constants.dart';
+import 'package:knowticed_plus/core/network/failure_model.dart';
+import 'package:knowticed_plus/core/helper/arabic_number_format.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/core/helper/inventory_module/core/text_field.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/features/external/services_mangment_module/core/new_theme.dart';
+import 'package:intl/intl.dart' hide TextDirection;
+import 'package:knowticed_plus/core/custom/navigation/custom_side_frame_master.dart';
+import 'package:knowticed_plus/features/settings/presentation/ui/widgets/settings_header.dart';
+import 'package:knowticed_plus/core/custom/dialogs/custom_dialog_manager.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
+import 'package:knowticed_plus/features/settings/se1_profile/data/utils/employee_date_formatter.dart';
+import 'package:knowticed_plus/features/settings/se1_profile/data/utils/phone_country_lookup.dart';
+import 'package:knowticed_plus/features/settings/se1_profile/domain/entities/personal_profile.dart';
+import 'package:knowticed_plus/features/settings/se6_requests/domain/entities/change_request.dart';
+import 'package:knowticed_plus/features/settings/se6_requests/domain/entities/field_change.dart';
+import 'package:knowticed_plus/features/settings/se6_requests/presentation/controller/requests_cubit.dart';
+import 'package:knowticed_plus/features/settings/se6_requests/presentation/ui/widgets/request_error_dialog.dart';
 // REMOVED_MODULE: import '../../../../../external/inventory_module/core/custom_button_widget.dart';
 // REMOVED_MODULE: import '../../../../../external/services_mangment_module/Category/presentation/ui/services_admin/Widget/W3_Frame_Screen_tablet.dart';
-import './request_page.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/ui/pages/settings_screen.dart';
+import 'package:knowticed_plus/features/settings/presentation/ui/pages/settings_screen.dart';
 
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/custom/5-custom_button.dart';
-import 'package:grc_module/core/custom/46-custom_image_picker.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
-import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_button.dart';
+import 'package:knowticed_plus/core/custom/pickers/custom_image_picker.dart';
+
+part '../widgets/preview_changes_page/preview_changes_page_builders.dart';
+part '../widgets/preview_changes_page/preview_changes_page_logic.dart';
+
 class PreviewChangesPage extends StatefulWidget {
   final Map<String, dynamic> changes;
   final File? selectedImage;
@@ -102,6 +106,14 @@ class PreviewChangesPage extends StatefulWidget {
 }
 
 class _PreviewChangesPageState extends State<PreviewChangesPage> {
+  /// Set by `_performSubmit` so `_submitChanges` can show the error dialog
+  /// after the shared flow returns (20/10/2026).
+  bool _submitFailed = false;
+
+  /// Lets this screen's builder/logic extensions refresh it (setState
+  /// itself may only be called inside the State class).
+  void rebuild(VoidCallback fn) => setState(fn);
+
   late TextEditingController requestNoteController;
 
   /// Owned by this page: the request flow is entered from here and torn down
@@ -126,7 +138,8 @@ class _PreviewChangesPageState extends State<PreviewChangesPage> {
   ///
   /// Opacity + IgnorePointer, matching the Preview button on the health edit
   /// page, so a disabled action looks and behaves the same across settings.
-  Widget _buildSubmitButton(BuildContext context, {required double width}) {
+  Widget _buildSubmitButton(BuildContext context,
+      {required double width, bool fullWidth = false}) {
     final enabled = _hasRequestNote;
 
     return Opacity(
@@ -141,6 +154,7 @@ class _PreviewChangesPageState extends State<PreviewChangesPage> {
           // `width` this method is handed. Both call sites were passing a
           // width and neither of them had any effect.
           width: width,
+          fullWidth: fullWidth,
           color: enabled ? AppColors.primary : AppColors.grey,
           textStyle: StyleText.fontSize16Weight500.copyWith(
             color: AppColors.textButton,
@@ -166,9 +180,8 @@ class _PreviewChangesPageState extends State<PreviewChangesPage> {
 
   /// The flag + dial code the employee's profile currently holds.
   String _getCurrentPhoneCode() {
-    final mobilePhoneList = employee?.mobilePhone;
-    final mobilePhone =
-        mobilePhoneList?.isNotEmpty == true ? mobilePhoneList!.first : null;
+    // Owner 21/10/2026: newest phone entry (history is newest last), not the oldest.
+    final mobilePhone = employee?.mobilePhone.lastOrNull;
 
     final String countryCode = mobilePhone?.countryCode?.lastOrNull ??
         PersonalProfile.defaultCountryCode;
@@ -178,9 +191,8 @@ class _PreviewChangesPageState extends State<PreviewChangesPage> {
 
   /// The number the employee's profile currently holds, without its code.
   String _getCurrentPhoneNumber() {
-    final mobilePhoneList = employee?.mobilePhone;
-    final mobilePhone =
-        mobilePhoneList?.isNotEmpty == true ? mobilePhoneList!.first : null;
+    // Owner 21/10/2026: newest phone entry (history is newest last), not the oldest.
+    final mobilePhone = employee?.mobilePhone.lastOrNull;
 
     return mobilePhone?.phones?.lastOrNull ?? '';
   }
@@ -197,10 +209,8 @@ class _PreviewChangesPageState extends State<PreviewChangesPage> {
   /// to nothing — so the box falls back to the '-' placeholder rather than
   /// showing a lone flag.
   String _formatDialCode(String countryCode) {
-    final String flag = PhoneCountryLookup.flagOf(countryCode);
-    final String dialCode = PhoneCountryLookup.dialCodeOf(countryCode);
-    if (dialCode.isEmpty) return '';
-    return '$flag $dialCode'.trim();
+    if (PhoneCountryLookup.dialCodeOf(countryCode).isEmpty) return '';
+    return PhoneCountryLookup.flagAndCode(countryCode).trim();
   }
 
   // Country flag / dial code lookups moved to
@@ -210,7 +220,7 @@ class _PreviewChangesPageState extends State<PreviewChangesPage> {
 
   @override
   Widget build(BuildContext context) {
-    final isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    MediaQuery.of(context).orientation == Orientation.portrait;
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobile = screenWidth < 600;
     var lightMode = Theme.of(context).brightness == Brightness.light;
@@ -221,686 +231,62 @@ class _PreviewChangesPageState extends State<PreviewChangesPage> {
         onFirstTap: () {
           Navigator.pop(context);
         },
-        secondTitle: S.of(context).editingMyPersonalData,
-        child: ScrollConfiguration(
-          behavior: const ScrollBehavior().copyWith(scrollbars: false),
-          child: SingleChildScrollView(
-            physics: ClampingScrollPhysics(),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Header — tablet/desktop only.
-                //
-                // CHANGED 8/9/2026. On mobile the old value and the new one now
-                // sit in the same field, one under the other, so a single
-                // "Current Details" heading above the list (and the "New
-                // Details" one that used to sit halfway down it) no longer
-                // describes what follows. Both are gone on mobile; the two
-                // column headings still make sense on wider screens, where the
-                // sides really are two columns.
-                if (!isMobile)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          S.of(context).current_details,
-                          style: StyleText.fontSize16Weight600.copyWith(
-                              color: AppColors.text
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 20.sp),
-                      Expanded(
-                        child: Text(
-                          S.of(context).new_details,
-                          style: StyleText.fontSize16Weight600.copyWith(
-                            color: AppColors.text
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-          
-                // CHANGED 8/9/2026 — 15.sp on mobile, matching the horizontal
-                // inset the page frame applies, so the first card sits as far
-                // from the top as it does from the sides.
-                //
-                // 10.sp was the gap UNDER the "Current Details" heading, back
-                // when mobile had one. With the headings gone (see above) this
-                // became the whole space above the first card, and it was
-                // visibly tighter at the top than at the edges.
-                SizedBox(height: isMobile ? 15.sp : 10.sp),
-
-                // Main Content - Conditional layout
-                //
-                // Mobile builds the list ONCE. Comparing two values meant
-                // scrolling a whole block down to the matching field in the
-                // second block and holding the first in your head; paired, the
-                // new value sits directly under the old one.
-                if (isMobile)
-                  _buildDetailsColumn(
-                    context,
-                    lightMode,
-                    isCurrentColumn: true,
-                  )
-                else
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Current Details Column
-                      Expanded(
-                        child: _buildDetailsColumn(
-                          context,
-                          lightMode,
-                          isCurrentColumn: true,
-                        ),
-                      ),
-          
-                      SizedBox(width: 16.sp),
-          
-                      // New Details Column
-                      Expanded(
-                        child: _buildDetailsColumn(
-                          context,
-                          lightMode,
-                          isCurrentColumn: false,
-                        ),
-                      ),
-                    ],
-                  ),
-          
-                SizedBox(height: 30.sp),
-          
-                // Bottom Action Buttons
-                //
-                // CHANGED 8/9/2026 — both buttons are a fixed 150.sp with a
-                // Spacer between them, matching the Discard / Preview pair at
-                // the bottom of edit_page_request.dart. This page is the step
-                // straight after that one, so the row the user just tapped
-                // through should not change shape underneath them.
-                //
-                // Mobile previously wrapped each button in `Expanded` with a
-                // 10.sp gap, so the pair stretched to the full width of the
-                // page and read as two banners rather than two buttons.
-               isMobile ?   Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    customButton(
-                      title: S.of(context).discardChange,
-                      function: () {
-                        Navigator.pop(context);
-                      },
-                      height: 38.h,
-                      width: 150.sp,
-                      color: AppColors.darkGrey,
-                      textStyle: StyleText.fontSize16Weight500.copyWith(
-                        color:  AppColors.white,
-                      ),
+        // X-137 (21/10/2026): "Editing Personal Information".
+        // 21/10/2026: "Preview …", like Preview Health Insurance.
+        secondTitle: S.of(context).previewPersonalInformation,
+        // D-202 (20/10/2026): Discard / Submit PINNED at the bottom on every
+        // device; the Before → After list scrolls above them. The old
+        // "Current Details | New Details" two-column layout is gone — the
+        // preview shows only what changed, as pairs (X-127).
+        child: SideFrameBoundedBody(
+          child: Column(
+            children: [
+              Expanded(
+                child: ScrollConfiguration(
+                  behavior: const ScrollBehavior().copyWith(scrollbars: false),
+                  child: SingleChildScrollView(
+                    physics: const ClampingScrollPhysics(),
+                    child: _buildDetailsColumn(
+                      context,
+                      lightMode,
+                      isCurrentColumn: true,
                     ),
-                    Spacer(),
-                    _buildSubmitButton(context, width: 150.sp),
-                  ],
-                ) : Row(
-                 mainAxisAlignment: MainAxisAlignment.start,
-                 children: [
-                   customButton(
-                     title: S.of(context).discardChange,
-                     function: () {
-                       Navigator.pop(context);
-                     },
-                     height: 38.h,
-                     width: 150.sp,
-                     color: AppColors.darkGrey,
-                     textStyle: StyleText.fontSize16Weight500.copyWith(
-                       color: AppColors.white,
-                     ),
-                   ),
-                   Spacer(),
-                   _buildSubmitButton(context, width: 150.sp),
-                 ],
-               ),
-          
-                SizedBox(height: 20.sp),
-              ],
-            ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 16.sp),
+              _buildActionButtons(context, isMobile),
+              SizedBox(height: 16.sp),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget _buildDetailsColumn(
-      BuildContext context,
-      bool lightMode, {
-        required bool isCurrentColumn,
-      })
-  {
-    final isArabic = Localizations
-        .localeOf(context)
-        .languageCode == 'ar';
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isMobile = screenWidth < 600;
-
-    // Helper function to check if field should be shown
-    bool shouldShowField(String fieldKey) {
-      if (!isMobile) return true; // Show all fields on tablet/desktop
-      return widget.changes.containsKey(fieldKey); // Show only changed fields on mobile
-    }
-
-    // PAIRED MODE — mobile only, added 8/9/2026.
-    //
-    // On mobile this method is called ONCE and every field renders both of its
-    // values: the current one, then the new one directly under it. On wider
-    // screens it is still called twice, once per column, and each call renders
-    // only the side it was asked for.
-    //
-    // That is why the builders below now receive BOTH values instead of
-    // `isCurrentColumn ? old : new` — the paired layout needs the pair, and the
-    // two-column layout picks its half here rather than at fifteen call sites.
-    final bool pairValues = isMobile;
-
-    // Local wrapper so every call below can keep passing "did this field
-    // change?" without also having to know which column it is in. The green
-    // highlight marks the NEW value — on the Current Details side it just
-    // outlined the old value the user is replacing, and in paired mode it
-    // marks the lower of the two boxes for the same reason.
-    Widget _buildFieldDisplay(
-      BuildContext context,
-      bool lightMode,
-      String label,
-      String currentValue,
-      String newValue,
-      bool hasChanged,
-    ) {
-      if (pairValues) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            _fieldLabel(label),
-            SizedBox(height: 10.h),
-            _valueBox(value: currentValue, showHighlight: false),
-            // Tighter than the 12.sp between fields, so the two halves of one
-            // comparison group together rather than reading as two fields.
-            SizedBox(height: 6.h),
-            _valueBox(value: newValue, showHighlight: hasChanged),
-          ],
-        );
-      }
-
-      return _fieldDisplay(
-        label: label,
-        value: isCurrentColumn ? currentValue : newValue,
-        showHighlight: hasChanged && !isCurrentColumn,
-      );
-    }
-
-    // Helper to check if any personal info fields should be shown
-    bool hasPersonalInfoFields = shouldShowField('photo') ||
-        shouldShowField('first_name') ||
-        shouldShowField('middle_name') ||
-        shouldShowField('last_name') ||
-        shouldShowField('gender') ||
-        shouldShowField('date_of_birth') ||
-        shouldShowField('marital_status');
-
-    // Check if any contact fields changed
-    bool hasContactChanges =
-        shouldShowField('phone') || shouldShowField('country_code');
-
-    // Check if any location fields changed
-    bool hasLocationChanges = shouldShowField('country') ||
-        shouldShowField('province') ||
-        shouldShowField('city') ||
-        shouldShowField('street');
-
-    return Column(
-      children: [
-        // Personal Information Container - only show if there are fields to display
-        if (hasPersonalInfoFields) ...[
-          Container(
-            padding: EdgeInsets.all(15.sp),
-            decoration: BoxDecoration(
-              color: AppColors.card,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Profile Photo - only show if changed on mobile
-                if (shouldShowField('photo'))
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // CHANGED 24/8/2026: was a hand-rolled
-                      // CircleAvatar + ClipRRect + Image.network stack with
-                      // its own error builder. `CustomImagePicker` is the
-                      // shared control the rest of the app uses, so the
-                      // avatar here now matches everywhere else — in
-                      // `readOnly`, since a preview must not let anyone
-                      // change the photo.
-                      //
-                      // Paired mode stacks the two avatars for the same reason
-                      // the value boxes stack: the old photo, then the one
-                      // replacing it. `imageFile: null` falls back to
-                      // `imageUrl`, which is what makes the first one the
-                      // current photo.
-                      Row(
-                        children: [
-                          CustomImagePicker(
-                            radius: 29.r,
-                            readOnly: true,
-                            imageFile:
-                                (pairValues || isCurrentColumn)
-                                    ? null
-                                    : widget.selectedImage,
-                            imageUrl: (employee?.photo?.isNotEmpty ?? false)
-                                ? employee!.photo!.last
-                                : null,
-                            onImagePicked: (_) {},
-                          ),
-                        ],
-                      ),
-                      if (pairValues) ...[
-                        SizedBox(height: 6.h),
-                        Row(
-                          children: [
-                            CustomImagePicker(
-                              radius: 29.r,
-                              readOnly: true,
-                              imageFile: widget.selectedImage,
-                              imageUrl: (employee?.photo?.isNotEmpty ?? false)
-                                  ? employee!.photo!.last
-                                  : null,
-                              onImagePicked: (_) {},
-                            ),
-                          ],
-                        ),
-                      ],
-                      SizedBox(height: 20.sp),
-                    ],
-                  ),
-
-                // Personal Information — each name is TWO rows now, English
-                // and Arabic, because the form edits both. Previously one row
-                // showed whichever spelling matched the UI language, which made
-                // an edit to the other one invisible in the preview.
-                if (shouldShowField('first_name')) ...[
-                  _buildFieldDisplay(
-                    context,
-                    lightMode,
-                    _labelFirstNameEn,
-                    FormatHelper.capitalize(employee?.firstName?.lastOrNull ?? ''),
-                    FormatHelper.capitalize(widget.firstNameController.text),
-                    widget.changes.containsKey('first_name'),
-                  ),
-                  SizedBox(height: 12.sp),
-                ],
-
-                if (shouldShowField('first_name_arabic')) ...[
-                  _buildFieldDisplay(
-                    context,
-                    lightMode,
-                    // The Arabic label stays Arabic in both languages, same as
-                    // on the edit form, so the two boxes are never ambiguous.
-                    _labelFirstNameAr,
-                    employee?.firstNameInArabic?.lastOrNull ?? '',
-                    widget.firstNameArController.text,
-                    widget.changes.containsKey('first_name_arabic'),
-                  ),
-                  SizedBox(height: 12.sp),
-                ],
-
-                if (shouldShowField('middle_name')) ...[
-                  _buildFieldDisplay(
-                    context,
-                    lightMode,
-                    _labelMiddleNameEn,
-                    FormatHelper.capitalize(employee?.middleName?.lastOrNull ?? ''),
-                    FormatHelper.capitalize(widget.middleNameController.text),
-                    widget.changes.containsKey('middle_name'),
-                  ),
-                  SizedBox(height: 12.sp),
-                ],
-
-                if (shouldShowField('middle_name_arabic')) ...[
-                  _buildFieldDisplay(
-                    context,
-                    lightMode,
-                    _labelMiddleNameAr,
-                    employee?.middleNameInArabic?.lastOrNull ?? '',
-                    widget.middleNameArController.text,
-                    widget.changes.containsKey('middle_name_arabic'),
-                  ),
-                  SizedBox(height: 12.sp),
-                ],
-
-                if (shouldShowField('last_name')) ...[
-                  _buildFieldDisplay(
-                    context,
-                    lightMode,
-                    _labelLastNameEn,
-                    FormatHelper.capitalize(employee?.lastName?.lastOrNull ?? ''),
-                    FormatHelper.capitalize(widget.lastNameController.text),
-                    widget.changes.containsKey('last_name'),
-                  ),
-                  SizedBox(height: 12.sp),
-                ],
-
-                if (shouldShowField('last_name_arabic')) ...[
-                  _buildFieldDisplay(
-                    context,
-                    lightMode,
-                    _labelLastNameAr,
-                    employee?.lastNameInArabic?.lastOrNull ?? '',
-                    widget.lastNameArController.text,
-                    widget.changes.containsKey('last_name_arabic'),
-                  ),
-                  SizedBox(height: 12.sp),
-                ],
-
-                if (shouldShowField('gender')) ...[
-                  _buildFieldDisplay(
-                    context,
-                    lightMode,
-                    S.of(context).gender,
-                    // Both columns go through _getGenderValue now. The Current
-                    // side used to print `employee.gender` straight from
-                    // Firestore, which is the raw key — so it was English (and
-                    // sometimes lower case) even in Arabic.
-                    FormatHelper.capitalize(
-                        _getGenderValue(employee?.gender?.lastOrNull)),
-                    FormatHelper.capitalize(
-                        _getGenderValue(widget.selectedGender)),
-                    widget.changes.containsKey('gender'),
-                  ),
-                  SizedBox(height: 12.sp),
-                ],
-
-                if (shouldShowField('date_of_birth')) ...[
-                  _buildFieldDisplay(
-                    context,
-                    lightMode,
-                    S.of(context).birthday,
-                    FormatHelper.capitalize(
-                        _formatDate(employee?.birthDay?.lastOrNull)),
-                    FormatHelper.capitalize(
-                        widget.dateOfBirthController.text),
-                    widget.changes.containsKey('date_of_birth'),
-                  ),
-                  if (shouldShowField('marital_status'))
-                    SizedBox(height: 12.sp),
-                ],
-
-                if (shouldShowField('marital_status'))
-                  _buildFieldDisplay(
-                    context,
-                    lightMode,
-                    S.of(context).maritalStatus,
-                    FormatHelper.capitalize(_getMaritalStatusValue(
-                        employee?.maritalStatus?.lastOrNull)),
-                    FormatHelper.capitalize(_getMaritalStatusValue(
-                        widget.selectedMaritalStatus)),
-                    widget.changes.containsKey('marital_status'),
-                  ),
-              ],
-            ),
-          ),
-          SizedBox(height: 20.sp),
-        ],
-
-        // Contact Section - only show if any contact field changed
-        if (hasContactChanges || !isMobile) ...[
-          Container(
-            padding: EdgeInsets.all(15.sp),
-            decoration: BoxDecoration(
-              color: AppColors.card,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Column(
-              children: [
-                // Contact Section Header
-                Row(
-                  children: [
-                    CustomSvgImage(
-                      assetPath: 'assets/icons_assets/settings_assets/phone_call_contact.svg',
-                      width: 16.w,
-                      height: 16.h,
-                      fit: BoxFit.scaleDown,
-                    ),
-                    SizedBox(width: 8.sp),
-                    Text(
-                      S.of(context).contact,
-                      style: StyleText.fontSize16Weight600.copyWith(
-                        color: AppColors.text,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 15.sp),
-
-                // Country code and number are two boxes, not one string. Each
-                // half carries its own highlight, so changing the country
-                // without touching the digits outlines only the code box.
-                if (shouldShowField('phone') || shouldShowField('country_code'))
-                  if (pairValues)
-                    // Two code+number rows under one label, matching how the
-                    // plain fields pair. Each row keeps its own two boxes, so
-                    // changing the country without touching the digits still
-                    // outlines only the code half of the lower row.
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        _fieldLabel(S.of(context).phoneNumber),
-                        SizedBox(height: 10.h),
-                        _phoneValueRow(
-                          code: _getCurrentPhoneCode(),
-                          number: _getCurrentPhoneNumber(),
-                          highlightCode: false,
-                          highlightNumber: false,
-                        ),
-                        SizedBox(height: 6.h),
-                        _phoneValueRow(
-                          code: _getNewPhoneCode(),
-                          number: _getNewPhoneNumber(),
-                          highlightCode:
-                              widget.changes.containsKey('country_code'),
-                          highlightNumber: widget.changes.containsKey('phone'),
-                        ),
-                      ],
-                    )
-                  else
-                    _phoneFieldDisplay(
-                      label: S.of(context).phoneNumber,
-                      code: isCurrentColumn
-                          ? _getCurrentPhoneCode()
-                          : _getNewPhoneCode(),
-                      number: isCurrentColumn
-                          ? _getCurrentPhoneNumber()
-                          : _getNewPhoneNumber(),
-                      // Only the New Details column outlines a change — same
-                      // rule as _buildFieldDisplay above.
-                      highlightCode:
-                          widget.changes.containsKey('country_code') &&
-                              !isCurrentColumn,
-                      highlightNumber: widget.changes.containsKey('phone') &&
-                          !isCurrentColumn,
-                    ),
-              ],
-            ),
-          ),
-          SizedBox(height: 20.sp),
-        ],
-
-        // Location Section - only show if any location field changed
-        if (hasLocationChanges || !isMobile)
-          Container(
-            padding: EdgeInsets.all(15.sp),
-            decoration: BoxDecoration(
-              color: AppColors.card,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Column(
-              children: [
-                // Location Section Header
-                Row(
-                  children: [
-                    // CHANGED 8/9/2026 — 16.sp -> 22.sp. The pin reads smaller
-                    // than the other section icons at the same nominal size
-                    // (its artwork carries more empty margin), so it needed a
-                    // larger box to sit level with the "Location" label beside
-                    // it. `fit: BoxFit.contain`, not `fill`: the asset is not
-                    // square, and `fill` stretched it to whatever box it was
-                    // given rather than scaling it.
-                    CustomSvgImage(
-                      assetPath: 'assets/icons_assets/settings_assets/location_city_pin.svg',
-                      width: 22.sp,
-                      height: 22.sp,
-                      fit: BoxFit.contain,
-                    ),
-                    SizedBox(width: 8.sp),
-                    Text(
-                      S.of(context).location,
-                      style: StyleText.fontSize16Weight600.copyWith(
-                        color: AppColors.text,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 15.sp),
-
-                if (shouldShowField('country')) ...[
-                  _buildFieldDisplay(
-                    context,
-                    lightMode,
-                    S.of(context).country,
-                    FormatHelper.capitalize(employee?.country?.lastOrNull ?? ''),
-                    FormatHelper.capitalize(widget.countryController.text),
-                    widget.changes.containsKey('country'),
-                  ),
-                  if (shouldShowField('province') || shouldShowField('city') || shouldShowField('street'))
-                    SizedBox(height: 12.sp),
-                ],
-
-                if (shouldShowField('province')) ...[
-                  _buildFieldDisplay(
-                    context,
-                    lightMode,
-                    S.of(context).stateOrProvince,
-                    FormatHelper.capitalize(employee?.province?.lastOrNull ?? ''),
-                    FormatHelper.capitalize(widget.provinceController.text),
-                    widget.changes.containsKey('province'),
-                  ),
-                  if (shouldShowField('city') || shouldShowField('street'))
-                    SizedBox(height: 12.sp),
-                ],
-
-                if (shouldShowField('city')) ...[
-                  _buildFieldDisplay(
-                    context,
-                    lightMode,
-                    S.of(context).city,
-                    FormatHelper.capitalize(employee?.city?.lastOrNull ?? ''),
-                    FormatHelper.capitalize(widget.cityController.text),
-                    widget.changes.containsKey('city'),
-                  ),
-                  if (shouldShowField('street'))
-                    SizedBox(height: 12.sp),
-                ],
-
-                if (shouldShowField('street'))
-                  _buildFieldDisplay(
-                    context,
-                    lightMode,
-                    S.of(context).streetName,
-                    FormatHelper.capitalize(employee?.street?.lastOrNull ?? ''),
-                    FormatHelper.capitalize(widget.streetController.text),
-                    widget.changes.containsKey('street'),
-                  ),
-
-              ],
-            ),
-          ),
-        // Request Note — once per page.
-        //
-        // MOVED 29/9/2026 (Settings mobile bug p.3/p.5): it used to sit INSIDE
-        // the Location card, which mobile only shows when a location field
-        // changed. A contact-only or gender-only request therefore had no note
-        // field — and Submit, which needs the note, could never be enabled.
-        //
-        // On tablet/desktop that means the New Details column only.
-        // In paired mode there is a single column, built with
-        // `isCurrentColumn: true`, so it has to be allowed through
-        // here or the note (and with it the enabled Submit button)
-        // would vanish on mobile.
-        if (!isCurrentColumn || pairValues) ...[
-          SizedBox(height: 20.sp),
-          CustomTextField(
-            label: S.of(context).request_note,
-            hint: S.of(context).textHere,
-            controller: requestNoteController,
-            // Draws the required marker next to the label, so the rule
-            // is visible before the user reaches a disabled button.
-            required: true,
-            textDirection: isArabic ? ui.TextDirection.rtl : ui.TextDirection.ltr,
-            maxLines: 3,
-            onChanged: (_){
-              setState(() {
-
-              });
-            },
-          )
-        ],
-      ],
+  /// D-202 (20/10/2026): Discard at the left edge, Submit at the right edge,
+  /// same width; Submit grey until the note is written (X-02).
+  Widget _buildActionButtons(BuildContext context, bool isMobile) {
+    final Widget discard = customButton(
+      title: S.of(context).discardChange,
+      function: () => Navigator.pop(context),
+      height: 38.h,
+      width: 150.sp,
+      fullWidth: isMobile,
+      color: AppColors.darkGrey,
+      textStyle: StyleText.fontSize16Weight500.copyWith(color: AppColors.text),
     );
-  }
-
-  /// One labelled read-only value.
-  ///
-  /// [showHighlight] — not "has this field changed" — because only the New
-  /// Details column outlines a change. See the local wrapper in
-  /// _buildDetailsColumn.
-  Widget _fieldDisplay({
-    required String label,
-    required String value,
-    required bool showHighlight,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _fieldLabel(label),
-        SizedBox(height: 10.h),
-        _valueBox(value: value, showHighlight: showHighlight),
-      ],
-    );
-  }
-
-  /// The phone row: a narrow country-code box beside the number, under one
-  /// label. Mirrors `_buildPhoneField` on the edit screen — same 100.sp code
-  /// box, same 12.sp gutter, number takes whatever is left — so the preview
-  /// reads at the proportions the employee typed it in at.
-  ///
-  /// The `Row` is direction-aware: under an Arabic UI the code lands on the
-  /// right, which is the leading edge there.
-  Widget _phoneFieldDisplay({
-    required String label,
-    required String code,
-    required String number,
-    required bool highlightCode,
-    required bool highlightNumber,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _fieldLabel(label),
-        SizedBox(height: 10.h),
-        _phoneValueRow(
-          code: code,
-          number: number,
-          highlightCode: highlightCode,
-          highlightNumber: highlightNumber,
-        ),
-      ],
+    final Widget submit =
+        _buildSubmitButton(context, width: 150.sp, fullWidth: isMobile);
+    return Row(
+// 23/10/2026 (Moataz): in Arabic the buttons mirror — yellow left, grey right.
+      children: isMobile
+          ? [
+              Expanded(child: discard),
+              SizedBox(width: 16.sp),
+              Expanded(child: submit),
+            ]
+          : [discard, const Spacer(), submit],
     );
   }
 
@@ -926,7 +312,7 @@ class _PreviewChangesPageState extends State<PreviewChangesPage> {
             center: true,
           ),
         ),
-        SizedBox(width: 12.sp),
+        SizedBox(width: 16.sp),
         // Expanded, not a second fixed width: the number is the long half
         // and takes the rest of the column.
         Expanded(
@@ -962,8 +348,7 @@ class _PreviewChangesPageState extends State<PreviewChangesPage> {
       // (green-bordered) fields, which is why those looked cut off.
       constraints: BoxConstraints(minHeight: 36.h),
       width: double.infinity,
-      alignment:
-          center ? Alignment.center : AlignmentDirectional.centerStart,
+      alignment: center ? Alignment.center : AlignmentDirectional.centerStart,
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
       decoration: BoxDecoration(
         color: AppColors.background,
@@ -972,7 +357,8 @@ class _PreviewChangesPageState extends State<PreviewChangesPage> {
         // both columns keep identical inner geometry and the two sides of
         // the comparison stay row-for-row aligned.
         border: Border.all(
-          color: showHighlight ? AppColors.statusApproved : AppColors.transparent,
+          color:
+              showHighlight ? AppColors.statusApproved : AppColors.transparent,
           width: 2,
         ),
       ),
@@ -986,8 +372,6 @@ class _PreviewChangesPageState extends State<PreviewChangesPage> {
       ),
     );
   }
-
-
 
   /// FIXED 24/8/2026 — "Male" stayed English on the Arabic preview.
   ///
@@ -1052,7 +436,9 @@ class _PreviewChangesPageState extends State<PreviewChangesPage> {
   String _formatDate(String? dateString) {
     if (dateString == null || dateString.isEmpty) return '';
 
-    final DateTime? date = DateTime.tryParse(dateString);
+    // 21/10/2026 (Moataz): was DateTime.tryParse, which cannot read the stored
+    // `yyyy/MM/dd` shape, so the Current birthday showed raw ("1986/04/12").
+    final DateTime? date = EmployeeDateFormatter.parse(dateString);
     if (date == null) return dateString;
 
     // CHANGED 8/9/2026 — `dd MMM yyyy` ("23 Aug 2023") in both locales, to
@@ -1064,240 +450,5 @@ class _PreviewChangesPageState extends State<PreviewChangesPage> {
         DateFormat('dd MMM yyyy', isArabic ? 'ar' : 'en').format(date);
 
     return isArabic ? ArabicDigits(formatted).toArabicNumbers() : formatted;
-  }
-
-
-  /// Function Name: [_submitChanges]
-  ///
-  /// Purpose: Raise a change request for everything edited in this session.
-  ///
-  /// The Firestore write, the employee-existence check and the error handling
-  /// moved into `RequestsCubit` / `RequestsRepository` — this method only
-  /// gathers values, dispatches, and drives the dialogs (CR-SKEL-SE6-N01/N02,
-  /// CR-SKEL-SE4-N11).
-  Future<void> _submitChanges(BuildContext context) async {
-    showConfirmationDialog(
-      // 21/9/2026 — report p.22: this animation rendered as a small dot in the
-      // confirm dialog. Same icon as the Health Insurance confirm (p.14).
-      lottiePath: 'assets/lottie_assets/main_lottie_assets/lottie_Edit Document.json',
-      title: S.of(context).requesting_a_change,
-      message: S.of(context).are_you_sure_submit_request,
-      onConfirm: () async {
-        final NavigatorState navigator = Navigator.of(context);
-
-        // Read before the first await — `context` must not be touched
-        // afterwards. Carries the language the reviewers' notification is
-        // sent in (ADDED 24/8/2026).
-        final bool isArabic =
-            Localizations.localeOf(context).languageCode == 'ar';
-
-        // ADDED 21/9/2026 — Settings bug report p.1/p.7: the confirm dialog
-        // closed and nothing showed until the success dialog, so the page
-        // looked frozen while the request was written. Same overlay the rest
-        // of the app uses; always taken down before any dialog that follows.
-        showLoadingIndicator();
-
-        // `widget.changes` is a Map<String, dynamic>, so `entries` yields
-        // MapEntry<String, dynamic> — annotating the parameter as
-        // MapEntry<String, Map<String, dynamic>> made the closure unassignable
-        // and collapsed the result to List<dynamic>. Narrow the *value*
-        // instead, which is where the real shape lives.
-        final List<FieldChange> changes = widget.changes.entries
-            .map<FieldChange>((MapEntry<String, dynamic> entry) {
-          final Map<String, dynamic> value =
-              (entry.value as Map).cast<String, dynamic>();
-          return FieldChange(
-            fieldName: entry.key,
-            oldValue: value['oldValue']?.toString() ?? '',
-            newValue: value['newValue']?.toString() ?? '',
-          );
-        }).toList();
-
-        final bool ok = await _requestsCubit.submit(
-          section: ChangeRequest.defaultSection,
-          employeeId: employee?.id ?? '',
-          employeeName:
-              '${employee?.firstName?.lastOrNull ?? ''} ${employee?.lastName?.lastOrNull ?? ''}'
-                  .trim(),
-          employeeEmail: employee?.email?.lastOrNull ?? '',
-          requestNote: requestNoteController.text.trim(),
-          changes: changes,
-          isArabic: isArabic,
-        );
-
-        hideLoadingIndicator();
-
-        if (!mounted) return;
-
-        if (!ok) {
-          _requestsCubit.clearMessages();
-          await RequestErrorDialog.show(context);
-          return;
-        }
-
-        _requestsCubit.clearMessages();
-
-        await showSuccessDialog(
-          lottiePath: 'assets/lottie_assets/main_lottie_assets/approved.json',
-          title: S.of(context).request_submitted,
-          subtitle: S.of(context).successfully_submitted_request,
-        );
-
-        // Close the success dialog, then the preview and edit pages. Was three
-        // `Get.back()` calls interleaved with `Navigator.pop`, which popped
-        // whatever route happened to be on top.
-        await Future<void>.delayed(const Duration(seconds: 2));
-        for (int i = 0; i < 3; i++) {
-          if (navigator.canPop()) navigator.pop();
-        }
-      },
-    );
-  }
-
-  Future<void> showConfirmationDialog({
-    required String lottiePath,
-    required String title,
-    required String message,
-    required VoidCallback onConfirm,
-  }) async {
-    var isPhone = ContextExtension(context).isPhone;
-    return showAppDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (context) => Dialog(
-        backgroundColor: Theme.of(context).brightness == Brightness.light
-            ? AppColors.white
-            : AppColors.background,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4.r),
-        ),
-        child: Padding(
-          padding: EdgeInsets.all(20.r),
-          child: SizedBox(
-            width: 405.sp,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Lottie.asset(
-                  lottiePath,
-                  width: 70.sp,
-                  height: 70.sp,
-                  fit: BoxFit.scaleDown,
-                  repeat: true,
-                  animate: true,
-                ),
-                SizedBox(height: 20.sp),
-                Text(
-                  title,
-                  style: StyleText.fontSize20Weight500.copyWith(
-                    color: Theme.of(context).brightness == Brightness.light
-                        ? AppColors.blackButton
-                        : AppColors.white,
-                  ),
-                ),
-                SizedBox(height: 18.sp),
-                Text(
-                  message,
-                  textAlign: TextAlign.center,
-                  style: StyleText.fontSize14Weight500.copyWith(
-                    color: Theme.of(context).brightness == Brightness.light
-                        ? AppColors.secondaryText
-                        : AppColors.grey,
-                  ),
-                ),
-                SizedBox(height: 15.sp),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 0.sp),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      customButton(
-                        title: S.of(context).no,
-                        function: () => Navigator.pop(context),
-                        textStyle: StyleText.fontSize16Weight500.copyWith(
-                          color: AppColors.white,
-                        ),
-                        width: isPhone ? 120.sp : 135.sp,
-                        height: 38.sp,
-                        radius: 4.r,
-                        // 21/9/2026 — report p.14/p.22: same grey + white as Discard Changes.
-                        color: AppColors.darkGrey,
-                      ),
-                      SizedBox(width: 20.sp),
-                      customButton(
-                        title: S.of(context).yes,
-                        function: () {
-                          Navigator.pop(context);
-                          onConfirm();
-                        },
-                        textStyle: StyleText.fontSize16Weight500.copyWith(
-                          color: AppColors.textButton,
-                        ),
-                        width: isPhone ?120.sp : 135.sp,                        height: 38.sp,
-                        radius: 4.r,
-                        color: AppColors.primary,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Future<void> showSuccessDialog({
-    required String lottiePath,
-    required String title,
-    required String subtitle,
-  }) async {
-    return showAppDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (context) => Dialog(
-        backgroundColor: Theme.of(context).brightness == Brightness.light
-            ? AppColors.white
-            : AppColors.background,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4.r),
-        ),
-        child: Padding(
-          padding: EdgeInsets.all(20.r),
-          child: SizedBox(
-            width: 405.sp,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Lottie.asset(
-                  lottiePath,
-                  width: 70.sp,
-                  height: 70.sp,
-                  fit: BoxFit.scaleDown,
-                ),
-                SizedBox(height: 20.sp),
-                Text(
-                  title,
-                  style: StyleText.fontSize20Weight500.copyWith(
-                    color: Theme.of(context).brightness == Brightness.light
-                        ? AppColors.blackButton
-                        : AppColors.white,
-                  ),
-                ),
-                SizedBox(height: 18.sp),
-                Text(
-                  subtitle,
-                  textAlign: TextAlign.center,
-                  style: StyleText.fontSize14Weight500.copyWith(
-                    color: AppColors.secondaryText,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }

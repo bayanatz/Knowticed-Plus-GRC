@@ -2,9 +2,9 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: demo_accounts_seeder.dart
-/// Purpose: "Apply all modules" — fire every notification and every calendar
+/// Description: "Apply all modules" — fire every notification and every calendar
 ///          event of every module at the demo accounts.
-/// Author: Knowticed Plus team
+/// Author: Amr Mesbah
 /// Created at: 27/9/2026
 ///
 /// Driven by the button on Home (`ApplyAllModulesButton`). One call to
@@ -29,27 +29,29 @@
 /// `<email>_<typeId>`, so a second run overwrites instead of duplicating.
 /// Notifications are new documents on every run (that is what a real event
 /// does too).
+library;
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:grc_module/core/enums/app_module.dart';
-import 'package:grc_module/core/enums/template_variable_samples.dart';
-import 'package:grc_module/core/network/get_base_url.dart';
-import 'package:grc_module/features/calendar/c1_calendar/data/data_source/calendar_data_service.dart';
-import 'package:grc_module/features/calendar/c1_calendar/domain/enums/calendar_catalog.dart';
-import 'package:grc_module/features/calendar/c1_calendar/domain/enums/calendar_event_type.dart';
-import 'package:grc_module/features/notification/domain/enums/database_module/database_notification_pages.dart';
-import 'package:grc_module/features/notification/domain/enums/grc_module/grc_notification_pages.dart';
-import 'package:grc_module/features/notification/domain/enums/knowledge_hub_module/knowledge_hub_notification_pages.dart';
-import 'package:grc_module/features/notification/domain/enums/messages_module/messages_notification_pages.dart';
-import 'package:grc_module/features/notification/domain/enums/notification_catalog.dart';
-import 'package:grc_module/features/notification/domain/enums/notification_event.dart';
-import 'package:grc_module/features/notification/domain/enums/role_module/role_management_module/role_management_notification_pages.dart';
-import 'package:grc_module/features/notification/domain/enums/role_module/user_access_module/user_access_notification_pages.dart';
-import 'package:grc_module/features/notification/domain/enums/role_module/user_management_module/user_management_notification_pages.dart';
-import 'package:grc_module/features/notification/domain/enums/services_module/services_notification_pages.dart';
-import 'package:grc_module/features/notification/domain/enums/settings_module/settings_notification_pages.dart';
-import 'package:grc_module/features/notification/services/app_notification_sender.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:knowticed_plus/core/enums/app_module.dart';
+import 'package:knowticed_plus/core/enums/template_variable_samples.dart';
+import 'package:knowticed_plus/core/network/get_base_url.dart';
+import 'package:knowticed_plus/features/calendar/data/data_source/calendar_data_service.dart';
+import 'package:knowticed_plus/features/calendar/domain/enums/calendar_catalog.dart';
+import 'package:knowticed_plus/features/calendar/domain/enums/calendar_event_type.dart';
+import 'package:knowticed_plus/features/notification/domain/enums/database/database_notification_pages.dart';
+import 'package:knowticed_plus/features/notification/domain/enums/grc/grc_notification_pages.dart';
+import 'package:knowticed_plus/features/notification/domain/enums/knowledge_hub/knowledge_hub_notification_pages.dart';
+import 'package:knowticed_plus/features/notification/domain/enums/messages/messages_notification_pages.dart';
+import 'package:knowticed_plus/features/notification/domain/enums/form_builder/form_builder_notification_pages.dart';
+import 'package:knowticed_plus/features/notification/domain/enums/notification_catalog.dart';
+import 'package:knowticed_plus/features/notification/domain/enums/notification_event.dart';
+import 'package:knowticed_plus/features/notification/domain/enums/roles/role_management_module/role_management_notification_pages.dart';
+import 'package:knowticed_plus/features/notification/domain/enums/roles/user_access_module/user_access_notification_pages.dart';
+import 'package:knowticed_plus/features/notification/domain/enums/roles/user_management_module/user_management_notification_pages.dart';
+import 'package:knowticed_plus/features/notification/domain/enums/services/services_notification_pages.dart';
+import 'package:knowticed_plus/features/notification/domain/enums/settings/settings_notification_pages.dart';
+import 'package:knowticed_plus/features/notification/helpers/services/app_notification_sender.dart';
 
 /// What one [DemoAccountsSeeder.applyAll] run did.
 class DemoSeedResult {
@@ -69,7 +71,8 @@ class DemoSeedResult {
       notificationsSent == notificationsAttempted &&
       calendarEventsWritten == calendarEventsAttempted;
 
-  bool get isTotalFailure => notificationsSent == 0 && calendarEventsWritten == 0;
+  bool get isTotalFailure =>
+      notificationsSent == 0 && calendarEventsWritten == 0;
 
   @override
   String toString() =>
@@ -126,6 +129,8 @@ abstract final class DemoAccountsSeeder {
         return SettingsNotificationPage.personalInfoScreen.key;
       case AppModule.messages:
         return MessagesNotificationPage.messagingHome.key;
+      case AppModule.formBuilder:
+        return FormBuilderNotificationPage.homeScreen.key;
       default:
         return '';
     }
@@ -144,8 +149,13 @@ abstract final class DemoAccountsSeeder {
     required bool isArabic,
   }) async {
     final List<(int, int)> results = await Future.wait(<Future<(int, int)>>[
-      _applyNotifications(senderEmail: senderEmail, isArabic: isArabic),
-      _applyCalendar(),
+      _applyNotifications(
+        events: NotificationCatalog.allEvents,
+        to: accounts,
+        senderEmail: senderEmail,
+        isArabic: isArabic,
+      ),
+      _applyCalendar(types: CalendarCatalog.allEvents, to: accounts),
     ]);
     final (int sent, int attempted) = results[0];
     final (int written, int total) = results[1];
@@ -156,56 +166,127 @@ abstract final class DemoAccountsSeeder {
       calendarEventsWritten: written,
       calendarEventsAttempted: total,
     );
-    debugPrint('[demo-seed] done — $result');
     return result;
+  }
+
+  /// Function Name: [applyModuleOrNull]
+  ///
+  /// Purpose: [applyModule] with its failure caught here, in the data layer,
+  /// so the test buttons hold no try/catch.
+  ///
+  /// Returns: the result, or null when the run failed outright.
+  static Future<DemoSeedResult?> applyModuleOrNull({
+    required AppModule module,
+    required List<String> to,
+    required String senderEmail,
+    required bool isArabic,
+  }) async {
+    try {
+      return await applyModule(
+        module: module,
+        to: to,
+        senderEmail: senderEmail,
+        isArabic: isArabic,
+      );
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Function Name: [applyModule]
+  ///
+  /// Purpose: ADDED 12/10/2026 — the same run as [applyAll], but for ONE
+  /// module and the accounts in [to] only. Drives the module test buttons
+  /// (e.g. Form Builder's "Test notifications & calendar"), which send to the
+  /// signed-in tester instead of flooding the four demo accounts with every
+  /// module.
+  ///
+  /// Notifications come from `NotificationCatalog.eventsOf(module)` and
+  /// calendar types from `CalendarCatalog.eventsOf(module)`, so a module only
+  /// has to be registered in the two catalogs to be testable here.
+  static Future<DemoSeedResult> applyModule({
+    required AppModule module,
+    required List<String> to,
+    required String senderEmail,
+    required bool isArabic,
+  }) async {
+    final List<String> recipients = to
+        .map((String e) => e.trim().toLowerCase())
+        .where((String e) => e.isNotEmpty)
+        .toSet()
+        .toList();
+    final List<(int, int)> results = await Future.wait(<Future<(int, int)>>[
+      _applyNotifications(
+        events: NotificationCatalog.eventsOf(module),
+        to: recipients,
+        senderEmail: senderEmail,
+        isArabic: isArabic,
+      ),
+      _applyCalendar(types: CalendarCatalog.eventsOf(module), to: recipients),
+    ]);
+    final (int sent, int attempted) = results[0];
+    final (int written, int total) = results[1];
+    return DemoSeedResult(
+      notificationsSent: sent,
+      notificationsAttempted: attempted,
+      calendarEventsWritten: written,
+      calendarEventsAttempted: total,
+    );
   }
 
   // ───────────────────────────── notifications ─────────────────────────────
 
   static Future<(int, int)> _applyNotifications({
+    required List<NotificationEvent> events,
+    required List<String> to,
     required String senderEmail,
     required bool isArabic,
   }) async {
     final DateTime now = DateTime.now();
     final List<Future<bool> Function()> jobs = <Future<bool> Function()>[];
 
-    for (final NotificationEvent event in NotificationCatalog.allEvents) {
+    for (final NotificationEvent event in events) {
       final values = event.variables.toSampleValues(now: now);
-      for (final String account in accounts) {
-        jobs.add(() => AppNotificationSender.sendEvent(
-              event: event,
-              pageKey: pageKeyFor(event.module),
-              senderEmail: senderEmail,
-              receiverEmail: account,
-              isArabic: isArabic,
-              variables: values,
-              sendPush: sendPush,
-            ));
+      for (final String account in to) {
+        jobs.add(
+          () => AppNotificationSender.sendEvent(
+            event: event,
+            pageKey: pageKeyFor(event.module),
+            senderEmail: senderEmail,
+            receiverEmail: account,
+            isArabic: isArabic,
+            variables: values,
+            sendPush: sendPush,
+          ),
+        );
       }
     }
 
     int sent = 0;
     for (int i = 0; i < jobs.length; i += _notificationChunk) {
-      final int end =
-          (i + _notificationChunk) > jobs.length ? jobs.length : i + _notificationChunk;
-      final List<bool> chunk =
-          await Future.wait(jobs.sublist(i, end).map((job) => job()));
+      final int end = (i + _notificationChunk) > jobs.length
+          ? jobs.length
+          : i + _notificationChunk;
+      final List<bool> chunk = await Future.wait(
+        jobs.sublist(i, end).map((job) => job()),
+      );
       sent += chunk.where((bool ok) => ok).length;
     }
-    debugPrint('[demo-seed] notifications $sent/${jobs.length}');
     return (sent, jobs.length);
   }
 
   // ─────────────────────────────── calendar ────────────────────────────────
 
-  static Future<(int, int)> _applyCalendar() async {
+  static Future<(int, int)> _applyCalendar({
+    required List<CalendarEventType> types,
+    required List<String> to,
+  }) async {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
-    final CollectionReference<Map<String, dynamic>> collection = firestore
-        .collection(getBaseUrl(CalendarDataService.seededEventsPath));
+    final CollectionReference<Map<String, dynamic>> collection =
+        firestore.collection(getBaseUrl(CalendarDataService.seededEventsPath));
 
     final DateTime now = DateTime.now();
     final DateTime today = DateTime(now.year, now.month, now.day);
-    final List<CalendarEventType> types = CalendarCatalog.allEvents;
 
     final List<MapEntry<String, Map<String, dynamic>>> docs =
         <MapEntry<String, Map<String, dynamic>>>[];
@@ -214,21 +295,26 @@ abstract final class DemoAccountsSeeder {
       final CalendarEventType type = types[i];
       // Spread the entries over today .. today+13 so the month is readable,
       // and back the reminder offset out so the card lands on that day.
-      final DateTime shownOn = today.add(Duration(days: i % 14, hours: 9 + i % 8));
-      final DateTime sourceDate =
-          shownOn.subtract(Duration(days: type.reminderOffsetDays));
+      final DateTime shownOn = today.add(
+        Duration(days: i % 14, hours: 9 + i % 8),
+      );
+      final DateTime sourceDate = shownOn.subtract(
+        Duration(days: type.reminderOffsetDays),
+      );
 
-      for (final String account in accounts) {
-        docs.add(MapEntry<String, Map<String, dynamic>>(
-          '${account}_${type.id}',
-          <String, dynamic>{
-            'receiverEmail': account,
-            'typeId': type.id,
-            'module': type.module.key,
-            'sourceDate': Timestamp.fromDate(sourceDate),
-            'createdAt': FieldValue.serverTimestamp(),
-          },
-        ));
+      for (final String account in to) {
+        docs.add(
+          MapEntry<String, Map<String, dynamic>>(
+            '${account}_${type.id}',
+            <String, dynamic>{
+              'receiverEmail': account,
+              'typeId': type.id,
+              'module': type.module.key,
+              'sourceDate': Timestamp.fromDate(sourceDate),
+              'createdAt': FieldValue.serverTimestamp(),
+            },
+          ),
+        );
       }
     }
 
@@ -237,18 +323,19 @@ abstract final class DemoAccountsSeeder {
       final int end =
           (i + _batchLimit) > docs.length ? docs.length : i + _batchLimit;
       final WriteBatch batch = firestore.batch();
-      for (final MapEntry<String, Map<String, dynamic>> doc
-          in docs.sublist(i, end)) {
+      for (final MapEntry<String, Map<String, dynamic>> doc in docs.sublist(
+        i,
+        end,
+      )) {
         batch.set(collection.doc(doc.key), doc.value);
       }
       try {
         await batch.commit();
         written += end - i;
-      } catch (e, stackTrace) {
-        debugPrint('[demo-seed] calendar batch $i-$end FAILED — $e\n$stackTrace');
+      } catch (e) {
+        debugPrint('Ignored error: $e');
       }
     }
-    debugPrint('[demo-seed] calendar $written/${docs.length}');
     return (written, docs.length);
   }
 }

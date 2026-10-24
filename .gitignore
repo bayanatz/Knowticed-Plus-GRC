@@ -44,5 +44,5 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# Local backup of the original Flutter template
-_original_backup.tar.gz
+# Notification (FCM) keys — built with tool/make_fcm_keys.dart, never committed
+fcm_keys.json

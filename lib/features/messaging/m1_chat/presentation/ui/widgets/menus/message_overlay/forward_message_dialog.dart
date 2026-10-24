@@ -1,9 +1,9 @@
 /// Module: messaging / chat / presentation/ui/widgets/menus/message_overlay/forward_message_dialog.dart
 /// ************************* FILE INFO *************************** ///
 /// File Name: forward_message_dialog.dart
-/// Purpose: Pick people to forward a message to — messaging Chat sub-feature.
-/// Author: Knowticed Team
-/// Created At: 2/9/2026
+/// Description: Pick people to forward a message to — messaging Chat sub-feature.
+/// Author: Amr Mesbah
+/// Created at: 2/9/2026
 ///
 /// Opened from the long-press menu's "Forward" item. Shows the messaging
 /// CONNECTIONS (`ConnectionsCubit.connections`), not the form-builder person
@@ -16,22 +16,24 @@
 /// Deliberately dumb: it owns only the search text and the tick marks, and
 /// hands the chosen connections back through [onSend]. The actual send lives on
 /// MasterChatCubit.
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:grc_module/core/custom/5-custom_button.dart';
-import 'package:grc_module/core/custom/23-custom_check_box.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/custom/35-custom_search_widget_custom.dart';
-import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
-import 'package:grc_module/core/helper/main_helper/localized_number.dart';
-import 'package:grc_module/core/helper/main_helper/spacing_helper.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/features/messaging/m2_connections/domain/entities/single_connection_entity.dart';
-import 'package:grc_module/generated/l10n.dart';
-
+import 'package:knowticed_plus/core/custom/buttons/custom_button.dart';
+import 'package:knowticed_plus/core/custom/cards/custom_employee_card.dart';
+import 'package:knowticed_plus/core/custom/pickers/custom_image_picker.dart';
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
+import 'package:knowticed_plus/core/custom/inputs/custom_search_widget_custom.dart';
+import 'package:knowticed_plus/core/custom/dialogs/custom_dialog_manager.dart';
+import 'package:knowticed_plus/core/helper/localized_number.dart';
+import 'package:knowticed_plus/features/messaging/helpers/spacing_helper.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/domain/entities/single_connection_entity.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
+import 'package:knowticed_plus/features/messaging/helpers/constants/messaging_assets.dart';
 
 class ForwardMessageDialog extends StatefulWidget {
   const ForwardMessageDialog({
@@ -55,10 +57,7 @@ class ForwardMessageDialog extends StatefulWidget {
     return CustomDialogManager.showContent<void>(
       context: context,
       width: 420.sp,
-      child: ForwardMessageDialog(
-        connections: connections,
-        onSend: onSend,
-      ),
+      child: ForwardMessageDialog(connections: connections, onSend: onSend),
     );
   }
 
@@ -85,9 +84,11 @@ class _ForwardMessageDialogState extends State<ForwardMessageDialog> {
     final q = _query.trim().toLowerCase();
     if (q.isEmpty) return widget.connections;
     return widget.connections
-        .where((c) =>
-            c.name.toLowerCase().contains(q) ||
-            (c.primaryLanguageSubInfo ?? '').toLowerCase().contains(q))
+        .where(
+          (c) =>
+              c.name.toLowerCase().contains(q) ||
+              (c.primaryLanguageSubInfo ?? '').toLowerCase().contains(q),
+        )
         .toList();
   }
 
@@ -120,10 +121,9 @@ class _ForwardMessageDialogState extends State<ForwardMessageDialog> {
               ),
               child: Center(
                 child: CustomSvgImage(
-                  // The forward glyph, per the design. Raw path rather than
-                  // an AppAssets constant because neither AppAssets class
-                  // declares it yet.
-                  assetPath: 'assets/icons_assets/main_icons_assets/arrow_back_curved.svg',
+                  // 18/10/2026: the same forward arrow as the menu item and
+                  // the selection bar (was the curved BACK glyph).
+                  assetPath: AppAssets.forward,
                   width: 16.sp,
                   height: 16.sp,
                   color: AppColors.textButton,
@@ -150,7 +150,7 @@ class _ForwardMessageDialogState extends State<ForwardMessageDialog> {
           expanded: false,
           hintText: S.of(context).search,
           // AppColors.background, matching the person cards below — the
-          // dialog's own surface is already AppColors.field, so a field-
+          // dialog's own surface is already AppColors.card, so a field-
           // coloured search box disappeared into it.
           fillColor: AppColors.background,
           onChanged: (value) => setState(() => _query = value),
@@ -163,8 +163,9 @@ class _ForwardMessageDialogState extends State<ForwardMessageDialog> {
           hasSelection
               ? '${S.of(context).selected}: ${LocalizedNumber.of(context, _selectedIds.length)}'
               : S.of(context).employees,
-          style: StyleText.fontSize12Weight500
-              .copyWith(color: AppColors.secondaryText),
+          style: StyleText.fontSize12Weight500.copyWith(
+            color: AppColors.secondaryText,
+          ),
         ),
 
         verticalSpace(8),
@@ -178,8 +179,9 @@ class _ForwardMessageDialogState extends State<ForwardMessageDialog> {
                   child: Center(
                     child: Text(
                       S.of(context).noResults,
-                      style: StyleText.fontSize14Weight500
-                          .copyWith(color: AppColors.secondaryText),
+                      style: StyleText.fontSize14Weight500.copyWith(
+                        color: AppColors.secondaryText,
+                      ),
                     ),
                   ),
                 )
@@ -202,14 +204,18 @@ class _ForwardMessageDialogState extends State<ForwardMessageDialog> {
 
         // ── Actions ───────────────────────────────────────────────────
         Row(
+          textDirection: TextDirection
+              .ltr, // X-73: Cancel left, action right in both languages
+
           children: [
             customButton(
               title: S.of(context).Cancel,
               function: () =>
                   Navigator.of(context, rootNavigator: true).maybePop(),
               color: AppColors.darkGrey,
-              textStyle: StyleText.fontSize15Weight400
-                  .copyWith(color: AppColors.white),
+              textStyle: StyleText.fontSize15Weight400.copyWith(
+                color: AppColors.text,
+              ),
             ),
             const Spacer(),
             customButton(
@@ -218,9 +224,10 @@ class _ForwardMessageDialogState extends State<ForwardMessageDialog> {
               // empty selection — customButton has no `enabled` flag.
               color: hasSelection
                   ? AppColors.primary
-                  : AppColors.primary.withOpacity(0.4),
-              textStyle: StyleText.fontSize15Weight400
-                  .copyWith(color: AppColors.textButton),
+                  : AppColors.primary.withValues(alpha: 0.4),
+              textStyle: StyleText.fontSize15Weight400.copyWith(
+                color: AppColors.textButton,
+              ),
               function: () {
                 if (!hasSelection) return;
                 final targets = widget.connections
@@ -240,11 +247,12 @@ class _ForwardMessageDialogState extends State<ForwardMessageDialog> {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// _ConnectionPickCard — one tickable person row.
+// _ConnectionPickCard — one tickable person: the app's standard person card.
 //
-// Same shape as FormPersonStateView in the form-builder share screen (avatar,
-// name, sub-line, CustomCheckBox), rebuilt here against SingleConnectionEntity
-// so messaging does not import form_builder_module.
+// CHANGED 18/10/2026 (owner: "the forward dialog is a multi-select of people
+// using the app's standard person card"): was a one-off avatar/name/sub-line
+// row. Now PersonChipCard — avatar, name, department, job title and the
+// corner tick — like every other people picker.
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _ConnectionPickCard extends StatelessWidget {
@@ -261,69 +269,19 @@ class _ConnectionPickCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String image = connection.imageUri;
-    final bool isNetwork = image.startsWith('http');
-
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
+    final String department = connection.userCategory?.name ?? '';
+    final String title = (connection.primaryLanguageSubInfo ?? '').isEmpty
+        ? ''
+        : connection.subInfo;
+    return PersonChipCard(
+      width: double.infinity,
+      name: connection.name,
+      subtitle1: department.isEmpty ? null : department,
+      subtitle2: title.isEmpty ? null : title,
+      avatar: image.isEmpty ? null : appImageProvider(image),
+      isSelected: isSelected,
+      backgroundColor: AppColors.background,
       onTap: onTap,
-      child: Container(
-        padding: EdgeInsetsDirectional.all(10.sp),
-        decoration: BoxDecoration(
-          // AppColors.background — every card in this app sits on background,
-          // and AppColors.card was too close to the dialog surface behind it.
-          color: AppColors.background,
-          borderRadius: BorderRadius.circular(8.r),
-          border: isSelected
-              ? Border.all(color: AppColors.primary, width: 1.sp)
-              : null,
-        ),
-        child: Row(
-          children: [
-            CircleAvatar(
-              radius: 20.sp,
-              // Not AppColors.background — that is now the CARD colour, so the
-              // avatar circle would vanish into it for anyone without a photo.
-              backgroundColor: AppColors.field,
-              backgroundImage: isNetwork ? NetworkImage(image) : null,
-              child: isNetwork
-                  ? null
-                  : CustomSvgImage(
-                      assetPath:
-                          'assets/icons_assets/main_icons_assets/assets_male.svg',
-                      width: 24.sp,
-                      height: 24.sp,
-                    ),
-            ),
-            horizontalSpace(10),
-            Expanded(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    // `name` already picks the Arabic name in Arabic mode
-                    // (LocalizedTextHelper, on the entity).
-                    connection.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: StyleText.fontSize14Weight500,
-                  ),
-                  if ((connection.primaryLanguageSubInfo ?? '').isNotEmpty)
-                    Text(
-                      connection.subInfo,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: StyleText.fontSize12Weight500
-                          .copyWith(color: AppColors.spanText),
-                    ),
-                ],
-              ),
-            ),
-            horizontalSpace(8),
-            CustomCheckBox(isSelected: isSelected),
-          ],
-        ),
-      ),
     );
   }
 }

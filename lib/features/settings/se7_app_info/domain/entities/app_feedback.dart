@@ -30,14 +30,15 @@
 /// than here: those seven enums describe a report's CONTENT, the three in this
 /// file describe its LIFECYCLE, and folding them together would double the
 /// length of this one.
+library;
 
-import 'package:grc_module/features/settings/se7_app_info/domain/entities/feedback_details.dart';
+import 'package:knowticed_plus/features/settings/se7_app_info/domain/entities/feedback_details.dart';
 
 /// Re-exported deliberately. [AppFeedback] now has a [FeedbackDetails] on it,
 /// so every file that already imports this one — the screen, the cubit, the
 /// data source, the request card — would otherwise need a second import added
 /// on the same line of work. One import keeps naming the whole feedback model.
-export 'package:grc_module/features/settings/se7_app_info/domain/entities/feedback_details.dart';
+export 'package:knowticed_plus/features/settings/se7_app_info/domain/entities/feedback_details.dart';
 
 /// Where a submission stands after triage.
 ///

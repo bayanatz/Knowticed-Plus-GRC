@@ -14,24 +14,25 @@
 ///          now live with their only consumers instead of in a feature folder
 ///          with no feature in it.
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
-import 'package:grc_module/features/home/h1_home_page/data/models/card_model/card_attachments.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/card_model/card_checklists.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/card_model/card_creator.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/card_model/card_description.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/card_model/card_image.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/card_model/card_members.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/card_model/card_name.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/card_model/card_priority.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/card_model/card_progress.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/card_model/card_progress_color.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/card_model/card_status.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/card_model/comment.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/card_model/end_date.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/card_model/end_time.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/card_model/last_update.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/card_model/start_date.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/card_model/start_time.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/card_model/card_attachments.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/card_model/card_checklists.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/card_model/card_creator.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/card_model/card_description.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/card_model/card_image.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/card_model/card_members.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/card_model/card_name.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/card_model/card_priority.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/card_model/card_progress.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/card_model/card_progress_color.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/card_model/card_status.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/card_model/comment.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/card_model/end_date.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/card_model/end_time.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/card_model/last_update.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/card_model/start_date.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/card_model/start_time.dart';
 
 class CardModel {
   String? cardId;

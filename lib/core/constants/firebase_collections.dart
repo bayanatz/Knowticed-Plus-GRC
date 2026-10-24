@@ -2,8 +2,8 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: firebase_collections.dart
-/// Purpose: Single source of truth for Firestore collection names.
-/// Author: Knowticed Plus team
+/// Description: Single source of truth for Firestore collection names.
+/// Author: Amr Mesbah
 /// Created at: 11/8/2026
 ///
 /// Added per the code review: collection names were being typed inline at the
@@ -52,7 +52,9 @@ abstract final class FirebaseCollections {
   static const String adminRoot = 'Admin';
   static const String companyData = 'Company_Data';
   static const String templates = 'templates';
-  static const String createKnowledge = 'Create_Knowledge';
+  // Knowledge Hub keeps its items under its module document.
+  static const String createKnowledge =
+      'Modules/knowledge_hub/Create_Knowledge';
   static const String creatingTask = 'Creating_Task';
   static const String employeesRequest = 'Employees_Request';
   static const String userRequests = 'User_Requests';

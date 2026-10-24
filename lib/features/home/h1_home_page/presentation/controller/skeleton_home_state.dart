@@ -6,7 +6,7 @@
 // Author: Knowticed Plus team
 // Updated: 11/8/2026 - Added the standard module + FILE INFO header.
 
-part of './skeleton_home_controller.dart';
+part of 'skeleton_home_controller.dart';
 
 @immutable
 sealed class SkeletonHomeState {}

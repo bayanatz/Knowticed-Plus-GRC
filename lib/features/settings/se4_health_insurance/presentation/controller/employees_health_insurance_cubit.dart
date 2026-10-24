@@ -6,6 +6,7 @@
 /// Author: Amr Mesbah
 /// Created at: 20/11/2024
 /// Updated: 11/8/2026 - Added the standard header (Docs).
+library;
 
 // ******************* FILE INFO *******************
 // File Name: employees_health_insurance_cubit.dart
@@ -21,10 +22,10 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/features/settings/se4_health_insurance/data/repository/health_insurance_repository.dart';
-import 'package:grc_module/features/settings/se4_health_insurance/domain/entities/request_health_insurance_entity.dart';
-import 'package:grc_module/features/settings/se4_health_insurance/presentation/controller/employees_health_insurance_state.dart';
+import 'package:knowticed_plus/core/network/failure_model.dart';
+import 'package:knowticed_plus/features/settings/se4_health_insurance/data/repository/health_insurance_repository.dart';
+import 'package:knowticed_plus/features/settings/se4_health_insurance/domain/entities/request_health_insurance_entity.dart';
+import 'package:knowticed_plus/features/settings/se4_health_insurance/presentation/controller/employees_health_insurance_state.dart';
 
 class EmployeesHealthInsuranceCubit
     extends Cubit<EmployeesHealthInsuranceState> {

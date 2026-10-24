@@ -4,22 +4,22 @@
 /// Purpose: Category filter — messaging Home sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+library;
 
 import 'package:flutter/material.dart';
-import 'package:grc_module/core/custom/79-filter_bar_item.dart' show FilterBarItem;
-import 'package:grc_module/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/custom/navigation/filter_bar_item.dart'
+    show FilterBarItem;
+import 'package:knowticed_plus/core/theme/app_colors.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:grc_module/features/messaging/m2_connections/presentation/controller/connections_controller.dart';
-import 'package:grc_module/features/messaging/m4_messaging_home/presentation/controller/messaging_home_controller.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/presentation/controller/connections_controller.dart';
+import 'package:knowticed_plus/features/messaging/m4_messaging_home/presentation/controller/messaging_home_controller.dart';
 
-import '../../../../../../core/helper/message_module/interface/entity/user_category.dart';
-
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/interface/entity/user_category.dart';
 
 class CategoryFilter extends StatelessWidget {
   const CategoryFilter({super.key});
 
-  
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ConnectionsCubit, ConnectionsState>(
@@ -50,12 +50,19 @@ class CategoryFilter extends StatelessWidget {
                   spacing: 30.sp,
                   children: [
                     for (UserCategory category in connectionsCubit.categories!)
-                      if (connectionsCubit.categoriesUsersCount[category.categoryId] != null &&
-                          connectionsCubit.categoriesUsersCount[category.categoryId]! > 0)
+                      if (connectionsCubit
+                                  .categoriesUsersCount[category.categoryId] !=
+                              null &&
+                          connectionsCubit
+                                  .categoriesUsersCount[category.categoryId]! >
+                              0)
                         FilterBarItem(
-                          isSelected: homeCubit.selectedTab.categoryId == category.categoryId,
+                          isSelected: homeCubit.selectedTab.categoryId ==
+                              category.categoryId,
                           title: category.name,
-                          numberOfItems: connectionsCubit.categoriesUsersCount[category.categoryId] ?? 0,
+                          numberOfItems: connectionsCubit
+                                  .categoriesUsersCount[category.categoryId] ??
+                              0,
                           onTap: () {
                             homeCubit.filterByCategory(category);
                           },

@@ -46,6 +46,21 @@ abstract final class ModuleNameAliases {
     'formbuilder': 'services_app',
     'database': 'database_builder',
     'knowledgehub': 'knowledge_hub',
+    // ADDED 7/10/2026 — To-Do. Canonical `todo` matches the licence key in
+    // `Demo_Requests` and the `todo_module_permissions` collection.
+    'to_do': 'todo',
+    'todo_list': 'todo',
+    // ADDED 8/10/2026 — Time Tracker. Canonical `time_tracker` matches
+    // `Demo_Permissions/{cid}.time_tracker` and the
+    // `time_tracker_module_permissions` collection (FINAL SPEC §1).
+    'timetracker': 'time_tracker',
+    // ADDED 8/10/2026 — owner decision 17: Knowticed Admin still licenses the
+    // module as `tracking` (until Amr renames it to `time_tracker`), so the
+    // client reads `tracking` as Time Tracker and the module shows for
+    // companies licensed in Admin today.
+    'tracking': 'time_tracker',
+    'time-tracker': 'time_tracker',
+    'time tracker': 'time_tracker',
   };
 
   /// Function Name: [canonical]

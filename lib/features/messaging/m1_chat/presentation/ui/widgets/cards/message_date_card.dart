@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:grc_module/core/helper/main_helper/date_time_helper.dart';
-import 'package:grc_module/core/helper/main_helper/spacing_helper.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/helper/date_time_helper.dart';
+import 'package:knowticed_plus/features/messaging/helpers/spacing_helper.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
 
 class MessageDate extends StatelessWidget {
   final DateTime date;
@@ -23,9 +23,11 @@ class MessageDate extends StatelessWidget {
             ),
             child: Text(
               DateTimeHelper.formatChatDate(date),
-              style: StyleText.fontSize12Weight400.copyWith(color: AppColors.secondaryBlack).copyWith(
-                color: AppColors.inverseBase,
-              ),
+              style: StyleText.fontSize12Weight400
+                  .copyWith(color: AppColors.secondaryBlack)
+                  .copyWith(
+                    color: AppColors.secondaryBlack,
+                  ),
             ),
           ),
         ),

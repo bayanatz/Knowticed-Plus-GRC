@@ -11,6 +11,7 @@
 /// `int.tryParse`, `DateTime.tryParse` and plain arithmetic, none of which
 /// throw. The catches were empty, so they could only ever have hidden a genuine
 /// bug. The logic is unchanged; the try blocks are simply gone.
+library;
 
 abstract class FlexibleDateParser {
   /// Function Name: [parse]

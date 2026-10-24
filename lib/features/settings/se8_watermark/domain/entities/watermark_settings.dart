@@ -17,7 +17,7 @@ library;
 
 import 'package:flutter/material.dart';
 
-import 'package:grc_module/core/helper/role/modules_enum.dart';
+import 'package:knowticed_plus/core/helper/access/modules_enum.dart';
 
 /// How the stamp is drawn: bare text, or text inside a rounded pill.
 ///
@@ -81,13 +81,18 @@ const List<Modules> kWatermarkModules = <Modules>[
   Modules.qiyas,
   Modules.inventory,
   Modules.hr,
+  // Owner 21/10/2026: Org Chart, Time Tracker and Database are modules the
+  // stamp covers, so they get a tile too.
+  Modules.employees,
   Modules.grc,
   Modules.formBuilder,
+  Modules.database,
   Modules.crm,
   Modules.todo,
   Modules.events,
   Modules.roles,
   Modules.tracking,
+  Modules.timeTracker,
   Modules.knowledgeHub,
   Modules.tasks,
   Modules.settings,
@@ -204,11 +209,18 @@ class WatermarkSettings {
       kWatermarkModules.map((Modules m) => m.name).toSet();
 
   /// Whether [module] should be stamped under these settings.
-  bool stampsModule(Modules module) => modules.contains(module.name);
+  ///
+  /// 22/10/2026 (Moataz: "why in the Notification Control we don't have the
+  /// watermark?"): a module with NO tile in [kWatermarkModules] (Notification
+  /// Control, …) cannot be switched off, so it is always stamped — the
+  /// sidebar shell has always meant it that way ("no tile, always stamp"),
+  /// but this check returned false for it, so those pages were never stamped.
+  bool stampsModule(Modules module) =>
+      !kWatermarkModules.contains(module) || modules.contains(module.name);
 
   /// The values Figma shows on the unedited screen — and what "Reset to
   /// Default" restores.
-  static const WatermarkSettings initial = WatermarkSettings(
+  static final WatermarkSettings initial = WatermarkSettings(
     field: WatermarkField.employeeEmail,
     showDate: true,
     showTime: false,
@@ -224,27 +236,9 @@ class WatermarkSettings {
     // would leave fourteen screens unstamped for anyone who never opens this
     // page. Opting OUT is the deliberate act; opting in is not.
     //
-    // `<String>{...}` spread rather than `allModuleNames` because `initial` is
-    // `const` and the getter is not.
-    modules: <String>{
-      'home',
-      'messages',
-      'services',
-      'notes',
-      'qiyas',
-      'inventory',
-      'hr',
-      'grc',
-      'formBuilder',
-      'crm',
-      'todo',
-      'events',
-      'roles',
-      'tracking',
-      'knowledgeHub',
-      'tasks',
-      'settings',
-    },
+    // Owner 21/10/2026: derived from kWatermarkModules (all on) so a tile added
+    // there can never be left unstamped by default or after a reset.
+    modules: allModuleNames,
   );
 
   // Ranges the sliders are bound to. Kept here rather than in the widget so the
@@ -298,7 +292,7 @@ class WatermarkSettings {
         'angle': angle,
         // Stored as an int so the document stays readable in the console and
         // survives a JSON round trip; `Color.value` is ARGB.
-        'color': color.value,
+        'color': color.toARGB32(),
         'styleMode': styleMode.key,
         // Sorted so two identical selections serialise to the same list and the
         // document stops showing a spurious diff every time the set's iteration
@@ -337,7 +331,7 @@ class WatermarkSettings {
       angle: asDouble(map['angle'], initial.angle)
           .clamp(minAngle, maxAngle)
           .toDouble(),
-      color: Color(asInt(map['color'], initial.color.value)),
+      color: Color(asInt(map['color'], initial.color.toARGB32())),
       styleMode: WatermarkStyleMode.fromKey(map['styleMode'] as String?),
       // A document written before this field existed has NO 'modules' key, and
       // it belonged to a company whose watermark covered everything — so a

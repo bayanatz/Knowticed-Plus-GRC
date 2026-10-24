@@ -6,15 +6,16 @@
 /// Author: Amr Mesbah
 /// Created at: 20/11/2024
 /// Updated: 11/8/2026 - CR-SKEL-SE4-N03: moved into the `remote_data_source/` sub-folder.
+library;
 
 // PORTED into services_app under features/settings.
 // Source: services_app features/employees/data/data_source/remote_data_source/remote_data_source/insurance_remote_data_source.dart
 // Imports rewired to the equivalents that already exist in services_app.
 
 import 'package:dartz/dartz.dart';
-import 'package:grc_module/core/network/api_constants.dart';
-import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/core/services/firebase/repository/firebase_repository.dart';
+import 'package:knowticed_plus/core/network/api_constants.dart';
+import 'package:knowticed_plus/core/network/failure_model.dart';
+import 'package:knowticed_plus/core/app_services/firebase/repository/firebase_repository.dart';
 
 ///*********************** FILE INFO ****************************
 /// Purpose: This file contains the remote data source for insurance data

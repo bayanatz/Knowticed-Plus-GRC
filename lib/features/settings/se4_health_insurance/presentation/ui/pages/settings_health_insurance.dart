@@ -5,8 +5,12 @@
 /// Purpose: The health-insurance section of the settings screen.
 /// Author: Amr Mesbah
 /// Created at: 12/11/2024
-/// Updated: 11/8/2026 - CR-SKEL-SE4-N17: the GetBuilder<RequestController> wrapper removed; the
+/// Updated: 11/8/2026 - CR-SKEL-SE4-N17: the GetBuilder`<RequestController>` wrapper removed; the
 ///          last raw Colors.transparent routed through AppColors.
+/// Updated: 9/10/2026 - Reachable again from the settings menu. Phone title
+///          localized; tablet card made Flexible so it cannot overflow the
+///          iPad pane.
+library;
 
 // ignore_for_file: must_be_immutable, prefer_const_declarations, unused_local_variable, deprecated_member_use, duplicate_ignore, no_leading_underscores_for_local_identifiers, use_build_context_synchronously
 ///********************************** FILE INFO *************************
@@ -18,17 +22,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
-import 'package:grc_module/core/theme/haptic_controller.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_font_size.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/custom/50-custom_side_frame_master.dart';
-import 'package:grc_module/core/custom/37-custom_navigate.dart';
-import 'package:grc_module/core/custom/6-custom_button_with_svg.dart';
-import 'package:grc_module/features/settings/se4_health_insurance/presentation/ui/pages/edit_page_request_health.dart';
-import 'package:grc_module/features/settings/se4_health_insurance/presentation/ui/widgets/fields/health_insurance_fields.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/custom/navigation/custom_side_frame_master.dart';
+import 'package:knowticed_plus/core/custom/navigation/custom_navigate.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_button_with_svg.dart';
+import 'package:knowticed_plus/features/settings/se4_health_insurance/presentation/ui/pages/edit_page_request_health.dart';
+import 'package:knowticed_plus/features/settings/se4_health_insurance/presentation/ui/widgets/fields/health_insurance_fields.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
 String? section;
 String? whatChanged;
@@ -41,7 +44,8 @@ class SettingsHealthInsurance extends StatefulWidget {
 
   @override
   // ignore: library_private_types_in_public_api
-  _SettingsHealthInsuranceState createState() => _SettingsHealthInsuranceState();
+  _SettingsHealthInsuranceState createState() =>
+      _SettingsHealthInsuranceState();
 }
 
 class _SettingsHealthInsuranceState extends State<SettingsHealthInsurance> {
@@ -70,47 +74,60 @@ class _SettingsHealthInsuranceState extends State<SettingsHealthInsurance> {
     return SideFrameMasterServices(
       titleText: S.of(context).settings,
       onFirstTap: () => Navigator.of(context).maybePop(),
-      secondTitle: "Health Insurance",
-      child: Column(
-        children: [
-          HealthInsuranceFields(),
-          SizedBox(height: 15.sp),
-          // RESTORED: this button used to open RequestToChangeDialogMobile and
-          // was deleted when that dialog's form widgets were removed, leaving
-          // the phone with no way to raise an insurance change request while
-          // the tablet kept one. It now goes to EditPageRequestHealth — the
-          // same destination _buildTablet uses — so both breakpoints match.
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              customButtonWithSvg(
-                // `fixedWidth`, not `width`: `width:` is accepted and ignored
-                // by customButtonWithSvg so the app-wide ButtonSizing rule
-                // wins. 200.sp matches the phone button on the personal
-                // information screen.
-                fixedWidth: 200.sp,
-                title: S.of(context).requestToChange,
-                function: () {
-                  hapticController.triggerHapticFeedback(
-                      vibration: VibrateType.mediumImpact,
-                      hapticFeedback: HapticFeedback.mediumImpact);
-                  navigateTo(context, EditPageRequestHealth());
-                },
-                color: AppColors.primary,
-                colorBorder: AppColors.transparent,
-                textStyle: StyleText.fontSize16Weight500
-                    .copyWith(color: AppColors.textButton),
-                image:
-                    'assets/icons_assets/settings_assets/request_change_document.svg',
-                svgColor: AppColors.textButton,
-                space: 8.w,
-                widthImage: 16.w,
-                heightImage: 23.h,
+      // CHANGED 9/10/2026 — was the hard-coded English "Health Insurance",
+      // which stayed English in Arabic. Now the localized EN/AR string.
+      secondTitle: S.of(context).healthInsurance,
+      // D-202 (21/10/2026): the single page action is PINNED at the bottom
+      // on the phone too — the fields scroll above it, it never moves.
+      child: SideFrameBoundedBody(
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                physics: const ClampingScrollPhysics(
+                  parent: BouncingScrollPhysics(),
+                ),
+                child: HealthInsuranceFields(),
               ),
-            ],
-          ),
-          SizedBox(height: 15.sp),
-        ],
+            ),
+            SizedBox(height: 16.sp),
+            // RESTORED: this button used to open RequestToChangeDialogMobile and
+            // was deleted when that dialog's form widgets were removed, leaving
+            // the phone with no way to raise an insurance change request while
+            // the tablet kept one. It now goes to EditPageRequestHealth — the
+            // same destination _buildTablet uses — so both breakpoints match.
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                customButtonWithSvg(
+                  // `fixedWidth`, not `width`: `width:` is accepted and ignored
+                  // by customButtonWithSvg so the app-wide ButtonSizing rule
+                  // wins. 200.sp matches the phone button on the personal
+                  // information screen.
+                  fixedWidth: 200.sp,
+                  title: S.of(context).requestToChange,
+                  function: () {
+                    hapticController.triggerHapticFeedback(
+                        vibration: VibrateType.mediumImpact,
+                        hapticFeedback: HapticFeedback.mediumImpact);
+                    navigateTo(context, EditPageRequestHealth());
+                  },
+                  color: AppColors.primary,
+                  colorBorder: AppColors.transparent,
+                  textStyle: StyleText.fontSize16Weight500
+                      .copyWith(color: AppColors.textButton),
+                  image:
+                      'assets/icons_assets/main_icons_assets/ic_module_request_change.svg',
+                  svgColor: AppColors.textButton,
+                  space: 8.w,
+                  widthImage: 16.w,
+                  heightImage: 23.h,
+                ),
+              ],
+            ),
+            SizedBox(height: 16.sp),
+          ],
+        ),
       ),
     );
   }
@@ -126,38 +143,62 @@ class _SettingsHealthInsuranceState extends State<SettingsHealthInsurance> {
     // (CR-SKEL-SE6-N09), so the wrapper rebuilt on nothing.
     return Column(
       children: [
-        Container(
-          decoration: BoxDecoration(
-            color: AppColors.card,
-            borderRadius: BorderRadius.circular(8.r),
-          ),
-          height: 470.h,
-          clipBehavior: Clip.antiAlias,
-          child: ScrollConfiguration(
-            behavior: const ScrollBehavior().copyWith(scrollbars: false),
-            child: SingleChildScrollView(
-              physics: ClampingScrollPhysics(),
-              child: Column(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.card,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        HealthInsuranceFields(),
-                      ],
+        // CHANGED 9/10/2026 — wrapped in Flexible, the same fix the Social
+        // tablet page carries. This panel is laid out inside the settings
+        // shell's Expanded right-hand pane, where a bare `height: 470.h` is
+        // taken literally: on a short iPad landscape viewport 470.h plus the
+        // button row below can exceed the pane and overflow. Flexible still
+        // gives the card its 470.h whenever there is room and clamps it
+        // otherwise; the inner scroll view keeps every field reachable.
+        // CHANGED 18/10/2026 (Moataz: big empty area under the button on
+        // iPad / desktop): the card is Expanded instead of a fixed height,
+        // so it fills the right-hand pane and the button sits 15 above the
+        // bottom edge. The inner scroll view keeps every field reachable.
+        // D-183 (18/10/2026): the card ends after its last field (D-146
+        // inset) — Flexible, not Expanded; it still scrolls when longer.
+        Expanded(
+          // D-202 (20/10/2026): the card keeps its own height (D-183) and the
+          // Request Change button below is PINNED to the bottom of the pane.
+          child: Column(
+            children: <Widget>[
+              Flexible(
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: AppColors.card,
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: ScrollConfiguration(
+                    behavior:
+                        const ScrollBehavior().copyWith(scrollbars: false),
+                    child: SingleChildScrollView(
+                      physics: ClampingScrollPhysics(),
+                      child: Column(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: AppColors.card,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                HealthInsuranceFields(),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
         ),
-        SizedBox(height: 15.h),
+        SizedBox(height: 16.h),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -175,7 +216,8 @@ class _SettingsHealthInsuranceState extends State<SettingsHealthInsurance> {
                 color: AppColors.primary,
                 textStyle: StyleText.fontSize16Weight500
                     .copyWith(color: AppColors.textButton),
-                image: 'assets/icons_assets/settings_assets/request_change_document.svg',
+                image:
+                    'assets/icons_assets/main_icons_assets/ic_module_request_change.svg',
                 svgColor: AppColors.textButton,
                 space: 8.w,
                 widthImage: 16.w,
@@ -183,7 +225,7 @@ class _SettingsHealthInsuranceState extends State<SettingsHealthInsurance> {
                 colorBorder: AppColors.transparent),
           ],
         ),
-        SizedBox(height: 15.sp),
+        SizedBox(height: 16.sp),
       ],
     );
   }

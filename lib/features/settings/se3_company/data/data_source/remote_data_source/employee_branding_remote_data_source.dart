@@ -9,12 +9,13 @@
 /// Added for CR-SKEL-SE3-N01 / N19. `EmployeeBrandingRepository` held
 /// `FirebaseFirestore.instance` itself and built its collection paths inline;
 /// se4 and se5 already split this correctly and this brings se3 into line.
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:grc_module/features/settings/se3_company/data/models/employee_branding_mapper.dart';
-import 'package:grc_module/features/settings/se3_company/data/utils/company_collection_paths.dart';
-import 'package:grc_module/features/settings/se3_company/domain/entities/employee_branding_entity.dart';
+import 'package:knowticed_plus/features/settings/se3_company/data/models/employee_branding_mapper.dart';
+import 'package:knowticed_plus/features/settings/se3_company/data/utils/company_collection_paths.dart';
+import 'package:knowticed_plus/features/settings/se3_company/domain/entities/employee_branding_entity.dart';
 
 class EmployeeBrandingRemoteDataSource {
   EmployeeBrandingRemoteDataSource({FirebaseFirestore? firestore})

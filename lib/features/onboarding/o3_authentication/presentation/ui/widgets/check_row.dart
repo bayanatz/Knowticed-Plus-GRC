@@ -6,6 +6,7 @@
 /// Author: Knowticed Plus team
 /// Created at: 2026
 /// Updated: 12/8/2026 - Added the standard header (Docs).
+library;
 
 /// Objectives: single "requirement met / not met" row used by the reset
 /// password checklist.
@@ -21,12 +22,11 @@
 /// checkbox in the app and picks up any change made there.
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
-import 'package:grc_module/core/custom/23-custom_check_box.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_font_size.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/custom/inputs/custom_check_box.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/extensions/screen_fraction_extension.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
 
 class CheckRow extends StatelessWidget {
   const CheckRow({super.key, required this.isChecked, required this.text});

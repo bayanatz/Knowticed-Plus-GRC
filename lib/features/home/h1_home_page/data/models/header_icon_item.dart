@@ -10,10 +10,12 @@
 /// the cubit and the state both consume this model, so declaring it inside a
 /// UI widget file was a layer inversion. The catalog of selectable icons — the
 /// part that needs page imports — stays in the widget layer.
+library;
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
 class HeaderIconItem {
   const HeaderIconItem({
@@ -52,34 +54,34 @@ class HeaderIconItem {
   /// already in Firebase, so dropping an entry silently drops a user's pin.
   static const List<String> supportedSvgPaths = <String>[
     // Current — exported from the Figma icon-picker design.
-    'assets/icons_assets/home_assets/picker_user_management.svg',
-    'assets/icons_assets/home_assets/picker_english.svg',
-    'assets/icons_assets/home_assets/picker_roles.svg',
-    'assets/icons_assets/home_assets/picker_user_access.svg',
-    'assets/icons_assets/home_assets/picker_dark_mode.svg',
-    'assets/icons_assets/home_assets/picker_light_mode.svg',
-    'assets/icons_assets/home_assets/picker_ar.svg',
-    'assets/icons_assets/home_assets/picker_service_dashboard.svg',
-    'assets/icons_assets/home_assets/picker_requested_services.svg',
-    'assets/icons_assets/home_assets/picker_service_approvals.svg',
-    'assets/icons_assets/home_assets/picker_inventory_dashboard.svg',
-    'assets/icons_assets/home_assets/picker_qiyas_dashboard.svg',
-    'assets/icons_assets/home_assets/picker_hub_approval.svg',
-    'assets/icons_assets/home_assets/picker_create_todo.svg',
-    'assets/icons_assets/home_assets/picker_create_task.svg',
-    'assets/icons_assets/home_assets/picker_check_in_out.svg',
-    'assets/icons_assets/home_assets/picker_check_in_out_alt.svg',
+    'assets/icons_assets/home_assets/ic_module_user_management.svg',
+    'assets/icons_assets/home_assets/ic_module_language_en.svg',
+    'assets/icons_assets/main_icons_assets/ic_module_service_approvals.svg',
+    'assets/icons_assets/home_assets/ic_module_user_access.svg',
+    'assets/icons_assets/home_assets/ic_module_dark_mode.svg',
+    'assets/icons_assets/home_assets/ic_module_light_mode.svg',
+    'assets/icons_assets/home_assets/ic_module_language_ar.svg',
+    'assets/icons_assets/main_icons_assets/ic_comms_customer_service.svg',
+    'assets/icons_assets/home_assets/ic_module_requested_services.svg',
+    'assets/icons_assets/main_icons_assets/ic_module_service_approvals.svg',
+    'assets/icons_assets/home_assets/ic_module_inventory_dashboard.svg',
+    'assets/icons_assets/home_assets/ic_module_grc_qiyas.svg',
+    'assets/icons_assets/home_assets/ic_module_hub_approvals.svg',
+    'assets/icons_assets/main_icons_assets/ic_module_create_todo.svg',
+    'assets/icons_assets/home_assets/ic_module_create_task.svg',
+    'assets/icons_assets/main_icons_assets/ic_hr_check_in_out.svg',
+    'assets/icons_assets/home_assets/ic_module_check_in_out.svg',
     // Legacy — no longer offered by the picker, still restorable.
-    'assets/icons_assets/roles_assets/roles_people_gear.svg',
-    'assets/icons_assets/home_assets/user_access_lock.svg',
-    'assets/icons_assets/main_icons_assets/user_access_workflow.svg',
-    'assets/icons_assets/home_assets/language_letter_a.svg',
-    'assets/icons_assets/settings_assets/dark_mode_toggle_moon.svg',
-    'assets/icons_assets/main_icons_assets/services_building_stars.svg',
-    'assets/icons_assets/roles_assets/inventory_warehouse.svg',
-    'assets/icons_assets/home_assets/analytics_charts.svg',
-    'assets/icons_assets/home_assets/todo_checklist_clipboard.svg',
-    'assets/icons_assets/home_assets/check_in_out_clock.svg',
+    'assets/icons_assets/main_icons_assets/ic_module_roles.svg',
+    'assets/icons_assets/home_assets/ic_module_user_access.svg',
+    'assets/icons_assets/main_icons_assets/ic_security_access_workflow.svg',
+    'assets/icons_assets/home_assets/ic_module_language_en.svg',
+    'assets/icons_assets/main_icons_assets/ic_module_dark_mode_toggle.svg',
+    'assets/icons_assets/main_icons_assets/ic_module_services.svg',
+    'assets/icons_assets/main_icons_assets/ic_module_inventory.svg',
+    'assets/icons_assets/main_icons_assets/ic_data_analytics.svg',
+    'assets/icons_assets/home_assets/ic_data_todo_total.svg',
+    'assets/icons_assets/main_icons_assets/ic_hr_check_in_out.svg',
   ];
 
   /// Legacy asset path → the current picker glyph that replaced it.
@@ -90,30 +92,31 @@ class HeaderIconItem {
   /// only. Without this table those icons restore and draw, but no destination
   /// can be looked up for them, so tapping one does nothing.
   static const Map<String, String> _legacySvgPathAliases = <String, String>{
-    'assets/icons_assets/roles_assets/roles_people_gear.svg':
-        'assets/icons_assets/home_assets/picker_roles.svg',
-    'assets/icons_assets/home_assets/user_access_lock.svg':
-        'assets/icons_assets/home_assets/picker_user_access.svg',
-    'assets/icons_assets/main_icons_assets/user_access_workflow.svg':
-        'assets/icons_assets/home_assets/picker_user_management.svg',
-    'assets/icons_assets/home_assets/language_letter_a.svg':
-        'assets/icons_assets/home_assets/picker_english.svg',
-    'assets/icons_assets/settings_assets/dark_mode_toggle_moon.svg':
-        'assets/icons_assets/home_assets/picker_dark_mode.svg',
-    'assets/icons_assets/main_icons_assets/services_building_stars.svg':
-        'assets/icons_assets/home_assets/picker_service_dashboard.svg',
-    'assets/icons_assets/roles_assets/inventory_warehouse.svg':
-        'assets/icons_assets/home_assets/picker_inventory_dashboard.svg',
-    'assets/icons_assets/home_assets/analytics_charts.svg':
-        'assets/icons_assets/home_assets/picker_qiyas_dashboard.svg',
-    'assets/icons_assets/home_assets/todo_checklist_clipboard.svg':
-        'assets/icons_assets/home_assets/picker_create_todo.svg',
-    'assets/icons_assets/home_assets/check_in_out_clock.svg':
-        'assets/icons_assets/home_assets/picker_check_in_out.svg',
-    'assets/icons_assets/home_assets/picker_check_in_out_alt.svg':
-        'assets/icons_assets/home_assets/picker_check_in_out.svg',
-    'assets/icons_assets/home_assets/picker_light_mode.svg':
-        'assets/icons_assets/home_assets/picker_dark_mode.svg',
+    'assets/icons_assets/main_icons_assets/ic_module_roles.svg':
+        'assets/icons_assets/main_icons_assets/ic_module_service_approvals.svg',
+    'assets/icons_assets/home_assets/ic_module_user_access.svg':
+        'assets/icons_assets/home_assets/ic_module_user_access.svg',
+    'assets/icons_assets/main_icons_assets/ic_security_access_workflow.svg':
+        'assets/icons_assets/home_assets/ic_module_user_management.svg',
+    // One language button: an icon pinned as "AR" resolves to the same entry.
+    'assets/icons_assets/home_assets/ic_module_language_ar.svg':
+        'assets/icons_assets/home_assets/ic_module_language_en.svg',
+    'assets/icons_assets/main_icons_assets/ic_module_dark_mode_toggle.svg':
+        'assets/icons_assets/home_assets/ic_module_dark_mode.svg',
+    'assets/icons_assets/main_icons_assets/ic_module_services.svg':
+        'assets/icons_assets/main_icons_assets/ic_comms_customer_service.svg',
+    'assets/icons_assets/main_icons_assets/ic_module_inventory.svg':
+        'assets/icons_assets/home_assets/ic_module_inventory_dashboard.svg',
+    'assets/icons_assets/main_icons_assets/ic_data_analytics.svg':
+        'assets/icons_assets/home_assets/ic_module_grc_qiyas.svg',
+    'assets/icons_assets/home_assets/ic_data_todo_total.svg':
+        'assets/icons_assets/main_icons_assets/ic_module_create_todo.svg',
+    'assets/icons_assets/main_icons_assets/ic_hr_check_in_out.svg':
+        'assets/icons_assets/main_icons_assets/ic_hr_check_in_out.svg',
+    'assets/icons_assets/home_assets/ic_module_check_in_out.svg':
+        'assets/icons_assets/main_icons_assets/ic_hr_check_in_out.svg',
+    'assets/icons_assets/home_assets/ic_module_light_mode.svg':
+        'assets/icons_assets/home_assets/ic_module_dark_mode.svg',
   };
 
   /// Function Name: [canonicalSvgPath]
@@ -126,6 +129,24 @@ class HeaderIconItem {
   /// so a legacy pin keeps its old glyph and gains its destination.
   static String canonicalSvgPath(String svgPath) =>
       _legacySvgPathAliases[svgPath] ?? svgPath;
+
+  static const String _languageEnSvg =
+      'assets/icons_assets/home_assets/ic_module_language_en.svg';
+  static const String _languageArSvg =
+      'assets/icons_assets/home_assets/ic_module_language_ar.svg';
+
+  /// Function Name: [displaySvgPath]
+  ///
+  /// Purpose: The glyph to DRAW. The language button is one button that flips:
+  ///          it shows the language a tap switches TO (AR while the app is in
+  ///          English, EN while it is in Arabic). Every other icon draws as
+  ///          stored.
+  static String displaySvgPath(String svgPath) {
+    if (canonicalSvgPath(svgPath) != _languageEnSvg) return svgPath;
+    return (Get.locale?.languageCode ?? 'en') == 'ar'
+        ? _languageEnSvg
+        : _languageArSvg;
+  }
 
   /// Function Name: [title]
   ///
@@ -160,61 +181,53 @@ class HeaderIconItem {
           // Current — the Figma icon-picker set. A path missing from this
           // switch still restores (supportedSvgPaths gates that), but falls
           // through to `default` and shows the raw asset path as its label.
-          case 'assets/icons_assets/home_assets/picker_user_management.svg':
+          case 'assets/icons_assets/home_assets/ic_module_user_management.svg':
             return l.userManagement;
-          case 'assets/icons_assets/home_assets/picker_english.svg':
-            return l.english;
-          case 'assets/icons_assets/home_assets/picker_roles.svg':
+          case 'assets/icons_assets/home_assets/ic_module_language_en.svg':
+          case 'assets/icons_assets/home_assets/ic_module_language_ar.svg':
+            return l.language;
+          case 'assets/icons_assets/main_icons_assets/ic_module_service_approvals.svg':
             return l.roles;
-          case 'assets/icons_assets/home_assets/picker_user_access.svg':
+          case 'assets/icons_assets/home_assets/ic_module_user_access.svg':
             return l.userAccess;
-          case 'assets/icons_assets/home_assets/picker_dark_mode.svg':
-          case 'assets/icons_assets/home_assets/picker_light_mode.svg':
+          case 'assets/icons_assets/home_assets/ic_module_dark_mode.svg':
+          case 'assets/icons_assets/home_assets/ic_module_light_mode.svg':
             return l.lightDarkMode;
-          case 'assets/icons_assets/home_assets/picker_ar.svg':
-            // No `arabic` key in intl_en.arb — literal until one is added.
-            return 'AR';
-          case 'assets/icons_assets/home_assets/picker_service_dashboard.svg':
+          case 'assets/icons_assets/main_icons_assets/ic_comms_customer_service.svg':
             return l.serviceDashboard;
-          case 'assets/icons_assets/home_assets/picker_requested_services.svg':
+          case 'assets/icons_assets/home_assets/ic_module_requested_services.svg':
             return l.requestedServices;
-          case 'assets/icons_assets/home_assets/picker_service_approvals.svg':
-            return l.serviceApprovals;
-          case 'assets/icons_assets/home_assets/picker_inventory_dashboard.svg':
+          case 'assets/icons_assets/home_assets/ic_module_inventory_dashboard.svg':
             return l.inventoryDashboard;
-          case 'assets/icons_assets/home_assets/picker_qiyas_dashboard.svg':
+          case 'assets/icons_assets/home_assets/ic_module_grc_qiyas.svg':
             return l.qiyasDashboard;
-          case 'assets/icons_assets/home_assets/picker_hub_approval.svg':
+          case 'assets/icons_assets/home_assets/ic_module_hub_approvals.svg':
             // No `hubApproval` key in intl_en.arb — literal until one is added.
-            return 'Hub Approval';
-          case 'assets/icons_assets/home_assets/picker_create_todo.svg':
+            return Get.locale?.languageCode == 'ar'
+                ? 'موافقات مركز المعرفة'
+                : 'Knowledge Hub Approval';
+          case 'assets/icons_assets/main_icons_assets/ic_module_create_todo.svg':
             return l.createToDo;
-          case 'assets/icons_assets/home_assets/picker_create_task.svg':
+          case 'assets/icons_assets/home_assets/ic_module_create_task.svg':
             return l.createTask;
-          case 'assets/icons_assets/home_assets/picker_check_in_out.svg':
-          case 'assets/icons_assets/home_assets/picker_check_in_out_alt.svg':
+          case 'assets/icons_assets/main_icons_assets/ic_hr_check_in_out.svg':
+          case 'assets/icons_assets/home_assets/ic_module_check_in_out.svg':
             return l.checkInOut;
           // Legacy — pinned before the picker was rebuilt.
-          case 'assets/icons_assets/roles_assets/roles_people_gear.svg':
+          case 'assets/icons_assets/main_icons_assets/ic_module_roles.svg':
             return l.roles;
-          case 'assets/icons_assets/home_assets/user_access_lock.svg':
-            return l.userAccess;
-          case 'assets/icons_assets/main_icons_assets/user_access_workflow.svg':
+          case 'assets/icons_assets/main_icons_assets/ic_security_access_workflow.svg':
             return l.userManagement;
-          case 'assets/icons_assets/home_assets/language_letter_a.svg':
-            return l.english;
-          case 'assets/icons_assets/settings_assets/dark_mode_toggle_moon.svg':
+          case 'assets/icons_assets/main_icons_assets/ic_module_dark_mode_toggle.svg':
             return l.lightDarkMode;
-          case 'assets/icons_assets/main_icons_assets/services_building_stars.svg':
+          case 'assets/icons_assets/main_icons_assets/ic_module_services.svg':
             return l.serviceDashboard;
-          case 'assets/icons_assets/roles_assets/inventory_warehouse.svg':
+          case 'assets/icons_assets/main_icons_assets/ic_module_inventory.svg':
             return l.inventoryDashboard;
-          case 'assets/icons_assets/home_assets/analytics_charts.svg':
+          case 'assets/icons_assets/main_icons_assets/ic_data_analytics.svg':
             return l.qiyasDashboard;
-          case 'assets/icons_assets/home_assets/todo_checklist_clipboard.svg':
+          case 'assets/icons_assets/home_assets/ic_data_todo_total.svg':
             return l.createToDo;
-          case 'assets/icons_assets/home_assets/check_in_out_clock.svg':
-            return l.checkInOut;
           default:
             return svgPath;
         }

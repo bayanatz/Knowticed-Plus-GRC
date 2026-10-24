@@ -1,31 +1,31 @@
 /// Module: messaging / chat / presentation/ui/widgets/confirm_caption_view.dart
+library;
+
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
 import 'dart:io';
 
 import 'package:card_swiper/card_swiper.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
 import 'package:mime/mime.dart';
 
 import 'package:video_player/video_player.dart';
 
-import 'package:grc_module/core/constants/message_module/app_assets.dart';
-import '';
-import 'package:grc_module/core/network/message_module/routes/app_routes.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
-import '../../../data/models/message/video_message_model.dart';
-import '../../controller/main_controllers/master_chat_cubit.dart';
-import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/core/custom/2-custom_textfield.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/features/messaging/helpers/constants/messaging_assets.dart';
+import 'package:knowticed_plus/core/routes/app_routes.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/message/video_message_model.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/main_controllers/master_chat_cubit.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
+import 'package:knowticed_plus/core/custom/inputs/custom_textfield.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
 
-part './confirm_caption/custom_pagination.dart';
-part './confirm_caption/caption_field.dart';
-
+part 'confirm_caption/custom_pagination.dart';
+part 'confirm_caption/caption_field.dart';
 
 //Youssef Ashraf
 ///Where user select captions for one/ multible images & videos
@@ -40,7 +40,7 @@ class ConfirmCaptionView extends GetView<MasterChatCubit> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, result) {
         // Access swiperIndex through state and update it through the method
         controller.updateSwiperIndex(0);
       },
@@ -50,7 +50,8 @@ class ConfirmCaptionView extends GetView<MasterChatCubit> {
         body: SafeArea(
           child: Padding(
             padding: EdgeInsets.symmetric(
-                horizontal: ContextExtension(context).isTablett ? 24.w : 16.0.w),
+                horizontal:
+                    ContextExtension(context).isTablett ? 24.w : 16.0.w),
             child: SizedBox(
               height: double.infinity,
               child: Stack(
@@ -71,7 +72,7 @@ class ConfirmCaptionView extends GetView<MasterChatCubit> {
                             (BuildContext context, SwiperPluginConfig config) {
                           return Visibility(
                             visible:
-                            MediaQuery.of(context).viewInsets.bottom == 0,
+                                MediaQuery.of(context).viewInsets.bottom == 0,
                             child: CustomPagination(
                               files: files,
                               controller: controller,
@@ -87,7 +88,8 @@ class ConfirmCaptionView extends GetView<MasterChatCubit> {
                         if (isVideo) {
                           final model = VideoMessageModel(
                               videoFilePath: files[index].path!,
-                              caption: controller.captionControllers[index].text);
+                              caption:
+                                  controller.captionControllers[index].text);
                           return Stack(
                             alignment: Alignment.center,
                             children: [
@@ -100,9 +102,9 @@ class ConfirmCaptionView extends GetView<MasterChatCubit> {
                               ),
                               CircleAvatar(
                                 backgroundColor:
-                                AppColors.grey.withOpacity(0.3),
-                                child: SvgPicture.asset(
-                                  AppAssets.play,
+                                    AppColors.grey.withValues(alpha: 0.3),
+                                child: CustomSvgImage.natural(
+                                  assetPath: AppAssets.play,
                                 ),
                               ),
                             ],

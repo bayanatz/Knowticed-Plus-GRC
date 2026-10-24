@@ -1,16 +1,25 @@
+/// Module: messaging/m1_chat
+///
+///*************************** FILE INFO ****************************///
+/// File Name: document_message_cubit.dart
+/// Description: `DocumentMessageState` state, `DocumentMessageCubit` cubit (state management).
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
+library;
+
 /// Module: messaging / chat / presentation/controller/message_types_controllers/document_message_cubit.dart
 import 'dart:io';
 
-import 'package:grc_module/core/services/media_picker_service.dart';
+import 'package:knowticed_plus/core/app_services/media_picker_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grc_module/features/messaging/m1_chat/presentation/controller/main_controllers/master_chat_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/main_controllers/master_chat_cubit.dart';
 import 'package:pdfx/pdfx.dart';
 
-import '../../../data/models/message/doc_message_model.dart';
-import '../../../domain/entity/new_message_content_entity.dart';
-import '../../../domain/repository/chat_repository/base_chat_repository.dart';
-import '../../../../../../core/helper/message_module/main_helper/chat_constants.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/message/doc_message_model.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/domain/entity/new_message_content_entity.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/domain/repository/chat_repository/base_chat_repository.dart';
+import 'package:knowticed_plus/features/messaging/helpers/constants/chat_constants.dart';
 
 // State class
 class DocumentMessageState {
@@ -61,8 +70,9 @@ class DocumentMessageCubit extends Cubit<DocumentMessageState> {
 
     try {
       // Picker owned by MediaPickerService — cubit no longer touches FilePicker (§16).
-      final paths = await MediaPickerService()
-          .pickFilePaths(allowedExtensions: ChatConstants.docExtensions);
+      final paths = await MediaPickerService().pickFilePaths(
+        allowedExtensions: ChatConstants.docExtensions,
+      );
 
       emit(state.copyWith(isPickingDocument: false));
 
@@ -77,10 +87,12 @@ class DocumentMessageCubit extends Cubit<DocumentMessageState> {
         masterChatCubit.addSelectedDocPaths(paths);
       }
     } catch (e) {
-      emit(state.copyWith(
-        isPickingDocument: false,
-        error: () => 'Failed to pick documents. Please try again.',
-      ));
+      emit(
+        state.copyWith(
+          isPickingDocument: false,
+          error: () => 'Failed to pick documents. Please try again.',
+        ),
+      );
     }
   }
 
@@ -101,16 +113,20 @@ class DocumentMessageCubit extends Cubit<DocumentMessageState> {
         emit(state.copyWith(uploadProgress: progress));
       }
 
-      emit(state.copyWith(
-        isSendingDocument: false,
-        selectedDocuments: [],
-        uploadProgress: 0,
-      ));
+      emit(
+        state.copyWith(
+          isSendingDocument: false,
+          selectedDocuments: [],
+          uploadProgress: 0,
+        ),
+      );
     } catch (e) {
-      emit(state.copyWith(
-        isSendingDocument: false,
-        error: () => 'Failed to send some documents. Please try again.',
-      ));
+      emit(
+        state.copyWith(
+          isSendingDocument: false,
+          error: () => 'Failed to send some documents. Please try again.',
+        ),
+      );
     }
   }
 
@@ -135,7 +151,7 @@ class DocumentMessageCubit extends Cubit<DocumentMessageState> {
       model.totalPages = doc.pagesCount;
       await doc.close();
     } catch (e) {
-      debugPrint('[DocumentMessageCubit] page count failed: $e');
+      debugPrint('Ignored error: $e');
     }
   }
 
@@ -145,8 +161,9 @@ class DocumentMessageCubit extends Cubit<DocumentMessageState> {
 
       await docUploadListener(docMessageModel);
 
-      NewMessageContentEntity messageContent =
-      DocumentMessageContentEntity(documentMessageModel: docMessageModel);
+      NewMessageContentEntity messageContent = DocumentMessageContentEntity(
+        documentMessageModel: docMessageModel,
+      );
 
       final currentUser = masterChatCubit.state.currentUser;
       final otherConnectionSide = masterChatCubit.state.otherConnectionSide;
@@ -174,10 +191,12 @@ class DocumentMessageCubit extends Cubit<DocumentMessageState> {
   }
 
   void cancelSending() {
-    emit(state.copyWith(
-      isSendingDocument: false,
-      selectedDocuments: [],
-      uploadProgress: 0,
-    ));
+    emit(
+      state.copyWith(
+        isSendingDocument: false,
+        selectedDocuments: [],
+        uploadProgress: 0,
+      ),
+    );
   }
 }

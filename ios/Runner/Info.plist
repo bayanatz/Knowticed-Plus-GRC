@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Knowticed GRC</string>
+	<string>Knowticed+</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -15,7 +15,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>Knowticed GRC</string>
+	<string>Knowticed Plus</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -45,29 +45,30 @@
 	     action while the user is on screen (system_logs_repository.addActivityLog
 	     stores lat/long on the log entry). It never tracks in the background, so
 	     NSLocationAlwaysUsageDescription would ask for more than is used. -->
+	<!-- UPDATED 8/10/2026: wording now names the Time Tracker check-in use (Apple review asks for the real purpose). -->
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Knowticed GRC records the location of activity log entries, so your organisation can see where an action was performed.</string>
+	<string>Knowticed Plus uses your location when you check in or out in Time Tracker, to confirm you are at your assigned work location, and to record where actions in the activity log were performed.</string>
 	<!-- ADDED 23/9/2026. Permission prompts for every plugin that touches a
 	     protected resource on iOS. iOS terminates the app the moment it
 	     accesses one of these without the matching key. -->
 	<!-- image_picker (ImageSource.camera) -->
 	<key>NSCameraUsageDescription</key>
-	<string>Knowticed GRC uses the camera so you can take photos and attach them to messages, comments and forms.</string>
+	<string>Knowticed Plus uses the camera so you can take photos and attach them to messages, comments and forms.</string>
 	<!-- image_picker (ImageSource.gallery, pickMultipleMedia) -->
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Knowticed GRC needs access to your photos so you can attach images and videos to messages, comments and forms.</string>
+	<string>Knowticed Plus needs access to your photos so you can attach images and videos to messages, comments and forms.</string>
 	<!-- saving images / exported files to Photos (share_plus, printing) -->
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Knowticed GRC saves images and exported files to your photo library when you choose to.</string>
+	<string>Knowticed Plus saves images and exported files to your photo library when you choose to.</string>
 	<!-- audio_waveforms / record: voice notes in chat -->
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Knowticed GRC needs the microphone so you can record voice messages in chat.</string>
+	<string>Knowticed Plus needs the microphone so you can record voice messages in chat.</string>
 	<!-- flutter_contacts / Permission.contacts: share a contact in chat -->
 	<key>NSContactsUsageDescription</key>
-	<string>Knowticed GRC accesses your contacts so you can share a contact in chat.</string>
+	<string>Knowticed Plus accesses your contacts so you can share a contact in chat.</string>
 	<!-- local_auth: biometric login -->
 	<key>NSFaceIDUsageDescription</key>
-	<string>Knowticed GRC uses Face ID so you can sign in quickly and securely.</string>
+	<string>Knowticed Plus uses Face ID so you can sign in quickly and securely.</string>
 	<!-- firebase_messaging / flutter_local_notifications: push notifications
 	     delivered while the app is in the background. -->
 	<key>UIBackgroundModes</key>

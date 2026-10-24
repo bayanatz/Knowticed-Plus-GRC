@@ -4,24 +4,23 @@
 /// Purpose: Home mobile page — messaging Home sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+library;
 
 // Date: 16/9/2024
 // By: Youssef Ashraf
 // Objectives: This file is responsible for providing the community page used in the community feature.
 
 import 'package:flutter/material.dart';
-import 'package:grc_module/features/messaging/m5_support/presentation/support_chat_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-import 'package:grc_module/features/messaging/m2_connections/presentation/controller/community_controller.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/presentation/controller/community_controller.dart';
 
-import 'package:grc_module/core/helper/main_helper/spacing_helper.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/helper/main_helper/custom_app_bar.dart';
-import '../../../../m2_connections/presentation/ui/pages/community_mobile_layout.dart';
-import '../widgets/category_filter.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/features/messaging/helpers/spacing_helper.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/features/messaging/helpers/messaging_app_bar.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/presentation/ui/pages/community_mobile_layout.dart';
+import 'package:knowticed_plus/features/messaging/m4_messaging_home/presentation/ui/widgets/category_filter.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
 class HomeMobilePage extends StatefulWidget {
   const HomeMobilePage({super.key});

@@ -1,14 +1,17 @@
 /// Module: messaging / chat / presentation/controller/functions_on_messages_controllers/pin_message_cubit.dart
+library;
+
+import 'package:flutter/foundation.dart';
 import 'dart:collection';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
-import 'package:grc_module/features/messaging/m1_chat/presentation/controller/main_controllers/master_chat_cubit.dart';
-import 'package:grc_module/features/messaging/m2_connections/presentation/controller/connections_controller.dart';
-import '../../../domain/entity/message_entity.dart';
-import '../../../../m2_connections/domain/entities/single_connection_entity.dart';
-import '../../../../m3_groups/domain/entities/group_entity.dart';
-import '../../../data/repository/group_chat_repository.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/main_controllers/master_chat_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/presentation/controller/connections_controller.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/domain/entity/message_entity.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/domain/entities/single_connection_entity.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/domain/entities/group_entity.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/repository/group_chat_repository.dart';
 
 // State class
 class PinMessageState {
@@ -37,10 +40,10 @@ class PinMessageCubit extends Cubit<PinMessageState> {
 
   PinMessageCubit({required this.masterChatCubit})
       : super(PinMessageState(
-    pinnedMessagesInRow:
-    SplayTreeSet<int>((a, b) => b.compareTo(a))..add(0),
-    allPinnedMessages: SplayTreeSet<int>((a, b) => a.compareTo(b)),
-  ));
+          pinnedMessagesInRow: SplayTreeSet<int>((a, b) => b.compareTo(a))
+            ..add(0),
+          allPinnedMessages: SplayTreeSet<int>((a, b) => a.compareTo(b)),
+        ));
 
   MessageEntity? get message {
     if (state.pinnedMessagesInRow.isEmpty) return null;
@@ -78,7 +81,6 @@ class PinMessageCubit extends Cubit<PinMessageState> {
         newAllPinned.add(i);
       }
     }
-
 
     emit(state.copyWith(
       pinnedMessagesInRow: newPinnedInRow,
@@ -121,7 +123,7 @@ class PinMessageCubit extends Cubit<PinMessageState> {
       if (otherConnectionSide is SingleConnectionEntity) {
         otherConnectionSide.hasPinnedMessage = newPinState ||
             masterChatCubit.state.messages.any(
-                  (m) => m.isPinned && m.messageId != message.messageId,
+              (m) => m.isPinned && m.messageId != message.messageId,
             );
       }
 
@@ -134,9 +136,11 @@ class PinMessageCubit extends Cubit<PinMessageState> {
           final connectionsCubit = Get.find<ConnectionsCubit>();
           connectionsCubit.filteredSingleConnections();
         } catch (e) {
+          debugPrint('Ignored error: $e');
         }
       }
     } catch (e) {
+      debugPrint('Ignored error: $e');
     }
   }
 
@@ -190,6 +194,7 @@ class PinMessageCubit extends Cubit<PinMessageState> {
         }
       }
     } catch (e) {
+      debugPrint('Ignored error: $e');
     }
   }
 

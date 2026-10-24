@@ -15,35 +15,34 @@
 ///
 /// PORTED into services_app under features/settings.
 /// Source: services_app features/employees/employee_branding/presentation/ui/…
+library;
 
-import 'package:grc_module/core/custom/5-custom_button.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/custom/55-custom_responsive_fields.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_button.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/custom/layout/custom_responsive_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-import 'package:grc_module/core/theme/haptic_controller.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
 
-
-import 'package:grc_module/core/theme/app_font_size.dart';
-import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
-import 'package:grc_module/core/custom/1-custom_dropdown.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/custom/dialogs/custom_dialog_manager.dart';
+import 'package:knowticed_plus/core/custom/dropdowns/custom_dropdown.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grc_module/features/settings/se3_company/data/models/company_model/company_model.dart';
-import 'package:grc_module/features/settings/se3_company/domain/entities/employee_branding_entity.dart';
-import 'package:grc_module/features/settings/se3_company/presentation/controller/company_cubit.dart';
-import 'package:grc_module/features/settings/se3_company/presentation/controller/company_state.dart';
-import 'package:grc_module/core/custom/61-custom_color_picker.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/ui/pages/settings_screen.dart';
-import 'package:grc_module/features/settings/se3_company/presentation/ui/widgets/shared/company_image.dart';
-import 'package:grc_module/features/settings/se3_company/data/utils/branding_color.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/ui/widgets/restart_widget.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/features/settings/se3_company/data/models/company_model/company_model.dart';
+import 'package:knowticed_plus/features/settings/se3_company/domain/entities/employee_branding_entity.dart';
+import 'package:knowticed_plus/features/settings/se3_company/presentation/controller/company_cubit.dart';
+import 'package:knowticed_plus/features/settings/se3_company/presentation/controller/company_state.dart';
+import 'package:knowticed_plus/core/custom/pickers/custom_color_picker.dart';
+import 'package:knowticed_plus/features/settings/presentation/ui/pages/settings_screen.dart';
+import 'package:knowticed_plus/features/settings/se3_company/presentation/ui/widgets/shared/company_image.dart';
+import 'package:knowticed_plus/features/settings/se3_company/data/utils/branding_color.dart';
+import 'package:knowticed_plus/features/settings/presentation/ui/widgets/restart_widget.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
-import 'package:grc_module/core/custom/33-custom_haptic.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/core/custom/helpers/custom_haptic.dart';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/core/theme/app_animations.dart';
 
 class EmployeeBrandingScreen extends StatefulWidget {
   const EmployeeBrandingScreen({super.key});
@@ -91,8 +90,8 @@ class _EmployeeBrandingScreenState extends State<EmployeeBrandingScreen> {
     selectedLogoUrl = company.companyLogo?.companyLogo?.lastOrNull;
     selectedPrimaryColor =
         BrandingColor.parse(company.primaryColor?.primaryColor?.lastOrNull);
-    selectedSecondaryColor = BrandingColor.parse(
-        company.secondaryColor?.secondaryColor?.lastOrNull);
+    selectedSecondaryColor =
+        BrandingColor.parse(company.secondaryColor?.secondaryColor?.lastOrNull);
     selectedEnglishFont = company.englishFont?.englishFont?.lastOrNull;
     selectedArabicFont = company.arabicFont?.arabicFont?.lastOrNull;
   }
@@ -112,7 +111,7 @@ class _EmployeeBrandingScreenState extends State<EmployeeBrandingScreen> {
     if (employeeId == null) {
       // Was Get.snackbar('Error', 'Employee ID not found') with raw
       // Colors.red/white and no translation (CR-SKEL-SE3-N12).
-      _showMessage(S.of(context).error, AppColors.signOut);
+      _showMessage(S.of(context).error, AppColors.primary);
       return;
     }
 
@@ -148,15 +147,13 @@ class _EmployeeBrandingScreenState extends State<EmployeeBrandingScreen> {
   /// (CR-SKEL-SE3-N08, N09, N12).
   void _onCompanyState(BuildContext context, CompanyState state) {
     if (state.errorMessage != null) {
-      _showMessage(S.of(context).error, AppColors.signOut);
+      _showMessage(S.of(context).error, AppColors.primary);
     } else if (state.successMessage != null) {
       _showMessage(S.of(context).successMessage, AppColors.primary);
     }
 
     final bool restart = state.restartRequested;
-    if (state.errorMessage != null ||
-        state.successMessage != null ||
-        restart) {
+    if (state.errorMessage != null || state.successMessage != null || restart) {
       companyController.clearMessages();
     }
 
@@ -166,21 +163,20 @@ class _EmployeeBrandingScreenState extends State<EmployeeBrandingScreen> {
   }
 
   void _resetToCompanyDefaults() {
-
     // Was DeleteDialog(isDeleteDialog: false) + a follow-up ResponseDialog.
     // CustomDialogManager.showDialogFlow covers both: it closes the confirm
     // dialog itself, runs onConfirm, and only shows the success dialog when
     // onConfirm returns true.
     CustomDialogManager.showDialogFlow(
       context: context,
-      confirmLottie: "assets/lottie_assets/main_lottie_assets/reset_brand.json",
+      confirmLottie:
+          "assets/lottie_assets/settings_lottie_assets/lot_action_reset_branding.json",
       confirmTitle: S.of(context).resetPersonalBranding,
       confirmSubtitle:
           S.of(context).areYouSureYouWantToResetYourPersonalBrandingToCo,
       confirmYesText: S.of(context).yes,
       confirmNoText: S.of(context).no,
       onConfirm: () async {
-
         hapticController.triggerHapticFeedback(
           vibration: VibrateType.mediumImpact,
           hapticFeedback: HapticFeedback.mediumImpact,
@@ -193,9 +189,11 @@ class _EmployeeBrandingScreenState extends State<EmployeeBrandingScreen> {
         await companyController.resetEmployeeBrandingToCompany(employee!.id!);
         return true;
       },
-      successLottie: "assets/lottie_assets/main_lottie_assets/correct.json",
-      successTitle: "Successful",
-      successSubtitle: "Personal Branding Has Been Reset To Company Defaults",
+      successLottie:
+          "assets/lottie_assets/main_lottie_assets/lot_status_success.json",
+      // Owner 21/10/2026: localized (was hard-coded English).
+      successTitle: S.of(context).Successful,
+      successSubtitle: S.of(context).personalBrandingResetToCompanyDefaults,
     );
   }
 
@@ -216,7 +214,8 @@ class _EmployeeBrandingScreenState extends State<EmployeeBrandingScreen> {
                 actions: <Widget>[
                   IconButton(
                     icon: const Icon(Icons.restore),
-                    onPressed: _resetToCompanyDefaults,
+                    onPressed:
+                        withHaptic(_resetToCompanyDefaults, HapticLevel.low),
                     tooltip: S.of(context).resetToCompanyDefaults,
                   ),
                 ],
@@ -239,17 +238,19 @@ class _EmployeeBrandingScreenState extends State<EmployeeBrandingScreen> {
           Container(
             padding: EdgeInsets.all(12.sp),
             decoration: BoxDecoration(
-              color: AppColors.blue.withOpacity(0.1),
+              color: AppColors.blue.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8.r),
               border: Border.all(color: AppColors.blue),
             ),
             child: Row(
               children: [
                 Icon(Icons.info_outline, color: AppColors.blue),
-                SizedBox(width: 12.w),
+                SizedBox(width: 16.w),
                 Expanded(
                   child: Text(
-                    S.of(context).customizeYourPersonalBrandingTheseSettingsWillOv,
+                    S
+                        .of(context)
+                        .customizeYourPersonalBrandingTheseSettingsWillOv,
                     style: StyleText.fontSize14Weight400.copyWith(
                       color: lightMode
                           ? AppColors.colorBlack
@@ -270,7 +271,7 @@ class _EmployeeBrandingScreenState extends State<EmployeeBrandingScreen> {
               color: AppColors.card,
             ),
             child: Padding(
-              padding: EdgeInsets.all(15.sp),
+              padding: EdgeInsets.all(16.sp),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -331,7 +332,8 @@ class _EmployeeBrandingScreenState extends State<EmployeeBrandingScreen> {
                     mobileSpacing: 0,
                     left: CustomDropdown<String>(
                       value: selectedEnglishFont?.toLowerCase(),
-                      items: _convertToDropdownItems(CompanyConstants.englishList),
+                      items:
+                          _convertToDropdownItems(CompanyConstants.englishList),
                       // Pinned to the colour fields' 40 (10 + 20 + 10, all .sp) so
                       // the Fonts and Colors rows are the same height (Settings p.13).
                       height: 40,
@@ -347,7 +349,8 @@ class _EmployeeBrandingScreenState extends State<EmployeeBrandingScreen> {
                     ),
                     right: CustomDropdown<String>(
                       value: selectedArabicFont?.toLowerCase(),
-                      items: _convertToDropdownItems(CompanyConstants.arabicList),
+                      items:
+                          _convertToDropdownItems(CompanyConstants.arabicList),
                       // Pinned to the colour fields' 40 (10 + 20 + 10, all .sp) so
                       // the Fonts and Colors rows are the same height (Settings p.13).
                       height: 40,

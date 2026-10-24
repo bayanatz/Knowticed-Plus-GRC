@@ -14,6 +14,7 @@
 ///
 /// PORTED into services_app under features/settings.
 /// Source: services_app features/employees/employee_branding/domain/model.dart
+library;
 
 import 'package:flutter/foundation.dart';
 

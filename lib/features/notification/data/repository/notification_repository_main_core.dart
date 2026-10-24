@@ -6,13 +6,13 @@
 /// Author: Knowticed Plus team
 /// Created at: 2026
 /// Updated: 12/8/2026 - Added the standard header (Docs).
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
-import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/features/notification/data/data_source/notification_remote_data_source.dart';
-import 'package:grc_module/features/notification/data/models/notification_model_core.dart';
-
+import 'package:knowticed_plus/core/network/failure_model.dart';
+import 'package:knowticed_plus/features/notification/data/data_source/notification_remote_data_source.dart';
+import 'package:knowticed_plus/features/notification/data/models/notification_model_core.dart';
 
 class NotificationRepository {
   NotificationRemoteDataSource notificationRemoteDataSource =

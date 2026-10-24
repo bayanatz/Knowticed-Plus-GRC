@@ -9,18 +9,16 @@ enum FileTypes {
   excel,
   powerpoint;
 
-  static const String _base = 'assets/icons_assets/main_icons_assets';
-
   static String getFileIcon(String filePath) {
     switch (getFileType(filePath)) {
       case FileTypes.pdf:
-        return '$_base/pdf_file_red.svg';
+        return 'assets/icons_assets/main_icons_assets/ic_file_pdf.svg';
       case FileTypes.word:
-        return '$_base/doc_file_blue.svg';
+        return 'assets/icons_assets/main_icons_assets/ic_file_doc.svg';
       case FileTypes.excel:
-        return '$_base/excell.svg';
+        return 'assets/icons_assets/main_icons_assets/ic_file_excel_grid.svg';
       case FileTypes.powerpoint:
-        return '$_base/ppt_attachment_icon.svg';
+        return 'assets/icons_assets/main_icons_assets/ic_file_powerpoint.svg';
     }
   }
 

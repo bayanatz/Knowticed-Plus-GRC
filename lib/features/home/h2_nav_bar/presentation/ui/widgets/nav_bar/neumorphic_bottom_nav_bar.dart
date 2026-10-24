@@ -6,19 +6,18 @@
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Extracted from the oversized model.dart as part of
 ///          breaking up the vendored persistent-nav-bar god files.
+library;
 
-import 'dart:math';
-import 'dart:ui';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:grc_module/features/home/h2_nav_bar/persistent_nav_bar.dart';
+import 'package:knowticed_plus/features/home/h2_nav_bar/persistent_nav_bar.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
 
 class NeumorphicBottomNavBar extends StatelessWidget {
   const NeumorphicBottomNavBar({
-    final Key? key,
+    super.key,
     this.navBarEssentials,
     this.neumorphicProperties = const NeumorphicProperties(),
-  }) : super(key: key);
+  });
   final NavBarEssentials? navBarEssentials;
   final NeumorphicProperties? neumorphicProperties;
 
@@ -92,9 +91,7 @@ class NeumorphicBottomNavBar extends StatelessWidget {
                             ? 15.0
                             : neumorphicProperties!.borderRadius),
                     color: navBarEssentials!.backgroundColor,
-                    border: neumorphicProperties == null
-                        ? null
-                        : neumorphicProperties!.border,
+                    border: neumorphicProperties?.border,
                     shape: neumorphicProperties == null
                         ? BoxShape.rectangle
                         : neumorphicProperties!.shape,
@@ -147,6 +144,7 @@ class NeumorphicBottomNavBar extends StatelessWidget {
             final int index = navBarEssentials!.items!.indexOf(item);
             return Flexible(
               child: GestureDetector(
+                onTapDown: (_) => HapticController.low(),
                 onTap: () {
                   if (navBarEssentials!.items![index].onPressed != null) {
                     navBarEssentials!.items![index].onPressed!(

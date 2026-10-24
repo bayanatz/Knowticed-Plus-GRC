@@ -3,22 +3,22 @@
 /// Description: Two-column grid of languages. Shipped languages are selectable
 ///              radio tiles; the rest are dimmed and carry a "SOON!" badge
 ///              (soon_light.svg / soon_dark.svg depending on the theme).
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
-import 'package:grc_module/core/helper/main_helper/app_locale.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/theme/haptic_controller.dart';
-import 'package:grc_module/core/theme/theme_controller.dart';
-import 'package:grc_module/core/custom/50-custom_side_frame_master.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/ui/widgets/settings_header.dart';
-import 'package:grc_module/features/settings/se7_app_info/domain/enums/languages.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/core/helper/app_locale.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
+import 'package:knowticed_plus/core/theme/theme_controller.dart';
+import 'package:knowticed_plus/core/custom/navigation/custom_side_frame_master.dart';
+import 'package:knowticed_plus/features/settings/presentation/ui/widgets/settings_header.dart';
+import 'package:knowticed_plus/features/settings/se7_app_info/domain/enums/languages.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
 /// One row in the picker.
 class _LanguageOption {
@@ -109,7 +109,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool isTablet = MediaQuery.of(context).size.shortestSide > 600;
+    bool isTablet = !kpIsPhoneLayout(context);
     final bool lightMode = Theme.of(context).brightness == Brightness.light;
 
     return isTablet
@@ -119,7 +119,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
 
   Widget _buildMobileView(BuildContext context, bool lightMode) {
     // SideFrameMasterServices supplies the mobile Scaffold, the breadcrumb
-    // header (back chevron + page title), the scroll view and the 15.sp
+    // header (back chevron + page title), the scroll view and the 16.sp
     // horizontal padding, so this method only provides the page body.
     return SideFrameMasterServices(
       titleText: S.of(context).settings,
@@ -147,18 +147,20 @@ class _LanguageScreenState extends State<LanguageScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 15.sp),
-
+          SizedBox(height: 16.sp),
           Padding(
-            padding:  EdgeInsets.symmetric(horizontal: 14.sp),
+            padding: EdgeInsets.symmetric(horizontal: 16.sp),
             child: SettingsHeader(
+              // Owner 21/10/2026: the card already insets 16 — without this
+              // the phone header got 16 more and sat inside the tiles' edge.
+              horizontalPadding: 0,
               imagePath:
-                  'assets/icons_assets/settings_assets/language_translate_bubbles.svg',
+                  'assets/icons_assets/settings_assets/ic_page_language.svg',
               text: S.of(context).language,
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(15.sp),
+            padding: EdgeInsets.all(16.sp),
             child: _optionsGrid(context, lightMode),
           ),
         ],
@@ -170,8 +172,14 @@ class _LanguageScreenState extends State<LanguageScreen> {
   /// tile keeps its half width rather than stretching across the row.
   Widget _optionsGrid(BuildContext context, bool lightMode) {
     final options = _options(context);
-    final isPhone = ContextExtension(context).isPhone;
-    final gap = 12.w;
+    // D-244 (21/10/2026): 1 per row when the menu is open beside the page
+    // (iPad portrait) and on the phone; 2 per row only when everything fits.
+    final isPhone = ContextExtension(context).isPhone ||
+        MediaQuery.of(context).orientation == Orientation.portrait;
+    // Owner 21/10/2026 (R-1): 16 between the two tiles in a row; 12 between
+    // rows stays.
+    final gap = 12.sp;
+    final columnGap = 16.sp;
 
     if (isPhone) {
       return Column(
@@ -192,7 +200,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(child: _langTile(context, options[i], lightMode)),
-            SizedBox(width: gap),
+            SizedBox(width: columnGap),
             Expanded(
               child: hasSecond
                   ? _langTile(context, options[i + 1], lightMode)
@@ -218,46 +226,66 @@ class _LanguageScreenState extends State<LanguageScreen> {
         option.isAvailable && selectedLanguage == option.language;
 
     return GestureDetector(
-      onTap: option.isAvailable ? () => toggleLangSwitch(option.language) : null,
+      onTapDown: option.isAvailable ? (_) => HapticController.low() : null,
+      onTap:
+          option.isAvailable ? () => toggleLangSwitch(option.language) : null,
       child: MouseRegion(
         cursor: option.isAvailable
             ? SystemMouseCursors.click
             : SystemMouseCursors.basic,
-        child: Container(
-          height: 52.h,
-          padding: EdgeInsets.symmetric(horizontal: 16.w),
-          decoration: BoxDecoration(
-            color: AppColors.background,
-            borderRadius: BorderRadius.circular(4.r),
-          ),
-          child: Row(
-            children: [
-              _radio(selected: selected, enabled: option.isAvailable),
-              SizedBox(width: 12.w),
-              Expanded(
-                child: Text(
-                  option.label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: StyleText.fontSize16Weight400.copyWith(
-                    color: option.isAvailable
-                        ? AppColors.text
-                        : AppColors.secondaryText,
+        child: Opacity(
+          // D-244: coming-soon languages are greyed out and not tappable.
+          opacity: option.isAvailable ? 1 : 0.5,
+          child: Container(
+            height: 52.h,
+            padding: EdgeInsets.symmetric(horizontal: 16.sp),
+            decoration: BoxDecoration(
+              color: AppColors.background,
+              borderRadius: BorderRadius.circular(4.r),
+              // D-244: the selected language has a yellow border too.
+              // Owner 21/10/2026: a transparent border of the same width when
+              // not selected, so selecting a tile does not shift its content.
+              border: Border.all(
+                color: selected ? AppColors.primary : Colors.transparent,
+                width: 1.5,
+              ),
+            ),
+            child: Row(
+              children: [
+                _radio(selected: selected, enabled: option.isAvailable),
+                SizedBox(width: 12.sp),
+                Expanded(
+                  child: Text(
+                    option.label,
+                    // Names in full, never cut (D-205).
+                    maxLines: 1,
+                    style: StyleText.fontSize16Weight400.copyWith(
+                      color: option.isAvailable
+                          ? AppColors.text
+                          : AppColors.secondaryText,
+                    ),
                   ),
                 ),
-              ),
-              if (!option.isAvailable) ...[
-                SizedBox(width: 8.w),
-                SvgPicture.asset(
-                  lightMode
-                      ? 'assets/icons_assets/settings_assets/soon_light.svg'
-                      : 'assets/icons_assets/settings_assets/soon_dark.svg',
-                  height: 30.sp,
-                  width: 30.sp,
-                  fit: BoxFit.contain,
-                ),
+                if (!option.isAvailable) ...[
+                  SizedBox(width: 8.sp),
+                  // D-244: a small "Soon" text tag (radius 4), not the big
+                  // round badge.
+                  Container(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 8.sp, vertical: 2.sp),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius: BorderRadius.circular(4.r),
+                    ),
+                    child: Text(
+                      S.of(context).soon,
+                      style: StyleText.fontSize12Weight500
+                          .copyWith(color: AppColors.textButton),
+                    ),
+                  ),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),
@@ -267,7 +295,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
   Widget _radio({required bool selected, required bool enabled}) {
     final Color ringColor = selected
         ? AppColors.primary
-        : AppColors.secondaryText.withOpacity(enabled ? 0.6 : 0.35);
+        : AppColors.secondaryText.withValues(alpha: enabled ? 0.6 : 0.35);
 
     return Container(
       width: 18.sp,

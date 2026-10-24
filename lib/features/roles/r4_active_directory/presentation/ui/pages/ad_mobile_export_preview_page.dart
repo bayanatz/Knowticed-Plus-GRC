@@ -28,22 +28,23 @@
 /// owns the mapping from `EmployeeDataItems` to `usersData` offsets, and one
 /// owner means the two screens cannot disagree about which cell is the job
 /// title.
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:grc_module/core/constants/app_assets.dart';
-import 'package:grc_module/core/custom/35-custom_search_widget_custom.dart';
-import 'package:grc_module/core/custom/50-custom_side_frame_master.dart';
-import 'package:grc_module/core/helper/main_helper/csv_helper.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/constants/app_assets.dart';
+import 'package:knowticed_plus/core/custom/inputs/custom_search_widget_custom.dart';
+import 'package:knowticed_plus/core/custom/navigation/custom_side_frame_master.dart';
+import 'package:knowticed_plus/core/helper/csv_helper.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
 // The header row this page writes is `EmployeeDataItems` in enum order, the
 // same one the desktop export uses.
-import 'package:grc_module/features/roles/r4_active_directory/domain/enums/employee_data.dart';
-import 'package:grc_module/features/roles/shared_mobile_export/mobile_export_person.dart';
-import 'package:grc_module/features/roles/shared_mobile_export/mobile_export_widgets.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/features/roles/r4_active_directory/domain/enums/employee_data.dart';
+import 'package:knowticed_plus/features/roles/presentation/ui/widgets/shared_mobile_export/mobile_export_person.dart';
+import 'package:knowticed_plus/features/roles/presentation/ui/widgets/shared_mobile_export/mobile_export_widgets.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
 class AdMobileExportPreviewPage extends StatefulWidget {
   const AdMobileExportPreviewPage({
@@ -130,9 +131,7 @@ class _AdMobileExportPreviewPageState extends State<AdMobileExportPreviewPage> {
   List<MapEntry<List<dynamic>, MobileExportPerson>> get _visible {
     final String q = _query.trim().toLowerCase();
     if (q.isEmpty) return _all;
-    return _all
-        .where((entry) => entry.value.searchIndex.contains(q))
-        .toList();
+    return _all.where((entry) => entry.value.searchIndex.contains(q)).toList();
   }
 
   /// What Export writes: every ticked row, whether or not the search box is

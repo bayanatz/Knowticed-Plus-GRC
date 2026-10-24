@@ -1,10 +1,12 @@
 /// Module: messaging / chat / domain/entity/new_message_content_entity.dart
+library;
+
 import 'dart:convert';
-import 'package:grc_module/core/enums/message_module/message_types.dart';
-import '../../../m3_groups/domain/entities/member_entity.dart';
-import '../../data/models/message/audio_message_model.dart';
-import '../../data/models/message/doc_message_model.dart';
-import '../../data/models/message/video_message_model.dart';
+import 'package:knowticed_plus/features/messaging/helpers/enums/message_types.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/domain/entities/member_entity.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/message/audio_message_model.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/message/doc_message_model.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/message/video_message_model.dart';
 
 /// NewMessageContentEntity is an abstract class that is used to create new message content entities.
 /// Purpose: this class is used to avoid creating many functions for each message type.
@@ -26,9 +28,9 @@ class TextMessageContentEntity extends NewMessageContentEntity {
   String? previewContent;
   TextMessageContentEntity(
       {required this.messageContent,
-        super.repliedMessageId,
-        this.mentionedMembers,
-        this.previewContent})
+      super.repliedMessageId,
+      this.mentionedMembers,
+      this.previewContent})
       : super(messageType: MessageTypes.text);
 }
 
@@ -60,6 +62,7 @@ class AudioMessageContentEntity extends NewMessageContentEntity {
   AudioMessageContentEntity({required this.audio, super.repliedMessageId})
       : super(messageType: MessageTypes.audio);
 }
+
 /// Shared location (bug report #23). Travels as JSON in the message's
 /// `Message_Content` — see [LocationPayload].
 class LocationMessageContentEntity extends NewMessageContentEntity {

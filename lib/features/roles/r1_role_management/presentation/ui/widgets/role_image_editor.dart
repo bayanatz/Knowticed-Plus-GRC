@@ -2,18 +2,22 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: role_image_editor.dart
-/// Purpose: Declares `RoleImageEditor`.
-/// Author: Knowticed Plus team
+/// Description: Declares `RoleImageEditor`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'package:flutter/material.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/data/models/role_model.dart'
+    show RoleHistoryModelMethods;
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
 
 class RoleImageEditor extends StatefulWidget {
   const RoleImageEditor({super.key});
@@ -51,31 +55,31 @@ class _RoleImageEditorState extends State<RoleImageEditor> {
             backgroundColor: AppColors.background,
             child: controller.roleImage != null
                 ? CircleAvatar(
-              radius: 32.r,
-              backgroundImage:
-              FileImage(controller.roleImage!.absolute),
-            )
+                    radius: 32.r,
+                    backgroundImage: FileImage(controller.roleImage!.absolute),
+                  )
                 : (controller.selectedRole?.currentRoleImage != null &&
-                controller.selectedRole!.currentRoleImage.isNotEmpty)
-                ? CircleAvatar(
-              radius: 32.r,
-              backgroundImage: NetworkImage(
-                controller.selectedRole!.currentRoleImage,
-              ),
-              onBackgroundImageError: (_, __) {},
-            )
-                : Container(
-              padding: EdgeInsets.all(8.sp),
-              child: CustomSvgImage(
-                assetPath:
-                'assets/icons_assets/main_icons_assets/image_photo_rounded.svg',
-                width: 26.sp,
-                height: 26.sp,
-                color: AppColors.text,
-              ),
-            ),
+                        controller.selectedRole!.currentRoleImage.isNotEmpty)
+                    ? CircleAvatar(
+                        radius: 32.r,
+                        backgroundImage: NetworkImage(
+                          controller.selectedRole!.currentRoleImage,
+                        ),
+                        onBackgroundImageError: (_, __) {},
+                      )
+                    : Container(
+                        padding: EdgeInsets.all(8.sp),
+                        child: CustomSvgImage(
+                          assetPath:
+                              'assets/icons_assets/main_icons_assets/ic_media_image.svg',
+                          width: 26.sp,
+                          height: 26.sp,
+                          color: AppColors.text,
+                        ),
+                      ),
           ),
           GestureDetector(
+            onTapDown: (_) => HapticController.low(),
             onTap: () async {
               await controller.pickRoleImage(camera: false);
             },
@@ -83,7 +87,8 @@ class _RoleImageEditorState extends State<RoleImageEditor> {
               radius: 12.r,
               backgroundColor: AppColors.primary,
               child: CustomSvgImage(
-                assetPath: 'assets/icons_assets/messaging_assets/camera.svg',
+                assetPath:
+                    'assets/icons_assets/main_icons_assets/ic_media_camera_teal.svg',
                 width: 16.w,
                 height: 16.h,
                 color: AppColors.textButton,

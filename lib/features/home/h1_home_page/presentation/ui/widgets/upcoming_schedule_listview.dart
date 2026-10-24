@@ -5,39 +5,46 @@
 /// Purpose: Declares `UpcomingScheduleListview`.
 /// Author: Knowticed Plus team
 /// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
 
+import 'package:knowticed_plus/generated/l10n.dart';
+import 'package:knowticed_plus/core/custom/feedback/custom_empty_state.dart';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:grc_module/core/theme/app_font_size.dart';
-import 'package:grc_module/features/home/main_controller/helper/events/events_stub.dart';
-import 'package:grc_module/features/home/main_controller/helper/events/controllers/events_controllers/model/event_model.dart';
-// REMOVED_MODULE: import 'package:grc_module/features/events/mobile/employee/take_survey_screen_mobile.dart';
-// REMOVED_MODULE: import 'package:grc_module/features/events/mobile/event_details_mobiel.dart';
-// REMOVED_MODULE: import 'package:grc_module/features/events/tablet/media_departments_view/views/event_details.dart';
-// REMOVED_MODULE: import 'package:grc_module/features/events/tablet/media_departments_view/views/survey/take_survey_screen.dart';
+import 'package:knowticed_plus/core/extensions/screen_fraction_extension.dart';
+import 'package:knowticed_plus/features/home/helpers/events/events_stub.dart';
+import 'package:knowticed_plus/features/home/helpers/events/controllers/events_controllers/model/event_model.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/features/events/mobile/employee/take_survey_screen_mobile.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/features/events/mobile/event_details_mobiel.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/features/events/tablet/media_departments_view/views/event_details.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/features/events/tablet/media_departments_view/views/survey/take_survey_screen.dart';
 
-import 'package:grc_module/features/home/h1_home_page/presentation/ui/widgets/custom_schedule_container.dart';
-import 'package:grc_module/features/home/h2_nav_bar/persistent_nav_bar.dart';
-import 'package:lottie/lottie.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/widgets/custom_schedule_container.dart';
+import 'package:knowticed_plus/features/home/h2_nav_bar/persistent_nav_bar.dart';
 import 'package:page_transition/page_transition.dart';
 
-import 'package:grc_module/features/home/main_controller/helper/todo_new_module/tasks_stub.dart';
-import 'package:grc_module/core/helper/main_helper/calnder_size.dart';
-import 'package:grc_module/features/home/h1_home_page/data/models/card_model/checklist_item.dart';
-import 'package:grc_module/features/home/h1_home_page/presentation/controller/schedule_controller.dart';
-import 'package:grc_module/features/settings/main_controller/presentation/controller/employee_controller.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/features/home/helpers/todo_new_module/tasks_stub.dart';
+import 'package:knowticed_plus/features/home/helpers/calendar_size.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/data/models/card_model/checklist_item.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/presentation/controller/schedule_controller.dart';
+import 'package:knowticed_plus/features/settings/presentation/controller/employee_controller.dart';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/core/custom/navigation/custom_navigate.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
+import 'package:knowticed_plus/features/todo/domain/entities/todo_entity.dart';
+import 'package:knowticed_plus/features/todo/presentation/ui/pages/todo_module_entry.dart';
 
 class UpcomingScheduleListview extends StatefulWidget {
-  List<DateTime?>? selectedDate;
+  final List<DateTime?>? selectedDate;
 
-  UpcomingScheduleListview({super.key, this.selectedDate});
+  const UpcomingScheduleListview({super.key, this.selectedDate});
   @override
-  _UpcomingScheduleListviewState createState() =>
+  State<UpcomingScheduleListview> createState() =>
       _UpcomingScheduleListviewState();
 }
 
@@ -76,15 +83,32 @@ class _UpcomingScheduleListviewState extends State<UpcomingScheduleListview> {
   @override
   void initState() {
     super.initState();
-    scheduleController.getAnyWorkToDO();
+    // After the first frame, not inside it: getAnyWorkToDO() calls
+    // GetxController.update() synchronously, and when another
+    // GetBuilder<EventsEmployeeController> is already on screen (the Home tab
+    // behind Settings › Home Preview / Watermark preview) that is a
+    // "setState() called during build" error (21/10/2026).
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) scheduleController.getAnyWorkToDO();
+    });
   }
 
   EmployeeController emplController = Get.find();
 
   @override
   Widget build(BuildContext context) {
+    // ScheduleController emits ScheduleUpdated whenever the user's to-dos
+    // change, so the empty-state check and the lists below stay live.
+    return BlocBuilder<ScheduleController, ScheduleState>(
+      bloc: scheduleController,
+      builder: (BuildContext context, ScheduleState _) =>
+          _buildSchedule(context),
+    );
+  }
+
+  Widget _buildSchedule(BuildContext context) {
     bool isDesktop = Platform.isLinux || Platform.isMacOS || Platform.isWindows;
-    bool isTablet = MediaQuery.of(context).size.shortestSide > 600;
+    bool isTablet = !kpIsPhoneLayout(context);
     bool isPortrait =
         MediaQuery.of(context).orientation == Orientation.portrait;
     bool isLargeTablet = MediaQuery.of(context).size.shortestSide >= 1024;
@@ -93,7 +117,7 @@ class _UpcomingScheduleListviewState extends State<UpcomingScheduleListview> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
+          SizedBox(
             height: isPortrait
                 ? null
                 : (isLargeTablet
@@ -102,23 +126,20 @@ class _UpcomingScheduleListviewState extends State<UpcomingScheduleListview> {
                         ? HomeHelper.getConditionalHeight(context)
                         : 0.35.h)),
             child: !scheduleController.isThereAnyWork()
+                // CHANGED 17/10/2026 (macOS resize test): was a 0.3-high box
+                // with the animation scaled up 4-6x and no text, so only a
+                // tick showed. Now the shared empty state with its message.
                 ? Center(
-                    child: SizedBox(
-                      height: 0.3.h,
-                      child: Transform.scale(
-                        scale: isTablet ? (isPortrait ? 6 : 5) : 4,
-                        child: Padding(
-                          padding: EdgeInsets.only(top: 0.0.h),
-                          child: Lottie.asset(
-                            "assets/lottie_assets/main_lottie_assets/emptyTask.json",
-                          ),
-                        ),
-                      ),
+                    child: CustomEmptyState(
+                      lottiePath:
+                          "assets/lottie_assets/home_lottie_assets/lot_empty_task.json",
+                      title: S.of(context).youreAllClear,
                     ),
                   )
                 : ListView(
-                    physics:
-                        isPortrait ? const NeverScrollableScrollPhysics() : null,
+                    physics: isPortrait
+                        ? const NeverScrollableScrollPhysics()
+                        : null,
                     shrinkWrap: isPortrait ? true : false,
                     padding: EdgeInsets.zero,
                     children: [
@@ -135,7 +156,8 @@ class _UpcomingScheduleListviewState extends State<UpcomingScheduleListview> {
     );
   }
 
-  GetBuilder<EventsEmployeeController> surveyItemsBuilder(BuildContext context, bool isTablet) {
+  GetBuilder<EventsEmployeeController> surveyItemsBuilder(
+      BuildContext context, bool isTablet) {
     return GetBuilder<EventsEmployeeController>(builder: (employeeController) {
       return ListView.builder(
         padding: EdgeInsets.zero,
@@ -147,6 +169,7 @@ class _UpcomingScheduleListviewState extends State<UpcomingScheduleListview> {
 
           return InkWell(
             onTap: () {
+              HapticController.low(); // list row: on the tap (X-117)
               isTablet
                   ? Navigator.push(
                       context,
@@ -203,6 +226,7 @@ class _UpcomingScheduleListviewState extends State<UpcomingScheduleListview> {
               scheduleController.requestedServices;
           return InkWell(
             onTap: () {
+              HapticController.low(); // list row: on the tap (X-117)
               isTablet
                   ? Navigator.push(
                       context,
@@ -344,6 +368,7 @@ class _UpcomingScheduleListviewState extends State<UpcomingScheduleListview> {
 
         return InkWell(
           onTap: () {
+            HapticController.low(); // list row: on the tap (X-117)
             isTablet
                 ? Navigator.push(
                     context,
@@ -410,6 +435,7 @@ class _UpcomingScheduleListviewState extends State<UpcomingScheduleListview> {
           List<EventModel> inviteAtEvents = scheduleController.inviteAtEvents;
           return InkWell(
             onTap: () {
+              HapticController.low(); // list row: on the tap (X-117)
               isTablet
                   ? Navigator.push(
                       context,
@@ -451,76 +477,45 @@ class _UpcomingScheduleListviewState extends State<UpcomingScheduleListview> {
     });
   }
 
+  /// To-dos on the selected day (from `ScheduleController.todoList`).
+  /// Tapping one opens the To-Do module with THAT to-do's details pushed on
+  /// top of its list (`TodoModuleEntry.initialTodoId`, same as the calendar
+  /// and home checklist taps). Both branches build the entry directly, so
+  /// the constructor argument reaches it (no drawer switch → no
+  /// `pendingTodoId` hint needed).
   Widget todoItemsBuilder(bool isTablet) {
-    return GetBuilder(builder: (todoController) {
-      return ListView.builder(
-        padding: EdgeInsets.zero,
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: scheduleController.todoList.length,
-        itemBuilder: (BuildContext context, int index) {
-          return InkWell(
-            onTap: () {
-              /*       isTablet
-                  ? Navigator.push(
-                      context,
-                      PageTransition(
-                          type: PageTransitionType.fade,
-                          child:
-                          TodoDetailsScreen(
-                            searchText: '',
-                            todoModel: scheduleController.todoList[index],
-                            items: [],
-                            title: scheduleController
-                                .todoList[index].name?.name?.last ??
-                                'ghfh',
-                            description: scheduleController.todoList[index]
-                                .description?.description?.last ??
-                                '',
-                            date: scheduleController
-                                .todoList[index].date?.date?.last ??
-                                'rrrrrrrrrrrrrr',
-                            time: scheduleController
-                                .todoList[index].time?.time?.last ??
-                                'eeeeeeeeeeeeeeee',
-                          )),
-                    )
-                  : PersistentNavBarNavigator.pushNewScreen(
-                      context,
-                      screen: TodoDetailsScreenMobile(
-                        searchText: '',
-                        todoModel: scheduleController.todoList[index],
-                        items: [],
-                        title: scheduleController
-                                .todoList[index].name?.name?.last ??
-                            'ghfh',
-                        description: scheduleController.todoList[index]
-                                .description?.description?.last ??
-                            '',
-                        date: scheduleController
-                                .todoList[index].date?.date?.last ??
-                            'rrrrrrrrrrrrrr',
-                        time: scheduleController
-                                .todoList[index].time?.time?.last ??
-                            'eeeeeeeeeeeeeeee',
-                      ),
-                      withNavBar: false,
-                    );
-       */
-            },
-            child:
-                Container() /* CustomScheduleContainer(
-              cardTitle: scheduleController.todoList[index].name!.name!.last!,
-              eventType: 'To Do list',
-              description: scheduleController
-                  .todoList[index].description!.description!.last!,
-              dueDate: scheduleController.todoList[index].date!.date!.last!,
-              imagesList: [],
-            ) */
-            ,
-          );
-        },
-      );
-    });
+    final List<TodoEntity> todos = scheduleController.todoList;
+    return ListView.builder(
+      padding: EdgeInsets.zero,
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemCount: todos.length,
+      itemBuilder: (BuildContext context, int index) {
+        final TodoEntity todo = todos[index];
+        final DateTime? due = todo.endAt ?? todo.startAt;
+        return InkWell(
+          onTap: () {
+            HapticController.low();
+            final TodoModuleEntry entry = TodoModuleEntry(
+              initialTodoId: todo.id.isEmpty ? null : todo.id,
+            );
+            isTablet
+                ? navigateTo(context, entry)
+                : PersistentNavBarNavigator.pushNewScreen(
+                    context,
+                    screen: entry,
+                    withNavBar: true,
+                  );
+          },
+          child: CustomScheduleContainer(
+            cardTitle: todo.name,
+            eventType: 'To Do list',
+            description: todo.description,
+            dueDate: due == null ? ' ' : DateFormat('dd MMM yyyy').format(due),
+            imagesList: const <String?>[],
+          ),
+        );
+      },
+    );
   }
 }

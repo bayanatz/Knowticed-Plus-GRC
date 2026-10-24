@@ -11,11 +11,12 @@
 /// six times, call `Get.find<LoginController>()`, and branch navigation from
 /// inside an animation status listener. The reads are behind one injectable
 /// seam here, so the page only asks "where next?".
+library;
 
 import 'package:get_storage/get_storage.dart';
 
-import 'package:grc_module/core/constants/app_constants.dart';
-import 'package:grc_module/features/onboarding/o1_splash/presentation/controller/splash_destination.dart';
+import 'package:knowticed_plus/core/constants/app_constants.dart';
+import 'package:knowticed_plus/features/onboarding/o1_splash/presentation/controller/splash_destination.dart';
 
 class SplashController {
   SplashController({

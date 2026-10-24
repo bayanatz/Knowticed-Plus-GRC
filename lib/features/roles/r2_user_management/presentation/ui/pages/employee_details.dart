@@ -2,65 +2,67 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: employee_details.dart
-/// Purpose: Declares `RoleEmployeeDetailsPage`.
-/// Author: Knowticed Plus team
+/// Description: Declares `RoleEmployeeDetailsPage`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
 /// Updated: 25/8/2026 - Card dates and the module count use Arabic numerals.
+library;
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_button.dart';
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
+import 'package:knowticed_plus/core/helper/format_title.dart';
 
-import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
-import 'package:grc_module/core/custom/50-custom_side_frame_master.dart';
-// REMOVED_MODULE: import 'package:grc_module/features/external/services_mangment_module/Category/presentation/ui/services_admin/Widget/W3_Frame_Screen_tablet.dart';
-// REMOVED_MODULE: import 'package:grc_module/features/services_management_module/s6_services_requests/presentation/ui/widgets/custom_button_with_image.dart';
-import 'package:grc_module/features/roles/r2_user_management/presentation/controller/user_management_cubit.dart';
-import 'package:grc_module/features/roles/r2_user_management/presentation/ui/widgets/edit_user_access_dialog.dart';
+import 'package:knowticed_plus/core/custom/feedback/circle_progress.dart';
+import 'package:knowticed_plus/core/custom/navigation/custom_side_frame_master.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/features/external/services_mangment_module/Category/presentation/ui/services_admin/Widget/W3_Frame_Screen_tablet.dart';
+// REMOVED_MODULE: import 'package:knowticed_plus/features/services_management_module/s6_services_requests/presentation/ui/widgets/custom_button_with_image.dart';
+import 'package:knowticed_plus/features/roles/r2_user_management/presentation/controller/user_management_cubit.dart';
+import 'package:knowticed_plus/features/roles/r2_user_management/presentation/ui/widgets/edit_user_access_dialog.dart';
 // REMOVED 25/8/2026: `dart:ui as ui` — its only use was the hardcoded
 // `ui.TextDirection.ltr` in the chip width measurement, which now reads the
 // ambient directionality instead.
-import 'package:grc_module/features/roles/r1_role_management/presentation/ui/widgets/permission_label.dart';
-import 'package:grc_module/features/settings/se1_profile/data/utils/localized_digits.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/presentation/ui/widgets/permission_label.dart';
+import 'package:knowticed_plus/features/settings/se1_profile/data/utils/localized_digits.dart';
 
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/custom/57-custom_dialog_manager.dart';
-import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/core/network/get_base_url.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/features/roles/r4_active_directory/data/models/employees_model/new_employee_model.dart';
-import 'package:grc_module/features/roles/r4_active_directory/domain/entities/employee_entity.dart';
-import 'package:grc_module/core/helper/role/main_core_employee_controller.dart';
+import 'package:knowticed_plus/core/custom/dialogs/custom_dialog_manager.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/features/roles/r4_active_directory/domain/entities/employee_entity.dart';
+import 'package:knowticed_plus/core/helper/access/main_core_employee_controller.dart';
 // REMOVED_MODULE: import '../../../../../../external/services_mangment_module/Category/presentation/ui/service_department_manager/mobile/dashBoard_master_mobile/widget/dialog.dart';
 // REMOVED_MODULE: import '../../../../../../external/services_mangment_module/core/new_theme.dart';
-import 'package:grc_module/features/roles/r2_user_management/domain/entities/user_permission_entity.dart';
+import 'package:knowticed_plus/features/roles/r2_user_management/domain/entities/user_permission_entity.dart';
 // ADDED 21/9/2026 — the role header's status label and colour (the same ones
 // the User Management grid uses).
-import 'package:grc_module/features/roles/r2_user_management/presentation/ui/widgets/user_access_status_label.dart';
-import 'package:grc_module/features/roles/r2_user_management/presentation/ui/pages/user_management_home.dart'
+import 'package:knowticed_plus/features/roles/r2_user_management/presentation/ui/widgets/user_access_status_label.dart';
+import 'package:knowticed_plus/features/roles/r2_user_management/presentation/ui/pages/user_management_home.dart'
     show UserAccessStatusColor;
-import 'package:grc_module/core/helper/role/modules_enum.dart';
-import 'package:grc_module/features/roles/r1_role_management/domain/enums/roles/roles_permissions_sections.dart';
-import 'package:grc_module/features/roles/r1_role_management/domain/enums/roles/user_management_permission.dart';
-import 'package:grc_module/core/helper/role/constants.dart';
-import 'package:grc_module/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
-import 'package:grc_module/features/roles/r5_system_logs/data/role_log_service.dart';
-import 'package:grc_module/features/roles/r1_role_management/presentation/ui/widgets/access_grant_widget.dart';
+import 'package:knowticed_plus/core/helper/access/modules_enum.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/roles/roles_permissions_sections.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/roles/user_management_permission.dart';
+import 'package:knowticed_plus/core/helper/access/constants.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
+import 'package:knowticed_plus/features/roles/r5_system_logs/data/role_log_service.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/presentation/ui/widgets/access_grant_widget.dart';
 // ADDED 28/8/2026 for the header's Chat button. `drawerCubit()` / `openInShell`
 // are the hardened module-navigation helpers — see `_openMessages` in
 // employee_details_methods4.dart for why they are used instead of context.read.
-import 'package:grc_module/features/notification/presentation/ui/widgets/notification_routing.dart';
+import 'package:knowticed_plus/features/notification/presentation/ui/widgets/notification_routing.dart';
 
-import 'package:grc_module/core/custom/6-custom_button_with_svg.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
-import 'package:grc_module/core/di/app_controllers.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_button_with_svg.dart';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/core/di/app_controllers.dart';
 import 'package:collection/collection.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/data/models/role_model.dart'
+    show RoleHistoryModelMethods;
+import 'package:knowticed_plus/features/roles/r2_user_management/data/repository/user_role_repository.dart'
+    show UserManagementAccessRepositoryMethods;
 part '../widgets/employee_details_methods1.dart';
 part '../widgets/employee_details_methods2.dart';
 part '../widgets/employee_details_methods3.dart';
@@ -77,25 +79,48 @@ class RoleEmployeeDetailsPage extends StatefulWidget {
 }
 
 class _RoleEmployeeDetailsPageState extends State<RoleEmployeeDetailsPage> {
-  final MainCoreEmployeeController employeeController =
-  AppControllers.employee;
+  /// Lets this screen's builder/logic extensions refresh it (setState
+  /// itself may only be called inside the State class).
+  void rebuild(VoidCallback fn) => setState(fn);
+
+  final MainCoreEmployeeController employeeController = AppControllers.employee;
 
   EmployeeEntityPro? currentEmployeeEntity;
 
   bool _permissionsLoaded = false;
   bool _isLoading = true;
   String? _errorMessage;
-  Map<String, List<String>> _modulePermissions = {};
+  final Map<String, List<String>> _modulePermissions = {};
   List<String> activeModuleStrings = [];
 
   // ── Shared month lists ────────────────────────────────────────────────────
   static const _enMonths = [
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
   ];
   static const _arMonths = [
-    'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
-    'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر',
+    'يناير',
+    'فبراير',
+    'مارس',
+    'أبريل',
+    'مايو',
+    'يونيو',
+    'يوليو',
+    'أغسطس',
+    'سبتمبر',
+    'أكتوبر',
+    'نوفمبر',
+    'ديسمبر',
   ];
 
   // ── Master date formatter ─────────────────────────────────────────────────
@@ -157,11 +182,10 @@ class _RoleEmployeeDetailsPageState extends State<RoleEmployeeDetailsPage> {
     //
     // Display only. This formats `rawDate` for the screen; the stored value is
     // untouched, and the parser above still reads the 'en' on-disk format.
-    final day   = parsed.day.toString().padLeft(2, '0');
-    final month = isArabic
-        ? _arMonths[parsed.month - 1]
-        : _enMonths[parsed.month - 1];
-    final year  = parsed.year.toString();
+    final day = parsed.day.toString().padLeft(2, '0');
+    final month =
+        isArabic ? _arMonths[parsed.month - 1] : _enMonths[parsed.month - 1];
+    final year = parsed.year.toString();
     final String formatted = '$day $month $year';
 
     return isArabic ? LocalizedDigits.apply(formatted, 'ar') : formatted;
@@ -175,17 +199,6 @@ class _RoleEmployeeDetailsPageState extends State<RoleEmployeeDetailsPage> {
     _initializePage();
   }
 
-
-
-
-
-
-
-
-
-
-
-
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
@@ -194,30 +207,31 @@ class _RoleEmployeeDetailsPageState extends State<RoleEmployeeDetailsPage> {
       return Scaffold(
         backgroundColor: AppColors.background,
         body: SafeArea(
-        child: SideFrameMasterServices(
-          titleText: S.of(context).platformControlsAndManagement,
-          onFirstTap: () => Navigator.pop(context),
-          secondTitle: S.of(context).employeeDetails,
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              minHeight: MediaQuery.of(context).size.height - 200.h,
-            ),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircleProgressMaster(),
-                  SizedBox(height: 16.sp),
-                  Text(
-                    S.of(context).loadingEmployeeDetails,
-                    style: StyleText.fontSize16Weight400
-                        .copyWith(color: AppColors.text),
-                  ),
-                ],
+          child: SideFrameMasterServices(
+            titleText: S.of(context).platformControlsAndManagement,
+            onFirstTap: () => Navigator.pop(context),
+            secondTitle: S.of(context).employeeDetails,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: MediaQuery.of(context).size.height - 200.h,
+              ),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircleProgressMaster(),
+                    SizedBox(height: 16.sp),
+                    Text(
+                      S.of(context).loadingEmployeeDetails,
+                      style: StyleText.fontSize16Weight400.copyWith(
+                        color: AppColors.text,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
         ),
       );
     }
@@ -228,61 +242,48 @@ class _RoleEmployeeDetailsPageState extends State<RoleEmployeeDetailsPage> {
       return Scaffold(
         backgroundColor: AppColors.background,
         body: SafeArea(
-        child: SideFrameMasterServices(
-          titleText: S.of(context).platformControlsAndManagement,
-          onFirstTap: () => Navigator.pop(context),
-          secondTitle: S.of(context).employeeDetails,
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.error_outline, size: 48.sp, color: AppColors.red),
-                SizedBox(height: 16.sp),
-                Text(S.of(context).errorLoadingData,
-                    style: StyleText.fontSize16Weight400),
-                SizedBox(height: 8.sp),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 32.sp),
-                  child: Text(
-                    _errorMessage!,
-                    style: StyleText.fontSize12Weight400,
-                    textAlign: TextAlign.center,
+          child: SideFrameMasterServices(
+            titleText: S.of(context).platformControlsAndManagement,
+            onFirstTap: () => Navigator.pop(context),
+            secondTitle: S.of(context).employeeDetails,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.error_outline, size: 48.sp, color: AppColors.red),
+                  SizedBox(height: 16.sp),
+                  Text(
+                    S.of(context).errorLoadingData,
+                    style: StyleText.fontSize16Weight400,
                   ),
-                ),
-                SizedBox(height: 16.sp),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      _isLoading = true;
-                      _errorMessage = null;
-                    });
-                    _initializePage();
-                  },
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary),
-                  child: Text(S.of(context).retry),
-                ),
-              ],
+                  SizedBox(height: 8.sp),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 32.sp),
+                    child: Text(
+                      _errorMessage!,
+                      style: StyleText.fontSize12Weight400,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  SizedBox(height: 16.sp),
+                  customButton(
+                    title: S.of(context).retry,
+                    function: () {
+                      setState(() {
+                        _isLoading = true;
+                        _errorMessage = null;
+                      });
+                      _initializePage();
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
         ),
       );
     }
 
     return _buildContent();
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

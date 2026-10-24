@@ -1,7 +1,9 @@
 /// Module: messaging / chat / presentation/controller/functions_on_messages_controllers/forward_message_cubit.dart
+library;
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../data/models/message/message_model.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/message/message_model.dart';
 
 // State class
 class ForwardMessageState {
@@ -19,7 +21,8 @@ class ForwardMessageState {
   }) {
     return ForwardMessageState(
       selectMessages: selectMessages ?? this.selectMessages,
-      selectedForwardMessages: selectedForwardMessages ?? this.selectedForwardMessages,
+      selectedForwardMessages:
+          selectedForwardMessages ?? this.selectedForwardMessages,
     );
   }
 }

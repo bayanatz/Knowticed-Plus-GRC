@@ -1,4 +1,5 @@
 /// Module: messaging / chat / presentation/ui/widgets/all_chats_tile.dart
+library;
 // Date: 12/9/2024
 // By: Nada Mohammed,Mohamed Ashraf
 // Last update: 12/9/2024
@@ -7,16 +8,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-import 'package:grc_module/features/messaging/m2_connections/presentation/controller/community_controller.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/presentation/controller/community_controller.dart';
 
-import 'package:grc_module/core/helper/main_helper/spacing_helper.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
-import '../../../data/models/chat/chat_model.dart';
-import 'package:grc_module/core/custom/46-custom_image_picker.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/features/messaging/helpers/spacing_helper.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/chat/chat_model.dart';
+import 'package:knowticed_plus/core/custom/pickers/custom_image_picker.dart';
 
 class AllChatsTile extends StatelessWidget {
   final ChatModel chat;
@@ -73,8 +72,10 @@ class AllChatsTile extends StatelessWidget {
                                 .join(', '),
                             overflow: TextOverflow.ellipsis,
                             style: isTablet
-                                ? StyleText.fontSize16Weight400.copyWith(color: AppColors.lightGrey)
-                                : StyleText.fontSize12Weight400.copyWith(color: AppColors.lightGrey),
+                                ? StyleText.fontSize16Weight400
+                                    .copyWith(color: AppColors.lightGrey)
+                                : StyleText.fontSize12Weight400
+                                    .copyWith(color: AppColors.lightGrey),
                             maxLines: 1,
                           )
                         ],
@@ -97,29 +98,30 @@ class AllChatsTile extends StatelessWidget {
       backgroundColor: AppColors.mediumGrey,
       backgroundImage: isGroup
           ? chat.groupModel!.groupImage != null
-          ? appImageProvider(chat.groupModel!.groupImage!)
-          : null
+              ? appImageProvider(chat.groupModel!.groupImage!)
+              : null
           : chat.otherUser != null
-          ? appImageProvider(chat.otherUser!.avatarUrl)
-          : null,
+              ? appImageProvider(chat.otherUser!.avatarUrl)
+              : null,
       child: isGroup && chat.groupModel!.groupImage == null
           ? Icon(
-        Icons.group,
-        color: AppColors.moreLightGrey,
-        size: isTablet ? 32.w : 24.w,
-      )
+              Icons.group,
+              color: AppColors.moreLightGrey,
+              size: isTablet ? 32.w : 24.w,
+            )
           : null,
     );
   }
 
-  Checkbox buildCheckbox(BuildContext context, bool isSelected, CommunityCubit cubit) {
+  Checkbox buildCheckbox(
+      BuildContext context, bool isSelected, CommunityCubit cubit) {
     return Checkbox(
       value: isSelected,
       onChanged: (bool? value) {
         cubit.toggleSelectedChat(chat);
       },
       side: WidgetStateBorderSide.resolveWith(
-            (states) {
+        (states) {
           if (states.contains(WidgetState.selected)) {
             return BorderSide(
               color: AppColors.secondaryPrimary,

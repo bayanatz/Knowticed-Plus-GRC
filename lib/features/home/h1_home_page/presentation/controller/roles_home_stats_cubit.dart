@@ -2,9 +2,9 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: roles_home_stats_cubit.dart
-/// Purpose: Declares `RolesHomeStatsCubit` — the counts behind the four Roles
+/// Description: Declares `RolesHomeStatsCubit` — the counts behind the four Roles
 ///          cards on the home page and in the Adding Widget picker.
-/// Author: Knowticed Plus team
+/// Author: Amr Mesbah
 /// Created at: 25/8/2026
 ///
 /// WHY THIS EXISTS
@@ -47,20 +47,23 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:grc_module/core/constants/firebase_collections.dart';
-import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/core/network/get_base_url.dart';
-import 'package:grc_module/features/onboarding/o3_authentication/domain/enums/employee_status_enum.dart';
-import 'package:grc_module/features/roles/r1_role_management/data/models/role_model.dart';
-import 'package:grc_module/features/roles/r1_role_management/data/repository/role_repository.dart';
-import 'package:grc_module/features/roles/r1_role_management/domain/enums/role_status.dart';
-import 'package:grc_module/features/roles/r2_user_management/data/repository/user_role_repository.dart';
-import 'package:grc_module/features/roles/r2_user_management/domain/entities/user_permission_entity.dart';
-import 'package:grc_module/features/roles/r2_user_management/domain/enums/user_access_status.dart';
-import 'package:grc_module/features/roles/r3_user_access/data/repository/user_access_repository.dart';
-import 'package:grc_module/features/roles/r3_user_access/domain/entities/user_access_entity.dart';
-import 'package:grc_module/features/roles/r3_user_access/domain/usecases/get_user_access_entities_use_case.dart';
-import 'package:grc_module/features/home/h1_home_page/presentation/controller/roles_home_stats_state.dart';
+import 'package:knowticed_plus/core/app_services/firebase/live_refresh.dart';
+import 'package:knowticed_plus/core/constants/firebase_collections.dart';
+import 'package:knowticed_plus/core/network/api_constants.dart'
+    show ApiConstants;
+import 'package:knowticed_plus/core/network/failure_model.dart';
+import 'package:knowticed_plus/core/network/get_base_url.dart';
+import 'package:knowticed_plus/features/onboarding/o3_authentication/domain/enums/employee_status_enum.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/data/models/role_model.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/data/repository/role_repository.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/role_status.dart';
+import 'package:knowticed_plus/features/roles/r2_user_management/data/repository/user_role_repository.dart';
+import 'package:knowticed_plus/features/roles/r2_user_management/domain/entities/user_permission_entity.dart';
+import 'package:knowticed_plus/features/roles/r2_user_management/domain/enums/user_access_status.dart';
+import 'package:knowticed_plus/features/roles/r3_user_access/data/repository/user_access_repository.dart';
+import 'package:knowticed_plus/features/roles/r3_user_access/domain/entities/user_access_entity.dart';
+import 'package:knowticed_plus/features/roles/r3_user_access/domain/usecases/get_user_access_entities_use_case.dart';
+import 'package:knowticed_plus/features/home/h1_home_page/presentation/controller/roles_home_stats_state.dart';
 
 /// Status keys stored on an employee change request.
 ///
@@ -76,6 +79,29 @@ abstract class RequestStatusKey {
 
 class RolesHomeStatsCubit extends Cubit<RolesHomeStatsState> {
   RolesHomeStatsCubit() : super(RolesHomeStatsInitial());
+
+  /// Re-runs [load] silently whenever roles, employees or change requests
+  /// change. A longer debounce than the default: this reload reads four
+  /// sources, and employee documents are written in bursts.
+  final LiveRefresh _live =
+      LiveRefresh(debounce: const Duration(milliseconds: 1000));
+
+  /// A change arrived while a load was in flight; reload once it finishes.
+  bool _dirty = false;
+
+  void _onRemoteChange() {
+    if (_loading) {
+      _dirty = true;
+      return;
+    }
+    load(silent: true);
+  }
+
+  @override
+  Future<void> close() {
+    _live.dispose();
+    return super.close();
+  }
 
   final RoleRepository _roleRepository = RoleRepository();
   final UserManagementAccessRepository _userManagementRepository =
@@ -94,8 +120,9 @@ class RolesHomeStatsCubit extends Cubit<RolesHomeStatsState> {
   Map<UserAccessStatus, int> accessCounts = _zeroed(UserAccessStatus.values);
 
   /// Employee accounts by status — the User Access card.
-  Map<EmployeeStatusEnum, int> accountCounts =
-      _zeroed(EmployeeStatusEnum.values);
+  Map<EmployeeStatusEnum, int> accountCounts = _zeroed(
+    EmployeeStatusEnum.values,
+  );
 
   /// Employee change requests by status key — the User Management Requests
   /// card. Keyed by [RequestStatusKey].
@@ -105,8 +132,9 @@ class RolesHomeStatsCubit extends Cubit<RolesHomeStatsState> {
     RequestStatusKey.rejected: 0,
   };
 
-  static Map<T, int> _zeroed<T>(List<T> values) =>
-      <T, int>{for (final T value in values) value: 0};
+  static Map<T, int> _zeroed<T>(List<T> values) => <T, int>{
+        for (final T value in values) value: 0,
+      };
 
   /// Guards against a second load while one is already in flight — all four
   /// cards call [ensureLoaded] from their first build.
@@ -153,10 +181,10 @@ class RolesHomeStatsCubit extends Cubit<RolesHomeStatsState> {
   /// total failure emits [RolesHomeStatsError].
   ///
   /// Returns: [Future<void>]
-  Future<void> load() async {
+  Future<void> load({bool silent = false}) async {
     if (_loading) return;
     _loading = true;
-    emitSafely(RolesHomeStatsLoading());
+    if (!silent) emitSafely(RolesHomeStatsLoading());
 
     final List<bool> results = await Future.wait(<Future<bool>>[
       _loadRoleCounts(),
@@ -168,11 +196,25 @@ class RolesHomeStatsCubit extends Cubit<RolesHomeStatsState> {
     _loading = false;
     _loadedOnce = true;
 
+    _live.watchPaths(<String>[
+      getBaseUrl(RoleRepository.kSubscriptionAdminCollection),
+      getBaseUrl(RoleRepository.kRolesCollection),
+      getBaseUrl(ApiConstants.employeesInfo),
+      '${getBaseUrl('Modules')}/roles/${FirebaseCollections.employeesRequest}',
+    ], _onRemoteChange);
+
     if (results.every((bool ok) => !ok)) {
-      emitSafely(RolesHomeStatsError('Roles home stats could not be loaded'));
-      return;
+      if (!silent) {
+        emitSafely(RolesHomeStatsError('Roles home stats could not be loaded'));
+      }
+    } else {
+      emitSafely(RolesHomeStatsLoaded());
     }
-    emitSafely(RolesHomeStatsLoaded());
+
+    if (_dirty && !isClosed) {
+      _dirty = false;
+      load(silent: true);
+    }
   }
 
   /// Role Management: active / inactive / draft, off the undeleted roles.
@@ -187,8 +229,9 @@ class RolesHomeStatsCubit extends Cubit<RolesHomeStatsState> {
           await _roleRepository.getUnDeletedRoles();
       if (result.isLeft()) return false;
 
-      final List<RoleHistoryModel> roles =
-          List<RoleHistoryModel>.from(result.getOrElse(() => <RoleHistoryModel>[]));
+      final List<RoleHistoryModel> roles = List<RoleHistoryModel>.from(
+        result.getOrElse(() => <RoleHistoryModel>[]),
+      );
 
       final Map<RoleStatus, int> counts = _zeroed(RoleStatus.values);
       for (final RoleHistoryModel role in roles) {
@@ -209,9 +252,12 @@ class RolesHomeStatsCubit extends Cubit<RolesHomeStatsState> {
 
       final List<UserPermissionEntity> permissions =
           List<UserPermissionEntity>.from(
-              result.getOrElse(() => <UserPermissionEntity>[]));
+        result.getOrElse(() => <UserPermissionEntity>[]),
+      );
 
-      final Map<UserAccessStatus, int> counts = _zeroed(UserAccessStatus.values);
+      final Map<UserAccessStatus, int> counts = _zeroed(
+        UserAccessStatus.values,
+      );
       for (final UserPermissionEntity permission in permissions) {
         counts[permission.accessStatus] =
             (counts[permission.accessStatus] ?? 0) + 1;
@@ -234,11 +280,14 @@ class RolesHomeStatsCubit extends Cubit<RolesHomeStatsState> {
 
       final Map<EmployeeStatusEnum, List<UserAccessEntity>> buckets =
           Map<EmployeeStatusEnum, List<UserAccessEntity>>.from(
-              result.getOrElse(
-                  () => <EmployeeStatusEnum, List<UserAccessEntity>>{}));
+        result.getOrElse(
+          () => <EmployeeStatusEnum, List<UserAccessEntity>>{},
+        ),
+      );
 
-      final Map<EmployeeStatusEnum, int> counts =
-          _zeroed(EmployeeStatusEnum.values);
+      final Map<EmployeeStatusEnum, int> counts = _zeroed(
+        EmployeeStatusEnum.values,
+      );
       buckets.forEach((EmployeeStatusEnum status, List<UserAccessEntity> list) {
         counts[status] = list.length;
       });
@@ -287,8 +336,7 @@ class RolesHomeStatsCubit extends Cubit<RolesHomeStatsState> {
   Future<bool> _guard(String label, Future<bool> Function() read) async {
     try {
       return await read();
-    } catch (e, stackTrace) {
-      debugPrint('RolesHomeStatsCubit: $label failed: $e\n$stackTrace');
+    } catch (e) {
       return false;
     }
   }

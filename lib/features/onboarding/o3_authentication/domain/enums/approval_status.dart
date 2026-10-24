@@ -9,6 +9,7 @@
 ///          `color` getter — which returned raw `Colors.green` / `Colors.red`
 ///          from a domain enum (§3, §12) — are deleted. The getter had **no
 ///          callers**; nothing in `lib/` read `ApprovalStatus.color`.
+library;
 
 enum ApprovalStatus {
   all,

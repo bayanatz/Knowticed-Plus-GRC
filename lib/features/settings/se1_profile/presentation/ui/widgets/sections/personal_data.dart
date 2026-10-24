@@ -12,20 +12,22 @@
 ///          data/utils/employee_date_formatter.dart; the widget takes a
 ///          [PersonalProfile] instead of reading the `employee` global; raw
 ///          Colors.* routed through AppColors.
+library;
 
+import 'package:knowticed_plus/core/extensions/context_extensions.dart'
+    show kpIsPhoneLayout;
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 
-import 'package:grc_module/core/helper/main_helper/extensions.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/features/settings/se1_profile/data/utils/employee_date_formatter.dart';
-import 'package:grc_module/features/settings/se1_profile/domain/entities/personal_profile.dart';
-import 'package:grc_module/features/settings/se1_profile/presentation/controller/personal_information_controller.dart';
-import 'package:grc_module/features/settings/se1_profile/presentation/ui/widgets/sections/name_section.dart';
-import 'package:grc_module/features/settings/se1_profile/presentation/ui/widgets/sections/three_text_section.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/core/helper/format_title.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/features/settings/se1_profile/data/utils/employee_date_formatter.dart';
+import 'package:knowticed_plus/features/settings/se1_profile/domain/entities/personal_profile.dart';
+import 'package:knowticed_plus/features/settings/se1_profile/presentation/controller/personal_information_controller.dart';
+import 'package:knowticed_plus/features/settings/se1_profile/presentation/ui/widgets/sections/name_section.dart';
+import 'package:knowticed_plus/features/settings/se1_profile/presentation/ui/widgets/sections/three_text_section.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
 class PersonalData extends StatelessWidget {
   const PersonalData({
@@ -51,14 +53,14 @@ class PersonalData extends StatelessWidget {
     // This file imports core/helper/main_helper/extensions.dart, whose
     // extension is ALSO called ContextExtension — and its `isPhone` is
     //
-    //     bool get isPhone => MediaQuery.of(this).size.width >= 600;
+    //     bool get isPhone => !kpIsPhoneLayout(this);
     //
     // i.e. true on WIDE screens, the exact inverse of
     // core/extensions/context_extensions.dart's `shortestSide < 600`. Same
     // name, same target type, opposite meaning, and the file's own comment
     // admits it. Every `isPhone` here was therefore reading FALSE on a phone.
     // Computed inline so it cannot bind to the wrong extension again.
-    final bool isMobile = MediaQuery.of(context).size.shortestSide < 600;
+    final bool isMobile = kpIsPhoneLayout(context);
 
     final String? genderKey =
         (controller.selectedGender ?? profile.gender)?.toLowerCase();
@@ -80,10 +82,11 @@ class PersonalData extends StatelessWidget {
         // Mobile only: bottom padding so this reads as a closed card, the way
         // each section does on the edit page. Others keep the flush bottom.
         padding: EdgeInsets.only(
-          top: 15.sp,
-          right: 15.sp,
-          left: 15.sp,
-          bottom: isMobile ? 15.sp : 0,
+          top: 16.sp,
+          right: 16.sp,
+          left: 16.sp,
+          // D-223: the next group's top inset is the gap.
+          bottom: 0,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -91,7 +94,8 @@ class PersonalData extends StatelessWidget {
           children: [
             _buildAvatar(),
 
-            SizedBox(height: 20.sp),
+            // D-243: group title (here the avatar) → first label 12.
+            SizedBox(height: 12.sp),
 
             // ── First / middle / last name ──────────────────────────────────
             NameSection(
@@ -117,7 +121,8 @@ class PersonalData extends StatelessWidget {
             ),
 
             // Mobile only: matches the 16.h the edit page uses between fields.
-            SizedBox(height: isMobile ? 10.sp : 15.sp),
+            // D-243: field → next label 12 on every device.
+            SizedBox(height: 12.sp),
             // ── Gender / birth date / marital status ────────────────────────
             ThreeTextSection(
               isReadOnly: isReadOnly,
@@ -143,8 +148,9 @@ class PersonalData extends StatelessWidget {
   }
 
   Widget _buildAvatar() {
-    Widget placeholder() => SvgPicture.asset(
-          'assets/icons_assets/main_icons_assets/male_avatar.svg',
+    Widget placeholder() => CustomSvgImage.natural(
+          assetPath:
+              'assets/icons_assets/main_icons_assets/ic_user_avatar_male.png',
           width: 64.r,
           height: 64.r,
           fit: BoxFit.cover,

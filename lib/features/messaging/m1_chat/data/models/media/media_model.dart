@@ -1,9 +1,8 @@
-
 //Youssef Ashraf
-import 'package:grc_module/core/helper/main_helper/date_time_helper.dart';
-import './doc_info_model.dart';
-import './image_model.dart';
-import './link_model.dart';
+import 'package:knowticed_plus/core/helper/date_time_helper.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/media/doc_info_model.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/media/image_model.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/media/link_model.dart';
 
 /// A Model for media data in every chat including images,links and docs with date of sending/recieving
 ///
@@ -23,7 +22,7 @@ class MediaModel {
   });
 
   ///we get all available sorted dates for each type(link-doc-media)
-  sortImageDates() {
+  void sortImageDates() {
     //first we sort date to display the image sort dates appropriately
     images?.sort(
       (a, b) => b.date.compareTo(a.date),
@@ -35,7 +34,7 @@ class MediaModel {
     }).toSet();
   }
 
-  sortPdfDates() {
+  void sortPdfDates() {
     pdfs?.sort(
       (a, b) => b.date.compareTo(a.date),
     );
@@ -45,7 +44,7 @@ class MediaModel {
     }).toSet();
   }
 
-  sortLinksDates() {
+  void sortLinksDates() {
     links?.sort(
       (a, b) => b.date.compareTo(a.date),
     );
@@ -55,7 +54,7 @@ class MediaModel {
     }).toSet();
   }
 
-  calcTotalMediaItems() {
+  void calcTotalMediaItems() {
     totalMediaItems =
         (links?.length ?? 0) + (pdfs?.length ?? 0) + (images?.length ?? 0);
   }

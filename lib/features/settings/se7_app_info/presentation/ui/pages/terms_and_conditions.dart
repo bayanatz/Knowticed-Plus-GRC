@@ -12,26 +12,29 @@
 ///          (`assignedCompanies` filter, `descriptionEn` / `descriptionAr`,
 ///          `lastUpdateDate`), with the same header, loading, empty and
 ///          error states. Built from about_this_app_screen.dart.
+library;
 
+import 'package:knowticed_plus/core/extensions/context_extensions.dart'
+    show kpIsPhoneLayout;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:knowticed_plus/core/helper/knowticed_logo.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:grc_module/core/constants/firebase_collections.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/custom/50-custom_side_frame_master.dart';
-import 'package:grc_module/core/custom/5-custom_button.dart';
-import 'package:grc_module/core/custom/66-circle_progress.dart';
-import 'package:grc_module/core/helper/main_helper/format_title.dart';
-import 'package:grc_module/core/network/api_constants.dart'
+import 'package:knowticed_plus/core/constants/firebase_collections.dart';
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
+import 'package:knowticed_plus/core/custom/navigation/custom_side_frame_master.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_button.dart';
+import 'package:knowticed_plus/core/custom/feedback/circle_progress.dart';
+import 'package:knowticed_plus/core/helper/format_title.dart';
+import 'package:knowticed_plus/core/network/api_constants.dart'
     hide FirebaseCollections;
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
 class TermsConditions extends StatefulWidget {
   const TermsConditions({super.key});
@@ -41,8 +44,9 @@ class TermsConditions extends StatefulWidget {
 }
 
 class _TermsConditionsState extends State<TermsConditions> {
+  // Same icon as the Terms row in the Settings menu (Figma), 18/10/2026.
   static const String _icon =
-      'assets/icons_assets/settings_assets/requests_edit_document.svg';
+      'assets/icons_assets/settings_assets/ic_page_terms.svg';
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -180,7 +184,7 @@ class _TermsConditionsState extends State<TermsConditions> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isTablet = MediaQuery.of(context).size.shortestSide > 600;
+    final bool isTablet = !kpIsPhoneLayout(context);
 
     if (!isTablet) {
       // Phones push this as its own route, so it owns a Scaffold — the same
@@ -197,16 +201,15 @@ class _TermsConditionsState extends State<TermsConditions> {
         backgroundColor: AppColors.background,
         body: SideFrameMasterServices(
           titleText: S.of(context).settings,
-          secondTitle: FormatHelper.capitalize(S.of(context).termsAndConditions),
+          secondTitle:
+              FormatHelper.capitalize(S.of(context).termsAndConditions),
           onFirstTap: () => Navigator.pop(context),
           onSecondTap: () => Navigator.pop(context),
           child: Column(
             children: <Widget>[
+              // D-246 (21/10/2026): one box; it ends after the content.
               _header(context),
-              SizedBox(
-                height: _phoneContentHeight(context),
-                child: _contentPane(context),
-              ),
+              _contentPane(context),
             ],
           ),
         ),
@@ -215,27 +218,30 @@ class _TermsConditionsState extends State<TermsConditions> {
 
     // Tablet / desktop: rendered inside settings_layout's Expanded, which does
     // hand down a bounded height — so `Expanded` is correct here.
+    // One card for header + body: two touching rounded boxes left a hairline
+    // seam between them on the desktop (Moataz 23/10/2026).
     return Column(
       children: <Widget>[
-        _header(context),
-        Expanded(child: _contentPane(context)),
+        Flexible(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8.r),
+            child: ColoredBox(
+              color: AppColors.card,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  _header(context),
+                  Flexible(
+                    child: SingleChildScrollView(child: _contentPane(context)),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        SizedBox(height: 16.sp),
       ],
     );
-  }
-
-  /// Height handed to the scrollable document pane on phones.
-  ///
-  /// The frame above it (safe area + breadcrumb + the 20.sp gap the frame
-  /// inserts) takes roughly a fifth of the viewport, and this page's own header
-  /// card sits under that. What is left is what the markdown gets. It is a
-  /// fraction rather than a measured value on purpose: the pane lives inside
-  /// the frame's SingleChildScrollView, so being a little short just means the
-  /// page scrolls, and being a little tall is impossible to hit.
-  double _phoneContentHeight(BuildContext context) {
-    final MediaQueryData mq = MediaQuery.of(context);
-    final double usable =
-        mq.size.height - mq.padding.top - mq.padding.bottom;
-    return usable * 0.72;
   }
 
   /// Title card above the content.
@@ -254,7 +260,7 @@ class _TermsConditionsState extends State<TermsConditions> {
         ),
       ),
       child: Padding(
-        padding: EdgeInsets.all(15.sp),
+        padding: EdgeInsets.all(16.sp),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -262,10 +268,8 @@ class _TermsConditionsState extends State<TermsConditions> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 // Same asset choice as privacy_Statement.dart's pane.
-                SvgPicture.asset(
-                  !lightMode
-                      ? 'assets/icons_assets/main_icons_assets/light_app_icon.svg'
-                      : 'assets/icons_assets/main_icons_assets/logo_app.svg',
+                CustomSvgImage.natural(
+                  assetPath: knowticedLogoAsset(lightMode: lightMode),
                   width: 50.w,
                   height: 50.h,
                   fit: BoxFit.fill,
@@ -284,13 +288,13 @@ class _TermsConditionsState extends State<TermsConditions> {
             SizedBox(height: 20.h),
             Row(
               children: <Widget>[
-                CustomSvgImage(
+                // Owner 21/10/2026: just the icon (16), no square tile behind it.
+                CustomSvgImage.natural(
                   assetPath: _icon,
-                  width: 25,
-                  height: 25,
-                  fit: BoxFit.fill,
+                  width: 24.sp,
+                  height: 24.sp,
                 ),
-                SizedBox(width: 5.w),
+                SizedBox(width: 8.sp),
                 Expanded(
                   child: Text(
                     FormatHelper.capitalize(S.of(context).termsAndConditions),
@@ -332,8 +336,11 @@ class _TermsConditionsState extends State<TermsConditions> {
     }
 
     return Markdown(
-      padding: EdgeInsets.all(15.sp),
-      data: _description!,
+      // D-246: the box hugs its content; the page frame scrolls.
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      padding: EdgeInsets.all(16.sp),
+      data: _withoutLeadingTitle(_description!),
       onTapLink: (String text, String? url, String title) async {
         if (url == null) return;
         final Uri link = url.contains('@') && !url.startsWith('http')
@@ -345,7 +352,7 @@ class _TermsConditionsState extends State<TermsConditions> {
       // identically.
       styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
         p: StyleText.fontSize14Weight500.copyWith(
-          color: AppColors.secondaryText,
+          color: AppColors.text, // 23/10/2026 (Moataz): body text is black
           height: 1.6,
         ),
         h1: StyleText.fontSize16Weight600.copyWith(
@@ -361,7 +368,7 @@ class _TermsConditionsState extends State<TermsConditions> {
           height: 1.8,
         ),
         listBullet: StyleText.fontSize14Weight500.copyWith(
-          color: AppColors.secondaryText,
+          color: AppColors.text, // 23/10/2026 (Moataz): body text is black
           height: 1.6,
         ),
       ),
@@ -433,3 +440,31 @@ const List<String> _kTermsDocIds = <String>[
   'terms_conditions',
   'terms',
 ];
+
+/// D-215 (20/10/2026): the page already shows its title in the header, so a
+/// stored document that starts with the same title (e.g. "# Terms and
+/// Conditions") loses that first heading — the title is written once.
+String _withoutLeadingTitle(String markdown) {
+  final List<String> lines = markdown.split('\n');
+  int i = 0;
+  while (i < lines.length && lines[i].trim().isEmpty) {
+    i++;
+  }
+  if (i >= lines.length) return markdown;
+  final String first = lines[i]
+      .replaceFirst(RegExp(r'^\s*#+\s*'), '')
+      .replaceAll(RegExp(r'[*_:]'), '')
+      .trim()
+      .toLowerCase();
+  const List<String> titles = <String>[
+    'terms and conditions',
+    'terms & conditions',
+    'privacy statement',
+    'privacy policy',
+    'الشروط والأحكام',
+    'بيان الخصوصية',
+    'سياسة الخصوصية',
+  ];
+  if (!titles.contains(first)) return markdown;
+  return lines.sublist(i + 1).join('\n').trimLeft();
+}

@@ -4,28 +4,113 @@
 /// Purpose: Home layout helper — messaging Home sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+/// Updated: 22/10/2026 - Owner: a notification's View opens its conversation.
+///          The module root takes `PendingNotificationRecord` (a chat
+///          partner's email, or a group id) and opens that chat over the list.
+library;
 
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:grc_module/core/custom/38-custom_responsive.dart';
+import 'package:knowticed_plus/core/custom/layout/custom_responsive.dart';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/core/helper/access/modules_enum.dart';
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/main_helper/messaging_interface_implementation.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/ui/pages/chat_mobile_view.dart';
+import 'package:knowticed_plus/features/notification/domain/enums/messages/messages_notification_pages.dart';
+import 'package:knowticed_plus/features/notification/domain/routing/pending_notification_record.dart';
 
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/main_controllers/group_chat_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/main_controllers/single_chat_cubit.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/media_controller.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/presentation/controller/message_controller.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/presentation/controller/community_controller.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/presentation/controller/connections_controller.dart';
+import 'package:knowticed_plus/features/messaging/m3_groups/presentation/controller/groups_controller.dart';
+import 'package:knowticed_plus/features/messaging/m4_messaging_home/presentation/controller/messaging_home_controller.dart';
+import 'package:knowticed_plus/features/messaging/helpers/main/chat_settings_service.dart';
+import 'package:knowticed_plus/features/messaging/m4_messaging_home/presentation/ui/pages/home_mobile_page.dart';
+import 'package:knowticed_plus/features/messaging/m4_messaging_home/presentation/ui/pages/home_tablet_page.dart';
 
-import '../../../../m1_chat/presentation/controller/main_controllers/group_chat_cubit.dart';
-import '../../../../m1_chat/presentation/controller/main_controllers/single_chat_cubit.dart';
-import '../../../../m1_chat/presentation/controller/media_controller.dart';
-import '../../../../m1_chat/presentation/controller/message_controller.dart';
-import '../../../../m2_connections/presentation/controller/community_controller.dart';
-import '../../../../m2_connections/presentation/controller/connections_controller.dart';
-import '../../../../m3_groups/presentation/controller/groups_controller.dart';
-import '../../controller/messaging_home_controller.dart';
-import '../../../../main_controller/helper/chat_settings_service.dart';
-import './home_mobile_page.dart';
-import './home_tablet_page.dart';
-
-class HomePageHelperLayout extends StatelessWidget {
+class HomePageHelperLayout extends StatefulWidget {
   const HomePageHelperLayout({super.key});
+
+  @override
+  State<HomePageHelperLayout> createState() => _HomePageHelperLayoutState();
+}
+
+class _HomePageHelperLayoutState extends State<HomePageHelperLayout> {
+  /// The conversation a notification's View asked for (owner 22/10/2026):
+  /// the chat partner's email, or a group id. Taken once — the routing
+  /// remounts this root for every View.
+  final PendingNotificationRecord? _notified =
+      PendingNotificationRecord.take(Modules.messages);
+
+  @override
+  void initState() {
+    super.initState();
+    final PendingNotificationRecord? notified = _notified;
+    if (notified != null) {
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => _openNotified(notified));
+    }
+  }
+
+  /// Opens the conversation [record] names, over the Messages list.
+  ///
+  /// An id with an `@` is a person (email IS the messaging user id) and goes
+  /// through the same bridge as the card's Message button; anything else is a
+  /// group id. A group the reader is no longer in — deleted, or they were
+  /// removed — leaves them on the list, which is also where the "removed" and
+  /// "group deleted" notifications point (they carry no id).
+  Future<void> _openNotified(PendingNotificationRecord record) async {
+    if (MessagesNotificationPage.fromKey(record.pageKey) ==
+        MessagesNotificationPage.messagingHome) {
+      return;
+    }
+    final String id = record.recordId;
+    final MessagingInterfaceImplementation messaging =
+        MessagingInterfaceImplementation();
+
+    // 22/10/2026 — the page decides, not the id: group ids can contain an
+    // `@` (`<creatorEmail>_<millis>`), so they were opened as a person.
+    final bool isGroup = MessagesNotificationPage.fromKey(record.pageKey) ==
+        MessagesNotificationPage.groupChat;
+    if (!isGroup && id.contains('@')) {
+      final OpenChatResult result;
+      if (context.isTablett) {
+        // The tablet layout renders the selected connection inline.
+        result = await messaging.selectChatWithUser(userEmail: id);
+      } else {
+        result = await messaging.tryOpenChatWithUser(
+            context: context, userEmail: id);
+      }
+      if (mounted) await showOpenChatFailure(context, result);
+      return;
+    }
+
+    final OpenChatResult result =
+        await messaging.selectChatWithGroup(groupId: id);
+    if (!mounted) return;
+    if (result != OpenChatResult.opened) {
+      // Said out loud (owner 22/10/2026): a View that does nothing reads as a
+      // bug. Deleted group / removed member land here too.
+      await showOpenChatFailure(context, result);
+      return;
+    }
+    // On tablet the GroupsCubit selection redraws the chat panel in place.
+    if (context.isTablett) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => ChatMobileView(
+          masterChatCubit: Get.find<GroupChatCubit>(),
+          connectionsCubit: Get.find<ConnectionsCubit>(),
+          groupsCubit: Get.find<GroupsCubit>(),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +131,6 @@ class HomePageHelperLayout extends StatelessWidget {
         !available<MessageCubit>() ||
         !available<MediaCubit>() ||
         !available<SingleChatCubit>() ||
-
         !available<GroupChatCubit>()) {
       log('❌ HomePageHelper: messaging dependencies not registered. '
           'Make sure useGroupAndSingleMessaging() is called before navigating here.');
@@ -63,7 +147,8 @@ class HomePageHelperLayout extends StatelessWidget {
     // for the pushed route, which is unaffected by these.
     return MultiBlocProvider(
       providers: [
-        BlocProvider<ConnectionsCubit>.value(value: Get.find<ConnectionsCubit>()),
+        BlocProvider<ConnectionsCubit>.value(
+            value: Get.find<ConnectionsCubit>()),
         BlocProvider<MessagingHomeCubit>.value(
             value: Get.find<MessagingHomeCubit>()),
         BlocProvider<CommunityCubit>.value(value: Get.find<CommunityCubit>()),

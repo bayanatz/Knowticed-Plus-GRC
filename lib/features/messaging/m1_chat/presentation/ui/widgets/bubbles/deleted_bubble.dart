@@ -32,11 +32,7 @@ class DeletedBubble extends StatelessWidget {
             ],
           ),*/
         Container(
-          constraints: BoxConstraints(
-            minHeight: 41.h,
-            maxWidth: 186.w,
-            minWidth: 186.w,
-          ),
+          constraints: kpBubbleConstraints(context),
           padding: EdgeInsetsDirectional.only(
             start: 8.w,
             end: 8.w,
@@ -58,7 +54,8 @@ class DeletedBubble extends StatelessWidget {
             children: [
               Text(
                 S.of(context).youDeletedThisMessage,
-                style: StyleText.fontSize14Weight400.copyWith(color: AppColors.secondaryBlack),
+                style: StyleText.fontSize14Weight400
+                    .copyWith(color: AppColors.secondaryBlack),
                 softWrap: true,
               ),
               Padding(
@@ -69,18 +66,19 @@ class DeletedBubble extends StatelessWidget {
                   children: [
                     Text(
                       DateTimeHelper.formatTime(messageModel.time.toDate()),
-                      style: StyleText.fontSize8Weight500.copyWith(color: AppColors.secondaryBlack),
+                      style: StyleText.fontSize8Weight500
+                          .copyWith(color: AppColors.secondaryBlack),
                     ),
                     horizontalSpace(4),
                     if (isMe)
                       Icon(
-                        /*  messageModel.isDelivered //Todo */ true
-                            ? Icons.done_all
-                            : Icons.done,
+                        // TODO: Icons.done when !messageModel.isDelivered.
+                        Icons.done_all,
                         color: messageModel.isSeen
                             ? AppColors.blue
                             : AppColors.secondaryBlack,
-                        size: ContextExtension(context).isTablet ? 18.sp : 16.sp,
+                        size:
+                            ContextExtension(context).isTablet ? 18.sp : 16.sp,
                       ),
                   ],
                 ),

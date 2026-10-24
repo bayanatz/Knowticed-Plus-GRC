@@ -2,8 +2,8 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: permission_label.dart
-/// Purpose: Render a permission / section identifier as localized display text.
-/// Author: Knowticed Plus team
+/// Description: Render a permission / section identifier as localized display text.
+/// Author: Amr Mesbah
 /// Created at: 13/8/2026
 ///
 /// The permission enums under `r1_role_management/domain/enums/` return
@@ -22,10 +22,11 @@
 ///
 /// Firestore permission keys (`Take_Screen_Shot`) resolve through the same
 /// table after [fromStorageKey] turns them back into their spaced form.
+library;
 
 import 'package:flutter/widgets.dart';
 
-import 'package:grc_module/generated/l10n.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
 
 abstract final class PermissionLabel {
   const PermissionLabel._();
@@ -265,6 +266,10 @@ abstract final class PermissionLabel {
         return s.addEmployee;
       case 'add product':
         return s.addProduct;
+      case "allow remove contributor's documents":
+        return s.allowRemoveContributorsDocuments;
+      case 'remove my submissions documents':
+        return s.removeMySubmissionsDocuments;
       case 'allows removing documents owned by anyone':
         return s.allowsRemovingDocumentsOwnedByAnyone;
       case 'approve leave requests':
@@ -472,6 +477,134 @@ abstract final class PermissionLabel {
       // ADDED 31/8/2026 — SettingsPermissions.watermark.
       case 'watermark':
         return s.watermark;
+      // ADDED 7/10/2026 — To-Do (TodoPermissionsSections / TodoPermissions).
+      // `To_Do_Permissions` folds to 'to do permissions', `View_To_Do` to
+      // 'view to do', etc.
+      case 'to do permissions':
+        return s.toDoPermissions;
+      case 'view to do':
+        return s.viewToDo;
+      case 'create to do':
+        return s.createToDo;
+      case 'edit to do':
+        return s.editToDo;
+      case 'delete to do':
+        return s.deleteToDo;
+      case 'restore to do':
+        return s.restoreToDo;
+      // ADDED 8/10/2026 — Time Tracker (TimeTrackerPermissionsSections /
+      // TimeTrackerPermissions). Keys already labelled above for another
+      // module keep that label: Approval_Permissions, Approve_And_Reject, Create_Group.
+      case 'check in permissions':
+        return s.timeTrackerCheckInPermissions;
+      case 'check in and out':
+        return s.timeTrackerCheckInAndOut;
+      case 'work from different location':
+        return s.timeTrackerWorkFromDifferentLocation;
+      case 'time tracker dashboard permissions':
+        return s.timeTrackerDashboardPermissions;
+      case 'personal dashboard':
+        return s.timeTrackerPersonalDashboard;
+      case 'hr dashboard':
+        return s.timeTrackerHrDashboard;
+      case 'hr dashboard all departments':
+        return s.timeTrackerHrDashboardAllDepartments;
+      case 'hr dashboard filter by employee':
+        return s.timeTrackerHrDashboardFilterByEmployee;
+      case 'attendance permissions':
+        return s.timeTrackerAttendancePermissions;
+      case 'view attendance':
+        return s.timeTrackerViewAttendance;
+      case 'request transaction':
+        return s.timeTrackerRequestTransaction;
+      case 'cancel transaction':
+        return s.timeTrackerCancelTransaction;
+      case 'export attendance':
+        return s.timeTrackerExportAttendance;
+      case 'time tracker request permissions':
+        return s.timeTrackerRequestPermissions;
+      case 'view time tracker requests':
+        return s.timeTrackerViewRequests;
+      case 'create time tracker request':
+        return s.timeTrackerCreateRequest;
+      case 'cancel time tracker request':
+        return s.timeTrackerCancelRequest;
+      case 'send request reminder':
+        return s.timeTrackerSendRequestReminder;
+      case 'comment on requests':
+        return s.timeTrackerCommentOnRequests;
+      case 'export time tracker requests':
+        return s.timeTrackerExportRequests;
+      case 'view approvals':
+        return s.timeTrackerViewApprovals;
+      case 'cancel request after approving':
+        return s.timeTrackerCancelRequestAfterApproving;
+      case 'approvals all departments':
+        return s.timeTrackerApprovalsAllDepartments;
+      case 'comment on approvals':
+        return s.timeTrackerCommentOnApprovals;
+      case 'request type permissions':
+        return s.timeTrackerRequestTypePermissions;
+      case 'view request types':
+        return s.timeTrackerViewRequestTypes;
+      case 'create request type':
+        return s.timeTrackerCreateRequestType;
+      case 'edit request type':
+        return s.timeTrackerEditRequestType;
+      case 'change request type status':
+        return s.timeTrackerChangeRequestTypeStatus;
+      case 'remove request type':
+        return s.timeTrackerRemoveRequestType;
+      case 'export request types':
+        return s.timeTrackerExportRequestTypes;
+      case 'location permissions':
+        return s.timeTrackerLocationPermissions;
+      case 'view locations':
+        return s.timeTrackerViewLocations;
+      case 'create location':
+        return s.timeTrackerCreateLocation;
+      case 'edit location':
+        return s.timeTrackerEditLocation;
+      case 'change location status':
+        return s.timeTrackerChangeLocationStatus;
+      case 'delete location':
+        return s.timeTrackerDeleteLocation;
+      case 'export locations':
+        return s.timeTrackerExportLocations;
+      case 'import locations':
+        return s.timeTrackerImportLocations;
+      case 'time tracker employee permissions':
+        return s.timeTrackerEmployeePermissions;
+      case 'view time tracker employees':
+        return s.timeTrackerViewEmployees;
+      case 'employees all departments':
+        return s.timeTrackerEmployeesAllDepartments;
+      case 'assign employee':
+        return s.timeTrackerAssignEmployee;
+      case 'reassign employee location':
+        return s.timeTrackerReassignEmployeeLocation;
+      case 'remove employee assignment':
+        return s.timeTrackerRemoveEmployeeAssignment;
+      case 'export time tracker employees':
+        return s.timeTrackerExportEmployees;
+      case 'group permissions':
+        return s.timeTrackerGroupPermissions;
+      case 'view groups':
+        return s.timeTrackerViewGroups;
+      case 'edit group':
+        return s.timeTrackerEditGroup;
+      case 'delete group':
+        return s.timeTrackerDeleteGroup;
+      case 'vacation balance permissions':
+        return s.timeTrackerVacationBalancePermissions;
+      case 'view vacation balances':
+        return s.timeTrackerViewVacationBalances;
+      case 'edit vacation balance':
+        return s.timeTrackerEditVacationBalance;
+      case 'import vacation balances':
+        return s.timeTrackerImportVacationBalances;
+      case 'export vacation balances':
+        return s.timeTrackerExportVacationBalances;
       default:
         return key;
     }
@@ -503,10 +636,8 @@ abstract final class PermissionLabel {
       .trim();
 
   static String fromStorageKey(BuildContext context, String storageKey) {
-    final String spaced = storageKey
-        .replaceAll('_', ' ')
-        .replaceAll('  ', ' ')
-        .trim();
+    final String spaced =
+        storageKey.replaceAll('_', ' ').replaceAll('  ', ' ').trim();
     return of(context, spaced);
   }
 }

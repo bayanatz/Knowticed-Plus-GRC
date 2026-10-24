@@ -1,11 +1,13 @@
 /// Module: messaging / chat / domain/entity/message_entity.dart
+library;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:grc_module/core/enums/message_module/message_types.dart';
-import '../../data/models/message/audio_message_model.dart';
-import '../../data/models/message/doc_message_model.dart';
-import '../../data/models/message/video_message_model.dart';
-import '../enum/reacts.dart';
+import 'package:knowticed_plus/features/messaging/helpers/enums/message_types.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/message/audio_message_model.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/message/doc_message_model.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/data/models/message/video_message_model.dart';
+import 'package:knowticed_plus/features/messaging/m1_chat/domain/enum/reacts.dart';
 
 class MessageEntity {
   String channelId;
@@ -31,6 +33,11 @@ class MessageEntity {
   AudioMessageModel? audio;
   bool isPinned;
 
+  /// Who wrote it (the messaging user id = email). ADDED 18/10/2026 so an
+  /// incoming bubble can show its sender (D-184); carried through copyWith,
+  /// which used to turn a GroupMessageEntity into a bare MessageEntity.
+  String? senderId;
+
   MessageEntity({
     required this.messageId,
     required this.time,
@@ -54,6 +61,7 @@ class MessageEntity {
     this.audio,
     required this.videoMessageModel,
     this.reacts = const [],
+    this.senderId,
   });
 
   MessageEntity copyWith({
@@ -93,7 +101,7 @@ class MessageEntity {
       isStarred: isStarred ?? this.isStarred,
       messageType: messageType ?? this.messageType,
       messageContent:
-      messageContent != null ? messageContent() : this.messageContent,
+          messageContent != null ? messageContent() : this.messageContent,
       isGroup: isGroup ?? this.isGroup,
       indexOfRepliedMessage: indexOfRepliedMessage != null
           ? indexOfRepliedMessage()
@@ -101,15 +109,16 @@ class MessageEntity {
       index: index ?? this.index,
       isPinned: isPinned ?? this.isPinned,
       repliedMessage:
-      repliedMessage != null ? repliedMessage() : this.repliedMessage,
+          repliedMessage != null ? repliedMessage() : this.repliedMessage,
       mediaLink: mediaLink != null ? mediaLink() : this.mediaLink,
       reacts: reacts ?? this.reacts,
       docMessageModel:
-      docMessageModel != null ? docMessageModel() : this.docMessageModel,
+          docMessageModel != null ? docMessageModel() : this.docMessageModel,
       videoMessageModel: videoMessageModel != null
           ? videoMessageModel()
           : this.videoMessageModel,
       audio: audio != null ? audio() : this.audio,
+      senderId: senderId,
     );
   }
 }

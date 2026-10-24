@@ -24,7 +24,7 @@ class PollCheckbox extends StatelessWidget {
           controlAffinity: ListTileControlAffinity.leading,
           dense: true,
           checkboxShape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.r)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.r)),
           checkColor: AppColors.white,
           activeColor: AppColors.secondaryPrimary,
           value: messageModel.pollModel!.pollValues[index],
@@ -50,13 +50,13 @@ class PollCheckbox extends StatelessWidget {
                   children: [
                     StackedAvatars(
                       height: 20.h,
-                      avatarColor: AppColors.field,
-                      avatarTextColor: AppColors.inverseBase,
+                      avatarColor: AppColors.card,
+                      avatarTextColor: AppColors.secondaryBlack,
                       width: 40.w,
                       images: messageModel.pollModel!
                           .voters[messageModel.pollModel!.options[index]]!
                           .map(
-                            (e) {
+                        (e) {
                           return e.avatarUrl;
                         },
                       ).toList(),

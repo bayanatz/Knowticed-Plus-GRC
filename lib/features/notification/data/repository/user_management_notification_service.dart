@@ -5,6 +5,9 @@
 /// Purpose: Notifications raised when a user's access rights change.
 /// Author: Knowticed Plus team
 /// Created at: 18/8/2026
+/// Updated: 22/10/2026 - Every notification saves the employee's email as
+///          `Request_Id`, so View opens that employee's details page
+///          (owner: View opens the record, not the module).
 ///
 /// ************************* FILE INFO ************************* ///
 /// File Name: user_management_notification_service.dart
@@ -44,13 +47,14 @@
 /// rather than silently sending Arabic. Pass the RECEIVER's saved
 /// preference where you have it. Admin fan-outs send one language to the
 /// whole batch.
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:grc_module/core/enums/template_variable.dart';
-import 'package:grc_module/core/network/get_base_url.dart';
-import 'package:grc_module/features/notification/domain/enums/role_module/user_management_module/user_management_events.dart';
-import 'package:grc_module/features/notification/domain/enums/role_module/user_management_module/user_management_notification_pages.dart';
-import 'package:grc_module/features/notification/services/app_notification_sender.dart';
+import 'package:knowticed_plus/core/enums/template_variable.dart';
+import 'package:knowticed_plus/core/network/get_base_url.dart';
+import 'package:knowticed_plus/features/notification/domain/enums/roles/user_management_module/user_management_events.dart';
+import 'package:knowticed_plus/features/notification/domain/enums/roles/user_management_module/user_management_notification_pages.dart';
+import 'package:knowticed_plus/features/notification/helpers/services/app_notification_sender.dart';
 
 class UserManagementNotificationService {
   UserManagementNotificationService._();
@@ -73,7 +77,7 @@ class UserManagementNotificationService {
 
       final emails = <String>[];
       for (final doc in snapshot.docs) {
-        final data = doc.data() as Map<String, dynamic>;
+        final data = doc.data();
 
         final roles = data['Role'];
         if (roles is! List || roles.isEmpty) continue;
@@ -100,6 +104,7 @@ class UserManagementNotificationService {
     required String senderEmail,
     required bool isArabic,
     Map<TemplateVariable, String> variables = const {},
+    String requestId = '',
   }) {
     return AppNotificationSender.sendEvent(
       event: event,
@@ -108,6 +113,7 @@ class UserManagementNotificationService {
       receiverEmail: receiverEmail,
       isArabic: isArabic,
       variables: variables,
+      requestId: requestId,
     );
   }
 
@@ -121,6 +127,7 @@ class UserManagementNotificationService {
     required String senderEmail,
     required bool isArabic,
     Map<TemplateVariable, String> variables = const {},
+    String requestId = '',
   }) async {
     return AppNotificationSender.sendEventToAll(
       event: event,
@@ -129,6 +136,7 @@ class UserManagementNotificationService {
       receiverEmails: await _masterAdminEmails(),
       isArabic: isArabic,
       variables: variables,
+      requestId: requestId,
     );
   }
 
@@ -148,6 +156,7 @@ class UserManagementNotificationService {
       receiverEmail: userEmail,
       senderEmail: senderEmail,
       isArabic: isArabic,
+      requestId: userEmail,
     );
   }
 
@@ -167,6 +176,7 @@ class UserManagementNotificationService {
       receiverEmail: userEmail,
       senderEmail: senderEmail,
       isArabic: isArabic,
+      requestId: userEmail,
     );
   }
 
@@ -186,12 +196,14 @@ class UserManagementNotificationService {
       receiverEmail: userEmail,
       senderEmail: senderEmail,
       isArabic: isArabic,
+      requestId: userEmail,
     );
     await _toAdmins(
       UserManagementNotificationEvent.accessRevokedAdmin,
       senderEmail: senderEmail,
       isArabic: isArabic,
       variables: {TemplateVariable.userName: userName},
+      requestId: userEmail,
     );
   }
 
@@ -213,6 +225,7 @@ class UserManagementNotificationService {
       senderEmail: senderEmail,
       isArabic: isArabic,
       variables: {TemplateVariable.scheduledDate: scheduledDate},
+      requestId: userEmail,
     );
   }
 
@@ -233,12 +246,14 @@ class UserManagementNotificationService {
       receiverEmail: userEmail,
       senderEmail: senderEmail,
       isArabic: isArabic,
+      requestId: userEmail,
     );
     await _toAdmins(
       UserManagementNotificationEvent.scheduledAccessAppliedAdmin,
       senderEmail: senderEmail,
       isArabic: isArabic,
       variables: {TemplateVariable.userName: userName},
+      requestId: userEmail,
     );
   }
 
@@ -258,6 +273,7 @@ class UserManagementNotificationService {
       receiverEmail: userEmail,
       senderEmail: senderEmail,
       isArabic: isArabic,
+      requestId: userEmail,
     );
   }
 }

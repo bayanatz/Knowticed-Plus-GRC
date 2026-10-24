@@ -2,44 +2,51 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: settings_switches_page.dart
-/// Purpose: Declares `SettingsSwitchesPage`.
-/// Author: Knowticed Plus team
+/// Description: Declares `SettingsSwitchesPage`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
 /// Updated: 25/8/2026 - Save/Create now runs the shared confirm → success →
 ///                      navigate flow (RoleDialogs.showSaveRoleDialog).
+library;
 
+import 'package:knowticed_plus/core/extensions/context_extensions.dart'
+    show kpIsPhoneLayout;
 import 'package:flutter/material.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/features/roles/r1_role_management/presentation/ui/widgets/permission_label.dart';
-import 'package:grc_module/core/custom/32-custom_svg.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/presentation/ui/widgets/permission_label.dart';
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 // FRAME 8/9/2026: `pagination_app_bar.dart` replaced by the shared side frame.
-import 'package:grc_module/core/custom/50-custom_side_frame_master.dart';
-import 'package:grc_module/features/roles/r1_role_management/presentation/controller/role_switches_controllers.dart';
+import 'package:knowticed_plus/core/custom/navigation/custom_side_frame_master.dart';
 
-import 'package:grc_module/core/theme/haptic_controller.dart';
+import 'package:knowticed_plus/core/theme/haptic_controller.dart';
 // REMOVED 25/8/2026: `68-confirm_dialog.dart`, `83-loading.dart` and
 // `role_status.dart` — the save flow they served moved into RoleDialogs.
-import 'package:grc_module/core/custom/5-custom_button.dart';
-import 'package:grc_module/core/custom/58-default_switch_button.dart';
-import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
-import 'package:grc_module/core/helper/role/modules_enum.dart';
-import 'package:grc_module/features/roles/r1_role_management/domain/enums/settings/settings_permissions_sections.dart';
-import 'package:grc_module/features/roles/r1_role_management/domain/entities/module_permissions_sections.dart';
-import 'package:grc_module/features/roles/r1_role_management/domain/entities/module_permissions_sections_permissions.dart';
-import 'package:grc_module/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
-import 'package:grc_module/features/roles/r1_role_management/presentation/ui/widgets/dialog.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_button.dart';
+import 'package:knowticed_plus/core/custom/inputs/default_switch_button.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/core/helper/access/modules_enum.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/settings/settings_permissions_sections.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/entities/module_permissions_sections.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/entities/module_permissions_sections_permissions.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/presentation/controller/role_cubit.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/presentation/ui/widgets/dialog.dart';
 import 'package:flutter/services.dart';
-import 'package:grc_module/core/di/app_controllers.dart';
-import 'package:grc_module/features/roles/r1_role_management/domain/enums/settings/settings_permissions.dart';
-import 'package:grc_module/features/roles/r1_role_management/presentation/ui/widgets/role_restricted_countries_field.dart';
-class SettingsSwitchesPage extends StatelessWidget {
-  SettingsSwitchesPage({super.key});
+import 'package:knowticed_plus/core/di/app_controllers.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/settings/settings_permissions.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/presentation/ui/widgets/role_restricted_countries_field.dart';
 
+class SettingsSwitchesPage extends StatefulWidget {
+  const SettingsSwitchesPage({super.key});
+
+  @override
+  State<SettingsSwitchesPage> createState() => _SettingsSwitchesPageState();
+}
+
+class _SettingsSwitchesPageState extends State<SettingsSwitchesPage> {
   /// Shared width for this page's action buttons.
   ///
   /// ADDED 8/9/2026. Passed as `width:`, which is the parameter `customButton`
@@ -56,7 +63,7 @@ class SettingsSwitchesPage extends StatelessWidget {
     final HapticController hapticController = AppControllers.haptic;
 
     controller = context.read<RoleCubit>();
-    isTablet = MediaQuery.of(context).size.width > 600;
+    isTablet = !kpIsPhoneLayout(context);
 
     return BlocBuilder<RoleCubit, RoleState>(
       buildWhen: (previous, current) => current is RoleSwitchToggled,
@@ -87,74 +94,77 @@ class SettingsSwitchesPage extends StatelessWidget {
                   : S.of(context).settingsPermission,
               child: SideFrameBoundedBody(
                 child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: modulePermissionsBuilder(Modules.settings),
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: modulePermissionsBuilder(Modules.settings),
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 20.sp),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        spacing: 5.sp,
-                        children: [
-                          customButton(
-                            title: S.of(context).back,
-                            color: AppColors.secondaryButton,
-                            textStyle: StyleText.fontSize16Weight400.copyWith(color: AppColors.blackButton),
-
-                            width: _actionButtonWidth,
-                            function: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                          if (!controller.isEditing)
+                    SizedBox(height: 20.sp),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          spacing: 5.sp,
+                          children: [
                             customButton(
-                              title: S.of(context).saveForLater,
-                              color: AppColors.secondaryButton,
-                              textStyle: StyleText.fontSize16Weight400.copyWith(color: AppColors.blackButton),
+                              title: S.of(context).back,
+                              color: AppColors.darkGrey,
+                              textStyle: StyleText.fontSize16Weight400.copyWith(
+                                color: AppColors.text,
+                              ),
                               width: _actionButtonWidth,
                               function: () {
-                                RoleDialogs.showSaveForLaterDialog(
-                                  context: context,
-                                  controller: controller,
-                                  pagesToPop: 3,
-
-                                );
+                                Navigator.of(context).pop();
                               },
-                            )
-                        ],
-                      ),
-                      customButton(
-                        title: controller.isEditing ? S.of(context).save : S.of(context).create,
-                        width: _actionButtonWidth,
-                        // REWORKED 25/8/2026: this used to be a `ConfirmDialog`
-                        // whose onConfirm popped straight out of the wizard the
-                        // moment the write returned — the user never saw a
-                        // success dialog, and a FAILED save navigated away in
-                        // exactly the same way. The confirm → save → success →
-                        // navigate sequence now lives in RoleDialogs next to
-                        // "save for later", and the pops run only after the
-                        // success dialog has closed.
-                        function: () {
-                          hapticController.triggerHapticFeedback(
+                            ),
+                            if (!controller.isEditing)
+                              customButton(
+                                title: S.of(context).saveForLater,
+                                color: AppColors.darkGrey,
+                                textStyle: StyleText.fontSize16Weight400
+                                    .copyWith(color: AppColors.text),
+                                width: _actionButtonWidth,
+                                function: () {
+                                  RoleDialogs.showSaveForLaterDialog(
+                                    context: context,
+                                    controller: controller,
+                                    pagesToPop: 3,
+                                  );
+                                },
+                              ),
+                          ],
+                        ),
+                        customButton(
+                          title: controller.isEditing
+                              ? S.of(context).save
+                              : S.of(context).create,
+                          width: _actionButtonWidth,
+                          // REWORKED 25/8/2026: this used to be a `ConfirmDialog`
+                          // whose onConfirm popped straight out of the wizard the
+                          // moment the write returned — the user never saw a
+                          // success dialog, and a FAILED save navigated away in
+                          // exactly the same way. The confirm → save → success →
+                          // navigate sequence now lives in RoleDialogs next to
+                          // "save for later", and the pops run only after the
+                          // success dialog has closed.
+                          function: () {
+                            hapticController.triggerHapticFeedback(
                               vibration: VibrateType.heavyImpact,
-                              hapticFeedback: HapticFeedback.heavyImpact
-                          );
-                          RoleDialogs.showSaveRoleDialog(
-                            context: context,
-                            controller: controller,
-                          );
-                        },
-                      )
-                    ],
-                  ),
-                  SizedBox(height: 20.sp),
-                ],
+                              hapticFeedback: HapticFeedback.heavyImpact,
+                            );
+                            RoleDialogs.showSaveRoleDialog(
+                              context: context,
+                              controller: controller,
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 20.sp),
+                  ],
                 ),
               ),
             ),
@@ -185,7 +195,7 @@ class SettingsSwitchesPage extends StatelessWidget {
               SizedBox(height: 10.sp),
               lastColumnBuilder(module),
             ],
-          )
+          ),
       ],
     );
   }
@@ -217,9 +227,9 @@ class SettingsSwitchesPage extends StatelessWidget {
   }
 
   Widget buildPermissionSection(
-      ModulePermissionsSections permissionSection,
-      Modules module,
-      ) {
+    ModulePermissionsSections permissionSection,
+    Modules module,
+  ) {
     if (permissionSection.sectionPermissions.isEmpty) {
       return const SizedBox.shrink();
     }
@@ -230,7 +240,7 @@ class SettingsSwitchesPage extends StatelessWidget {
         Container(
           padding: EdgeInsets.all(10.sp),
           decoration: BoxDecoration(
-            color: AppColors.field,
+            color: AppColors.card,
             borderRadius: BorderRadius.circular(8.r),
           ),
           child: Column(
@@ -244,11 +254,11 @@ class SettingsSwitchesPage extends StatelessWidget {
                     backgroundColor: AppColors.primary,
                     child: Padding(
                       padding: EdgeInsets.all(4.sp),
-                      child: CustomSvgImage(assetPath: 
-                        (permissionSection.getName ==
-                            SettingsPermissionsSections.settings.getName)
-                            ? 'assets/icons_assets/roles_assets/settings.svg'
-                            : 'assets/icons_assets/roles_assets/scoial_permission.svg',
+                      child: CustomSvgImage(
+                        assetPath: (permissionSection.getName ==
+                                SettingsPermissionsSections.settings.getName)
+                            ? 'assets/icons_assets/roles_assets/ic_settings.svg'
+                            : 'assets/icons_assets/roles_assets/ic_security_social_permission.svg',
                         colorFilter: ColorFilter.mode(
                           AppColors.textButton,
                           BlendMode.srcIn,
@@ -264,34 +274,35 @@ class SettingsSwitchesPage extends StatelessWidget {
                     child: Builder(
                       builder: (BuildContext context) => Text(
                         PermissionLabel.of(context, permissionSection.getName),
-                        style: StyleText.fontSize12Weight400.copyWith(color: AppColors.secondaryBlack),
+                        style: StyleText.fontSize12Weight400.copyWith(
+                          color: AppColors.secondaryBlack,
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
               for (int permissionIndex = 0;
-              permissionIndex <
-                  permissionSection.sectionPermissions.length;
-              permissionIndex++)
+                  permissionIndex < permissionSection.sectionPermissions.length;
+                  permissionIndex++)
                 _buildPermissionRow(
                   permissionSection.sectionPermissions[permissionIndex]
-                  as ModulePermissionsSectionsPermission,
+                      as ModulePermissionsSectionsPermission,
                   permissionSection,
                   module,
                 ),
             ],
           ),
-        )
+        ),
       ],
     );
   }
 
   Widget _buildPermissionRow(
-      ModulePermissionsSectionsPermission permission,
-      ModulePermissionsSections section,
-      Modules module,
-      ) {
+    ModulePermissionsSectionsPermission permission,
+    ModulePermissionsSections section,
+    Modules module,
+  ) {
     final HapticController hapticController = AppControllers.haptic;
 
     // ✅ Check if this permission exists in Firebase
@@ -309,9 +320,9 @@ class SettingsSwitchesPage extends StatelessWidget {
       // the actual label — goes through PermissionLabel.
       String uiName = permission.getUiName;
       List<String> possibleKeys = [
-        uiName,                              // "Change Theme"
-        uiName.replaceAll(' ', '_'),        // "Change_Theme"
-        uiName.replaceAll(' ', ''),         // "ChangeTheme"
+        uiName, // "Change Theme"
+        uiName.replaceAll(' ', '_'), // "Change_Theme"
+        uiName.replaceAll(' ', ''), // "ChangeTheme"
         permission.getDataBaseName,
         permission.getDataBaseName.replaceAll(' ', '_'),
       ];
@@ -335,7 +346,9 @@ class SettingsSwitchesPage extends StatelessWidget {
           child: Builder(
             builder: (BuildContext context) => Text(
               PermissionLabel.of(context, permission.getUiName),
-              style: StyleText.fontSize12Weight400.copyWith(color: AppColors.secondaryBlack),
+              style: StyleText.fontSize12Weight400.copyWith(
+                color: AppColors.secondaryBlack,
+              ),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
@@ -349,10 +362,9 @@ class SettingsSwitchesPage extends StatelessWidget {
           DefaultSwitchButton(
             value: controller.isSwitchActive(module, section, permission),
             onChanged: (value) {
-
               hapticController.triggerHapticFeedback(
-                  vibration: VibrateType.mediumImpact,
-                  hapticFeedback: HapticFeedback.mediumImpact
+                vibration: VibrateType.mediumImpact,
+                hapticFeedback: HapticFeedback.mediumImpact,
               );
               controller.toggleSwitchState(
                 module: module,
@@ -362,7 +374,7 @@ class SettingsSwitchesPage extends StatelessWidget {
             },
           )
         else
-        // Show empty space where switch would be
+          // Show empty space where switch would be
           SizedBox(width: 40.sp),
       ],
     );

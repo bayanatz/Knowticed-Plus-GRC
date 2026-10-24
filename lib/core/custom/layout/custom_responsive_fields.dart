@@ -1,0 +1,52 @@
+/// Module: core
+///
+///*************************** FILE INFO ****************************///
+/// File Name: custom_responsive_fields.dart
+/// Purpose: Shared form field widget.
+/// Author: Knowticed Plus team
+/// Updated: 11/8/2026 - Added the standard module + FILE INFO header.
+library;
+
+/// ******************* FILE INFO *******************
+/// File Name: custom_responsive_field.dart
+/// Description: Custom responsive field to handle how fields preview on all platforms.
+/// Created by: Amr Mesbah
+/// Last Update: 30/8/2025
+
+import 'package:knowticed_plus/core/extensions/context_extensions.dart'
+    show kpIsPhoneLayout;
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+Widget buildResponsiveFields({
+  required BuildContext context,
+  required Widget left,
+  required Widget right,
+  double? mobileSpacing, // ← optional height for mobile
+
+  /// D-225 (21/10/2026): a page shown beside the Settings menu on iPad
+  /// PORTRAIT has room for ONE field per row — pass true there.
+  bool stackOnPortrait = false,
+}) {
+  final isMobile = kpIsPhoneLayout(context) ||
+      (stackOnPortrait &&
+          MediaQuery.of(context).orientation == Orientation.portrait);
+
+  if (isMobile) {
+    return Column(
+      children: [
+        left,
+        SizedBox(height: (mobileSpacing ?? 15).h), // ← default 15 if null
+        right,
+      ],
+    );
+  } else {
+    return Row(
+      children: [
+        Expanded(child: left),
+        SizedBox(width: 15.sp),
+        Expanded(child: right),
+      ],
+    );
+  }
+}

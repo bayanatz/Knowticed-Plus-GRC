@@ -4,15 +4,17 @@
 /// Purpose: Get all app users in connection form — messaging Connections sub-feature.
 /// Author: Knowticed Team
 /// Created At: 11/10/2025
+library;
 
 import 'package:dartz/dartz.dart';
 
-import 'package:grc_module/core/network/message_module/services/error_handler.dart';
-import '../../../../../core/helper/message_module/interface/entity/user_category.dart';
-import '../../../../../core/helper/message_module/interface/entity/user_connection_interface_parameters.dart';
-import '../base_repository/base_connections_repository.dart';
-import '../entities/single_connection_entity.dart';
-import 'package:grc_module/core/enums/message_module/message_types.dart';
+import 'package:knowticed_plus/core/helper/format_title.dart';
+import 'package:knowticed_plus/core/network/failure_model.dart';
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/interface/entity/user_category.dart';
+import 'package:knowticed_plus/features/messaging/helpers/messaging_bridge/interface/entity/user_connection_interface_parameters.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/domain/base_repository/base_connections_repository.dart';
+import 'package:knowticed_plus/features/messaging/m2_connections/domain/entities/single_connection_entity.dart';
+import 'package:knowticed_plus/features/messaging/helpers/enums/message_types.dart';
 
 /// created by Mohamed Elrashidy
 /// created at 30/9/2024
@@ -27,13 +29,15 @@ class GetAllAppUsersInConnectionFormUseCase {
 
   Stream<Either<Failure, List<SingleConnectionEntity>>> execute({
     required String currentUserId,
-    required Future<List<UserConnectionInterfaceParameters>> Function() getAllUsers,
+    required Future<List<UserConnectionInterfaceParameters>> Function()
+        getAllUsers,
     required List<UserCategory> categories, // ✅ added
   }) async* {
     // Domain stays pure — no try/catch here (§11.2). Any failure from the
     // injected data source propagates to the caller (cubit), which handles it
     // via the stream's onError.
-    final List<UserConnectionInterfaceParameters> allUsers = await getAllUsers();
+    final List<UserConnectionInterfaceParameters> allUsers =
+        await getAllUsers();
 
     List<SingleConnectionEntity> connectionLessUsers = mapConnectionLessUsers(
       allUsers: allUsers,
@@ -47,28 +51,29 @@ class GetAllAppUsersInConnectionFormUseCase {
     );
   }
 
-  Stream<Either<Failure, List<SingleConnectionEntity>>> startStreamOfConnections(
-      String currentUserId,
-      List<SingleConnectionEntity> allUsers,
-      List<UserCategory> categories, // ✅ added
-      ) async* {
-    await for (final connections in connectionRepository
-        .getCurrentUserConnections(
+  Stream<Either<Failure, List<SingleConnectionEntity>>>
+      startStreamOfConnections(
+    String currentUserId,
+    List<SingleConnectionEntity> allUsers,
+    List<UserCategory> categories, // ✅ added
+  ) async* {
+    await for (final connections
+        in connectionRepository.getCurrentUserConnections(
       currentUserId: currentUserId,
       categories: categories, // ✅ pass through
     )) {
       if (connections.isLeft()) {
         yield Left(connections.fold(
-              (l) => l,
-              (r) => FirebaseFailure(""),
+          (l) => l,
+          (r) => FirebaseFailure(""),
         ));
       } else if (connections.isRight()) {
         List<SingleConnectionEntity> existedConnections =
-        connections.getOrElse(() => [] as List<SingleConnectionEntity>)
-        as List<SingleConnectionEntity>;
+            connections.getOrElse(() => [] as List<SingleConnectionEntity>)
+                as List<SingleConnectionEntity>;
 
         List<SingleConnectionEntity> allUsersInConnectionForm =
-        getAllDataInSingleConnectionForm(
+            getAllDataInSingleConnectionForm(
           allUsers,
           existedConnections,
           currentUserId,
@@ -80,10 +85,10 @@ class GetAllAppUsersInConnectionFormUseCase {
   }
 
   List<SingleConnectionEntity> getAllDataInSingleConnectionForm(
-      List<SingleConnectionEntity> allUsers,
-      List<SingleConnectionEntity> existedConnections,
-      String currentUserId,
-      ) {
+    List<SingleConnectionEntity> allUsers,
+    List<SingleConnectionEntity> existedConnections,
+    String currentUserId,
+  ) {
     List<SingleConnectionEntity> allUsersInConnectionForm = [];
     Set<String> ids = {};
 
@@ -98,19 +103,34 @@ class GetAllAppUsersInConnectionFormUseCase {
             break;
           }
         }
-        if (profile == null) continue; // unknown user — nothing to show
-        connection
-          ..primaryLanguageName = profile.primaryLanguageName
-          ..secondaryLanguageName = profile.secondaryLanguageName
-          ..primaryLanguageSubInfo = profile.primaryLanguageSubInfo
-          ..secondaryLanguageSubInfo = profile.secondaryLanguageSubInfo
-          ..imageUri = profile.imageUri
-          ..userId = profile.userId
-          ..otherSideId = profile.userId
-          ..phone = profile.phone
-          ..userCategory = profile.userCategory
-          ..connectionId = profile.connectionId
-          ..isProfileMissing = false;
+        if (profile == null) {
+          // CHANGED 18/10/2026 (showcase: Khaled Abdelrahman / Mona Elsayed
+          // had seeded chats with the owner but never appeared under Direct
+          // Message). Someone outside the employee list — a test account not
+          // activated yet, or a record that cannot be parsed — still owns a
+          // REAL conversation: show it under a name read from the email
+          // instead of dropping it. A doc without any message stays hidden.
+          if (connection.messageType == MessageTypes.none) continue;
+          connection
+            ..primaryLanguageName =
+                FormatHelper.formatEmailToName(connection.userId)
+            ..primaryLanguageSubInfo = ''
+            ..connectionId = '$currentUserId.${connection.userId}'
+            ..isProfileMissing = false;
+        } else {
+          connection
+            ..primaryLanguageName = profile.primaryLanguageName
+            ..secondaryLanguageName = profile.secondaryLanguageName
+            ..primaryLanguageSubInfo = profile.primaryLanguageSubInfo
+            ..secondaryLanguageSubInfo = profile.secondaryLanguageSubInfo
+            ..imageUri = profile.imageUri
+            ..userId = profile.userId
+            ..otherSideId = profile.userId
+            ..phone = profile.phone
+            ..userCategory = profile.userCategory
+            ..connectionId = profile.connectionId
+            ..isProfileMissing = false;
+        }
       }
       // CHANGED 30/9/2026 (Messages QA p.2 — a new chat did not show under
       // Direct Message): ids are compared ignoring case. The same person
@@ -120,8 +140,8 @@ class GetAllAppUsersInConnectionFormUseCase {
       // conversation. The doc that actually carries a message wins, then the
       // newer one.
       final String key = connection.userId.trim().toLowerCase();
-      final int existing = allUsersInConnectionForm.indexWhere(
-          (c) => c.userId.trim().toLowerCase() == key);
+      final int existing = allUsersInConnectionForm
+          .indexWhere((c) => c.userId.trim().toLowerCase() == key);
       if (existing == -1) {
         ids.add(key);
         allUsersInConnectionForm.add(connection);

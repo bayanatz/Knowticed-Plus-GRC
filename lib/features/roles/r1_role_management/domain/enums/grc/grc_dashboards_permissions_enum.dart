@@ -11,8 +11,9 @@
 /// grc_module_permissions_enum.dart for the full note. Every string below has
 /// a twin key in `_getDefaultPermissionsForModule('grc')` over in
 /// knowticed_admin_dashboard.
+library;
 
-import 'package:grc_module/features/roles/r1_role_management/domain/entities/module_permissions_sections_permissions.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/entities/module_permissions_sections_permissions.dart';
 
 enum GrcDashboardsPermissions implements ModulePermissionsSectionsPermission {
   mainModuleDashboard,

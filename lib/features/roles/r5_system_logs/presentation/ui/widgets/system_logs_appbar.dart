@@ -2,9 +2,9 @@
 ///
 /// ************************ FILE INFO ******************** ///
 /// FILE NAME: system_logs_appbar.dart
-/// PURPOSE: this file contains the system logs appbar.
+/// Description: this file contains the system logs appbar.
 /// Author: Amr Mesbah
-/// Created At: 2/2/2025
+/// Created at: 2/2/2025
 /// Updated: 12/8/2026 - Rebuilt on the core widgets (AppSearchTextField,
 ///          CustomFilterIcon, CustomDropdown, customButtonWithSvg). The
 ///          hand-rolled GestureDetector + Container buttons — one pair per
@@ -16,28 +16,34 @@
 /// Updated: 30/8/2026 - The Export button's size is asked for through
 ///          `fixedWidth` / `fixedHeight`; the `width` / `height` it passed
 ///          before are ignored by `customButtonWithSvg` by design.
+/// Updated: 9/10/2026 - Time Tracker phase 6: a Module menu (same button +
+///          anchored menu as Sort) so the tablet screen can show one module's
+///          logs (e.g. Time Tracker). The screen had no filter at all.
+library;
+
+import 'package:knowticed_plus/core/custom/buttons/custom_filter_icon.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_button_sizing.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_toolbar_action_button.dart';
+import 'package:knowticed_plus/features/roles/r5_system_logs/presentation/ui/pages/system_logs_export_page.dart';
+import 'package:knowticed_plus/features/roles/r5_system_logs/presentation/ui/widgets/system_logs_filter_dialog.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grc_module/core/custom/35-custom_search_widget_custom.dart';
-import 'package:grc_module/core/theme/app_theme.dart';
+import 'package:knowticed_plus/core/custom/inputs/custom_search_widget_custom.dart';
+import 'package:knowticed_plus/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:grc_module/core/custom/14-custom_filter_icon.dart';
-import 'package:grc_module/core/custom/6-custom_button_with_svg.dart';
+import 'package:knowticed_plus/core/custom/buttons/custom_button_with_svg.dart';
 // ADDED 30/8/2026: the Sort button and its menu rows, same as User Access.
-import 'package:grc_module/core/custom/32-custom_svg.dart';
-import 'package:grc_module/core/constants/app_assets.dart';
+import 'package:knowticed_plus/core/constants/app_assets.dart';
 
-import 'package:grc_module/features/roles/r5_system_logs/presentation/controller/system_logs_controller.dart';
-import 'package:grc_module/features/roles/r5_system_logs/presentation/ui/widgets/download_logs_dialog.dart';
-import 'package:grc_module/features/roles/r5_system_logs/presentation/ui/widgets/filter_dialog.dart';
-import 'package:grc_module/core/theme/app_colors.dart';
-import 'package:grc_module/features/roles/r5_system_logs/domain/constants/system_logs_constants.dart';
+import 'package:knowticed_plus/features/roles/r5_system_logs/presentation/controller/system_logs_controller.dart';
+import 'package:knowticed_plus/core/theme/app_colors.dart';
+import 'package:knowticed_plus/features/roles/helpers/constants/system_logs_constants.dart';
 
-import 'package:grc_module/generated/l10n.dart';
-import 'package:grc_module/core/extensions/context_extensions.dart';
-import 'package:grc_module/core/di/app_controllers.dart';
-import 'package:grc_module/core/theme/app_animations.dart';
+import 'package:knowticed_plus/generated/l10n.dart';
+import 'package:knowticed_plus/core/extensions/context_extensions.dart';
+import 'package:knowticed_plus/core/di/app_controllers.dart';
+// ADDED 9/10/2026 — the Module menu's labels.
 
 /// Was a StatefulWidget carrying three mutable public fields
 /// (`isFilterDataShow`, `delayValue`, `roleValue`) that `build` reassigned
@@ -78,15 +84,15 @@ class _SystemLogsAppBarState extends State<SystemLogsAppBar> {
         // Drives both the filter button's fill and its label colour. This used
         // to be a local `isFilterDataShow` flag that flipped on every tap
         // regardless of whether a filter was actually applied.
-        final bool isFiltering = systemLogsController.isFilter;
 
         return Padding(
           padding: EdgeInsets.only(bottom: isPortrait ? 0.01.h : 0.02.h),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment:
-                isPortrait ? CrossAxisAlignment.start : CrossAxisAlignment.center,
-            spacing: 10.sp,
+            crossAxisAlignment: isPortrait
+                ? CrossAxisAlignment.start
+                : CrossAxisAlignment.center,
+            spacing: ButtonSizing.toolbarGap(context),
             children: <Widget>[
               AppSearchTextField(
                 controller: controller.searchController,
@@ -95,8 +101,18 @@ class _SystemLogsAppBarState extends State<SystemLogsAppBar> {
                 },
               ),
 
-
               if (!isMobile) _sortButton(isPortrait),
+
+              // CHANGED 21/10/2026 (owner: "filter the module is not like
+              // this"): his Figma 3944:61314 has the house Filter button,
+              // opening the Filter pop-up (Module, Action, Role, Employee,
+              // Country, City, From / To) — not a Module menu.
+              if (!isMobile)
+                CustomFilterIcon(
+                  title: S.of(context).filter,
+                  active: controller.isThereFilter(),
+                  onTap: () => SystemLogsFilterDialog.show(context),
+                ),
 
               // Empty title on mobile makes customButtonWithSvg render the
               // 38.sp icon-only variant, so the two hand-built export buttons
@@ -114,26 +130,23 @@ class _SystemLogsAppBarState extends State<SystemLogsAppBar> {
                 // On mobile the title is empty, which selects the icon-only
                 // variant — that one is square, and `fixedWidth` sets its side,
                 // so the 200 is deliberately not applied there.
-                fixedWidth: isMobile ? null : 120.sp,
-                fixedHeight: 38.sp,
+                // Owner 21/10/2026: same width / height / icon / text as Sort and Filter.
+                fixedWidth: isMobile ? null : ToolbarStyle.labelledWidth,
+                fixedHeight: ButtonSizing.height,
                 title: isMobile ? '' : S.of(context).export,
                 // NOTE 9/9/2026: this appbar is tablet/desktop only — on a
                 // phone `SystemLogsTable` renders the Figma export form as the
                 // whole tab instead of this table, so nothing here is
                 // reachable there.
-                function: () async {
-                  await showAppDialog(
-                    context: context,
-                    builder: (context) => const SystemLogsDownloadDialog(),
-                  );
-                },
-                textStyle: StyleText.fontSize16Weight500.copyWith(
-                  color: AppColors.textButton,
-                ),
+                // CHANGED 21/10/2026 (X-112, owner "the export is not like
+                // this way in Figma"): his two-page export, not the
+                // file-name-only dialog.
+                function: () => SystemLogsExportPage.open(context),
+                textStyle: ToolbarStyle.label(AppColors.textButton),
                 color: AppColors.primary,
                 image: AppAssets.export,
-                widthImage: 20.sp,
-                heightImage: 20.sp,
+                widthImage: ToolbarStyle.iconSize,
+                heightImage: ToolbarStyle.iconSize,
                 svgColor: AppColors.textButton,
                 colorBorder: AppColors.transparent,
               ),
@@ -164,45 +177,19 @@ class _SystemLogsAppBarState extends State<SystemLogsAppBar> {
   /// `_sortSelected` does on the User Access screen.
   bool get _sortSelected => systemLogsController.sortValue != null;
 
+  // Owner 21/10/2026: Sort is the house toolbar button — same width, height, icon size and text as the Filter beside it.
   Widget _sortButton(bool isPortrait) {
-    return GestureDetector(
-      onTap: _showSortMenu,
-      child: Container(
-        key: _sortButtonKey,
-        width: isPortrait ? 38.w : 100.w,
-        // CHANGED 28/9/2026 (Role bug report p.7 — "they must have same
-        // height"): was 36.sp, 2 short of the 38.sp search field and the
-        // 38.sp Export button on either side of it.
-        height: 38.sp,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8.r),
-          color: _sortSelected ? AppColors.primary : AppColors.card,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CustomSvgImage(
-              assetPath: AppAssets.sort,
-              width: 20.w,
-              height: 20.h,
-              fit: BoxFit.scaleDown,
-              color: _sortSelected
-                  ? AppColors.textButton
-                  : AppColors.secondaryText,
-            ),
-            if (!isPortrait) ...[
-              SizedBox(width: 8.w),
-              Text(
-                S.of(context).Sort,
-                style: StyleText.fontSize16Weight500.copyWith(
-                  color: _sortSelected
-                      ? AppColors.textButton
-                      : AppColors.secondaryText,
-                ),
-              ),
-            ],
-          ],
-        ),
+    return KeyedSubtree(
+      key: _sortButtonKey,
+      child: CustomToolbarActionButton(
+        svgPath: AppAssets.sort,
+        label: S.of(context).Sort,
+        fill: AppColors.card,
+        active: _sortSelected,
+        contentColor: ToolbarStyle.contentColor,
+        haptic: ToolbarHaptic.low,
+        onTap: _showSortMenu,
+        labelledWidth: ToolbarStyle.labelledWidth,
       ),
     );
   }
@@ -246,9 +233,7 @@ class _SystemLogsAppBarState extends State<SystemLogsAppBar> {
       position: position,
       color: AppColors.card,
       constraints: BoxConstraints(minWidth: buttonSize.width),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8.r),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
       // The selected row is painted edge to edge, so the menu does the
       // rounding and gives up its default vertical list padding — otherwise a
       // strip of `AppColors.card` shows above and below the fill and the row

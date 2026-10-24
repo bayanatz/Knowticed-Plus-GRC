@@ -8,12 +8,12 @@
 ///
 /// Extracted from the 586-line `custom_drawer.dart`, which had no
 /// `presentation/ui/widgets/` folder at all.
+library;
 
+import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
-import 'package:grc_module/core/theme/app_colors.dart';
 
 class DrawerLogoContainer extends StatelessWidget {
   const DrawerLogoContainer({super.key, this.logoUrl});
@@ -27,28 +27,36 @@ class DrawerLogoContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool lightMode = Theme.of(context).brightness == Brightness.light;
 
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 10.h),
-      child: Center(
-        child: CircleAvatar(
-          radius: 40.w,
-          backgroundColor: AppColors.transparent,
-          child: logoUrl == null
-              ? SvgPicture.asset(
-                  lightMode
-                      ? "assets/icons_assets/home_assets/new_size_logo.svg"
-                      : "assets/icons_assets/main_icons_assets/knowticed_logo_dark.svg",
-                  width: 60.w,
-                  height: 60.w,
-                  fit: BoxFit.contain,
-                )
-              : SvgPicture.network(
-                  logoUrl!,
-                  width: 60.w,
-                  height: 60.w,
-                  fit: BoxFit.contain,
-                ),
-        ),
+    // FIXED 17/10/2026 (D-03 diagonal cut): the logo was sized in `.w`
+    // (80.w circle) inside a `.sp` sidebar (90.sp), so on a landscape iPad it
+    // was wider than its own column and pushed into the corner. It is now a
+    // 90.sp square — same width as the sidebar and same height as the app
+    // bar — with the SAME inset on every side, so the top and side gaps match
+    // and the logo sits level with the header row.
+    final double box = 90.sp;
+    final double inset = 15.sp;
+    final double logo = box - inset * 2;
+
+    return SizedBox(
+      width: box,
+      height: box,
+      child: Padding(
+        padding: EdgeInsets.all(inset),
+        child: logoUrl == null
+            ? CustomSvgImage.natural(
+                assetPath: lightMode
+                    ? "assets/icons_assets/main_icons_assets/logo_knowticed.svg"
+                    : "assets/icons_assets/main_icons_assets/logo_knowticed_dark.svg",
+                width: logo,
+                height: logo,
+                fit: BoxFit.contain,
+              )
+            : SvgPicture.network(
+                logoUrl!,
+                width: logo,
+                height: logo,
+                fit: BoxFit.contain,
+              ),
       ),
     );
   }

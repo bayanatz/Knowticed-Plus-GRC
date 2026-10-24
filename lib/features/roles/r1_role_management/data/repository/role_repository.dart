@@ -2,54 +2,79 @@
 ///
 ///*************************** FILE INFO ****************************///
 /// File Name: role_repository.dart
-/// Purpose: Declares `RoleRepository`.
-/// Author: Knowticed Plus team
+/// Description: Declares `RoleRepository`.
+/// Author: Amr Mesbah
+/// Created at: 06/10/2026
 /// Updated: 12/8/2026 - Added the standard module + FILE INFO header.
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
-import 'package:flutter/foundation.dart';
-import 'package:grc_module/core/network/failure_model.dart';
-import 'package:grc_module/features/roles/r4_active_directory/data/models/edit_by_model.dart';
-import 'package:grc_module/core/network/get_base_url.dart';
-import 'package:grc_module/core/di/app_controllers.dart';
-import 'package:grc_module/features/roles/r1_role_management/domain/enums/module_name_aliases.dart';
-import 'package:grc_module/features/roles/r1_role_management/domain/enums/role_status.dart';
-import 'package:grc_module/features/roles/r1_role_management/data/data_source/remote_data_source/role_remote_data_source.dart';
-import 'package:grc_module/features/roles/r1_role_management/data/models/role_model.dart';
-import 'package:grc_module/core/constants/firebase_collections.dart';
+import 'package:knowticed_plus/core/network/failure_model.dart';
+import 'package:knowticed_plus/features/roles/r4_active_directory/data/models/edit_by_model.dart';
+import 'package:knowticed_plus/core/network/get_base_url.dart';
+import 'package:knowticed_plus/core/di/app_controllers.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/module_name_aliases.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/role_status.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/data/data_source/remote_data_source/role_remote_data_source.dart';
+import 'package:knowticed_plus/features/roles/r1_role_management/data/models/role_model.dart';
+import 'package:knowticed_plus/core/constants/firebase_collections.dart';
 // ADDED 25/8/2026 — see the NOTIFICATIONS section at the foot of this class.
-import 'package:grc_module/features/notification/data/repository/role_management_notification_service.dart';
+import 'package:knowticed_plus/features/notification/data/repository/role_management_notification_service.dart';
+
+part 'role_repository/role_repository_methods.dart';
 
 class RoleRepository {
   final RoleRemoteDataSource remoteDataSource = RoleRemoteDataSource();
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   // Collection names
-  static const String ROLES_COLLECTION = 'Roles';
-  static const String SUBSCRIPTION_ADMIN_COLLECTION = 'Subscription_Admin';
-  static const String SUBSCRIPTION_PERMISSION_ADMIN_COLLECTION = 'Subscription_Permission_Admin';
+  static const String kRolesCollection = 'Roles';
+  static const String kSubscriptionAdminCollection = 'Subscription_Admin';
+  static const String kSubscriptionPermissionAdminCollection =
+      'Subscription_Permission_Admin';
 
   /// ADDED 28/9/2026 — the Restricted Location allow-list, one document per
   /// role (`{Role_Id, Countries: [ISO codes], Updated_At}`). Kept OUT of
   /// `settings_module_permissions` on purpose: every field there is a history
   /// of BOOLS (`updateModulePermissions` does `List<bool>.from(...)` on each),
   /// so a list of country codes stored beside them would break the next save.
-  static const String ROLE_RESTRICTED_LOCATIONS = 'role_restricted_locations';
+  static const String kRoleRestrictedLocations = 'role_restricted_locations';
 
   // Regular employee permission collections
-  static const String SERVICES_PERMISSIONS = 'services_module_permissions';
-  static const String services_app_PERMISSIONS = 'services_app_module_permissions';
-  static const String MESSAGES_PERMISSIONS = 'messages_module_permissions';
-  static const String INVENTORY_PERMISSIONS = 'inventory_module_permissions';
-  static const String SETTINGS_PERMISSIONS = 'settings_module_permissions';
-  static const String QIYAS_PERMISSIONS = 'qiyas_module_permissions';
-  static const String GRC_PERMISSIONS = 'grc_module_permissions';
-  static const String KNOWLEDGE_HUB_PERMISSIONS = 'knowledge_hub_module_permissions';
-  static const String ROLES_PERMISSIONS = 'roles_permissions';
-  static const String HR_PERMISSIONS = 'hr_module_permissions';
-  static const String CRM_PERMISSIONS = 'crm_module_permissions';
-  static const String NOTIFICATION_PERMISSIONS = 'notification_module_permissions';
+  static const String kServicesPermissions = 'services_module_permissions';
+  static const String kServicesAppPermissions =
+      'services_app_module_permissions';
+
+  /// Where Knowticed Admin writes a role's Form Builder switches; read as a
+  /// fallback when [kServicesAppPermissions] has no document for the role.
+  static const String kFormBuilderAdminPermissions =
+      'form_builder_module_permissions';
+  static const String kMessagesPermissions = 'messages_module_permissions';
+  static const String kInventoryPermissions = 'inventory_module_permissions';
+  static const String kSettingsPermissions = 'settings_module_permissions';
+  static const String kQiyasPermissions = 'qiyas_module_permissions';
+  static const String kGrcPermissions = 'grc_module_permissions';
+  static const String kKnowledgeHubPermissions =
+      'knowledge_hub_module_permissions';
+  // CHANGED 9/10/2026 — was `roles_permissions`, the only collection off the
+  // house pattern `<module>_module_permissions`. Knowticed Admin creates
+  // `roles_module_permissions` (clients_repository.dart) and login_controller
+  // already mapped 'roles' there, so the client was reading one collection
+  // and Admin/login writing another. Data move: Documents/Settings Fixes/
+  // migrations/migrate_roles_permissions.py (run by Moataz, dry-run first).
+  static const String kRolesPermissions = 'roles_module_permissions';
+  static const String kHrPermissions = 'hr_module_permissions';
+  static const String kCrmPermissions = 'crm_module_permissions';
+  static const String kNotificationPermissions =
+      'notification_module_permissions';
+  // ADDED 7/10/2026 — To-Do (personal module). Mirrors
+  // `TodoFirestorePaths.rolePermissions`; section `To_Do_Permissions`.
+  static const String kTodoPermissions = 'todo_module_permissions';
+  // ADDED 8/10/2026 — Time Tracker. Mirrors
+  // `TimeTrackerFirestorePaths.rolePermissions`.
+  static const String kTimeTrackerPermissions =
+      'time_tracker_module_permissions';
 
   // Helper method to get collection reference with base path
   CollectionReference _getCollection(String collectionName) {
@@ -67,14 +92,16 @@ class RoleRepository {
         return false;
       }
 
-      bool isAdmin = (email.toLowerCase().trim() == adminEmail.toLowerCase().trim());
+      bool isAdmin =
+          (email.toLowerCase().trim() == adminEmail.toLowerCase().trim());
       return isAdmin;
     } catch (e) {
       return false;
     }
   }
 
-  Future<Either<FirebaseFailure, Map<String, bool>>> getAdminRestrictionsForModule({
+  Future<Either<FirebaseFailure, Map<String, bool>>>
+      getAdminRestrictionsForModule({
     required String companyId,
     required String moduleName,
   }) async {
@@ -88,7 +115,8 @@ class RoleRepository {
         return Right({});
       }
 
-      Map<String, dynamic> demoPermissions = demoPermDoc.data() as Map<String, dynamic>;
+      Map<String, dynamic> demoPermissions =
+          demoPermDoc.data() as Map<String, dynamic>;
 
       if (!demoPermissions.containsKey(moduleName)) {
         return Right({});
@@ -98,7 +126,9 @@ class RoleRepository {
         return Right({});
       }
 
-      Map<String, dynamic> modulePerms = Map<String, dynamic>.from(demoPermissions[moduleName]);
+      Map<String, dynamic> modulePerms = Map<String, dynamic>.from(
+        demoPermissions[moduleName],
+      );
       Map<String, bool> restrictions = {};
 
       modulePerms.forEach((key, value) {
@@ -108,8 +138,7 @@ class RoleRepository {
       });
 
       return Right(restrictions);
-
-    } catch (e, stackTrace) {
+    } catch (e) {
       return Left(FirebaseFailure(e.toString()));
     }
   }
@@ -129,31 +158,32 @@ class RoleRepository {
         return Left(FirebaseFailure('Cannot access employee controller'));
       }
 
-      QuerySnapshot snapshot = await _getCollection(SUBSCRIPTION_ADMIN_COLLECTION)
-          .where('email', isEqualTo: currentUserEmail)
-          .limit(1)
-          .get();
+      QuerySnapshot snapshot = await _getCollection(
+        kSubscriptionAdminCollection,
+      ).where('email', isEqualTo: currentUserEmail).limit(1).get();
 
       if (snapshot.docs.isEmpty) {
         return Right(null);
       }
 
-      Map<String, dynamic> data = snapshot.docs.first.data() as Map<String, dynamic>;
+      Map<String, dynamic> data =
+          snapshot.docs.first.data() as Map<String, dynamic>;
       data['_documentId'] = snapshot.docs.first.id;
 
       RoleHistoryModel role = RoleHistoryModel.fromMap(data);
 
       return Right(role);
-    } catch (e, stackTrace) {
+    } catch (e) {
       return Left(FirebaseFailure(e.toString()));
     }
   }
 
-  Future<Either<FirebaseFailure, Map<String, Map<String, bool>>>> getAdminPermissions(String roleId) async {
+  Future<Either<FirebaseFailure, Map<String, Map<String, bool>>>>
+      getAdminPermissions(String roleId) async {
     try {
-      DocumentSnapshot doc = await _getCollection(SUBSCRIPTION_PERMISSION_ADMIN_COLLECTION)
-          .doc(roleId)
-          .get();
+      DocumentSnapshot doc = await _getCollection(
+        kSubscriptionPermissionAdminCollection,
+      ).doc(roleId).get();
 
       if (!doc.exists) {
         return Right({});
@@ -173,7 +203,7 @@ class RoleRepository {
 
         if (value is Map) {
           Map<String, bool> modulePerms = {};
-          (value as Map).forEach((permKey, permValue) {
+          (value).forEach((permKey, permValue) {
             modulePerms[permKey.toString()] = permValue == true;
           });
           adminPermissions[key] = modulePerms;
@@ -181,391 +211,7 @@ class RoleRepository {
       });
 
       return Right(adminPermissions);
-    } catch (e, stackTrace) {
-      return Left(FirebaseFailure(e.toString()));
-    }
-  }
-
-  Future<Either<FirebaseFailure, Map<String, Map<String, bool>>>> validatePermissionsAgainstAdmin({
-    required Map<String, Map<String, bool>> requestedPermissions,
-    required String companyId,
-  }) async {
-    try {
-      DocumentSnapshot demoPermDoc = await firestore
-          .collection(FirebaseCollections.demoPermissions)
-          .doc(companyId)
-          .get();
-
-      if (!demoPermDoc.exists) {
-        // SECURITY (default-deny): this used to `return Right(requestedPermissions)`
-        // — a missing admin-permission document granted every permission the
-        // caller asked for. Failing closed here surfaces the misconfiguration
-        // instead of silently persisting elevated permissions.
-        return Left(FirebaseFailure(
-          'Permission template for this company is unavailable, so the role '
-          'cannot be validated. No changes were saved.',
-        ));
-      }
-
-      Map<String, dynamic> demoPermissions = demoPermDoc.data() as Map<String, dynamic>;
-      Map<String, Map<String, bool>> validatedPermissions = {};
-
-      requestedPermissions.forEach((moduleName, modulePermissions) {
-        // Every spelling the template may be keyed under (23/8/2026): asking
-        // only for `services_app` when the document says `form_builder` made
-        // the module look absent, and the default-deny branch below then wrote
-        // all-false for a module the company had actually granted.
-        // See [ModuleNameAliases].
-        String? storedKey;
-        for (final String spelling
-            in ModuleNameAliases.spellingsOf(moduleName)) {
-          if (demoPermissions[spelling] is Map) {
-            storedKey = spelling;
-            break;
-          }
-        }
-
-        if (storedKey != null) {
-          Map<String, dynamic> adminModulePerms =
-          Map<String, dynamic>.from(demoPermissions[storedKey]);
-
-          Map<String, bool> validatedModulePerms = {};
-
-          modulePermissions.forEach((permKey, requestedValue) {
-            bool adminAllows = (adminModulePerms[permKey] == true);
-
-            if (adminAllows) {
-              validatedModulePerms[permKey] = requestedValue;
-            } else {
-              validatedModulePerms[permKey] = false;
-            }
-          });
-
-          validatedPermissions[moduleName] = validatedModulePerms;
-        } else {
-          // SECURITY (default-deny): a module absent from the admin template
-          // used to pass through with everything the caller requested. An
-          // un-granted module now resolves to all-false.
-          validatedPermissions[moduleName] = <String, bool>{
-            for (final String permKey in modulePermissions.keys) permKey: false,
-          };
-        }
-      });
-
-      return Right(validatedPermissions);
-
-    } catch (e, stackTrace) {
-      return Left(FirebaseFailure(e.toString()));
-    }
-  }
-
-  // REMOVED 11/8/2026: `isPermissionAllowedByAdmin` — dead code (0 callers;
-  // RoleCubit and PermissionSyncService each declare their own) and fail-open
-  // twice over: it returned `true` both when the admin-permission document was
-  // missing and when the module was absent from it.
-
-  Future<Either<Failure, dynamic>> addNewRole({
-    required List<String> selectedModules,
-    required String roleName,
-    required String roleNameAr,
-    required String roleDescription,
-    required String roleDescriptionAr,
-    required String createdBy,
-    required String? roleImage,
-    required Map<String, Map<String, bool>> modulePermissions,
-    RoleStatus status = RoleStatus.active,
-    List<String>? restrictedCountryCodes,
-  }) async {
-    try {
-      String companyId = getBaseUrl('').split('/').where((s) => s.isNotEmpty).last;
-
-      Either<FirebaseFailure, Map<String, Map<String, bool>>> validationResult =
-      await validatePermissionsAgainstAdmin(
-        requestedPermissions: modulePermissions,
-        companyId: companyId,
-      );
-
-      if (validationResult.isLeft()) {
-        return validationResult;
-      }
-
-      Map<String, Map<String, bool>> validatedPermissions =
-      validationResult.getOrElse(() => {});
-
-      for (var module in validatedPermissions.keys) {
-        var perms = validatedPermissions[module];
-        if (perms != null) {
-          for (var permValue in perms.values) {
-            if (permValue is List) {
-              throw Exception("Nested array detected in module '$module' permissions");
-            }
-          }
-        }
-      }
-
-      String roleId = await remoteDataSource.generateNextRoleId();
-
-      DocumentSnapshot existingDoc = await _getCollection(ROLES_COLLECTION).doc(roleId).get();
-      if (existingDoc.exists) {
-        throw Exception("Role ID collision detected - ID $roleId already exists!");
-      }
-
-      String? roleImageLink;
-      if (roleImage != null) {
-        try {
-          dynamic uploadResult = await remoteDataSource.uploadRoleImage(roleImage);
-
-          if (uploadResult is Either) {
-            dynamic value = uploadResult.fold(
-                  (failure) => null,
-                  (success) => success,
-            );
-
-            if (value == null) {
-              Failure failure = uploadResult.fold((l) => l, (r) => FirebaseFailure('Unexpected'));
-              return Left(failure);
-            }
-
-            roleImageLink = value.toString();
-          } else {
-            return Left(FirebaseFailure('Unexpected result type from image upload'));
-          }
-        } catch (imageError, stackTrace) {
-          return Left(FirebaseFailure('Image upload failed: $imageError'));
-        }
-      }
-
-      RoleHistoryModel role = RoleHistoryModel.createNew(
-        roleId: roleId,
-        roleName: roleName,
-        roleNameAr: roleNameAr,
-        roleDescription: roleDescription,
-        roleDescriptionAr: roleDescriptionAr,
-        roleImage: roleImageLink ?? '',
-        createdAt: Timestamp.now(),
-        createdBy: createdBy,
-        status: status,
-        selectedModules: selectedModules,
-      );
-
-      WriteBatch batch = firestore.batch();
-
-      DocumentReference roleRef = _getCollection(ROLES_COLLECTION).doc(roleId);
-
-      Map<String, dynamic> roleMap = role.toMap();
-
-      if (roleMap['Selected_Modules'] is List) {
-        var modules = roleMap['Selected_Modules'] as List;
-        for (var module in modules) {
-          if (module is List) {
-            throw Exception("Nested arrays in Selected_Modules are not supported");
-          }
-        }
-      }
-
-      batch.set(roleRef, roleMap);
-
-      await _createPermissionDocuments(batch, roleId, selectedModules, validatedPermissions);
-
-      if (restrictedCountryCodes != null) {
-        _setRestrictedCountries(batch, roleId, restrictedCountryCodes);
-      }
-
-      await batch.commit();
-
-      // ADDED 25/8/2026 — spec: Role Created. Fans out to the Master Admins,
-      // minus the person who just did it.
-      await _notifyRoleCreated(actorEmail: createdBy, roleName: roleName);
-
-      return Right('Role created successfully');
-    } catch (e, stackTrace) {
-      return Left(FirebaseFailure(e.toString()));
-    }
-  }
-
-  // ✅ FIXED: Added status parameter
-  Future<Either<Failure, dynamic>> updateRole({
-    required RoleHistoryModel role,
-    required String currentUserEmail,
-    required String roleDescription,
-    required String roleDescriptionAr,
-    String? roleNameAr,
-    required String? roleImage,
-    required List<String> selectedModules,
-    required Map<String, Map<String, bool>> modulePermissions,
-    RoleStatus status = RoleStatus.active, // ✅ ADDED
-    List<String>? restrictedCountryCodes,
-  }) async {
-    try {
-      String roleId = role.roleId;
-      int timestamp = DateTime.now().millisecondsSinceEpoch;
-
-      // The status as STORED, read before anything is written.
-      //
-      // Not `role.currentStatus`: `RoleCubit.activateDraftRole` applies
-      // `copyWith(status: active)` to the role BEFORE handing it here, so the
-      // in-memory model already carries the new value and the draft → active
-      // transition would compare active against active and look like no change
-      // at all. Reading the document is the only view of the status that the
-      // caller cannot have pre-mutated.
-      final RoleStatus storedStatus = await _storedRoleStatus(roleId);
-
-      String companyId = getBaseUrl('').split('/').where((s) => s.isNotEmpty).last;
-
-      Either<FirebaseFailure, Map<String, Map<String, bool>>> validationResult =
-      await validatePermissionsAgainstAdmin(
-        requestedPermissions: modulePermissions,
-        companyId: companyId,
-      );
-
-      if (validationResult.isLeft()) {
-        return validationResult;
-      }
-
-      Map<String, Map<String, bool>> validatedPermissions =
-      validationResult.getOrElse(() => {});
-
-      WriteBatch batch = firestore.batch();
-
-      EditBy currentEditBy = role.currentEditBy ?? EditBy(editorEmail: [], timestamps: []);
-      List<String?> editorEmails = List<String?>.from(currentEditBy.editorEmail ?? []);
-      List<Timestamp?> editTimestamps = List<Timestamp?>.from(currentEditBy.timestamps ?? []);
-      editorEmails.add(currentUserEmail);
-      editTimestamps.add(Timestamp.now());
-      EditBy updatedEditBy = EditBy(
-        editorEmail: editorEmails,
-        timestamps: editTimestamps,
-      );
-
-      String? roleImageLink;
-      if (roleImage != null) {
-        try {
-          dynamic uploadResult = await remoteDataSource.uploadRoleImage(roleImage);
-
-          if (uploadResult is Either) {
-            dynamic value = uploadResult.fold(
-                  (failure) => null,
-                  (success) => success,
-            );
-
-            if (value == null) {
-              Failure failure = uploadResult.fold((l) => l, (r) => FirebaseFailure('Unexpected'));
-              return Left(failure);
-            }
-
-            roleImageLink = value.toString();
-          } else {
-            return Left(FirebaseFailure('Unexpected result type from image upload'));
-          }
-        } catch (imageError, stackTrace) {
-          return Left(FirebaseFailure('Image upload failed: $imageError'));
-        }
-      }
-
-      RoleHistoryModel updatedRole = role.copyWith(
-        roleDescription: roleDescription,
-        roleDescriptionAr: roleDescriptionAr,
-        roleNameAr: roleNameAr,
-        roleImage: roleImageLink,
-        selectedModules: selectedModules,
-        editBy: updatedEditBy,
-        status: status.name, // ✅ ADDED
-      );
-
-      Map<String, dynamic> synchronizedRoleData = updatedRole.toMap();
-
-      DocumentReference roleRef = _getCollection(ROLES_COLLECTION).doc(roleId);
-      batch.update(roleRef, synchronizedRoleData);
-
-      for (String moduleName in selectedModules) {
-        String collectionName = _getPermissionCollectionName(moduleName);
-        if (collectionName.isEmpty) continue;
-
-        DocumentReference permRef = _getCollection(collectionName).doc(roleId);
-        DocumentSnapshot permDoc = await permRef.get();
-
-        Map<String, dynamic> synchronizedPermissionData;
-
-        if (permDoc.exists) {
-          Map<String, dynamic> existingPermissions = permDoc.data() as Map<String, dynamic>;
-          synchronizedPermissionData = _synchronizeModulePermissions(
-            existingPermissions: existingPermissions,
-            newPermissions: validatedPermissions[moduleName] ?? {},
-            timestamp: timestamp,
-            roleId: roleId,
-          );
-        } else {
-          synchronizedPermissionData = _createNewModulePermissions(
-            permissions: validatedPermissions[moduleName] ?? {},
-            timestamp: timestamp,
-            roleId: roleId,
-          );
-        }
-
-        batch.set(permRef, synchronizedPermissionData);
-      }
-
-      DocumentReference subPermRef = firestore
-          .collection(getBaseUrl('Subscription_Permission_Admin'))
-          .doc(roleId);
-
-      Map<String, dynamic> subPermData = {
-        'companyId': companyId,
-        'roleId': roleId,
-        'timestamps': FieldValue.arrayUnion([timestamp]),
-      };
-
-      for (String moduleName in selectedModules) {
-        if (validatedPermissions.containsKey(moduleName)) {
-          subPermData[moduleName] = validatedPermissions[moduleName];
-        }
-      }
-
-      batch.set(subPermRef, subPermData, SetOptions(merge: true));
-
-      if (restrictedCountryCodes != null) {
-        _setRestrictedCountries(batch, roleId, restrictedCountryCodes);
-      }
-
-      List<String> oldModules = role.currentSelectedModules;
-
-      // Compared canonically (23/8/2026). The caller now normalises module
-      // names, so a role stored as `form_builder` arrives here as
-      // `services_app`. A raw string comparison would call the old name
-      // "removed", and `_getPermissionCollectionName` resolves both to the SAME
-      // collection — so the batch would have deleted the permissions document
-      // it had just written a few lines above. See [ModuleNameAliases].
-      final Set<String> keptModules =
-          selectedModules.map(ModuleNameAliases.canonical).toSet();
-      List<String> removedModules = oldModules
-          .where((m) => !keptModules.contains(ModuleNameAliases.canonical(m)))
-          .toList();
-
-      if (removedModules.isNotEmpty) {
-        for (String moduleName in removedModules) {
-          String collectionName = _getPermissionCollectionName(moduleName);
-          if (collectionName.isNotEmpty) {
-            DocumentReference permRef = _getCollection(collectionName).doc(roleId);
-            batch.delete(permRef);
-          }
-        }
-      }
-
-      await batch.commit();
-
-      // ADDED 25/8/2026 — spec: Role Updated, and Role Status Changed when
-      // this save also flipped active/inactive. Both, when both happened: the
-      // permissions genuinely changed AND the role was switched off, and an
-      // admin reviewing the notice needs to know each.
-      await _notifyRoleUpdated(
-        actorEmail: currentUserEmail,
-        roleName: role.currentRoleName,
-        oldStatus: storedStatus,
-        newStatus: status,
-      );
-
-      return Right('Role updated successfully');
-    } catch (e, stackTrace) {
+    } catch (e) {
       return Left(FirebaseFailure(e.toString()));
     }
   }
@@ -580,7 +226,7 @@ class RoleRepository {
     List<String> countryCodes,
   ) {
     batch.set(
-      _getCollection(ROLE_RESTRICTED_LOCATIONS).doc(roleId),
+      _getCollection(kRoleRestrictedLocations).doc(roleId),
       <String, dynamic>{
         'Role_Id': roleId,
         'Countries': countryCodes.toSet().toList()..sort(),
@@ -594,180 +240,16 @@ class RoleRepository {
   /// restriction configured".
   Future<List<String>> getRestrictedCountryCodes(String roleId) async {
     try {
-      final DocumentSnapshot doc =
-          await _getCollection(ROLE_RESTRICTED_LOCATIONS).doc(roleId).get();
+      final DocumentSnapshot doc = await _getCollection(
+        kRoleRestrictedLocations,
+      ).doc(roleId).get();
       if (!doc.exists) return <String>[];
       final Object? countries =
           (doc.data() as Map<String, dynamic>?)?['Countries'];
       if (countries is! List) return <String>[];
       return countries.map((Object? e) => e.toString()).toList();
     } catch (e) {
-      debugPrint('getRestrictedCountryCodes($roleId) failed: $e');
       return <String>[];
-    }
-  }
-
-  Future<Either<FirebaseFailure, dynamic>> getUnDeletedRoles() async {
-    try {
-      List<RoleHistoryModel> roleTypeList = [];
-
-      // Roles come from two collections. A failure in one used to be swallowed
-      // by an empty `catch {}`, so a permission error or an offline read
-      // returned a *silently truncated* role list that looked like success
-      // (§11.5). Failures are now recorded and reported if nothing was read.
-      final List<String> readFailures = <String>[];
-
-      try {
-        String subscriptionAdminPath = getBaseUrl(SUBSCRIPTION_ADMIN_COLLECTION);
-
-        QuerySnapshot subscriptionSnapshot = await firestore
-            .collection(subscriptionAdminPath)
-            .get();
-
-        for (QueryDocumentSnapshot doc in subscriptionSnapshot.docs) {
-          try {
-            Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-            data['_documentId'] = doc.id;
-
-            RoleHistoryModel role = RoleHistoryModel.fromMap(data);
-
-            roleTypeList.add(role);
-
-          } catch (e, stackTrace) {
-            debugPrint(
-              'getUnDeletedRoles: skipped malformed $SUBSCRIPTION_ADMIN_COLLECTION '
-              'doc ${doc.id}: $e\n$stackTrace',
-            );
-            continue;
-          }
-        }
-
-      } catch (e, stackTrace) {
-        readFailures.add('$SUBSCRIPTION_ADMIN_COLLECTION: $e');
-        debugPrint('getUnDeletedRoles: $SUBSCRIPTION_ADMIN_COLLECTION read failed: $e\n$stackTrace');
-      }
-
-      try {
-        String rolesPath = getBaseUrl(ROLES_COLLECTION);
-
-        QuerySnapshot rolesSnapshot = await firestore
-            .collection(rolesPath)
-            .get();
-
-        for (QueryDocumentSnapshot doc in rolesSnapshot.docs) {
-          try {
-            Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-            data['_documentId'] = doc.id;
-
-            RoleHistoryModel role = RoleHistoryModel.fromMap(data);
-
-            if (role.currentStatus != RoleStatus.deleted) {
-              roleTypeList.add(role);
-            }
-          } catch (e, stackTrace) {
-            debugPrint(
-              'getUnDeletedRoles: skipped malformed $ROLES_COLLECTION doc '
-              '${doc.id}: $e\n$stackTrace',
-            );
-            continue;
-          }
-        }
-
-      } catch (e, stackTrace) {
-        readFailures.add('$ROLES_COLLECTION: $e');
-        debugPrint('getUnDeletedRoles: $ROLES_COLLECTION read failed: $e\n$stackTrace');
-      }
-
-      // Only fail the call when nothing at all could be read — a partial result
-      // is still useful, but "no roles" plus "a read blew up" must not be
-      // reported to the UI as an empty-but-successful list.
-      if (roleTypeList.isEmpty && readFailures.isNotEmpty) {
-        return Left(FirebaseFailure(
-          'Could not load roles (${readFailures.join('; ')}).',
-        ));
-      }
-
-      return Right(roleTypeList);
-
-    } catch (e, stackTrace) {
-      return Left(FirebaseFailure(e.toString()));
-    }
-  }
-
-  Future<Either<FirebaseFailure, dynamic>> deleteRole({
-    required RoleHistoryModel role,
-    required String currentUserEmail,
-  }) async {
-    try {
-      String roleId = role.roleId;
-
-      WriteBatch batch = firestore.batch();
-
-      EditBy currentEditBy = role.currentEditBy ?? EditBy(editorEmail: [], timestamps: []);
-      List<String?> editorEmails = List<String?>.from(currentEditBy.editorEmail ?? []);
-      List<Timestamp?> editTimestamps = List<Timestamp?>.from(currentEditBy.timestamps ?? []);
-      editorEmails.add(currentUserEmail);
-      editTimestamps.add(Timestamp.now());
-      EditBy updatedEditBy = EditBy(
-        editorEmail: editorEmails,
-        timestamps: editTimestamps,
-      );
-
-      RoleHistoryModel updatedRole = role.copyWith(
-        status: RoleStatus.deleted.name,
-        editBy: updatedEditBy,
-      );
-
-      DocumentReference roleRef = _getCollection(ROLES_COLLECTION).doc(roleId);
-      DocumentSnapshot docSnapshot = await roleRef.get();
-
-      if (!docSnapshot.exists) {
-        return Left(FirebaseFailure('Role document not found with ID: $roleId'));
-      }
-
-      batch.update(roleRef, updatedRole.toMap());
-
-      List<String> permissionCollections = [
-        SERVICES_PERMISSIONS,
-        services_app_PERMISSIONS,
-        MESSAGES_PERMISSIONS,
-        INVENTORY_PERMISSIONS,
-        SETTINGS_PERMISSIONS,
-        GRC_PERMISSIONS,
-        QIYAS_PERMISSIONS,
-        KNOWLEDGE_HUB_PERMISSIONS,
-        ROLES_PERMISSIONS,
-        HR_PERMISSIONS,
-        CRM_PERMISSIONS,
-        NOTIFICATION_PERMISSIONS,
-      ];
-
-      for (String collection in permissionCollections) {
-        DocumentReference permRef = _getCollection(collection).doc(roleId);
-        DocumentSnapshot permSnapshot = await permRef.get();
-        if (permSnapshot.exists) {
-          batch.delete(permRef);
-        }
-      }
-
-      String companyId = getBaseUrl('').split('/').where((s) => s.isNotEmpty).last;
-      DocumentReference subPermRef = firestore
-          .collection(getBaseUrl('Subscription_Permission_Admin'))
-          .doc(roleId);
-
-      batch.delete(subPermRef);
-
-      await batch.commit();
-
-      // ADDED 25/8/2026 — spec: Role Deleted.
-      await _notifyRoleDeleted(
-        actorEmail: currentUserEmail,
-        roleName: role.currentRoleName,
-      );
-
-      return Right('Role deleted successfully');
-    } catch (e, stackTrace) {
-      return Left(FirebaseFailure(e.toString()));
     }
   }
 
@@ -807,13 +289,13 @@ class RoleRepository {
   Future<RoleStatus> _storedRoleStatus(String roleId) async {
     try {
       final DocumentSnapshot snapshot =
-          await _getCollection(ROLES_COLLECTION).doc(roleId).get();
+          await _getCollection(kRolesCollection).doc(roleId).get();
       if (!snapshot.exists) return RoleStatus.active;
 
       final Object? data = snapshot.data();
       if (data is! Map<String, dynamic>) return RoleStatus.active;
 
-      final Object? stored = data[RoleHistoryModel.STATUS_KEY];
+      final Object? stored = data[RoleHistoryModel.kStatusKey];
       final String name = stored is List
           ? (stored.isEmpty ? '' : stored.last.toString())
           : (stored?.toString() ?? '');
@@ -822,8 +304,7 @@ class RoleRepository {
         (RoleStatus s) => s.name == name,
         orElse: () => RoleStatus.active,
       );
-    } catch (e, stackTrace) {
-      debugPrint('stored role status read failed: $e\n$stackTrace');
+    } catch (e) {
       return RoleStatus.active;
     }
   }
@@ -833,7 +314,9 @@ class RoleRepository {
   /// email in the message than the controller's "no name" sentinel.
   String _actorName(String actorEmail) {
     final String name = AppControllers.employee.getEmployeeName(actorEmail);
-    return (name.isEmpty || name.trim() == 'no name') ? actorEmail : name.trim();
+    return (name.isEmpty || name.trim() == 'no name')
+        ? actorEmail
+        : name.trim();
   }
 
   /// Function Name: [_notifyRoleCreated]
@@ -842,22 +325,26 @@ class RoleRepository {
   ///
   /// Parameters:
   /// - [actorEmail]: who created it; excluded from the recipients.
+  /// - [roleId]: the role document id — saved as the notification's
+  ///   `Request_Id` so View opens this role (22/10/2026).
   /// - [roleName]: the English role name, as stored.
   ///
   /// Returns: [Future<void>] — never throws. The role is already saved; a
   /// notification failure must not turn that into an error the user sees.
   Future<void> _notifyRoleCreated({
     required String actorEmail,
+    required String roleId,
     required String roleName,
   }) async {
     try {
       await RoleManagementNotificationService.sendRoleCreatedNotification(
         actorEmail: actorEmail,
+        roleId: roleId,
         actorName: _actorName(actorEmail),
         roleName: roleName,
       );
-    } catch (e, stackTrace) {
-      debugPrint('role-created notification failed: $e\n$stackTrace');
+    } catch (_) {
+      // Best effort: this failure must not stop the action.
     }
   }
 
@@ -868,6 +355,8 @@ class RoleRepository {
   ///
   /// Parameters:
   /// - [actorEmail]: who saved the change; excluded from the recipients.
+  /// - [roleId]: the role document id — saved as the notification's
+  ///   `Request_Id` so View opens this role (22/10/2026).
   /// - [roleName]: the English role name, as stored.
   /// - [oldStatus] / [newStatus]: the status before and after this save. The
   ///   status template prints the transition, so both are required — passing
@@ -876,6 +365,7 @@ class RoleRepository {
   /// Returns: [Future<void>] — never throws.
   Future<void> _notifyRoleUpdated({
     required String actorEmail,
+    required String roleId,
     required String roleName,
     required RoleStatus oldStatus,
     required RoleStatus newStatus,
@@ -885,6 +375,7 @@ class RoleRepository {
 
       await RoleManagementNotificationService.sendRoleUpdatedNotification(
         actorEmail: actorEmail,
+        roleId: roleId,
         actorName: actorName,
         roleName: roleName,
       );
@@ -893,14 +384,15 @@ class RoleRepository {
         await RoleManagementNotificationService
             .sendRoleStatusChangedNotification(
           actorEmail: actorEmail,
+          roleId: roleId,
           actorName: actorName,
           roleName: roleName,
           oldStatus: oldStatus.name,
           newStatus: newStatus.name,
         );
       }
-    } catch (e, stackTrace) {
-      debugPrint('role-updated notification failed: $e\n$stackTrace');
+    } catch (_) {
+      // Best effort: this failure must not stop the action.
     }
   }
 
@@ -923,51 +415,17 @@ class RoleRepository {
         actorName: _actorName(actorEmail),
         roleName: roleName,
       );
-    } catch (e, stackTrace) {
-      debugPrint('role-deleted notification failed: $e\n$stackTrace');
-    }
-  }
-
-  Future<Either<FirebaseFailure, String>> fixCorruptedQiyasDocument(String roleId) async {
-    try {
-      DocumentReference permRef = _getCollection(QIYAS_PERMISSIONS).doc(roleId);
-      await permRef.delete();
-
-      Map<String, dynamic> properPermissions = {
-        'Role_Id': roleId,
-        'timestamps': [DateTime.now().millisecondsSinceEpoch],
-        'Export_Table': [false],
-        'Export_Champion_Table': [false],
-        'Assigned_Evidence_Module': [false],
-        'Delete_Qiyas': [false],
-        'Champions_Module': [false],
-        'Dashboard_Module': [false],
-        'Edit_Evidence': [false],
-        'Uploaded_Documents_Module': [false],
-        'Remove_Champion': [false],
-        'Assign_Champion': [false],
-        'Edit_Qiyas_Details': [false],
-        'Change_Submission_Status_Module': [false],
-        'Qiyas_Permissions_Module': [false],
-        'Approvals_Module': [false],
-        'Reassign_Champion': [false],
-        'Vision_Badges': [false],
-        'Bulk_Upload': [false],
-      };
-
-      await permRef.set(properPermissions);
-      return Right('Qiyas document fixed successfully');
-    } catch (e, stackTrace) {
-      return Left(FirebaseFailure(e.toString()));
+    } catch (_) {
+      // Best effort: this failure must not stop the action.
     }
   }
 
   Future<void> _createPermissionDocuments(
-      WriteBatch batch,
-      String roleId,
-      List<String> selectedModules,
-      Map<String, Map<String, bool>> modulePermissions,
-      ) async {
+    WriteBatch batch,
+    String roleId,
+    List<String> selectedModules,
+    Map<String, Map<String, bool>> modulePermissions,
+  ) async {
     for (int i = 0; i < selectedModules.length; i++) {
       String module = selectedModules[i];
       String collectionName = _getPermissionCollectionName(module);
@@ -1010,7 +468,19 @@ class RoleRepository {
     }
   }
 
-  String _getPermissionCollectionName(String module) {
+  /// Function Name: [permissionCollectionFor]
+  ///
+  /// Purpose: The `Demo/{cid}/<collection>` that holds a module's role
+  ///          switches — public and static since 9/10/2026 so the mapping
+  ///          (`roles` → `roles_module_permissions`) is unit-tested.
+  ///
+  /// Returns: the collection name, or `''` for a module without one.
+  static String permissionCollectionFor(String module) =>
+      _getPermissionCollectionName(module);
+
+  // `static` since 9/10/2026 (it never used instance state) so
+  // [permissionCollectionFor] can expose it without a Firestore instance.
+  static String _getPermissionCollectionName(String module) {
     // Canonical first (23/8/2026): a role storing `form_builder` used to fall
     // through to `default: return ''`, and every caller reads that as "invalid
     // module" and skips the read or the write entirely — so that module's
@@ -1018,90 +488,36 @@ class RoleRepository {
     // See [ModuleNameAliases].
     switch (ModuleNameAliases.canonical(module)) {
       case 'services':
-        return SERVICES_PERMISSIONS;
+        return kServicesPermissions;
       case 'services_app':
-        return services_app_PERMISSIONS;
+        return kServicesAppPermissions;
       case 'messages':
-        return MESSAGES_PERMISSIONS;
+        return kMessagesPermissions;
       case 'inventory':
-        return INVENTORY_PERMISSIONS;
+        return kInventoryPermissions;
       case 'settings':
-        return SETTINGS_PERMISSIONS;
+        return kSettingsPermissions;
       case 'qiyas':
-        return QIYAS_PERMISSIONS;
+        return kQiyasPermissions;
       case 'grc':
-        return GRC_PERMISSIONS;
+        return kGrcPermissions;
       case 'knowledge_hub':
-        return KNOWLEDGE_HUB_PERMISSIONS;
-      case 'roles':
-        return ROLES_PERMISSIONS;
+        return kKnowledgeHubPermissions;
+      case 'roles': // 9/10/2026 — now roles_module_permissions
+        return kRolesPermissions;
       case 'hr':
-        return HR_PERMISSIONS;
+        return kHrPermissions;
       case 'crm':
-        return CRM_PERMISSIONS;
+        return kCrmPermissions;
       case 'notification':
-        return NOTIFICATION_PERMISSIONS;
+        return kNotificationPermissions;
+      case 'todo':
+        return kTodoPermissions;
+      case 'time_tracker': // ADDED 8/10/2026 — Time Tracker role grants
+        return kTimeTrackerPermissions;
       default:
         return '';
     }
-  }
-
-  Map<String, dynamic> _synchronizeModulePermissions({
-    required Map<String, dynamic> existingPermissions,
-    required Map<String, bool> newPermissions,
-    required int timestamp,
-    required String roleId,
-  }) {
-    Map<String, dynamic> synchronizedData = {'Role_Id': roleId};
-
-    List<int> timestamps = [];
-    if (existingPermissions.containsKey('timestamps') && existingPermissions['timestamps'] is List) {
-      timestamps = List<int>.from(existingPermissions['timestamps']).toList();
-    }
-
-    timestamps.add(timestamp);
-    synchronizedData['timestamps'] = timestamps;
-
-    Set<String> allPermissionKeys = {};
-
-    existingPermissions.forEach((key, value) {
-      if (key != 'Role_Id' && key != 'timestamps') {
-        allPermissionKeys.add(key);
-      }
-    });
-
-    newPermissions.forEach((key, value) {
-      String dbKey = key.trim().replaceAll(RegExp(r'\s+'), '_');
-      allPermissionKeys.add(dbKey);
-    });
-
-    for (String permissionKey in allPermissionKeys) {
-      List<bool> permissionHistory = [];
-
-      if (existingPermissions.containsKey(permissionKey) && existingPermissions[permissionKey] is List) {
-        permissionHistory = List<bool>.from(
-            existingPermissions[permissionKey].map((v) => v == true)
-        ).toList();
-      } else {
-        permissionHistory = List.filled(timestamps.length - 1, false, growable: true);
-      }
-
-      bool currentValue = permissionHistory.isNotEmpty ? permissionHistory.last : false;
-      bool newValue = currentValue;
-
-      for (String newPermKey in newPermissions.keys) {
-        String dbKey = newPermKey.trim().replaceAll(RegExp(r'\s+'), '_');
-        if (dbKey == permissionKey) {
-          newValue = newPermissions[newPermKey]!;
-          break;
-        }
-      }
-
-      permissionHistory.add(newValue);
-      synchronizedData[permissionKey] = permissionHistory;
-    }
-
-    return synchronizedData;
   }
 
   Map<String, dynamic> _createNewModulePermissions({
@@ -1132,7 +548,19 @@ class RoleRepository {
         return Right(null);
       }
 
-      DocumentSnapshot doc = await _getCollection(collectionName).doc(roleId).get();
+      DocumentSnapshot doc =
+          await _getCollection(collectionName).doc(roleId).get();
+
+      // ADDED 18/10/2026: Form Builder switches written by Knowticed Admin
+      // live in `form_builder_module_permissions`, while the client's
+      // canonical bucket is `services_app_module_permissions`. When the
+      // client's document doesn't exist yet, read Admin's, so a role that has
+      // Create_New_Form there isn't treated as all-false (Create button hidden).
+      if (!doc.exists && collectionName == kServicesAppPermissions) {
+        doc = await _getCollection(kFormBuilderAdminPermissions)
+            .doc(roleId)
+            .get();
+      }
 
       if (doc.exists) {
         return Right(doc.data() as Map<String, dynamic>);
@@ -1144,7 +572,8 @@ class RoleRepository {
     }
   }
 
-  Future<Either<FirebaseFailure, Map<String, Map<String, dynamic>>>> getAllRolePermissions({
+  Future<Either<FirebaseFailure, Map<String, Map<String, dynamic>>>>
+      getAllRolePermissions({
     required String roleId,
     required List<String> selectedModules,
   }) async {
@@ -1153,7 +582,7 @@ class RoleRepository {
 
       for (String module in selectedModules) {
         Either<FirebaseFailure, Map<String, dynamic>?> result =
-        await getRolePermissions(roleId: roleId, module: module);
+            await getRolePermissions(roleId: roleId, module: module);
 
         if (result.isRight()) {
           Map<String, dynamic>? permissions = result.getOrElse(() => null);
@@ -1188,10 +617,7 @@ class RoleRepository {
       if (doc.exists) {
         existingData = doc.data() as Map<String, dynamic>;
       } else {
-        existingData = {
-          'Role_Id': roleId,
-          'timestamps': [],
-        };
+        existingData = {'Role_Id': roleId, 'timestamps': []};
       }
 
       int newTimestamp = DateTime.now().millisecondsSinceEpoch;
@@ -1201,7 +627,9 @@ class RoleRepository {
 
       permissions.forEach((key, value) {
         String dbKey = key.trim().replaceAll(RegExp(r'\s+'), '_');
-        List<bool> permissionHistory = List<bool>.from(existingData[dbKey] ?? []);
+        List<bool> permissionHistory = List<bool>.from(
+          existingData[dbKey] ?? [],
+        );
         permissionHistory.add(value);
         existingData[dbKey] = permissionHistory;
       });
@@ -1211,5 +639,666 @@ class RoleRepository {
     } catch (e) {
       return Left(FirebaseFailure(e.toString()));
     }
+  }
+
+  /// Function Name: [capToCompanyCeiling]
+  ///
+  /// Purpose: Cap a role's requested switches by the company ceiling
+  ///          (`Demo_Permissions/{cid}`) — the pure half of
+  ///          [validatePermissionsAgainstAdmin] (extracted 9/10/2026).
+  ///
+  /// A switch stays as requested only when the ceiling grants it; anything
+  /// the ceiling does not grant, and every switch of a module the ceiling
+  /// does not list at all, becomes `false` (default-deny).
+  ///
+  /// Parameters:
+  /// - [requestedPermissions]: `{module: {switch: bool}}` from the role form.
+  /// - [demoPermissions]: the `Demo_Permissions/{cid}` document.
+  ///
+  /// Returns: the capped `{module: {switch: bool}}`, same keys as requested.
+  static Map<String, Map<String, bool>> capToCompanyCeiling({
+    required Map<String, Map<String, bool>> requestedPermissions,
+    required Map<String, dynamic> demoPermissions,
+  }) {
+    final Map<String, Map<String, bool>> validatedPermissions = {};
+
+    requestedPermissions.forEach((moduleName, modulePermissions) {
+      // Every spelling the template may be keyed under (23/8/2026): asking
+      // only for `services_app` when the document says `form_builder` made
+      // the module look absent, and the default-deny branch below then wrote
+      // all-false for a module the company had actually granted.
+      // See [ModuleNameAliases].
+      String? storedKey;
+      for (final String spelling in ModuleNameAliases.spellingsOf(moduleName)) {
+        if (demoPermissions[spelling] is Map) {
+          storedKey = spelling;
+          break;
+        }
+      }
+
+      if (storedKey != null) {
+        Map<String, dynamic> adminModulePerms = Map<String, dynamic>.from(
+          demoPermissions[storedKey],
+        );
+
+        Map<String, bool> validatedModulePerms = {};
+
+        modulePermissions.forEach((permKey, requestedValue) {
+          bool adminAllows = (adminModulePerms[permKey] == true);
+
+          if (adminAllows) {
+            validatedModulePerms[permKey] = requestedValue;
+          } else {
+            validatedModulePerms[permKey] = false;
+          }
+        });
+
+        validatedPermissions[moduleName] = validatedModulePerms;
+      } else {
+        // SECURITY (default-deny): a module absent from the admin template
+        // used to pass through with everything the caller requested. An
+        // un-granted module now resolves to all-false.
+        validatedPermissions[moduleName] = <String, bool>{
+          for (final String permKey in modulePermissions.keys) permKey: false,
+        };
+      }
+    });
+
+    return validatedPermissions;
+  }
+
+  /// Function Name: [buildSubscriptionPermissionAdminData]
+  ///
+  /// Purpose: The ONE builder for
+  ///          `Demo/{cid}/Subscription_Permission_Admin/{roleId}` (ADDED
+  ///          9/10/2026), shared by [addNewRole] and [updateRole].
+  ///
+  /// Until 9/10/2026 only [updateRole] wrote this document, so a new role had
+  /// none and `PermissionSyncService._syncDemoPermissionsToAllRoles` skipped
+  /// it (`if (!subPermDoc.exists) continue;`) until its first edit.
+  ///
+  /// Shape (unchanged from the edit path): `companyId`, `roleId`,
+  /// `timestamps`, plus `{module: {switch: bool}}` for every selected module
+  /// that has validated permissions.
+  ///
+  /// Parameters:
+  /// - [companyId] / [roleId]: the ids stored on the document.
+  /// - [selectedModules]: the role's modules, in form order.
+  /// - [validatedPermissions]: already capped by [capToCompanyCeiling].
+  /// - [timestamps]: `[millis]` at creation; `FieldValue.arrayUnion([millis])`
+  ///   on edit (merge write), exactly as before.
+  ///
+  /// Returns: the document body.
+  static Map<String, dynamic> buildSubscriptionPermissionAdminData({
+    required String companyId,
+    required String roleId,
+    required List<String> selectedModules,
+    required Map<String, Map<String, bool>> validatedPermissions,
+    required Object timestamps,
+  }) {
+    final Map<String, dynamic> subPermData = <String, dynamic>{
+      'companyId': companyId,
+      'roleId': roleId,
+      'timestamps': timestamps,
+    };
+
+    for (final String moduleName in selectedModules) {
+      if (validatedPermissions.containsKey(moduleName)) {
+        subPermData[moduleName] = validatedPermissions[moduleName];
+      }
+    }
+
+    return subPermData;
+  }
+
+  // REMOVED 11/8/2026: `isPermissionAllowedByAdmin` — dead code (0 callers;
+  // RoleCubit and PermissionSyncService each declare their own) and fail-open
+  // twice over: it returned `true` both when the admin-permission document was
+  // missing and when the module was absent from it.
+
+  Future<Either<Failure, dynamic>> addNewRole({
+    required List<String> selectedModules,
+    required String roleName,
+    required String roleNameAr,
+    required String roleDescription,
+    required String roleDescriptionAr,
+    required String createdBy,
+    required String? roleImage,
+    required Map<String, Map<String, bool>> modulePermissions,
+    RoleStatus status = RoleStatus.active,
+    List<String>? restrictedCountryCodes,
+  }) async {
+    try {
+      String companyId =
+          getBaseUrl('').split('/').where((s) => s.isNotEmpty).last;
+
+      Either<FirebaseFailure, Map<String, Map<String, bool>>> validationResult =
+          await validatePermissionsAgainstAdmin(
+        requestedPermissions: modulePermissions,
+        companyId: companyId,
+      );
+
+      if (validationResult.isLeft()) {
+        return validationResult;
+      }
+
+      Map<String, Map<String, bool>> validatedPermissions =
+          validationResult.getOrElse(() => {});
+
+      for (var module in validatedPermissions.keys) {
+        var perms = validatedPermissions[module];
+        if (perms != null) {
+          for (var permValue in perms.values) {
+            if (permValue is List) {
+              throw Exception(
+                "Nested array detected in module '$module' permissions",
+              );
+            }
+          }
+        }
+      }
+
+      String roleId = await remoteDataSource.generateNextRoleId();
+
+      DocumentSnapshot existingDoc = await _getCollection(
+        RoleRepository.kRolesCollection,
+      ).doc(roleId).get();
+      if (existingDoc.exists) {
+        throw Exception(
+          "Role ID collision detected - ID $roleId already exists!",
+        );
+      }
+
+      String? roleImageLink;
+      if (roleImage != null) {
+        try {
+          dynamic uploadResult = await remoteDataSource.uploadRoleImage(
+            roleImage,
+          );
+
+          if (uploadResult is Either) {
+            dynamic value = uploadResult.fold(
+              (failure) => null,
+              (success) => success,
+            );
+
+            if (value == null) {
+              Failure failure = uploadResult.fold(
+                (l) => l,
+                (r) => FirebaseFailure('Unexpected'),
+              );
+              return Left(failure);
+            }
+
+            roleImageLink = value.toString();
+          } else {
+            return Left(
+              FirebaseFailure('Unexpected result type from image upload'),
+            );
+          }
+        } catch (imageError) {
+          return Left(FirebaseFailure('Image upload failed: $imageError'));
+        }
+      }
+
+      RoleHistoryModel role = RoleHistoryModel.createNew(
+        roleId: roleId,
+        roleName: roleName,
+        roleNameAr: roleNameAr,
+        roleDescription: roleDescription,
+        roleDescriptionAr: roleDescriptionAr,
+        roleImage: roleImageLink ?? '',
+        createdAt: Timestamp.now(),
+        createdBy: createdBy,
+        status: status,
+        selectedModules: selectedModules,
+      );
+
+      WriteBatch batch = firestore.batch();
+
+      DocumentReference roleRef = _getCollection(
+        RoleRepository.kRolesCollection,
+      ).doc(roleId);
+
+      Map<String, dynamic> roleMap = role.toMap();
+
+      if (roleMap['Selected_Modules'] is List) {
+        var modules = roleMap['Selected_Modules'] as List;
+        for (var module in modules) {
+          if (module is List) {
+            throw Exception(
+              "Nested arrays in Selected_Modules are not supported",
+            );
+          }
+        }
+      }
+
+      batch.set(roleRef, roleMap);
+
+      await _createPermissionDocuments(
+        batch,
+        roleId,
+        selectedModules,
+        validatedPermissions,
+      );
+
+      // ADDED 9/10/2026 — the role's Subscription_Permission_Admin document,
+      // in the same commit, same shape as the edit path. Without it
+      // PermissionSyncService skipped the new role until its first edit.
+      // A plain set (not merge): the id is new, and a stale document left
+      // under a reused id must not leak its old modules into this role.
+      batch.set(
+        _getCollection(kSubscriptionPermissionAdminCollection).doc(roleId),
+        buildSubscriptionPermissionAdminData(
+          companyId: companyId,
+          roleId: roleId,
+          selectedModules: selectedModules,
+          validatedPermissions: validatedPermissions,
+          timestamps: <int>[DateTime.now().millisecondsSinceEpoch],
+        ),
+      );
+
+      if (restrictedCountryCodes != null) {
+        _setRestrictedCountries(batch, roleId, restrictedCountryCodes);
+      }
+
+      await batch.commit();
+
+      // ADDED 25/8/2026 — spec: Role Created. Fans out to the Master Admins,
+      // minus the person who just did it.
+      await _notifyRoleCreated(
+        actorEmail: createdBy,
+        roleId: roleId,
+        roleName: roleName,
+      );
+
+      return Right('Role created successfully');
+    } catch (e) {
+      return Left(FirebaseFailure(e.toString()));
+    }
+  }
+
+  // ✅ FIXED: Added status parameter
+  Future<Either<Failure, dynamic>> updateRole({
+    required RoleHistoryModel role,
+    required String currentUserEmail,
+    required String roleDescription,
+    required String roleDescriptionAr,
+    String? roleNameAr,
+    required String? roleImage,
+    required List<String> selectedModules,
+    required Map<String, Map<String, bool>> modulePermissions,
+    RoleStatus status = RoleStatus.active, // ✅ ADDED
+    List<String>? restrictedCountryCodes,
+  }) async {
+    try {
+      String roleId = role.roleId;
+      int timestamp = DateTime.now().millisecondsSinceEpoch;
+
+      // The status as STORED, read before anything is written.
+      //
+      // Not `role.currentStatus`: `RoleCubit.activateDraftRole` applies
+      // `copyWith(status: active)` to the role BEFORE handing it here, so the
+      // in-memory model already carries the new value and the draft → active
+      // transition would compare active against active and look like no change
+      // at all. Reading the document is the only view of the status that the
+      // caller cannot have pre-mutated.
+      final RoleStatus storedStatus = await _storedRoleStatus(roleId);
+
+      String companyId =
+          getBaseUrl('').split('/').where((s) => s.isNotEmpty).last;
+
+      Either<FirebaseFailure, Map<String, Map<String, bool>>> validationResult =
+          await validatePermissionsAgainstAdmin(
+        requestedPermissions: modulePermissions,
+        companyId: companyId,
+      );
+
+      if (validationResult.isLeft()) {
+        return validationResult;
+      }
+
+      Map<String, Map<String, bool>> validatedPermissions =
+          validationResult.getOrElse(() => {});
+
+      WriteBatch batch = firestore.batch();
+
+      EditBy currentEditBy =
+          role.currentEditBy ?? EditBy(editorEmail: [], timestamps: []);
+      List<String?> editorEmails = List<String?>.from(
+        currentEditBy.editorEmail ?? [],
+      );
+      List<Timestamp?> editTimestamps = List<Timestamp?>.from(
+        currentEditBy.timestamps ?? [],
+      );
+      editorEmails.add(currentUserEmail);
+      editTimestamps.add(Timestamp.now());
+      EditBy updatedEditBy = EditBy(
+        editorEmail: editorEmails,
+        timestamps: editTimestamps,
+      );
+
+      String? roleImageLink;
+      if (roleImage != null) {
+        try {
+          dynamic uploadResult = await remoteDataSource.uploadRoleImage(
+            roleImage,
+          );
+
+          if (uploadResult is Either) {
+            dynamic value = uploadResult.fold(
+              (failure) => null,
+              (success) => success,
+            );
+
+            if (value == null) {
+              Failure failure = uploadResult.fold(
+                (l) => l,
+                (r) => FirebaseFailure('Unexpected'),
+              );
+              return Left(failure);
+            }
+
+            roleImageLink = value.toString();
+          } else {
+            return Left(
+              FirebaseFailure('Unexpected result type from image upload'),
+            );
+          }
+        } catch (imageError) {
+          return Left(FirebaseFailure('Image upload failed: $imageError'));
+        }
+      }
+
+      RoleHistoryModel updatedRole = role.copyWith(
+        roleDescription: roleDescription,
+        roleDescriptionAr: roleDescriptionAr,
+        roleNameAr: roleNameAr,
+        roleImage: roleImageLink,
+        selectedModules: selectedModules,
+        editBy: updatedEditBy,
+        status: status.name, // ✅ ADDED
+      );
+
+      Map<String, dynamic> synchronizedRoleData = updatedRole.toMap();
+
+      DocumentReference roleRef = _getCollection(
+        RoleRepository.kRolesCollection,
+      ).doc(roleId);
+      batch.update(roleRef, synchronizedRoleData);
+
+      for (String moduleName in selectedModules) {
+        String collectionName = _getPermissionCollectionName(moduleName);
+        if (collectionName.isEmpty) continue;
+
+        DocumentReference permRef = _getCollection(collectionName).doc(roleId);
+        DocumentSnapshot permDoc = await permRef.get();
+
+        Map<String, dynamic> synchronizedPermissionData;
+
+        if (permDoc.exists) {
+          Map<String, dynamic> existingPermissions =
+              permDoc.data() as Map<String, dynamic>;
+          synchronizedPermissionData = _synchronizeModulePermissions(
+            existingPermissions: existingPermissions,
+            newPermissions: validatedPermissions[moduleName] ?? {},
+            timestamp: timestamp,
+            roleId: roleId,
+          );
+        } else {
+          synchronizedPermissionData = _createNewModulePermissions(
+            permissions: validatedPermissions[moduleName] ?? {},
+            timestamp: timestamp,
+            roleId: roleId,
+          );
+        }
+
+        batch.set(permRef, synchronizedPermissionData);
+      }
+
+      DocumentReference subPermRef = firestore
+          .collection(getBaseUrl('Subscription_Permission_Admin'))
+          .doc(roleId);
+
+      // CHANGED 9/10/2026 — built by the shared
+      // [buildSubscriptionPermissionAdminData] (addNewRole uses it too);
+      // same document, same merge write as before.
+      Map<String, dynamic> subPermData = buildSubscriptionPermissionAdminData(
+        companyId: companyId,
+        roleId: roleId,
+        selectedModules: selectedModules,
+        validatedPermissions: validatedPermissions,
+        timestamps: FieldValue.arrayUnion([timestamp]),
+      );
+
+      batch.set(subPermRef, subPermData, SetOptions(merge: true));
+
+      if (restrictedCountryCodes != null) {
+        _setRestrictedCountries(batch, roleId, restrictedCountryCodes);
+      }
+
+      // CHANGED 21/10/2026 (S-12, soft delete only): a module taken off the
+      // role no longer hard-deletes its `{module}_module_permissions` doc.
+      // Access is decided by the role's Selected_Modules
+      // (EmployeeController.hasModuleAccess gates every permission check), so
+      // the kept doc grants nothing and its history survives.
+
+      await batch.commit();
+
+      // ADDED 25/8/2026 — spec: Role Updated, and Role Status Changed when
+      // this save also flipped active/inactive. Both, when both happened: the
+      // permissions genuinely changed AND the role was switched off, and an
+      // admin reviewing the notice needs to know each.
+      await _notifyRoleUpdated(
+        actorEmail: currentUserEmail,
+        roleId: roleId,
+        roleName: role.currentRoleName,
+        oldStatus: storedStatus,
+        newStatus: status,
+      );
+
+      return Right('Role updated successfully');
+    } catch (e) {
+      return Left(FirebaseFailure(e.toString()));
+    }
+  }
+
+  Future<Either<FirebaseFailure, dynamic>> getUnDeletedRoles() async {
+    try {
+      List<RoleHistoryModel> roleTypeList = [];
+
+      // Roles come from two collections. A failure in one used to be swallowed
+      // by an empty `catch {}`, so a permission error or an offline read
+      // returned a *silently truncated* role list that looked like success
+      // (§11.5). Failures are now recorded and reported if nothing was read.
+      final List<String> readFailures = <String>[];
+
+      try {
+        String subscriptionAdminPath = getBaseUrl(
+          RoleRepository.kSubscriptionAdminCollection,
+        );
+
+        QuerySnapshot subscriptionSnapshot =
+            await firestore.collection(subscriptionAdminPath).get();
+
+        for (QueryDocumentSnapshot doc in subscriptionSnapshot.docs) {
+          try {
+            Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+            data['_documentId'] = doc.id;
+
+            RoleHistoryModel role = RoleHistoryModel.fromMap(data);
+
+            roleTypeList.add(role);
+          } catch (e) {
+            continue;
+          }
+        }
+      } catch (e) {
+        readFailures.add('${RoleRepository.kSubscriptionAdminCollection}: $e');
+      }
+
+      try {
+        String rolesPath = getBaseUrl(RoleRepository.kRolesCollection);
+
+        QuerySnapshot rolesSnapshot =
+            await firestore.collection(rolesPath).get();
+
+        for (QueryDocumentSnapshot doc in rolesSnapshot.docs) {
+          try {
+            Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+            data['_documentId'] = doc.id;
+
+            RoleHistoryModel role = RoleHistoryModel.fromMap(data);
+
+            if (role.currentStatus != RoleStatus.deleted) {
+              roleTypeList.add(role);
+            }
+          } catch (e) {
+            continue;
+          }
+        }
+      } catch (e) {
+        readFailures.add('${RoleRepository.kRolesCollection}: $e');
+      }
+
+      // Only fail the call when nothing at all could be read — a partial result
+      // is still useful, but "no roles" plus "a read blew up" must not be
+      // reported to the UI as an empty-but-successful list.
+      if (roleTypeList.isEmpty && readFailures.isNotEmpty) {
+        return Left(
+          FirebaseFailure('Could not load roles (${readFailures.join('; ')}).'),
+        );
+      }
+
+      return Right(roleTypeList);
+    } catch (e) {
+      return Left(FirebaseFailure(e.toString()));
+    }
+  }
+
+  Future<Either<FirebaseFailure, dynamic>> deleteRole({
+    required RoleHistoryModel role,
+    required String currentUserEmail,
+  }) async {
+    try {
+      String roleId = role.roleId;
+
+      WriteBatch batch = firestore.batch();
+
+      EditBy currentEditBy =
+          role.currentEditBy ?? EditBy(editorEmail: [], timestamps: []);
+      List<String?> editorEmails = List<String?>.from(
+        currentEditBy.editorEmail ?? [],
+      );
+      List<Timestamp?> editTimestamps = List<Timestamp?>.from(
+        currentEditBy.timestamps ?? [],
+      );
+      editorEmails.add(currentUserEmail);
+      editTimestamps.add(Timestamp.now());
+      EditBy updatedEditBy = EditBy(
+        editorEmail: editorEmails,
+        timestamps: editTimestamps,
+      );
+
+      RoleHistoryModel updatedRole = role.copyWith(
+        status: RoleStatus.deleted.name,
+        editBy: updatedEditBy,
+      );
+
+      DocumentReference roleRef = _getCollection(
+        RoleRepository.kRolesCollection,
+      ).doc(roleId);
+      DocumentSnapshot docSnapshot = await roleRef.get();
+
+      if (!docSnapshot.exists) {
+        return Left(
+          FirebaseFailure('Role document not found with ID: $roleId'),
+        );
+      }
+
+      // CHANGED 21/10/2026 (S-12, soft delete only): the role is only marked
+      // Deleted. Its permission docs and Subscription_Permission_Admin entry
+      // are kept (they were hard-deleted, so a restored role came back with
+      // no permissions). Nobody holds a deleted role — the cubit blocks the
+      // delete while employees do (X-87) — so the kept docs grant nothing.
+      batch.update(roleRef, updatedRole.toMap());
+
+      await batch.commit();
+
+      // ADDED 25/8/2026 — spec: Role Deleted.
+      await _notifyRoleDeleted(
+        actorEmail: currentUserEmail,
+        roleName: role.currentRoleName,
+      );
+
+      return Right('Role deleted successfully');
+    } catch (e) {
+      return Left(FirebaseFailure(e.toString()));
+    }
+  }
+
+  Map<String, dynamic> _synchronizeModulePermissions({
+    required Map<String, dynamic> existingPermissions,
+    required Map<String, bool> newPermissions,
+    required int timestamp,
+    required String roleId,
+  }) {
+    Map<String, dynamic> synchronizedData = {'Role_Id': roleId};
+
+    List<int> timestamps = [];
+    if (existingPermissions.containsKey('timestamps') &&
+        existingPermissions['timestamps'] is List) {
+      timestamps = List<int>.from(existingPermissions['timestamps']).toList();
+    }
+
+    timestamps.add(timestamp);
+    synchronizedData['timestamps'] = timestamps;
+
+    Set<String> allPermissionKeys = {};
+
+    existingPermissions.forEach((key, value) {
+      if (key != 'Role_Id' && key != 'timestamps') {
+        allPermissionKeys.add(key);
+      }
+    });
+
+    newPermissions.forEach((key, value) {
+      String dbKey = key.trim().replaceAll(RegExp(r'\s+'), '_');
+      allPermissionKeys.add(dbKey);
+    });
+
+    for (String permissionKey in allPermissionKeys) {
+      List<bool> permissionHistory = [];
+
+      if (existingPermissions.containsKey(permissionKey) &&
+          existingPermissions[permissionKey] is List) {
+        permissionHistory = List<bool>.from(
+          existingPermissions[permissionKey].map((v) => v == true),
+        ).toList();
+      } else {
+        permissionHistory = List.filled(
+          timestamps.length - 1,
+          false,
+          growable: true,
+        );
+      }
+
+      bool currentValue =
+          permissionHistory.isNotEmpty ? permissionHistory.last : false;
+      bool newValue = currentValue;
+
+      for (String newPermKey in newPermissions.keys) {
+        String dbKey = newPermKey.trim().replaceAll(RegExp(r'\s+'), '_');
+        if (dbKey == permissionKey) {
+          newValue = newPermissions[newPermKey]!;
+          break;
+        }
+      }
+
+      permissionHistory.add(newValue);
+      synchronizedData[permissionKey] = permissionHistory;
+    }
+
+    return synchronizedData;
   }
 }
