@@ -18,7 +18,6 @@
 library;
 
 import 'package:knowticed_plus/core/custom/feedback/removed_module_placeholder.dart';
-import 'package:knowticed_plus/features/form_builder/form_builder_entry.dart'; // [module:form_builder]
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:knowticed_plus/core/custom/feedback/module_page_stubs.dart';
@@ -52,7 +51,6 @@ import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/gr
 import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/pages/home_responsive_page.dart';
 import 'package:knowticed_plus/features/home/h2_nav_bar/presentation/ui/pages/more_page.dart';
 import 'package:knowticed_plus/features/notification/presentation/ui/pages/notification_control.dart';
-import 'package:knowticed_plus/features/services/services_entry.dart'; // [module:services]
 import 'package:knowticed_plus/features/settings/presentation/ui/pages/settings_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:knowticed_plus/features/roles/r1_role_management/presentation/ui/pages/role_screen.dart';
@@ -72,17 +70,10 @@ import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/to
 import 'package:knowticed_plus/features/todo/todo_entry.dart';
 // ADDED 8/10/2026 — the Time Tracker block on "Adding New Role" + its entry.
 import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/time_tracker/time_tracker_sections_enum.dart';
-import 'package:knowticed_plus/features/time_tracker/time_tracker_entry.dart'; // [module:time_tracker]
 
-import 'package:knowticed_plus/features/database/database_entry.dart'; // [module:database]
 // KnowledgeHubPage supplies the MultiBlocProvider (CreateKnowledgeCubit, etc.)
 // that the knowledge hub screens read from. Do NOT route to ViewKnowledgeHub
 // directly — it has no provider ancestor and throws ProviderNotFoundException.
-import 'package:knowticed_plus/features/knowledge_hub/knowledge_hub_entry.dart'; // [module:knowledge_hub]
-import 'package:knowticed_plus/features/inventory/inventory_entry.dart'; // [module:inventory]
-import 'package:knowticed_plus/features/hr/hr_entry.dart'; // [module:hr]
-import 'package:knowticed_plus/features/crm/crm_entry.dart'; // [module:crm]
-import 'package:knowticed_plus/features/qiyas/qiyas_entry.dart'; // [module:qiyas]
 
 // ✅ DECLARE GLOBAL KEYS OUTSIDE THE ENUM (at file level)
 // This ensures only ONE instance of each key exists
@@ -308,7 +299,7 @@ enum Modules {
       case Modules.tracking:
         return TrackerPageResponsivePageRefactor();
       case Modules.inventory:
-        return InventoryResponsivePage(); // [module:inventory|return RemovedModulePage(moduleName: getModuleName);]
+        return RemovedModulePage(moduleName: getModuleName);
       case Modules.grc:
         return GrcResponsivePageLayout(); // [module:grc|return RemovedModulePage(moduleName: getModuleName);]
       case Modules.roles:
@@ -330,7 +321,7 @@ enum Modules {
 
       case Modules.services:
         servicesKey ??= GlobalKey();
-        return ServicesResponsivePage(); // [module:services|return RemovedModulePage(moduleName: getModuleName);]
+        return RemovedModulePage(moduleName: getModuleName);
 
       case Modules.todo:
         // ADDED 7/10/2026 — TodoModuleEntry provides TodoListCubit +
@@ -339,22 +330,22 @@ enum Modules {
       case Modules.timeTracker:
         // ADDED 8/10/2026 — TimeTrackerModuleEntry provides the module's
         // cubits, the View gate and its nested Navigator (no GlobalKey).
-        return const TimeTrackerModuleEntry(); // [module:time_tracker|return RemovedModulePage(moduleName: getModuleName);]
+        return RemovedModulePage(moduleName: getModuleName);
       case Modules.hr:
-        return const HrModuleLandingPage(); // [module:hr|return RemovedModulePage(moduleName: getModuleName);]
+        return RemovedModulePage(moduleName: getModuleName);
       case Modules.crm:
-        return const CrmScreenHost(); // [module:crm|return RemovedModulePage(moduleName: getModuleName);]
+        return RemovedModulePage(moduleName: getModuleName);
       case Modules.database:
         // Owner 21/10/2026: DatabaseModuleEntry hosts the module's nested Navigator — DatabaseBuilderPage alone pushed details to the root and hid the shell.
-        return const DatabaseModuleEntry(); // [module:database|return RemovedModulePage(moduleName: getModuleName);]
+        return RemovedModulePage(moduleName: getModuleName);
       case Modules.messages:
         return HomePageHelperLayout();
 
       case Modules.formBuilder:
-        return FormResponsivePageLayout(); // [module:form_builder|return RemovedModulePage(moduleName: getModuleName);]
+        return RemovedModulePage(moduleName: getModuleName);
 
       case Modules.knowledgeHub:
-        return KnowledgeHubPage(); // [module:knowledge_hub|return RemovedModulePage(moduleName: getModuleName);]
+        return RemovedModulePage(moduleName: getModuleName);
       case Modules.settings:
         return SettingsScreen();
       case Modules.more:
@@ -364,7 +355,7 @@ enum Modules {
         if (grcNavKey == null) {
           grcNavKey = GlobalKey();
         } else {}
-        return QiyasResponsivePage(); // [module:qiyas|return RemovedModulePage(moduleName: getModuleName);]
+        return RemovedModulePage(moduleName: getModuleName);
 
       case Modules.notification:
         return NotificationControlPage(); // TODO: Create this page

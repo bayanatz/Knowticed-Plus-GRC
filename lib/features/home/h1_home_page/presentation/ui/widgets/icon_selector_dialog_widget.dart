@@ -54,17 +54,13 @@ import 'package:get_storage/get_storage.dart';
 import 'package:knowticed_plus/core/constants/app_constants.dart';
 import 'package:knowticed_plus/core/di/app_controllers.dart';
 import 'package:knowticed_plus/features/roles/r1_role_management/presentation/ui/pages/role_screen.dart';
-import 'package:knowticed_plus/features/knowledge_hub/kh6_approvals/presentation/controller/approvals_cubit.dart'; // [module:knowledge_hub]
-import 'package:knowticed_plus/features/knowledge_hub/kh6_approvals/presentation/ui/pages/approvals_screen.dart'; // [module:knowledge_hub]
 
 import 'package:knowticed_plus/core/custom/helpers/custom_svg.dart';
 import 'package:knowticed_plus/core/extensions/context_extensions.dart';
 import 'package:knowticed_plus/features/home/h1_home_page/data/models/header_icon_item.dart';
 import 'package:knowticed_plus/features/todo/presentation/ui/pages/todo_module_entry.dart';
 // ADDED 9/10/2026 — Time Tracker phase 6 (Check In / Out header icon).
-import 'package:knowticed_plus/features/time_tracker/presentation/ui/pages/time_tracker_module_entry.dart'; // [module:time_tracker]
 import 'package:knowticed_plus/core/theme/theme_controller.dart';
-import 'package:knowticed_plus/features/knowledge_hub/knowledge_hub_get_it.dart'; // [module:knowledge_hub]
 import 'package:knowticed_plus/core/theme/haptic_controller.dart';
 
 // ── Roles module tabs ────────────────────────────────────────────────────────
@@ -253,28 +249,6 @@ List<HeaderIconCatalogEntry> headerIconCatalogEntries(BuildContext context) {
         navigateTo: (context) => const Placeholder(),
       ),
     ),
-    // [module:knowledge_hub]
-    HeaderIconCatalogEntry(
-      module: Modules.knowledgeHub,
-      item: HeaderIconItem(
-        // No `hubApproval` key exists in intl_en.arb — literal until one is
-        // added. Every other label here resolves through S.of(ctx).
-        svgPath: 'assets/icons_assets/home_assets/ic_module_hub_approvals.svg',
-        getTitle: (ctx) => Localizations.localeOf(ctx).languageCode == 'ar'
-            ? 'موافقات مركز المعرفة'
-            : 'Knowledge Hub Approval',
-        // WIRED 23/8/2026 — the page exists (knowledge_hub/k6_approvals) and
-        // was simply never connected here. It reads `ApprovalsCubit` from the
-        // tree, which normally comes from `KnowledgeHubPage`'s MultiBlocProvider
-        // — opened on its own it has to bring its own, or it throws
-        // ProviderNotFoundException the moment it builds.
-        navigateTo: (context) => BlocProvider<ApprovalsCubit>(
-          create: (_) => KnowledgeHubDI.approvalsCubit(),
-          child: const ApprovalsScreen(),
-        ),
-      ),
-    ),
-    // [/module:knowledge_hub]
     HeaderIconCatalogEntry(
       module: Modules.todo,
       item: HeaderIconItem(
@@ -294,22 +268,6 @@ List<HeaderIconCatalogEntry> headerIconCatalogEntries(BuildContext context) {
         navigateTo: (context) => const Placeholder(),
       ),
     ),
-    // [module:time_tracker]
-    HeaderIconCatalogEntry(
-      // WIRED 9/10/2026 (Time Tracker phase 6) — was `Modules.tracking` + a
-      // Placeholder. The legacy tracking module is no longer in any drawer
-      // (Modules.timeTracker took its slot), so the picker never offered this
-      // icon. It now opens the Time Tracker main page, whose header holds the
-      // Check In / Check Out control. No "New Request" icon: the picker set
-      // has no glyph for it.
-      module: Modules.timeTracker,
-      item: HeaderIconItem(
-        svgPath: 'assets/icons_assets/main_icons_assets/ic_hr_check_in_out.svg',
-        getTitle: (ctx) => S.of(ctx).checkInOut,
-        navigateTo: (context) => const TimeTrackerModuleEntry(),
-      ),
-    ),
-    // [/module:time_tracker]
   ];
 }
 

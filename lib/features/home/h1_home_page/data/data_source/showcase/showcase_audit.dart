@@ -17,7 +17,6 @@ library;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:knowticed_plus/core/network/get_base_url.dart';
-import 'package:knowticed_plus/features/form_builder/helpers/constants/fb_api_constants.dart'; // [module:form_builder]
 import 'package:knowticed_plus/features/grc/helpers/constants/grc_firebase_paths.dart'; // [module:grc]
 import 'package:knowticed_plus/features/home/h1_home_page/data/data_source/showcase/showcase_common.dart';
 import 'package:knowticed_plus/features/settings/se6_requests/data/utils/request_collection_paths.dart';
@@ -52,7 +51,6 @@ abstract final class ShowcaseAudit {
           db.collection(getBaseUrl('Modules/services/RequestServices')),
       'Knowledge Hub': () =>
           db.collection(getBaseUrl('Modules/knowledge_hub/Create_Knowledge')),
-      'Form Builder': () => db.collection(getBaseUrl(FormApiConstants.forms)), // [module:form_builder]
       'Database': () =>
           db.collection(getBaseUrl('Modules/database_builder/Databases')),
       'GRC modules': () => db.collection(GrcFirebasePaths.modulesCollection), // [module:grc]

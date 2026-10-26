@@ -47,19 +47,15 @@ import 'package:knowticed_plus/features/home/h3_app_drawer/presentation/controll
 import 'package:knowticed_plus/features/home/helpers/role_access.dart';
 // ADDED 12/9/2026 — the deep-link router. These four are the module roots that
 // hold a "pending section" hint; see [openNotification].
-import 'package:knowticed_plus/features/knowledge_hub/presentation/ui/pages/knowledge_hub_responsive_page.dart'; // [module:knowledge_hub]
 import 'package:knowticed_plus/features/notification/data/models/notification_data_model.dart';
 import 'package:knowticed_plus/features/notification/domain/routing/notification_deep_link.dart';
 import 'package:knowticed_plus/features/notification/domain/routing/pending_notification_record.dart';
 import 'package:knowticed_plus/features/roles/r1_role_management/presentation/ui/pages/role_screen.dart';
-import 'package:knowticed_plus/features/services/sv1_home_page_services/presentation/ui/pages/responsive_services.dart'; // [module:services]
 import 'package:knowticed_plus/features/settings/presentation/ui/pages/settings_screen.dart';
-import 'package:knowticed_plus/features/form_builder/presentation/navigation/form_builder_shortcut.dart'; // [module:form_builder]
 import 'package:knowticed_plus/features/grc/grc11_module/presentation/ui/pages/grc_page.dart'; // [module:grc]
 import 'package:knowticed_plus/features/todo/presentation/ui/pages/todo_module_entry.dart';
 // ADDED 9/10/2026 — Time Tracker deep link (phase 4).
 import 'package:knowticed_plus/features/notification/domain/enums/time_tracker/time_tracker_notification_pages.dart';
-import 'package:knowticed_plus/features/time_tracker/presentation/ui/pages/time_tracker_module_entry.dart'; // [module:time_tracker]
 
 /// Which Time Tracker request a notification opens, and as whom. ADDED
 /// 9/10/2026 (phase 4).
@@ -353,18 +349,6 @@ abstract class NotificationRouting {
     TimeTrackerNotificationLink? request, [
     DateTime? attendanceDay,
   ]) {
-    // [module:time_tracker]
-    if (request != null) {
-      return TimeTrackerModuleEntry(
-        initialRequestId: request.requestId,
-        initialAsApproval: request.asApproval,
-      );
-    }
-    // 22/10/2026 — a late / absent calendar card: Attendance on that day.
-    if (attendanceDay != null) {
-      return TimeTrackerModuleEntry(initialAttendanceDate: attendanceDay);
-    }
-    // [/module:time_tracker]
     return null;
   }
 
@@ -665,16 +649,6 @@ abstract class NotificationRouting {
     // as its navigator builds its first routes.
     if (todoId != null) TodoModuleEntry.pendingTodoId = todoId;
     // ADDED 9/10/2026 — same one-shot hint for a Time Tracker request.
-    // [module:time_tracker]
-    if (request != null) {
-      TimeTrackerModuleEntry.pendingRequestId = request.requestId;
-      TimeTrackerModuleEntry.pendingAsApproval = request.asApproval;
-    }
-    // 22/10/2026 — a late / absent calendar card: Attendance on that day.
-    if (attendanceDay != null) {
-      TimeTrackerModuleEntry.pendingAttendanceDate = attendanceDay;
-    }
-    // [/module:time_tracker]
     // 22/10/2026 — Owner (View lag): the shell keeps every module mounted
     // behind the notification pages now, so only THIS module is rebuilt —
     // fresh, so it reads the hints armed above on its first build.
@@ -798,22 +772,7 @@ abstract class NotificationRouting {
     if (link.settingsSection != null) {
       SettingsScreen.pendingInitialIndex = link.settingsSection!.containerIndex;
     }
-    // [module:knowledge_hub]
-    if (link.knowledgeHubSection != null) {
-      KnowledgeHubPage.pendingSection = link.knowledgeHubSection;
-    }
-    // [/module:knowledge_hub]
-    // [module:services]
-    if (link.servicesSection != null) {
-      ServicesResponsivePage.pendingSection = link.servicesSection;
-    }
-    // [/module:services]
     // ADDED 22/10/2026 — Form Builder tab / GRC Action Center.
-    // [module:form_builder]
-    if (link.formBuilderTab != null) {
-      FormBuilderShortcuts.pending = link.formBuilderTab;
-    }
-    // [/module:form_builder]
     // [module:grc]
     if (link.grcActionCenter) {
       GovernanceRiskAndCompliancePage.pendingActionCenter = true;

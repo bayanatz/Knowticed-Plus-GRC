@@ -121,11 +121,6 @@ class CalendarCubit extends Cubit<CalendarState> {
           ),
       // ADDED 9/10/2026 — Time Tracker phase 6: approved leaves, pending
       // requests, transactions, late / absent days, approvals waiting.
-      // [module:time_tracker]
-      'time tracker': () => _dataService.getTimeTrackerCalendarEvents(
-            currentUserEmail: currentUserEmail,
-          ),
-      // [/module:time_tracker]
       'role management': () => _dataService.getRoleManagementCalendarEvents(
             currentUserEmail: currentUserEmail,
           ),
@@ -168,11 +163,6 @@ class CalendarCubit extends Cubit<CalendarState> {
       // button (DemoAccountsSeeder): one of every calendar event type.
       // ADDED 12/10/2026 — Form Builder: forms assigned / shared to the user,
       // the 14-day access warning, access expiry and the owner's reminders.
-      // [module:form_builder]
-      'form builder': () => _dataService.getFormBuilderCalendarEvents(
-            currentUserEmail: currentUserEmail,
-          ),
-      // [/module:form_builder]
       'seeded demo': () => _dataService.getSeededCalendarEvents(
             currentUserEmail: currentUserEmail,
           ),

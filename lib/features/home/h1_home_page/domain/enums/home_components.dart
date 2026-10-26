@@ -14,7 +14,6 @@
 /// Create at: 21/9/2025
 library;
 
-import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/widgets/module_widget/form_builder/forms_submission.dart'; // [module:form_builder]
 import 'package:flutter/material.dart';
 import 'package:knowticed_plus/core/helper/access/modules_enum.dart';
 import 'package:knowticed_plus/features/home/h1_home_page/data/models/home_component_model.dart';
@@ -22,16 +21,11 @@ import 'package:knowticed_plus/features/home/h1_home_page/data/models/home_compo
 import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/home_widgets/home_chart_cards_extra.dart';
 import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/home_widgets/home_extra_widgets.dart';
 import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/home_widgets/home_roles_widgets.dart';
-import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/home_widgets/home_service_widgets.dart'; // [module:services]
-import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/widgets/module_widget/form_builder/forms_actions.dart'; // [module:form_builder]
 import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/widgets/module_widget/inventory/inventory_actions.dart';
 import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/widgets/module_widget/inventory/inventory_new_request.dart';
 import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/widgets/module_widget/inventory/inventory_overview.dart';
 import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/widgets/module_widget/inventory/my_request_inventory.dart';
 import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/widgets/module_widget/inventory/stocks.dart';
-import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/widgets/module_widget/knowledge_hub/approval_knowledge.dart'; // [module:knowledge_hub]
-import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/widgets/module_widget/knowledge_hub/knowledge_hub_actions.dart'; // [module:knowledge_hub]
-import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/widgets/module_widget/knowledge_hub/knowledge_hub_overview.dart'; // [module:knowledge_hub]
 import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/widgets/module_widget/messages/schedule_message.dart';
 import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/widgets/module_widget/qiyas/qiyas_assign_overview.dart';
 import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/widgets/module_widget/settings/settings_home_widgets.dart';
@@ -40,8 +34,6 @@ import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/widget
 import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/widgets/module_widget/todo/to_check_box.dart';
 import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/widgets/module_widget/todo/todo_status.dart';
 // ADDED 9/10/2026 — Time Tracker phase 6 home cards.
-import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/widgets/module_widget/time_tracker/time_tracker_quick_cards.dart'; // [module:time_tracker]
-import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/widgets/module_widget/time_tracker/time_tracker_stat_cards.dart'; // [module:time_tracker]
 
 enum HomeComponents {
   /// Fallback for component names found in a stored layout that this
@@ -410,10 +402,9 @@ enum HomeComponents {
       case HomeComponents.scheduleMessages:
         return ScheduleMessage(model: model);
       case HomeComponents.formActions:
-        return FormActions(model: model); // [module:form_builder|return null;]
+        return null;
       case HomeComponents.formsSubmission:
-        return FormsSubmission(
-            model: model); // [module:form_builder|return null;]
+        return null;
       case HomeComponents.employeeMessages:
         return EmployeeMessagesWidget(model: model);
       case HomeComponents.groupMessages:
@@ -421,34 +412,31 @@ enum HomeComponents {
       case HomeComponents.lowStocks:
         return LowStocks(model: model);
       case HomeComponents.serviceActions:
-        return ServicesActions(model: model); // [module:services|return null;]
+        return null;
       case HomeComponents.requestedService:
-        return RequestService(model: model); // [module:services|return null;]
+        return null;
       case HomeComponents.inventoryActions:
         return InventoryActions(model: model);
       case HomeComponents.inventoryNewRequest:
         return InventoryNewRequests(model: model);
       case HomeComponents.knowledgeHubActions:
-        return KnowledgeHubActions(
-            model: model); // [module:knowledge_hub|return null;]
+        return null;
       case HomeComponents.serviceStatus:
-        return ServicesStatus(model: model); // [module:services|return null;]
+        return null;
       case HomeComponents.myServices:
-        return MyServices(model: model); // [module:services|return null;]
+        return null;
       case HomeComponents.nearBreachedSLA:
-        return NearBreachedSLA(model: model); // [module:services|return null;]
+        return null;
       case HomeComponents.inventoryOverview:
         return InventoryOverview(model: model);
       case HomeComponents.knowledgeHubOverview:
-        return KnowledgeHubOverview(
-            model: model); // [module:knowledge_hub|return null;]
+        return null;
       case HomeComponents.approvalDashboard: // ✅ NEW CASE
-        return ApprovalDashBoardWidget(
-            model: model); // [module:knowledge_hub|return null;]
+        return null;
       case HomeComponents.serviceOverview:
-        return ServiceOverview(model: model); // [module:services|return null;]
+        return null;
       case HomeComponents.myRequestServices:
-        return MyRequestServices(model: model); // [module:services|return null;]
+        return null;
       case HomeComponents.myRequestInventory:
         return MyRequestInventory(model: model);
       case HomeComponents.myTodoList:
@@ -458,26 +446,19 @@ enum HomeComponents {
       case HomeComponents.myTodoBox:
         return MyTodoCheckBox(model: model);
       case HomeComponents.timeTrackerTotals:
-        return TimeTrackerTotalsCard(
-            model: model); // [module:time_tracker|return null;]
+        return null;
       case HomeComponents.timeTrackerPresence:
-        return TimeTrackerPresenceCard(
-            model: model); // [module:time_tracker|return null;]
+        return null;
       case HomeComponents.timeTrackerStatus:
-        return TimeTrackerStatusCard(
-            model: model); // [module:time_tracker|return null;]
+        return null;
       case HomeComponents.timeTrackerApprover:
-        return TimeTrackerApproverCard(
-            model: model); // [module:time_tracker|return null;]
+        return null;
       case HomeComponents.timeTrackerMyRequest:
-        return TimeTrackerMyRequestCard(
-            model: model); // [module:time_tracker|return null;]
+        return null;
       case HomeComponents.timeTrackerQuickRequests:
-        return TimeTrackerQuickRequestsCard(
-            model: model); // [module:time_tracker|return null;]
+        return null;
       case HomeComponents.timeTrackerQuickApprovals:
-        return TimeTrackerQuickApprovalsCard(
-            model: model); // [module:time_tracker|return null;]
+        return null;
       case HomeComponents.stocks:
         return Stocks(model: model);
       case HomeComponents.qiyasAssignOverview:

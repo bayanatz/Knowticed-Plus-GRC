@@ -24,15 +24,6 @@ extension CalendarDataServiceMethods4 on CalendarDataService {
   /// - [currentUserEmail]: the signed-in user.
   ///
   /// Returns: [Future<List<CalendarEventModel>>]
-  // [module:time_tracker]
-  Future<List<CalendarEventModel>> getTimeTrackerCalendarEvents({
-    required String currentUserEmail,
-  }) =>
-      const TimeTrackerCalendarSource().load(
-        currentUserEmail: currentUserEmail,
-        isArabic: languageCode() == 'ar',
-      );
-  // [/module:time_tracker]
 
   /// Function Name: [getTodoCalendarEvents]
   ///

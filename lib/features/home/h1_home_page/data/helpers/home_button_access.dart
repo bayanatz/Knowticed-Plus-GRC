@@ -30,7 +30,6 @@ import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/me
 import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/services/approval_permission_work.dart';
 import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/services/request_service_permission.dart';
 import 'package:knowticed_plus/features/roles/r1_role_management/domain/enums/services/service_permissions.dart';
-import 'package:knowticed_plus/features/time_tracker/data/services/time_tracker_access.dart'; // [module:time_tracker]
 
 abstract final class HomeButtonAccess {
   const HomeButtonAccess._();
@@ -107,21 +106,6 @@ abstract final class HomeButtonAccess {
           // Inventory has no per-button permission yet: the module being open
           // is the only gate.
           return moduleOpen(Modules.inventory);
-        // [module:time_tracker]
-        case HomeComponents.timeTrackerQuickRequests:
-        case HomeComponents.timeTrackerQuickApprovals:
-          final GetIt sl = GetIt.instance;
-          if (!sl.isRegistered<TimeTrackerAccess>()) return false;
-          final TimeTrackerAccess access = sl<TimeTrackerAccess>();
-          switch (key) {
-            case HomeButtonKey.checkInOut:
-              return access.canCheckInAndOut;
-            case HomeButtonKey.requests:
-              return access.canViewRequests;
-            case HomeButtonKey.timeTrackerApprovals:
-              return access.canViewApprovals;
-          }
-        // [/module:time_tracker]
         default:
           return false;
       }

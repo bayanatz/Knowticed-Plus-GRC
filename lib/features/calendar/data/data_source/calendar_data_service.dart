@@ -54,13 +54,9 @@ import 'package:knowticed_plus/features/calendar/domain/enums/knowledge_hub_modu
 import 'package:knowticed_plus/features/calendar/domain/enums/todo_module/todo_calendar_events.dart';
 import 'package:knowticed_plus/features/todo/data/models/todo_model.dart';
 import 'package:knowticed_plus/features/todo/helpers/constants/todo_firestore_paths.dart';
-import 'package:knowticed_plus/features/time_tracker/helpers/constants/time_tracker_firestore_paths.dart'; // [module:time_tracker]
 import 'package:knowticed_plus/features/todo/domain/entities/todo_entity.dart';
 // ADDED 9/10/2026 — Time Tracker phase 6 calendar source.
-import 'package:knowticed_plus/features/calendar/data/data_source/time_tracker/time_tracker_calendar_source.dart'; // [module:time_tracker]
 import 'package:knowticed_plus/features/calendar/domain/enums/time_tracker_module/time_tracker_calendar_events.dart';
-import 'package:knowticed_plus/features/time_tracker/domain/entities/attendance_day.dart'; // [module:time_tracker]
-import 'package:knowticed_plus/features/time_tracker/domain/entities/time_tracker_request.dart'; // [module:time_tracker]
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
@@ -93,11 +89,7 @@ import 'package:knowticed_plus/core/constants/firebase_collections.dart';
 import 'package:knowticed_plus/features/grc/helpers/constants/grc_firebase_paths.dart'; // [module:grc]
 import 'package:knowticed_plus/features/calendar/domain/enums/calendar_catalog.dart';
 import 'package:knowticed_plus/core/enums/template_variable_samples.dart';
-import 'package:knowticed_plus/features/form_builder/helpers/constants/fb_api_constants.dart'; // [module:form_builder]
 import 'package:knowticed_plus/features/calendar/domain/enums/form_builder_module/form_builder_calendar_events.dart';
-import 'package:knowticed_plus/features/form_builder/data/models/form_access_row.dart'; // [module:form_builder]
-import 'package:knowticed_plus/features/form_builder/data/models/form_privacy_model.dart'; // [module:form_builder]
-import 'package:knowticed_plus/features/form_builder/data/models/users_model.dart'; // [module:form_builder]
 
 part 'calendar_data_service/calendar_data_service_methods.dart';
 part 'calendar_data_service/calendar_data_service_methods_2.dart';
@@ -107,7 +99,6 @@ part 'calendar_data_service/calendar_data_service_methods_5.dart';
 part 'calendar_data_service/calendar_data_service_methods_6.dart';
 part 'qiyas/calendar_data_service_qiyas_approvals.dart';
 part 'qiyas/calendar_data_service_qiyas_assignments.dart';
-part 'form_builder/calendar_data_service_form_builder.dart'; // [module:form_builder]
 
 class CalendarDataService {
   /// Department lookups are injected; this service has no service locator.
@@ -157,8 +148,6 @@ class CalendarDataService {
   List<String> liveCollectionPaths(String email) => <String>[
         getBaseUrl(TodoFirestorePaths.todosOf(email.trim().toLowerCase())),
         getBaseUrl(FirestoreCollections.requestServicesRoot),
-        getBaseUrl(TimeTrackerFirestorePaths.requests), // [module:time_tracker]
-        getBaseUrl(FormApiConstants.formPrivacy), // [module:form_builder]
         getBaseUrl(FirebaseCollections.createKnowledge),
       ];
 
@@ -1551,40 +1540,6 @@ class CalendarDataService {
     return field.toString();
   }
 
-  // [module:time_tracker]
-  /// Function Name: [timeTrackerCalendarEntries]
-  ///
-  /// Purpose: The pure Time Tracker card builder (unit-tested in
-  /// test/features/calendar/time_tracker/) — see
-  /// `TimeTrackerCalendarSource.entries`. ADDED 9/10/2026.
-  ///
-  /// Returns: [List<CalendarEventModel>]
-  static List<CalendarEventModel> timeTrackerCalendarEntries({
-    required List<TimeTrackerRequest> requests,
-    required List<AttendanceDay> days,
-    required String userEmail,
-    required DateTime now,
-    required bool isArabic,
-    bool showRequests = true,
-    bool showAttendance = true,
-    bool Function(TimeTrackerRequest request)? waitsForMe,
-    String Function(TimeTrackerRequest request)? typeNameOf,
-    String Function(String email)? personNameOf,
-  }) =>
-      TimeTrackerCalendarSource.entries(
-        requests: requests,
-        days: days,
-        userEmail: userEmail,
-        now: now,
-        isArabic: isArabic,
-        showRequests: showRequests,
-        showAttendance: showAttendance,
-        waitsForMe: waitsForMe,
-        typeNameOf: typeNameOf,
-        personNameOf: personNameOf,
-      );
-
-  // [/module:time_tracker]
   /// Function Name: [todoCalendarEntries]
   ///
   /// Purpose: The calendar cards ONE to-do raises — the pure half of

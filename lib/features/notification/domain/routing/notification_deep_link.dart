@@ -51,7 +51,6 @@
 library;
 
 import 'package:knowticed_plus/core/helper/access/modules_enum.dart';
-import 'package:knowticed_plus/features/form_builder/presentation/navigation/form_builder_shortcut.dart'; // [module:form_builder]
 import 'package:knowticed_plus/features/notification/domain/enums/form_builder/form_builder_notification_pages.dart';
 import 'package:knowticed_plus/features/notification/domain/enums/grc/grc_notification_pages.dart';
 import 'package:knowticed_plus/features/notification/domain/enums/knowledge_hub/knowledge_hub_notification_pages.dart';
@@ -106,7 +105,6 @@ class NotificationDeepLink {
     this.settingsSection,
     this.knowledgeHubSection,
     this.servicesSection,
-    this.formBuilderTab, // [module:form_builder]
     this.grcActionCenter = false,
   });
 
@@ -142,7 +140,6 @@ class NotificationDeepLink {
   final NotificationServicesSection? servicesSection;
 
   /// ADDED 22/10/2026 — Form Builder home tab (a submission → Submissions).
-  final FormBuilderShortcut? formBuilderTab; // [module:form_builder]
 
   /// ADDED 22/10/2026 — open GRC's Action Center (a task for this user).
   final bool grcActionCenter;
@@ -153,7 +150,6 @@ class NotificationDeepLink {
       settingsSection != null ||
       knowledgeHubSection != null ||
       servicesSection != null ||
-      formBuilderTab != null || // [module:form_builder]
       grcActionCenter;
 
   /// Function Name: [resolve]
@@ -201,12 +197,6 @@ class NotificationDeepLink {
       case Modules.formBuilder:
         return NotificationDeepLink._(
           module,
-          // [module:form_builder]
-          formBuilderTab: FormBuilderNotificationPage.fromKey(page) ==
-                  FormBuilderNotificationPage.resultScreen
-              ? FormBuilderShortcut.submissions
-              : null,
-          // [/module:form_builder]
         );
       case Modules.grc:
         return NotificationDeepLink._(

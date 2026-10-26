@@ -40,10 +40,8 @@ import 'package:knowticed_plus/features/home/h1_home_page/data/models/home_widge
 import 'package:knowticed_plus/features/home/h1_home_page/domain/enums/home_components.dart';
 import 'package:knowticed_plus/features/home/h1_home_page/domain/settings/home_widget_settings_schema.dart';
 import 'package:knowticed_plus/features/home/h1_home_page/presentation/controller/home_widget_settings_cubit.dart';
-import 'package:knowticed_plus/features/home/h1_home_page/presentation/controller/services_home_stats_cubit.dart'; // [module:services]
 import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/home_widgets/home_extra_widgets.dart';
 import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/widgets/widget_settings/home_picker_dialog.dart';
-import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/widgets/module_widget/form_builder/forms_submission.dart'; // [module:form_builder]
 import 'package:knowticed_plus/generated/l10n.dart';
 
 /// Function Name: [showHomeWidgetSettingsDialog]
@@ -77,7 +75,7 @@ Future<Map<String, dynamic>?> showHomeWidgetSettingsDialog(
         ? HomePickerCache.forms
         : (isArabic ? HomePickerCache.groupsAr : HomePickerCache.groupsEn);
     final List<HomePickItem> items = forms
-        ? await _withLoader(homeFormItems, cache.fresh != null) // [module:form_builder|? <HomePickItem>[]]
+        ? <HomePickItem>[]
         : groups
             ? await _withLoader(
                 () => homeMessagingGroupItems(isArabic), cache.fresh != null)
@@ -86,7 +84,7 @@ Future<Map<String, dynamic>?> showHomeWidgetSettingsDialog(
     final List<String>? picked = await showHomePickerDialog(
       context,
       title: forms ? s.forms : (groups ? s.groups : s.employees),
-      icon: forms ? kHomeFormIcon : kHomeGroupIcon, // [module:form_builder|icon: kHomeGroupIcon,]
+      icon: kHomeGroupIcon,
       items: items,
       initial: stored.list(f.key, const <String>[]),
       min: f.minSelected,
@@ -107,17 +105,6 @@ Future<Map<String, dynamic>?> showHomeWidgetSettingsDialog(
           if (HomeButtonAccess.allowed(model.component, o.value)) o,
       ];
     }
-    // [module:services]
-    if (f.source == HomeOptionSource.servicesDepartments) {
-      final ServicesHomeStatsCubit stats =
-          context.read<ServicesHomeStatsCubit>();
-      dynamicOptions[f.key] = <HomeSettingOption>[
-        f.options.first,
-        for (final ServiceDepartmentOption d in stats.departmentOptions)
-          HomeSettingOption(d.id, (S _) => d.name(isArabic)),
-      ];
-    }
-    // [/module:services]
   }
   if (!context.mounted) return null;
 
@@ -164,11 +151,6 @@ Future<List<HomePickItem>> _withLoader(
 /// Loads the Forms and Group Messages lists ahead of the first gear tap, so
 /// the dialog opens with them already filled. Safe to call often.
 void warmHomePickerLists({required bool isArabic}) {
-  // [module:form_builder]
-  if (HomePickerCache.forms.fresh == null) {
-    homeFormItems().catchError((Object _) => const <HomePickItem>[]);
-  }
-  // [/module:form_builder]
   final HomePickerCacheEntry groups =
       isArabic ? HomePickerCache.groupsAr : HomePickerCache.groupsEn;
   if (groups.fresh == null) {

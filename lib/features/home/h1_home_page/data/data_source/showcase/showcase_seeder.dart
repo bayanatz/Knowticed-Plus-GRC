@@ -18,16 +18,11 @@ import 'package:get/get.dart';
 import 'package:knowticed_plus/core/helper/access/main_core_employee_controller.dart';
 import 'package:knowticed_plus/features/home/h1_home_page/data/data_source/showcase/showcase_calendar.dart';
 import 'package:knowticed_plus/features/home/h1_home_page/data/data_source/showcase/showcase_common.dart';
-import 'package:knowticed_plus/features/home/h1_home_page/data/data_source/showcase/showcase_database.dart'; // [module:database]
-import 'package:knowticed_plus/features/home/h1_home_page/data/data_source/showcase/showcase_form_builder.dart'; // [module:form_builder]
 import 'package:knowticed_plus/features/home/h1_home_page/data/data_source/showcase/showcase_grc.dart'; // [module:grc]
-import 'package:knowticed_plus/features/home/h1_home_page/data/data_source/showcase/showcase_knowledge_hub.dart'; // [module:knowledge_hub]
 import 'package:knowticed_plus/features/home/h1_home_page/data/data_source/showcase/showcase_messages.dart';
 import 'package:knowticed_plus/features/home/h1_home_page/data/data_source/showcase/showcase_org_chart.dart';
 import 'package:knowticed_plus/features/home/h1_home_page/data/data_source/showcase/showcase_roles.dart';
-import 'package:knowticed_plus/features/home/h1_home_page/data/data_source/showcase/showcase_services.dart'; // [module:services]
 import 'package:knowticed_plus/features/home/h1_home_page/data/data_source/showcase/showcase_settings.dart';
-import 'package:knowticed_plus/features/home/h1_home_page/data/data_source/showcase/showcase_time_tracker.dart'; // [module:time_tracker]
 import 'package:knowticed_plus/features/home/h1_home_page/data/data_source/showcase/showcase_todo.dart';
 import 'package:knowticed_plus/features/roles/r4_active_directory/domain/entities/employee_entity.dart';
 
@@ -66,32 +61,12 @@ abstract final class ShowcaseSeeder {
       'GRC': () =>
           ShowcaseGrc.seed(firestore: db, me: me, isArabic: isArabic, now: now),
       // [/module:grc]
-      // [module:database]
-      'Database': () => ShowcaseDatabase.seed(
-          firestore: db, me: me, isArabic: isArabic, now: now),
-      // [/module:database]
-      // [module:knowledge_hub]
-      'Knowledge Hub': () => ShowcaseKnowledgeHub.seed(
-          firestore: db, me: me, isArabic: isArabic, now: now),
-      // [/module:knowledge_hub]
-      // [module:form_builder]
-      'Form Builder': () => ShowcaseFormBuilder.seed(
-          firestore: db, me: me, isArabic: isArabic, now: now),
-      // [/module:form_builder]
-      // [module:time_tracker]
-      'Time Tracker': () => ShowcaseTimeTracker.seed(
-          firestore: db, me: me, isArabic: isArabic, now: now),
-      // [/module:time_tracker]
       'Calendar (all modules, one day)': () => ShowcaseCalendar.seed(
           firestore: db, me: me, isArabic: isArabic, now: now),
       'To-Do': () => ShowcaseTodo.seed(
           firestore: db, ownerEmail: me.email, isArabic: isArabic, now: now),
       'Settings': () => ShowcaseSettings.seed(
           firestore: db, me: me, isArabic: isArabic, now: now),
-      // [module:services]
-      'Services': () => ShowcaseServices.seed(
-          firestore: db, me: me, isArabic: isArabic, now: now),
-      // [/module:services]
     };
 
     final List<ShowcaseModuleResult> results = <ShowcaseModuleResult>[];

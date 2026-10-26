@@ -63,7 +63,6 @@ import 'package:knowticed_plus/core/custom/charts/custom_radial_bar_chart_card.d
 import 'package:knowticed_plus/core/custom/charts/custom_table_chart_card.dart';
 import 'package:knowticed_plus/generated/l10n.dart';
 import 'package:knowticed_plus/core/theme/app_animations.dart';
-import 'package:knowticed_plus/features/home/h1_home_page/data/services/time_tracker_chart_figures.dart'; // [module:time_tracker]
 import 'package:knowticed_plus/features/home/h1_home_page/data/services/todo_chart_figures.dart';
 import 'package:knowticed_plus/features/home/h1_home_page/domain/settings/home_chart_live.dart';
 
@@ -102,7 +101,6 @@ class _HomeChartLiveScopeState extends State<HomeChartLiveScope> {
   void initState() {
     super.initState();
     TodoChartLive.ensureStarted();
-    TimeTrackerChartLive.ensureStarted(); // [module:time_tracker]
   }
 
   @override

@@ -8,7 +8,6 @@
 library;
 
 import 'package:knowticed_plus/core/helper/no_hover_binding.dart';
-import 'package:knowticed_plus/features/database/database_entry.dart'; // [module:database]
 import 'package:knowticed_plus/core/app_services/restricted_location/restricted_location_guard.dart';
 import 'package:knowticed_plus/core/theme/toggle_control.dart';
 
@@ -40,8 +39,6 @@ import 'package:knowticed_plus/features/grc/grc_get_it.dart'; // [module:grc]
 import 'package:knowticed_plus/features/todo/domain/base_repository/todo_base_repository.dart';
 import 'package:knowticed_plus/features/todo/todo_get_it.dart';
 // ADDED 8/10/2026 — Time Tracker DI (phase 1).
-import 'package:knowticed_plus/features/time_tracker/data/services/time_tracker_access.dart'; // [module:time_tracker]
-import 'package:knowticed_plus/features/time_tracker/time_tracker_get_it.dart'; // [module:time_tracker]
 import 'package:knowticed_plus/features/grc/grc11_module/presentation/controller/controller/grc_module_cubit.dart'; // [module:grc]
 
 import 'package:knowticed_plus/features/notification/helpers/services/flutter_local_notification_handler.dart';
@@ -58,7 +55,6 @@ import 'package:knowticed_plus/firebase/dev/firebase_options.dart';
 import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/pages/no_internet_screen.dart';
 import 'package:knowticed_plus/features/home/h1_home_page/presentation/controller/home_cubit.dart';
 import 'package:knowticed_plus/features/home/h1_home_page/presentation/controller/roles_home_stats_cubit.dart';
-import 'package:knowticed_plus/features/home/h1_home_page/presentation/controller/services_home_stats_cubit.dart'; // [module:services]
 import 'package:knowticed_plus/features/settings/se8_watermark/presentation/controller/watermark_cubit.dart';
 import 'package:knowticed_plus/features/home/h1_home_page/presentation/ui/widgets/app_bar_date.dart';
 import 'package:knowticed_plus/features/onboarding/o1_splash/presentation/ui/pages/splash_screen.dart';
@@ -136,11 +132,6 @@ void main() async {
       }
 
       // Time Tracker dependency injection (ADDED 8/10/2026) — same guard.
-      // [module:time_tracker]
-      if (!GetIt.instance.isRegistered<TimeTrackerAccess>()) {
-        setupTimeTrackerDependencies(GetIt.instance);
-      }
-      // [/module:time_tracker]
 
       // ScreenUtil
       await ScreenUtil.ensureScreenSize();
@@ -304,7 +295,6 @@ class MyApp extends StatelessWidget {
           child: MultiBlocProvider(
             providers: [
               // The Database module's repositories (Amr, 16/10/2026).
-              ...databaseProviders(), // [module:database]
               BlocProvider.value(value: themeCubit),
               // Company branding/info. Owned by main() (see comment there),
               // provided by value so the whole widget tree can read it.
@@ -340,11 +330,6 @@ class MyApp extends StatelessWidget {
               // picker. See services_home_stats_cubit.dart.
               //
               // Lazy and ensureLoaded()-driven, exactly like the Roles one.
-              // [module:services]
-              BlocProvider<ServicesHomeStatsCubit>(
-                create: (_) => ServicesHomeStatsCubit(),
-              ),
-              // [/module:services]
               // The company-wide watermark. Root-level for two reasons: every
               // WatermarkLayer in the app reads ONE instance, so the settings
               // are fetched once rather than per page; and the editor writes to
